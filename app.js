@@ -1,6 +1,3 @@
-/* ==========================================
-   DECODE THE WORD - GOLD MASTER (IOS SAFE + FIXED STUDIO FLOW)
-   ========================================== */
 
 // Compatibility: map words.js global WORDS_DATA to the engine's expected WORD_ENTRIES.
 // Note: words.js declares WORDS_DATA with `const`, so it is *not* a window property, but it
@@ -77,6 +74,7 @@ let activePlaybackSourceId = '';
 const PHONEME_VIDEO_LIBRARY_CANDIDATE_DIRS = [
     'assets/articulation/clips',
     'public/assets/articulation/clips'
+]; //
 const PACKED_TTS_BASE_PREF_KEY = 'decode_tts_base_path_v1';
 const PACKED_TTS_BASE_PLAIN = 'https://raw.githubusercontent.com/bkseatown/Cornerstone-MTSS/main/literacy-platform/audio/tts/packs/ava-multi';
 const PACKED_TTS_BASE_SCOPED = 'https://raw.githubusercontent.com/bkseatown/Cornerstone-MTSS/main/literacy-platform/audio/tts/packs/ava-multi';
