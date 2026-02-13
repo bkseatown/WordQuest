@@ -4213,7 +4213,7 @@ function applyPlayMode(mode = PLAY_MODE_CLASSIC, options = {}) {
     }
 
     if (opts.toast === true) {
-        showToast(isListen ? 'Mode: Listen & Spell' : 'Mode: Classic Wordle');
+        showToast(isListen ? '🎧 Listen & Spell — audio hints on' : '🎮 Classic — pure deduction, no audio hints');
     }
     return nextMode;
 }
@@ -7385,8 +7385,8 @@ function initKeyboard() {
         if (r === "zxcvbnm") {
             const ent = createKey("ENTER", submitGuess, true);
             const del = createKey("⌫", deleteLetter, true);
-            rowDiv.prepend(ent);
-            rowDiv.append(del);
+            rowDiv.prepend(del);
+            rowDiv.append(ent);
         }
         keyboard.appendChild(rowDiv);
     });
@@ -13706,101 +13706,7 @@ function initTutorial() {
     const tutorialShown = localStorage.getItem('tutorialShown');
     const welcomeModal = document.getElementById('welcome-modal');
     const startBtn = document.getElementById('start-playing-btn');
-    const backBtn = document.getElementById('welcome-back-btn');
-    const stepTitle = document.getElementById('welcome-step-title');
-    const stepCaption = document.getElementById('welcome-step-caption');
-    const stepIndex = document.getElementById('welcome-step-index');
-    const stepTotal = document.getElementById('welcome-step-total');
-    const modeHelper = document.getElementById('welcome-mode-helper');
-    const modeChoiceButtons = Array.from(welcomeModal?.querySelectorAll('[data-welcome-mode]') || []);
     if (!welcomeModal || !startBtn) return;
-
-    const tutorialSteps = Array.from(welcomeModal.querySelectorAll('[data-tutorial-step]'));
-    const stepDots = Array.from(welcomeModal.querySelectorAll('[data-step-dot]'));
-    if (!tutorialSteps.length) return;
-
-    let selectedMode = readPlayMode();
-    let visibleSteps = [];
-    let activeStepIndex = 0;
-    const getModeSteps = (mode) => {
-        return tutorialSteps.filter((stepEl) => {
-            const stepMode = String(stepEl.dataset.stepMode || 'both').trim().toLowerCase();
-            return stepMode === 'both' || stepMode === normalizePlayMode(mode);
-        });
-    };
-
-    const renderStep = (nextIndex = 0) => {
-        visibleSteps = getModeSteps(selectedMode);
-        const finalStepIndex = Math.max(0, visibleSteps.length - 1);
-        activeStepIndex = Math.max(0, Math.min(finalStepIndex, nextIndex));
-
-        tutorialSteps.forEach((stepEl) => {
-            stepEl.classList.add('hidden');
-        });
-        const currentStep = visibleSteps[activeStepIndex];
-        if (!currentStep) return;
-        currentStep.classList.remove('hidden');
-
-        stepDots.forEach((dotEl, idx) => {
-            dotEl.classList.toggle('hidden', idx >= visibleSteps.length);
-            dotEl.classList.toggle('active', idx === activeStepIndex);
-        });
-
-        if (stepTitle) {
-            stepTitle.textContent = currentStep.dataset.stepTitle || 'Word Quest Quick Tour';
-        }
-        if (stepCaption) {
-            stepCaption.textContent = currentStep.dataset.stepCaption || '';
-        }
-        if (stepIndex) {
-            stepIndex.textContent = String(activeStepIndex + 1);
-        }
-        if (stepTotal) {
-            stepTotal.textContent = String(visibleSteps.length);
-        }
-
-        const onModeChoiceStep = String(currentStep.dataset.stepMode || 'both').trim().toLowerCase() === 'both';
-        let stepCta = activeStepIndex === finalStepIndex
-            ? 'Start Playing'
-            : (currentStep.dataset.stepCta || 'Next');
-        if (onModeChoiceStep) {
-            stepCta = selectedMode === PLAY_MODE_LISTEN
-                ? 'Show Listen Example'
-                : (selectedMode === PLAY_MODE_CLASSIC ? 'Show Classic Example' : 'Choose a Mode');
-            startBtn.disabled = !(selectedMode === PLAY_MODE_CLASSIC || selectedMode === PLAY_MODE_LISTEN);
-        } else {
-            startBtn.disabled = false;
-        }
-        startBtn.textContent = stepCta;
-
-        modeChoiceButtons.forEach((btn) => {
-            const mode = normalizePlayMode(btn.dataset.welcomeMode || '');
-            const active = mode === selectedMode;
-            btn.classList.toggle('is-active', active);
-            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-        });
-        if (modeHelper) {
-            modeHelper.textContent = onModeChoiceStep
-                ? 'Choose one mode now. You can switch anytime during a round with the mode buttons above the board.'
-                : (selectedMode === PLAY_MODE_LISTEN
-                    ? 'Listen & Spell mode uses Hear Sentence and Hear Word as active clues.'
-                    : 'Classic mode hides audio clues for pure Wordle-style deduction.');
-        }
-
-        if (backBtn) {
-            backBtn.classList.toggle('hidden', activeStepIndex === 0);
-        }
-    };
-
-    modeChoiceButtons.forEach((btn) => {
-        if (!(btn instanceof HTMLButtonElement)) return;
-        btn.addEventListener('click', () => {
-            selectedMode = normalizePlayMode(btn.dataset.welcomeMode || '');
-            renderStep(activeStepIndex);
-        });
-    });
-
-    renderStep(0);
 
     if (!tutorialShown) {
         localStorage.setItem('tutorialShown', 'true');
@@ -13808,16 +13714,8 @@ function initTutorial() {
         welcomeModal.classList.remove('hidden');
     }
 
-    if (backBtn) {
-        backBtn.onclick = () => renderStep(activeStepIndex - 1);
-    }
     startBtn.onclick = () => {
-        const finalStepIndex = Math.max(0, getModeSteps(selectedMode).length - 1);
-        if (activeStepIndex < finalStepIndex) {
-            renderStep(activeStepIndex + 1);
-            return;
-        }
-        applyPlayMode(selectedMode, { toast: true });
+        try { localStorage.setItem('wq_tutorial_seen', '1'); } catch(e) {}
         closeModal();
     };
 }

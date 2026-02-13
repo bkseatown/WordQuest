@@ -8997,12 +8997,23 @@ body.word-quest-page .controls #pattern-select {
     text-shadow: 0 0 6px rgba(250, 204, 21, 0.45);
 }
 
+.modal-def {
+    font-family: var(--font-reading);
+    color: #475569;
+    font-weight: 500;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-top: 8px;
+    font-style: italic;
+}
+
 .modal-sentence {
     font-family: var(--font-reading);
     color: #334155;
     font-weight: 650;
     line-height: 1.5;
-    margin-top: 10px;
+    margin-top: 6px;
+    font-size: 0.95rem;
 }
 
 #modal-syllables {

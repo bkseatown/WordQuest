@@ -270,6 +270,19 @@
                       <option value="playful-sunrise">Sunset Pop</option>
                       <option value="classic-wordle">Classic Wordle</option>
                       <option value="classic-contrast">Electric Contrast</option>
+                      <option disabled>── Superhero ──</option>
+                      <option value="hero-iron">🦸 Iron (Red + Gold)</option>
+                      <option value="hero-shield">🛡️ Shield (Blue + Red)</option>
+                      <option value="hero-spider">🕷️ Spider (Navy + Red)</option>
+                      <option value="hero-wonder">⭐ Wonder (Navy + Gold)</option>
+                      <option disabled>── Vibes ──</option>
+                      <option value="beach-sunset">🏖️ Beach Sunset</option>
+                      <option value="coffeehouse">☕ Coffeehouse</option>
+                      <option value="rose-gold">🌸 Rose Gold</option>
+                      <option value="slate-steel">🔩 Slate & Steel</option>
+                      <option disabled>── Trending 2026 ──</option>
+                      <option value="mocha-mousse">🍫 Mocha Mousse</option>
+                      <option value="digital-lavender">💜 Digital Lavender</option>
                     </select>
                   </label>
                 </div>
@@ -366,155 +379,55 @@
 
     <!-- Welcome / Tutorial -->
     <div id="welcome-modal" class="modal hidden welcome-modal" role="dialog" aria-modal="true" aria-label="How to play Word Quest">
-      <div class="modal-content welcome-tutorial-card">
-        <h2 id="welcome-step-title">Word Quest Quick Tour</h2>
-        <p id="welcome-step-caption" class="welcome-step-caption"></p>
+      <div class="modal-content welcome-tutorial-card" style="max-width:480px; padding:28px 32px 24px;">
+        <button class="close-btn" type="button" aria-label="Close" onclick="document.getElementById('welcome-modal').classList.add('hidden');document.getElementById('modal-overlay').classList.add('hidden');">✕</button>
+        <h2 style="margin:0 0 4px; font-size:1.5rem; font-weight:800;">How To Play</h2>
+        <p style="margin:0 0 16px; color:#64748b; font-size:0.95rem;">Guess the word in 6 tries.</p>
 
-        <div class="welcome-step-progress" aria-label="Tutorial step progress">
-          <span class="welcome-step-dot active" data-step-dot="0" aria-hidden="true"></span>
-          <span class="welcome-step-dot" data-step-dot="1" aria-hidden="true"></span>
-          <span class="welcome-step-dot" data-step-dot="2" aria-hidden="true"></span>
-          <span class="welcome-step-dot" data-step-dot="3" aria-hidden="true"></span>
+        <ul style="list-style:none; padding:0; margin:0 0 18px; font-size:0.92rem; color:#334155; line-height:1.6;">
+          <li style="margin-bottom:4px;">• Each guess must be a valid word.</li>
+          <li>• Tile colors show how close your guess was.</li>
+        </ul>
+
+        <p style="margin:0 0 8px; font-weight:700; font-size:0.95rem;">Examples</p>
+
+        <div style="display:flex; gap:4px; margin-bottom:6px;">
+          <span class="welcome-tile correct" style="width:44px;height:44px;font-size:1.3rem;">S</span>
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">T</span>
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">A</span>
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">N</span>
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">D</span>
+        </div>
+        <p style="margin:0 0 14px; font-size:0.88rem; color:#475569;"><strong>S</strong> is in the word and in the correct spot.</p>
+
+        <div style="display:flex; gap:4px; margin-bottom:6px;">
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">B</span>
+          <span class="welcome-tile present" style="width:44px;height:44px;font-size:1.3rem;">R</span>
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">I</span>
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">C</span>
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">K</span>
+        </div>
+        <p style="margin:0 0 14px; font-size:0.88rem; color:#475569;"><strong>R</strong> is in the word but in the wrong spot.</p>
+
+        <div style="display:flex; gap:4px; margin-bottom:6px;">
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">P</span>
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">L</span>
+          <span class="welcome-tile absent" style="width:44px;height:44px;font-size:1.3rem;">A</span>
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">N</span>
+          <span class="welcome-tile" style="width:44px;height:44px;font-size:1.3rem;background:#fff;border:2px solid #d1d5db;">T</span>
+        </div>
+        <p style="margin:0 0 18px; font-size:0.88rem; color:#475569;"><strong>A</strong> is not in the word at all.</p>
+
+        <div style="border-top:1px solid #e2e8f0; padding-top:14px; margin-bottom:16px;">
+          <p style="margin:0 0 6px; font-weight:700; font-size:0.95rem;">🎧 Listen &amp; Spell Mode</p>
+          <p style="margin:0; font-size:0.88rem; color:#475569; line-height:1.5;">
+            Switch to <strong>Listen &amp; Spell</strong> to hear the word and sentence before you type. 
+            Use <strong>Classic</strong> for pure deduction with no audio hints.
+          </p>
         </div>
 
-        <section
-          class="welcome-step"
-          data-tutorial-step="0"
-          data-step-mode="both"
-          data-step-title="Pick Your Play Style"
-          data-step-caption="Pick how you want to play! Try to guess like a detective, or listen first to practice spelling."
-        >
-          <div class="welcome-mode-grid">
-            <button type="button" class="welcome-mode-card welcome-mode-choice" data-welcome-mode="classic" aria-pressed="false">
-              <h3>🎮 Detective Mode</h3>
-              <p>Figure out the word like a puzzle! Use clues from your guesses.</p>
-            </button>
-            <button type="button" class="welcome-mode-card welcome-mode-choice" data-welcome-mode="listen" aria-pressed="false">
-              <h3>🎧 Learning Mode</h3>
-              <p>Hear the word and sentence first, then practice spelling!</p>
-            </button>
-          </div>
-          <p id="welcome-mode-helper" class="welcome-step-note">Pick one to start! You can always switch modes while you play.</p>
-        </section>
-
-        <section
-          class="welcome-step hidden"
-          data-tutorial-step="1"
-          data-step-mode="classic"
-          data-step-title="Step 1: First Guess"
-          data-step-caption="Gray = not in the word. Yellow = right letter, wrong place!"
-          data-step-cta="Next Clue"
-        >
-          <div class="welcome-tile-row" aria-label="First guess example">
-            <span class="welcome-tile absent">T</span>
-            <span class="welcome-tile absent">O</span>
-            <span class="welcome-tile absent">U</span>
-            <span class="welcome-tile present">C</span>
-            <span class="welcome-tile absent">H</span>
-          </div>
-          <p class="welcome-step-note">Guess: <strong>TOUCH</strong>. The <strong>C</strong> is in the word, but needs to move!</p>
-        </section>
-
-        <section
-          class="welcome-step hidden"
-          data-tutorial-step="2"
-          data-step-mode="classic"
-          data-step-title="Step 2: Stronger Guess"
-          data-step-caption="Use your clues to guess better!"
-          data-step-cta="Final Step"
-        >
-          <div class="welcome-tile-row" aria-label="Second guess example">
-            <span class="welcome-tile present">C</span>
-            <span class="welcome-tile correct">R</span>
-            <span class="welcome-tile correct">I</span>
-            <span class="welcome-tile present">B</span>
-            <span class="welcome-tile absent">S</span>
-          </div>
-          <p class="welcome-step-note">Guess: <strong>CRIBS</strong>. Nice! <strong>2 greens</strong> (perfect!), <strong>2 yellows</strong> (close!)</p>
-        </section>
-
-        <section
-          class="welcome-step hidden"
-          data-tutorial-step="3"
-          data-step-mode="classic"
-          data-step-title="Step 3: Solve It!"
-          data-step-caption="Use all your clues to find the answer!"
-          data-step-cta="Start Playing"
-        >
-          <div class="welcome-reasoning-row" aria-label="Deductive reasoning example">
-            <span class="welcome-candidate ruled-out">BRISK ✕ (S was gray)</span>
-            <span class="welcome-candidate best">BRICK ✓</span>
-          </div>
-          <div class="welcome-tile-row" aria-label="Winning guess example">
-            <span class="welcome-tile correct">B</span>
-            <span class="welcome-tile correct">R</span>
-            <span class="welcome-tile correct">I</span>
-            <span class="welcome-tile correct">C</span>
-            <span class="welcome-tile correct">K</span>
-          </div>
-          <p class="welcome-step-note">Now you’re ready. Start with Classic mode or turn on listening hints anytime.</p>
-        </section>
-
-        <section
-          class="welcome-step hidden"
-          data-tutorial-step="1"
-          data-step-mode="listen"
-          data-step-title="Step 1: Hear the Sentence Clue"
-          data-step-caption="Tap Hear Sentence first. Use context clues to predict possible spellings."
-          data-step-cta="Next Clue"
-        >
-          <div class="welcome-reasoning-row" aria-label="Sentence-first clue example">
-            <span class="welcome-candidate best">“The <strong>brick</strong> one looked brighter.”</span>
-            <span class="welcome-candidate">Possible words: <strong>brick</strong>, <strong>brisk</strong></span>
-          </div>
-          <p class="welcome-step-note">Sentence hints narrow your options before you type.</p>
-        </section>
-
-        <section
-          class="welcome-step hidden"
-          data-tutorial-step="2"
-          data-step-mode="listen"
-          data-step-title="Step 2: Hear the Target Word"
-          data-step-caption="Tap Hear Word to confirm the exact target, then spell what you heard."
-          data-step-cta="Final Step"
-        >
-          <div class="welcome-tile-row" aria-label="Listen and spell example">
-            <span class="welcome-tile correct">B</span>
-            <span class="welcome-tile correct">R</span>
-            <span class="welcome-tile correct">I</span>
-            <span class="welcome-tile correct">C</span>
-            <span class="welcome-tile correct">K</span>
-          </div>
-          <p class="welcome-step-note">You can replay sentence and word audio as many times as needed.</p>
-        </section>
-
-        <section
-          class="welcome-step hidden"
-          data-tutorial-step="3"
-          data-step-mode="listen"
-          data-step-title="Step 3: Switch Anytime"
-          data-step-caption="Want pure Wordle? Switch to Classic. Need supports? Switch back to Listen & Spell."
-          data-step-cta="Start Playing"
-        >
-          <div class="welcome-mode-grid">
-            <article class="welcome-mode-card">
-              <h3>Classic</h3>
-              <p>Audio buttons are hidden for a deduction-only round.</p>
-            </article>
-            <article class="welcome-mode-card">
-              <h3>Listen &amp; Spell</h3>
-              <p>Audio buttons return so students can use sentence and word clues.</p>
-            </article>
-          </div>
-          <p class="welcome-step-note">Mode switching does not reset your round.</p>
-        </section>
-
-        <div class="welcome-step-actions">
-          <button id="welcome-back-btn" type="button" class="welcome-nav-btn hidden">Back</button>
-          <div class="welcome-step-count" aria-live="polite">
-            <span id="welcome-step-index">1</span>/<span id="welcome-step-total">4</span>
-          </div>
-          <button id="start-playing-btn" type="button" class="primary-btn">Show Example</button>
+        <div class="welcome-step-actions" style="justify-content:center;">
+          <button id="start-playing-btn" type="button" class="primary-btn" style="width:100%; padding:12px; font-size:1.05rem;">Start Playing</button>
         </div>
       </div>
     </div>
@@ -994,6 +907,198 @@
         --wq-tile-text: #000000;
       }
 
+      /* === NEW THEMED PALETTES === */
+
+      /* Superhero: Iron (deep crimson + gold) */
+      body.word-quest-page[data-wq-scene="hero-iron"] {
+        --wq-page-bg: linear-gradient(180deg, #1a0a0a 0%, #2d1216 62%, #1a0f0f 100%);
+        --wq-canvas-surface: linear-gradient(180deg, rgba(45, 18, 22, 0.97) 0%, rgba(30, 12, 15, 0.95) 100%);
+        --wq-canvas-glow: radial-gradient(circle at 18% 12%, rgba(200, 55, 45, 0.22), transparent 48%), radial-gradient(circle at 84% 88%, rgba(218, 165, 32, 0.18), transparent 52%);
+        --wq-canvas-accent: linear-gradient(90deg, rgba(200, 55, 45, 0.92), rgba(218, 165, 32, 0.88), rgba(200, 55, 45, 0.82));
+        --wq-panel-border: rgba(200, 55, 45, 0.35);
+        --wq-keyboard-surface: rgba(45, 18, 22, 0.9);
+        --wq-key-bg: linear-gradient(180deg, rgba(65, 28, 32, 0.98) 0%, rgba(45, 18, 22, 0.96) 100%);
+        --wq-key-border: rgba(200, 55, 45, 0.45);
+        --wq-key-vowel-bg: linear-gradient(180deg, rgba(218, 165, 32, 0.35) 0%, rgba(180, 130, 25, 0.28) 100%);
+        --wq-key-vowel-border: rgba(218, 165, 32, 0.65);
+        --wq-key-text: #f0d8c8;
+        --wq-key-shadow: inset 0 1px 0 rgba(218, 165, 32, 0.15), 0 3px 8px rgba(0, 0, 0, 0.4);
+        --wq-tile-bg: linear-gradient(180deg, rgba(55, 24, 28, 0.98) 0%, rgba(40, 16, 20, 0.96) 100%);
+        --wq-tile-border: rgba(200, 55, 45, 0.4);
+        --wq-tile-text: #f8e8d8;
+      }
+
+      /* Superhero: Shield (patriotic blue + red) */
+      body.word-quest-page[data-wq-scene="hero-shield"] {
+        --wq-page-bg: linear-gradient(180deg, #0c1a3a 0%, #132954 62%, #0e1d40 100%);
+        --wq-canvas-surface: linear-gradient(180deg, rgba(19, 41, 84, 0.97) 0%, rgba(14, 29, 64, 0.95) 100%);
+        --wq-canvas-glow: radial-gradient(circle at 18% 12%, rgba(45, 95, 180, 0.22), transparent 48%), radial-gradient(circle at 84% 88%, rgba(190, 45, 55, 0.18), transparent 52%);
+        --wq-canvas-accent: linear-gradient(90deg, rgba(190, 45, 55, 0.92), rgba(240, 240, 240, 0.85), rgba(45, 95, 180, 0.92));
+        --wq-panel-border: rgba(45, 95, 180, 0.4);
+        --wq-keyboard-surface: rgba(14, 29, 64, 0.9);
+        --wq-key-bg: linear-gradient(180deg, rgba(25, 50, 95, 0.98) 0%, rgba(18, 36, 72, 0.96) 100%);
+        --wq-key-border: rgba(65, 115, 200, 0.42);
+        --wq-key-vowel-bg: linear-gradient(180deg, rgba(190, 45, 55, 0.32) 0%, rgba(160, 35, 45, 0.25) 100%);
+        --wq-key-vowel-border: rgba(190, 45, 55, 0.6);
+        --wq-key-text: #d8e4f5;
+        --wq-key-shadow: inset 0 1px 0 rgba(100, 160, 240, 0.12), 0 3px 8px rgba(0, 0, 0, 0.35);
+        --wq-tile-bg: linear-gradient(180deg, rgba(22, 44, 88, 0.98) 0%, rgba(16, 32, 66, 0.96) 100%);
+        --wq-tile-border: rgba(65, 115, 200, 0.38);
+        --wq-tile-text: #e8f0ff;
+      }
+
+      /* Superhero: Spider (deep blue-red + web texture feel) */
+      body.word-quest-page[data-wq-scene="hero-spider"] {
+        --wq-page-bg: linear-gradient(180deg, #0f0820 0%, #1a1040 62%, #120a28 100%);
+        --wq-canvas-surface: linear-gradient(180deg, rgba(26, 16, 64, 0.97) 0%, rgba(18, 10, 40, 0.95) 100%);
+        --wq-canvas-glow: radial-gradient(circle at 18% 12%, rgba(200, 30, 40, 0.22), transparent 48%), radial-gradient(circle at 84% 88%, rgba(40, 80, 200, 0.2), transparent 52%);
+        --wq-canvas-accent: linear-gradient(90deg, rgba(200, 30, 40, 0.92), rgba(40, 80, 200, 0.88), rgba(200, 30, 40, 0.82));
+        --wq-panel-border: rgba(200, 30, 40, 0.35);
+        --wq-keyboard-surface: rgba(20, 12, 48, 0.9);
+        --wq-key-bg: linear-gradient(180deg, rgba(35, 22, 70, 0.98) 0%, rgba(24, 14, 50, 0.96) 100%);
+        --wq-key-border: rgba(200, 30, 40, 0.4);
+        --wq-key-vowel-bg: linear-gradient(180deg, rgba(200, 30, 40, 0.28) 0%, rgba(180, 20, 30, 0.2) 100%);
+        --wq-key-vowel-border: rgba(200, 30, 40, 0.58);
+        --wq-key-text: #e0d0e8;
+        --wq-key-shadow: inset 0 1px 0 rgba(200, 30, 40, 0.12), 0 3px 8px rgba(0, 0, 0, 0.4);
+        --wq-tile-bg: linear-gradient(180deg, rgba(30, 18, 60, 0.98) 0%, rgba(20, 12, 42, 0.96) 100%);
+        --wq-tile-border: rgba(200, 30, 40, 0.35);
+        --wq-tile-text: #f0e4f4;
+      }
+
+      /* Superhero: Wonder (deep navy + gold + crimson) */
+      body.word-quest-page[data-wq-scene="hero-wonder"] {
+        --wq-page-bg: linear-gradient(180deg, #0a1228 0%, #14203e 62%, #0c1630 100%);
+        --wq-canvas-surface: linear-gradient(180deg, rgba(20, 32, 62, 0.97) 0%, rgba(12, 22, 48, 0.95) 100%);
+        --wq-canvas-glow: radial-gradient(circle at 18% 12%, rgba(218, 165, 32, 0.22), transparent 48%), radial-gradient(circle at 84% 88%, rgba(175, 30, 45, 0.18), transparent 52%);
+        --wq-canvas-accent: linear-gradient(90deg, rgba(218, 165, 32, 0.92), rgba(175, 30, 45, 0.88), rgba(218, 165, 32, 0.82));
+        --wq-panel-border: rgba(218, 165, 32, 0.38);
+        --wq-keyboard-surface: rgba(14, 24, 50, 0.9);
+        --wq-key-bg: linear-gradient(180deg, rgba(24, 38, 72, 0.98) 0%, rgba(16, 28, 55, 0.96) 100%);
+        --wq-key-border: rgba(218, 165, 32, 0.4);
+        --wq-key-vowel-bg: linear-gradient(180deg, rgba(218, 165, 32, 0.28) 0%, rgba(180, 135, 25, 0.2) 100%);
+        --wq-key-vowel-border: rgba(218, 165, 32, 0.6);
+        --wq-key-text: #f0e4d0;
+        --wq-key-shadow: inset 0 1px 0 rgba(218, 165, 32, 0.15), 0 3px 8px rgba(0, 0, 0, 0.35);
+        --wq-tile-bg: linear-gradient(180deg, rgba(22, 34, 66, 0.98) 0%, rgba(14, 24, 50, 0.96) 100%);
+        --wq-tile-border: rgba(218, 165, 32, 0.35);
+        --wq-tile-text: #f4ecd8;
+      }
+
+      /* Beach Sunset (warm sand + coral + ocean) */
+      body.word-quest-page[data-wq-scene="beach-sunset"] {
+        --wq-page-bg: linear-gradient(180deg, #f5e6d3 0%, #fce4d6 52%, #d4e8ef 100%);
+        --wq-canvas-surface: linear-gradient(180deg, rgba(252, 244, 235, 0.98) 0%, rgba(248, 236, 224, 0.96) 100%);
+        --wq-canvas-glow: radial-gradient(circle at 18% 12%, rgba(230, 126, 86, 0.18), transparent 48%), radial-gradient(circle at 84% 88%, rgba(78, 165, 188, 0.16), transparent 52%);
+        --wq-canvas-accent: linear-gradient(90deg, rgba(230, 126, 86, 0.88), rgba(240, 180, 120, 0.82), rgba(78, 165, 188, 0.78));
+        --wq-panel-border: rgba(210, 155, 110, 0.45);
+        --wq-keyboard-surface: rgba(248, 238, 226, 0.92);
+        --wq-key-bg: linear-gradient(180deg, #fefcfa 0%, #f8f0e6 100%);
+        --wq-key-border: rgba(210, 155, 110, 0.52);
+        --wq-key-vowel-bg: linear-gradient(180deg, rgba(78, 165, 188, 0.2) 0%, rgba(65, 145, 168, 0.14) 100%);
+        --wq-key-vowel-border: rgba(78, 165, 188, 0.6);
+        --wq-key-text: #5a3e2e;
+        --wq-key-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 6px rgba(120, 80, 40, 0.12);
+        --wq-tile-bg: linear-gradient(180deg, #fffdf8 0%, #f8f0e6 100%);
+        --wq-tile-border: rgba(210, 155, 110, 0.38);
+        --wq-tile-text: #3a2820;
+      }
+
+      /* Coffeehouse (warm browns + cream — Starbucks vibes) */
+      body.word-quest-page[data-wq-scene="coffeehouse"] {
+        --wq-page-bg: linear-gradient(180deg, #f5ede4 0%, #efe5d8 62%, #e8ddd0 100%);
+        --wq-canvas-surface: linear-gradient(180deg, rgba(248, 240, 230, 0.98) 0%, rgba(240, 230, 216, 0.96) 100%);
+        --wq-canvas-glow: radial-gradient(circle at 18% 12%, rgba(120, 80, 45, 0.14), transparent 48%), radial-gradient(circle at 84% 88%, rgba(58, 94, 60, 0.12), transparent 52%);
+        --wq-canvas-accent: linear-gradient(90deg, rgba(120, 80, 45, 0.85), rgba(58, 94, 60, 0.78), rgba(168, 130, 85, 0.72));
+        --wq-panel-border: rgba(150, 110, 70, 0.4);
+        --wq-keyboard-surface: rgba(240, 230, 216, 0.92);
+        --wq-key-bg: linear-gradient(180deg, #faf6f0 0%, #efe6d8 100%);
+        --wq-key-border: rgba(150, 110, 70, 0.48);
+        --wq-key-vowel-bg: linear-gradient(180deg, rgba(58, 94, 60, 0.18) 0%, rgba(48, 78, 50, 0.12) 100%);
+        --wq-key-vowel-border: rgba(58, 94, 60, 0.55);
+        --wq-key-text: #3a2a1a;
+        --wq-key-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 2px 6px rgba(80, 50, 20, 0.12);
+        --wq-tile-bg: linear-gradient(180deg, #fdf8f2 0%, #f0e6d6 100%);
+        --wq-tile-border: rgba(150, 110, 70, 0.35);
+        --wq-tile-text: #2d1e10;
+      }
+
+      /* Rose Gold (feminine — blush + rose + gold) */
+      body.word-quest-page[data-wq-scene="rose-gold"] {
+        --wq-page-bg: linear-gradient(180deg, #faf0f0 0%, #f8eaeb 62%, #f4e4e5 100%);
+        --wq-canvas-surface: linear-gradient(180deg, rgba(252, 244, 244, 0.98) 0%, rgba(248, 236, 237, 0.96) 100%);
+        --wq-canvas-glow: radial-gradient(circle at 18% 12%, rgba(200, 120, 130, 0.16), transparent 48%), radial-gradient(circle at 84% 88%, rgba(200, 170, 120, 0.14), transparent 52%);
+        --wq-canvas-accent: linear-gradient(90deg, rgba(200, 120, 130, 0.82), rgba(200, 170, 120, 0.78), rgba(180, 130, 140, 0.72));
+        --wq-panel-border: rgba(200, 140, 150, 0.38);
+        --wq-keyboard-surface: rgba(248, 238, 238, 0.92);
+        --wq-key-bg: linear-gradient(180deg, #fefafa 0%, #f6eaea 100%);
+        --wq-key-border: rgba(200, 140, 150, 0.45);
+        --wq-key-vowel-bg: linear-gradient(180deg, rgba(200, 170, 120, 0.22) 0%, rgba(190, 155, 105, 0.15) 100%);
+        --wq-key-vowel-border: rgba(200, 170, 120, 0.6);
+        --wq-key-text: #5a3038;
+        --wq-key-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 2px 6px rgba(140, 80, 90, 0.1);
+        --wq-tile-bg: linear-gradient(180deg, #fffafa 0%, #f8eced 100%);
+        --wq-tile-border: rgba(200, 140, 150, 0.32);
+        --wq-tile-text: #3a2028;
+      }
+
+      /* Slate & Steel (masculine — charcoal + steel blue) */
+      body.word-quest-page[data-wq-scene="slate-steel"] {
+        --wq-page-bg: linear-gradient(180deg, #1e2530 0%, #252d3a 62%, #1c232e 100%);
+        --wq-canvas-surface: linear-gradient(180deg, rgba(37, 45, 58, 0.97) 0%, rgba(28, 35, 46, 0.95) 100%);
+        --wq-canvas-glow: radial-gradient(circle at 18% 12%, rgba(100, 140, 180, 0.16), transparent 48%), radial-gradient(circle at 84% 88%, rgba(90, 110, 140, 0.12), transparent 52%);
+        --wq-canvas-accent: linear-gradient(90deg, rgba(100, 140, 180, 0.82), rgba(150, 165, 180, 0.72), rgba(80, 120, 165, 0.78));
+        --wq-panel-border: rgba(100, 130, 165, 0.32);
+        --wq-keyboard-surface: rgba(30, 38, 50, 0.9);
+        --wq-key-bg: linear-gradient(180deg, rgba(45, 55, 72, 0.98) 0%, rgba(35, 44, 58, 0.96) 100%);
+        --wq-key-border: rgba(100, 130, 165, 0.38);
+        --wq-key-vowel-bg: linear-gradient(180deg, rgba(100, 140, 180, 0.22) 0%, rgba(80, 120, 160, 0.15) 100%);
+        --wq-key-vowel-border: rgba(100, 140, 180, 0.55);
+        --wq-key-text: #c8d4e0;
+        --wq-key-shadow: inset 0 1px 0 rgba(120, 150, 190, 0.1), 0 3px 8px rgba(0, 0, 0, 0.3);
+        --wq-tile-bg: linear-gradient(180deg, rgba(42, 52, 68, 0.98) 0%, rgba(32, 40, 55, 0.96) 100%);
+        --wq-tile-border: rgba(100, 130, 165, 0.3);
+        --wq-tile-text: #dce4ee;
+      }
+
+      /* Mocha Mousse (2026 Pantone trend — rich warm brown) */
+      body.word-quest-page[data-wq-scene="mocha-mousse"] {
+        --wq-page-bg: linear-gradient(180deg, #3a2e26 0%, #4a3c32 62%, #352a22 100%);
+        --wq-canvas-surface: linear-gradient(180deg, rgba(62, 50, 42, 0.97) 0%, rgba(48, 38, 32, 0.95) 100%);
+        --wq-canvas-glow: radial-gradient(circle at 18% 12%, rgba(180, 140, 100, 0.18), transparent 48%), radial-gradient(circle at 84% 88%, rgba(160, 110, 75, 0.14), transparent 52%);
+        --wq-canvas-accent: linear-gradient(90deg, rgba(180, 140, 100, 0.82), rgba(200, 165, 120, 0.78), rgba(160, 120, 85, 0.72));
+        --wq-panel-border: rgba(160, 120, 85, 0.35);
+        --wq-keyboard-surface: rgba(50, 40, 34, 0.9);
+        --wq-key-bg: linear-gradient(180deg, rgba(72, 58, 48, 0.98) 0%, rgba(55, 44, 36, 0.96) 100%);
+        --wq-key-border: rgba(160, 120, 85, 0.4);
+        --wq-key-vowel-bg: linear-gradient(180deg, rgba(200, 165, 120, 0.24) 0%, rgba(180, 140, 100, 0.16) 100%);
+        --wq-key-vowel-border: rgba(200, 165, 120, 0.55);
+        --wq-key-text: #e8d8c8;
+        --wq-key-shadow: inset 0 1px 0 rgba(200, 165, 120, 0.12), 0 3px 8px rgba(0, 0, 0, 0.35);
+        --wq-tile-bg: linear-gradient(180deg, rgba(66, 54, 44, 0.98) 0%, rgba(50, 40, 34, 0.96) 100%);
+        --wq-tile-border: rgba(160, 120, 85, 0.32);
+        --wq-tile-text: #f0e4d4;
+      }
+
+      /* Digital Lavender (2026 trend — soft purple-gray) */
+      body.word-quest-page[data-wq-scene="digital-lavender"] {
+        --wq-page-bg: linear-gradient(180deg, #eee8f4 0%, #e8e0f2 62%, #e2daf0 100%);
+        --wq-canvas-surface: linear-gradient(180deg, rgba(240, 234, 248, 0.98) 0%, rgba(232, 224, 242, 0.96) 100%);
+        --wq-canvas-glow: radial-gradient(circle at 18% 12%, rgba(150, 120, 200, 0.14), transparent 48%), radial-gradient(circle at 84% 88%, rgba(180, 160, 220, 0.12), transparent 52%);
+        --wq-canvas-accent: linear-gradient(90deg, rgba(150, 120, 200, 0.78), rgba(180, 160, 220, 0.72), rgba(140, 110, 190, 0.68));
+        --wq-panel-border: rgba(160, 130, 200, 0.35);
+        --wq-keyboard-surface: rgba(236, 228, 244, 0.92);
+        --wq-key-bg: linear-gradient(180deg, #f8f4fc 0%, #ede6f4 100%);
+        --wq-key-border: rgba(160, 130, 200, 0.42);
+        --wq-key-vowel-bg: linear-gradient(180deg, rgba(150, 120, 200, 0.18) 0%, rgba(130, 100, 180, 0.12) 100%);
+        --wq-key-vowel-border: rgba(150, 120, 200, 0.55);
+        --wq-key-text: #3a2e50;
+        --wq-key-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 6px rgba(80, 50, 120, 0.1);
+        --wq-tile-bg: linear-gradient(180deg, #faf6fe 0%, #f0eaf6 100%);
+        --wq-tile-border: rgba(160, 130, 200, 0.3);
+        --wq-tile-text: #2a2040;
+      }
+
       @media (max-width: 760px) {
         .wq-palette-field {
           width: 100%;
@@ -1119,7 +1224,17 @@
           'playful-festival',
           'playful-sunrise',
           'classic-wordle',
-          'classic-contrast'
+          'classic-contrast',
+          'hero-iron',
+          'hero-shield',
+          'hero-spider',
+          'hero-wonder',
+          'beach-sunset',
+          'coffeehouse',
+          'rose-gold',
+          'slate-steel',
+          'mocha-mousse',
+          'digital-lavender'
         ]);
 
         var scenePresets = Object.freeze({
@@ -1135,7 +1250,17 @@
           'playful-festival': { keyboard: 'playful', intensity: 'medium', shape: 'round', density: 'standard' },
           'playful-sunrise': { keyboard: 'playful', intensity: 'soft', shape: 'round', density: 'standard' },
           'classic-wordle': { keyboard: 'professional', intensity: 'medium', shape: 'crisp', density: 'standard' },
-          'classic-contrast': { keyboard: 'professional', intensity: 'vivid', shape: 'crisp', density: 'large' }
+          'classic-contrast': { keyboard: 'professional', intensity: 'vivid', shape: 'crisp', density: 'large' },
+          'hero-iron': { keyboard: 'professional', intensity: 'vivid', shape: 'crisp', density: 'standard' },
+          'hero-shield': { keyboard: 'professional', intensity: 'vivid', shape: 'crisp', density: 'standard' },
+          'hero-spider': { keyboard: 'professional', intensity: 'vivid', shape: 'crisp', density: 'standard' },
+          'hero-wonder': { keyboard: 'professional', intensity: 'vivid', shape: 'crisp', density: 'standard' },
+          'beach-sunset': { keyboard: 'calm', intensity: 'soft', shape: 'soft', density: 'standard' },
+          'coffeehouse': { keyboard: 'calm', intensity: 'soft', shape: 'soft', density: 'standard' },
+          'rose-gold': { keyboard: 'calm', intensity: 'soft', shape: 'soft', density: 'standard' },
+          'slate-steel': { keyboard: 'professional', intensity: 'medium', shape: 'crisp', density: 'standard' },
+          'mocha-mousse': { keyboard: 'professional', intensity: 'medium', shape: 'crisp', density: 'standard' },
+          'digital-lavender': { keyboard: 'calm', intensity: 'soft', shape: 'soft', density: 'standard' }
         });
 
         function activeBaseTheme() {
