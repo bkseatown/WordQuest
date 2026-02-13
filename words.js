@@ -28694,6 +28694,7 @@ const WORDS_DATA =
       });
 
       entries[word.toLowerCase()] = {
+        ...item,
         def: en.def || item.definition || "",
         sentence: en.sentence || item.sentence || "",
         syllables: item.syllableText || item.syllables || "",
