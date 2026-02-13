@@ -7419,7 +7419,6 @@ function initKeyboard() {
     
     micBtn.onclick = async () => {
         if (isRecording) {
-            // Stop recording
             if (mediaRecorder && mediaRecorder.state === 'recording') {
                 mediaRecorder.stop();
             }
@@ -7437,47 +7436,106 @@ function initKeyboard() {
             
             mediaRecorder.onstart = () => {
                 isRecording = true;
-                micBtn.innerHTML = "⏹ Stop";
+                micBtn.innerHTML = "⏹";
                 micBtn.style.background = "linear-gradient(180deg,#fca5a5,#f87171)";
                 micBtn.style.color = "#7f1d1d";
+                micBtn.title = "Stop recording";
             };
             
             mediaRecorder.onstop = () => {
                 isRecording = false;
-                micBtn.innerHTML = "🎙 Record";
+                micBtn.innerHTML = "🎙";
                 micBtn.style.background = "linear-gradient(180deg,#fef3c7,#fde68a)";
                 micBtn.style.color = "#92400e";
+                micBtn.title = "Record your pronunciation";
                 
                 stream.getTracks().forEach(t => t.stop());
                 
                 const blob = new Blob(audioChunks, { type: 'audio/webm' });
                 const url = URL.createObjectURL(blob);
+                const word = String(currentWord || '').toLowerCase();
                 
-                // Show playback in a toast-style popup
-                let playbackDiv = document.getElementById('mic-playback');
-                if (!playbackDiv) {
-                    playbackDiv = document.createElement('div');
-                    playbackDiv.id = 'mic-playback';
-                    playbackDiv.style.cssText = 'position:fixed; bottom:80px; left:50%; transform:translateX(-50%); z-index:9999; background:rgba(255,255,255,0.97); border-radius:16px; padding:10px 16px; box-shadow:0 8px 24px rgba(0,0,0,0.2); display:flex; align-items:center; gap:10px; font-size:0.85rem; backdrop-filter:blur(8px);';
-                    document.body.appendChild(playbackDiv);
+                // Show enhanced practice panel
+                let panel = document.getElementById('mic-playback');
+                if (!panel) {
+                    panel = document.createElement('div');
+                    panel.id = 'mic-playback';
+                    document.body.appendChild(panel);
                 }
                 
-                playbackDiv.innerHTML = `
-                    <span style="font-weight:700;">Your recording:</span>
-                    <button onclick="new Audio('${url}').play()" style="padding:4px 12px; border-radius:8px; border:1px solid #d1d5db; background:#f0fdf4; cursor:pointer; font-size:0.82rem;">▶ Play</button>
-                    <button onclick="if(typeof tryPlayPackedTtsForCurrentWord==='function'){tryPlayPackedTtsForCurrentWord({text:currentWord,languageCode:'en',type:'word'})}" style="padding:4px 12px; border-radius:8px; border:1px solid #d1d5db; background:#eff6ff; cursor:pointer; font-size:0.82rem;">🔊 Hear Word</button>
-                    <button onclick="this.parentElement.remove()" style="padding:4px 8px; border-radius:8px; border:1px solid #d1d5db; background:#fff; cursor:pointer;">✕</button>
+                panel.style.cssText = 'position:fixed; bottom:60px; left:50%; transform:translateX(-50%); z-index:9999; background:rgba(255,255,255,0.98); border-radius:16px; padding:14px 20px; box-shadow:0 8px 32px rgba(0,0,0,0.22); max-width:380px; width:90%; font-size:0.85rem; backdrop-filter:blur(8px); border:1px solid rgba(0,0,0,0.08);';
+                
+                panel.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <strong style="font-size:0.95rem;">🎙 Practice: "${word}"</strong>
+                        <button id="mic-panel-close" style="background:none; border:none; font-size:1.1rem; cursor:pointer; padding:2px 6px; color:#9ca3af;">✕</button>
+                    </div>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+                        <button id="mic-play-me" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid #bbf7d0; background:#f0fdf4; cursor:pointer; font-weight:600; font-size:0.82rem;">▶ Hear Me</button>
+                        <button id="mic-play-word" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid #bfdbfe; background:#eff6ff; cursor:pointer; font-weight:600; font-size:0.82rem;">🔊 Hear Word</button>
+                        <button id="mic-record-again" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid #fde68a; background:#fefce8; cursor:pointer; font-weight:600; font-size:0.82rem;">🔄 Try Again</button>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button id="mic-save" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid #c4b5fd; background:#f5f3ff; cursor:pointer; font-weight:600; font-size:0.82rem;">💾 Save to Device</button>
+                        <button id="mic-compare" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid #fbcfe8; background:#fdf2f8; cursor:pointer; font-weight:600; font-size:0.82rem;">🔁 Compare</button>
+                    </div>
+                    <div id="mic-status" style="margin-top:8px; font-size:0.78rem; color:#6b7280; text-align:center;"></div>
                 `;
                 
-                // Auto-dismiss after 15 seconds
-                setTimeout(() => { if (playbackDiv.parentElement) playbackDiv.remove(); }, 15000);
+                const statusEl = panel.querySelector('#mic-status');
+                
+                panel.querySelector('#mic-panel-close').onclick = () => panel.remove();
+                
+                panel.querySelector('#mic-play-me').onclick = () => {
+                    new Audio(url).play();
+                    if (statusEl) statusEl.textContent = '🎧 Playing your recording...';
+                };
+                
+                panel.querySelector('#mic-play-word').onclick = () => {
+                    if (typeof speak === 'function') speak(word, 'word');
+                    if (statusEl) statusEl.textContent = '🔊 Playing correct pronunciation...';
+                };
+                
+                panel.querySelector('#mic-record-again').onclick = () => {
+                    panel.remove();
+                    micBtn.click();
+                };
+                
+                panel.querySelector('#mic-save').onclick = async () => {
+                    try {
+                        const dbName = 'WordQuestRecordings';
+                        const storeName = 'recordings';
+                        const db = await new Promise((resolve, reject) => {
+                            const req = indexedDB.open(dbName, 1);
+                            req.onupgradeneeded = () => req.result.createObjectStore(storeName);
+                            req.onsuccess = () => resolve(req.result);
+                            req.onerror = () => reject(req.error);
+                        });
+                        const tx = db.transaction(storeName, 'readwrite');
+                        const store = tx.objectStore(storeName);
+                        const key = `${word}_${new Date().toISOString().slice(0,10)}`;
+                        store.put({ blob, word, date: new Date().toISOString(), size: blob.size }, key);
+                        await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
+                        db.close();
+                        if (statusEl) statusEl.textContent = `💾 Saved! Key: "${key}" — compare recordings over time.`;
+                    } catch (e) {
+                        if (statusEl) statusEl.textContent = '⚠️ Could not save — try again.';
+                    }
+                };
+                
+                panel.querySelector('#mic-compare').onclick = async () => {
+                    if (statusEl) statusEl.textContent = '🔁 Playing word, then your recording...';
+                    if (typeof speak === 'function') speak(word, 'word');
+                    setTimeout(() => { new Audio(url).play(); }, 1800);
+                };
+                
+                // No auto-dismiss — user controls the panel
             };
             
             mediaRecorder.start();
-            // Auto-stop after 5 seconds
             setTimeout(() => {
                 if (mediaRecorder.state === 'recording') mediaRecorder.stop();
-            }, 5000);
+            }, 8000);
             
         } catch (err) {
             showToast('Microphone access needed for recording');

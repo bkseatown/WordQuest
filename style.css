@@ -8890,24 +8890,20 @@ body.word-quest-page.fit-screen-tight #game-board {
 body.word-quest-page #game-board .tile,
 body.word-quest-page #game-board .cell,
 body.word-quest-page #game-board [data-tile] {
-    width: min(72px, calc((100vh - 340px) / 7)) !important;
-    height: min(60px, calc((100vh - 340px) / 8.5)) !important;
-    font-size: min(1.6rem, calc((100vh - 340px) / 16)) !important;
+    width: min(68px, calc((100vh - 340px) / 7.5)) !important;
+    height: min(58px, calc((100vh - 340px) / 9)) !important;
+    font-size: min(1.5rem, calc((100vh - 340px) / 16)) !important;
     border-radius: 12px !important;
 }
 
 body.word-quest-page #game-board {
-    width: min(100%, 900px) !important;
     max-width: 900px !important;
     margin-inline: auto !important;
-    gap: 10px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
+    gap: 8px !important;
 }
 body.word-quest-page #game-board .board-row,
 body.word-quest-page #game-board .row {
-    gap: 10px !important;
+    gap: 8px !important;
     justify-content: center !important;
 }
 
