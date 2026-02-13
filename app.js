@@ -7741,7 +7741,16 @@ function estimateSpeechDuration(text, rate = 1) {
     return Math.min(12000, base / normalized);
 }
 
+// Track autoplay timeouts so we can cancel them on modal close
+let autoPlayRevealTimeouts = [];
+
+function cancelAutoPlayReveal() {
+    autoPlayRevealTimeouts.forEach(id => clearTimeout(id));
+    autoPlayRevealTimeouts = [];
+}
+
 function autoPlayReveal(definitionText, sentenceText) {
+    cancelAutoPlayReveal();
     if (appSettings.autoHear === false) return;
     if (isCurrentWordAudioBlocked()) return;
     const wordText = currentWord || '';
@@ -7751,7 +7760,7 @@ function autoPlayReveal(definitionText, sentenceText) {
     const interPartGapMs = 340;
     let delay = 170;
     if (wordText) {
-        setTimeout(() => {
+        autoPlayRevealTimeouts.push(setTimeout(() => {
             const gate = beginExclusivePlaybackForSource('auto-hear-word');
             if (!gate.proceed) return;
             tryPlayPackedTtsForCurrentWord({
@@ -7765,11 +7774,11 @@ function autoPlayReveal(definitionText, sentenceText) {
                     activePlaybackSourceId = '';
                 }
             });
-        }, delay);
+        }, delay));
         delay += estimateSpeechDuration(wordText, speechRateWord) + interPartGapMs;
     }
     if (definitionText) {
-        setTimeout(() => {
+        autoPlayRevealTimeouts.push(setTimeout(() => {
             const gate = beginExclusivePlaybackForSource('auto-hear-definition');
             if (!gate.proceed) return;
             tryPlayPackedTtsForCurrentWord({
@@ -7783,11 +7792,11 @@ function autoPlayReveal(definitionText, sentenceText) {
                     activePlaybackSourceId = '';
                 }
             });
-        }, delay);
+        }, delay));
         delay += estimateSpeechDuration(definitionText, speechRateSentence) + interPartGapMs;
     }
     if (sentenceText) {
-        setTimeout(() => {
+        autoPlayRevealTimeouts.push(setTimeout(() => {
             const gate = beginExclusivePlaybackForSource('auto-hear-sentence');
             if (!gate.proceed) return;
             tryPlayPackedTtsForCurrentWord({
@@ -7801,7 +7810,7 @@ function autoPlayReveal(definitionText, sentenceText) {
                     activePlaybackSourceId = '';
                 }
             });
-        }, delay);
+        }, delay));
     }
 }
 
@@ -8308,6 +8317,19 @@ function showEndModal(win) {
             const safeWord = cleanAudienceText(translation.word || '');
             const safeDefinition = translation.definition || '';
             const safeSentence = translation.sentence || '';
+            
+            // If all text ended up empty after sanitization, show fallback
+            if (!safeWord && !safeDefinition && !safeSentence) {
+                if (translatedWord) { translatedWord.textContent = ''; translatedWord.classList.add('hidden'); }
+                translatedDef.textContent = "Translation coming soon for this word.";
+                translatedSentence.textContent = "";
+                if (playTranslatedWord) { playTranslatedWord.onclick = null; playTranslatedWord.disabled = true; }
+                if (playTranslatedDef) { playTranslatedDef.onclick = null; playTranslatedDef.disabled = true; }
+                if (playTranslatedSentence) { playTranslatedSentence.onclick = null; playTranslatedSentence.disabled = true; }
+                setTranslationAudioNote('');
+                translationDisplay.classList.remove("hidden");
+                return;
+            }
             if (translatedWord) {
                 translatedWord.textContent = safeWord ? `Word: ${safeWord}` : '';
                 translatedWord.classList.toggle('hidden', !safeWord);
@@ -8437,6 +8459,56 @@ function showEndModal(win) {
                 toggleTranslationSection(selectedLang && selectedLang !== 'en');
             };
         }
+    }
+    
+    // Show inline bonus (joke/fact/riddle/quote) directly in the reveal modal
+    const revealBonus = document.getElementById('reveal-bonus');
+    const revealBonusEmoji = document.getElementById('reveal-bonus-emoji');
+    const revealBonusTitle = document.getElementById('reveal-bonus-title');
+    const revealBonusText = document.getElementById('reveal-bonus-text');
+    const revealBonusPunchline = document.getElementById('reveal-bonus-punchline');
+    if (revealBonus && revealBonusText && shouldShowBonusContent()) {
+        try {
+            const pool = getBonusContentPool();
+            const types = ['jokes', 'riddles', 'facts', 'quotes'].filter(t => Array.isArray(pool?.[t]) && pool[t].length);
+            if (types.length) {
+                const entries = types.flatMap(t => (pool[t] || []).map(text => ({ type: t, text })));
+                const pick = entries[Math.floor(Math.random() * entries.length)];
+                if (pick?.text) {
+                    const emojis = { jokes: '😄', riddles: '🧩', facts: '🌟', quotes: '💭' };
+                    const titles = { jokes: 'Joke Time!', riddles: 'Riddle Time!', facts: 'Fun Fact!', quotes: 'Inspiration' };
+                    if (revealBonusEmoji) revealBonusEmoji.textContent = emojis[pick.type] || '✨';
+                    if (revealBonusTitle) revealBonusTitle.textContent = titles[pick.type] || 'Bonus';
+                    
+                    // For jokes/riddles, split setup from punchline/answer
+                    let visibleText = pick.text;
+                    let hiddenText = '';
+                    if (pick.type === 'jokes') {
+                        const parsed = splitJokeSetupAndPunchline(pick.text);
+                        if (parsed.punchline) { visibleText = parsed.setup; hiddenText = parsed.punchline; }
+                    } else if (pick.type === 'riddles') {
+                        const parsed = splitRiddlePromptAndAnswer(pick.text);
+                        if (parsed.answer) { visibleText = parsed.prompt; hiddenText = parsed.answer; }
+                    }
+                    
+                    revealBonusText.textContent = visibleText;
+                    revealBonus.classList.remove('hidden');
+                    
+                    if (hiddenText && revealBonusPunchline) {
+                        revealBonusPunchline.classList.remove('hidden');
+                        revealBonusPunchline.textContent = pick.type === 'riddles' ? 'Reveal Answer' : 'Reveal Punchline';
+                        revealBonusPunchline.onclick = () => {
+                            revealBonusText.textContent = visibleText + '\n' + hiddenText;
+                            revealBonusPunchline.classList.add('hidden');
+                        };
+                    } else if (revealBonusPunchline) {
+                        revealBonusPunchline.classList.add('hidden');
+                    }
+                }
+            }
+        } catch (e) {}
+    } else if (revealBonus) {
+        revealBonus.classList.add('hidden');
     }
     
     // Store that we should show bonus when modal closes
@@ -8621,6 +8693,7 @@ function handleTeacherSubmit() {
 
 function closeModal() {
     const wasGameModalOpen = !gameModal.classList.contains("hidden");
+    cancelAutoPlayReveal();
     stopAllActiveAudioPlayers();
     stopDecodableFollowAlong({ clearHighlights: true });
     cancelPendingSpeech(true);
