@@ -7316,6 +7316,9 @@ body.word-quest-page #game-canvas {
     flex: 1;
     min-height: 0;
     padding-bottom: 10px;
+    max-width: 960px !important;
+    margin-inline: auto !important;
+    width: 100% !important;
 }
 
 body.word-quest-page #game-board {
@@ -7613,578 +7616,6 @@ body.madlibs-page .fun-hud {
    Dark theme
    ========================================================================== */
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --color-text: #e5e7eb;
-        --color-neutral: #334155;
-    }
-
-    body {
-        background: radial-gradient(circle at top, #233047 0%, #0f172a 60%);
-        color: #e5e7eb;
-    }
-
-    header {
-        color: #e5e7eb;
-    }
-
-    h1 {
-        color: #f8fafc;
-    }
-
-    h2,
-    h3,
-    .modal-content h2 {
-        color: #f8fafc;
-    }
-
-    .controls label,
-    .controls select,
-    .controls option,
-    .hint-btn,
-    .warmup-title,
-    .warmup-subtitle {
-        color: #e2e8f0;
-    }
-
-    .controls select,
-    #pattern-select,
-    #length-select,
-    #guess-count-select {
-        background: #1e293b;
-        border-color: #334155;
-        color: #e2e8f0;
-    }
-
-    .warmup-panel {
-        background: rgba(30, 41, 59, 0.9);
-        border-color: rgba(51, 65, 85, 0.9);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-    }
-
-    .warmup-btn {
-        background: #4338ca;
-        border-color: #6366f1;
-        color: #eef2ff;
-    }
-
-    .warmup-tile {
-        background: #0f172a;
-        border-color: #334155;
-        color: #e2e8f0;
-    }
-
-    #game-board {
-        background: transparent;
-    }
-
-    .tile {
-        background: #2b3a52;
-        border-color: #64748b;
-        color: #f8fafc;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.45);
-    }
-
-    .tile.correct {
-        background: #22c55e;
-        border-color: #4ade80;
-        color: #0b1220;
-        box-shadow: 0 6px 14px rgba(74, 222, 128, 0.45);
-    }
-
-    .tile.present {
-        background: #fbbf24;
-        border-color: #facc15;
-        color: #0b1220;
-        box-shadow: 0 6px 14px rgba(250, 204, 21, 0.45);
-    }
-
-    .tile.absent {
-        background: #344256;
-        border-color: #64748b;
-        color: #e2e8f0;
-        box-shadow: 0 6px 12px rgba(15, 23, 42, 0.5);
-    }
-
-    #keyboard {
-        color: #e2e8f0;
-    }
-
-    .key {
-        background: linear-gradient(180deg, #33445e 0%, #243044 100%);
-        color: #f8fafc;
-        border: 1px solid #475569;
-        box-shadow: 0 4px 0 0 #0b1220, 0 6px 12px rgba(0,0,0,0.55);
-        text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-    }
-
-    .key.correct {
-        background: linear-gradient(180deg, #16a34a 0%, #15803d 100%) !important;
-        color: #f8fafc !important;
-        border-color: #22c55e !important;
-    }
-
-    .key.present {
-        background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%) !important;
-        color: #1f2937 !important;
-        border-color: #fbbf24 !important;
-    }
-
-    .key.absent {
-        background: linear-gradient(180deg, #1f2937 0%, #0f172a 100%) !important;
-        color: #cbd5f5 !important;
-        border-color: #334155;
-    }
-
-    .key.vowel:not(.correct):not(.present):not(.absent) {
-        background: linear-gradient(180deg, #5b76c7 0%, #3f4f86 100%);
-        border: 1px solid #a5b4fc;
-        color: #f8fafc;
-        box-shadow: 0 4px 0 0 #0b1220, 0 6px 14px rgba(0,0,0,0.5);
-    }
-
-    .modal {
-        background: #111827;
-        color: #e5e7eb;
-        border-color: #1f2937;
-    }
-
-    .modal .close-btn,
-    .top-right-x {
-        color: #cbd5f5;
-    }
-
-    .modal-audio-btn,
-    .modal-primary-btn {
-        background: #1f2937;
-        color: #e2e8f0;
-        border-color: #334155;
-    }
-
-    .adventure-subtitle {
-        color: #cbd5f5;
-    }
-
-    .adventure-card {
-        background: rgba(15, 23, 42, 0.7);
-        border-color: rgba(99, 102, 241, 0.35);
-    }
-
-    .adventure-card-body h3 {
-        color: #f8fafc;
-    }
-
-    .adventure-card-body p {
-        color: #cbd5f5;
-    }
-
-    .adventure-note {
-        color: #cbd5f5;
-    }
-
-    .adventure-team-settings {
-        background: rgba(15, 23, 42, 0.8);
-        border-color: rgba(99, 102, 241, 0.35);
-    }
-
-    .adventure-team-row input {
-        background: #0f172a;
-        border-color: #334155;
-        color: #e2e8f0;
-    }
-
-    .auto-read-label {
-        color: #cbd5f5;
-    }
-
-    .translation-display {
-        background: #0f172a;
-        border-left-color: #6366f1;
-    }
-
-    #teacher-modal {
-        background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
-    }
-
-    #teacher-modal label,
-    #teacher-modal .teacher-hint,
-    #teacher-modal .teacher-subtext,
-    #teacher-modal .toggle-row {
-        color: #e2e8f0;
-    }
-
-    #teacher-modal #custom-word-input,
-    #teacher-modal #system-voice-select {
-        background: #0f172a;
-        border-color: #334155;
-        color: #e2e8f0;
-    }
-
-    #teacher-modal .teacher-tools {
-        background: rgba(15, 23, 42, 0.7);
-        border-color: rgba(51, 65, 85, 0.8);
-    }
-
-    #teacher-modal.teacher-clean .teacher-block,
-    #teacher-modal.teacher-clean .teacher-section {
-        background: rgba(15, 23, 42, 0.72);
-        border-color: rgba(51, 65, 85, 0.8);
-    }
-
-    #teacher-modal.teacher-clean .teacher-section summary {
-        color: #e2e8f0;
-    }
-
-    #teacher-modal.teacher-clean .teacher-danger summary {
-        color: #fca5a5;
-    }
-
-    .voice-install-row {
-        background: rgba(180, 83, 9, 0.2);
-        border-color: rgba(217, 119, 6, 0.5);
-        color: #fde68a;
-    }
-
-    .voice-install-row button {
-        background: #f59e0b;
-        color: #0f172a;
-    }
-
-    #teacher-modal .teacher-tabs {
-        background: rgba(30, 41, 59, 0.8);
-    }
-
-    #teacher-modal .teacher-tab-btn {
-        color: #cbd5f5;
-    }
-
-    #teacher-modal .teacher-tab-btn.active {
-        background: #6366f1;
-        border-color: #818cf8;
-        color: #f8fafc;
-        box-shadow: 0 10px 18px rgba(99, 102, 241, 0.35);
-    }
-
-    .teacher-pack-row {
-        background: rgba(15, 23, 42, 0.65);
-        border-color: rgba(51, 65, 85, 0.8);
-    }
-
-    .voice-available-row {
-        background: rgba(34, 197, 94, 0.12);
-        border-color: rgba(74, 222, 128, 0.5);
-        color: #bbf7d0;
-    }
-
-    .voice-available-row button {
-        background: #22c55e;
-        color: #0f172a;
-    }
-
-    #phoneme-modal {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-    }
-
-    .sound-guide-card,
-    .sound-guide-board {
-        background: #ffffff;
-        border-color: #e2e8f0;
-        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
-        backdrop-filter: blur(10px);
-    }
-
-    .sound-guide-section h3,
-    .sound-subsection-title,
-    .sound-guide-subtitle {
-        color: #1f2937;
-        text-shadow: none;
-    }
-
-    #phoneme-modal h2 {
-        color: #0f172a;
-        text-shadow: none;
-    }
-
-    .sound-tile {
-        background: #f9fbff;
-        border-color: #cbd5e1;
-        color: #0f172a;
-    }
-
-    .sound-tile.vowel {
-        background: #eef2ff;
-        border-color: #c7d2fe;
-        color: #1e3a8a;
-    }
-
-    .sound-tile.selected {
-        background: #e0e7ff;
-        border-color: #6366f1;
-        color: #1e293b;
-    }
-
-    .info-icon {
-        background: rgba(30, 41, 59, 0.9);
-        color: #c7d2fe;
-    }
-
-    .info-example {
-        background: rgba(99, 102, 241, 0.2);
-        color: #c7d2fe;
-    }
-
-    .selected-sound {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        color: #0f172a;
-    }
-
-    .articulation-card {
-        background: rgba(15, 23, 42, 0.78);
-        border-color: rgba(148, 163, 184, 0.4);
-        color: #e2e8f0;
-    }
-
-    .articulation-ipa {
-        background: rgba(129, 140, 248, 0.18);
-        color: #e0e7ff;
-    }
-
-    .articulation-visual-wrap {
-        background: linear-gradient(145deg, rgba(59, 130, 246, 0.18), rgba(30, 64, 175, 0.25));
-        border-color: rgba(129, 140, 248, 0.4);
-    }
-
-    .articulation-tip {
-        color: #f8fafc;
-    }
-
-    .articulation-example,
-    .articulation-picture-label {
-        color: #cbd5f5;
-    }
-
-    .fun-hud {
-        background: rgba(30, 41, 59, 0.92);
-        border-color: rgba(71, 85, 105, 0.85);
-        color: #f8fafc;
-    }
-
-    .fun-hud-mini-btn {
-        background: rgba(30, 41, 59, 0.9);
-        border-color: rgba(71, 85, 105, 0.8);
-        color: #e2e8f0;
-    }
-
-    .classroom-dock {
-        background: linear-gradient(160deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.95));
-        border-color: rgba(51, 65, 85, 0.8);
-    }
-
-    .classroom-dock-header h3 {
-        color: #f8fafc;
-    }
-
-    .classroom-dock-header p,
-    .dock-file-name,
-    .dock-hint,
-    .dock-timer-set {
-        color: #cbd5f5;
-    }
-
-    .dock-tab {
-        background: rgba(15, 23, 42, 0.7);
-        color: #cbd5f5;
-        box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.35);
-    }
-
-    .dock-tab.active {
-        background: #6366f1;
-        color: #f8fafc;
-    }
-
-    .dock-upload {
-        background: rgba(99, 102, 241, 0.25);
-        color: #e0e7ff;
-    }
-
-    .dock-file-viewer {
-        background: rgba(15, 23, 42, 0.5);
-        border-color: rgba(148, 163, 184, 0.35);
-    }
-
-    .dock-timer-display {
-        color: #f8fafc;
-    }
-
-    .dock-timer-set select {
-        background: #0f172a;
-        border-color: #334155;
-        color: #e2e8f0;
-    }
-
-    body.cloze-page {
-        background: radial-gradient(circle at top, #1f2937 0%, #0f172a 60%);
-    }
-
-    .cloze-subtitle {
-        color: #cbd5f5;
-    }
-
-    .cloze-panel {
-        background: rgba(15, 23, 42, 0.92);
-        border-color: rgba(51, 65, 85, 0.8);
-        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
-    }
-
-    body.cloze-page .cloze-story {
-        background: rgba(30, 41, 59, 0.82);
-        border-color: rgba(94, 108, 138, 0.7);
-    }
-
-    body.cloze-page .cloze-story .cloze-passage {
-        background: rgba(15, 23, 42, 0.45);
-        border-color: rgba(100, 116, 139, 0.55);
-    }
-
-    .cloze-panel::before {
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), transparent 60%);
-    }
-
-    .cloze-controls select {
-        background: #0f172a;
-        border-color: #334155;
-        color: #e2e8f0;
-    }
-
-    .secondary-btn {
-        background: #1f2937;
-        color: #e2e8f0;
-        border-color: #334155;
-    }
-
-    .cloze-passage {
-        background: rgba(15, 23, 42, 0.6);
-        border-color: #334155;
-        color: #e2e8f0;
-    }
-
-    .cloze-blank {
-        background: rgba(30, 41, 59, 0.7);
-        border-color: #64748b;
-        color: #e2e8f0;
-    }
-
-    .cloze-word {
-        background: rgba(99, 102, 241, 0.25);
-        border-color: #6366f1;
-        color: #e2e8f0;
-    }
-
-    .cloze-hud {
-        background: rgba(15, 23, 42, 0.8);
-        border-color: rgba(51, 65, 85, 0.8);
-        color: #f8fafc;
-    }
-
-    .cloze-toggle {
-        color: #cbd5f5;
-    }
-
-    body.madlibs-page .madlibs-panel {
-        background: rgba(15, 23, 42, 0.78);
-        border-color: rgba(51, 65, 85, 0.8);
-        box-shadow: 0 16px 28px rgba(0, 0, 0, 0.35);
-    }
-
-    body.madlibs-page .madlibs-panel h2 {
-        color: #f8fafc;
-    }
-
-    body.madlibs-page .madlibs-panel .muted,
-    body.madlibs-page .madlibs-panel label {
-        color: #cbd5f5;
-    }
-
-    body.madlibs-page .madlibs-panel input[type="text"],
-    body.madlibs-page .madlibs-panel textarea,
-    body.madlibs-page .madlibs-panel select {
-        background: rgba(15, 23, 42, 0.6);
-        border-color: #334155;
-        color: #e2e8f0;
-    }
-
-    body.madlibs-page .madlibs-field {
-        background: rgba(30, 41, 59, 0.6);
-        border-color: rgba(51, 65, 85, 0.7);
-    }
-
-    body.madlibs-page .madlibs-output {
-        background: rgba(15, 23, 42, 0.6);
-        border-color: #334155;
-        color: #e2e8f0;
-        background-image: linear-gradient(transparent 0%, transparent 92%, rgba(129, 140, 248, 0.2) 92%, rgba(129, 140, 248, 0.2) 100%);
-    }
-
-    body.comprehension-page,
-    body.fluency-page {
-        background: radial-gradient(circle at top, #1f2937 0%, #0f172a 60%);
-        color: #e2e8f0;
-    }
-
-    body.comprehension-page .comp-panel,
-    body.fluency-page .fluency-panel {
-        background: rgba(15, 23, 42, 0.85);
-        border-color: rgba(51, 65, 85, 0.8);
-        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.45);
-    }
-
-    body.comprehension-page .comp-passage,
-    body.fluency-page .fluency-passage {
-        background: rgba(15, 23, 42, 0.6);
-        border-color: #334155;
-        color: #e2e8f0;
-    }
-
-    body.comprehension-page .comp-choice {
-        background: rgba(30, 41, 59, 0.85);
-        border-color: rgba(71, 85, 105, 0.8);
-        color: #f8fafc;
-    }
-
-    body.comprehension-page .comp-question {
-        background: rgba(30, 41, 59, 0.9);
-        border-color: rgba(71, 85, 105, 0.8);
-        color: #f8fafc;
-    }
-
-    body.comprehension-page .comp-question h3 {
-        color: #f8fafc;
-    }
-
-    body.comprehension-page .comp-question-meta {
-        color: #c7d2fe;
-    }
-
-    body.comprehension-page .comp-choice span {
-        color: #f8fafc;
-    }
-
-    body.comprehension-page .comp-hud,
-    body.fluency-page .fluency-hud {
-        background: rgba(99, 102, 241, 0.2);
-        color: #e2e8f0;
-    }
-
-    body.comprehension-page .comp-controls select,
-    body.fluency-page .fluency-controls select,
-    body.fluency-page .fluency-score input {
-        background: #0f172a;
-        border-color: #334155;
-        color: #e2e8f0;
-    }
-}
 
 @media (max-height: 900px) {
     body.word-quest-page header {
@@ -8403,44 +7834,10 @@ body.madlibs-page .fun-hud {
    Force Light Theme Override (for projectors & light-mode consistency)
    ========================================================================== */
 
-body.force-light {
-    background:
-        radial-gradient(circle at 12% 10%, rgba(56, 189, 248, 0.16), transparent 46%),
-        radial-gradient(circle at 88% 8%, rgba(251, 146, 60, 0.16), transparent 44%),
-        radial-gradient(circle at 50% 82%, rgba(99, 102, 241, 0.12), transparent 50%),
-        linear-gradient(180deg, #fbfdff 0%, #eef4ff 55%, #e6eefb 100%) !important;
-    color: #0f172a !important;
-    color-scheme: light;
-}
 
-body.force-light header,
-body.force-light h1,
-body.force-light h2,
-body.force-light h3 {
-    color: #0f172a !important;
-}
 
-body.force-light .controls label,
-body.force-light .controls select,
-body.force-light .controls option {
-    color: #1f2937 !important;
-}
 
-body.force-light .cloze-subtitle,
-body.force-light .comp-subtitle,
-body.force-light .fluency-subtitle,
-body.force-light .madlibs-subtitle,
-body.force-light .writing-subtitle,
-body.force-light .planit-subtitle,
-body.force-light .numsense-subtitle,
-body.force-light .sound-guide-subtitle,
-body.force-light .howto-subtitle {
-    color: #1f2937 !important;
-}
 
-body.force-light #modal-overlay {
-    background: rgba(15, 23, 42, 0.18) !important;
-}
 
 body.warmup-open #game-canvas {
     opacity: 0.12;
@@ -8448,240 +7845,40 @@ body.warmup-open #game-canvas {
     pointer-events: none;
 }
 
-body.force-light .modal,
-body.force-light #teacher-modal,
-body.force-light .classroom-dock,
-body.force-light .cloze-panel,
-body.force-light .comp-panel,
-body.force-light .fluency-panel,
-body.force-light .madlibs-panel,
-body.force-light .numsense-panel,
-body.force-light .sound-guide-card,
-body.force-light .sound-guide-board,
-body.force-light .selected-sound,
-body.force-light .articulation-card,
-body.force-light .fun-hud {
-    background: #ffffff !important;
-    color: #0f172a !important;
-    border-color: #e2e8f0 !important;
-}
 
 /* Force light should win even when OS is in dark mode (avoids washed-out Teacher modal text). */
-body.force-light #teacher-modal label,
-body.force-light #teacher-modal .toggle-row,
-body.force-light #teacher-modal .practice-pack-label,
-body.force-light #teacher-modal .practice-pack-label strong {
-    color: #1f2937;
-}
 
-body.force-light #teacher-modal .teacher-subtext,
-body.force-light #teacher-modal .teacher-hint,
-body.force-light #teacher-modal .practice-pack-label span {
-    color: #6b7280;
-}
 
-body.force-light .activity-teacher-tools,
-body.force-light .activity-lesson {
-    background: #ffffff !important;
-    color: #0f172a !important;
-    border-color: #e2e8f0 !important;
-}
 
-body.force-light .activity-teacher-tools summary,
-body.force-light .activity-lesson-title {
-    color: #1f2937 !important;
-}
 
-body.force-light .activity-teacher-tools .muted,
-body.force-light .activity-lesson-copy {
-    color: #6b7280 !important;
-}
 
 /* Force light should also win on Mad Libs text (avoids pale dark-mode labels on white panels). */
-body.force-light.madlibs-page .madlibs-panel label,
-body.force-light.madlibs-page .madlibs-panel summary,
-body.force-light.madlibs-page .madlibs-panel .translation-toggle {
-    color: #374151 !important;
-}
 
-body.force-light.madlibs-page .madlibs-panel .muted,
-body.force-light.madlibs-page .madlibs-field .field-help,
-body.force-light.madlibs-page .madlibs-output.empty {
-    color: #6b7280 !important;
-}
 
-body.force-light #teacher-modal #custom-word-input,
-body.force-light #teacher-modal #system-voice-select {
-    background: #ffffff;
-    border-color: #d1d5db;
-    color: #0f172a;
-}
 
-body.force-light .tile.correct {
-    background: #22c55e !important;
-    border-color: #16a34a !important;
-    color: #0b1220 !important;
-}
 
-body.force-light .tile.present {
-    background: #fbbf24 !important;
-    border-color: #f59e0b !important;
-    color: #1f2937 !important;
-}
 
-body.force-light .tile.absent {
-    background: var(--color-absent) !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
-}
 
-body.force-light .wordle-help .tile.ex.green {
-    background: var(--color-correct) !important;
-    border-color: transparent !important;
-    color: #ffffff !important;
-}
 
-body.force-light .wordle-help .tile.ex.yellow {
-    background: var(--color-present) !important;
-    border-color: transparent !important;
-    color: #1f2937 !important;
-}
 
-body.force-light .wordle-help .tile.ex.gray {
-    background: var(--color-absent) !important;
-    border-color: transparent !important;
-    color: #ffffff !important;
-}
 
-body.force-light .key.correct {
-    background: #22c55e !important;
-    border-color: #16a34a !important;
-    color: #ffffff !important;
-}
 
-body.force-light .key.present {
-    background: #fbbf24 !important;
-    border-color: #f59e0b !important;
-    color: #1f2937 !important;
-}
 
-body.force-light .key.absent {
-    background: linear-gradient(180deg, #64748b 0%, #475569 100%) !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
-    box-shadow: 0 3px 0 0 #334155, 0 4px 10px rgba(15, 23, 42, 0.14) !important;
-}
 
-body.force-light .key:not(.correct):not(.present):not(.absent) {
-    background: linear-gradient(180deg, #ffffff 0%, #edf2fb 100%) !important;
-    border-color: #a5b4c6 !important;
-    color: #0f172a !important;
-    box-shadow: 0 4px 0 0 #9db0c9, 0 4px 10px rgba(15, 23, 42, 0.16) !important;
-}
 
-body.force-light .key.vowel:not(.correct):not(.present):not(.absent) {
-    background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 100%) !important;
-    border-color: #5b8ff7 !important;
-    color: #0f172a !important;
-    box-shadow: 0 4px 0 0 #9fb8e8, 0 4px 10px rgba(15, 23, 42, 0.15) !important;
-}
 
-body.force-light .fun-hud-mini-btn {
-    background: #f8fafc !important;
-    border-color: #dbe3ee !important;
-    color: #1f2937 !important;
-}
 
-body.force-light select,
-body.force-light input,
-body.force-light textarea {
-    background: #ffffff !important;
-    color: #0f172a !important;
-    border-color: #cbd5e1 !important;
-}
 
-body.force-light .dock-tab,
-body.force-light .dock-upload,
-body.force-light .dock-file-viewer,
-body.force-light .dock-timer-set select,
-body.force-light .dock-timer-display,
-body.force-light .dock-file-name,
-body.force-light .dock-hint,
-body.force-light .dock-timer-set {
-    color: #0f172a !important;
-}
 
-body.force-light .dock-tab {
-    background: #f8fafc !important;
-    border-color: #dbe3ee !important;
-}
 
-body.force-light .dock-tab.active {
-    background: #4f46e5 !important;
-    color: #ffffff !important;
-}
 
-body.force-light #teacher-modal .teacher-tools,
-body.force-light #teacher-modal.teacher-clean .teacher-block,
-body.force-light #teacher-modal.teacher-clean .teacher-section,
-body.force-light .teacher-pack-row {
-    background: #f8fafc !important;
-    border-color: #e2e8f0 !important;
-    color: #0f172a !important;
-}
 
-body.force-light .cloze-story,
-body.force-light .cloze-passage,
-body.force-light .comp-passage,
-body.force-light .fluency-passage,
-body.force-light .comp-choice,
-body.force-light .comp-question,
-body.force-light .madlibs-output,
-body.force-light .madlibs-field,
-body.force-light .translation-display,
-body.force-light .adventure-card,
-body.force-light .adventure-team-settings {
-    background: #ffffff !important;
-    border-color: #e2e8f0 !important;
-    color: #0f172a !important;
-}
 
-body.force-light .cloze-blank {
-    background: linear-gradient(180deg, rgba(238, 242, 255, 0.95), rgba(224, 231, 255, 0.75)) !important;
-    border-color: rgba(99, 102, 241, 0.35) !important;
-    color: #1f2937 !important;
-    box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.12) !important;
-}
 
-body.force-light .cloze-blank:hover {
-    background: rgba(99, 102, 241, 0.18) !important;
-}
 
-body.force-light .cloze-blank.correct {
-    background: #d1fae5 !important;
-    border-color: #10b981 !important;
-    color: #065f46 !important;
-}
 
-body.force-light .cloze-blank.wrong {
-    background: #fee2e2 !important;
-    border-color: #ef4444 !important;
-    color: #991b1b !important;
-}
 
-body.force-light .cloze-word {
-    background: #ffffff !important;
-    border-color: rgba(99, 102, 241, 0.35) !important;
-    color: #312e81 !important;
-    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.12) !important;
-}
 
-body.force-light .cloze-hud,
-body.force-light .comp-hud,
-body.force-light .fluency-hud {
-    background: rgba(99, 102, 241, 0.12) !important;
-    color: #0f172a !important;
-}
 
 /* ==========================================================================
    Bundle 1 — Word Quest Visibility (Keep Last)
@@ -8762,52 +7959,12 @@ body.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent)::before
 }
 
 /* Force-light uses !important in a few places; keep Word Quest contrast consistent. */
-body.force-light.word-quest-page #game-board {
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.06) 0%, rgba(15, 23, 42, 0.03) 100%) !important;
-    border-color: rgba(100, 116, 139, 0.32) !important;
-}
 
-body.force-light.word-quest-page .tile:not(.correct):not(.present):not(.absent) {
-    background: linear-gradient(180deg, #ffffff 0%, #e7efff 100%) !important;
-    border-color: rgba(51, 65, 85, 0.30) !important;
-    color: #0f172a !important;
-    text-shadow: none !important;
-}
 
-body.force-light.word-quest-page .tile.active.row-active:not(.correct):not(.present):not(.absent) {
-    color: #0f172a !important;
-    text-shadow: none !important;
-}
 
-body.force-light.word-quest-page .tile.vowel:not(.correct):not(.present):not(.absent) {
-    border-color: rgba(14, 116, 144, 0.46) !important;
-    background: linear-gradient(180deg, #ecfeff 0%, #e0f2fe 100%) !important;
-}
 
-body.force-light.word-quest-page .key:not(.correct):not(.present):not(.absent) {
-    background: linear-gradient(180deg, #ffffff 0%, #e9eeff 100%) !important;
-    border-color: rgba(51, 65, 85, 0.24) !important;
-    color: #0f172a !important;
-    text-shadow: none !important;
-}
 
-body.force-light.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent) {
-    background: linear-gradient(180deg, #d6e6ff 0%, #b6d2ff 100%) !important;
-    border-color: rgba(29, 78, 216, 0.88) !important;
-    color: #0b2f74 !important;
-    font-weight: 860;
-    outline: 2px solid rgba(59, 130, 246, 0.24);
-    outline-offset: -1px;
-    box-shadow:
-        0 4px 0 rgba(96, 165, 250, 0.9),
-        0 0 0 2px rgba(59, 130, 246, 0.26),
-        0 11px 18px rgba(30, 64, 175, 0.24) !important;
-}
 
-body.force-light.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent)::before {
-    content: none;
-    display: none;
-}
 
 /* ==========================================================================
    Support UI safety rails
@@ -9177,11 +8334,6 @@ body.home-page.home-details-collapsed .home-hero-panel {
 /* Word Quest: keep vowel highlighting without extra marker dots. */
 body.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent)::before,
 body.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent)::after,
-body.force-light.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent)::before,
-body.force-light.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent)::after {
-    content: none !important;
-    display: none !important;
-}
 
 body.home-page.home-details-collapsed .home-card.home-hero {
     padding: clamp(14px, 2vw, 24px);
@@ -9738,10 +8890,25 @@ body.word-quest-page.fit-screen-tight #game-board {
 body.word-quest-page #game-board .tile,
 body.word-quest-page #game-board .cell,
 body.word-quest-page #game-board [data-tile] {
-    width: min(64px, calc((100vh - 360px) / 7.5)) !important;
-    height: min(52px, calc((100vh - 360px) / 9)) !important;
-    font-size: min(1.5rem, calc((100vh - 360px) / 18)) !important;
+    width: min(72px, calc((100vh - 340px) / 7)) !important;
+    height: min(60px, calc((100vh - 340px) / 8.5)) !important;
+    font-size: min(1.6rem, calc((100vh - 340px) / 16)) !important;
     border-radius: 12px !important;
+}
+
+body.word-quest-page #game-board {
+    width: min(100%, 900px) !important;
+    max-width: 900px !important;
+    margin-inline: auto !important;
+    gap: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+body.word-quest-page #game-board .board-row,
+body.word-quest-page #game-board .row {
+    gap: 10px !important;
+    justify-content: center !important;
 }
 
 body.word-quest-page #keyboard,
@@ -9770,9 +8937,9 @@ body.word-quest-page #keyboard [data-key]:not(.correct):not(.present):not(.absen
     width: auto !important;
     min-width: 0 !important;
     max-width: 56px !important;
-    min-height: min(40px, calc((100vh - 360px) / 16)) !important;
+    min-height: min(40px, calc((100vh - 340px) / 16)) !important;
     padding: 4px 2px !important;
-    font-size: min(1rem, calc((100vh - 360px) / 24)) !important;
+    font-size: min(1rem, calc((100vh - 340px) / 24)) !important;
 }
 
 body.word-quest-page #keyboard .key.wide,
@@ -9782,7 +8949,7 @@ body.word-quest-page.fit-screen-tight #keyboard .key.wide {
     width: auto !important;
     min-width: 0 !important;
     max-width: 100px !important;
-    font-size: min(0.82rem, calc((100vh - 360px) / 30)) !important;
+    font-size: min(0.82rem, calc((100vh - 340px) / 30)) !important;
 }
 
 /* Sentence text checkbox - visible on all themes */
@@ -9799,6 +8966,7 @@ body.word-quest-page .cs-sentence-caption-toggle-wrap label {
 body.word-quest-page header {
     padding: 0 !important;
     margin: 0 !important;
+    overflow: visible !important;
 }
 body.word-quest-page .header-row {
     display: flex !important;
@@ -9806,7 +8974,7 @@ body.word-quest-page .header-row {
     gap: 8px !important;
     padding: 4px 10px !important;
     flex-wrap: nowrap !important;
-    overflow-x: auto !important;
+    overflow: visible !important;
     min-height: 0 !important;
 }
 body.word-quest-page .header-row h1 {
@@ -9844,24 +9012,10 @@ body.word-quest-page .header-row .wq-tools-toggle {
 body.word-quest-page .wq-tools-menu {
     position: relative !important;
 }
-body.word-quest-page .wq-tools-menu[open] > .wq-tools-body {
+body.word-quest-page .wq-tools-menu.is-open > .wq-tools-body {
     display: block !important;
-    position: absolute !important;
-    top: 100% !important;
-    right: 0 !important;
-    z-index: 1000 !important;
-    min-width: 320px !important;
-    max-width: 420px !important;
-    max-height: 70vh !important;
-    overflow-y: auto !important;
-    background: rgba(255, 255, 255, 0.97) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-    border: 1px solid rgba(0, 0, 0, 0.12) !important;
-    padding: 8px !important;
-    margin-top: 4px !important;
 }
-body.word-quest-page .wq-tools-menu:not([open]) > .wq-tools-body {
+body.word-quest-page .wq-tools-menu:not(.is-open) > .wq-tools-body {
     display: none !important;
 }
 body.word-quest-page .wq-tools-tabs {
@@ -10493,4 +9647,39 @@ body.word-quest-page[data-wq-scene="mocha-mousse"] #keyboard button,
 body.word-quest-page[data-wq-scene="pro-midnight"] #keyboard .key,
 body.word-quest-page[data-wq-scene="pro-midnight"] #keyboard button {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+/* TRANSLATION TEXT - explicit styling to ensure visibility */
+#translated-def {
+    padding: 6px 10px !important;
+    font-size: 0.88rem !important;
+    color: #1e293b !important;
+    line-height: 1.5 !important;
+    min-height: 1.2em !important;
+}
+#translated-sentence {
+    padding: 4px 10px !important;
+    font-size: 0.85rem !important;
+    color: #475569 !important;
+    font-style: italic !important;
+    line-height: 1.5 !important;
+    min-height: 1.2em !important;
+}
+#translated-word {
+    padding: 4px 10px !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+}
+.translation-display {
+    padding: 8px 0 !important;
+    margin: 6px 0 !important;
+    border-left: 3px solid #a5b4fc !important;
+    border-radius: 4px !important;
+}
+.translation-audio-row {
+    display: flex !important;
+    gap: 6px !important;
+    padding: 6px 10px !important;
+    flex-wrap: wrap !important;
 }

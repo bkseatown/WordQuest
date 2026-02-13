@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="cs-build-hash" content="a3b8d201" />
-    <meta name="cs-build-time" content="2026-02-13 19:15 UTC" />
+    <meta name="cs-build-hash" content="c7d4f523" />
+    <meta name="cs-build-time" content="2026-02-14 02:00 UTC" />
     <title>Word Quest — Decode the Word</title>
     <script>
       (function () {
@@ -68,17 +68,17 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="style.css?v=a3b8d201" />
+    <link rel="stylesheet" href="style.css?v=c7d4f523" />
     <link rel="stylesheet" href="word-quest-stable.css" />
     <link rel="stylesheet" href="delight.css" />
-    <script src="words.js?v=a3b8d201" defer></script>
+    <script src="words.js?v=c7d4f523" defer></script>
     <script src="decodables-expansion.js" defer></script>
     <script src="young-overrides.js" defer></script>
     <script src="phoneme-data.js" defer></script>
     <script src="focus-info.js" defer></script>
     <script src="translations.js" defer></script>
     <script src="delight.js" defer></script>
-    <script src="app.js?v=a3b8d201" defer></script>
+    <script src="app.js?v=c7d4f523" defer></script>
   </head>
 
   <body class="word-quest-page cs-page-wordquest look-35" data-wq-scene="navy-mint">
@@ -140,9 +140,9 @@
 
         <button id="new-word-btn" type="button" class="case-toggle-btn new-round-btn" aria-label="Start new round" style="padding:4px 12px; font-size:0.75rem; white-space:nowrap;">New Round</button>
 
-        <details id="wq-tools-menu" class="wq-tools-menu" style="position:relative; z-index:100;">
-          <summary id="wq-tools-toggle" class="case-toggle-btn wq-tools-toggle" style="padding:4px 12px; font-size:0.75rem; white-space:nowrap; cursor:pointer;">Tools ▾</summary>
-            <div class="wq-tools-body" style="position:absolute; top:100%; right:0; z-index:1000; min-width:320px; max-width:420px; max-height:70vh; overflow-y:auto; background:rgba(255,255,255,0.98); border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.25); border:1px solid rgba(0,0,0,0.12); padding:8px; margin-top:4px;">
+        <div id="wq-tools-menu" class="wq-tools-menu" style="position:relative; z-index:100;">
+          <button id="wq-tools-toggle" type="button" class="case-toggle-btn wq-tools-toggle" style="padding:4px 12px; font-size:0.75rem; white-space:nowrap; cursor:pointer;" onclick="this.parentElement.classList.toggle('is-open')">Tools ▾</button>
+            <div class="wq-tools-body" style="display:none; position:absolute; top:100%; right:0; z-index:1000; min-width:320px; max-width:420px; max-height:70vh; overflow-y:auto; background:rgba(255,255,255,0.98); border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.25); border:1px solid rgba(0,0,0,0.12); padding:8px; margin-top:4px;">
               <div class="wq-tools-tabs" role="tablist" aria-label="Tool sections">
                 <button
                   id="wq-tools-tab-round"
@@ -333,13 +333,12 @@
                 </section>
               </section>
             </div>
-          </details>
+          </div>
 
         <div style="flex:1;"></div>
 
         <nav class="header-actions" aria-label="Primary" style="display:flex; gap:4px; align-items:center;">
           <a id="home-btn" class="link-btn" href="./" style="padding:4px 8px; font-size:0.72rem;">Home</a>
-          <button id="help-open-btn" type="button" class="link-btn" style="padding:4px 8px; font-size:0.72rem;" aria-label="Help">?</button>
         </nav>
       </div>
       <div id="focus-round-chip" class="focus-round-chip" aria-live="polite"></div>

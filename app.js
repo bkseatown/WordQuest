@@ -2034,11 +2034,7 @@ function shouldAttemptPackedTtsLookup() {
 }
 
 function shouldUseLegacyForceLight() {
-    if (!document.body) return true;
-    if (document.body.classList.contains('word-quest-page')) return false;
-    if (document.body.classList.contains('cs-hv2-page')) return false;
-    if (document.body.classList.contains('cs-hv2-enabled')) return false;
-    return true;
+    return false; // Dark mode media query removed — themes handle all styling
 }
 
 function applySettings() {
@@ -8313,7 +8309,11 @@ function showEndModal(win) {
     };
 
     const renderTranslation = async (selectedLang) => {
-        if (!translationDisplay || !translatedDef || !translatedSentence) return;
+        console.log('[Translation] renderTranslation called with lang:', selectedLang, 'word:', currentWord);
+        if (!translationDisplay || !translatedDef || !translatedSentence) {
+            console.log('[Translation] BAIL: missing elements', {display: !!translationDisplay, def: !!translatedDef, sent: !!translatedSentence});
+            return;
+        }
         if (!selectedLang || selectedLang === "en") {
             translationDisplay.classList.add("hidden");
             setTranslationAudioNote('');
@@ -8323,6 +8323,7 @@ function showEndModal(win) {
         const translation = getTranslationData(currentWord, selectedLang, {
             audienceMode: resolvedAudienceMode
         });
+        console.log('[Translation] getTranslationData result:', translation ? {def: translation.definition?.substring(0,40), sent: translation.sentence?.substring(0,40), word: translation.word} : 'NULL');
         if (translation && (translation.definition || translation.sentence || translation.word)) {
             const safeWord = cleanAudienceText(translation.word || '');
             const safeDefinition = translation.definition || '';
@@ -8346,6 +8347,8 @@ function showEndModal(win) {
             }
             translatedDef.textContent = safeDefinition;
             translatedSentence.textContent = safeSentence ? `"${safeSentence}"` : '';
+            console.log('[Translation] TEXT SET - def:', safeDefinition?.substring(0,40), '| sent:', safeSentence?.substring(0,40));
+            console.log('[Translation] Elements in DOM:', {defParent: translatedDef.parentElement?.id, sentParent: translatedSentence.parentElement?.id, displayParent: translationDisplay.parentElement?.className});
 
             if (playTranslatedWord) {
                 playTranslatedWord.onclick = safeWord
@@ -15493,3 +15496,11 @@ function initModalDismissals() {
 }
 
 // Initialize on page load handled above.
+
+// Click outside to close tools dropdown
+document.addEventListener('click', (e) => {
+    const toolsMenu = document.getElementById('wq-tools-menu');
+    if (toolsMenu && toolsMenu.classList.contains('is-open') && !toolsMenu.contains(e.target)) {
+        toolsMenu.classList.remove('is-open');
+    }
+});
