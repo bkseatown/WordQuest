@@ -3,7 +3,7 @@
 **Live URL:** https://bkseatown.github.io/WordQuest/
 **Repo:** https://github.com/bkseatown/WordQuest
 **Owner:** Bob (bkseatown)
-**Last Build:** d8e5f634 — Feb 14, 2026
+**Last Build:** e9f6a745 — Feb 14, 2026
 
 ---
 
@@ -103,12 +103,11 @@ The IIFE at the bottom of `words.js` creates `window.WORD_ENTRIES` via `...item`
 - Translation section in reveal modal (toggle "Language + Translation")
 - Lock language preference across rounds
 
-### Voice Recording (mic icon on keyboard)
-- Tap to record pronunciation (up to 8 seconds)
-- Practice panel with: Hear Me, Hear Word, Try Again, Save to Device, Compare
-- Compare mode: plays correct pronunciation then your recording back-to-back
+### Voice Recording (in word reveal modal)
+- "Practice Saying It" button appears in reveal modal after guessing
+- Records pronunciation (up to 8 seconds)
+- After recording: Hear Me, Compare (plays word then recording), Save, Try Again
 - Save recordings to IndexedDB for long-term tracking (beginning-of-year vs end-of-year)
-- Panel stays until dismissed (no auto-disappear)
 - Students, parents, and teachers can compare growth over time
 
 ### Teacher Tools (Tools dropdown)
@@ -187,7 +186,7 @@ Dark themes (hero-*, slate-steel, mocha-mousse): medium-tone backgrounds, light 
 5. `renderTranslation(lang)` sets text on `#translated-def`, `#translated-sentence`
 
 ### Debug Logging
-Console messages tagged `[Translation]` trace the full chain. Remove once confirmed working.
+Translation debug logging has been removed — translations confirmed working as of Build e9f6a745.
 
 ---
 
@@ -249,17 +248,21 @@ Console messages tagged `[Translation]` trace the full chain. Remove once confir
 
 ## Change Log
 
-### Build d8e5f634 — Feb 14, 2026
+### Build e9f6a745 — Feb 14, 2026
 - REMOVED 586-line prefers-color-scheme dark block (was fighting theme system)
 - REMOVED all force-light CSS and disabled JS function
-- FIXED game board: removed display flex that destroyed CSS Grid (tiles in single column)
-- FIXED Tools dropdown: changed from details to button-toggled div (prevents header scroll)
-- FIXED header overflow: removed overflow-x auto, added overflow visible
-- FIXED duplicate ? button (removed HTML one, JS already creates it)
-- UPGRADED voice recording: persistent practice panel with Save, Compare, Try Again
-- ADDED translation debug logging ([Translation] in console)
-- ADDED explicit CSS for translation text elements
-- LIGHTENED all 6 dark theme page backgrounds from near-black to medium tones
+- FIXED game board: removed display flex that destroyed CSS Grid
+- FIXED game board tiles wider (76px max, grid minmax 56px, board 720px)
+- FIXED vertical centering — game canvas justify-content:center, no bottom dead space
+- FIXED reveal modal compact layout — fits without scrolling
+- FIXED translation section border overlap — clean select styling
+- FIXED Sentence text visibility — dark text on light themes, white on dark themes
+- FIXED Tools dropdown: button-toggled div instead of details element
+- FIXED header overflow: overflow visible, no scroll
+- FIXED duplicate ? button
+- MOVED recording from keyboard to reveal modal (Practice Saying It button)
+- Recording: Hear Me, Compare, Save to IndexedDB, Try Again
+- ADDED bonus frequency in Tools > Round Setup (default: Every round)
 - Updated README as comprehensive agent handoff document
 
 ### Build a3b8d201 — Feb 13, 2026

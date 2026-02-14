@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="cs-build-hash" content="d8e5f634" />
-    <meta name="cs-build-time" content="2026-02-14 08:30 UTC" />
+    <meta name="cs-build-hash" content="e9f6a745" />
+    <meta name="cs-build-time" content="2026-02-14 14:00 UTC" />
     <title>Word Quest — Decode the Word</title>
     <script>
       (function () {
@@ -68,17 +68,17 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="style.css?v=d8e5f634" />
+    <link rel="stylesheet" href="style.css?v=e9f6a745" />
     <link rel="stylesheet" href="word-quest-stable.css" />
     <link rel="stylesheet" href="delight.css" />
-    <script src="words.js?v=d8e5f634" defer></script>
+    <script src="words.js?v=e9f6a745" defer></script>
     <script src="decodables-expansion.js" defer></script>
     <script src="young-overrides.js" defer></script>
     <script src="phoneme-data.js" defer></script>
     <script src="focus-info.js" defer></script>
     <script src="translations.js" defer></script>
     <script src="delight.js" defer></script>
-    <script src="app.js?v=d8e5f634" defer></script>
+    <script src="app.js?v=e9f6a745" defer></script>
   </head>
 
   <body class="word-quest-page cs-page-wordquest look-35" data-wq-scene="navy-mint">
@@ -218,6 +218,19 @@
                     <span>Letter case</span>
                     <button id="case-toggle" type="button" class="case-toggle-btn" aria-label="Toggle letter case">abc</button>
                   </div>
+                </div>
+
+                <div class="wq-tools-subcard">
+                  <label class="wq-tools-field" for="bonus-frequency-select">
+                    <span>Fun facts & jokes</span>
+                    <select id="bonus-frequency-select" aria-label="Bonus content frequency" style="font-size:0.82rem; padding:4px 8px; border-radius:8px; border:1px solid rgba(100,116,139,0.4); background:rgba(255,255,255,0.9);">
+                      <option value="always" selected>Every round</option>
+                      <option value="often">Often (75%)</option>
+                      <option value="sometimes">Sometimes (40%)</option>
+                      <option value="rare">Rarely (20%)</option>
+                      <option value="off">Off</option>
+                    </select>
+                  </label>
                 </div>
               </section>
 
@@ -518,6 +531,11 @@
 	        <div id="modal-action-row" class="modal-action-row">
 	          <button id="speak-btn" type="button" class="modal-audio-btn">Hear Word</button>
 	          <button id="play-again-btn" type="button" class="primary-btn">Play Again</button>
+	        </div>
+
+	        <div id="reveal-record-section">
+	          <button id="reveal-record-btn" type="button">🎙 Practice Saying It</button>
+	          <div id="reveal-record-status"></div>
 	        </div>
 
 	        <div class="translation-selector" aria-label="Translate">

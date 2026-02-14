@@ -5050,7 +5050,7 @@ select{
 #game-board{
   --word-length: 5;
   display:grid;
-  grid-template-columns: repeat(var(--word-length), minmax(44px, 1fr));
+  grid-template-columns: repeat(var(--word-length), minmax(56px, 1fr));
   gap: 8px;
   justify-content:center;
 }
@@ -7319,6 +7319,7 @@ body.word-quest-page #game-canvas {
     max-width: 960px !important;
     margin-inline: auto !important;
     width: 100% !important;
+    justify-content: center !important;
 }
 
 body.word-quest-page #game-board {
@@ -8881,7 +8882,7 @@ body.word-quest-page .sentence-preview:not(.has-caption) {
 body.word-quest-page #game-board,
 body.word-quest-page.fit-screen #game-board,
 body.word-quest-page.fit-screen-tight #game-board {
-    max-width: min(100%, 620px) !important;
+    max-width: min(100%, 720px) !important;
     margin: 0 auto !important;
     padding: 10px 14px !important;
     gap: 8px !important;
@@ -8890,14 +8891,14 @@ body.word-quest-page.fit-screen-tight #game-board {
 body.word-quest-page #game-board .tile,
 body.word-quest-page #game-board .cell,
 body.word-quest-page #game-board [data-tile] {
-    width: min(68px, calc((100vh - 340px) / 7.5)) !important;
-    height: min(58px, calc((100vh - 340px) / 9)) !important;
-    font-size: min(1.5rem, calc((100vh - 340px) / 16)) !important;
+    width: min(76px, calc((100vh - 320px) / 7)) !important;
+    height: min(60px, calc((100vh - 320px) / 8.5)) !important;
+    font-size: min(1.6rem, calc((100vh - 320px) / 15)) !important;
     border-radius: 12px !important;
 }
 
 body.word-quest-page #game-board {
-    max-width: 900px !important;
+    max-width: 720px !important;
     margin-inline: auto !important;
     gap: 8px !important;
 }
@@ -8953,9 +8954,23 @@ body.word-quest-page .cs-sentence-caption-toggle span,
 body.word-quest-page .cs-sentence-caption-toggle-wrap,
 body.word-quest-page .cs-sentence-caption-toggle-wrap span,
 body.word-quest-page .cs-sentence-caption-toggle-wrap label {
-    color: rgba(255, 255, 255, 0.85) !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
-    font-size: 0.82rem !important;
+    color: #334155 !important;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6) !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+}
+/* Dark theme overrides for sentence text */
+body.word-quest-page[data-wq-scene*="hero-"] .cs-sentence-caption-toggle span,
+body.word-quest-page[data-wq-scene*="hero-"] .cs-sentence-caption-toggle-wrap span,
+body.word-quest-page[data-wq-scene*="hero-"] .cs-sentence-caption-toggle-wrap label,
+body.word-quest-page[data-wq-scene="slate-steel"] .cs-sentence-caption-toggle span,
+body.word-quest-page[data-wq-scene="slate-steel"] .cs-sentence-caption-toggle-wrap span,
+body.word-quest-page[data-wq-scene="slate-steel"] .cs-sentence-caption-toggle-wrap label,
+body.word-quest-page[data-wq-scene="mocha-mousse"] .cs-sentence-caption-toggle span,
+body.word-quest-page[data-wq-scene="mocha-mousse"] .cs-sentence-caption-toggle-wrap span,
+body.word-quest-page[data-wq-scene="mocha-mousse"] .cs-sentence-caption-toggle-wrap label {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Reduce header headroom */
@@ -9678,4 +9693,159 @@ body.word-quest-page[data-wq-scene="pro-midnight"] #keyboard button {
     gap: 6px !important;
     padding: 6px 10px !important;
     flex-wrap: wrap !important;
+}
+
+/* ===== Reveal Modal — compact, no-scroll layout ===== */
+body.word-quest-page .game-modal {
+    max-height: 92vh !important;
+    padding: 16px 20px !important;
+    max-width: 460px !important;
+}
+body.word-quest-page .game-modal .modal-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+}
+body.word-quest-page .game-modal #modal-title {
+    font-size: 1.1rem !important;
+    margin: 0 !important;
+}
+body.word-quest-page .game-modal #modal-word {
+    font-size: clamp(1.4rem, 4vw, 2rem) !important;
+    margin: 2px 0 !important;
+    letter-spacing: 0.08em !important;
+}
+body.word-quest-page .game-modal #modal-def {
+    font-size: 0.88rem !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+}
+body.word-quest-page .game-modal #modal-sentence {
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+}
+body.word-quest-page .game-modal .modal-action-row {
+    margin-top: 6px !important;
+    gap: 6px !important;
+}
+body.word-quest-page .game-modal .modal-audio-btn {
+    padding: 5px 10px !important;
+    font-size: 0.78rem !important;
+}
+body.word-quest-page .game-modal .primary-btn {
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+}
+
+/* Translation section — compact, no border overlap */
+body.word-quest-page .game-modal .translation-compact {
+    margin-top: 8px !important;
+    border-top: 1px solid #e5e7eb !important;
+    padding-top: 6px !important;
+}
+body.word-quest-page .game-modal .translation-toggle {
+    font-size: 0.8rem !important;
+}
+body.word-quest-page .game-modal .translation-display {
+    background: #f8fafb !important;
+    border-left: 3px solid #a5b4fc !important;
+    border-radius: 6px !important;
+    padding: 6px 10px !important;
+    margin: 4px 0 !important;
+}
+body.word-quest-page .game-modal #translated-def,
+body.word-quest-page .game-modal #translated-sentence {
+    font-size: 0.82rem !important;
+    line-height: 1.35 !important;
+}
+body.word-quest-page .game-modal .translation-audio-row {
+    gap: 4px !important;
+    padding: 4px 0 !important;
+}
+body.word-quest-page .game-modal .translation-audio-row button {
+    padding: 3px 8px !important;
+    font-size: 0.72rem !important;
+}
+
+/* Recording section in reveal modal */
+#reveal-record-section {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #e5e7eb;
+}
+#reveal-record-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: 1px solid #fde68a;
+    background: linear-gradient(180deg, #fefce8, #fef3c7);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #92400e;
+    transition: transform 0.1s;
+}
+#reveal-record-btn:hover {
+    transform: translateY(-1px);
+}
+#reveal-record-status {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+/* Bonus modal compact */
+body.word-quest-page .bonus-modal {
+    max-width: 400px !important;
+    padding: 16px 20px !important;
+}
+body.word-quest-page .bonus-emoji {
+    font-size: 2rem !important;
+    margin-bottom: 4px !important;
+}
+body.word-quest-page .bonus-title {
+    font-size: 1rem !important;
+    margin-bottom: 6px !important;
+}
+body.word-quest-page .bonus-text {
+    font-size: 0.88rem !important;
+    line-height: 1.4 !important;
+}
+body.word-quest-page .bonus-actions {
+    margin-top: 8px !important;
+    gap: 6px !important;
+}
+
+/* Clean up translation section borders in reveal modal */
+body.word-quest-page .game-modal .translation-selector {
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+body.word-quest-page .game-modal .translation-selector select {
+    outline: 1px solid #d1d5db !important;
+    outline-offset: 0 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 10px !important;
+    padding: 6px 10px !important;
+    font-size: 0.85rem !important;
+    width: 100% !important;
+    background: #fff !important;
+}
+body.word-quest-page .game-modal .translation-selector select:focus {
+    outline: 2px solid #818cf8 !important;
+    outline-offset: -1px !important;
+    border-color: #818cf8 !important;
+}
+body.word-quest-page .game-modal .translation-selector label {
+    font-size: 0.78rem !important;
+    color: #9ca3af !important;
+}
+body.word-quest-page .game-modal .translation-pin {
+    font-size: 0.75rem !important;
+    color: #9ca3af !important;
 }

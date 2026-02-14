@@ -2081,9 +2081,9 @@ function applySettings() {
         translationLock.checked = !!appSettings.translation?.pinned;
     }
 
-    const bonusSelect = document.getElementById('bonus-frequency');
+    const bonusSelect = document.getElementById('bonus-frequency') || document.getElementById('bonus-frequency-select');
     if (bonusSelect) {
-        bonusSelect.value = appSettings.bonus?.frequency || 'sometimes';
+        bonusSelect.value = appSettings.bonus?.frequency || 'always';
     }
 
     const audienceSelect = document.getElementById('audience-mode-select');
@@ -5410,6 +5410,16 @@ function initTeacherTools() {
         };
     }
 
+    // Tools panel bonus frequency
+    const toolsBonusSelect = document.getElementById('bonus-frequency-select');
+    if (toolsBonusSelect) {
+        toolsBonusSelect.value = appSettings.bonus?.frequency || 'always';
+        toolsBonusSelect.onchange = () => {
+            appSettings.bonus.frequency = toolsBonusSelect.value;
+            saveSettings();
+        };
+    }
+
     const audienceSelect = document.getElementById('teacher-audience-mode');
     if (audienceSelect) {
         audienceSelect.value = normalizeAudienceMode(appSettings.audienceMode || DEFAULT_SETTINGS.audienceMode);
@@ -7402,149 +7412,11 @@ function initKeyboard() {
         keyboard.appendChild(rowDiv);
     });
 
-    // Add mic button to the end of the last keyboard row (not a separate row)
-    const lastRow = keyboard.lastElementChild;
-    const micBtn = document.createElement("button");
-    micBtn.id = "keyboard-mic-btn";
-    micBtn.type = "button";
-    micBtn.className = "key keyboard-mic-btn";
-    micBtn.innerHTML = "🎙";
-    micBtn.style.cssText = "flex:0 0 auto; width:36px; min-width:36px; max-width:36px; padding:4px; font-size:1rem; border-radius:10px; background:linear-gradient(180deg,#fef3c7,#fde68a); border:1px solid rgba(217,119,6,0.4); color:#92400e; cursor:pointer;";
-    micBtn.title = "Record your pronunciation";
-    if (lastRow) lastRow.appendChild(micBtn);
-    
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let isRecording = false;
-    
-    micBtn.onclick = async () => {
-        if (isRecording) {
-            if (mediaRecorder && mediaRecorder.state === 'recording') {
-                mediaRecorder.stop();
-            }
-            return;
-        }
-        
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-            
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0) audioChunks.push(e.data);
-            };
-            
-            mediaRecorder.onstart = () => {
-                isRecording = true;
-                micBtn.innerHTML = "⏹";
-                micBtn.style.background = "linear-gradient(180deg,#fca5a5,#f87171)";
-                micBtn.style.color = "#7f1d1d";
-                micBtn.title = "Stop recording";
-            };
-            
-            mediaRecorder.onstop = () => {
-                isRecording = false;
-                micBtn.innerHTML = "🎙";
-                micBtn.style.background = "linear-gradient(180deg,#fef3c7,#fde68a)";
-                micBtn.style.color = "#92400e";
-                micBtn.title = "Record your pronunciation";
-                
-                stream.getTracks().forEach(t => t.stop());
-                
-                const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                const url = URL.createObjectURL(blob);
-                const word = String(currentWord || '').toLowerCase();
-                
-                // Show enhanced practice panel
-                let panel = document.getElementById('mic-playback');
-                if (!panel) {
-                    panel = document.createElement('div');
-                    panel.id = 'mic-playback';
-                    document.body.appendChild(panel);
-                }
-                
-                panel.style.cssText = 'position:fixed; bottom:60px; left:50%; transform:translateX(-50%); z-index:9999; background:rgba(255,255,255,0.98); border-radius:16px; padding:14px 20px; box-shadow:0 8px 32px rgba(0,0,0,0.22); max-width:380px; width:90%; font-size:0.85rem; backdrop-filter:blur(8px); border:1px solid rgba(0,0,0,0.08);';
-                
-                panel.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <strong style="font-size:0.95rem;">🎙 Practice: "${word}"</strong>
-                        <button id="mic-panel-close" style="background:none; border:none; font-size:1.1rem; cursor:pointer; padding:2px 6px; color:#9ca3af;">✕</button>
-                    </div>
-                    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-                        <button id="mic-play-me" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid #bbf7d0; background:#f0fdf4; cursor:pointer; font-weight:600; font-size:0.82rem;">▶ Hear Me</button>
-                        <button id="mic-play-word" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid #bfdbfe; background:#eff6ff; cursor:pointer; font-weight:600; font-size:0.82rem;">🔊 Hear Word</button>
-                        <button id="mic-record-again" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid #fde68a; background:#fefce8; cursor:pointer; font-weight:600; font-size:0.82rem;">🔄 Try Again</button>
-                    </div>
-                    <div style="display:flex; gap:8px;">
-                        <button id="mic-save" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid #c4b5fd; background:#f5f3ff; cursor:pointer; font-weight:600; font-size:0.82rem;">💾 Save to Device</button>
-                        <button id="mic-compare" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid #fbcfe8; background:#fdf2f8; cursor:pointer; font-weight:600; font-size:0.82rem;">🔁 Compare</button>
-                    </div>
-                    <div id="mic-status" style="margin-top:8px; font-size:0.78rem; color:#6b7280; text-align:center;"></div>
-                `;
-                
-                const statusEl = panel.querySelector('#mic-status');
-                
-                panel.querySelector('#mic-panel-close').onclick = () => panel.remove();
-                
-                panel.querySelector('#mic-play-me').onclick = () => {
-                    new Audio(url).play();
-                    if (statusEl) statusEl.textContent = '🎧 Playing your recording...';
-                };
-                
-                panel.querySelector('#mic-play-word').onclick = () => {
-                    if (typeof speak === 'function') speak(word, 'word');
-                    if (statusEl) statusEl.textContent = '🔊 Playing correct pronunciation...';
-                };
-                
-                panel.querySelector('#mic-record-again').onclick = () => {
-                    panel.remove();
-                    micBtn.click();
-                };
-                
-                panel.querySelector('#mic-save').onclick = async () => {
-                    try {
-                        const dbName = 'WordQuestRecordings';
-                        const storeName = 'recordings';
-                        const db = await new Promise((resolve, reject) => {
-                            const req = indexedDB.open(dbName, 1);
-                            req.onupgradeneeded = () => req.result.createObjectStore(storeName);
-                            req.onsuccess = () => resolve(req.result);
-                            req.onerror = () => reject(req.error);
-                        });
-                        const tx = db.transaction(storeName, 'readwrite');
-                        const store = tx.objectStore(storeName);
-                        const key = `${word}_${new Date().toISOString().slice(0,10)}`;
-                        store.put({ blob, word, date: new Date().toISOString(), size: blob.size }, key);
-                        await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
-                        db.close();
-                        if (statusEl) statusEl.textContent = `💾 Saved! Key: "${key}" — compare recordings over time.`;
-                    } catch (e) {
-                        if (statusEl) statusEl.textContent = '⚠️ Could not save — try again.';
-                    }
-                };
-                
-                panel.querySelector('#mic-compare').onclick = async () => {
-                    if (statusEl) statusEl.textContent = '🔁 Playing word, then your recording...';
-                    if (typeof speak === 'function') speak(word, 'word');
-                    setTimeout(() => { new Audio(url).play(); }, 1800);
-                };
-                
-                // No auto-dismiss — user controls the panel
-            };
-            
-            mediaRecorder.start();
-            setTimeout(() => {
-                if (mediaRecorder.state === 'recording') mediaRecorder.stop();
-            }, 8000);
-            
-        } catch (err) {
-            showToast('Microphone access needed for recording');
-        }
-    };
+    // Recording feature moved to reveal modal (reveal-record-btn)
 }
-
 function createKey(txt, action, wide) {
     const b = document.createElement("button");
+
     b.textContent = txt;
     b.className = `key ${wide ? 'wide' : ''}`;
     if (wide) {
@@ -8367,9 +8239,7 @@ function showEndModal(win) {
     };
 
     const renderTranslation = async (selectedLang) => {
-        console.log('[Translation] renderTranslation called with lang:', selectedLang, 'word:', currentWord);
         if (!translationDisplay || !translatedDef || !translatedSentence) {
-            console.log('[Translation] BAIL: missing elements', {display: !!translationDisplay, def: !!translatedDef, sent: !!translatedSentence});
             return;
         }
         if (!selectedLang || selectedLang === "en") {
@@ -8381,7 +8251,6 @@ function showEndModal(win) {
         const translation = getTranslationData(currentWord, selectedLang, {
             audienceMode: resolvedAudienceMode
         });
-        console.log('[Translation] getTranslationData result:', translation ? {def: translation.definition?.substring(0,40), sent: translation.sentence?.substring(0,40), word: translation.word} : 'NULL');
         if (translation && (translation.definition || translation.sentence || translation.word)) {
             const safeWord = cleanAudienceText(translation.word || '');
             const safeDefinition = translation.definition || '';
@@ -8405,8 +8274,6 @@ function showEndModal(win) {
             }
             translatedDef.textContent = safeDefinition;
             translatedSentence.textContent = safeSentence ? `"${safeSentence}"` : '';
-            console.log('[Translation] TEXT SET - def:', safeDefinition?.substring(0,40), '| sent:', safeSentence?.substring(0,40));
-            console.log('[Translation] Elements in DOM:', {defParent: translatedDef.parentElement?.id, sentParent: translatedSentence.parentElement?.id, displayParent: translationDisplay.parentElement?.className});
 
             if (playTranslatedWord) {
                 playTranslatedWord.onclick = safeWord
@@ -8532,6 +8399,92 @@ function showEndModal(win) {
         }
     }
     
+    // Set up recording button in reveal modal
+    const revealRecordBtn = document.getElementById('reveal-record-btn');
+    const revealRecordStatus = document.getElementById('reveal-record-status');
+    if (revealRecordBtn) {
+        let recMediaRecorder = null;
+        let recAudioChunks = [];
+        let recIsRecording = false;
+        let recBlobUrl = null;
+        
+        revealRecordBtn.onclick = async () => {
+            if (recIsRecording) {
+                if (recMediaRecorder && recMediaRecorder.state === 'recording') recMediaRecorder.stop();
+                return;
+            }
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recMediaRecorder = new MediaRecorder(stream);
+                recAudioChunks = [];
+                
+                recMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recAudioChunks.push(e.data); };
+                recMediaRecorder.onstart = () => {
+                    recIsRecording = true;
+                    revealRecordBtn.innerHTML = '⏹ Stop Recording';
+                    revealRecordBtn.style.background = 'linear-gradient(180deg,#fca5a5,#f87171)';
+                    revealRecordBtn.style.borderColor = '#f87171';
+                    revealRecordBtn.style.color = '#7f1d1d';
+                    // Countdown timer
+                    let secondsLeft = 8;
+                    if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="color:#dc2626; font-weight:700;">🔴 Recording: ${secondsLeft}s remaining</span><br><span style="font-size:0.72rem; color:#6b7280;">Say the word clearly — tap Stop when done</span>`;
+                    const countdownInterval = setInterval(() => {
+                        secondsLeft--;
+                        if (secondsLeft <= 0 || !recIsRecording) {
+                            clearInterval(countdownInterval);
+                            return;
+                        }
+                        if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="color:#dc2626; font-weight:700;">🔴 Recording: ${secondsLeft}s remaining</span><br><span style="font-size:0.72rem; color:#6b7280;">Say the word clearly — tap Stop when done</span>`;
+                    }, 1000);
+                };
+                recMediaRecorder.onstop = () => {
+                    recIsRecording = false;
+                    stream.getTracks().forEach(t => t.stop());
+                    const blob = new Blob(recAudioChunks, { type: 'audio/webm' });
+                    recBlobUrl = URL.createObjectURL(blob);
+                    const word = String(currentWord || '').toLowerCase();
+                    
+                    revealRecordBtn.innerHTML = '🎙 Try Again';
+                    revealRecordBtn.style.background = 'linear-gradient(180deg, #fefce8, #fef3c7)';
+                    revealRecordBtn.style.borderColor = '#fde68a';
+                    revealRecordBtn.style.color = '#92400e';
+                    
+                    if (revealRecordStatus) {
+                        revealRecordStatus.innerHTML = `
+                            <span style="display:inline-flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
+                                <button onclick="new Audio('${recBlobUrl}').play()" style="padding:3px 10px; border-radius:8px; border:1px solid #bbf7d0; background:#f0fdf4; cursor:pointer; font-size:0.75rem; font-weight:600;">▶ Hear Me</button>
+                                <button onclick="if(typeof speak==='function')speak('${word}','word')" style="padding:3px 10px; border-radius:8px; border:1px solid #bfdbfe; background:#eff6ff; cursor:pointer; font-size:0.75rem; font-weight:600;">🔊 Compare</button>
+                                <button id="reveal-save-rec" style="padding:3px 10px; border-radius:8px; border:1px solid #c4b5fd; background:#f5f3ff; cursor:pointer; font-size:0.75rem; font-weight:600;">💾 Save</button>
+                            </span>`;
+                        const saveBtn = document.getElementById('reveal-save-rec');
+                        if (saveBtn) {
+                            saveBtn.onclick = async () => {
+                                try {
+                                    const db = await new Promise((resolve, reject) => {
+                                        const req = indexedDB.open('WordQuestRecordings', 1);
+                                        req.onupgradeneeded = () => req.result.createObjectStore('recordings');
+                                        req.onsuccess = () => resolve(req.result);
+                                        req.onerror = () => reject(req.error);
+                                    });
+                                    const tx = db.transaction('recordings', 'readwrite');
+                                    tx.objectStore('recordings').put({ blob, word, date: new Date().toISOString() }, `${word}_${new Date().toISOString().slice(0,10)}`);
+                                    await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
+                                    db.close();
+                                    saveBtn.textContent = '✅ Saved!';
+                                    saveBtn.disabled = true;
+                                } catch(e) { saveBtn.textContent = '⚠️ Error'; }
+                            };
+                        }
+                    }
+                };
+                recMediaRecorder.start();
+                setTimeout(() => { if (recMediaRecorder.state === 'recording') recMediaRecorder.stop(); }, 8000);
+            } catch(err) {
+                if (revealRecordStatus) revealRecordStatus.textContent = '⚠️ Microphone access needed';
+            }
+        };
+    }
+
     // Store that we should show bonus when modal closes
     sessionStorage.setItem('showBonusOnClose', 'true');
 
@@ -10515,9 +10468,10 @@ function pickPreferredBonusNarrationVoice(voices = []) {
 }
 
 function shouldShowBonusContent() {
-    const frequency = appSettings.bonus?.frequency || 'sometimes';
+    const frequency = appSettings.bonus?.frequency || 'always';
     if (frequency === 'off') return false;
-    if (frequency === 'often' || frequency === 'always') return true;
+    if (frequency === 'always') return true;
+    if (frequency === 'often') return Math.random() < 0.75;
     if (frequency === 'rare') return Math.random() < 0.2;
     return Math.random() < 0.4;
 }
