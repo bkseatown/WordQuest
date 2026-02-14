@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="cs-build-hash" content="f3a1b820" />
-    <meta name="cs-build-time" content="2026-02-14 16:30 UTC" />
+    <meta name="cs-build-hash" content="a7d2e910" />
+    <meta name="cs-build-time" content="2026-02-15 10:00 UTC" />
     <title>Word Quest — Decode the Word</title>
     <script>
       (function () {
@@ -68,17 +68,17 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="style.css?v=f3a1b820" />
+    <link rel="stylesheet" href="style.css?v=a7d2e910" />
     <link rel="stylesheet" href="word-quest-stable.css" />
     <link rel="stylesheet" href="delight.css" />
-    <script src="words.js?v=f3a1b820" defer></script>
+    <script src="words.js?v=a7d2e910" defer></script>
     <script src="decodables-expansion.js" defer></script>
     <script src="young-overrides.js" defer></script>
     <script src="phoneme-data.js" defer></script>
     <script src="focus-info.js" defer></script>
     <script src="translations.js" defer></script>
     <script src="delight.js" defer></script>
-    <script src="app.js?v=f3a1b820" defer></script>
+    <script src="app.js?v=a7d2e910" defer></script>
   </head>
 
   <body class="word-quest-page cs-page-wordquest look-35" data-wq-scene="navy-mint">
@@ -88,7 +88,7 @@
           <a href="./" style="text-decoration:underline;">WORD QUEST</a>
         </h1>
 
-        <select id="pattern-select" aria-label="Choose your path" style="max-width:180px; font-size:0.75rem; padding:4px 6px; border-radius:8px;">
+        <select id="pattern-select" aria-label="Choose your path" style="max-width:220px; font-size:0.72rem; padding:4px 6px; border-radius:8px;">
             <option value="shuffle" selected>Choose your path?</option>
             <option value="all">All Words</option>
             <option value="cvc">CVC (short vowels: cat, pin)</option>
@@ -371,6 +371,8 @@
         <div id="quick-tiles-row" class="quick-tiles-row hidden" aria-label="Quick tiles"></div>
       </div>
 
+      <div id="wq-phonics-hint" aria-live="polite"></div>
+
       <div id="game-canvas">
         <div id="game-board" aria-label="Guess grid"></div>
 
@@ -391,56 +393,43 @@
 
     <!-- Welcome / Tutorial -->
     <div id="welcome-modal" class="modal hidden welcome-modal" role="dialog" aria-modal="true" aria-label="How to play Word Quest">
-      <div class="modal-content welcome-tutorial-card" style="max-width:440px; padding:20px 24px 18px; background:linear-gradient(180deg, #f0f4ff 0%, #e8ecf8 100%); border-radius:20px;">
+      <div class="modal-content welcome-tutorial-card" style="max-width:400px; padding:18px 20px 14px; background:linear-gradient(180deg, #f0f4ff 0%, #e8ecf8 100%); border-radius:18px;">
         <button class="close-btn" type="button" aria-label="Close" onclick="document.getElementById('welcome-modal').classList.add('hidden');document.getElementById('modal-overlay').classList.add('hidden');">✕</button>
-        <h2 style="margin:0 0 4px; font-size:1.3rem; font-weight:800; color:#1e293b;">How To Play</h2>
-        <p style="margin:0 0 10px; color:#64748b; font-size:0.85rem;">Guess the word in 6 tries.</p>
+        <h2 style="margin:0 0 2px; font-size:1.1rem; font-weight:800; color:#1e293b; text-align:center;">🎯 Word Quest</h2>
+        <p style="margin:0 0 10px; color:#64748b; font-size:0.78rem; text-align:center;">Can you guess the word in 6 tries? Let's find out!</p>
 
-        <ul style="list-style:none; padding:0; margin:0 0 18px; font-size:0.92rem; color:#334155; line-height:1.6;">
-          <li style="margin-bottom:4px;">• Each guess must be a valid word.</li>
-          <li>• Tile colors show how close your guess was.</li>
-        </ul>
-
-        <p style="margin:0 0 8px; font-weight:700; font-size:0.95rem;">Examples</p>
-
-        <div style="display:flex; gap:4px; margin-bottom:6px;">
-          <span class="welcome-tile correct" style="width:36px;height:36px;font-size:1.1rem;">S</span>
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">T</span>
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">A</span>
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">N</span>
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">D</span>
-        </div>
-        <p style="margin:0 0 8px; font-size:0.82rem; color:#475569;"><strong>S</strong> is in the word and in the correct spot.</p>
-
-        <div style="display:flex; gap:4px; margin-bottom:6px;">
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">B</span>
-          <span class="welcome-tile present" style="width:36px;height:36px;font-size:1.1rem;">R</span>
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">I</span>
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">C</span>
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">K</span>
-        </div>
-        <p style="margin:0 0 8px; font-size:0.82rem; color:#475569;"><strong>R</strong> is in the word but in the wrong spot.</p>
-
-        <div style="display:flex; gap:4px; margin-bottom:6px;">
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">P</span>
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">L</span>
-          <span class="welcome-tile absent" style="width:36px;height:36px;font-size:1.1rem;">A</span>
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">N</span>
-          <span class="welcome-tile" style="width:36px;height:36px;font-size:1.1rem;background:#fff;border:2px solid #d1d5db;">T</span>
-        </div>
-        <p style="margin:0 0 10px; font-size:0.82rem; color:#475569;"><strong>A</strong> is not in the word at all.</p>
-
-        <div style="border-top:1px solid #e2e8f0; padding-top:14px; margin-bottom:16px;">
-          <p style="margin:0 0 6px; font-weight:700; font-size:0.95rem;">🔊 Audio Hints</p>
-          <p style="margin:0; font-size:0.88rem; color:#475569; line-height:1.5;">
-            Toggle <strong>Audio Hints</strong> on to hear the word and sentence before you type. 
-            Turn it off for pure deduction with no audio clues.
-          </p>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+          <div style="flex:1; background:rgba(34,197,94,0.1); border-radius:10px; padding:8px; text-align:center;">
+            <div style="display:flex; gap:3px; justify-content:center; margin-bottom:4px;">
+              <span class="welcome-tile correct" style="width:26px;height:26px;font-size:0.85rem;">S</span>
+              <span class="welcome-tile" style="width:26px;height:26px;font-size:0.85rem;background:#fff;border:1px solid #d1d5db;">T</span>
+            </div>
+            <p style="margin:0; font-size:0.68rem; color:#16a34a; font-weight:600;">🟢 Right spot</p>
+          </div>
+          <div style="flex:1; background:rgba(234,179,8,0.1); border-radius:10px; padding:8px; text-align:center;">
+            <div style="display:flex; gap:3px; justify-content:center; margin-bottom:4px;">
+              <span class="welcome-tile" style="width:26px;height:26px;font-size:0.85rem;background:#fff;border:1px solid #d1d5db;">B</span>
+              <span class="welcome-tile present" style="width:26px;height:26px;font-size:0.85rem;">R</span>
+            </div>
+            <p style="margin:0; font-size:0.68rem; color:#ca8a04; font-weight:600;">🟡 Wrong spot</p>
+          </div>
+          <div style="flex:1; background:rgba(100,116,139,0.08); border-radius:10px; padding:8px; text-align:center;">
+            <div style="display:flex; gap:3px; justify-content:center; margin-bottom:4px;">
+              <span class="welcome-tile" style="width:26px;height:26px;font-size:0.85rem;background:#fff;border:1px solid #d1d5db;">P</span>
+              <span class="welcome-tile absent" style="width:26px;height:26px;font-size:0.85rem;">A</span>
+            </div>
+            <p style="margin:0; font-size:0.68rem; color:#64748b; font-weight:600;">⬜ Not in word</p>
+          </div>
         </div>
 
-        <div class="welcome-step-actions" style="justify-content:center;">
-          <button id="start-playing-btn" type="button" class="primary-btn" style="width:100%; padding:12px; font-size:1.05rem;">Start Playing</button>
-        </div>
+        <p style="margin:0 0 8px; font-size:0.75rem; color:#475569; text-align:center;">Toggle 🔊 <strong>Audio Hints</strong> in the header to hear words before guessing.</p>
+
+        <button id="start-playing-btn" type="button" class="primary-btn" style="width:100%; padding:10px; font-size:0.95rem; border-radius:10px; margin-bottom:6px;">Let's Play! 🚀</button>
+        
+        <label style="display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.68rem; color:#94a3b8; cursor:pointer;">
+          <input type="checkbox" id="howto-dont-show" />
+          Don't show this again
+        </label>
       </div>
     </div>
 
@@ -531,41 +520,52 @@
         <div id="modal-def" class="modal-def"></div>
         <div id="modal-sentence" class="modal-sentence"></div>
 
-	        <div id="modal-action-row" class="modal-action-row">
-	          <button id="speak-btn" type="button" class="modal-audio-btn">Hear Word</button>
-	          <button id="play-again-btn" type="button" class="primary-btn">Play Again</button>
-	        </div>
+        <div id="modal-action-row" class="modal-action-row" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:10px 0;">
+        </div>
 
-	        <div id="reveal-record-section">
-	          <div id="reveal-record-ready" style="text-align:center;">
-	            <p style="font-size:0.78rem; color:#64748b; margin:0 0 6px;">🎙 Want to practice saying this word?</p>
-	            <button id="reveal-record-btn" type="button">🔴 Start Recording</button>
-	          </div>
-	          <div id="reveal-record-status"></div>
-	        </div>
+        <button id="play-again-btn" type="button" class="primary-btn" style="width:100%; margin:6px 0;">Play Again</button>
 
-	        <div class="translation-selector" aria-label="Translate">
-	          <label for="language-select"><strong>Language</strong></label>
-	          <select id="language-select" aria-label="Translation language">
-	            <option value="en">English</option>
-	            <option value="es">Español (Spanish)</option>
-	            <option value="zh">中文 (Simplified Chinese)</option>
-	            <option value="hi">हिन्दी (Hindi)</option>
-	            <option value="ms">Bahasa Melayu (Malay)</option>
-	            <option value="vi">Tiếng Việt (Vietnamese)</option>
-	            <option value="tl">Tagalog (Filipino)</option>
-	            <option value="ar">العربية (Arabic)</option>
-	            <option value="ko">한국어 (Korean)</option>
-	            <option value="ja">日本語 (Japanese)</option>
-	          </select>
-	          <label class="translation-pin">
-	            <input type="checkbox" id="pin-language" />
-	            Lock this language
-	          </label>
-	          <div id="translation-pin-status" class="translation-pin-status hidden" aria-live="polite"></div>
-	        </div>
-	      </div>
-	    </div>
+        <!-- Collapsible: Practice Recording -->
+        <details id="reveal-record-details" class="reveal-section-details">
+          <summary class="reveal-section-summary">🎙 Practice Saying It</summary>
+          <div id="reveal-record-section" style="padding:8px 0; text-align:center;">
+            <button id="reveal-record-btn" type="button" style="padding:8px 18px; border-radius:10px; border:2px solid #e5e7eb; background:linear-gradient(180deg,#fefce8,#fef3c7); color:#92400e; font-weight:700; font-size:0.82rem; cursor:pointer;">🔴 Start Recording</button>
+            <div id="reveal-record-status" style="margin-top:6px;"></div>
+          </div>
+        </details>
+
+        <!-- Collapsible: Auto-read & Translation -->
+        <details id="reveal-translate-details" class="reveal-section-details">
+          <summary class="reveal-section-summary">🌐 Language + Translation</summary>
+          <div style="padding:8px 0;">
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.78rem; color:#64748b; margin-bottom:6px; cursor:pointer;">
+              <input type="checkbox" id="auto-read-toggle" checked />
+              Auto-read word, definition, and sentence
+            </label>
+            <div class="translation-selector" aria-label="Translate" style="border:none; padding:0;">
+              <label for="language-select" style="font-size:0.72rem; color:#94a3b8; font-weight:600;">Language</label>
+              <select id="language-select" aria-label="Translation language" style="width:100%; padding:6px 8px; border-radius:8px; border:1px solid #d1d5db; font-size:0.82rem; margin:4px 0;">
+                <option value="en">English</option>
+                <option value="es">Español (Spanish)</option>
+                <option value="zh">中文 (Simplified Chinese)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+                <option value="ms">Bahasa Melayu (Malay)</option>
+                <option value="vi">Tiếng Việt (Vietnamese)</option>
+                <option value="tl">Tagalog (Filipino)</option>
+                <option value="ar">العربية (Arabic)</option>
+                <option value="ko">한국어 (Korean)</option>
+                <option value="ja">日本語 (Japanese)</option>
+              </select>
+              <label class="translation-pin" style="font-size:0.72rem; color:#94a3b8;">
+                <input type="checkbox" id="pin-language" />
+                Lock this language
+              </label>
+              <div id="translation-pin-status" class="translation-pin-status hidden" aria-live="polite"></div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
 
     <!-- Bonus modal (joke / fun fact / quote) -->
     <div id="bonus-modal" class="modal hidden bonus-modal" role="dialog" aria-modal="true" aria-label="Bonus content">

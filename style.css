@@ -10053,3 +10053,152 @@ body.word-quest-page .wq-palette-select option[disabled] {
     color: #94a3b8 !important;
     font-weight: 600 !important;
 }
+
+/* ===== Build f3a1b820+ Major Polish ===== */
+
+/* Collapsible reveal sections */
+.reveal-section-details {
+    margin-top: 6px !important;
+    border-top: 1px solid rgba(0,0,0,0.06) !important;
+}
+.reveal-section-summary {
+    padding: 8px 0 !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    cursor: pointer !important;
+    list-style: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+.reveal-section-summary::-webkit-details-marker { display: none !important; }
+.reveal-section-summary::after {
+    content: '▸' !important;
+    font-size: 0.7rem !important;
+    transition: transform 0.2s !important;
+    margin-left: auto !important;
+}
+.reveal-section-details[open] .reveal-section-summary::after {
+    transform: rotate(90deg) !important;
+}
+
+/* Path dropdown narrower */
+body.word-quest-page #focus-select,
+body.word-quest-page [id*="focus-select"] {
+    max-width: 260px !important;
+    font-size: 0.72rem !important;
+}
+
+/* Phonics hint below path bar */
+#wq-phonics-hint {
+    text-align: center;
+    font-size: 0.68rem;
+    color: #94a3b8;
+    font-weight: 500;
+    padding: 2px 0;
+    letter-spacing: 0.02em;
+    min-height: 14px;
+}
+
+/* Keyboard: eliminated keys shrink */
+body.word-quest-page .key.absent {
+    transform: scale(0.65) !important;
+    opacity: 0.35 !important;
+    transition: all 0.3s ease !important;
+}
+body.word-quest-page .key.correct {
+    transition: all 0.3s ease !important;
+}
+body.word-quest-page .key.present {
+    transition: all 0.3s ease !important;
+}
+
+/* Vowel keys - subtle highlight */
+body.word-quest-page .key.vowel:not(.absent):not(.correct):not(.present) {
+    background: rgba(99, 102, 241, 0.08) !important;
+    border-color: rgba(99, 102, 241, 0.15) !important;
+}
+
+/* How-to modal - fun & compact */
+body.word-quest-page .howto-modal .howto-content {
+    font-size: 0.82rem !important;
+}
+body.word-quest-page .howto-modal .howto-section {
+    background: rgba(99, 102, 241, 0.06) !important;
+    border: 1px solid rgba(99, 102, 241, 0.12) !important;
+    border-radius: 10px !important;
+    padding: 10px 12px !important;
+    margin-bottom: 8px !important;
+}
+body.word-quest-page .howto-modal .howto-tile {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 0.78rem !important;
+}
+body.word-quest-page .howto-modal .start-playing-btn,
+body.word-quest-page .howto-modal .primary-btn {
+    width: 100% !important;
+    border-radius: 10px !important;
+}
+
+/* Reveal modal word - bigger, more celebratory */
+body.word-quest-page .game-modal .modal-word {
+    font-size: 2.2rem !important;
+    letter-spacing: 0.12em !important;
+    margin: 6px 0 !important;
+}
+body.word-quest-page .game-modal .modal-def {
+    font-size: 0.88rem !important;
+    margin-bottom: 4px !important;
+}
+body.word-quest-page .game-modal .modal-sentence {
+    font-size: 0.85rem !important;
+    margin-bottom: 6px !important;
+}
+
+/* Audio controls in reveal */
+body.word-quest-page .modal-audio-controls {
+    display: flex !important;
+    gap: 6px !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+}
+body.word-quest-page .modal-audio-btn {
+    padding: 5px 10px !important;
+    font-size: 0.72rem !important;
+    border-radius: 8px !important;
+}
+
+/* Play Again prominent */
+body.word-quest-page .game-modal .primary-btn {
+    padding: 10px !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+}
+
+/* Repeated letter indicator on keyboard */
+body.word-quest-page .key[data-multi]::after {
+    content: '✦';
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    background: #4f46e5;
+    color: #fff;
+    font-size: 0.5rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    animation: pulse-badge 1.5s ease-in-out infinite;
+}
+body.word-quest-page .key {
+    position: relative !important;
+}
+@keyframes pulse-badge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}

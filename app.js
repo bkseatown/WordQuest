@@ -6912,6 +6912,7 @@ function startNewGame(customWord = null) {
         setQuickCustomWordStatus(WORD_SOURCE_LIBRARY_STATUS, false, false);
     }
     updateFocusPanel();
+    updatePhonicsHint();
 
     isFirstLoad = false;
     board.style.setProperty("--word-length", CURRENT_WORD_LENGTH);
@@ -7215,6 +7216,30 @@ function updateFocusPanel() {
             quickRow.innerHTML = "";
         }
     }
+}
+
+/* ==========================================
+function updatePhonicsHint() {
+    const hintEl = document.getElementById('wq-phonics-hint');
+    if (!hintEl) return;
+    if (!currentEntry || !currentEntry.phonics) {
+        hintEl.textContent = '';
+        return;
+    }
+    const phonics = currentEntry.phonics;
+    const patternNames = {
+        'cvc': 'CVC', 'ccvc': 'Blend', 'cvcc': 'Blend', 'digraph': 'Digraph',
+        'cvce': 'Magic E', 'vowel_team': 'Vowel Team', 'r_controlled': 'R-Controlled',
+        'diphthong': 'Diphthong', 'prefix': 'Prefix', 'suffix': 'Suffix',
+        'inflectional_ending': 'Suffix', 'multisyllable': 'Multisyllabic',
+        'foundation': 'Foundation', 'advanced_patterns': 'Advanced',
+        'initial_blend': 'Blend', 'final_blend': 'Blend', 'silent_e': 'Magic E',
+        'long_vowels': 'Long Vowel', 'blends': 'Blend', 'compound': 'Compound'
+    };
+    const level = patternNames[phonics.primary_level] || '';
+    const syllables = phonics.syllables ? `${phonics.syllables} syllable${phonics.syllables > 1 ? 's' : ''}` : '';
+    const parts = [level, syllables].filter(Boolean);
+    hintEl.textContent = parts.length ? parts.join(' · ') : '';
 }
 
 /* ==========================================
@@ -7627,6 +7652,23 @@ function revealColors(result, guess) {
                 } else if (status === "absent") {
                     if (!k.classList.contains("correct") && !k.classList.contains("present")) {
                         k.classList.add("absent");
+                    }
+                }
+                // Repeated letter hint: show badge if letter appears more times
+                if (k.classList.contains("correct")) {
+                    const letter = guess[i];
+                    const targetLetters = currentWord.toLowerCase().split('');
+                    const totalInTarget = targetLetters.filter(l => l === letter).length;
+                    if (totalInTarget > 1) {
+                        let correctCount = 0;
+                        document.querySelectorAll('.tile.correct').forEach(tile => {
+                            if ((tile.textContent || '').toLowerCase() === letter) correctCount++;
+                        });
+                        if (correctCount < totalInTarget) {
+                            k.dataset.multi = '+';
+                        } else {
+                            delete k.dataset.multi;
+                        }
                     }
                 }
             }
@@ -8429,10 +8471,24 @@ function showEndModal(win) {
         let recBlobUrl = null;
         
         revealRecordBtn.onclick = async () => {
+            // If currently recording, stop
             if (recIsRecording) {
                 if (recMediaRecorder && recMediaRecorder.state === 'recording') recMediaRecorder.stop();
                 return;
             }
+            
+            // Countdown before recording
+            revealRecordBtn.disabled = true;
+            revealRecordBtn.style.opacity = '0.5';
+            const readyDiv = document.getElementById('reveal-record-ready');
+            
+            for (let i = 3; i >= 1; i--) {
+                if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="font-size:1.8rem; font-weight:800; color:#4f46e5;">${i}</span><br><span style="font-size:0.72rem; color:#6b7280;">Get ready to say the word...</span>`;
+                await new Promise(r => setTimeout(r, 800));
+            }
+            if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="font-size:1rem; font-weight:700; color:#dc2626;">🎤 Speak now!</span>`;
+            await new Promise(r => setTimeout(r, 300));
+            
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 recMediaRecorder = new MediaRecorder(stream);
@@ -8441,20 +8497,18 @@ function showEndModal(win) {
                 recMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recAudioChunks.push(e.data); };
                 recMediaRecorder.onstart = () => {
                     recIsRecording = true;
+                    revealRecordBtn.disabled = false;
+                    revealRecordBtn.style.opacity = '1';
                     revealRecordBtn.innerHTML = '⏹ Stop Recording';
                     revealRecordBtn.style.background = 'linear-gradient(180deg,#fca5a5,#f87171)';
                     revealRecordBtn.style.borderColor = '#f87171';
                     revealRecordBtn.style.color = '#7f1d1d';
-                    // Countdown timer
                     let secondsLeft = 8;
-                    if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="color:#dc2626; font-weight:700;">🔴 Recording: ${secondsLeft}s remaining</span><br><span style="font-size:0.72rem; color:#6b7280;">Say the word clearly — tap Stop when done</span>`;
+                    if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="color:#dc2626; font-weight:700;">🔴 Recording: ${secondsLeft}s</span>`;
                     const countdownInterval = setInterval(() => {
                         secondsLeft--;
-                        if (secondsLeft <= 0 || !recIsRecording) {
-                            clearInterval(countdownInterval);
-                            return;
-                        }
-                        if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="color:#dc2626; font-weight:700;">🔴 Recording: ${secondsLeft}s remaining</span><br><span style="font-size:0.72rem; color:#6b7280;">Say the word clearly — tap Stop when done</span>`;
+                        if (secondsLeft <= 0 || !recIsRecording) { clearInterval(countdownInterval); return; }
+                        if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="color:#dc2626; font-weight:700;">🔴 Recording: ${secondsLeft}s</span>`;
                     }, 1000);
                 };
                 recMediaRecorder.onstop = () => {
@@ -9008,6 +9062,7 @@ async function downloadPracticeAudioBundle() {
 }
 
 function checkFirstTimeVisitor() {
+    if (localStorage.getItem("wq_howto_dismissed")) return;
     if (!localStorage.getItem("decode_v5_visited")) {
         modalOverlay.classList.remove("hidden");
         welcomeModal.classList.remove("hidden");
@@ -9018,6 +9073,7 @@ function checkFirstTimeVisitor() {
 function clearKeyboardColors() {
     document.querySelectorAll(".key").forEach(k => {
         k.classList.remove("correct", "present", "absent");
+        delete k.dataset.multi;
     });
 }
 
@@ -13882,6 +13938,10 @@ function initTutorial() {
     }
 
     startBtn.onclick = () => {
+        const dontShow = document.getElementById('howto-dont-show');
+        if (dontShow && dontShow.checked) {
+            try { localStorage.setItem('wq_howto_dismissed', '1'); } catch(e) {}
+        }
         try { localStorage.setItem('wq_tutorial_seen', '1'); } catch(e) {}
         closeModal();
     };
