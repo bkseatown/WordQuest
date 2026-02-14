@@ -9849,3 +9849,207 @@ body.word-quest-page .game-modal .translation-pin {
     font-size: 0.75rem !important;
     color: #9ca3af !important;
 }
+
+/* ===== Build e9f6a745+ Polish Fixes ===== */
+
+/* 1. More space between board and keyboard */
+body.word-quest-page #game-canvas {
+    gap: 24px !important;
+}
+
+/* 2. Build stamp subtle */
+body.word-quest-page .cs-build-stamp,
+body.word-quest-page [class*="build-stamp"],
+body.word-quest-page .build-stamp {
+    opacity: 0.25 !important;
+    font-size: 0.65rem !important;
+}
+
+/* 3. Howto modal smaller, warmer, no scroll */
+body.word-quest-page .howto-modal {
+    max-width: 480px !important;
+    max-height: 85vh !important;
+    padding: 16px 20px !important;
+    font-size: 0.85rem !important;
+    overflow-y: auto !important;
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2) !important;
+}
+body.word-quest-page .howto-modal h2 {
+    font-size: 1.1rem !important;
+    margin-bottom: 8px !important;
+}
+body.word-quest-page .howto-modal p {
+    font-size: 0.82rem !important;
+    line-height: 1.35 !important;
+    margin-bottom: 6px !important;
+}
+body.word-quest-page .howto-section {
+    padding: 8px 10px !important;
+    margin-bottom: 8px !important;
+}
+body.word-quest-page .howto-section h3 {
+    font-size: 0.88rem !important;
+    margin-bottom: 4px !important;
+}
+
+/* 4. Mode toggle - cleaner pill style */
+body.word-quest-page .wq-play-mode-btn {
+    transition: all 0.15s ease !important;
+}
+body.word-quest-page .wq-play-mode-btn.is-active {
+    background: #1e293b !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+}
+body.word-quest-page .wq-play-mode-btn:not(.is-active) {
+    background: rgba(255,255,255,0.6) !important;
+    color: #64748b !important;
+}
+
+/* 5. Tools tabs - better styling */
+body.word-quest-page .wq-tools-tabs {
+    display: flex !important;
+    gap: 0 !important;
+    background: #f1f5f9 !important;
+    border-radius: 10px !important;
+    padding: 3px !important;
+    margin-bottom: 8px !important;
+}
+body.word-quest-page .wq-tools-tab {
+    flex: 1 !important;
+    padding: 6px 10px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    background: transparent !important;
+    color: #64748b !important;
+    transition: all 0.15s !important;
+    white-space: nowrap !important;
+}
+body.word-quest-page .wq-tools-tab.is-active {
+    background: #fff !important;
+    color: #1e293b !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12) !important;
+}
+
+/* 6. Tools subcards cleaner */
+body.word-quest-page .wq-tools-subcard {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    padding: 10px 12px !important;
+    margin-bottom: 6px !important;
+}
+
+/* Teacher word panel clean styling */
+body.word-quest-page .wq-tools-teacher-card {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    padding: 10px 12px !important;
+}
+body.word-quest-page .wq-tools-teacher-head {
+    margin-bottom: 8px !important;
+}
+body.word-quest-page .wq-tools-teacher-head strong {
+    font-size: 0.85rem !important;
+}
+body.word-quest-page .wq-tools-teacher-head span {
+    font-size: 0.72rem !important;
+    color: #94a3b8 !important;
+    display: block !important;
+}
+body.word-quest-page .quick-custom-word-body input[type="text"],
+body.word-quest-page .quick-custom-word-body textarea {
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    padding: 6px 10px !important;
+    font-size: 0.82rem !important;
+    background: #fff !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+body.word-quest-page .quick-custom-word-body textarea {
+    resize: vertical !important;
+    min-height: 60px !important;
+}
+body.word-quest-page .hint-btn {
+    padding: 5px 10px !important;
+    border-radius: 8px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    border: 1px solid #d1d5db !important;
+    background: #fff !important;
+    color: #374151 !important;
+}
+body.word-quest-page .hint-btn:not(.secondary) {
+    background: #4f46e5 !important;
+    color: #fff !important;
+    border-color: #4f46e5 !important;
+}
+
+/* Teacher word panel layout */
+body.word-quest-page .quick-custom-word-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    align-items: center !important;
+    margin-bottom: 6px !important;
+}
+body.word-quest-page .quick-custom-word-list {
+    margin-top: 8px !important;
+    padding-top: 8px !important;
+    border-top: 1px solid #e2e8f0 !important;
+}
+body.word-quest-page .quick-custom-word-list label {
+    font-size: 0.75rem !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+}
+body.word-quest-page .quick-custom-word-list-toggle {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-size: 0.72rem !important;
+    color: #64748b !important;
+}
+body.word-quest-page .quick-custom-word-status {
+    font-size: 0.72rem !important;
+    color: #94a3b8 !important;
+    margin-top: 6px !important;
+}
+
+/* Recording section - user-controlled */
+body.word-quest-page #reveal-record-section {
+    margin-top: 8px !important;
+    padding-top: 8px !important;
+    border-top: 1px solid rgba(0,0,0,0.08) !important;
+}
+body.word-quest-page #reveal-record-btn {
+    padding: 8px 16px !important;
+    border-radius: 10px !important;
+    border: 2px solid #e5e7eb !important;
+    background: linear-gradient(180deg, #fefce8, #fef3c7) !important;
+    color: #92400e !important;
+    font-weight: 700 !important;
+    font-size: 0.82rem !important;
+    cursor: pointer !important;
+}
+
+/* Palette select styling */
+body.word-quest-page .wq-palette-select {
+    font-size: 0.82rem !important;
+    padding: 4px 6px !important;
+}
+body.word-quest-page .wq-palette-select option[disabled] {
+    font-size: 0.7rem !important;
+    color: #94a3b8 !important;
+    font-weight: 600 !important;
+}

@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="cs-build-hash" content="e9f6a745" />
-    <meta name="cs-build-time" content="2026-02-14 14:00 UTC" />
+    <meta name="cs-build-hash" content="f3a1b820" />
+    <meta name="cs-build-time" content="2026-02-14 16:30 UTC" />
     <title>Word Quest — Decode the Word</title>
     <script>
       (function () {
@@ -68,17 +68,17 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="style.css?v=e9f6a745" />
+    <link rel="stylesheet" href="style.css?v=f3a1b820" />
     <link rel="stylesheet" href="word-quest-stable.css" />
     <link rel="stylesheet" href="delight.css" />
-    <script src="words.js?v=e9f6a745" defer></script>
+    <script src="words.js?v=f3a1b820" defer></script>
     <script src="decodables-expansion.js" defer></script>
     <script src="young-overrides.js" defer></script>
     <script src="phoneme-data.js" defer></script>
     <script src="focus-info.js" defer></script>
     <script src="translations.js" defer></script>
     <script src="delight.js" defer></script>
-    <script src="app.js?v=e9f6a745" defer></script>
+    <script src="app.js?v=f3a1b820" defer></script>
   </head>
 
   <body class="word-quest-page cs-page-wordquest look-35" data-wq-scene="navy-mint">
@@ -133,9 +133,14 @@
             </optgroup>
         </select>
 
-        <div id="wq-play-mode-switch" class="wq-play-mode-switch" role="group" aria-label="Play mode" style="display:flex; gap:0;">
-          <button id="wq-play-mode-classic" type="button" class="wq-play-mode-btn is-active" data-play-mode-option="classic" aria-pressed="true" style="padding:4px 10px; font-size:0.72rem; border-radius:8px 0 0 8px;">Classic</button>
-          <button id="wq-play-mode-listen" type="button" class="wq-play-mode-btn" data-play-mode-option="listen" aria-pressed="false" style="padding:4px 10px; font-size:0.72rem; border-radius:0 8px 8px 0;">Listen &amp; Spell</button>
+        <div id="wq-play-mode-switch" class="wq-play-mode-switch" role="group" aria-label="Play mode" style="display:flex; align-items:center; gap:6px;">
+          <label id="wq-audio-toggle-label" for="wq-audio-toggle" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.72rem; font-weight:600; color:#64748b; user-select:none;">
+            <span class="wq-toggle-track" style="position:relative; width:36px; height:20px; background:#cbd5e1; border-radius:999px; transition:background 0.2s;">
+              <span class="wq-toggle-thumb" style="position:absolute; top:2px; left:2px; width:16px; height:16px; background:#fff; border-radius:50%; transition:transform 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+            </span>
+            <input id="wq-audio-toggle" type="checkbox" style="display:none;" />
+            <span id="wq-audio-toggle-text">🔇 Classic</span>
+          </label>
         </div>
 
         <button id="new-word-btn" type="button" class="case-toggle-btn new-round-btn" aria-label="Start new round" style="padding:4px 12px; font-size:0.75rem; white-space:nowrap;">New Round</button>
@@ -177,10 +182,6 @@
 
               <section id="wq-tools-panel-round" class="wq-tools-panel is-active" role="tabpanel" aria-labelledby="wq-tools-tab-round" data-tools-panel="round">
                 <div class="wq-tools-subcard" style="margin-bottom:8px;">
-                  <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                    <input id="quick-teacher-word" type="text" placeholder="Teacher word" class="masked" autocomplete="off" spellcheck="false" maxlength="12" style="flex:1; padding:5px 8px; border-radius:8px; border:1px solid rgba(100,116,139,0.4); font-size:0.82rem; background:rgba(255,255,255,0.9); color:#1e293b;" />
-                    <button id="quick-teacher-go" type="button" style="padding:5px 10px; border-radius:8px; border:1px solid rgba(100,116,139,0.4); background:rgba(255,255,255,0.85); font-size:0.78rem; font-weight:700; cursor:pointer; white-space:nowrap;">Go</button>
-                  </div>
                   <label class="wq-focus-hint-toggle" for="wq-toggle-round-clue" style="display:flex; align-items:center; gap:4px; font-size:0.8rem;">
                     <input id="wq-toggle-round-clue" type="checkbox" />
                     <span>Small focus hint</span>
@@ -261,19 +262,21 @@
                   <label class="wq-palette-field" for="wq-palette-select">
                     <span>Palette</span>
                     <select id="wq-palette-select" class="wq-palette-select">
-                      <option value="calm-studio">Pastel Slate</option>
-                      <option value="meadow-calm">Forest Wheat</option>
-                      <option value="ocean-calm">Navy Mint</option>
-                      <option value="professional-chrome">Gold Slate</option>
-                      <option value="professional-midnight">Purple Gold</option>
-                      <option value="academy-evergreen">Evergreen Heritage</option>
-                      <option value="pastel-scholars">Soft Scholars</option>
-                      <option value="sprout-lavender">Lavender Sprout</option>
-                      <option value="husky-classic">Husky Classic</option>
-                      <option value="playful-festival">Citrus Arcade</option>
-                      <option value="playful-sunrise">Sunset Pop</option>
-                      <option value="classic-wordle">Classic Wordle</option>
-                      <option value="classic-contrast">Electric Contrast</option>
+                      <option disabled>── School ──</option>
+                      <option value="calm-studio">🎨 Pastel Slate</option>
+                      <option value="meadow-calm">🌾 Forest Wheat</option>
+                      <option value="ocean-calm">🌊 Navy Mint</option>
+                      <option value="professional-chrome">✨ Gold Slate</option>
+                      <option value="professional-midnight">👑 Purple Gold</option>
+                      <option value="academy-evergreen">🌲 Evergreen Heritage</option>
+                      <option value="pastel-scholars">📚 Soft Scholars</option>
+                      <option value="sprout-lavender">🌱 Lavender Sprout</option>
+                      <option value="husky-classic">🐺 Husky Classic</option>
+                      <option disabled>── Fun ──</option>
+                      <option value="playful-festival">🍊 Citrus Arcade</option>
+                      <option value="playful-sunrise">🌅 Sunset Pop</option>
+                      <option value="classic-wordle">🟩 Classic Wordle</option>
+                      <option value="classic-contrast">⚡ Electric Contrast</option>
                       <option disabled>── Superhero ──</option>
                       <option value="hero-iron">🦸 Iron (Red + Gold)</option>
                       <option value="hero-shield">🛡️ Shield (Blue + Red)</option>
@@ -283,7 +286,7 @@
                       <option value="beach-sunset">🏖️ Beach Sunset</option>
                       <option value="coffeehouse">☕ Coffeehouse</option>
                       <option value="rose-gold">🌸 Rose Gold</option>
-                      <option value="slate-steel">🔩 Slate & Steel</option>
+                      <option value="slate-steel">🔩 Slate &amp; Steel</option>
                       <option disabled>── Trending 2026 ──</option>
                       <option value="mocha-mousse">🍫 Mocha Mousse</option>
                       <option value="digital-lavender">💜 Digital Lavender</option>
@@ -428,10 +431,10 @@
         <p style="margin:0 0 10px; font-size:0.82rem; color:#475569;"><strong>A</strong> is not in the word at all.</p>
 
         <div style="border-top:1px solid #e2e8f0; padding-top:14px; margin-bottom:16px;">
-          <p style="margin:0 0 6px; font-weight:700; font-size:0.95rem;">🎧 Listen &amp; Spell Mode</p>
+          <p style="margin:0 0 6px; font-weight:700; font-size:0.95rem;">🔊 Audio Hints</p>
           <p style="margin:0; font-size:0.88rem; color:#475569; line-height:1.5;">
-            Switch to <strong>Listen &amp; Spell</strong> to hear the word and sentence before you type. 
-            Use <strong>Classic</strong> for pure deduction with no audio hints.
+            Toggle <strong>Audio Hints</strong> on to hear the word and sentence before you type. 
+            Turn it off for pure deduction with no audio clues.
           </p>
         </div>
 
@@ -534,7 +537,10 @@
 	        </div>
 
 	        <div id="reveal-record-section">
-	          <button id="reveal-record-btn" type="button">🎙 Practice Saying It</button>
+	          <div id="reveal-record-ready" style="text-align:center;">
+	            <p style="font-size:0.78rem; color:#64748b; margin:0 0 6px;">🎙 Want to practice saying this word?</p>
+	            <button id="reveal-record-btn" type="button">🔴 Start Recording</button>
+	          </div>
 	          <div id="reveal-record-status"></div>
 	        </div>
 
@@ -1175,10 +1181,10 @@
             '  z-index: 2200;',
             '  padding: 4px 10px;',
             '  border-radius: 999px;',
-            '  border: 1px solid rgba(51, 65, 85, 0.25);',
-            '  background: rgba(248, 250, 252, 0.88);',
-            '  color: #334155;',
-            '  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);',
+            '  border: none;',
+            '  background: transparent;',
+            '  color: rgba(100, 116, 139, 0.3);',
+            '  box-shadow: none;',
             '  font: 600 11px/1.2 "Atkinson Hyperlegible", "Segoe UI", sans-serif;',
             '  letter-spacing: 0.02em;',
             '  pointer-events: none;',

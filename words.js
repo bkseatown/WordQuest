@@ -3555,11 +3555,11 @@ const WORDS_DATA =
   "calculator": {
     "pos": "noun",
     "en": {
-      "def": "A machine that does math for you, or spells 'HELLO' upside down.",
+      "def": "A machine that does math for you, or spells 'Hello' upside down.",
       "sentence": "I typed numbers into the calculator to make it say funny words."
     },
     "es": {
-      "def": "Una máquina que hace matemáticas por ti o deletrea 'HOLA' al revés.",
+      "def": "Una máquina que hace matemáticas por ti o deletrea 'Hola' al revés.",
       "sentence": "Escribí números en la calculadora para que dijera palabras divertidas."
     },
     "zh": {
@@ -3567,15 +3567,15 @@ const WORDS_DATA =
       "sentence": "我在计算器上输入数字，让它显示有趣的单词。"
     },
     "ms": {
-      "def": "Mesin yang melakukan matematik untuk anda, atau mengeja 'HELLO' secara terbalik.",
+      "def": "Mesin yang melakukan matematik untuk anda, atau mengeja 'Hello' secara terbalik.",
       "sentence": "Saya menaip nombor ke dalam kalkulator untuk membuat ia menyebut perkataan lucu."
     },
     "vi": {
-      "def": "Cỗ máy làm toán hộ bạn, hoặc dùng để viết chữ 'HELLO' ngược.",
+      "def": "Cỗ máy làm toán hộ bạn, hoặc dùng để viết chữ 'Hello' ngược.",
       "sentence": "Tôi gõ số vào máy tính để nó hiện ra những từ buồn cười."
     },
     "tl": {
-      "def": "Makinang nagko-compute para sa'yo, o nag-i-spell ng 'HELLO' nang pabaliktad.",
+      "def": "Makinang nagko-compute para sa'yo, o nag-i-spell ng 'Hello' nang pabaliktad.",
       "sentence": "Nag-type ako ng numbers sa calculator para magpakita ng mga nakakatawang salita."
     },
     "phonics": {
@@ -3601,7 +3601,7 @@ const WORDS_DATA =
       "sentence": "لقد قمت بكتابة الأرقام في الآلة الحاسبة لأجعلها تقول كلمات مضحكة."
     },
     "ko": {
-      "def": "당신을 위해 수학을 계산하거나 'HELLO'를 거꾸로 쓰는 기계입니다.",
+      "def": "당신을 위해 수학을 계산하거나 'Hello'를 거꾸로 쓰는 기계입니다.",
       "sentence": "재미있는 단어가 나오도록 계산기에 숫자를 입력했습니다."
     },
     "ja": {
@@ -9559,7 +9559,7 @@ const WORDS_DATA =
   "ghost": {
     "pos": "noun",
     "en": {
-      "def": "A floating bed sheet that says 'BOO'.",
+      "def": "A floating bed sheet that says 'Boo'.",
       "sentence": "I dressed up as a ghost but tripped over my own sheet."
     },
     "es": {
@@ -9571,7 +9571,7 @@ const WORDS_DATA =
       "sentence": "我打扮成鬼，却被自己的床单绊倒了。"
     },
     "ms": {
-      "def": "Cadar terapung yang berbunyi 'BOO'.",
+      "def": "Cadar terapung yang berbunyi 'Boo'.",
       "sentence": "Saya berpakaian sebagai hantu tetapi tersandung cadar saya sendiri."
     },
     "vi": {
@@ -9604,7 +9604,7 @@ const WORDS_DATA =
       "sentence": "لقد ارتديت ملابس الشبح ولكني تعثرت في ملاءتي."
     },
     "ko": {
-      "def": "'BOO'라고 적힌 떠다니는 침대 시트.",
+      "def": "'Boo'라고 적힌 떠다니는 침대 시트.",
       "sentence": "나는 유령으로 분장했지만 시트에 걸려 넘어졌다."
     },
     "ja": {
@@ -13235,11 +13235,11 @@ const WORDS_DATA =
   "library": {
     "pos": "noun",
     "en": {
-      "def": "A building full of books where a lady says 'SHHH' every five seconds.",
+      "def": "A building full of books where a lady says 'Shhh' every five seconds.",
       "sentence": "I dropped a book in the library and the librarian looked at me with laser eyes."
     },
     "es": {
-      "def": "Un edificio lleno de libros donde una señora dice 'SHHH' cada cinco segundos.",
+      "def": "Un edificio lleno de libros donde una señora dice 'Shhh' cada cinco segundos.",
       "sentence": "Se me cayó un libro en la biblioteca y la bibliotecaria me miró con ojos láser."
     },
     "zh": {
@@ -13247,7 +13247,7 @@ const WORDS_DATA =
       "sentence": "我在图书馆掉了一本书，图书管理员用激光般的眼神看着我。"
     },
     "ms": {
-      "def": "Sebuah bangunan penuh dengan buku di mana seorang wanita berkata 'SHHH' setiap lima saat.",
+      "def": "Sebuah bangunan penuh dengan buku di mana seorang wanita berkata 'Shhh' setiap lima saat.",
       "sentence": "Saya menjatuhkan buku di perpustakaan dan pustakawan memandang saya dengan mata laser."
     },
     "vi": {
@@ -13255,7 +13255,7 @@ const WORDS_DATA =
       "sentence": "Tôi làm rơi cuốn sách trong thư viện và cô thủ thư nhìn tôi với đôi mắt rực lửa."
     },
     "tl": {
-      "def": "Gusaling puno ng libro kung saan may babaeng nagsasabi ng 'SHHH' kada limang segundo.",
+      "def": "Gusaling puno ng libro kung saan may babaeng nagsasabi ng 'Shhh' kada limang segundo.",
       "sentence": "Nalaglag ko ang libro sa library at tiningnan ako ng librarian ng masama."
     },
     "phonics": {
@@ -13273,7 +13273,7 @@ const WORDS_DATA =
       "is_sight_word": false
     },
     "hi": {
-      "def": "किताबों से भरी एक इमारत जहां हर पांच सेकंड में एक महिला कहती है 'SHHH'।",
+      "def": "किताबों से भरी एक इमारत जहां हर पांच सेकंड में एक महिला कहती है 'Shhh'।",
       "sentence": "मैंने लाइब्रेरी में एक किताब गिरा दी और लाइब्रेरियन ने लेज़र आँखों से मे���ी ओर देखा।"
     },
     "ar": {

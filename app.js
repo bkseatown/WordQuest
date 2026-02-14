@@ -4205,6 +4205,16 @@ function applyPlayMode(mode = PLAY_MODE_CLASSIC, options = {}) {
         listenBtn.setAttribute('aria-pressed', isListen ? 'true' : 'false');
     }
 
+    // Update audio toggle if present
+    const audioToggle = document.getElementById('wq-audio-toggle');
+    const audioToggleText = document.getElementById('wq-audio-toggle-text');
+    const toggleTrack = document.querySelector('.wq-toggle-track');
+    const toggleThumb = document.querySelector('.wq-toggle-thumb');
+    if (audioToggle) audioToggle.checked = isListen;
+    if (audioToggleText) audioToggleText.textContent = isListen ? '🔊 Audio Hints' : '🔇 Classic';
+    if (toggleTrack) toggleTrack.style.background = isListen ? '#4f46e5' : '#cbd5e1';
+    if (toggleThumb) toggleThumb.style.transform = isListen ? 'translateX(16px)' : 'translateX(0)';
+
     const hintActions = document.querySelector('.hint-actions');
     if (hintActions instanceof HTMLElement) {
         hintActions.classList.toggle('hidden', !isListen);
@@ -5089,6 +5099,16 @@ function initControls() {
     }
     if (playModeListenBtn) {
         playModeListenBtn.onclick = () => applyPlayMode(PLAY_MODE_LISTEN, { toast: true });
+    }
+    // Audio toggle switch handler
+    const audioToggleLabel = document.getElementById('wq-audio-toggle-label');
+    const audioToggleCheckbox = document.getElementById('wq-audio-toggle');
+    if (audioToggleLabel) {
+        audioToggleLabel.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isCurrentlyListen = (audioToggleCheckbox && audioToggleCheckbox.checked);
+            applyPlayMode(isCurrentlyListen ? PLAY_MODE_CLASSIC : PLAY_MODE_LISTEN, { toast: true });
+        });
     }
 
     if (hearWordBtn) {
