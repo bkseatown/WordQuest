@@ -2857,14 +2857,9 @@ main {
     }
 }
 
+/* Vowel bg disabled — dot indicator only */
 .key.vowel:not(.correct):not(.present):not(.absent) { 
-    background: linear-gradient(180deg, #d7ecff 0%, #b7d6ff 100%); 
-    border: 2px solid #3f78e0; 
-    color: #0f172a;
-    box-shadow:
-        0 4px 0 0 #8cb5ee,
-        0 0 0 2px rgba(63, 120, 224, 0.2),
-        0 4px 10px rgba(15, 23, 42, 0.15);
+    /* background/border inherit from .key */
 }
 
 .key.vowel:not(.correct):not(.present):not(.absent)::after {
@@ -7942,12 +7937,9 @@ body.word-quest-page .key:not(.correct):not(.present):not(.absent) {
 }
 
 body.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent) {
-    background: var(--wq-key-bg, linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%)) !important;
-    border-color: var(--wq-key-border, rgba(148, 163, 184, 0.6)) !important;
-    color: var(--wq-key-text, #1e293b) !important;
+    /* Inherit normal key styling - no special background */
     font-weight: 760 !important;
     outline: none !important;
-    box-shadow: 0 4px 0 rgba(148, 163, 184, 0.68), 0 10px 18px rgba(15, 23, 42, 0.14) !important;
 }
 
 body.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent)::before {
@@ -8680,10 +8672,13 @@ body.word-quest-page.fit-screen-tight #keyboard .key.wide {
     font-size: 0.95rem !important;
 }
 
+/* Vowel bg disabled — use dot indicator instead (see bottom of file) */
+/*
 body.word-quest-page #keyboard .key.vowel:not(.correct):not(.present):not(.absent) {
     background: var(--wq-key-vowel-bg) !important;
     border-color: var(--wq-key-vowel-border) !important;
 }
+*/
 
 body.word-quest-page #game-board,
 body.word-quest-page.fit-screen #game-board,
@@ -10107,19 +10102,9 @@ body.word-quest-page .key.present {
     transition: all 0.3s ease !important;
 }
 
-/* Vowel keys - small dot indicator that works on all themes */
-body.word-quest-page .key.vowel:not(.absent):not(.correct):not(.present)::after {
-    content: '' !important;
-    display: block !important;
-    position: absolute !important;
-    bottom: 3px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 5px !important;
-    height: 5px !important;
-    border-radius: 50% !important;
-    background: #6366f1 !important;
-    opacity: 0.6 !important;
+/* Vowel keys - subtle bottom border indicator that works on all themes */
+body.word-quest-page .key.vowel:not(.absent):not(.correct):not(.present) {
+    border-bottom: 3px solid rgba(99, 102, 241, 0.5) !important;
 }
 
 /* How-to modal - fun & compact */
