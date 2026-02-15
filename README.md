@@ -3,7 +3,7 @@
 **Live URL:** https://bkseatown.github.io/WordQuest/
 **Repo:** https://github.com/bkseatown/WordQuest
 **Owner:** Bob (bkseatown)
-**Last Build:** c5d4a032 — Feb 15, 2026
+**Last Build:** d6e5b143 — Feb 15, 2026
 
 ---
 
@@ -210,6 +210,8 @@ Translation debug logging has been removed — translations confirmed working as
 | 14 | **Watch for unclosed comments** | A `/*` without `*/` will swallow all code below it. One unclosed comment killed `updatePhonicsHint()` and crashed the entire game |
 | 15 | **Modal HTML must match showEndModal() expectations** | `showEndModal()` dynamically creates audio controls, action rows, and translation selectors. Don't restructure modal HTML (e.g. wrapping in `<details>`) without updating the JS DOM manipulation logic |
 | 16 | **TTS treats ALL-CAPS as acronyms** | Words like 'BOO' in definitions get spelled B-O-O. Use title case ('Boo') instead |
+| 17 | **Teacher word panel was role-gated** | `isTeacherCustomWordAllowed()` returned false for non-teacher roles, hiding the entire teacher card. Fixed: always show in Teacher Word tab |
+| 18 | **Vowel key bg must match theme** | Hardcoded blue vowel backgrounds blend into dark/blue themes. Use CSS vars (`--wq-key-bg`) or theme-independent indicators (dots) |
 
 ---
 
@@ -251,6 +253,15 @@ Translation debug logging has been removed — translations confirmed working as
 ---
 
 ## Change Log
+
+### Build d6e5b143 — Feb 15, 2026
+- FIXED: Teacher Word tab was hidden by `isTeacherCustomWordAllowed()` gating. Removed role-based gating so teacher word panel is always available in Tools → Teacher Word tab
+- FIXED: Teacher word body (`quick-custom-word-body`) was collapsed by default due to `customWordTeacherOnly` guard. Now always expanded when in tools panel
+- FIXED: Phonics hint ("Long Vowel · 1 syllable") now only shows when path is "All Words" or "Shuffle" — hidden when a specific focus path is selected (path bar already shows the focus)
+- FIXED: "Hint: Any focus" chip hidden when path is "All Words" (redundant with phonics hint bar)
+- FIXED: Vowel key styling changed from blue background (blended into dark/blue themes) to matching regular key background + small indigo dot indicator that works across all themes
+- FIXED: Bonus content flow — if `showBonusContent()` fails (empty pool), auto-starts new game instead of leaving player stuck on completed board
+- IMPROVED: Reveal modal spacing — more breathing room between word, recording, audio controls, and translation sections
 
 ### Build c5d4a032 — Feb 15, 2026
 - FIXED: `updatePhonicsHint()` was inside unclosed `/*` comment block — function never got defined, crashing `startNewGame()` and preventing board/keyboard render

@@ -4774,14 +4774,12 @@ function initControls() {
     initToolsTabbedPanels();
 
     if (quickCustomPanel) {
-        quickCustomPanel.classList.toggle('hidden', !customWordTeacherOnly);
+        quickCustomPanel.classList.remove('hidden');
         quickCustomPanel.classList.toggle('is-open', false);
-        quickCustomPanel.classList.toggle('is-collapsed', customWordTeacherOnly);
-        quickCustomPanel.setAttribute('aria-hidden', customWordTeacherOnly ? 'false' : 'true');
     }
     if (teacherToolsCard) {
-        teacherToolsCard.classList.toggle('hidden', !customWordTeacherOnly);
-        teacherToolsCard.setAttribute('aria-hidden', customWordTeacherOnly ? 'false' : 'true');
+        teacherToolsCard.classList.remove('hidden');
+        teacherToolsCard.setAttribute('aria-hidden', 'false');
     }
 
     const setCustomPanelExpanded = (expanded) => {
@@ -4833,7 +4831,7 @@ function initControls() {
         writeRoundClueVisibilityMode(readRoundClueVisibilityMode());
     }
 
-    if (customWordTeacherOnly && quickCustomWordBody) {
+    if (quickCustomWordBody) {
         if (teacherControlsInTools) {
             setCustomPanelExpanded(true);
             if (quickCustomWordToggleBtn instanceof HTMLButtonElement) {
@@ -4854,9 +4852,8 @@ function initControls() {
     }
 
     if (teacherWordToolsBtn instanceof HTMLButtonElement) {
-        teacherWordToolsBtn.classList.toggle('hidden', !customWordTeacherOnly);
+        teacherWordToolsBtn.classList.remove('hidden');
         teacherWordToolsBtn.addEventListener('click', () => {
-            if (!customWordTeacherOnly) return;
             if (teacherControlsInTools) {
                 if (toolsMenu instanceof HTMLDetailsElement) toolsMenu.open = true;
                 if (toolsTeacherTabBtn instanceof HTMLButtonElement) toolsTeacherTabBtn.click();
@@ -7170,7 +7167,8 @@ function updateFocusPanel() {
     const focusRoundChip = document.getElementById('focus-round-chip');
     if (focusRoundChip) {
         if (selectedPattern === 'all') {
-            focusRoundChip.textContent = 'Hint: Any focus';
+            focusRoundChip.textContent = '';
+            focusRoundChip.classList.add('is-hidden');
         } else if (selectedPattern === 'shuffle') {
             focusRoundChip.textContent = `Hint: ${info.title || 'Mixed review'}`;
         } else if (usesFallback) {
@@ -7228,6 +7226,15 @@ function updateFocusPanel() {
 function updatePhonicsHint() {
     const hintEl = document.getElementById('wq-phonics-hint');
     if (!hintEl) return;
+    
+    // Only show hint when path is "all words" / "shuffle" or teacher list
+    const sel = document.getElementById('pattern-select');
+    const selectedPath = sel ? sel.value : 'shuffle';
+    if (selectedPath !== 'shuffle' && selectedPath !== 'all') {
+        hintEl.textContent = '';
+        return;
+    }
+    
     if (!currentEntry || !currentEntry.phonics) {
         hintEl.textContent = '';
         return;
@@ -8800,9 +8807,16 @@ function closeModal() {
     if (wasGameModalOpen && sessionStorage.getItem('showBonusOnClose') === 'true') {
         sessionStorage.removeItem('showBonusOnClose');
         if (shouldShowBonusContent()) {
-            // Show bonus first; new game starts when bonus is closed
             sessionStorage.setItem('startNewGameAfterBonus', 'true');
-            setTimeout(() => showBonusContent(), 300);
+            setTimeout(() => {
+                showBonusContent();
+                // If bonus modal didn't actually open (empty pool etc), start new game
+                const bonusModal = document.getElementById('bonus-modal');
+                if (!bonusModal || bonusModal.classList.contains('hidden')) {
+                    sessionStorage.removeItem('startNewGameAfterBonus');
+                    if (gameOver) startNewGame();
+                }
+            }, 300);
             return; // Don't start new game yet
         }
     }

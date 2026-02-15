@@ -7942,16 +7942,12 @@ body.word-quest-page .key:not(.correct):not(.present):not(.absent) {
 }
 
 body.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent) {
-    background: linear-gradient(180deg, #d6e6ff 0%, #b6d2ff 100%);
-    border-color: rgba(29, 78, 216, 0.88);
-    color: #0b2f74;
-    font-weight: 860;
-    outline: 2px solid rgba(59, 130, 246, 0.24);
-    outline-offset: -1px;
-    box-shadow:
-        0 4px 0 rgba(96, 165, 250, 0.9),
-        0 0 0 2px rgba(59, 130, 246, 0.26),
-        0 11px 18px rgba(30, 64, 175, 0.24);
+    background: var(--wq-key-bg, linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%)) !important;
+    border-color: var(--wq-key-border, rgba(148, 163, 184, 0.6)) !important;
+    color: var(--wq-key-text, #1e293b) !important;
+    font-weight: 760 !important;
+    outline: none !important;
+    box-shadow: 0 4px 0 rgba(148, 163, 184, 0.68), 0 10px 18px rgba(15, 23, 42, 0.14) !important;
 }
 
 body.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent)::before {
@@ -10111,10 +10107,19 @@ body.word-quest-page .key.present {
     transition: all 0.3s ease !important;
 }
 
-/* Vowel keys - subtle highlight */
-body.word-quest-page .key.vowel:not(.absent):not(.correct):not(.present) {
-    background: rgba(99, 102, 241, 0.08) !important;
-    border-color: rgba(99, 102, 241, 0.15) !important;
+/* Vowel keys - small dot indicator that works on all themes */
+body.word-quest-page .key.vowel:not(.absent):not(.correct):not(.present)::after {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    bottom: 3px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 5px !important;
+    height: 5px !important;
+    border-radius: 50% !important;
+    background: #6366f1 !important;
+    opacity: 0.6 !important;
 }
 
 /* How-to modal - fun & compact */
@@ -10213,4 +10218,34 @@ body.word-quest-page .sentence-preview {
 }
 body.word-quest-page #game-canvas {
     gap: 12px !important;
+}
+
+/* Reveal modal - more breathing room */
+body.word-quest-page .game-modal .modal-content {
+    padding: 16px 20px 14px !important;
+}
+body.word-quest-page .game-modal .modal-audio-controls {
+    margin: 8px 0 4px !important;
+}
+body.word-quest-page .game-modal .auto-read-toggle {
+    margin-top: 6px !important;
+    padding-top: 6px !important;
+    border-top: 1px solid rgba(0,0,0,0.06) !important;
+}
+body.word-quest-page .game-modal .translation-selector {
+    margin-top: 4px !important;
+    padding-top: 4px !important;
+}
+body.word-quest-page .game-modal #reveal-record-section {
+    margin-top: 8px !important;
+    padding-top: 8px !important;
+}
+body.word-quest-page .game-modal .modal-action-row {
+    margin: 6px 0 !important;
+}
+
+/* Ensure play-again is clearly separated */
+body.word-quest-page .game-modal .modal-primary-btn,
+body.word-quest-page .game-modal #play-again-btn {
+    margin-top: 8px !important;
 }
