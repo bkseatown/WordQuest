@@ -5288,13 +5288,6 @@ body.word-quest-page #welcome-modal .welcome-step-count {
   color: #475569;
 }
 
-body.word-quest-page #welcome-modal #start-playing-btn {
-  width: 100%;
-  margin: 0;
-  min-height: 44px;
-  border-radius: 14px;
-}
-
 @media (max-width: 760px) {
   body.word-quest-page #welcome-modal .welcome-mode-grid,
   body.word-quest-page #welcome-modal .welcome-reasoning-row {
@@ -7250,11 +7243,11 @@ body.cs-sentence-caption-off #sentence-preview {
     }
     
     .selected-sound {
-        padding: 8px !important;
+        padding: 8px;
     }
     
     .selected-sound > div:first-child {
-        flex-direction: column !important;
+        flex-direction: column;
         text-align: center;
     }
     
@@ -7264,12 +7257,12 @@ body.cs-sentence-caption-off #sentence-preview {
     }
     
     .phoneme-grid {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
-        gap: 8px !important;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 8px;
     }
     
     #letters-grid {
-        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)) !important;
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
     }
 }
 
@@ -7311,10 +7304,10 @@ body.word-quest-page #game-canvas {
     flex: 1;
     min-height: 0;
     padding-bottom: 10px;
-    max-width: 960px !important;
-    margin-inline: auto !important;
-    width: 100% !important;
-    justify-content: center !important;
+    max-width: 960px;
+    margin-inline: auto;
+    width: 100%;
+    justify-content: center;
 }
 
 body.word-quest-page #game-board {
@@ -7938,7 +7931,7 @@ body.word-quest-page .key:not(.correct):not(.present):not(.absent) {
 
 body.word-quest-page .key.vowel:not(.correct):not(.present):not(.absent) {
     /* Inherit normal key styling - no special background */
-    font-weight: 760 !important;
+    font-weight: 760;
     outline: none !important;
 }
 
@@ -8389,16 +8382,16 @@ body.word-quest-page .quick-custom-word-status {
     body.word-quest-page #game-canvas,
     body.word-quest-page.fit-screen #game-canvas,
     body.word-quest-page.fit-screen-tight #game-canvas {
-        margin: 4px auto 12px !important;
-        padding: 10px 12px 12px !important;
-        gap: 8px !important;
+        margin: 4px auto 12px;
+        padding: 10px 12px 12px;
+        gap: 8px;
     }
 
     body.word-quest-page #keyboard,
     body.word-quest-page.fit-screen #keyboard,
     body.word-quest-page.fit-screen-tight #keyboard {
-        margin-bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
-        padding: 10px 10px calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+        margin-bottom: max(14px, env(safe-area-inset-bottom, 0px));
+        padding: 10px 10px calc(14px + env(safe-area-inset-bottom, 0px));
     }
 }
 
@@ -8450,7 +8443,7 @@ body.word-quest-page {
     --wq-key-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 2px 8px rgba(70, 56, 33, 0.12);
     --wq-key-radius: 16px;
     --wq-panel-radius: 18px;
-    background: var(--wq-page-bg) !important;
+    background: var(--wq-page-bg);
     --theme-grid-dot: rgba(140, 115, 77, 0.14);
     --theme-grid-opacity: 0.16;
     --theme-grid-size: 30px;
@@ -8551,126 +8544,126 @@ body.word-quest-page.cs-hv2-theme-high-contrast {
 }
 
 body.word-quest-page #game-canvas {
-    gap: 18px !important;
-    padding-top: 18px !important;
-    padding-bottom: 18px !important;
-    background: var(--wq-canvas-surface) !important;
-    border-color: var(--wq-panel-border) !important;
-    box-shadow: var(--wq-canvas-shadow) !important;
-    border-radius: var(--wq-panel-radius) !important;
+    gap: 18px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    background: var(--wq-canvas-surface);
+    border-color: var(--wq-panel-border);
+    box-shadow: var(--wq-canvas-shadow);
+    border-radius: var(--wq-panel-radius);
 }
 
 body.word-quest-page #game-canvas::before {
-    background: var(--wq-canvas-glow) !important;
+    background: var(--wq-canvas-glow);
 }
 
 body.word-quest-page #game-canvas::after {
-    background: var(--wq-canvas-accent) !important;
+    background: var(--wq-canvas-accent);
 }
 
 body.word-quest-page .hint-actions {
-    margin-top: 6px !important;
-    margin-bottom: 8px !important;
+    margin-top: 6px;
+    margin-bottom: 8px;
 }
 
 body.word-quest-page #sentence-preview,
 body.word-quest-page .sentence-preview {
-    margin-bottom: 6px !important;
+    margin-bottom: 6px;
 }
 
 body.word-quest-page #game-canvas label,
 body.word-quest-page #game-canvas .show-sentence,
 body.word-quest-page #game-canvas .sentence-toggle {
-    margin: 8px 0 10px !important;
+    margin: 8px 0 10px;
     display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
+    align-items: center;
+    gap: 8px;
 }
 
 body.word-quest-page .controls,
 body.word-quest-page.fit-screen .controls,
 body.word-quest-page.fit-screen-tight .controls {
     display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: flex-end !important;
-    justify-content: flex-start !important;
-    gap: 8px 12px !important;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 8px 12px;
 }
 
 body.word-quest-page .controls .control-group {
     display: flex !important;
-    flex-direction: column !important;
-    min-width: max-content !important;
+    flex-direction: column;
+    min-width: max-content;
 }
 
 body.word-quest-page .wq-theme-control {
-    min-width: 140px !important;
+    min-width: 140px;
 }
 
 body.word-quest-page .wq-theme-control label {
     display: block !important;
-    opacity: 1 !important;
+    opacity: 1;
 }
 
 body.word-quest-page .wq-theme-select {
-    min-width: 140px !important;
-    min-height: 38px !important;
-    border-radius: 11px !important;
-    border-color: rgba(78, 91, 210, 0.42) !important;
-    background: rgba(255, 255, 255, 0.92) !important;
-    color: #1f2937 !important;
-    font-weight: 800 !important;
+    min-width: 140px;
+    min-height: 38px;
+    border-radius: 11px;
+    border-color: rgba(78, 91, 210, 0.42);
+    background: rgba(255, 255, 255, 0.92);
+    color: #1f2937;
+    font-weight: 800;
 }
 
 body.word-quest-page #keyboard,
 body.word-quest-page.fit-screen #keyboard,
 body.word-quest-page.fit-screen-tight #keyboard {
-    min-height: 0 !important;
-    width: min(100%, 860px) !important;
-    max-width: min(100%, 860px) !important;
-    margin-inline: auto !important;
+    min-height: 0;
+    width: min(100%, 860px);
+    max-width: min(100%, 860px);
+    margin-inline: auto;
     display: flex !important;
-    flex-direction: column !important;
-    padding: 8px !important;
-    border-radius: var(--wq-panel-radius) !important;
-    background: var(--wq-keyboard-surface) !important;
-    border: 1px solid var(--wq-panel-border) !important;
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1) !important;
+    flex-direction: column;
+    padding: 8px;
+    border-radius: var(--wq-panel-radius);
+    background: var(--wq-keyboard-surface);
+    border: 1px solid var(--wq-panel-border);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(6px);
-    gap: 10px !important;
+    gap: 10px;
 }
 
 body.word-quest-page .keyboard-row,
 body.word-quest-page.fit-screen .keyboard-row,
 body.word-quest-page.fit-screen-tight .keyboard-row {
-    width: 100% !important;
-    justify-content: center !important;
-    gap: 8px !important;
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
 }
 
 body.word-quest-page #keyboard button:not(.correct):not(.present):not(.absent),
 body.word-quest-page #keyboard .key:not(.correct):not(.present):not(.absent),
 body.word-quest-page #keyboard [data-key]:not(.correct):not(.present):not(.absent) {
-    min-height: 0 !important;
-    min-width: 52px !important;
-    max-width: 74px !important;
-    padding: 10px 12px !important;
-    font-size: 1.1rem !important;
-    font-weight: 800 !important;
-    border-radius: var(--wq-key-radius) !important;
-    background: var(--wq-key-bg) !important;
-    border-color: var(--wq-key-border) !important;
-    color: var(--wq-key-text) !important;
-    box-shadow: var(--wq-key-shadow) !important;
+    min-height: 0;
+    min-width: 52px;
+    max-width: 74px;
+    padding: 10px 12px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    border-radius: var(--wq-key-radius);
+    background: var(--wq-key-bg);
+    border-color: var(--wq-key-border);
+    color: var(--wq-key-text);
+    box-shadow: var(--wq-key-shadow);
 }
 
 body.word-quest-page #keyboard .key.wide,
 body.word-quest-page.fit-screen #keyboard .key.wide,
 body.word-quest-page.fit-screen-tight #keyboard .key.wide {
-    flex: 1.3 1 0 !important;
-    min-width: 92px !important;
-    max-width: 126px !important;
-    font-size: 0.95rem !important;
+    flex: 1.3 1 0;
+    min-width: 92px;
+    max-width: 126px;
+    font-size: 0.95rem;
 }
 
 /* Vowel bg disabled — use dot indicator instead (see bottom of file) */
@@ -8684,33 +8677,33 @@ body.word-quest-page #keyboard .key.vowel:not(.correct):not(.present):not(.absen
 body.word-quest-page #game-board,
 body.word-quest-page.fit-screen #game-board,
 body.word-quest-page.fit-screen-tight #game-board {
-    padding: 8px !important;
-    border-radius: var(--wq-panel-radius) !important;
-    background: var(--wq-board-surface) !important;
-    box-shadow: var(--wq-board-shadow) !important;
+    padding: 8px;
+    border-radius: var(--wq-panel-radius);
+    background: var(--wq-board-surface);
+    box-shadow: var(--wq-board-shadow);
 }
 
 body.word-quest-page #game-board .tile:not(.correct):not(.present):not(.absent):not(.row-active),
 body.word-quest-page #game-board .cell:not(.correct):not(.present):not(.absent),
 body.word-quest-page #game-board [data-tile]:not(.correct):not(.present):not(.absent) {
-    background: var(--wq-tile-bg) !important;
-    border-color: var(--wq-tile-border) !important;
-    color: var(--wq-tile-text) !important;
+    background: var(--wq-tile-bg);
+    border-color: var(--wq-tile-border);
+    color: var(--wq-tile-text);
 }
 
 @media (max-width: 1100px) {
     body.word-quest-page #keyboard,
     body.word-quest-page.fit-screen #keyboard,
     body.word-quest-page.fit-screen-tight #keyboard {
-        min-height: 0 !important;
-        padding: 14px !important;
+        min-height: 0;
+        padding: 14px;
     }
 
     body.word-quest-page #keyboard .key.wide,
     body.word-quest-page.fit-screen #keyboard .key.wide,
     body.word-quest-page.fit-screen-tight #keyboard .key.wide {
-        min-width: 80px !important;
-        max-width: 112px !important;
+        min-width: 80px;
+        max-width: 112px;
     }
 }
 
@@ -8718,9 +8711,9 @@ body.word-quest-page #game-board [data-tile]:not(.correct):not(.present):not(.ab
     body.word-quest-page #keyboard button:not(.correct):not(.present):not(.absent),
     body.word-quest-page #keyboard .key:not(.correct):not(.present):not(.absent),
     body.word-quest-page #keyboard [data-key]:not(.correct):not(.present):not(.absent) {
-        min-height: 0 !important;
-        min-width: 56px !important;
-        max-width: 78px !important;
+        min-height: 0;
+        min-width: 56px;
+        max-width: 78px;
     }
 }
 
@@ -8728,24 +8721,24 @@ body.word-quest-page #game-board [data-tile]:not(.correct):not(.present):not(.ab
     body.word-quest-page #keyboard,
     body.word-quest-page.fit-screen #keyboard,
     body.word-quest-page.fit-screen-tight #keyboard {
-        min-height: 0 !important;
-        padding: 12px !important;
+        min-height: 0;
+        padding: 12px;
     }
 
     body.word-quest-page #keyboard button:not(.correct):not(.present):not(.absent),
     body.word-quest-page #keyboard .key:not(.correct):not(.present):not(.absent),
     body.word-quest-page #keyboard [data-key]:not(.correct):not(.present):not(.absent) {
-        min-height: 0 !important;
-        min-width: 34px !important;
-        max-width: 56px !important;
-        font-size: 0.92rem !important;
+        min-height: 0;
+        min-width: 34px;
+        max-width: 56px;
+        font-size: 0.92rem;
     }
 
     body.word-quest-page #keyboard .key.wide,
     body.word-quest-page.fit-screen #keyboard .key.wide,
     body.word-quest-page.fit-screen-tight #keyboard .key.wide {
-        min-width: 66px !important;
-        max-width: 98px !important;
+        min-width: 66px;
+        max-width: 98px;
     }
 }
 
@@ -8795,7 +8788,7 @@ body.word-quest-page.cs-hv2-theme-calm {
     --wq-keyboard-surface: rgba(236, 245, 241, 0.74);
     --wq-key-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(237, 245, 241, 0.95) 100%);
     --wq-key-border: rgba(112, 136, 133, 0.4);
-    background: linear-gradient(180deg, #f2f6f7 0%, #ecf2ed 42%, #f7f4ec 100%) !important;
+    background: linear-gradient(180deg, #f2f6f7 0%, #ecf2ed 42%, #f7f4ec 100%);
 }
 
 body.word-quest-page.cs-hv2-theme-professional {
@@ -8812,7 +8805,7 @@ body.word-quest-page.cs-hv2-theme-professional {
     --wq-key-border: rgba(84, 112, 158, 0.42);
     --wq-key-radius: 12px;
     --wq-panel-radius: 12px;
-    background: linear-gradient(180deg, #eaf0f8 0%, #dfe8f4 54%, #d8e2f1 100%) !important;
+    background: linear-gradient(180deg, #eaf0f8 0%, #dfe8f4 54%, #d8e2f1 100%);
 }
 
 body.word-quest-page.cs-hv2-theme-playful {
@@ -8832,7 +8825,7 @@ body.word-quest-page.cs-hv2-theme-playful {
     --wq-key-text: #1f2a44;
     --wq-key-radius: 16px;
     --wq-panel-radius: 18px;
-    background: linear-gradient(180deg, #fff9ef 0%, #fff1ef 40%, #eef4ff 100%) !important;
+    background: linear-gradient(180deg, #fff9ef 0%, #fff1ef 40%, #eef4ff 100%);
 }
 
 body.word-quest-page.cs-hv2-theme-high-contrast {
@@ -8843,11 +8836,11 @@ body.word-quest-page.cs-hv2-theme-high-contrast {
 body.word-quest-page #game-canvas,
 body.word-quest-page.fit-screen #game-canvas,
 body.word-quest-page.fit-screen-tight #game-canvas {
-    max-width: min(100%, 980px) !important;
-    padding: 6px 12px 4px !important;
-    gap: 6px !important;
-    isolation: isolate !important;
-    overflow: visible !important;
+    max-width: min(100%, 980px);
+    padding: 6px 12px 4px;
+    gap: 6px;
+    isolation: isolate;
+    overflow: visible;
 }
 
 body.word-quest-page #sentence-preview.hidden,
@@ -8855,90 +8848,90 @@ body.word-quest-page .sentence-preview.hidden,
 body.word-quest-page #sentence-preview:empty,
 body.word-quest-page .sentence-preview:empty {
     display: none !important;
-    padding: 0 !important;
-    border: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    min-height: 0 !important;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    min-height: 0;
 }
 
 body.word-quest-page #sentence-preview:not(.has-caption),
 body.word-quest-page .sentence-preview:not(.has-caption) {
     display: none !important;
-    padding: 0 !important;
-    border: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
 }
 
 body.word-quest-page #game-board,
 body.word-quest-page.fit-screen #game-board,
 body.word-quest-page.fit-screen-tight #game-board {
-    max-width: min(100%, 720px) !important;
-    margin: 0 auto !important;
-    padding: 10px 14px !important;
-    gap: 8px !important;
+    max-width: min(100%, 720px);
+    margin: 0 auto;
+    padding: 10px 14px;
+    gap: 8px;
 }
 
 body.word-quest-page #game-board .tile,
 body.word-quest-page #game-board .cell,
 body.word-quest-page #game-board [data-tile] {
-    width: min(76px, calc((100vh - 320px) / 7)) !important;
-    height: min(60px, calc((100vh - 320px) / 8.5)) !important;
-    font-size: min(1.6rem, calc((100vh - 320px) / 15)) !important;
-    border-radius: 12px !important;
+    width: min(76px, calc((100vh - 320px) / 7));
+    height: min(60px, calc((100vh - 320px) / 8.5));
+    font-size: min(1.6rem, calc((100vh - 320px) / 15));
+    border-radius: 12px;
 }
 
 body.word-quest-page #game-board {
-    max-width: 720px !important;
-    margin-inline: auto !important;
-    gap: 8px !important;
+    max-width: 720px;
+    margin-inline: auto;
+    gap: 8px;
 }
 body.word-quest-page #game-board .board-row,
 body.word-quest-page #game-board .row {
-    gap: 8px !important;
-    justify-content: center !important;
+    gap: 8px;
+    justify-content: center;
 }
 
 body.word-quest-page #keyboard,
 body.word-quest-page.fit-screen #keyboard,
 body.word-quest-page.fit-screen-tight #keyboard {
-    width: min(100%, 900px) !important;
-    max-width: min(100%, 900px) !important;
-    min-height: 0 !important;
-    margin-inline: auto !important;
-    padding: 6px 10px !important;
-    gap: 5px !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    width: min(100%, 900px);
+    max-width: min(100%, 900px);
+    min-height: 0;
+    margin-inline: auto;
+    padding: 6px 10px;
+    gap: 5px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 body.word-quest-page .keyboard-row,
 body.word-quest-page.fit-screen .keyboard-row,
 body.word-quest-page.fit-screen-tight .keyboard-row {
-    gap: 6px !important;
+    gap: 6px;
 }
 
 body.word-quest-page #keyboard button:not(.correct):not(.present):not(.absent),
 body.word-quest-page #keyboard .key:not(.correct):not(.present):not(.absent),
 body.word-quest-page #keyboard [data-key]:not(.correct):not(.present):not(.absent) {
-    flex: 1 1 clamp(36px, 4vw, 48px) !important;
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: 56px !important;
-    min-height: min(40px, calc((100vh - 340px) / 16)) !important;
-    padding: 4px 2px !important;
-    font-size: min(1rem, calc((100vh - 340px) / 24)) !important;
+    flex: 1 1 clamp(36px, 4vw, 48px);
+    width: auto;
+    min-width: 0;
+    max-width: 56px;
+    min-height: min(40px, calc((100vh - 340px) / 16));
+    padding: 4px 2px;
+    font-size: min(1rem, calc((100vh - 340px) / 24));
 }
 
 body.word-quest-page #keyboard .key.wide,
 body.word-quest-page.fit-screen #keyboard .key.wide,
 body.word-quest-page.fit-screen-tight #keyboard .key.wide {
-    flex: 1.6 1 clamp(64px, 8vw, 90px) !important;
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: 100px !important;
-    font-size: min(0.82rem, calc((100vh - 340px) / 30)) !important;
+    flex: 1.6 1 clamp(64px, 8vw, 90px);
+    width: auto;
+    min-width: 0;
+    max-width: 100px;
+    font-size: min(0.82rem, calc((100vh - 340px) / 30));
 }
 
 /* Sentence text checkbox - visible on all themes */
@@ -8946,10 +8939,10 @@ body.word-quest-page .cs-sentence-caption-toggle span,
 body.word-quest-page .cs-sentence-caption-toggle-wrap,
 body.word-quest-page .cs-sentence-caption-toggle-wrap span,
 body.word-quest-page .cs-sentence-caption-toggle-wrap label {
-    color: #334155 !important;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6) !important;
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
+    color: #334155;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 /* Dark theme overrides for sentence text */
 body.word-quest-page[data-wq-scene*="hero-"] .cs-sentence-caption-toggle span,
@@ -8961,59 +8954,59 @@ body.word-quest-page[data-wq-scene="slate-steel"] .cs-sentence-caption-toggle-wr
 body.word-quest-page[data-wq-scene="mocha-mousse"] .cs-sentence-caption-toggle span,
 body.word-quest-page[data-wq-scene="mocha-mousse"] .cs-sentence-caption-toggle-wrap span,
 body.word-quest-page[data-wq-scene="mocha-mousse"] .cs-sentence-caption-toggle-wrap label {
-    color: rgba(255, 255, 255, 0.9) !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* Reduce header headroom */
 body.word-quest-page header {
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: visible !important;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
 }
 body.word-quest-page .header-row {
     display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    padding: 4px 10px !important;
-    flex-wrap: nowrap !important;
-    overflow: visible !important;
-    min-height: 0 !important;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    flex-wrap: nowrap;
+    overflow: visible;
+    min-height: 0;
 }
 body.word-quest-page .header-row h1 {
-    font-size: 0.9rem !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: nowrap !important;
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
 }
 body.word-quest-page .header-row h1 a {
-    font-size: 0.9rem !important;
-    text-decoration: underline !important;
+    font-size: 0.9rem;
+    text-decoration: underline;
 }
 body.word-quest-page .header-row select {
-    max-width: 180px !important;
-    font-size: 0.75rem !important;
-    padding: 4px 6px !important;
+    max-width: 180px;
+    font-size: 0.75rem;
+    padding: 4px 6px;
 }
 body.word-quest-page .header-row .wq-play-mode-btn {
-    padding: 4px 10px !important;
-    font-size: 0.72rem !important;
+    padding: 4px 10px;
+    font-size: 0.72rem;
 }
 body.word-quest-page .header-row .new-round-btn {
-    padding: 4px 12px !important;
-    font-size: 0.75rem !important;
-    white-space: nowrap !important;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    white-space: nowrap;
 }
 body.word-quest-page .header-row .wq-tools-toggle {
-    padding: 4px 12px !important;
-    font-size: 0.75rem !important;
-    white-space: nowrap !important;
-    cursor: pointer !important;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    cursor: pointer;
 }
 
 /* === Tools dropdown overlay === */
 body.word-quest-page .wq-tools-menu {
-    position: relative !important;
+    position: relative;
 }
 body.word-quest-page .wq-tools-menu.is-open > .wq-tools-body {
     display: block !important;
@@ -9023,62 +9016,62 @@ body.word-quest-page .wq-tools-menu:not(.is-open) > .wq-tools-body {
 }
 body.word-quest-page .wq-tools-tabs {
     display: flex !important;
-    gap: 2px !important;
-    background: rgba(0, 0, 0, 0.06) !important;
-    border-radius: 8px !important;
-    padding: 3px !important;
-    margin-bottom: 8px !important;
+    gap: 2px;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    padding: 3px;
+    margin-bottom: 8px;
 }
 body.word-quest-page .wq-tools-tab {
-    flex: 1 !important;
-    padding: 6px 8px !important;
-    font-size: 0.72rem !important;
-    font-weight: 600 !important;
-    border: none !important;
-    border-radius: 6px !important;
-    background: transparent !important;
-    color: #475569 !important;
-    cursor: pointer !important;
-    white-space: nowrap !important;
-    transition: background 0.15s, color 0.15s !important;
+    flex: 1;
+    padding: 6px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #475569;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
 }
 body.word-quest-page .wq-tools-tab:hover {
-    background: rgba(0, 0, 0, 0.06) !important;
+    background: rgba(0, 0, 0, 0.06);
 }
 body.word-quest-page .wq-tools-tab.is-active {
-    background: #fff !important;
-    color: #1e293b !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    background: #fff;
+    color: #1e293b;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 body.word-quest-page .wq-tools-panel {
-    color: #1e293b !important;
-    font-size: 0.82rem !important;
+    color: #1e293b;
+    font-size: 0.82rem;
 }
 body.word-quest-page .wq-tools-panel.hidden {
     display: none !important;
 }
 body.word-quest-page .wq-tools-subcard {
-    padding: 8px !important;
-    background: rgba(0, 0, 0, 0.03) !important;
-    border-radius: 8px !important;
-    margin-bottom: 6px !important;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+    margin-bottom: 6px;
 }
 body.word-quest-page .wq-tools-field {
     display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 8px !important;
-    padding: 4px 0 !important;
-    font-size: 0.8rem !important;
-    color: #334155 !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.8rem;
+    color: #334155;
 }
 body.word-quest-page .wq-tools-field select {
-    font-size: 0.78rem !important;
-    padding: 4px 6px !important;
-    border-radius: 6px !important;
-    border: 1px solid rgba(0, 0, 0, 0.15) !important;
-    background: #fff !important;
-    color: #1e293b !important;
+    font-size: 0.78rem;
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: #fff;
+    color: #1e293b;
 }
 
 /* === ALL text visible on dark themes === */
@@ -9089,7 +9082,7 @@ body.word-quest-page[data-wq-scene="hero-wonder"],
 body.word-quest-page[data-wq-scene="slate-steel"],
 body.word-quest-page[data-wq-scene="mocha-mousse"],
 body.word-quest-page[data-wq-scene="pro-midnight"] {
-    color: rgba(255, 255, 255, 0.92) !important;
+    color: rgba(255, 255, 255, 0.92);
 }
 body.word-quest-page[data-wq-scene="hero-iron"] .header-row,
 body.word-quest-page[data-wq-scene="hero-shield"] .header-row,
@@ -9098,7 +9091,7 @@ body.word-quest-page[data-wq-scene="hero-wonder"] .header-row,
 body.word-quest-page[data-wq-scene="slate-steel"] .header-row,
 body.word-quest-page[data-wq-scene="mocha-mousse"] .header-row,
 body.word-quest-page[data-wq-scene="pro-midnight"] .header-row {
-    color: rgba(255, 255, 255, 0.92) !important;
+    color: rgba(255, 255, 255, 0.92);
 }
 body.word-quest-page[data-wq-scene="hero-iron"] .header-row h1 a,
 body.word-quest-page[data-wq-scene="hero-shield"] .header-row h1 a,
@@ -9107,7 +9100,7 @@ body.word-quest-page[data-wq-scene="hero-wonder"] .header-row h1 a,
 body.word-quest-page[data-wq-scene="slate-steel"] .header-row h1 a,
 body.word-quest-page[data-wq-scene="mocha-mousse"] .header-row h1 a,
 body.word-quest-page[data-wq-scene="pro-midnight"] .header-row h1 a {
-    color: rgba(255, 255, 255, 0.95) !important;
+    color: rgba(255, 255, 255, 0.95);
 }
 body.word-quest-page[data-wq-scene="hero-iron"] .header-row .link-btn,
 body.word-quest-page[data-wq-scene="hero-shield"] .header-row .link-btn,
@@ -9116,7 +9109,7 @@ body.word-quest-page[data-wq-scene="hero-wonder"] .header-row .link-btn,
 body.word-quest-page[data-wq-scene="slate-steel"] .header-row .link-btn,
 body.word-quest-page[data-wq-scene="mocha-mousse"] .header-row .link-btn,
 body.word-quest-page[data-wq-scene="pro-midnight"] .header-row .link-btn {
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: rgba(255, 255, 255, 0.85);
 }
 /* Hint text and focus chip visible on dark */
 body.word-quest-page[data-wq-scene="hero-iron"] .focus-round-chip,
@@ -9126,12 +9119,12 @@ body.word-quest-page[data-wq-scene="hero-wonder"] .focus-round-chip,
 body.word-quest-page[data-wq-scene="slate-steel"] .focus-round-chip,
 body.word-quest-page[data-wq-scene="mocha-mousse"] .focus-round-chip,
 body.word-quest-page[data-wq-scene="pro-midnight"] .focus-round-chip {
-    color: rgba(255, 255, 255, 0.9) !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 body.word-quest-page .header-row .link-btn {
-    padding: 4px 8px !important;
-    font-size: 0.72rem !important;
+    padding: 4px 8px;
+    font-size: 0.72rem;
 }
 body.word-quest-page .controls {
     display: none !important;
@@ -9140,77 +9133,77 @@ body.word-quest-page .header-top {
     display: none !important;
 }
 body.word-quest-page .focus-round-chip {
-    padding: 0 10px 2px !important;
-    font-size: 0.78rem !important;
+    padding: 0 10px 2px;
+    font-size: 0.78rem;
 }
 body.word-quest-page .hint-actions {
-    padding: 0 !important;
-    margin: 0 !important;
+    padding: 0;
+    margin: 0;
 }
 body.word-quest-page .hint-actions .hint-btn,
 body.word-quest-page .hint-actions .hint-text {
-    padding: 1px 6px !important;
-    font-size: 0.78rem !important;
-    line-height: 1.3 !important;
+    padding: 1px 6px;
+    font-size: 0.78rem;
+    line-height: 1.3;
 }
 
 @media (max-width: 1024px) {
     body.word-quest-page #game-canvas,
     body.word-quest-page.fit-screen #game-canvas,
     body.word-quest-page.fit-screen-tight #game-canvas {
-        max-width: min(100%, 900px) !important;
-        padding: 4px 10px 4px !important;
-        gap: 6px !important;
+        max-width: min(100%, 900px);
+        padding: 4px 10px 4px;
+        gap: 6px;
     }
 
     body.word-quest-page #game-board,
     body.word-quest-page.fit-screen #game-board,
     body.word-quest-page.fit-screen-tight #game-board {
-        max-width: min(100%, 520px) !important;
-        padding: 8px 10px !important;
-        gap: 6px !important;
+        max-width: min(100%, 520px);
+        padding: 8px 10px;
+        gap: 6px;
     }
 
     body.word-quest-page #game-board .tile,
     body.word-quest-page #game-board .cell,
     body.word-quest-page #game-board [data-tile] {
-        width: min(56px, calc((100vh - 340px) / 7.5)) !important;
-        height: min(48px, calc((100vh - 340px) / 9)) !important;
-        font-size: min(1.3rem, calc((100vh - 340px) / 18)) !important;
+        width: min(56px, calc((100vh - 340px) / 7.5));
+        height: min(48px, calc((100vh - 340px) / 9));
+        font-size: min(1.3rem, calc((100vh - 340px) / 18));
     }
 
     body.word-quest-page #keyboard,
     body.word-quest-page.fit-screen #keyboard,
     body.word-quest-page.fit-screen-tight #keyboard {
-        min-height: 0 !important;
-        width: min(100%, 700px) !important;
-        max-width: min(100%, 700px) !important;
-        padding: 5px 8px !important;
-        gap: 4px !important;
+        min-height: 0;
+        width: min(100%, 700px);
+        max-width: min(100%, 700px);
+        padding: 5px 8px;
+        gap: 4px;
     }
 }
 
 @media (max-height: 800px) and (min-width: 760px) {
     body.word-quest-page #game-canvas {
-        gap: 4px !important;
-        padding: 4px 8px 2px !important;
+        gap: 4px;
+        padding: 4px 8px 2px;
     }
     body.word-quest-page #game-board {
-        padding: 6px 8px !important;
-        gap: 5px !important;
+        padding: 6px 8px;
+        gap: 5px;
     }
     body.word-quest-page #game-board .tile,
     body.word-quest-page #game-board .cell,
     body.word-quest-page #game-board [data-tile] {
-        width: min(52px, calc((100vh - 320px) / 7.5)) !important;
-        height: min(44px, calc((100vh - 320px) / 9)) !important;
+        width: min(52px, calc((100vh - 320px) / 7.5));
+        height: min(44px, calc((100vh - 320px) / 9));
     }
     body.word-quest-page #keyboard {
-        padding: 4px 6px !important;
-        gap: 3px !important;
+        padding: 4px 6px;
+        gap: 3px;
     }
     body.word-quest-page .keyboard-row {
-        gap: 4px !important;
+        gap: 4px;
     }
 }
 
@@ -9543,9 +9536,9 @@ body.word-quest-page[data-wq-scene="hero-wonder"] .tile:not(.correct):not(.prese
 body.word-quest-page[data-wq-scene="slate-steel"] .tile:not(.correct):not(.present):not(.absent),
 body.word-quest-page[data-wq-scene="mocha-mousse"] .tile:not(.correct):not(.present):not(.absent),
 body.word-quest-page[data-wq-scene="professional-midnight"] .tile:not(.correct):not(.present):not(.absent) {
-    background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(240,242,250,0.92) 100%) !important;
-    border-color: rgba(255,255,255,0.35) !important;
-    color: #1a1a2e !important;
+    background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(240,242,250,0.92) 100%);
+    border-color: rgba(255,255,255,0.35);
+    color: #1a1a2e;
 }
 
 /* === Hide voice picker button (Ava only for now) === */
@@ -9561,64 +9554,64 @@ body.word-quest-page .control-group label[aria-hidden="true"] {
 /* === HEIGHT-RESPONSIVE: prevent keyboard overflow on short screens === */
 @media (max-height: 860px) {
     body.word-quest-page #game-canvas {
-        gap: 4px !important;
-        padding: 4px 10px 2px !important;
+        gap: 4px;
+        padding: 4px 10px 2px;
     }
     body.word-quest-page #game-board {
-        padding: 6px 10px !important;
-        gap: 6px !important;
+        padding: 6px 10px;
+        gap: 6px;
     }
     body.word-quest-page #game-board .tile,
     body.word-quest-page #game-board .cell,
     body.word-quest-page #game-board [data-tile] {
-        width: min(58px, calc((100vh - 340px) / 7.5)) !important;
-        height: min(48px, calc((100vh - 340px) / 9)) !important;
-        font-size: min(1.3rem, calc((100vh - 340px) / 18)) !important;
+        width: min(58px, calc((100vh - 340px) / 7.5));
+        height: min(48px, calc((100vh - 340px) / 9));
+        font-size: min(1.3rem, calc((100vh - 340px) / 18));
     }
     body.word-quest-page #keyboard button,
     body.word-quest-page #keyboard .key,
     body.word-quest-page #keyboard [data-key] {
-        min-height: min(36px, calc((100vh - 340px) / 16)) !important;
+        min-height: min(36px, calc((100vh - 340px) / 16));
     }
     body.word-quest-page header {
-        padding: 2px 10px 0 !important;
+        padding: 2px 10px 0;
     }
 }
 
 @media (max-height: 740px) {
     body.word-quest-page #game-canvas {
-        gap: 2px !important;
-        padding: 2px 8px 0 !important;
+        gap: 2px;
+        padding: 2px 8px 0;
     }
     body.word-quest-page #game-board {
-        padding: 4px 8px !important;
-        gap: 4px !important;
+        padding: 4px 8px;
+        gap: 4px;
     }
     body.word-quest-page #game-board .tile,
     body.word-quest-page #game-board .cell,
     body.word-quest-page #game-board [data-tile] {
-        width: min(48px, calc((100vh - 300px) / 7.5)) !important;
-        height: min(38px, calc((100vh - 300px) / 9)) !important;
-        font-size: min(1.1rem, calc((100vh - 300px) / 18)) !important;
+        width: min(48px, calc((100vh - 300px) / 7.5));
+        height: min(38px, calc((100vh - 300px) / 9));
+        font-size: min(1.1rem, calc((100vh - 300px) / 18));
     }
     body.word-quest-page #keyboard {
-        padding: 3px 6px !important;
-        gap: 2px !important;
+        padding: 3px 6px;
+        gap: 2px;
     }
     body.word-quest-page #keyboard button,
     body.word-quest-page #keyboard .key,
     body.word-quest-page #keyboard [data-key] {
-        min-height: min(28px, calc((100vh - 300px) / 16)) !important;
+        min-height: min(28px, calc((100vh - 300px) / 16));
     }
     body.word-quest-page .keyboard-row {
-        gap: 3px !important;
+        gap: 3px;
     }
     body.word-quest-page header {
-        padding: 1px 8px 0 !important;
+        padding: 1px 8px 0;
     }
     body.word-quest-page .hint-actions .hint-btn {
-        padding: 0 4px !important;
-        font-size: 0.72rem !important;
+        padding: 0 4px;
+        font-size: 0.72rem;
     }
 }
 
@@ -9630,8 +9623,8 @@ body.word-quest-page[data-wq-scene="hero-wonder"] #game-board .tile,
 body.word-quest-page[data-wq-scene="slate-steel"] #game-board .tile,
 body.word-quest-page[data-wq-scene="mocha-mousse"] #game-board .tile,
 body.word-quest-page[data-wq-scene="pro-midnight"] #game-board .tile {
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.15), 0 2px 6px rgba(0, 0, 0, 0.25) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.15), 0 2px 6px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 /* Dark theme keys: subtle border for definition */
@@ -9649,7 +9642,7 @@ body.word-quest-page[data-wq-scene="mocha-mousse"] #keyboard .key,
 body.word-quest-page[data-wq-scene="mocha-mousse"] #keyboard button,
 body.word-quest-page[data-wq-scene="pro-midnight"] #keyboard .key,
 body.word-quest-page[data-wq-scene="pro-midnight"] #keyboard button {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 /* TRANSLATION TEXT - explicit styling to ensure visibility */
@@ -9689,75 +9682,75 @@ body.word-quest-page[data-wq-scene="pro-midnight"] #keyboard button {
 
 /* ===== Reveal Modal — compact, no-scroll layout ===== */
 body.word-quest-page .game-modal {
-    max-height: 92vh !important;
-    padding: 16px 20px !important;
-    max-width: 460px !important;
+    max-height: 92vh;
+    padding: 16px 20px;
+    max-width: 460px;
 }
 body.word-quest-page .game-modal .modal-content {
     display: flex !important;
-    flex-direction: column !important;
-    gap: 6px !important;
+    flex-direction: column;
+    gap: 6px;
 }
 body.word-quest-page .game-modal #modal-title {
-    font-size: 1.1rem !important;
-    margin: 0 !important;
+    font-size: 1.1rem;
+    margin: 0;
 }
 body.word-quest-page .game-modal #modal-word {
-    font-size: clamp(1.4rem, 4vw, 2rem) !important;
-    margin: 2px 0 !important;
-    letter-spacing: 0.08em !important;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    margin: 2px 0;
+    letter-spacing: 0.08em;
 }
 body.word-quest-page .game-modal #modal-def {
-    font-size: 0.88rem !important;
-    line-height: 1.4 !important;
-    margin: 0 !important;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    margin: 0;
 }
 body.word-quest-page .game-modal #modal-sentence {
-    font-size: 0.85rem !important;
-    line-height: 1.4 !important;
-    margin: 0 !important;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin: 0;
 }
 body.word-quest-page .game-modal .modal-action-row {
-    margin-top: 6px !important;
-    gap: 6px !important;
+    margin-top: 6px;
+    gap: 6px;
 }
 body.word-quest-page .game-modal .modal-audio-btn {
-    padding: 5px 10px !important;
-    font-size: 0.78rem !important;
+    padding: 5px 10px;
+    font-size: 0.78rem;
 }
 body.word-quest-page .game-modal .primary-btn {
-    padding: 8px 16px !important;
-    font-size: 0.85rem !important;
+    padding: 8px 16px;
+    font-size: 0.85rem;
 }
 
 /* Translation section — compact, no border overlap */
 body.word-quest-page .game-modal .translation-compact {
-    margin-top: 8px !important;
-    border-top: 1px solid #e5e7eb !important;
-    padding-top: 6px !important;
+    margin-top: 8px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 6px;
 }
 body.word-quest-page .game-modal .translation-toggle {
-    font-size: 0.8rem !important;
+    font-size: 0.8rem;
 }
 body.word-quest-page .game-modal .translation-display {
-    background: #f8fafb !important;
-    border-left: 3px solid #a5b4fc !important;
-    border-radius: 6px !important;
-    padding: 6px 10px !important;
-    margin: 4px 0 !important;
+    background: #f8fafb;
+    border-left: 3px solid #a5b4fc;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin: 4px 0;
 }
 body.word-quest-page .game-modal #translated-def,
 body.word-quest-page .game-modal #translated-sentence {
-    font-size: 0.82rem !important;
-    line-height: 1.35 !important;
+    font-size: 0.82rem;
+    line-height: 1.35;
 }
 body.word-quest-page .game-modal .translation-audio-row {
-    gap: 4px !important;
-    padding: 4px 0 !important;
+    gap: 4px;
+    padding: 4px 0;
 }
 body.word-quest-page .game-modal .translation-audio-row button {
-    padding: 3px 8px !important;
-    font-size: 0.72rem !important;
+    padding: 3px 8px;
+    font-size: 0.72rem;
 }
 
 /* Recording section in reveal modal */
@@ -9791,55 +9784,55 @@ body.word-quest-page .game-modal .translation-audio-row button {
 
 /* Bonus modal compact */
 body.word-quest-page .bonus-modal {
-    max-width: 400px !important;
-    padding: 16px 20px !important;
+    max-width: 400px;
+    padding: 16px 20px;
 }
 body.word-quest-page .bonus-emoji {
-    font-size: 2rem !important;
-    margin-bottom: 4px !important;
+    font-size: 2rem;
+    margin-bottom: 4px;
 }
 body.word-quest-page .bonus-title {
-    font-size: 1rem !important;
-    margin-bottom: 6px !important;
+    font-size: 1rem;
+    margin-bottom: 6px;
 }
 body.word-quest-page .bonus-text {
-    font-size: 0.88rem !important;
-    line-height: 1.4 !important;
+    font-size: 0.88rem;
+    line-height: 1.4;
 }
 body.word-quest-page .bonus-actions {
-    margin-top: 8px !important;
-    gap: 6px !important;
+    margin-top: 8px;
+    gap: 6px;
 }
 
 /* Clean up translation section borders in reveal modal */
 body.word-quest-page .game-modal .translation-selector {
-    border: none !important;
-    outline: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
 }
 body.word-quest-page .game-modal .translation-selector select {
-    outline: 1px solid #d1d5db !important;
-    outline-offset: 0 !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: 10px !important;
-    padding: 6px 10px !important;
-    font-size: 0.85rem !important;
-    width: 100% !important;
-    background: #fff !important;
+    outline: 1px solid #d1d5db;
+    outline-offset: 0;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    width: 100%;
+    background: #fff;
 }
 body.word-quest-page .game-modal .translation-selector select:focus {
-    outline: 2px solid #818cf8 !important;
-    outline-offset: -1px !important;
-    border-color: #818cf8 !important;
+    outline: 2px solid #818cf8;
+    outline-offset: -1px;
+    border-color: #818cf8;
 }
 body.word-quest-page .game-modal .translation-selector label {
-    font-size: 0.78rem !important;
-    color: #9ca3af !important;
+    font-size: 0.78rem;
+    color: #9ca3af;
 }
 body.word-quest-page .game-modal .translation-pin {
-    font-size: 0.75rem !important;
-    color: #9ca3af !important;
+    font-size: 0.75rem;
+    color: #9ca3af;
 }
 
 /* ===== Build e9f6a745+ Polish Fixes ===== */
@@ -9850,197 +9843,197 @@ body.word-quest-page .game-modal .translation-pin {
 body.word-quest-page .cs-build-stamp,
 body.word-quest-page [class*="build-stamp"],
 body.word-quest-page .build-stamp {
-    opacity: 0.25 !important;
-    font-size: 0.65rem !important;
+    opacity: 0.25;
+    font-size: 0.65rem;
 }
 
 /* 3. Howto modal smaller, warmer, no scroll */
 body.word-quest-page .howto-modal {
-    max-width: 480px !important;
-    max-height: 85vh !important;
-    padding: 16px 20px !important;
-    font-size: 0.85rem !important;
-    overflow-y: auto !important;
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.2) !important;
+    max-width: 480px;
+    max-height: 85vh;
+    padding: 16px 20px;
+    font-size: 0.85rem;
+    overflow-y: auto;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
 }
 body.word-quest-page .howto-modal h2 {
-    font-size: 1.1rem !important;
-    margin-bottom: 8px !important;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
 }
 body.word-quest-page .howto-modal p {
-    font-size: 0.82rem !important;
-    line-height: 1.35 !important;
-    margin-bottom: 6px !important;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    margin-bottom: 6px;
 }
 body.word-quest-page .howto-section {
-    padding: 8px 10px !important;
-    margin-bottom: 8px !important;
+    padding: 8px 10px;
+    margin-bottom: 8px;
 }
 body.word-quest-page .howto-section h3 {
-    font-size: 0.88rem !important;
-    margin-bottom: 4px !important;
+    font-size: 0.88rem;
+    margin-bottom: 4px;
 }
 
 /* 4. Mode toggle - cleaner pill style */
 body.word-quest-page .wq-play-mode-btn {
-    transition: all 0.15s ease !important;
+    transition: all 0.15s ease;
 }
 body.word-quest-page .wq-play-mode-btn.is-active {
-    background: #1e293b !important;
-    color: #fff !important;
-    font-weight: 700 !important;
+    background: #1e293b;
+    color: #fff;
+    font-weight: 700;
 }
 body.word-quest-page .wq-play-mode-btn:not(.is-active) {
-    background: rgba(255,255,255,0.6) !important;
-    color: #64748b !important;
+    background: rgba(255,255,255,0.6);
+    color: #64748b;
 }
 
 /* 5. Tools tabs - better styling */
 body.word-quest-page .wq-tools-tabs {
     display: flex !important;
-    gap: 0 !important;
-    background: #f1f5f9 !important;
-    border-radius: 10px !important;
-    padding: 3px !important;
-    margin-bottom: 8px !important;
+    gap: 0;
+    background: #f1f5f9;
+    border-radius: 10px;
+    padding: 3px;
+    margin-bottom: 8px;
 }
 body.word-quest-page .wq-tools-tab {
-    flex: 1 !important;
-    padding: 6px 10px !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 0.78rem !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    background: transparent !important;
-    color: #64748b !important;
-    transition: all 0.15s !important;
-    white-space: nowrap !important;
+    flex: 1;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    color: #64748b;
+    transition: all 0.15s;
+    white-space: nowrap;
 }
 body.word-quest-page .wq-tools-tab.is-active {
-    background: #fff !important;
-    color: #1e293b !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12) !important;
+    background: #fff;
+    color: #1e293b;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
 }
 
 /* 6. Tools subcards cleaner */
 body.word-quest-page .wq-tools-subcard {
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 10px !important;
-    padding: 10px 12px !important;
-    margin-bottom: 6px !important;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
 }
 
 /* Teacher word panel clean styling */
 body.word-quest-page .wq-tools-teacher-card {
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 10px !important;
-    padding: 10px 12px !important;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
 }
 body.word-quest-page .wq-tools-teacher-head {
-    margin-bottom: 8px !important;
+    margin-bottom: 8px;
 }
 body.word-quest-page .wq-tools-teacher-head strong {
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
 }
 body.word-quest-page .wq-tools-teacher-head span {
-    font-size: 0.72rem !important;
-    color: #94a3b8 !important;
+    font-size: 0.72rem;
+    color: #94a3b8;
     display: block !important;
 }
 body.word-quest-page .quick-custom-word-body input[type="text"],
 body.word-quest-page .quick-custom-word-body textarea {
-    border: 1px solid #d1d5db !important;
-    border-radius: 8px !important;
-    padding: 6px 10px !important;
-    font-size: 0.82rem !important;
-    background: #fff !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;
 }
 body.word-quest-page .quick-custom-word-body textarea {
-    resize: vertical !important;
-    min-height: 60px !important;
+    resize: vertical;
+    min-height: 60px;
 }
 body.word-quest-page .hint-btn {
-    padding: 5px 10px !important;
-    border-radius: 8px !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    border: 1px solid #d1d5db !important;
-    background: #fff !important;
-    color: #374151 !important;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #374151;
 }
 body.word-quest-page .hint-btn:not(.secondary) {
-    background: #4f46e5 !important;
-    color: #fff !important;
-    border-color: #4f46e5 !important;
+    background: #4f46e5;
+    color: #fff;
+    border-color: #4f46e5;
 }
 
 /* Teacher word panel layout */
 body.word-quest-page .quick-custom-word-row {
     display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 6px !important;
-    align-items: center !important;
-    margin-bottom: 6px !important;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 6px;
 }
 body.word-quest-page .quick-custom-word-list {
-    margin-top: 8px !important;
-    padding-top: 8px !important;
-    border-top: 1px solid #e2e8f0 !important;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
 }
 body.word-quest-page .quick-custom-word-list label {
-    font-size: 0.75rem !important;
-    color: #64748b !important;
-    font-weight: 600 !important;
-    margin-bottom: 4px !important;
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 4px;
     display: block !important;
 }
 body.word-quest-page .quick-custom-word-list-toggle {
     display: flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-    font-size: 0.72rem !important;
-    color: #64748b !important;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    color: #64748b;
 }
 body.word-quest-page .quick-custom-word-status {
-    font-size: 0.72rem !important;
-    color: #94a3b8 !important;
-    margin-top: 6px !important;
+    font-size: 0.72rem;
+    color: #94a3b8;
+    margin-top: 6px;
 }
 
 /* Recording section - user-controlled */
 body.word-quest-page #reveal-record-section {
-    margin-top: 8px !important;
-    padding-top: 8px !important;
-    border-top: 1px solid rgba(0,0,0,0.08) !important;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,0.08);
 }
 body.word-quest-page #reveal-record-btn {
-    padding: 8px 16px !important;
-    border-radius: 10px !important;
-    border: 2px solid #e5e7eb !important;
-    background: linear-gradient(180deg, #fefce8, #fef3c7) !important;
-    color: #92400e !important;
-    font-weight: 700 !important;
-    font-size: 0.82rem !important;
-    cursor: pointer !important;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+    background: linear-gradient(180deg, #fefce8, #fef3c7);
+    color: #92400e;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
 }
 
 /* Palette select styling */
 body.word-quest-page .wq-palette-select {
-    font-size: 0.82rem !important;
-    padding: 4px 6px !important;
+    font-size: 0.82rem;
+    padding: 4px 6px;
 }
 body.word-quest-page .wq-palette-select option[disabled] {
-    font-size: 0.7rem !important;
-    color: #94a3b8 !important;
-    font-weight: 600 !important;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    font-weight: 600;
 }
 
 /* ===== Build f3a1b820+ Major Polish ===== */
@@ -10075,8 +10068,8 @@ body.word-quest-page .wq-palette-select option[disabled] {
 /* Path dropdown narrower */
 body.word-quest-page #focus-select,
 body.word-quest-page [id*="focus-select"] {
-    max-width: 260px !important;
-    font-size: 0.72rem !important;
+    max-width: 260px;
+    font-size: 0.72rem;
 }
 
 /* Phonics hint below path bar */
@@ -10110,59 +10103,58 @@ body.word-quest-page .key.vowel:not(.absent):not(.correct):not(.present) {
 
 /* How-to modal - fun & compact */
 body.word-quest-page .howto-modal .howto-content {
-    font-size: 0.82rem !important;
+    font-size: 0.82rem;
 }
 body.word-quest-page .howto-modal .howto-section {
-    background: rgba(99, 102, 241, 0.06) !important;
-    border: 1px solid rgba(99, 102, 241, 0.12) !important;
-    border-radius: 10px !important;
-    padding: 10px 12px !important;
-    margin-bottom: 8px !important;
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.12);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
 }
 body.word-quest-page .howto-modal .howto-tile {
-    width: 24px !important;
-    height: 24px !important;
-    font-size: 0.78rem !important;
+    width: 24px;
+    height: 24px;
+    font-size: 0.78rem;
 }
-body.word-quest-page .howto-modal .start-playing-btn,
 body.word-quest-page .howto-modal .primary-btn {
-    width: 100% !important;
-    border-radius: 10px !important;
+    width: 100%;
+    border-radius: 10px;
 }
 
 /* Reveal modal word - bigger, more celebratory */
 body.word-quest-page .game-modal .modal-word {
-    font-size: 2.2rem !important;
-    letter-spacing: 0.12em !important;
-    margin: 6px 0 !important;
+    font-size: 2.2rem;
+    letter-spacing: 0.12em;
+    margin: 6px 0;
 }
 body.word-quest-page .game-modal .modal-def {
-    font-size: 0.88rem !important;
-    margin-bottom: 4px !important;
+    font-size: 0.88rem;
+    margin-bottom: 4px;
 }
 body.word-quest-page .game-modal .modal-sentence {
-    font-size: 0.85rem !important;
-    margin-bottom: 6px !important;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
 }
 
 /* Audio controls in reveal */
 body.word-quest-page .modal-audio-controls {
     display: flex !important;
-    gap: 6px !important;
-    justify-content: center !important;
-    flex-wrap: wrap !important;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 body.word-quest-page .modal-audio-btn {
-    padding: 5px 10px !important;
-    font-size: 0.72rem !important;
-    border-radius: 8px !important;
+    padding: 5px 10px;
+    font-size: 0.72rem;
+    border-radius: 8px;
 }
 
 /* Play Again prominent */
 body.word-quest-page .game-modal .primary-btn {
-    padding: 10px !important;
-    font-size: 0.92rem !important;
-    font-weight: 700 !important;
+    padding: 10px;
+    font-size: 0.92rem;
+    font-weight: 700;
 }
 
 /* Repeated letter indicator on keyboard */
@@ -10184,7 +10176,7 @@ body.word-quest-page .key[data-multi]::after {
     animation: pulse-badge 1.5s ease-in-out infinite;
 }
 body.word-quest-page .key {
-    position: relative !important;
+    position: relative;
 }
 @keyframes pulse-badge {
     0%, 100% { transform: scale(1); }
@@ -10193,47 +10185,47 @@ body.word-quest-page .key {
 
 /* Tighten audio hint spacing */
 body.word-quest-page .hint-actions {
-    margin: 0 !important;
-    padding: 2px 0 !important;
-    gap: 6px !important;
+    margin: 0;
+    padding: 2px 0;
+    gap: 6px;
 }
 body.word-quest-page .sentence-preview {
-    margin: 0 !important;
-    padding: 2px 0 !important;
-    font-size: 0.78rem !important;
+    margin: 0;
+    padding: 2px 0;
+    font-size: 0.78rem;
 }
 body.word-quest-page #game-canvas {
-    gap: 12px !important;
+    gap: 12px;
 }
 
 /* Reveal modal - more breathing room */
 body.word-quest-page .game-modal .modal-content {
-    padding: 16px 20px 14px !important;
+    padding: 16px 20px 14px;
 }
 body.word-quest-page .game-modal .modal-audio-controls {
-    margin: 8px 0 4px !important;
+    margin: 8px 0 4px;
 }
 body.word-quest-page .game-modal .auto-read-toggle {
-    margin-top: 6px !important;
-    padding-top: 6px !important;
-    border-top: 1px solid rgba(0,0,0,0.06) !important;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(0,0,0,0.06);
 }
 body.word-quest-page .game-modal .translation-selector {
-    margin-top: 4px !important;
-    padding-top: 4px !important;
+    margin-top: 4px;
+    padding-top: 4px;
 }
 body.word-quest-page .game-modal #reveal-record-section {
-    margin-top: 8px !important;
-    padding-top: 8px !important;
+    margin-top: 8px;
+    padding-top: 8px;
 }
 body.word-quest-page .game-modal .modal-action-row {
-    margin: 6px 0 !important;
+    margin: 6px 0;
 }
 
 /* Ensure play-again is clearly separated */
 body.word-quest-page .game-modal .modal-primary-btn,
 body.word-quest-page .game-modal #play-again-btn {
-    margin-top: 8px !important;
+    margin-top: 8px;
 }
 
 /* =====================================================================
@@ -10247,40 +10239,40 @@ body.word-quest-page .game-modal #play-again-btn {
 /* --- 1. MIDDLE AREA COMPACT LAYOUT --- */
 /* Collapse hint-actions + sentence toggle into a single compact row */
 body.word-quest-page .hint-actions {
-    margin: 2px 0 !important;
-    gap: 6px !important;
-    padding: 0 !important;
+    margin: 2px 0;
+    gap: 6px;
+    padding: 0;
 }
 
 body.word-quest-page .hint-actions .hint-btn {
-    padding: 4px 10px !important;
-    font-size: 0.72rem !important;
+    padding: 4px 10px;
+    font-size: 0.72rem;
 }
 
 body.word-quest-page .cs-sentence-caption-toggle-wrap {
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0;
+    padding: 0;
 }
 
 body.word-quest-page .cs-sentence-caption-toggle {
-    font-size: 0.7rem !important;
-    gap: 4px !important;
+    font-size: 0.7rem;
+    gap: 4px;
 }
 
 body.word-quest-page #sentence-preview,
 body.word-quest-page .sentence-preview {
-    margin: 2px 0 0 !important;
-    padding: 4px 12px !important;
-    font-size: 0.75rem !important;
-    max-height: 2.8em !important;
-    overflow: hidden !important;
-    line-height: 1.3 !important;
+    margin: 2px 0 0;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    max-height: 2.8em;
+    overflow: hidden;
+    line-height: 1.3;
 }
 
 body.word-quest-page .cs-sentence-caption-hide {
-    padding: 2px 8px !important;
-    font-size: 0.65rem !important;
-    margin: 0 !important;
+    padding: 2px 8px;
+    font-size: 0.65rem;
+    margin: 0;
 }
 
 /* --- 2. LOCKED TILE COLORS ACROSS ALL THEMES --- */
@@ -10362,21 +10354,21 @@ body.word-quest-page[data-wq-scene="classic-contrast"] .key.vowel:not(.correct):
 /* --- 3. MOBILE HEADER OVERFLOW FIX --- */
 @media (max-width: 640px) {
     body.word-quest-page .header-row {
-        flex-wrap: wrap !important;
-        gap: 4px !important;
-        padding: 4px 6px !important;
-        overflow-x: hidden !important;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 4px 6px;
+        overflow-x: hidden;
     }
 
     body.word-quest-page .header-row h1 {
-        font-size: 0.75rem !important;
-        min-width: auto !important;
+        font-size: 0.75rem;
+        min-width: auto;
     }
 
     body.word-quest-page #pattern-select {
-        max-width: 140px !important;
-        font-size: 0.65rem !important;
-        padding: 3px 4px !important;
+        max-width: 140px;
+        font-size: 0.65rem;
+        padding: 3px 4px;
     }
 
     body.word-quest-page #wq-play-mode-switch {
@@ -10384,112 +10376,112 @@ body.word-quest-page[data-wq-scene="classic-contrast"] .key.vowel:not(.correct):
     }
 
     body.word-quest-page .new-round-btn {
-        padding: 3px 8px !important;
-        font-size: 0.68rem !important;
+        padding: 3px 8px;
+        font-size: 0.68rem;
     }
 
     body.word-quest-page .wq-tools-toggle {
-        padding: 3px 8px !important;
-        font-size: 0.68rem !important;
+        padding: 3px 8px;
+        font-size: 0.68rem;
     }
 
     body.word-quest-page .header-actions .link-btn {
-        padding: 3px 6px !important;
-        font-size: 0.65rem !important;
+        padding: 3px 6px;
+        font-size: 0.65rem;
     }
 
     /* Prevent horizontal scroll on entire page */
     html, body {
         overflow-x: hidden !important;
-        max-width: 100vw !important;
+        max-width: 100vw;
     }
 
     /* Game canvas full width on mobile */
     body.word-quest-page #game-canvas {
-        width: calc(100% - 8px) !important;
-        margin: 2px 4px !important;
-        padding: 12px 6px 6px !important;
-        border-radius: 16px !important;
+        width: calc(100% - 8px);
+        margin: 2px 4px;
+        padding: 12px 6px 6px;
+        border-radius: 16px;
     }
 
     /* Board tighter on mobile */
     body.word-quest-page #game-board {
-        gap: 5px !important;
-        padding: 6px !important;
+        gap: 5px;
+        padding: 6px;
     }
 
     /* Compact tiles on narrow screens */
     body.word-quest-page .tile {
-        font-size: clamp(1rem, 4.5vw, 1.3rem) !important;
+        font-size: clamp(1rem, 4.5vw, 1.3rem);
     }
 
     /* Keyboard full width */
     body.word-quest-page #keyboard {
-        width: 100% !important;
-        padding: 0 2px !important;
+        width: 100%;
+        padding: 0 2px;
     }
 
     body.word-quest-page .key {
-        font-size: clamp(0.8rem, 3.2vw, 1rem) !important;
-        padding: 0 2px !important;
-        min-width: 0 !important;
+        font-size: clamp(0.8rem, 3.2vw, 1rem);
+        padding: 0 2px;
+        min-width: 0;
     }
 
     /* Hint actions compact on mobile */
     body.word-quest-page .hint-actions .hint-btn {
-        padding: 3px 8px !important;
-        font-size: 0.68rem !important;
+        padding: 3px 8px;
+        font-size: 0.68rem;
     }
 
     /* Focus round chip compact */
     body.word-quest-page .focus-round-chip {
-        font-size: 0.65rem !important;
-        padding: 1px 6px !important;
+        font-size: 0.65rem;
+        padding: 1px 6px;
     }
 }
 
 /* Very narrow phones (< 380px like iPhone SE) */
 @media (max-width: 380px) {
     body.word-quest-page #pattern-select {
-        max-width: 110px !important;
-        font-size: 0.6rem !important;
+        max-width: 110px;
+        font-size: 0.6rem;
     }
 
     body.word-quest-page .header-row h1 {
-        font-size: 0.68rem !important;
+        font-size: 0.68rem;
     }
 
     body.word-quest-page #game-board {
-        gap: 3px !important;
-        padding: 4px !important;
+        gap: 3px;
+        padding: 4px;
     }
 }
 
 /* Phone landscape */
 @media (max-height: 500px) and (orientation: landscape) {
     body.word-quest-page .header-row {
-        padding: 2px 6px !important;
+        padding: 2px 6px;
     }
 
     body.word-quest-page #game-canvas {
-        padding: 6px 6px 4px !important;
-        gap: 4px !important;
+        padding: 6px 6px 4px;
+        gap: 4px;
     }
 
     body.word-quest-page #game-board {
-        gap: 3px !important;
-        padding: 4px !important;
+        gap: 3px;
+        padding: 4px;
     }
 
     body.word-quest-page .tile {
-        width: min(36px, calc((100vh - 180px) / 7)) !important;
-        height: min(36px, calc((100vh - 180px) / 7)) !important;
-        font-size: 0.85rem !important;
+        width: min(36px, calc((100vh - 180px) / 7));
+        height: min(36px, calc((100vh - 180px) / 7));
+        font-size: 0.85rem;
     }
 
     body.word-quest-page .key {
-        height: min(32px, calc((100vh - 200px) / 4)) !important;
-        font-size: 0.78rem !important;
+        height: min(32px, calc((100vh - 200px) / 4));
+        font-size: 0.78rem;
     }
 
     /* Hide non-essential elements in landscape */
@@ -10511,12 +10503,12 @@ body.word-quest-page[data-wq-scene="classic-contrast"] .key.vowel:not(.correct):
 /* Tablet (iPad) */
 @media (min-width: 641px) and (max-width: 1024px) {
     body.word-quest-page .header-row {
-        gap: 6px !important;
-        padding: 4px 8px !important;
+        gap: 6px;
+        padding: 4px 8px;
     }
 
     body.word-quest-page #pattern-select {
-        max-width: 180px !important;
+        max-width: 180px;
     }
 }
 
@@ -10567,9 +10559,9 @@ body.word-quest-page[data-wq-scene="slate-steel"] #wq-mobile-panel,
 body.word-quest-page[data-wq-scene="mocha-mousse"] #wq-mobile-panel,
 body.word-quest-page[data-wq-scene="pro-midnight"] #wq-mobile-panel,
 body.word-quest-page[data-wq-scene="coffeehouse"] #wq-mobile-panel {
-    background: rgba(30,41,59,0.98) !important;
-    border-color: rgba(255,255,255,0.1) !important;
-    color: #f1f5f9 !important;
+    background: rgba(30,41,59,0.98);
+    border-color: rgba(255,255,255,0.1);
+    color: #f1f5f9;
 }
 
 /* Items moved into mobile panel */

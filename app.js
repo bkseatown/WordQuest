@@ -94,23 +94,6 @@ function readPackedTtsBasePathPreference() {
     }
 }
 
-function rememberPackedTtsBasePathPreference(value = '') {
-    const normalized = normalizePackedTtsBasePath(value);
-    if (!normalized) return;
-    try {
-        localStorage.setItem(PACKED_TTS_BASE_PREF_KEY, normalized);
-    } catch (e) {}
-}
-function detectPackedTtsBasePathFromAssetPath(value = '') {
-    const candidate = String(value || '').trim().replace(/^\/+/, '');
-    if (candidate === PACKED_TTS_BASE_PLAIN || candidate.startsWith(`${PACKED_TTS_BASE_PLAIN}/`)) {
-        return PACKED_TTS_BASE_PLAIN;
-    }
-    if (candidate === PACKED_TTS_BASE_SCOPED || candidate.startsWith(`${PACKED_TTS_BASE_SCOPED}/`)) {
-        return PACKED_TTS_BASE_SCOPED;
-    }
-    return '';
-}
 
 function resolvePackedTtsBasePath() {
     const runtimeOverride = normalizePackedTtsBasePath(window?.CORNERSTONE_TTS_BASE_PATH || '');
@@ -445,7 +428,7 @@ function writeTeacherWordList(words = []) {
     teacherWordList = clean;
     try {
         localStorage.setItem(TEACHER_WORD_LIST_KEY, JSON.stringify(clean));
-    } catch (error) {}
+    } catch(error) { /* silent */ }
     return clean;
 }
 
@@ -461,7 +444,7 @@ function writeTeacherWordListEnabled(enabled) {
     teacherWordListEnabled = !!enabled && teacherWordList.length > 0;
     try {
         localStorage.setItem(TEACHER_WORD_LIST_ENABLED_KEY, teacherWordListEnabled ? 'on' : 'off');
-    } catch (error) {}
+    } catch(error) { /* silent */ }
     return teacherWordListEnabled;
 }
 
@@ -1103,12 +1086,6 @@ function summarizePackedTtsEntries(entries = {}) {
     return summary;
 }
 
-function clearPackedTtsCaches() {
-    packedTtsManifestCacheByPath.clear();
-    packedTtsManifestPromiseByPath.clear();
-    packedTtsPackRegistryCache = null;
-    packedTtsPackRegistryPromise = null;
-}
 
 function normalizePackManifestPath(rawPath = '') {
     const candidate = String(rawPath || '').trim();
@@ -1170,40 +1147,6 @@ function getDefaultTtsPackOption() {
     };
 }
 
-function normalizeTtsPackRegistry(rawRegistry) {
-    const defaultPack = getDefaultTtsPackOption();
-    if (!rawRegistry || typeof rawRegistry !== 'object' || !Array.isArray(rawRegistry.packs)) {
-        return {
-            packs: [defaultPack],
-            packMap: { default: defaultPack }
-        };
-    }
-
-    const normalizedPacks = [];
-    rawRegistry.packs.forEach((pack) => {
-        if (!pack || typeof pack !== 'object') return;
-        const id = normalizeTtsPackId(pack.id);
-        if (id === 'default') return;
-        const manifestPath = normalizePackManifestPath(pack.manifestPath);
-        if (!manifestPath) return;
-        normalizedPacks.push({
-            id,
-            name: String(pack.name || id).trim() || id,
-            manifestPath,
-            description: String(pack.description || '').trim(),
-            generatedAt: pack.generatedAt || '',
-            languages: Array.isArray(pack.languages) ? pack.languages : [],
-            fields: Array.isArray(pack.fields) ? pack.fields : []
-        });
-    });
-
-    const packs = [defaultPack, ...normalizedPacks];
-    const packMap = {};
-    packs.forEach((pack) => {
-        packMap[pack.id] = pack;
-    });
-    return { packs, packMap };
-}
 
 async function loadPackedTtsPackRegistry() {
     return null; 
@@ -1221,7 +1164,6 @@ async function loadPackedTtsManifestFromPath(manifestPath = '') {
         const response = await fetch(manifestPath);
         if (response.ok) return await response.json();
     } catch (e) {
-        console.log("Manifest not found, playing audio directly.");
     }
     return { words: {}, sentences: {} };
 }
@@ -1342,7 +1284,7 @@ function stopAllActiveAudioPlayers() {
         try {
             audio.pause();
             audio.currentTime = 0;
-        } catch (e) {}
+        } catch(e) { /* silent */ }
     });
     activeAudioPlayers.clear();
     activePlaybackSourceId = '';
@@ -1368,7 +1310,7 @@ function stopAudioPlayerInstance(audio) {
     try {
         audio.pause();
         audio.currentTime = 0;
-    } catch (e) {}
+    } catch(e) { /* silent */ }
     activeAudioPlayers.delete(audio);
 }
 
@@ -1391,6 +1333,8 @@ function beginExclusivePlaybackForSource(sourceId = '') {
 
 async function playAudioClipUrl(url, options = {}) {
     if (!url) return false;
+    // Store URL for waveform capture (pronunciation studio)
+    window._wqLastPlayedAudioUrl = url;
     const playbackRate = normalizeDecodableReadSpeed(options.playbackRate ?? 1);
     const sourceId = normalizePlaybackSourceId(options.sourceId || '');
     const onPlay = typeof options.onPlay === 'function' ? options.onPlay : null;
@@ -1419,7 +1363,7 @@ async function playAudioClipUrl(url, options = {}) {
     try {
         await audio.play();
         if (onPlay) {
-            try { onPlay(audio); } catch (e) {}
+            try { onPlay(audio); } catch(e) { /* silent */ }
         }
         return true;
     } catch {
@@ -1624,7 +1568,7 @@ async function hasPackedClipByDirectPath({ word = '', languageCode = 'en', type 
             try {
                 const response = await fetch(variant, { method: 'HEAD' });
                 if (response.ok) return true;
-            } catch (e) {}
+            } catch(e) { /* silent */ }
         }
     }
     return false;
@@ -1728,7 +1672,7 @@ function releaseActiveSoundVideoUrl() {
     if (activeSoundVideoObjectUrl) {
         try {
             URL.revokeObjectURL(activeSoundVideoObjectUrl);
-        } catch (e) {}
+        } catch(e) { /* silent */ }
         activeSoundVideoObjectUrl = '';
     }
 }
@@ -1758,7 +1702,7 @@ async function canLoadVideoUrl(url = '') {
     try {
         const res = await fetch(url, { method: 'HEAD', cache: 'no-store' });
         if (res.ok) return true;
-    } catch (e) {}
+    } catch(e) { /* silent */ }
     try {
         const res = await fetch(url, {
             method: 'GET',
@@ -1831,7 +1775,7 @@ function getSoundVideoPlayer() {
 function clearSoundVideoPlayer() {
     const videoEl = getSoundVideoPlayer();
     if (!videoEl) return;
-    try { videoEl.pause(); } catch (e) {}
+    try { videoEl.pause(); } catch(e) { /* silent */ }
     videoEl.removeAttribute('src');
     videoEl.load();
     videoEl.classList.add('hidden');
@@ -1861,7 +1805,7 @@ async function showPhonemeVideoPreview(sound = '', phoneme = null, options = {})
     if (autoplay) {
         try {
             await videoEl.play();
-        } catch (e) {}
+        } catch(e) { /* silent */ }
     }
     return true;
 }
@@ -2375,7 +2319,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof initAdaptiveActions === 'function') {
         initAdaptiveActions();
     } else {
-        console.log('initAdaptiveActions not available - skipping');
     }
     
     startNewGame();
@@ -2600,7 +2543,7 @@ function initPopupWindowInteractions() {
             if (currentPointerId !== null) {
                 try {
                     panel.releasePointerCapture(currentPointerId);
-                } catch (error) {}
+                } catch(error) { /* silent */ }
             }
         };
 
@@ -2640,7 +2583,7 @@ function initPopupWindowInteractions() {
             }
             try {
                 panel.setPointerCapture(pointerId);
-            } catch (error) {}
+            } catch(error) { /* silent */ }
             event.preventDefault();
         });
 
@@ -2847,15 +2790,6 @@ function syncGameModeActive(forceStart = false) {
     updateFunHudVisibility();
 }
 
-function formatTeamShortLabel(name = '', fallback = '') {
-    if (!name) return fallback;
-    const cleaned = name.toString().replace(/team\s*/i, '').trim();
-    if (!cleaned) return fallback;
-    const parts = cleaned.split(/\s+/);
-    const base = parts[0] || cleaned;
-    if (base.length <= 4) return base;
-    return base.slice(0, 4);
-}
 
 function updateFunHudVisibility() {
     const hud = ensureFunHud();
@@ -3847,10 +3781,6 @@ function getTranslationVoiceTarget(languageCode) {
     return langMappings[languageCode] || languageCode;
 }
 
-function voiceMatchesLanguage(voice, targetLang = 'en') {
-    if (!voice?.lang) return false;
-    return normalizePackedTtsLanguage(voice.lang) === normalizePackedTtsLanguage(targetLang);
-}
 
 async function hasVoiceForLanguage(languageCode, options = {}) {
     const voices = await getVoicesForSpeech();
@@ -3865,9 +3795,6 @@ async function hasVoiceForLanguage(languageCode, options = {}) {
     );
 }
 
-async function hasHighQualityVoiceForLanguage(languageCode) {
-    return hasVoiceForLanguage(languageCode, { requireHighQuality: true });
-}
 
 function ensureTranslationAudioNote() {
     const translationDisplay = document.getElementById("translation-display");
@@ -3922,15 +3849,6 @@ function notifyMissingTranslationVoice() {
     }
 }
 
-function getBestTranslationVoice(voices, targetLang) {
-    if (!Array.isArray(voices) || !voices.length) return null;
-    return (
-        pickBestVoiceForLang(voices, targetLang, { requireHighQuality: true })
-        || pickBestVoiceForLang(voices, targetLang, { excludeLowQuality: true })
-        || pickBestVoiceForLang(voices, targetLang)
-        || null
-    );
-}
 
 /* Play text in a specific language for translations */
 async function playTextInLanguage(text, languageCode, type = 'sentence', sourceId = '') {
@@ -4125,7 +4043,7 @@ async function getWordQuestQuickVoicePackOptions() {
                 .filter((pack) => preferredOrder.has(pack.id))
                 .sort((a, b) => preferredOrder.get(a.id) - preferredOrder.get(b.id));
         }
-    } catch (error) {}
+    } catch(error) { /* silent */ }
     return WORD_QUEST_QUICK_VOICE_FALLBACK_PACKS.slice();
 }
 
@@ -4142,7 +4060,7 @@ function writeSentenceCaptionMode(mode = 'off') {
     const next = String(mode || '').trim().toLowerCase() === 'on' ? 'on' : 'off';
     try {
         localStorage.setItem(SENTENCE_CAPTION_KEY, next);
-    } catch (error) {}
+    } catch(error) { /* silent */ }
     return next;
 }
 
@@ -4150,7 +4068,7 @@ function readDelightToggleSetting(key, defaultValue = 'off') {
     try {
         const raw = String(localStorage.getItem(key) || '').trim().toLowerCase();
         if (raw === 'on' || raw === 'off') return raw;
-    } catch (error) {}
+    } catch(error) { /* silent */ }
     return defaultValue;
 }
 
@@ -4158,7 +4076,7 @@ function writeDelightToggleSetting(key, next = 'off') {
     const value = String(next || '').trim().toLowerCase() === 'on' ? 'on' : 'off';
     try {
         localStorage.setItem(key, value);
-    } catch (error) {}
+    } catch(error) { /* silent */ }
     return value;
 }
 
@@ -4175,7 +4093,7 @@ function writeRoundClueVisibilityMode(mode = 'off') {
     const next = String(mode || '').trim().toLowerCase() === 'on' ? 'on' : 'off';
     try {
         localStorage.setItem(ROUND_CLUE_VISIBILITY_KEY, next);
-    } catch (error) {}
+    } catch(error) { /* silent */ }
     const chip = document.getElementById('focus-round-chip');
     if (chip) {
         chip.classList.toggle('is-hidden', next !== 'on');
@@ -4201,7 +4119,7 @@ function writePlayMode(mode = PLAY_MODE_CLASSIC) {
     const next = normalizePlayMode(mode);
     try {
         localStorage.setItem(PLAY_MODE_KEY, next);
-    } catch (error) {}
+    } catch(error) { /* silent */ }
     return next;
 }
 
@@ -4733,7 +4651,7 @@ function initControls() {
             if (persist) {
                 try {
                     localStorage.setItem(storageKey, tabId);
-                } catch (e) {}
+                } catch(e) { /* silent */ }
             }
         };
 
@@ -4774,7 +4692,7 @@ function initControls() {
         let initialTab = fallbackTab;
         try {
             initialTab = resolveTabId(localStorage.getItem(storageKey));
-        } catch (e) {}
+        } catch(e) { /* silent */ }
         applyTab(initialTab, { persist: false });
 
         if (toolsMenu instanceof HTMLDetailsElement && toolsMenu.dataset.boundToolsToggle !== 'true') {
@@ -5491,174 +5409,11 @@ function initTeacherTools() {
     }
 }
 
-function ensureTeacherLaunchpad() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid || document.getElementById('teacher-launchpad-row')) return;
 
-    const row = document.createElement('div');
-    row.className = 'teacher-row teacher-launchpad-row';
-    row.id = 'teacher-launchpad-row';
-    row.innerHTML = `
-        <div>
-            <strong>Session defaults</strong>
-            <div class="teacher-subtext">Set language, audio behavior, and fun level once before class.</div>
-        </div>
-        <div class="teacher-launchpad-controls">
-            <label for="teacher-translation-default">Reveal language</label>
-            <select id="teacher-translation-default">
-                <option value="en">English</option>
-                <option value="es">Español (Spanish)</option>
-                <option value="zh">中文 (Simplified Chinese)</option>
-                <option value="hi">हिन्दी (Hindi)</option>
-                <option value="tl">Tagalog (Filipino)</option>
-                <option value="ms">Bahasa Melayu (Malay)</option>
-                <option value="vi">Tiếng Việt (Vietnamese)</option>
-                <option value="ar">العربية (Arabic)</option>
-                <option value="ko">한국어 (Korean)</option>
-                <option value="ja">日本語 (Japanese)</option>
-            </select>
-            <label for="teacher-audience-mode">Language style</label>
-            <select id="teacher-audience-mode">
-                <option value="auto">Auto</option>
-                <option value="young-eal">Young / EAL-friendly</option>
-                <option value="general">General</option>
-            </select>
-            <label for="teacher-reveal-frequency">Jokes/facts/riddles</label>
-            <select id="teacher-reveal-frequency">
-                <option value="off">Off</option>
-                <option value="rare">Rare</option>
-                <option value="sometimes">Sometimes</option>
-                <option value="often">Often</option>
-                <option value="always">Always</option>
-            </select>
-            <label class="toggle-row inline"><input type="checkbox" id="toggle-auto-hear-session" /> Auto-read reveal card</label>
-            <label class="toggle-row inline"><input type="checkbox" id="toggle-fun-mode-session" /> Fun mode (coins/hearts)</label>
-        </div>
-    `;
-    grid.prepend(row);
-}
 
-function ensureVoiceHubRow() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid) return;
-    if (document.getElementById('open-voice-hub-btn')) return;
 
-    const row = document.createElement('div');
-    row.className = 'teacher-row';
-    row.innerHTML = `
-        <div>
-            <strong>Voice & Audio Packs</strong>
-            <div class="teacher-subtext">Managed in a dedicated workspace so gameplay settings stay simple.</div>
-        </div>
-        <button type="button" id="open-voice-hub-btn" class="teacher-secondary-btn">Open Audio Workspace</button>
-    `;
-    grid.appendChild(row);
-    row.querySelector('#open-voice-hub-btn')?.addEventListener('click', () => {
-        window.location.href = 'teacher-report.html#report-recording-library';
-    });
-}
 
-function ensureUiLookRow() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid || document.getElementById('ui-look-select')) return;
 
-    const row = document.createElement('div');
-    row.className = 'teacher-row';
-    row.innerHTML = `
-        <label for="ui-look-select"><strong>Interface look</strong></label>
-        <select id="ui-look-select">
-            <option value="k2">K–2 (Playful)</option>
-            <option value="35">3–5 (Balanced)</option>
-            <option value="612">6–12 (Studio)</option>
-        </select>
-        <div class="teacher-subtext">Adjusts shapes and contrast (content stays the same).</div>
-    `;
-    grid.appendChild(row);
-
-    const select = row.querySelector('#ui-look-select');
-    if (!select) return;
-    select.value = getUiLookValue();
-    select.addEventListener('change', () => {
-        appSettings.uiLook = select.value;
-        saveSettings();
-        applySettings();
-    });
-}
-
-function ensureClassroomDockControl() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid || document.getElementById('open-classroom-dock')) return;
-
-    const row = document.createElement('div');
-    row.className = 'toggle-row inline';
-    row.innerHTML = `
-        <button type="button" id="open-classroom-dock" class="teacher-secondary-btn">Open Classroom Dock</button>
-    `;
-    grid.appendChild(row);
-    row.querySelector('#open-classroom-dock')?.addEventListener('click', () => {
-        toggleClassroomDock(true);
-    });
-}
-
-function ensurePracticePackRow() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid || document.getElementById('practice-pack-row')) return;
-
-    const row = document.createElement('div');
-    row.className = 'teacher-pack-row';
-    row.id = 'practice-pack-row';
-    row.innerHTML = `
-        <div class="practice-pack-label">
-            <strong>Download practice pack</strong>
-            <span class="teacher-subtext">CSV summary + audio bundle</span>
-        </div>
-        <div class="practice-pack-actions">
-            <button type="button" id="practice-pack-csv" class="teacher-secondary-btn">CSV</button>
-            <button type="button" id="practice-pack-audio" class="teacher-secondary-btn">Audio bundle</button>
-            <button type="button" id="practice-pack-clear" class="teacher-secondary-btn">Clear local recordings</button>
-        </div>
-    `;
-    grid.appendChild(row);
-
-    row.querySelector('#practice-pack-csv')?.addEventListener('click', downloadPracticePackCsv);
-    row.querySelector('#practice-pack-audio')?.addEventListener('click', downloadPracticeAudioBundle);
-    row.querySelector('#practice-pack-clear')?.addEventListener('click', clearAllPracticeRecordings);
-}
-
-function ensureSettingsTransferRow() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid || document.getElementById('settings-transfer-row')) return;
-
-    const row = document.createElement('div');
-    row.className = 'teacher-pack-row';
-    row.id = 'settings-transfer-row';
-    row.innerHTML = `
-        <div class="practice-pack-label">
-            <strong>Move your settings</strong>
-            <span class="teacher-subtext">Export/import preferences for a new device.</span>
-        </div>
-        <div class="practice-pack-actions">
-            <button type="button" id="settings-export" class="teacher-secondary-btn">Export</button>
-            <button type="button" id="settings-import-btn" class="teacher-secondary-btn">Import</button>
-            <input id="settings-import" type="file" accept="application/json" style="position:absolute;left:-9999px;width:1px;height:1px;" />
-        </div>
-    `;
-    grid.appendChild(row);
-
-    row.querySelector('#settings-export')?.addEventListener('click', exportPlatformSettings);
-    row.querySelector('#settings-import-btn')?.addEventListener('click', () => {
-        row.querySelector('#settings-import')?.click();
-    });
-    const input = row.querySelector('#settings-import');
-    if (input) {
-        input.addEventListener('change', async (event) => {
-            const file = event.target.files?.[0];
-            if (!file) return;
-            await importPlatformSettingsFromFile(file);
-            event.target.value = '';
-        });
-    }
-}
 
 function exportPlatformSettings() {
     const safeCopy = JSON.parse(JSON.stringify(appSettings || {}));
@@ -5722,32 +5477,8 @@ async function importPlatformSettingsFromFile(file) {
     }
 }
 
-function ensureTeacherTabs() {
-    return;
-}
 
-function setTeacherTab(tab = 'audio') {
-    return;
-}
 
-function compactTeacherLayout() {
-    const modal = document.getElementById('teacher-modal');
-    if (!modal || modal.dataset.cleaned === 'true') return;
-    modal.dataset.cleaned = 'true';
-    modal.classList.add('teacher-clean');
-
-    const deleteGrid = modal.querySelector('.voice-delete-grid');
-    if (deleteGrid && !modal.querySelector('.teacher-danger')) {
-        const wrapper = document.createElement('details');
-        wrapper.className = 'teacher-section teacher-danger';
-        wrapper.innerHTML = `<summary>Cleanup tools</summary>`;
-        deleteGrid.parentNode?.insertBefore(wrapper, deleteGrid);
-        wrapper.appendChild(deleteGrid);
-    }
-
-    const tools = modal.querySelector('.teacher-tools');
-    if (tools) tools.classList.add('teacher-section');
-}
 
 function ensureAssessmentControls() {
     const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
@@ -5769,19 +5500,6 @@ function ensureAssessmentControls() {
     });
 }
 
-function ensureVoiceQualityHint() {
-    const voiceSelect = document.getElementById('system-voice-select');
-    if (!voiceSelect) return;
-    let hint = document.getElementById('voice-quality-hint');
-    if (!hint) {
-        hint = document.createElement('div');
-        hint.id = 'voice-quality-hint';
-        hint.className = 'voice-quality-hint';
-        const tip = getVoiceInstallHint();
-        hint.innerHTML = `Enhanced voices (may load after first play) <span class="tiny-tooltip" title="${tip}" aria-label="${tip}">ⓘ</span>`;
-        voiceSelect.insertAdjacentElement('afterend', hint);
-    }
-}
 
 function ensureVoiceInstallPrompt() {
     const voiceSelect = document.getElementById('system-voice-select');
@@ -5801,7 +5519,7 @@ function ensureVoiceInstallPrompt() {
     if (btn && !btn.dataset.bound) {
         btn.dataset.bound = 'true';
         btn.onclick = () => {
-            alert(getVoiceInstallHint());
+            showToast(getVoiceInstallHint());
         };
     }
     return row;
@@ -5859,155 +5577,10 @@ async function prefetchEnhancedVoice() {
     return;
 }
 
-function ensureBonusControls() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid || document.getElementById('bonus-frequency')) return;
 
-    const row = document.createElement('div');
-    row.className = 'teacher-row';
-    row.innerHTML = `
-        <label for="bonus-frequency"><strong>Reveal fun frequency</strong></label>
-        <select id="bonus-frequency">
-            <option value="off">Off</option>
-            <option value="rare">Rare</option>
-            <option value="sometimes">Sometimes</option>
-            <option value="often">Often</option>
-            <option value="always">Always</option>
-        </select>
-        <label for="audience-mode-select" style="margin-top:8px;"><strong>Language style</strong></label>
-        <select id="audience-mode-select">
-            <option value="auto">Auto (by learner + language)</option>
-            <option value="young-eal">Young / EAL-friendly</option>
-            <option value="general">General</option>
-        </select>
-        <div class="teacher-subtext">Auto defaults to Young/EAL for K-2 learners, EAL pathway, and non-English translation mode.</div>
-    `;
-    grid.appendChild(row);
-}
 
-function ensureAutoHearToggle() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid) return;
-    if (document.getElementById('toggle-auto-hear')) return;
 
-    const row = document.createElement('label');
-    row.className = 'toggle-row';
-    row.innerHTML = `
-        <input type="checkbox" id="toggle-auto-hear" />
-        Auto-play word, definition, and sentence
-    `;
-    grid.appendChild(row);
-}
 
-function ensureRevealRecordingToolsToggle() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid) return;
-    if (document.getElementById('toggle-reveal-recorders')) return;
-
-    const row = document.createElement('label');
-    row.className = 'toggle-row';
-    row.innerHTML = `
-        <input type="checkbox" id="toggle-reveal-recorders" />
-        Show teacher recording tools on the reveal screen
-    `;
-    grid.appendChild(row);
-
-    const toggle = row.querySelector('#toggle-reveal-recorders');
-    toggle.checked = !!appSettings.showRevealRecordingTools;
-    toggle.onchange = () => {
-        appSettings.showRevealRecordingTools = toggle.checked;
-        saveSettings();
-    };
-}
-
-function ensureFunHudControls() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid) return;
-    if (document.getElementById('toggle-fun-hud')) return;
-
-    const row = document.createElement('label');
-    row.className = 'toggle-row';
-    row.innerHTML = `
-        <input type="checkbox" id="toggle-fun-hud" />
-        Fun mode (coins & hearts)
-    `;
-    grid.appendChild(row);
-
-    const toggle = row.querySelector('#toggle-fun-hud');
-    toggle.checked = !!appSettings.funHud?.enabled;
-    toggle.onchange = () => {
-        appSettings.funHud.enabled = toggle.checked;
-        saveSettings();
-        updateFunHudVisibility();
-    };
-
-    const sfxRow = document.createElement('label');
-    sfxRow.className = 'toggle-row';
-    sfxRow.innerHTML = `
-        <input type="checkbox" id="toggle-fun-sfx" />
-        Tiny reward sounds
-    `;
-    grid.appendChild(sfxRow);
-
-    const styleRow = document.createElement('label');
-    styleRow.className = 'toggle-row select-row';
-    styleRow.innerHTML = `
-        <span>Fun style</span>
-        <select id="fun-style-select">
-            <option value="playful">Playful</option>
-            <option value="studio">Studio</option>
-        </select>
-    `;
-    grid.appendChild(styleRow);
-
-    const resetRow = document.createElement('div');
-    resetRow.className = 'toggle-row inline';
-    resetRow.innerHTML = `
-        <button type="button" id="reset-fun-hud" class="teacher-secondary-btn">Reset fun counters</button>
-    `;
-    grid.appendChild(resetRow);
-
-    const sfxToggle = sfxRow.querySelector('#toggle-fun-sfx');
-    sfxToggle.checked = !!appSettings.funHud?.sfx;
-    sfxToggle.onchange = () => {
-        appSettings.funHud.sfx = sfxToggle.checked;
-        saveSettings();
-    };
-
-    const styleSelect = styleRow.querySelector('#fun-style-select');
-    styleSelect.value = appSettings.funHud?.style || 'playful';
-    styleSelect.onchange = () => {
-        appSettings.funHud.style = styleSelect.value;
-        saveSettings();
-        updateFunHudVisibility();
-    };
-
-    const resetBtn = resetRow.querySelector('#reset-fun-hud');
-    resetBtn.onclick = () => {
-        appSettings.funHud.coins = 0;
-        appSettings.funHud.hearts = appSettings.funHud.maxHearts || 3;
-        saveSettings();
-        renderFunHud();
-        showToast('Fun counters reset.');
-    };
-}
-
-function ensureGameModesRow() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid || document.getElementById('open-game-modes-btn')) return;
-
-    const row = document.createElement('div');
-    row.className = 'teacher-row';
-    row.innerHTML = `
-        <div>
-            <strong>Game Modes</strong>
-            <div class="teacher-subtext">Optional: team turns, timer, and challenge hearts.</div>
-        </div>
-        <button type="button" id="open-game-modes-btn" class="teacher-secondary-btn">Open</button>
-    `;
-    grid.appendChild(row);
-    row.querySelector('#open-game-modes-btn')?.addEventListener('click', openAdventureModal);
-}
 
 function initSoundWallFilters() {
     const filterInputs = document.querySelectorAll('.soundwall-filters input[type="checkbox"][data-section]');
@@ -6158,86 +5731,7 @@ async function updateTtsPackStatusFromManifest({ pack = null } = {}) {
     );
 }
 
-async function playTtsPackSampleClip() {
-    const audienceCopy = getWordCopyForAudience(currentWord, 'en');
-    const sentence = String(audienceCopy.sentence || currentEntry?.en?.sentence || '').trim();
-    const definition = String(audienceCopy.definition || currentEntry?.en?.def || '').trim();
-    const word = String(currentWord || '').trim();
 
-    let played = false;
-    if (sentence) {
-        played = await tryPlayPackedTtsForCurrentWord({
-            text: sentence,
-            languageCode: 'en',
-            type: 'sentence'
-        });
-    }
-    if (!played && definition) {
-        played = await tryPlayPackedTtsForCurrentWord({
-            text: definition,
-            languageCode: 'en',
-            type: 'def'
-        });
-    }
-    if (!played && word) {
-        played = await tryPlayPackedTtsForCurrentWord({
-            text: word,
-            languageCode: 'en',
-            type: 'word'
-        });
-    }
-
-    if (played) {
-        showToast('Voice-pack clip played.');
-    } else {
-        showToast('No clip found in this pack for the current word yet.');
-    }
-}
-
-async function populateTtsPackSelect({ forceRefresh = false } = {}) {
-    const selectEl = document.getElementById('tts-pack-select');
-    if (!selectEl) return;
-    try {
-        const registry = await loadPackedTtsPackRegistry({ forceRefresh });
-        const packs = Array.isArray(registry?.packs) && registry.packs.length
-            ? registry.packs
-            : [getDefaultTtsPackOption()];
-        const selectedPackId = getPreferredTtsPackId();
-
-        selectEl.innerHTML = '';
-        packs.forEach((pack) => {
-            const option = document.createElement('option');
-            option.value = pack.id;
-            option.textContent = pack.name || pack.id;
-            selectEl.appendChild(option);
-        });
-
-        const hasSelected = packs.some((pack) => pack.id === selectedPackId);
-        if (hasSelected) {
-            selectEl.value = selectedPackId;
-        } else {
-            const preferredFallbackPackId = packs.some((pack) => pack.id === DEFAULT_SETTINGS.ttsPackId)
-                ? DEFAULT_SETTINGS.ttsPackId
-                : 'default';
-            selectEl.value = preferredFallbackPackId;
-            appSettings.ttsPackId = preferredFallbackPackId;
-            saveSettings();
-        }
-
-        const activePackId = normalizeTtsPackId(selectEl.value || 'default');
-        const activePack = packs.find((pack) => pack.id === activePackId) || getDefaultTtsPackOption();
-        const languageSummary = describeTtsPackLanguages(activePack);
-        const languageText = languageSummary ? ` (${languageSummary})` : '';
-        if (activePack.id === 'default') {
-            setTtsPackStatus(`Using default voice pack from ${PACKED_TTS_BASE_PATH}.`, 'info');
-        } else {
-            setTtsPackStatus(`Using pack: ${activePack.name}${languageText}.`, 'info');
-        }
-        await updateTtsPackStatusFromManifest({ pack: activePack });
-    } catch {
-        setTtsPackStatus('Could not load pack registry. Falling back to default pack.', 'warn');
-    }
-}
 
 function setVoiceHealthCheckStatus(message = '', tone = 'info') {
     const el = document.getElementById('voice-health-check-status');
@@ -6262,60 +5756,6 @@ function getVoiceHealthSummary(voice, qualityMode) {
     return { tone: 'info', message: 'Standard voice is active; enhanced voices will sound more natural.' };
 }
 
-async function runVoiceHealthCheck() {
-    if (voiceHealthCheckInProgress) {
-        showToast('Voice health check is already running.');
-        return;
-    }
-    voiceHealthCheckInProgress = true;
-    voiceHealthCheckToken += 1;
-    const checkToken = voiceHealthCheckToken;
-
-    try {
-        const qualityMode = getSpeechQualityMode();
-        setVoiceHealthCheckStatus('Running voice health check…', 'info');
-        await refreshVoiceDiagnostics('voice health check');
-        const voices = await getVoicesForSpeech();
-        const preferred = pickBestEnglishVoice(voices);
-        if (!preferred) {
-            setVoiceHealthCheckStatus('No English voice is available yet. Install enhanced voices, then refresh.', 'warn');
-            showToast('Install enhanced voices, then run Voice Health Check again.');
-            voiceHealthCheckInProgress = false;
-            return;
-        }
-
-        const summary = getVoiceHealthSummary(preferred, qualityMode);
-        const voiceName = preferred.name || preferred.voiceURI || 'Selected voice';
-        setVoiceHealthCheckStatus(`${voiceName}: ${summary.message} Playing test lines…`, 'info');
-
-        cancelPendingSpeech(true);
-        const fallbackLang = preferred.lang || getPreferredEnglishDialect();
-        const samples = [
-            { text: 'Phoneme sample: mmm, as in moon.', type: 'phoneme' },
-            { text: 'Word sample: bright.', type: 'word' },
-            { text: 'Sentence sample: You found the clue, laughed at the joke, and read with expression.', type: 'sentence' }
-        ];
-
-        let delay = 90;
-        samples.forEach((sample) => {
-            setTimeout(() => {
-                if (checkToken !== voiceHealthCheckToken) return;
-                speakEnglishText(sample.text, sample.type, preferred, fallbackLang);
-            }, delay);
-            delay += estimateSpeechDuration(sample.text, getSpeechRate(sample.type)) + 260;
-        });
-
-        setTimeout(() => {
-            if (checkToken !== voiceHealthCheckToken) return;
-            setVoiceHealthCheckStatus(`${voiceName}: ${summary.message}`, summary.tone);
-            voiceHealthCheckInProgress = false;
-        }, delay + 120);
-    } catch (error) {
-        console.warn('Voice health check failed', error);
-        setVoiceHealthCheckStatus('Voice health check failed. Refresh diagnostics and try again.', 'warn');
-        voiceHealthCheckInProgress = false;
-    }
-}
 
 async function refreshVoiceDiagnostics(source = 'refresh') {
     const qualityMode = getSpeechQualityMode();
@@ -6347,82 +5787,7 @@ async function refreshVoiceDiagnostics(source = 'refresh') {
     updateEnhancedVoicePrompt();
 }
 
-function ensureVoicePreferencesControls() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid || document.getElementById('system-voice-select')) return;
 
-    const row = document.createElement('div');
-    row.className = 'teacher-row teacher-voice-row';
-    row.id = 'teacher-voice-preferences-row';
-    row.innerHTML = `
-        <label for="system-voice-select"><strong>Narration voice</strong></label>
-        <select id="system-voice-select" aria-label="Narration voice dialect">
-            <option value="en-US">American English</option>
-            <option value="en-GB">British English</option>
-        </select>
-        <div class="slider-row">
-            <label for="speech-rate"><strong>Base speech rate</strong></label>
-            <div style="display:flex; gap:10px; align-items:center;">
-                <input id="speech-rate" type="range" min="0.7" max="1.05" step="0.01" />
-                <span id="speech-rate-value">0.95x</span>
-            </div>
-        </div>
-        <label for="narration-style-select"><strong>Narration style</strong></label>
-        <select id="narration-style-select" aria-label="Narration style">
-            <option value="expressive">Expressive (recommended)</option>
-            <option value="neutral">Neutral</option>
-        </select>
-        <label for="speech-quality-select"><strong>Voice quality</strong></label>
-        <select id="speech-quality-select" aria-label="Voice quality mode">
-            <option value="natural-preferred">Natural preferred (recommended)</option>
-            <option value="natural-only">Natural only</option>
-            <option value="fallback-any">Allow basic fallback</option>
-        </select>
-        <label for="tts-pack-select"><strong>Audio voice pack</strong></label>
-        <div class="voice-pack-controls">
-            <select id="tts-pack-select" aria-label="Audio voice pack">
-                <option value="default">Default voice pack</option>
-            </select>
-            <button type="button" id="tts-pack-refresh-btn" class="teacher-secondary-btn">Refresh packs</button>
-            <button type="button" id="tts-pack-sample-btn" class="teacher-secondary-btn">Play pack sample</button>
-        </div>
-        <div id="tts-pack-status" class="teacher-subtext">Using default voice pack.</div>
-        <div class="teacher-subtext">Natural-only blocks robotic fallback voices but requires enhanced system voices.</div>
-        <div class="teacher-subtext">Expressive style adds punctuation-aware pacing and intonation for sentence reading.</div>
-    `;
-    grid.appendChild(row);
-}
-
-function ensureVoiceDiagnosticsPanel() {
-    const grid = document.querySelector('#teacher-modal .teacher-tools-grid');
-    if (!grid || document.getElementById('voice-diagnostics-panel')) return;
-
-    const row = document.createElement('div');
-    row.className = 'teacher-row voice-diagnostics-row';
-    row.id = 'voice-diagnostics-row';
-    row.innerHTML = `
-        <label><strong>Voice diagnostics</strong></label>
-        <div id="voice-diagnostics-panel" class="voice-diagnostics-panel">
-            <div><strong>Selected voice:</strong> <span id="voice-diagnostics-name">Not resolved yet</span></div>
-            <div><strong>Preferred dialect:</strong> <span id="voice-diagnostics-dialect">en-US</span></div>
-            <div><strong>Voice language:</strong> <span id="voice-diagnostics-lang">—</span></div>
-            <div><strong>Quality tier:</strong> <span id="voice-diagnostics-quality">Unknown</span></div>
-            <div><strong>Quality policy:</strong> <span id="voice-diagnostics-policy">Natural preferred</span></div>
-            <div><strong>Candidates loaded:</strong> <span id="voice-diagnostics-candidates">0</span></div>
-            <div><strong>Narration style:</strong> <span id="voice-diagnostics-style">Expressive</span></div>
-            <div><strong>Fallback reason:</strong> <span id="voice-diagnostics-reason">Waiting for voice data.</span></div>
-            <div><strong>Last updated:</strong> <span id="voice-diagnostics-updated">—</span></div>
-        </div>
-        <div class="toggle-row inline voice-diagnostics-actions">
-            <button type="button" id="voice-diagnostics-refresh" class="teacher-secondary-btn">Refresh diagnostics</button>
-            <button type="button" id="voice-diagnostics-sample" class="teacher-secondary-btn">Play sample</button>
-            <button type="button" id="voice-health-check-btn" class="teacher-secondary-btn">Voice health check</button>
-        </div>
-        <div id="voice-health-check-status" class="voice-health-check-status hidden" aria-live="polite"></div>
-        <div class="teacher-subtext">Use this to verify which system voice is active before class.</div>
-    `;
-    grid.appendChild(row);
-}
 
 /* --- AUTO-ADJUST WORD LENGTH BASED ON PATTERN --- */
 const PATTERN_LENGTH_RULES = {
@@ -6538,13 +5903,7 @@ function syncLengthOptionsToPattern(setDefault = false) {
     }
 }
 
-function autoAdjustLength() {
-    syncLengthOptionsToPattern(true);
-}
 
-function updatePatternLengthCompatibility() {
-    syncLengthOptionsToPattern(false);
-}
 
 /* --- STUDIO LOGIC --- */
 let studioList = [];
@@ -6558,7 +5917,7 @@ function releaseStudioStream() {
     if (!studioStream) return;
     try {
         studioStream.getTracks().forEach(track => {
-            try { track.stop(); } catch (e) {}
+            try { track.stop(); } catch(e) { /* silent */ }
         });
     } finally {
         studioStream = null;
@@ -6598,7 +5957,7 @@ async function startStudioSession() {
     
     // Safety check
     if (!window.WORD_ENTRIES) {
-        alert("Word database not loaded yet. Please wait and try again.");
+        showToast("Word database not loaded yet. Please wait and try again.");
         return;
     }
     
@@ -6617,7 +5976,7 @@ async function startStudioSession() {
     }
 
     if (rawList.length === 0) {
-        alert("No words found. Please check your selection or pasted list.");
+        showToast("No words found. Please check your selection or pasted list.");
         return;
     }
 
@@ -6650,7 +6009,7 @@ async function startStudioSession() {
     }
 
     if (studioList.length === 0) {
-        alert("All selected words already have recordings! Try unchecking 'Skip existing' or choose different words.");
+        showToast("All selected words already have recordings.");
         return;
     }
 
@@ -6704,7 +6063,7 @@ function showStudioCompletionModal() {
                    `Your custom recordings will now be used when students play with these words. ` +
                    `The app will automatically prefer your recordings over computer-generated speech.`;
     
-    alert(message);
+    showToast(message);
     closeModal();
 }
 
@@ -6839,7 +6198,7 @@ function toggleRecording(type) {
 
     }).catch(err => {
         console.error("Mic Error:", err);
-        alert("Could not access microphone. Please check permissions and try again.");
+        showToast("⚠️ Could not access microphone. Check permissions.");
     });
 }
 
@@ -6950,7 +6309,6 @@ function startNewGame(customWord = null) {
     // Highlight the first row immediately so the board feels "ready" even before typing.
     updateGrid();
     
-    console.log(`✓ Game started: word="${currentWord}" (${CURRENT_WORD_LENGTH} letters)`);
     updateWordQuestAudioAvailabilityNotice();
     
     // Update adaptive actions for new word
@@ -7391,58 +6749,7 @@ async function speakPhoneme(sound) {
     speakText(text, 'phoneme');
 }
 
-function canShowMouthPosition(sound) {
-    // Check if we have mouth position data for this sound
-    if (!sound || !window.PHONEME_DATA) return false;
-    return !!window.PHONEME_DATA[sound.toLowerCase()];
-}
 
-function openPhonemeGuideToSound(sound) {
-    // Open phoneme modal
-    const phonemeModal = document.getElementById('phoneme-modal');
-    const modalOverlay = document.getElementById('modal-overlay');
-    
-    if (phonemeModal && modalOverlay) {
-        modalOverlay.classList.remove('hidden');
-        phonemeModal.classList.remove('hidden');
-        setWarmupOpen(true);
-        if (sound) prefetchPhonemeClips([sound]);
-    try { populatePhonemeGrid && populatePhonemeGrid(); } catch(e) {}
-        
-        // Scroll to matching card and highlight
-        setTimeout(() => {
-            const targetCard = document.querySelector(`.phoneme-card[data-sound="${sound}"]`);
-            if (targetCard) {
-                targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                targetCard.classList.add('highlight-flash');
-                setTimeout(() => targetCard.classList.remove('highlight-flash'), 2000);
-            }
-        }, 100);
-    }
-}
-
-function updateVoiceIndicator() {
-    const indicator = document.getElementById('voice-indicator');
-    const indicatorText = document.getElementById('voice-indicator-text');
-    
-    if (!indicator || !indicatorText) return;
-    
-    // Check if teacher recordings are enabled
-    const useTeacherVoice = localStorage.getItem('useTeacherRecordings') !== 'false';
-    
-    if (useTeacherVoice && hasAnyRecordings()) {
-        indicator.style.display = 'block';
-        indicatorText.textContent = '🎤 Using teacher\'s voice';
-    } else {
-        indicator.style.display = 'none';
-    }
-}
-
-function hasAnyRecordings() {
-    // Check if any recordings exist in IndexedDB
-    // Simplified check - can be enhanced
-    return localStorage.getItem('hasRecordings') === 'true';
-}
 
 function initAdaptiveActions() {
     // Wire up action buttons
@@ -7454,7 +6761,6 @@ function initAdaptiveActions() {
     // Actions are wired up in updateAdaptiveActions()
     // This is just initial setup
     
-    console.log('✓ Adaptive actions initialized');
 }
 
 function initKeyboard() {
@@ -8235,7 +7541,7 @@ function showEndModal(win) {
                 length
             }
         });
-    } catch (e) {}
+    } catch(e) { /* silent */ }
 
     stopLightningTimer();
     
@@ -8539,13 +7845,13 @@ function showEndModal(win) {
     const pronunListen = document.getElementById('pronun-listen');
     const pronunRecord = document.getElementById('pronun-record');
     const pronunTimer = document.getElementById('pronun-timer');
-    const pronunWaveform = document.getElementById('pronun-waveform');
     const pronunPlayMine = document.getElementById('pronun-play-mine');
     const pronunRedo = document.getElementById('pronun-redo');
     const pronunPlayback = document.getElementById('pronun-playback');
     const pronunCompareSection = document.getElementById('pronun-compare-section');
     const pronunPlayBoth = document.getElementById('pronun-play-both');
     const pronunSave = document.getElementById('pronun-save');
+    const pronunFeedback = document.getElementById('pronun-feedback');
     const revealRecordStatus = document.getElementById('reveal-record-status');
 
     if (revealRecordBtn && pronunStudio) {
@@ -8554,127 +7860,418 @@ function showEndModal(win) {
         let psIsRecording = false;
         let psBlobUrl = null;
         let psBlob = null;
-        let psAnalyser = null;
-        let psAnimFrame = null;
-        let psAudioCtx = null;
         let psModelAmplitudes = [];
         let psStudentAmplitudes = [];
+        let psRecordingAnalyser = null;
+        let psRecordingAnimFrame = null;
 
-        // Toggle studio open/close
+        // Toggle studio
         revealRecordBtn.onclick = () => {
             const isHidden = pronunStudio.classList.contains('hidden');
             pronunStudio.classList.toggle('hidden');
             revealRecordBtn.textContent = isHidden ? '🎙 Close Studio' : '🎙 Practice Saying It';
         };
+        if (pronunClose) pronunClose.onclick = () => {
+            pronunStudio.classList.add('hidden');
+            revealRecordBtn.textContent = '🎙 Practice Saying It';
+            if (psIsRecording && psMediaRecorder && psMediaRecorder.state === 'recording') psMediaRecorder.stop();
+        };
 
-        if (pronunClose) {
-            pronunClose.onclick = () => {
-                pronunStudio.classList.add('hidden');
-                revealRecordBtn.textContent = '🎙 Practice Saying It';
-                // Stop recording if in progress
-                if (psIsRecording && psMediaRecorder && psMediaRecorder.state === 'recording') {
-                    psMediaRecorder.stop();
-                }
-            };
+        // ========================================
+        // WAVEFORM DRAWING UTILITIES
+        // roundRect polyfill for older school devices
+        function safeRoundRect(ctx, x, y, w, h, r) {
+            if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); return; }
+            r = Math.min(r, w / 2, h / 2);
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.arcTo(x + w, y, x + w, y + r, r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+            ctx.lineTo(x + r, y + h);
+            ctx.arcTo(x, y + h, x, y + h - r, r);
+            ctx.lineTo(x, y + r);
+            ctx.arcTo(x, y, x + r, y, r);
+        }
+        // ========================================
+        function drawWaveformBars(canvas, amplitudes, color, bgColor) {
+            if (!canvas || !amplitudes || !amplitudes.length) return;
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width;
+            const H = canvas.height;
+            ctx.clearRect(0, 0, W, H);
+            
+            // Background gradient
+            const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+            bgGrad.addColorStop(0, bgColor || 'rgba(0,0,0,0.02)');
+            bgGrad.addColorStop(1, 'rgba(255,255,255,0.8)');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, W, H);
+            
+            // Normalize amplitudes to 0-1
+            const max = Math.max(...amplitudes, 0.001);
+            const normalized = amplitudes.map(v => Math.min(1, v / max));
+            
+            // Draw as bold mirrored mountain bars
+            const barCount = Math.min(normalized.length, Math.floor(W / 3));
+            const step = normalized.length / barCount;
+            const barWidth = Math.max(3, (W / barCount) * 0.75);
+            const gap = (W / barCount) - barWidth;
+            const mid = H / 2;
+            const maxBarH = mid - 3;
+            
+            for (let i = 0; i < barCount; i++) {
+                const idx = Math.floor(i * step);
+                // Smooth by averaging neighbors
+                let val = normalized[idx] || 0;
+                if (idx > 0) val = (val + (normalized[idx - 1] || 0)) / 2;
+                if (idx < normalized.length - 1) val = (val + (normalized[idx + 1] || 0)) / 2;
+                
+                const barH = Math.max(2, val * maxBarH);
+                const x = i * (barWidth + gap) + gap / 2;
+                
+                // Bar gradient
+                const barGrad = ctx.createLinearGradient(0, mid - barH, 0, mid + barH);
+                barGrad.addColorStop(0, color);
+                barGrad.addColorStop(0.5, color + 'aa');
+                barGrad.addColorStop(1, color);
+                ctx.fillStyle = barGrad;
+                
+                // Rounded bar
+                const radius = Math.min(barWidth / 2, 2);
+                ctx.beginPath();
+                safeRoundRect(ctx, x, mid - barH, barWidth, barH * 2, radius);
+                ctx.fill();
+            }
+            
+            // Subtle center line
+            ctx.strokeStyle = color + '25';
+            ctx.lineWidth = 0.5;
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            ctx.moveTo(0, mid);
+            ctx.lineTo(W, mid);
+            ctx.stroke();
+            ctx.setLineDash([]);
         }
 
-        // Step 1: Listen to the word
+        function drawComparisonOverlay(canvas, modelAmps, studentAmps) {
+            if (!canvas || !modelAmps?.length || !studentAmps?.length) return;
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width;
+            const H = canvas.height;
+            ctx.clearRect(0, 0, W, H);
+            
+            // White background with subtle grid
+            ctx.fillStyle = '#fafbfc';
+            ctx.fillRect(0, 0, W, H);
+            
+            // Normalize both to same scale
+            const maxModel = Math.max(...modelAmps, 0.001);
+            const maxStudent = Math.max(...studentAmps, 0.001);
+            const globalMax = Math.max(maxModel, maxStudent);
+            const normModel = modelAmps.map(v => Math.min(1, v / globalMax));
+            const normStudent = studentAmps.map(v => Math.min(1, v / globalMax));
+            
+            const barCount = Math.min(80, Math.max(normModel.length, normStudent.length));
+            const mid = H / 2;
+            const barWidth = Math.max(2, (W / barCount) * 0.4);
+            const pairWidth = W / barCount;
+            const maxBarH = mid - 4;
+            
+            let matchSum = 0;
+            let totalWeight = 0;
+            
+            for (let i = 0; i < barCount; i++) {
+                const mIdx = Math.floor(i * normModel.length / barCount);
+                const sIdx = Math.floor(i * normStudent.length / barCount);
+                let mVal = normModel[mIdx] || 0;
+                let sVal = normStudent[sIdx] || 0;
+                
+                // Smooth
+                if (mIdx > 0) mVal = (mVal + (normModel[mIdx-1]||0)) / 2;
+                if (sIdx > 0) sVal = (sVal + (normStudent[sIdx-1]||0)) / 2;
+                
+                const x = i * pairWidth;
+                const mBarH = Math.max(1.5, mVal * maxBarH);
+                const sBarH = Math.max(1.5, sVal * maxBarH);
+                
+                // Calculate match quality for this bar
+                const diff = Math.abs(mVal - sVal);
+                const match = Math.max(0, 1 - diff * 3);
+                const weight = Math.max(mVal, sVal, 0.1);
+                matchSum += match * weight;
+                totalWeight += weight;
+                
+                // Draw match highlight background (green where they agree)
+                if (diff < 0.2) {
+                    ctx.fillStyle = `rgba(34, 197, 94, ${0.08 + match * 0.12})`;
+                    const h = Math.max(mBarH, sBarH);
+                    ctx.fillRect(x, mid - h - 2, pairWidth, (h + 2) * 2);
+                }
+                
+                // Draw model bar (blue, left side)
+                const mGrad = ctx.createLinearGradient(0, mid - mBarH, 0, mid + mBarH);
+                mGrad.addColorStop(0, 'rgba(59, 130, 246, 0.7)');
+                mGrad.addColorStop(0.5, 'rgba(59, 130, 246, 0.5)');
+                mGrad.addColorStop(1, 'rgba(59, 130, 246, 0.7)');
+                ctx.fillStyle = mGrad;
+                ctx.beginPath();
+                safeRoundRect(ctx, x + 1, mid - mBarH, barWidth, mBarH * 2, 1.5);
+                ctx.fill();
+                
+                // Draw student bar (orange, right side)
+                const sGrad = ctx.createLinearGradient(0, mid - sBarH, 0, mid + sBarH);
+                sGrad.addColorStop(0, 'rgba(249, 115, 22, 0.7)');
+                sGrad.addColorStop(0.5, 'rgba(249, 115, 22, 0.5)');
+                sGrad.addColorStop(1, 'rgba(249, 115, 22, 0.7)');
+                ctx.fillStyle = sGrad;
+                ctx.beginPath();
+                safeRoundRect(ctx, x + barWidth + 2, mid - sBarH, barWidth, sBarH * 2, 1.5);
+                ctx.fill();
+                
+                // Draw difference indicator (red tick) where there's a big mismatch
+                if (diff > 0.35 && Math.max(mVal, sVal) > 0.15) {
+                    ctx.fillStyle = 'rgba(220, 38, 38, 0.25)';
+                    ctx.fillRect(x, H - 3, pairWidth - 1, 3);
+                }
+            }
+            
+            // Center line
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 0.5;
+            ctx.setLineDash([2, 4]);
+            ctx.beginPath();
+            ctx.moveTo(0, mid);
+            ctx.lineTo(W, mid);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Calculate overall similarity
+            const pct = totalWeight > 0 ? Math.round((matchSum / totalWeight) * 100) : 50;
+            
+            // Draw similarity bar at bottom
+            const barY = H - 6;
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fillRect(8, barY, W - 16, 4);
+            const barColor = pct >= 75 ? '#22c55e' : pct >= 50 ? '#eab308' : '#3b82f6';
+            ctx.fillStyle = barColor;
+            ctx.fillRect(8, barY, (W - 16) * (pct / 100), 4);
+            
+            if (pronunFeedback) {
+                pronunFeedback.style.display = 'block';
+                if (pct >= 75) {
+                    pronunFeedback.innerHTML = `⭐⭐⭐ Great match! <strong>${pct}%</strong> rhythm similarity — your pronunciation is on track!`;
+                    pronunFeedback.style.background = 'rgba(34,197,94,0.1)';
+                    pronunFeedback.style.color = '#166534';
+                } else if (pct >= 50) {
+                    pronunFeedback.innerHTML = `⭐⭐ Good try! <strong>${pct}%</strong> match — listen again and try matching the rhythm pattern`;
+                    pronunFeedback.style.background = 'rgba(234,179,8,0.1)';
+                    pronunFeedback.style.color = '#92400e';
+                } else {
+                    pronunFeedback.innerHTML = `⭐ Keep practicing! <strong>${pct}%</strong> — tap Listen to hear the model, then try again slower`;
+                    pronunFeedback.style.background = 'rgba(59,130,246,0.08)';
+                    pronunFeedback.style.color = '#1e40af';
+                }
+            }
+        }
+
+        // ========================================
+        // MODEL WAVEFORM CAPTURE
+        // ========================================
+        // Capture model audio when "Listen" is clicked by decoding audio from speech synthesis
+        async function captureModelWaveform() {
+            const word = String(currentWord || '').toLowerCase();
+            if (!word) return;
+            
+            const modelCanvas = document.getElementById('pronun-wave-model');
+            if (!modelCanvas) return;
+            
+            // Show loading state
+            const ctx = modelCanvas.getContext('2d');
+            const W = modelCanvas.width;
+            const H = modelCanvas.height;
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = '#eff6ff';
+            ctx.fillRect(0, 0, W, H);
+            ctx.fillStyle = '#93c5fd';
+            ctx.font = '12px system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Capturing model voice...', W / 2, H / 2 + 4);
+            
+            // Clear any previously stored URL
+            window._wqLastPlayedAudioUrl = null;
+            
+            // Play the word — this will set window._wqLastPlayedAudioUrl
+            speak(word, 'word');
+            
+            // Wait for the audio URL to be captured
+            let audioUrl = null;
+            for (let attempt = 0; attempt < 20; attempt++) {
+                await new Promise(r => setTimeout(r, 100));
+                if (window._wqLastPlayedAudioUrl) {
+                    audioUrl = window._wqLastPlayedAudioUrl;
+                    break;
+                }
+            }
+            
+            if (audioUrl) {
+                try {
+                    // Fetch and decode the actual audio file
+                    const response = await fetch(audioUrl);
+                    const arrayBuffer = await response.arrayBuffer();
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                    
+                    // Extract amplitude envelope from decoded audio
+                    const channelData = audioBuffer.getChannelData(0);
+                    const sampleCount = 100; // number of waveform bars
+                    const step = Math.floor(channelData.length / sampleCount);
+                    psModelAmplitudes = [];
+                    
+                    for (let i = 0; i < sampleCount; i++) {
+                        let sum = 0;
+                        const start = i * step;
+                        for (let j = start; j < start + step && j < channelData.length; j++) {
+                            sum += Math.abs(channelData[j]);
+                        }
+                        psModelAmplitudes.push((sum / step) * 120);
+                    }
+                    
+                    drawWaveformBars(modelCanvas, psModelAmplitudes, '#3b82f6', 'rgba(239,246,255,0.5)');
+                    audioCtx.close();
+                    return;
+                } catch(e) {
+                    // Fetch/decode failed — fall through to synthetic
+                }
+            }
+            
+            // Fallback: generate synthetic envelope based on word structure
+            const vowels = word.match(/[aeiou]/gi) || [];
+            const syllableCount = Math.max(1, vowels.length);
+            const sampleCount = 100;
+            psModelAmplitudes = [];
+            
+            for (let i = 0; i < sampleCount; i++) {
+                const t = i / sampleCount;
+                let amp = 0;
+                for (let s = 0; s < syllableCount; s++) {
+                    const center = (s + 0.5) / syllableCount;
+                    const width = 0.7 / syllableCount;
+                    const dist = Math.abs(t - center) / width;
+                    if (dist < 1) amp += (1 - dist * dist) * (0.6 + 0.4 * Math.random());
+                }
+                amp = Math.min(1, amp) * (0.7 + 0.3 * Math.random());
+                if (t < 0.06) amp *= t / 0.06;
+                if (t > 0.94) amp *= (1 - t) / 0.06;
+                psModelAmplitudes.push(amp * 35);
+            }
+            drawWaveformBars(modelCanvas, psModelAmplitudes, '#3b82f6', 'rgba(239,246,255,0.5)');
+        }
+
+        // Step 1: Listen
         if (pronunListen) {
             pronunListen.onclick = () => {
-                const word = String(currentWord || '').toLowerCase();
-                if (typeof speak === 'function') speak(word, 'word');
+                pronunListen.textContent = '🔊 Playing...';
+                pronunListen.disabled = true;
+                captureModelWaveform();
+                setTimeout(() => {
+                    pronunListen.textContent = '▶ Listen';
+                    pronunListen.disabled = false;
+                }, 2000);
             };
         }
 
-        // Waveform drawing helper
-        function drawLiveWaveform(canvas, analyser) {
+        // ========================================
+        // STUDENT RECORDING WITH LIVE WAVEFORM
+        // ========================================
+        function drawLiveRecordingWaveform(canvas, analyser) {
             if (!canvas || !analyser) return;
             const ctx = canvas.getContext('2d');
+            const W = canvas.width;
+            const H = canvas.height;
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
-
+            let frameCount = 0;
+            
             function draw() {
                 if (!psIsRecording) return;
-                psAnimFrame = requestAnimationFrame(draw);
+                psRecordingAnimFrame = requestAnimationFrame(draw);
                 analyser.getByteTimeDomainData(dataArray);
-
-                ctx.fillStyle = 'rgba(254, 252, 232, 0.3)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = '#dc2626';
-                ctx.beginPath();
-
-                const sliceWidth = canvas.width / bufferLength;
-                let x = 0;
-                for (let i = 0; i < bufferLength; i++) {
-                    const v = dataArray[i] / 128.0;
-                    const y = (v * canvas.height) / 2;
-                    if (i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                    x += sliceWidth;
+                frameCount++;
+                
+                // Smooth fade background
+                ctx.fillStyle = 'rgba(254, 252, 232, 0.2)';
+                ctx.fillRect(0, 0, W, H);
+                
+                // Redraw fully every 3 frames for clarity
+                if (frameCount % 3 === 0) {
+                    ctx.clearRect(0, 0, W, H);
+                    ctx.fillStyle = 'rgba(254, 252, 232, 0.4)';
+                    ctx.fillRect(0, 0, W, H);
                 }
-                ctx.lineTo(canvas.width, canvas.height / 2);
-                ctx.stroke();
-
-                // Capture amplitude for comparison later
-                const sum = dataArray.reduce((a, b) => a + Math.abs(b - 128), 0);
-                psStudentAmplitudes.push(sum / bufferLength);
+                
+                const mid = H / 2;
+                const barCount = 50;
+                const step = Math.floor(bufferLength / barCount);
+                const barWidth = Math.max(3, (W / barCount) * 0.7);
+                const gap = (W / barCount) - barWidth;
+                
+                for (let i = 0; i < barCount; i++) {
+                    let sum = 0;
+                    for (let j = 0; j < step; j++) {
+                        sum += Math.abs(dataArray[i * step + j] - 128);
+                    }
+                    const val = sum / step;
+                    const barH = Math.max(2, (val / 30) * (mid - 3));
+                    const x = i * (barWidth + gap) + gap / 2;
+                    const intensity = Math.min(1, val / 40);
+                    
+                    // Color shifts from orange to red based on volume
+                    const r = Math.round(220 + intensity * 35);
+                    const g = Math.round(80 - intensity * 40);
+                    const b = Math.round(22);
+                    
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${0.5 + intensity * 0.4})`;
+                    ctx.beginPath();
+                    safeRoundRect(ctx, x, mid - barH, barWidth, barH * 2, 1.5);
+                    ctx.fill();
+                }
+                
+                // Capture for comparison
+                const totalAmp = dataArray.reduce((a, b) => a + Math.abs(b - 128), 0);
+                psStudentAmplitudes.push(totalAmp / bufferLength);
             }
             draw();
         }
 
-        // Draw static waveform from amplitude data
-        function drawStaticWave(canvas, amplitudes, color) {
-            if (!canvas || !amplitudes.length) return;
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const step = canvas.width / amplitudes.length;
-            const mid = canvas.height / 2;
-
-            ctx.fillStyle = color + '20';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.beginPath();
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 1.5;
-            for (let i = 0; i < amplitudes.length; i++) {
-                const h = (amplitudes[i] / 40) * mid;
-                const x = i * step;
-                ctx.moveTo(x, mid - h);
-                ctx.lineTo(x, mid + h);
-            }
-            ctx.stroke();
-        }
-
-        // Step 2: Record
         if (pronunRecord) {
             pronunRecord.onclick = async () => {
-                // If recording, stop
                 if (psIsRecording) {
                     if (psMediaRecorder && psMediaRecorder.state === 'recording') psMediaRecorder.stop();
                     return;
                 }
 
+                const yoursCanvas = document.getElementById('pronun-wave-yours');
+                psStudentAmplitudes = [];
+                
                 // Countdown
                 pronunRecord.disabled = true;
-                psStudentAmplitudes = [];
                 for (let i = 3; i >= 1; i--) {
                     if (pronunTimer) { pronunTimer.style.display = 'inline'; pronunTimer.textContent = `${i}...`; }
-                    await new Promise(r => setTimeout(r, 700));
+                    await new Promise(r => setTimeout(r, 600));
                 }
-                if (pronunTimer) pronunTimer.textContent = '🔴 Speak now!';
+                if (pronunTimer) pronunTimer.textContent = '🔴 Speak!';
 
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    psAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    psAnalyser = psAudioCtx.createAnalyser();
-                    psAnalyser.fftSize = 256;
-                    const source = psAudioCtx.createMediaStreamSource(stream);
-                    source.connect(psAnalyser);
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    psRecordingAnalyser = audioCtx.createAnalyser();
+                    psRecordingAnalyser.fftSize = 256;
+                    audioCtx.createMediaStreamSource(stream).connect(psRecordingAnalyser);
 
                     psMediaRecorder = new MediaRecorder(stream);
                     psAudioChunks = [];
-
                     psMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) psAudioChunks.push(e.data); };
 
                     psMediaRecorder.onstart = () => {
@@ -8684,51 +8281,43 @@ function showEndModal(win) {
                         pronunRecord.style.background = '#fca5a5';
                         pronunRecord.style.borderColor = '#f87171';
                         pronunRecord.style.color = '#7f1d1d';
-
-                        if (pronunWaveform) {
-                            pronunWaveform.style.display = 'block';
-                            drawLiveWaveform(pronunWaveform, psAnalyser);
-                        }
+                        drawLiveRecordingWaveform(yoursCanvas, psRecordingAnalyser);
 
                         let secs = 7;
-                        const countInterval = setInterval(() => {
+                        const ci = setInterval(() => {
                             secs--;
-                            if (secs <= 0 || !psIsRecording) { clearInterval(countInterval); return; }
+                            if (secs <= 0 || !psIsRecording) { clearInterval(ci); return; }
                             if (pronunTimer) pronunTimer.textContent = `🔴 ${secs}s`;
                         }, 1000);
                     };
 
                     psMediaRecorder.onstop = () => {
                         psIsRecording = false;
-                        if (psAnimFrame) cancelAnimationFrame(psAnimFrame);
+                        if (psRecordingAnimFrame) cancelAnimationFrame(psRecordingAnimFrame);
                         stream.getTracks().forEach(t => t.stop());
-                        if (psAudioCtx) { try { psAudioCtx.close(); } catch(e){} }
+                        try { audioCtx.close(); } catch(e) { /* silent */ }
 
                         psBlob = new Blob(psAudioChunks, { type: 'audio/webm' });
                         if (psBlobUrl) URL.revokeObjectURL(psBlobUrl);
                         psBlobUrl = URL.createObjectURL(psBlob);
 
                         // Reset button
-                        pronunRecord.textContent = '● Record';
+                        pronunRecord.textContent = '● Record Again';
                         pronunRecord.style.background = '#fef3c7';
                         pronunRecord.style.borderColor = '#fbbf24';
                         pronunRecord.style.color = '#92400e';
-                        if (pronunTimer) pronunTimer.textContent = '✅ Recorded!';
+                        if (pronunTimer) pronunTimer.textContent = '✅ Done!';
 
-                        // Show playback controls
-                        if (pronunPlayback) pronunPlayback.style.display = 'flex';
-                        if (pronunPlayback) {
-                            pronunPlayback.style.display = 'flex';
-                            pronunPlayback.style.gap = '6px';
-                            pronunPlayback.style.justifyContent = 'center';
-                        }
+                        // Show playback
+                        if (pronunPlayback) { pronunPlayback.style.display = 'flex'; pronunPlayback.style.gap = '6px'; pronunPlayback.style.justifyContent = 'center'; }
 
-                        // Show compare section
+                        // Draw final waveform
+                        drawWaveformBars(yoursCanvas, psStudentAmplitudes, '#f97316', 'rgba(249,115,22,0.04)');
+
+                        // Show compare section and draw overlay
                         if (pronunCompareSection) pronunCompareSection.style.display = 'block';
-
-                        // Draw student waveform
-                        const yoursCanvas = document.getElementById('pronun-wave-yours');
-                        drawStaticWave(yoursCanvas, psStudentAmplitudes, '#f97316');
+                        const compareCanvas = document.getElementById('pronun-wave-compare');
+                        drawComparisonOverlay(compareCanvas, psModelAmplitudes, psStudentAmplitudes);
                     };
 
                     psMediaRecorder.start();
@@ -8740,74 +8329,56 @@ function showEndModal(win) {
             };
         }
 
-        // Play back recording
-        if (pronunPlayMine) {
-            pronunPlayMine.onclick = () => {
-                if (psBlobUrl) new Audio(psBlobUrl).play();
-            };
-        }
-
+        // Playback
+        if (pronunPlayMine) pronunPlayMine.onclick = () => { if (psBlobUrl) new Audio(psBlobUrl).play(); };
+        
         // Re-record
-        if (pronunRedo) {
-            pronunRedo.onclick = () => {
-                if (pronunPlayback) pronunPlayback.style.display = 'none';
-                if (pronunCompareSection) pronunCompareSection.style.display = 'none';
-                if (pronunTimer) { pronunTimer.textContent = ''; pronunTimer.style.display = 'none'; }
-                if (pronunWaveform) pronunWaveform.style.display = 'none';
-                pronunRecord.click();
-            };
-        }
+        if (pronunRedo) pronunRedo.onclick = () => {
+            if (pronunPlayback) pronunPlayback.style.display = 'none';
+            if (pronunCompareSection) pronunCompareSection.style.display = 'none';
+            if (pronunTimer) { pronunTimer.textContent = ''; pronunTimer.style.display = 'none'; }
+            if (pronunFeedback) pronunFeedback.style.display = 'none';
+            pronunRecord.click();
+        };
 
-        // Play both in sequence
-        if (pronunPlayBoth) {
-            pronunPlayBoth.onclick = async () => {
-                const word = String(currentWord || '').toLowerCase();
-                // Play model first
-                pronunPlayBoth.textContent = '🔊 Playing model...';
-                pronunPlayBoth.disabled = true;
-                if (typeof speak === 'function') speak(word, 'word');
-                await new Promise(r => setTimeout(r, 1800));
-                // Then play student
-                pronunPlayBoth.textContent = '🎙 Playing yours...';
-                if (psBlobUrl) {
-                    const audio = new Audio(psBlobUrl);
-                    audio.play();
-                    audio.onended = () => {
-                        pronunPlayBoth.textContent = '▶ Play Both (Model → Yours)';
-                        pronunPlayBoth.disabled = false;
-                    };
-                    setTimeout(() => {
-                        pronunPlayBoth.textContent = '▶ Play Both (Model → Yours)';
-                        pronunPlayBoth.disabled = false;
-                    }, 5000);
-                } else {
-                    pronunPlayBoth.textContent = '▶ Play Both (Model → Yours)';
-                    pronunPlayBoth.disabled = false;
-                }
-            };
-        }
+        // Play both
+        if (pronunPlayBoth) pronunPlayBoth.onclick = async () => {
+            const word = String(currentWord || '').toLowerCase();
+            pronunPlayBoth.textContent = '🔊 Model...';
+            pronunPlayBoth.disabled = true;
+            if (typeof speak === 'function') speak(word, 'word');
+            await new Promise(r => setTimeout(r, 1800));
+            pronunPlayBoth.textContent = '🎙 Yours...';
+            if (psBlobUrl) {
+                const a = new Audio(psBlobUrl);
+                a.play();
+                a.onended = () => { pronunPlayBoth.textContent = '▶ Play Both (Model → Yours)'; pronunPlayBoth.disabled = false; };
+                setTimeout(() => { pronunPlayBoth.textContent = '▶ Play Both (Model → Yours)'; pronunPlayBoth.disabled = false; }, 5000);
+            } else {
+                pronunPlayBoth.textContent = '▶ Play Both (Model → Yours)';
+                pronunPlayBoth.disabled = false;
+            }
+        };
 
-        // Save to portfolio
-        if (pronunSave) {
-            pronunSave.onclick = async () => {
-                if (!psBlob) return;
-                const word = String(currentWord || '').toLowerCase();
-                try {
-                    const db = await new Promise((resolve, reject) => {
-                        const req = indexedDB.open('WordQuestRecordings', 1);
-                        req.onupgradeneeded = () => req.result.createObjectStore('recordings');
-                        req.onsuccess = () => resolve(req.result);
-                        req.onerror = () => reject(req.error);
-                    });
-                    const tx = db.transaction('recordings', 'readwrite');
-                    tx.objectStore('recordings').put({ blob: psBlob, word, date: new Date().toISOString() }, `${word}_${new Date().toISOString().slice(0,10)}`);
-                    await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
-                    db.close();
-                    pronunSave.textContent = '✅ Saved!';
-                    pronunSave.disabled = true;
-                } catch(e) { pronunSave.textContent = '⚠️ Error'; }
-            };
-        }
+        // Save
+        if (pronunSave) pronunSave.onclick = async () => {
+            if (!psBlob) return;
+            const word = String(currentWord || '').toLowerCase();
+            try {
+                const db = await new Promise((resolve, reject) => {
+                    const req = indexedDB.open('WordQuestRecordings', 1);
+                    req.onupgradeneeded = () => req.result.createObjectStore('recordings');
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+                const tx = db.transaction('recordings', 'readwrite');
+                tx.objectStore('recordings').put({ blob: psBlob, word, date: new Date().toISOString() }, `${word}_${new Date().toISOString().slice(0,10)}`);
+                await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
+                db.close();
+                pronunSave.textContent = '✅ Saved!';
+                pronunSave.disabled = true;
+            } catch(e) { pronunSave.textContent = '⚠️ Error'; }
+        };
     }
 
     // Store that we should show bonus when modal closes
@@ -8833,93 +8404,6 @@ function openTeacherMode() {
    TEACHER VOICE CONTROL SYSTEM
    ========================================== */
 
-function initTeacherVoiceControl() {
-    const toggle = document.getElementById('teacher-voice-toggle');
-    const statusText = document.getElementById('recording-count');
-    const deleteAllBtn = document.getElementById('delete-all-recordings');
-    const deleteWordBtn = document.getElementById('delete-word-recording');
-    const deleteSentenceBtn = document.getElementById('delete-sentence-recording');
-    const deleteAllWordBtn = document.getElementById('delete-all-word-recordings');
-    const deleteAllSentenceBtn = document.getElementById('delete-all-sentence-recordings');
-    const deletePhonemeBtn = document.getElementById('delete-phoneme-recording');
-
-    if (!toggle) return;
-
-    const useTeacherVoice = localStorage.getItem('useTeacherRecordings') !== 'false';
-    toggle.checked = useTeacherVoice;
-
-    updateRecordingStatus();
-
-    toggle.onchange = () => {
-        const enabled = toggle.checked;
-        localStorage.setItem('useTeacherRecordings', enabled.toString());
-        updateVoiceIndicator();
-        showToast(enabled ? '✅ Teacher voice enabled' : '🔊 Using system voice');
-    };
-
-    if (deleteWordBtn) {
-        deleteWordBtn.onclick = async () => {
-            if (!currentWord) return showToast('No word selected yet.');
-            if (confirm(`Delete the word recording for "${currentWord}"?`)) {
-                await deleteAudioFromDB(`${currentWord}_word`);
-                showToast('✅ Word recording deleted');
-                updateRecordingStatus();
-            }
-        };
-    }
-
-    if (deleteSentenceBtn) {
-        deleteSentenceBtn.onclick = async () => {
-            if (!currentWord) return showToast('No word selected yet.');
-            if (confirm(`Delete the sentence recording for "${currentWord}"?`)) {
-                await deleteAudioFromDB(`${currentWord}_sentence`);
-                showToast('✅ Sentence recording deleted');
-                updateRecordingStatus();
-            }
-        };
-    }
-
-    if (deletePhonemeBtn) {
-        deletePhonemeBtn.onclick = async () => {
-            if (!currentSelectedSound?.sound) return showToast('Select a sound in the Sounds guide first.');
-            const key = `phoneme_${currentSelectedSound.sound}`;
-            if (confirm(`Delete the phoneme recording for "${currentSelectedSound.sound}"?`)) {
-                await deleteAudioFromDB(key);
-                clearPhonemeCache(currentSelectedSound.sound);
-                showToast('✅ Phoneme recording deleted');
-                updateRecordingStatus();
-            }
-        };
-    }
-
-    if (deleteAllWordBtn) {
-        deleteAllWordBtn.onclick = async () => {
-            if (confirm('Delete all word recordings? This cannot be undone.')) {
-                const count = await deleteAudioByFilter(key => key.endsWith('_word'));
-                showToast(`✅ Deleted ${count} word recording${count === 1 ? '' : 's'}`);
-                updateRecordingStatus();
-            }
-        };
-    }
-
-    if (deleteAllSentenceBtn) {
-        deleteAllSentenceBtn.onclick = async () => {
-            if (confirm('Delete all sentence recordings? This cannot be undone.')) {
-                const count = await deleteAudioByFilter(key => key.endsWith('_sentence'));
-                showToast(`✅ Deleted ${count} sentence recording${count === 1 ? '' : 's'}`);
-                updateRecordingStatus();
-            }
-        };
-    }
-
-    if (deleteAllBtn) {
-        deleteAllBtn.onclick = async () => {
-            if (confirm('Delete all your voice recordings? This cannot be undone.')) {
-                await clearAllTeacherRecordings();
-            }
-        };
-    }
-}
 
 function updateRecordingStatus() {
     const statusText = document.getElementById('recording-count');
@@ -8983,12 +8467,6 @@ function updateVoiceIndicator() {
     }
 }
 
-function handleTeacherSubmit() {
-    const input = document.getElementById("quick-custom-word-input");
-    if (!input) return;
-    applyCustomWordChallenge(input.value, { source: 'teacher' });
-    input.value = '';
-}
 
 function closeModal() {
     const wasGameModalOpen = !gameModal.classList.contains("hidden");
@@ -9034,7 +8512,7 @@ function closeModal() {
     }
     releasePracticeStream();
     if (mediaRecorder && mediaRecorder.state === 'recording') {
-        try { mediaRecorder.stop(); } catch (e) {}
+        try { mediaRecorder.stop(); } catch(e) { /* silent */ }
     }
     releaseStudioStream();
     
@@ -9127,9 +8605,6 @@ function releasePracticeStream() {
     practiceRecorder.stream = null;
 }
 
-function getPracticeRecording(key) {
-    return practiceRecordings.get(key);
-}
 
 function clearPracticeRecording(key) {
     const existing = practiceRecordings.get(key);
@@ -10783,24 +10258,10 @@ function getBonusVoiceDebugId() {
         if (resolvedPackId) return `pack:${resolvedPackId}`;
         const voiceUri = String(appSettings?.voiceUri || '').trim();
         if (voiceUri) return `voice:${voiceUri}`;
-    } catch (e) {}
+    } catch(e) { /* silent */ }
     return 'system-default';
 }
 
-function pickPreferredBonusNarrationVoice(voices = []) {
-    const pool = Array.isArray(voices) ? voices : [];
-    if (!pool.length) return null;
-    const isEnglishVoice = (voice) => String(voice?.lang || '').toLowerCase().startsWith('en');
-    const selectedVoiceUri = String(appSettings?.voiceUri || '').trim();
-    if (selectedVoiceUri) {
-        const selected = pool.find((voice) => (voice?.voiceURI || voice?.name || '') === selectedVoiceUri);
-        if (selected && isEnglishVoice(selected) && isHighQualityVoice(selected)) {
-            return selected;
-        }
-    }
-    const dialect = getPreferredEnglishDialect();
-    return pickPreferredEnglishCandidate(pool, dialect, { requireHighQuality: true }) || null;
-}
 
 function shouldShowBonusContent() {
     const frequency = appSettings.bonus?.frequency || 'always';
@@ -10852,7 +10313,7 @@ function showBonusContent() {
         : (parsedRiddle.prompt || content);
     try {
         localStorage.setItem('last_bonus_key', `${type}:${initialVisibleContent}`);
-    } catch (e) {}
+    } catch(e) { /* silent */ }
     
     const emoji = type === 'jokes'
         ? '😄'
@@ -11063,15 +10524,11 @@ function initNewFeatures() {
             const def = currentEntry.def || '';
             
             // Debug: Check if translations are loaded
-            console.log('Translation requested for:', word, 'Language:', lang);
-            console.log('window.TRANSLATIONS exists:', !!window.TRANSLATIONS);
             if (window.TRANSLATIONS) {
-                console.log('Available words:', Object.keys(window.TRANSLATIONS));
             }
             
             // Use curated translations for high-frequency words
             const translation = getWordTranslation(word, lang);
-            console.log('Translation found:', translation);
             
             if (translation) {
                 // Rich translation available from translations.js
@@ -12630,9 +12087,6 @@ function getBlendSounds() {
     return blends.filter(sound => window.PHONEME_DATA[sound]);
 }
 
-function getVowelTeamSounds() {
-    return getVowelTeamOnlySounds();
-}
 
 function getVowelTeamOnlySounds() {
     const fallback = ['ay', 'ee', 'igh', 'oa', 'oo'];
@@ -12704,31 +12158,6 @@ function clearSoundSelection() {
     if (layout) layout.classList.add('no-card');
 }
 
-function initPhonemeTabNavigation() {
-    const tabs = document.querySelectorAll('.phoneme-tab');
-    const contents = document.querySelectorAll('.tab-content');
-    
-    tabs.forEach(tab => {
-        tab.onclick = () => {
-            // Update tab appearance
-            tabs.forEach(t => {
-                t.classList.remove('active');
-                t.style.background = 'transparent';
-                t.style.color = '#6b7280';
-            });
-            tab.classList.add('active');
-            tab.style.background = 'white';
-            tab.style.color = '#374151';
-            
-            // Show corresponding content
-            const targetTab = tab.dataset.tab;
-            contents.forEach(content => {
-                content.classList.add('hidden');
-            });
-            document.getElementById(targetTab + '-content').classList.remove('hidden');
-        };
-    });
-}
 
 function populatePhonemeGroup(gridId, sounds) {
     const grid = document.getElementById(gridId);
@@ -12753,68 +12182,8 @@ function populatePhonemeGroup(gridId, sounds) {
     return count;
 }
 
-function populateVowelsGrid() {
-    if (window.PHONEME_GROUPS && window.PHONEME_GROUPS.vowels) {
-        populatePhonemeGroup('vowels-short-grid', window.PHONEME_GROUPS.vowels.short);
-        populatePhonemeGroup('vowels-long-grid', window.PHONEME_GROUPS.vowels.long);
-        populatePhonemeGroup('vowels-rcontrolled-grid', window.PHONEME_GROUPS.vowels.rControlled);
-        populatePhonemeGroup('vowels-diphthongs-grid', window.PHONEME_GROUPS.vowels.diphthongs);
-        populatePhonemeGroup('vowels-welded-grid', window.PHONEME_GROUPS.vowels.welded);
-        populatePhonemeGroup('vowels-schwa-grid', window.PHONEME_GROUPS.vowels.schwa);
-        return;
-    }
 
-    const grid = document.getElementById('vowels-grid');
-    if (!grid) return;
 
-    const vowels = window.PHONEME_CATEGORIES.vowels.filter(v => window.PHONEME_DATA[v]);
-    grid.innerHTML = '';
-
-    vowels.forEach(sound => {
-        const phoneme = window.PHONEME_DATA[sound];
-        const card = createPhonemeCard(sound, phoneme);
-        grid.appendChild(card);
-    });
-}
-
-function populateConsonantsGrid() {
-    if (window.PHONEME_GROUPS && window.PHONEME_GROUPS.consonants) {
-        populatePhonemeGroup('consonants-single-grid', window.PHONEME_GROUPS.consonants.single);
-        populatePhonemeGroup('consonants-digraphs-grid', window.PHONEME_GROUPS.consonants.digraphs);
-        populatePhonemeGroup('consonants-blends-grid', window.PHONEME_GROUPS.consonants.blends);
-        return;
-    }
-
-    const grid = document.getElementById('consonants-grid');
-    if (!grid) return;
-
-    const consonants = window.PHONEME_CATEGORIES.consonants.filter(c => window.PHONEME_DATA[c]);
-    grid.innerHTML = '';
-
-    consonants.forEach(sound => {
-        const phoneme = window.PHONEME_DATA[sound];
-        const card = createPhonemeCard(sound, phoneme);
-        grid.appendChild(card);
-    });
-}
-
-function populateSoundWall() {
-    populateVowelValley();
-
-    if (window.PHONEME_GROUPS && window.PHONEME_GROUPS.vowels) {
-        populatePhonemeGroup('soundwall-long-vowels', window.PHONEME_GROUPS.vowels.long);
-        populatePhonemeGroup('soundwall-rcontrolled', window.PHONEME_GROUPS.vowels.rControlled);
-        populatePhonemeGroup('soundwall-diphthongs', window.PHONEME_GROUPS.vowels.diphthongs);
-        populatePhonemeGroup('soundwall-welded', window.PHONEME_GROUPS.vowels.welded);
-        populatePhonemeGroup('soundwall-schwa', window.PHONEME_GROUPS.vowels.schwa);
-    }
-
-    populateConsonantGrid();
-
-    if (window.PHONEME_GROUPS && window.PHONEME_GROUPS.consonants) {
-        populatePhonemeGroup('soundwall-blends', window.PHONEME_GROUPS.consonants.blends);
-    }
-}
 
 function populateVowelValley() {
     const container = document.getElementById('vowel-valley');
@@ -12902,44 +12271,6 @@ function populateConsonantGrid() {
     });
 }
 
-function populateLettersGrid() {
-    const grid = document.getElementById('letters-grid');
-    if (!grid) return;
-    
-    const letters = Object.keys(window.LETTER_SOUNDS);
-    grid.innerHTML = '';
-    
-    letters.forEach(letter => {
-        const card = document.createElement('div');
-        card.className = 'letter-card';
-        card.style.cssText = `
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            color: white;
-            padding: 16px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 700;
-            font-size: 2rem;
-        `;
-        
-        card.textContent = letter.toUpperCase();
-        card.onclick = () => showLetterSounds(letter);
-        
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-2px)';
-            card.style.boxShadow = '0 8px 16px rgba(0,0,0,0.2)';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'translateY(0)';
-            card.style.boxShadow = 'none';
-        });
-        
-        grid.appendChild(card);
-    });
-}
 
 function getMouthClass(phoneme) {
     return phoneme?.animation || 'mouth-neutral';
@@ -13034,19 +12365,6 @@ function getArticulationShape(phoneme) {
     return 'neutral';
 }
 
-function getClipartForSound(soundKey = '', phoneme = null) {
-    const key = soundKey.toString().toLowerCase();
-    const cliparts = {
-        a: { label: 'apple', svg: getClipartSvg('apple') },
-        e: { label: 'egg', svg: getClipartSvg('egg') },
-        i: { label: 'igloo', svg: getClipartSvg('igloo') },
-        o: { label: 'octopus', svg: getClipartSvg('octopus') },
-        u: { label: 'umbrella', svg: getClipartSvg('umbrella') }
-    };
-    if (cliparts[key]) return cliparts[key];
-    const fallbackLabel = phoneme?.example || 'sound cue';
-    return { label: fallbackLabel, svg: getClipartSvg('sound') };
-}
 
 function getClipartSvg(type = 'sound') {
     switch (type) {
@@ -13102,33 +12420,6 @@ function getClipartSvg(type = 'sound') {
     }
 }
 
-function getArticulationIconSvg(phoneme) {
-    const shape = getArticulationShape(phoneme);
-    const mouth = (() => {
-        switch (shape) {
-            case 'wide':
-                return `<rect x="34" y="60" width="52" height="24" rx="10" fill="#f87171"/>`;
-            case 'smile':
-                return `<path d="M34 66c10 14 42 14 52 0" stroke="#f87171" stroke-width="10" stroke-linecap="round" fill="none"/>`;
-            case 'round':
-                return `<circle cx="60" cy="72" r="16" fill="#f87171"/>`;
-            case 'closed':
-                return `<rect x="30" y="66" width="60" height="10" rx="5" fill="#f87171"/>`;
-            case 'tongue':
-                return `<path d="M36 58h48v16a14 14 0 0 1-14 14H50a14 14 0 0 1-14-14V58Z" fill="#f87171"/>`;
-            default:
-                return `<rect x="32" y="64" width="56" height="14" rx="7" fill="#f87171"/>`;
-        }
-    })();
-
-    return `
-        <svg class="sound-clipart clipart-mouth" viewBox="0 0 120 120" role="img" aria-label="Mouth cue">
-            <circle cx="60" cy="52" r="34" fill="#fde68a" opacity="0.6"/>
-            <circle cx="60" cy="52" r="28" fill="#fde68a" opacity="0.9"/>
-            ${mouth}
-        </svg>
-    `;
-}
 
 function ensureArticulationCard(phoneme) {
     const display = document.getElementById('selected-sound-display');
@@ -13963,13 +13254,6 @@ function getSoundTtsFromKey(soundKey = '') {
     return SOUND_TTS_MAP[key] || '';
 }
 
-function isShortVowelSound(soundKey = '', phoneme = null) {
-    const key = soundKey.toString().toLowerCase();
-    const shortVowels = ['a', 'e', 'i', 'o', 'u'];
-    if (!shortVowels.includes(key)) return false;
-    if (phoneme?.name && phoneme.name.toLowerCase().includes('short')) return true;
-    return true;
-}
 
 function getPhonemeTts(phoneme, soundKey = '') {
     if (!phoneme) return '';
@@ -14007,28 +13291,6 @@ async function speakPhonemeSound(phoneme, soundKey = '') {
     speakEnglishText(tts, 'phoneme', preferred, preferred.lang || getPreferredEnglishDialect());
 }
 
-function initPhonemeCards() {
-    const cards = document.querySelectorAll('.phoneme-card');
-
-    let initialized = 0;
-    cards.forEach(card => {
-        if (card.dataset.mouthInit === 'true') return;
-        card.dataset.mouthInit = 'true';
-        initialized += 1;
-
-        card.addEventListener('click', () => {
-            const sound = card.dataset.sound;
-            if (!sound) return;
-
-            const phonemeData = window.getPhonemeData ? window.getPhonemeData(sound) : null;
-            showPhonemeMouth(sound, phonemeData);
-        });
-    });
-
-    if (initialized > 0) {
-        console.log('✓ Initialized', initialized, 'phoneme cards with mouth animations');
-    }
-}
 
 function showPhonemeMouth(sound, phonemeData) {
     if (phonemeData) {
@@ -14250,9 +13512,9 @@ function initTutorial() {
     function finishOnboarding() {
         const dontShow = document.getElementById('howto-dont-show');
         if (dontShow && dontShow.checked) {
-            try { localStorage.setItem('wq_howto_dismissed', '1'); } catch(e) {}
+            try { localStorage.setItem('wq_howto_dismissed', '1'); } catch(e) { /* silent */ }
         }
-        try { localStorage.setItem('tutorialShown', 'true'); localStorage.setItem('wq_tutorial_seen', '1'); } catch(e) {}
+        try { localStorage.setItem('tutorialShown', 'true'); localStorage.setItem('wq_tutorial_seen', '1'); } catch(e) { /* silent */ }
         closeModal();
     }
 
@@ -14347,68 +13609,14 @@ function initHowTo() {
     headerActions.appendChild(btn);
 }
 
-function initClozeLink() {
-    const headerActions = document.querySelector('.header-actions');
-    if (!headerActions || document.getElementById('cloze-btn')) return;
-    const link = document.createElement('a');
-    link.id = 'cloze-btn';
-    link.href = 'cloze.html';
-    link.className = 'link-btn';
-    link.textContent = 'Story Fill';
-    link.title = 'Cloze';
-    const madlibsLink = Array.from(headerActions.querySelectorAll('a, button'))
-        .find(el => (el.textContent || '').toLowerCase().includes('mad libs'));
-    if (madlibsLink) {
-        headerActions.insertBefore(link, madlibsLink);
-    } else {
-        headerActions.appendChild(link);
-    }
-}
 
-function initComprehensionLink() {
-    const headerActions = document.querySelector('.header-actions');
-    if (!headerActions || document.getElementById('comprehension-btn')) return;
-    const link = document.createElement('a');
-    link.id = 'comprehension-btn';
-    link.href = 'comprehension.html';
-    link.className = 'link-btn';
-    link.textContent = 'Read & Think';
-    link.title = 'Comprehension';
-    const madlibsLink = Array.from(headerActions.querySelectorAll('a, button'))
-        .find(el => (el.textContent || '').toLowerCase().includes('mad libs'));
-    if (madlibsLink) {
-        headerActions.insertBefore(link, madlibsLink);
-    } else {
-        headerActions.appendChild(link);
-    }
-}
 
-function initFluencyLink() {
-    const headerActions = document.querySelector('.header-actions');
-    if (!headerActions || document.getElementById('fluency-btn')) return;
-    const link = document.createElement('a');
-    link.id = 'fluency-btn';
-    link.href = 'fluency.html';
-    link.className = 'link-btn';
-    link.textContent = 'Speed Sprint';
-    link.title = 'Fluency';
-    const madlibsLink = Array.from(headerActions.querySelectorAll('a, button'))
-        .find(el => (el.textContent || '').toLowerCase().includes('mad libs'));
-    if (madlibsLink) {
-        headerActions.insertBefore(link, madlibsLink);
-    } else {
-        headerActions.appendChild(link);
-    }
-}
 
 function initAdventureMode() {
     // Game modes are now accessed from Teacher Settings to keep the main header clean.
     return;
 }
 
-function initClassroomDock() {
-    ensureClassroomDock();
-}
 
 let classroomFileUrl = null;
 let classroomTimerId = null;
@@ -14500,174 +13708,7 @@ function ensureClassroomDock() {
     return dock;
 }
 
-function ensureMoreToolsMenu() {
-    const headerActions = document.querySelector('.header-actions');
-    if (!headerActions || document.getElementById('more-tools-btn')) return;
-    const wrapper = document.createElement('div');
-    wrapper.className = 'more-tools-wrapper';
-    wrapper.innerHTML = `
-        <button type="button" id="more-tools-btn" class="link-btn" aria-haspopup="menu" aria-expanded="false">Activities ▾</button>
-        <div id="more-tools-menu" class="more-tools-menu hidden" role="menu" aria-label="Tools menu">
-            <a href="word-quest.html" class="more-tools-item" role="menuitem">Word Quest</a>
-            <a href="cloze.html" class="more-tools-item" role="menuitem">Story Fill</a>
-            <a href="comprehension.html" class="more-tools-item" role="menuitem">Read & Think</a>
-            <a href="fluency.html" class="more-tools-item" role="menuitem">Speed Sprint</a>
-            <a href="madlibs.html" class="more-tools-item" role="menuitem">Silly Stories</a>
-            <a href="writing.html" class="more-tools-item" role="menuitem">Write & Build</a>
-            <a href="plan-it.html" class="more-tools-item" role="menuitem">Plan-It</a>
-            <a href="number-sense.html" class="more-tools-item" role="menuitem">Number Sense</a>
-            <a href="operations.html" class="more-tools-item" role="menuitem">Operations</a>
-            <a href="teacher-report.html" class="more-tools-item" role="menuitem">Teacher Report</a>
-            <button type="button" id="menu-sound-lab" class="more-tools-item" role="menuitem">Sound Lab</button>
-            <button type="button" id="menu-classroom-dock" class="more-tools-item" role="menuitem">Classroom Dock</button>
-        </div>
-    `;
-    headerActions.appendChild(wrapper);
 
-    const btn = wrapper.querySelector('#more-tools-btn');
-    const menu = wrapper.querySelector('#more-tools-menu');
-    const soundLab = wrapper.querySelector('#menu-sound-lab');
-    const classroomDock = wrapper.querySelector('#menu-classroom-dock');
-
-    const closeMenu = () => {
-        menu.classList.add('hidden');
-        btn?.setAttribute('aria-expanded', 'false');
-    };
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        menu.classList.toggle('hidden');
-        btn.setAttribute('aria-expanded', menu.classList.contains('hidden') ? 'false' : 'true');
-    });
-    document.addEventListener('click', (e) => {
-        if (!wrapper.contains(e.target)) closeMenu();
-    });
-
-    if (soundLab) {
-        soundLab.addEventListener('click', () => {
-            closeMenu();
-            openPhonemeGuide();
-        });
-    }
-    if (classroomDock) {
-        classroomDock.addEventListener('click', () => {
-            closeMenu();
-            toggleClassroomDock(true);
-        });
-    }
-
-    wrapper.querySelectorAll('a.more-tools-item').forEach((link) => {
-        link.addEventListener('click', () => {
-            closeMenu();
-        });
-    });
-}
-
-function organizeHeaderActions() {
-    const headerActions = document.querySelector('.header-actions');
-    if (!headerActions || headerActions.dataset.organized === 'v2') return;
-
-    const moreWrapper = headerActions.querySelector('.more-tools-wrapper');
-    const howtoBtn = headerActions.querySelector('#howto-btn');
-
-    const findById = (id) => headerActions.querySelector(`#${id}`);
-    const findByText = (text) => Array.from(headerActions.querySelectorAll('a,button'))
-        .find(el => (el.textContent || '').toLowerCase().includes(text));
-
-    const homeBtn = findById('home-btn');
-    const classroomBtn = findById('classroom-btn');
-    const adventureBtn = findById('adventure-btn');
-    const teacherBtn = findById('teacher-btn');
-    const newWordBtn = findById('new-word-btn') || findByText('new word');
-    const clozeBtn = findById('cloze-btn') || findByText('cloze');
-    const compBtn = findById('comprehension-btn') || findByText('comprehension');
-    const fluencyBtn = findById('fluency-btn') || findByText('fluency');
-    const madlibsBtn = findById('madlibs-btn') || findByText('mad libs');
-    const writingBtn = findById('writing-btn') || findByText('write');
-    const planitBtn = findById('planit-btn') || findByText('plan-it') || findByText('planit');
-
-    const existing = Array.from(headerActions.children);
-    const used = new Set();
-
-    const ordered = [];
-    const add = (el) => {
-        if (!el || used.has(el)) return;
-        used.add(el);
-        ordered.push(el);
-    };
-
-    add(homeBtn);
-    add(classroomBtn);
-    add(teacherBtn);
-
-    add(newWordBtn);
-    add(adventureBtn);
-    add(clozeBtn);
-    add(compBtn);
-    add(fluencyBtn);
-    add(madlibsBtn);
-    add(writingBtn);
-    add(planitBtn);
-
-    if (moreWrapper) add(moreWrapper);
-    if (howtoBtn) add(howtoBtn);
-
-    existing.forEach(el => {
-        if (!used.has(el)) ordered.push(el);
-    });
-
-    headerActions.innerHTML = '';
-    ordered.forEach(el => headerActions.appendChild(el));
-    headerActions.dataset.organized = 'v2';
-
-    if (newWordBtn) {
-        newWordBtn.textContent = 'Word Quest';
-        newWordBtn.title = 'New Word';
-        newWordBtn.classList.add('active');
-        newWordBtn.setAttribute('aria-current', 'page');
-    }
-
-    if (clozeBtn) {
-        clozeBtn.textContent = 'Story Fill';
-        clozeBtn.title = 'Cloze';
-    }
-
-    if (compBtn) {
-        compBtn.textContent = 'Read & Think';
-        compBtn.title = 'Comprehension';
-    }
-
-    if (fluencyBtn) {
-        fluencyBtn.textContent = 'Speed Sprint';
-        fluencyBtn.title = 'Fluency';
-    }
-
-    if (madlibsBtn) {
-        madlibsBtn.textContent = 'Silly Stories';
-        madlibsBtn.title = 'Mad Libs';
-    }
-
-    if (writingBtn) {
-        writingBtn.textContent = 'Write & Build';
-        writingBtn.title = 'Writing';
-    }
-
-    if (planitBtn) {
-        planitBtn.textContent = 'Plan-It';
-        planitBtn.title = 'Planning & organizing';
-    }
-
-    if (adventureBtn) {
-        adventureBtn.title = 'Adventure Mode';
-    }
-
-    if (classroomBtn) {
-        classroomBtn.title = 'Classroom Tools';
-    }
-
-    if (teacherBtn) {
-        teacherBtn.title = 'Teacher Settings';
-    }
-}
 
 function toggleClassroomDock(forceOpen = null) {
     const dock = ensureClassroomDock();
@@ -15391,48 +14432,6 @@ function stopLightningTimer() {
         lightningTimer = null;
     }
 }
-function ensureHowToModal() {
-    let modal = document.getElementById('howto-modal');
-    if (modal) return modal;
-
-    modal = document.createElement('div');
-    modal.id = 'howto-modal';
-    modal.className = 'modal hidden howto-modal';
-    modal.dataset.overlayClose = 'true';
-    modal.innerHTML = `
-        <div class="modal-content howto-content">
-            <button class="close-btn" aria-label="Close">✕</button>
-            <h2>How to Play</h2>
-            <p class="howto-subtitle">Quick steps for students and teachers.</p>
-            <div class="howto-section">
-                <h3>1) Guess the word</h3>
-                <ul>
-                    <li>Type a word, then press Enter.</li>
-                    <li><span class="tile howto-tile correct">W</span> Green = correct spot.</li>
-                    <li><span class="tile howto-tile present">A</span> Gold = in the word, wrong spot.</li>
-                    <li><span class="tile howto-tile absent">R</span> Slate = not in the word.</li>
-                </ul>
-            </div>
-            <div class="howto-section">
-                <h3>2) Use audio tools</h3>
-                <ul>
-                    <li>Hear Word / Definition / Sentence in the reveal card.</li>
-                    <li>Warm‑Up: tap a sound to see mouth cues and hear it.</li>
-                </ul>
-            </div>
-            <div class="howto-section">
-                <h3>3) Fun mode (optional)</h3>
-                <ul>
-                    <li>Coins track progress. Hearts are optional in Challenge mode.</li>
-                    <li>Teachers can toggle fun, sound effects, and difficulty.</li>
-                </ul>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    modal.querySelector('.close-btn')?.addEventListener('click', closeModal);
-    return modal;
-}
 
 function openHowToModal() {
     const modal = document.getElementById('welcome-modal');
@@ -15563,12 +14562,6 @@ function ensureAssessmentModal() {
     return modal;
 }
 
-function openAssessmentModal() {
-    const modal = ensureAssessmentModal();
-    if (!modalOverlay) return;
-    modalOverlay.classList.remove('hidden');
-    modal.classList.remove('hidden');
-}
 
 function ensureCorePhonicsModal() {
     let modal = document.getElementById('core-phonics-modal');
@@ -15620,14 +14613,6 @@ function ensureCorePhonicsModal() {
     return modal;
 }
 
-function openCorePhonicsModal() {
-    const modal = ensureCorePhonicsModal();
-    if (!modalOverlay) return;
-    modalOverlay.classList.remove('hidden');
-    modal.classList.remove('hidden');
-    const select = modal.querySelector('#core-phonics-level');
-    startCorePhonics(select?.value || CORE_PHONICS_LEVELS[0].id);
-}
 
 let corePhonicsState = null;
 
@@ -16095,7 +15080,7 @@ function writeShuffleBagState(state = {}) {
     };
     try {
         localStorage.setItem(key, JSON.stringify(payload));
-    } catch (e) {}
+    } catch(e) { /* silent */ }
 }
 
 function getNonRepeatingShuffleChoice(items = [], scope = 'default') {
