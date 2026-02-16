@@ -184,7 +184,19 @@ const DEFAULT_SETTINGS = {
         teamMode: false,
         timerEnabled: false,
         timerSeconds: 60,
+        timerPerTurn: false,
+        turnTimerSeconds: 30,
         activeTeam: 'A',
+        teamCount: 2,
+        teams: {
+            A: { name: 'Foxes', emoji: '🦊', treats: 0 },
+            B: { name: 'Wolves', emoji: '🐺', treats: 0 },
+            C: { name: 'Owls', emoji: '🦉', treats: 0 },
+            D: { name: 'Bears', emoji: '🐻', treats: 0 }
+        },
+        rounds: 10,
+        currentRound: 0,
+        // Legacy compat
         teamAName: 'Team A',
         teamBName: 'Team B',
         teamACoins: 0,
@@ -2344,6 +2356,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initStudio();
     initNewFeatures();
     initTutorial();
+    initMobileHamburger();
     initFocusToggle();
     enableOverlayCloseForAllModals();
     initModalDismissals();
@@ -2788,15 +2801,21 @@ function renderFunHud() {
     const gameModeActive = teamMode || timerEnabled || !!appSettings.funHud?.challenge;
 
     if (teamMode) {
-        const aName = appSettings.gameMode?.teamAName || 'Team A';
-        const bName = appSettings.gameMode?.teamBName || 'Team B';
-        const aCoins = appSettings.gameMode?.teamACoins ?? 0;
-        const bCoins = appSettings.gameMode?.teamBCoins ?? 0;
-        const aShort = formatTeamShortLabel(aName, 'A');
-        const bShort = formatTeamShortLabel(bName, 'B');
-        if (coins) coins.textContent = `${aShort} ${aCoins} • ${bShort} ${bCoins}`;
+        const teamCount = appSettings.gameMode?.teamCount || 2;
+        const teams = appSettings.gameMode?.teams || {};
+        const order = ['A', 'B', 'C', 'D'].slice(0, teamCount);
+        
+        // Build score display
+        const scoreText = order.map(k => {
+            const t = teams[k] || { emoji: '🎯', name: k, treats: 0 };
+            const treatIcons = '🍕'.repeat(Math.min(t.treats, 10)) || '·';
+            return `${t.emoji}${t.treats}`;
+        }).join(' · ');
+        
+        if (coins) coins.textContent = scoreText;
         if (teamLabel) {
-            teamLabel.textContent = `Turn: ${formatTeamShortLabel(getActiveTeamLabel(), getActiveTeamKey())}`;
+            const active = getTeamInfo(getActiveTeamKey());
+            teamLabel.textContent = `${active.emoji} ${active.name}'s Turn`;
             teamLabel.style.display = 'inline-flex';
         }
     } else {
@@ -4772,6 +4791,7 @@ function initControls() {
     teacherWordListEnabled = readTeacherWordListEnabled() && teacherWordList.length > 0;
     writeTeacherWordListEnabled(teacherWordListEnabled);
     initToolsTabbedPanels();
+    initArenaPanel();
 
     if (quickCustomPanel) {
         quickCustomPanel.classList.remove('hidden');
@@ -7611,6 +7631,11 @@ function submitGuess() {
             toggleActiveTeam();
             renderFunHud();
         }
+        // Reset per-turn timer for next guess
+        resetTurnTimer();
+        if (appSettings.gameMode?.timerPerTurn && appSettings.gameMode?.timerEnabled) {
+            startLightningTimer();
+        }
         // Prepare and highlight the next row immediately.
         updateGrid();
     }
@@ -7679,6 +7704,13 @@ function revealColors(result, guess) {
                         });
                         if (correctCount < totalInTarget) {
                             k.dataset.multi = '+';
+                            // Show toast on first occurrence only
+                            if (!k.dataset.multiToasted) {
+                                k.dataset.multiToasted = '1';
+                                setTimeout(() => {
+                                    showToast(`💡 "${letter.toUpperCase()}" appears more than once in this word!`);
+                                }, (CURRENT_WORD_LENGTH * 200) + 400);
+                            }
                         } else {
                             delete k.dataset.multi;
                         }
@@ -8207,6 +8239,32 @@ function showEndModal(win) {
 
     stopLightningTimer();
     
+    // Reset recording section for fresh state
+    const rrBtn = document.getElementById('reveal-record-btn');
+    const rrStatus = document.getElementById('reveal-record-status');
+    if (rrBtn) {
+        rrBtn.innerHTML = '🎙 Practice Saying It';
+        rrBtn.style.background = 'linear-gradient(180deg,#fefce8,#fef3c7)';
+        rrBtn.style.borderColor = '#e5e7eb';
+        rrBtn.style.color = '#92400e';
+        rrBtn.disabled = false;
+        rrBtn.style.opacity = '1';
+    }
+    if (rrStatus) rrStatus.innerHTML = '';
+    // Reset pronunciation studio
+    const psEl = document.getElementById('pronun-studio');
+    if (psEl) psEl.classList.add('hidden');
+    const psPlayback = document.getElementById('pronun-playback');
+    if (psPlayback) psPlayback.style.display = 'none';
+    const psCompare = document.getElementById('pronun-compare-section');
+    if (psCompare) psCompare.style.display = 'none';
+    const psTimer = document.getElementById('pronun-timer');
+    if (psTimer) { psTimer.textContent = ''; psTimer.style.display = 'none'; }
+    const psWave = document.getElementById('pronun-waveform');
+    if (psWave) psWave.style.display = 'none';
+    const psSave = document.getElementById('pronun-save');
+    if (psSave) { psSave.textContent = '💾 Save to Portfolio'; psSave.disabled = false; }
+
     modalOverlay.classList.remove("hidden");
     gameModal.classList.remove("hidden");
     gameModal.dataset.overlayClose = 'true';
@@ -8278,10 +8336,10 @@ function showEndModal(win) {
     const gameModeRunning = !!appSettings.gameMode?.active;
     if (win && appSettings.funHud?.enabled && gameModeRunning) {
         if (appSettings.gameMode?.teamMode) {
-            if (lastGuessTeam === 'B') {
-                appSettings.gameMode.teamBCoins = (appSettings.gameMode.teamBCoins || 0) + 1;
-            } else {
-                appSettings.gameMode.teamACoins = (appSettings.gameMode.teamACoins || 0) + 1;
+            const treats = awardTeamTreats(lastGuessTeam, guesses.length);
+            if (treats > 0) {
+                const team = getTeamInfo(lastGuessTeam);
+                showToast(`${team.emoji} ${team.name} earned ${'🍕'.repeat(treats)}!`);
             }
         } else {
             appSettings.funHud.coins = (appSettings.funHud.coins || 0) + 1;
@@ -8474,102 +8532,282 @@ function showEndModal(win) {
         }
     }
     
-    // Set up recording button in reveal modal
+    // Set up Pronunciation Studio in reveal modal
     const revealRecordBtn = document.getElementById('reveal-record-btn');
+    const pronunStudio = document.getElementById('pronun-studio');
+    const pronunClose = document.getElementById('pronun-close');
+    const pronunListen = document.getElementById('pronun-listen');
+    const pronunRecord = document.getElementById('pronun-record');
+    const pronunTimer = document.getElementById('pronun-timer');
+    const pronunWaveform = document.getElementById('pronun-waveform');
+    const pronunPlayMine = document.getElementById('pronun-play-mine');
+    const pronunRedo = document.getElementById('pronun-redo');
+    const pronunPlayback = document.getElementById('pronun-playback');
+    const pronunCompareSection = document.getElementById('pronun-compare-section');
+    const pronunPlayBoth = document.getElementById('pronun-play-both');
+    const pronunSave = document.getElementById('pronun-save');
     const revealRecordStatus = document.getElementById('reveal-record-status');
-    if (revealRecordBtn) {
-        let recMediaRecorder = null;
-        let recAudioChunks = [];
-        let recIsRecording = false;
-        let recBlobUrl = null;
-        
-        revealRecordBtn.onclick = async () => {
-            // If currently recording, stop
-            if (recIsRecording) {
-                if (recMediaRecorder && recMediaRecorder.state === 'recording') recMediaRecorder.stop();
-                return;
-            }
-            
-            // Countdown before recording
-            revealRecordBtn.disabled = true;
-            revealRecordBtn.style.opacity = '0.5';
-            const readyDiv = document.getElementById('reveal-record-ready');
-            
-            for (let i = 3; i >= 1; i--) {
-                if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="font-size:1.8rem; font-weight:800; color:#4f46e5;">${i}</span><br><span style="font-size:0.72rem; color:#6b7280;">Get ready to say the word...</span>`;
-                await new Promise(r => setTimeout(r, 800));
-            }
-            if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="font-size:1rem; font-weight:700; color:#dc2626;">🎤 Speak now!</span>`;
-            await new Promise(r => setTimeout(r, 300));
-            
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                recMediaRecorder = new MediaRecorder(stream);
-                recAudioChunks = [];
-                
-                recMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recAudioChunks.push(e.data); };
-                recMediaRecorder.onstart = () => {
-                    recIsRecording = true;
-                    revealRecordBtn.disabled = false;
-                    revealRecordBtn.style.opacity = '1';
-                    revealRecordBtn.innerHTML = '⏹ Stop Recording';
-                    revealRecordBtn.style.background = 'linear-gradient(180deg,#fca5a5,#f87171)';
-                    revealRecordBtn.style.borderColor = '#f87171';
-                    revealRecordBtn.style.color = '#7f1d1d';
-                    let secondsLeft = 8;
-                    if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="color:#dc2626; font-weight:700;">🔴 Recording: ${secondsLeft}s</span>`;
-                    const countdownInterval = setInterval(() => {
-                        secondsLeft--;
-                        if (secondsLeft <= 0 || !recIsRecording) { clearInterval(countdownInterval); return; }
-                        if (revealRecordStatus) revealRecordStatus.innerHTML = `<span style="color:#dc2626; font-weight:700;">🔴 Recording: ${secondsLeft}s</span>`;
-                    }, 1000);
-                };
-                recMediaRecorder.onstop = () => {
-                    recIsRecording = false;
-                    stream.getTracks().forEach(t => t.stop());
-                    const blob = new Blob(recAudioChunks, { type: 'audio/webm' });
-                    recBlobUrl = URL.createObjectURL(blob);
-                    const word = String(currentWord || '').toLowerCase();
-                    
-                    revealRecordBtn.innerHTML = '🎙 Try Again';
-                    revealRecordBtn.style.background = 'linear-gradient(180deg, #fefce8, #fef3c7)';
-                    revealRecordBtn.style.borderColor = '#fde68a';
-                    revealRecordBtn.style.color = '#92400e';
-                    
-                    if (revealRecordStatus) {
-                        revealRecordStatus.innerHTML = `
-                            <span style="display:inline-flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
-                                <button onclick="new Audio('${recBlobUrl}').play()" style="padding:3px 10px; border-radius:8px; border:1px solid #bbf7d0; background:#f0fdf4; cursor:pointer; font-size:0.75rem; font-weight:600;">▶ Hear Me</button>
-                                <button onclick="if(typeof speak==='function')speak('${word}','word')" style="padding:3px 10px; border-radius:8px; border:1px solid #bfdbfe; background:#eff6ff; cursor:pointer; font-size:0.75rem; font-weight:600;">🔊 Compare</button>
-                                <button id="reveal-save-rec" style="padding:3px 10px; border-radius:8px; border:1px solid #c4b5fd; background:#f5f3ff; cursor:pointer; font-size:0.75rem; font-weight:600;">💾 Save</button>
-                            </span>`;
-                        const saveBtn = document.getElementById('reveal-save-rec');
-                        if (saveBtn) {
-                            saveBtn.onclick = async () => {
-                                try {
-                                    const db = await new Promise((resolve, reject) => {
-                                        const req = indexedDB.open('WordQuestRecordings', 1);
-                                        req.onupgradeneeded = () => req.result.createObjectStore('recordings');
-                                        req.onsuccess = () => resolve(req.result);
-                                        req.onerror = () => reject(req.error);
-                                    });
-                                    const tx = db.transaction('recordings', 'readwrite');
-                                    tx.objectStore('recordings').put({ blob, word, date: new Date().toISOString() }, `${word}_${new Date().toISOString().slice(0,10)}`);
-                                    await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
-                                    db.close();
-                                    saveBtn.textContent = '✅ Saved!';
-                                    saveBtn.disabled = true;
-                                } catch(e) { saveBtn.textContent = '⚠️ Error'; }
-                            };
-                        }
-                    }
-                };
-                recMediaRecorder.start();
-                setTimeout(() => { if (recMediaRecorder.state === 'recording') recMediaRecorder.stop(); }, 8000);
-            } catch(err) {
-                if (revealRecordStatus) revealRecordStatus.textContent = '⚠️ Microphone access needed';
-            }
+
+    if (revealRecordBtn && pronunStudio) {
+        let psMediaRecorder = null;
+        let psAudioChunks = [];
+        let psIsRecording = false;
+        let psBlobUrl = null;
+        let psBlob = null;
+        let psAnalyser = null;
+        let psAnimFrame = null;
+        let psAudioCtx = null;
+        let psModelAmplitudes = [];
+        let psStudentAmplitudes = [];
+
+        // Toggle studio open/close
+        revealRecordBtn.onclick = () => {
+            const isHidden = pronunStudio.classList.contains('hidden');
+            pronunStudio.classList.toggle('hidden');
+            revealRecordBtn.textContent = isHidden ? '🎙 Close Studio' : '🎙 Practice Saying It';
         };
+
+        if (pronunClose) {
+            pronunClose.onclick = () => {
+                pronunStudio.classList.add('hidden');
+                revealRecordBtn.textContent = '🎙 Practice Saying It';
+                // Stop recording if in progress
+                if (psIsRecording && psMediaRecorder && psMediaRecorder.state === 'recording') {
+                    psMediaRecorder.stop();
+                }
+            };
+        }
+
+        // Step 1: Listen to the word
+        if (pronunListen) {
+            pronunListen.onclick = () => {
+                const word = String(currentWord || '').toLowerCase();
+                if (typeof speak === 'function') speak(word, 'word');
+            };
+        }
+
+        // Waveform drawing helper
+        function drawLiveWaveform(canvas, analyser) {
+            if (!canvas || !analyser) return;
+            const ctx = canvas.getContext('2d');
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            function draw() {
+                if (!psIsRecording) return;
+                psAnimFrame = requestAnimationFrame(draw);
+                analyser.getByteTimeDomainData(dataArray);
+
+                ctx.fillStyle = 'rgba(254, 252, 232, 0.3)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#dc2626';
+                ctx.beginPath();
+
+                const sliceWidth = canvas.width / bufferLength;
+                let x = 0;
+                for (let i = 0; i < bufferLength; i++) {
+                    const v = dataArray[i] / 128.0;
+                    const y = (v * canvas.height) / 2;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                    x += sliceWidth;
+                }
+                ctx.lineTo(canvas.width, canvas.height / 2);
+                ctx.stroke();
+
+                // Capture amplitude for comparison later
+                const sum = dataArray.reduce((a, b) => a + Math.abs(b - 128), 0);
+                psStudentAmplitudes.push(sum / bufferLength);
+            }
+            draw();
+        }
+
+        // Draw static waveform from amplitude data
+        function drawStaticWave(canvas, amplitudes, color) {
+            if (!canvas || !amplitudes.length) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const step = canvas.width / amplitudes.length;
+            const mid = canvas.height / 2;
+
+            ctx.fillStyle = color + '20';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.5;
+            for (let i = 0; i < amplitudes.length; i++) {
+                const h = (amplitudes[i] / 40) * mid;
+                const x = i * step;
+                ctx.moveTo(x, mid - h);
+                ctx.lineTo(x, mid + h);
+            }
+            ctx.stroke();
+        }
+
+        // Step 2: Record
+        if (pronunRecord) {
+            pronunRecord.onclick = async () => {
+                // If recording, stop
+                if (psIsRecording) {
+                    if (psMediaRecorder && psMediaRecorder.state === 'recording') psMediaRecorder.stop();
+                    return;
+                }
+
+                // Countdown
+                pronunRecord.disabled = true;
+                psStudentAmplitudes = [];
+                for (let i = 3; i >= 1; i--) {
+                    if (pronunTimer) { pronunTimer.style.display = 'inline'; pronunTimer.textContent = `${i}...`; }
+                    await new Promise(r => setTimeout(r, 700));
+                }
+                if (pronunTimer) pronunTimer.textContent = '🔴 Speak now!';
+
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    psAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    psAnalyser = psAudioCtx.createAnalyser();
+                    psAnalyser.fftSize = 256;
+                    const source = psAudioCtx.createMediaStreamSource(stream);
+                    source.connect(psAnalyser);
+
+                    psMediaRecorder = new MediaRecorder(stream);
+                    psAudioChunks = [];
+
+                    psMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) psAudioChunks.push(e.data); };
+
+                    psMediaRecorder.onstart = () => {
+                        psIsRecording = true;
+                        pronunRecord.disabled = false;
+                        pronunRecord.textContent = '⏹ Stop';
+                        pronunRecord.style.background = '#fca5a5';
+                        pronunRecord.style.borderColor = '#f87171';
+                        pronunRecord.style.color = '#7f1d1d';
+
+                        if (pronunWaveform) {
+                            pronunWaveform.style.display = 'block';
+                            drawLiveWaveform(pronunWaveform, psAnalyser);
+                        }
+
+                        let secs = 7;
+                        const countInterval = setInterval(() => {
+                            secs--;
+                            if (secs <= 0 || !psIsRecording) { clearInterval(countInterval); return; }
+                            if (pronunTimer) pronunTimer.textContent = `🔴 ${secs}s`;
+                        }, 1000);
+                    };
+
+                    psMediaRecorder.onstop = () => {
+                        psIsRecording = false;
+                        if (psAnimFrame) cancelAnimationFrame(psAnimFrame);
+                        stream.getTracks().forEach(t => t.stop());
+                        if (psAudioCtx) { try { psAudioCtx.close(); } catch(e){} }
+
+                        psBlob = new Blob(psAudioChunks, { type: 'audio/webm' });
+                        if (psBlobUrl) URL.revokeObjectURL(psBlobUrl);
+                        psBlobUrl = URL.createObjectURL(psBlob);
+
+                        // Reset button
+                        pronunRecord.textContent = '● Record';
+                        pronunRecord.style.background = '#fef3c7';
+                        pronunRecord.style.borderColor = '#fbbf24';
+                        pronunRecord.style.color = '#92400e';
+                        if (pronunTimer) pronunTimer.textContent = '✅ Recorded!';
+
+                        // Show playback controls
+                        if (pronunPlayback) pronunPlayback.style.display = 'flex';
+                        if (pronunPlayback) {
+                            pronunPlayback.style.display = 'flex';
+                            pronunPlayback.style.gap = '6px';
+                            pronunPlayback.style.justifyContent = 'center';
+                        }
+
+                        // Show compare section
+                        if (pronunCompareSection) pronunCompareSection.style.display = 'block';
+
+                        // Draw student waveform
+                        const yoursCanvas = document.getElementById('pronun-wave-yours');
+                        drawStaticWave(yoursCanvas, psStudentAmplitudes, '#f97316');
+                    };
+
+                    psMediaRecorder.start();
+                    setTimeout(() => { if (psMediaRecorder && psMediaRecorder.state === 'recording') psMediaRecorder.stop(); }, 7000);
+                } catch (err) {
+                    if (pronunTimer) pronunTimer.textContent = '⚠️ Mic access needed';
+                    pronunRecord.disabled = false;
+                }
+            };
+        }
+
+        // Play back recording
+        if (pronunPlayMine) {
+            pronunPlayMine.onclick = () => {
+                if (psBlobUrl) new Audio(psBlobUrl).play();
+            };
+        }
+
+        // Re-record
+        if (pronunRedo) {
+            pronunRedo.onclick = () => {
+                if (pronunPlayback) pronunPlayback.style.display = 'none';
+                if (pronunCompareSection) pronunCompareSection.style.display = 'none';
+                if (pronunTimer) { pronunTimer.textContent = ''; pronunTimer.style.display = 'none'; }
+                if (pronunWaveform) pronunWaveform.style.display = 'none';
+                pronunRecord.click();
+            };
+        }
+
+        // Play both in sequence
+        if (pronunPlayBoth) {
+            pronunPlayBoth.onclick = async () => {
+                const word = String(currentWord || '').toLowerCase();
+                // Play model first
+                pronunPlayBoth.textContent = '🔊 Playing model...';
+                pronunPlayBoth.disabled = true;
+                if (typeof speak === 'function') speak(word, 'word');
+                await new Promise(r => setTimeout(r, 1800));
+                // Then play student
+                pronunPlayBoth.textContent = '🎙 Playing yours...';
+                if (psBlobUrl) {
+                    const audio = new Audio(psBlobUrl);
+                    audio.play();
+                    audio.onended = () => {
+                        pronunPlayBoth.textContent = '▶ Play Both (Model → Yours)';
+                        pronunPlayBoth.disabled = false;
+                    };
+                    setTimeout(() => {
+                        pronunPlayBoth.textContent = '▶ Play Both (Model → Yours)';
+                        pronunPlayBoth.disabled = false;
+                    }, 5000);
+                } else {
+                    pronunPlayBoth.textContent = '▶ Play Both (Model → Yours)';
+                    pronunPlayBoth.disabled = false;
+                }
+            };
+        }
+
+        // Save to portfolio
+        if (pronunSave) {
+            pronunSave.onclick = async () => {
+                if (!psBlob) return;
+                const word = String(currentWord || '').toLowerCase();
+                try {
+                    const db = await new Promise((resolve, reject) => {
+                        const req = indexedDB.open('WordQuestRecordings', 1);
+                        req.onupgradeneeded = () => req.result.createObjectStore('recordings');
+                        req.onsuccess = () => resolve(req.result);
+                        req.onerror = () => reject(req.error);
+                    });
+                    const tx = db.transaction('recordings', 'readwrite');
+                    tx.objectStore('recordings').put({ blob: psBlob, word, date: new Date().toISOString() }, `${word}_${new Date().toISOString().slice(0,10)}`);
+                    await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
+                    db.close();
+                    pronunSave.textContent = '✅ Saved!';
+                    pronunSave.disabled = true;
+                } catch(e) { pronunSave.textContent = '⚠️ Error'; }
+            };
+        }
     }
 
     // Store that we should show bonus when modal closes
@@ -9094,6 +9332,7 @@ function clearKeyboardColors() {
     document.querySelectorAll(".key").forEach(k => {
         k.classList.remove("correct", "present", "absent");
         delete k.dataset.multi;
+        delete k.dataset.multiToasted;
     });
 }
 
@@ -13944,27 +14183,101 @@ function initVoiceSourceControls() {
     });
 }
 
-/* First-Time Tutorial */
+/* First-Time Tutorial — SET-style branching onboarding */
 function initTutorial() {
     const tutorialShown = localStorage.getItem('tutorialShown');
     const welcomeModal = document.getElementById('welcome-modal');
-    const startBtn = document.getElementById('start-playing-btn');
-    if (!welcomeModal || !startBtn) return;
+    if (!welcomeModal) return;
 
+    // Step elements
+    const step1 = document.getElementById('onboard-step1');
+    const step2a = document.getElementById('onboard-step2a');
+    const step2b = document.getElementById('onboard-step2b');
+    const footer = document.getElementById('onboard-footer');
+    const knowBtn = document.getElementById('onboard-know-wordle');
+    const newBtn = document.getElementById('onboard-new-player');
+    const goPlay = document.getElementById('onboard-go-play');
+    const prevBtn = document.getElementById('onboard-prev');
+    const nextBtn = document.getElementById('onboard-next');
+    const dots = document.querySelectorAll('.onboard-dot');
+
+    function showStep(which) {
+        [step1, step2a, step2b].forEach(s => { if (s) s.classList.add('hidden'); });
+        if (which) which.classList.remove('hidden');
+        if (footer) footer.classList.toggle('hidden', which === step1);
+    }
+
+    // "I know Wordle" path
+    if (knowBtn) knowBtn.onclick = () => showStep(step2a);
+    
+    // "Show me how" path — slide-based tutorial
+    let currentSlide = 1;
+    const totalSlides = 4;
+    
+    function showSlide(n) {
+        currentSlide = n;
+        document.querySelectorAll('.onboard-slide').forEach(s => s.classList.add('hidden'));
+        const target = document.querySelector(`.onboard-slide[data-slide="${n}"]`);
+        if (target) target.classList.remove('hidden');
+        dots.forEach((d, i) => {
+            d.style.background = (i + 1 === n) ? '#4f46e5' : '#cbd5e1';
+        });
+        if (prevBtn) prevBtn.style.visibility = n <= 1 ? 'hidden' : 'visible';
+        if (nextBtn) nextBtn.textContent = n >= totalSlides ? "Let's Play! 🚀" : 'Next →';
+    }
+
+    if (newBtn) newBtn.onclick = () => { showStep(step2b); showSlide(1); };
+
+    if (nextBtn) nextBtn.onclick = () => {
+        if (currentSlide >= totalSlides) {
+            finishOnboarding();
+        } else {
+            showSlide(currentSlide + 1);
+        }
+    };
+
+    if (prevBtn) prevBtn.onclick = () => {
+        if (currentSlide <= 1) {
+            showStep(step1); // Go back to initial choice
+        } else {
+            showSlide(currentSlide - 1);
+        }
+    };
+
+    // "Let's Play" from the "I know Wordle" path
+    if (goPlay) goPlay.onclick = () => finishOnboarding();
+
+    function finishOnboarding() {
+        const dontShow = document.getElementById('howto-dont-show');
+        if (dontShow && dontShow.checked) {
+            try { localStorage.setItem('wq_howto_dismissed', '1'); } catch(e) {}
+        }
+        try { localStorage.setItem('tutorialShown', 'true'); localStorage.setItem('wq_tutorial_seen', '1'); } catch(e) {}
+        closeModal();
+    }
+
+    // Show on first visit
     if (!tutorialShown) {
         localStorage.setItem('tutorialShown', 'true');
         if (modalOverlay) modalOverlay.classList.remove('hidden');
         welcomeModal.classList.remove('hidden');
     }
 
-    startBtn.onclick = () => {
-        const dontShow = document.getElementById('howto-dont-show');
-        if (dontShow && dontShow.checked) {
-            try { localStorage.setItem('wq_howto_dismissed', '1'); } catch(e) {}
-        }
-        try { localStorage.setItem('wq_tutorial_seen', '1'); } catch(e) {}
-        closeModal();
-    };
+    // "How to Play" button in Tools menu
+    const replayBtn = document.getElementById('wq-replay-tutorial');
+    if (replayBtn) {
+        replayBtn.onclick = () => {
+            // Reset to step 1
+            showStep(step1);
+            if (modalOverlay) modalOverlay.classList.remove('hidden');
+            welcomeModal.classList.remove('hidden');
+            // Close tools menu
+            const toolsMenu = document.getElementById('wq-tools-menu');
+            if (toolsMenu) toolsMenu.classList.remove('is-open');
+            const toolsBody = toolsMenu?.querySelector('.wq-tools-body');
+            if (toolsBody) toolsBody.style.display = 'none';
+        };
+    }
 }
 
 /* Focus Panel Toggle */
@@ -14716,12 +15029,45 @@ function getActiveTeamKey() {
 
 function getActiveTeamLabel() {
     const key = getActiveTeamKey();
+    const teams = appSettings.gameMode?.teams;
+    if (teams && teams[key]) return `${teams[key].emoji} ${teams[key].name}`;
     return key === 'A' ? (appSettings.gameMode?.teamAName || 'Team A') : (appSettings.gameMode?.teamBName || 'Team B');
 }
 
 function toggleActiveTeam() {
-    const next = getActiveTeamKey() === 'A' ? 'B' : 'A';
+    const teamCount = appSettings.gameMode?.teamCount || 2;
+    const order = ['A', 'B', 'C', 'D'].slice(0, teamCount);
+    const current = getActiveTeamKey();
+    const idx = order.indexOf(current);
+    const next = order[(idx + 1) % order.length];
     appSettings.gameMode.activeTeam = next;
+    saveSettings();
+}
+
+function getTeamInfo(key) {
+    const teams = appSettings.gameMode?.teams || {};
+    return teams[key] || { name: `Team ${key}`, emoji: '🎯', treats: 0 };
+}
+
+function awardTeamTreats(teamKey, guessCount) {
+    const teams = appSettings.gameMode?.teams;
+    if (!teams || !teams[teamKey]) return 0;
+    let treats = 0;
+    if (guessCount <= 1) treats = 3;
+    else if (guessCount <= 3) treats = 2;
+    else if (guessCount <= 6) treats = 1;
+    teams[teamKey].treats = (teams[teamKey].treats || 0) + treats;
+    saveSettings();
+    return treats;
+}
+
+function resetTeamScores() {
+    const teams = appSettings.gameMode?.teams;
+    if (!teams) return;
+    ['A', 'B', 'C', 'D'].forEach(k => {
+        if (teams[k]) teams[k].treats = 0;
+    });
+    appSettings.gameMode.currentRound = 0;
     saveSettings();
 }
 
@@ -14744,8 +15090,20 @@ function resetLightningTimer() {
         renderFunHud();
         return;
     }
-    lightningRemaining = appSettings.gameMode.timerSeconds || 60;
+    // Use per-turn timer if enabled, otherwise per-game timer
+    if (appSettings.gameMode?.timerPerTurn) {
+        lightningRemaining = appSettings.gameMode.turnTimerSeconds || 30;
+    } else {
+        lightningRemaining = appSettings.gameMode.timerSeconds || 60;
+    }
     startLightningTimer();
+    renderFunHud();
+}
+
+// Call this after each guess to reset per-turn timer
+function resetTurnTimer() {
+    if (!appSettings.gameMode?.timerPerTurn || !appSettings.gameMode?.timerEnabled) return;
+    lightningRemaining = appSettings.gameMode.turnTimerSeconds || 30;
     renderFunHud();
 }
 
@@ -14754,20 +15112,277 @@ function startLightningTimer() {
     const gameModeRunning = !!appSettings.gameMode?.active;
     if (!gameModeRunning || !appSettings.gameMode?.timerEnabled) return;
     if (!lightningRemaining) {
-        lightningRemaining = appSettings.gameMode.timerSeconds || 60;
+        if (appSettings.gameMode?.timerPerTurn) {
+            lightningRemaining = appSettings.gameMode.turnTimerSeconds || 30;
+        } else {
+            lightningRemaining = appSettings.gameMode.timerSeconds || 60;
+        }
     }
     lightningTimer = setInterval(() => {
         lightningRemaining -= 1;
+        // Visual warning in last 5 seconds
+        if (lightningRemaining <= 5 && lightningRemaining > 0) {
+            const timerEl = document.getElementById('fun-hud-timer');
+            if (timerEl) timerEl.querySelector('.fun-hud-value')?.classList.add('timer-warning');
+        }
         if (lightningRemaining <= 0) {
             lightningRemaining = 0;
             stopLightningTimer();
             if (!gameOver) {
-                gameOver = true;
-                showEndModal(false);
+                if (appSettings.gameMode?.timerPerTurn) {
+                    // Per-turn: skip this turn, move to next guess row
+                    showToast('⏱️ Time\'s up for this turn!');
+                    if (currentGuess.length > 0) currentGuess = '';
+                    guesses.push('_____'); // placeholder skip
+                    if (guesses.length >= CURRENT_MAX_GUESSES) {
+                        gameOver = true;
+                        showEndModal(false);
+                    } else {
+                        updateGrid();
+                        if (appSettings.gameMode?.teamMode) {
+                            toggleActiveTeam();
+                            renderFunHud();
+                        }
+                        resetTurnTimer();
+                        startLightningTimer();
+                    }
+                } else {
+                    gameOver = true;
+                    showEndModal(false);
+                }
             }
         }
         renderFunHud();
     }, 1000);
+}
+
+/* Mobile Hamburger Menu */
+function initMobileHamburger() {
+    const hamburger = document.getElementById('wq-hamburger');
+    const mobilePanel = document.getElementById('wq-mobile-panel');
+    if (!hamburger || !mobilePanel) return;
+
+    // Populate mobile panel with cloned controls
+    const patternSelect = document.getElementById('pattern-select');
+    const audioToggle = document.getElementById('wq-play-mode-switch');
+    const toolsMenu = document.getElementById('wq-tools-menu');
+
+    // Build mobile panel content
+    mobilePanel.innerHTML = `
+        <div class="wq-mobile-item" style="flex:1; min-width:140px;"></div>
+        <div class="wq-mobile-item" style="flex-shrink:0;"></div>
+        <div class="wq-mobile-item" style="flex-shrink:0;"></div>
+    `;
+
+    // Move references (on mobile, we'll show/hide the original elements via CSS)
+    // The mobile panel acts as a reveal area — on mobile, the originals are hidden
+    // and we provide access through the panel
+
+    hamburger.onclick = () => {
+        const isOpen = mobilePanel.classList.contains('is-open');
+        mobilePanel.classList.toggle('is-open');
+        hamburger.setAttribute('aria-expanded', String(!isOpen));
+        hamburger.textContent = isOpen ? '☰' : '✕';
+
+        if (!isOpen) {
+            // On open, move the actual controls into the mobile panel temporarily
+            // Only on mobile viewports
+            if (window.innerWidth <= 640) {
+                if (patternSelect && !mobilePanel.contains(patternSelect)) {
+                    mobilePanel.children[0].appendChild(patternSelect);
+                    patternSelect.style.display = '';
+                    patternSelect.style.maxWidth = '100%';
+                }
+                if (audioToggle && !mobilePanel.contains(audioToggle)) {
+                    mobilePanel.children[1].appendChild(audioToggle);
+                    audioToggle.style.display = 'flex';
+                }
+                if (toolsMenu && !mobilePanel.contains(toolsMenu)) {
+                    mobilePanel.children[2].appendChild(toolsMenu);
+                    toolsMenu.style.display = '';
+                }
+            }
+        } else {
+            // On close, move controls back to header
+            const headerRow = document.querySelector('.header-row');
+            if (headerRow) {
+                const spacer = headerRow.querySelector('[style*="flex:1"]');
+                if (patternSelect && !headerRow.contains(patternSelect)) {
+                    headerRow.insertBefore(patternSelect, hamburger.nextSibling);
+                }
+                if (audioToggle && !headerRow.contains(audioToggle)) {
+                    headerRow.insertBefore(audioToggle, spacer);
+                }
+                if (toolsMenu && !headerRow.contains(toolsMenu)) {
+                    headerRow.insertBefore(toolsMenu, spacer);
+                }
+            }
+        }
+    };
+
+    // Close panel when clicking outside
+    document.addEventListener('click', (e) => {
+        if (mobilePanel.classList.contains('is-open') &&
+            !mobilePanel.contains(e.target) &&
+            !hamburger.contains(e.target)) {
+            hamburger.click();
+        }
+    });
+
+    // Handle resize — return controls to header if screen gets wider
+    let wasNarrow = window.innerWidth <= 640;
+    window.addEventListener('resize', () => {
+        const isNarrow = window.innerWidth <= 640;
+        if (wasNarrow && !isNarrow && mobilePanel.classList.contains('is-open')) {
+            hamburger.click(); // Close panel, which returns controls
+        }
+        wasNarrow = isNarrow;
+    });
+}
+
+function initArenaPanel() {
+    const teamToggle = document.getElementById('arena-team-toggle');
+    const teamLabel = document.getElementById('arena-team-label');
+    const teamSetup = document.getElementById('arena-team-setup');
+    const teamCount = document.getElementById('arena-team-count');
+    const timerToggle = document.getElementById('arena-timer-toggle');
+    const timerLabel = document.getElementById('arena-timer-label');
+    const timerSetup = document.getElementById('arena-timer-setup');
+    const timerMode = document.getElementById('arena-timer-mode');
+    const timerSeconds = document.getElementById('arena-timer-seconds');
+    const startBtn = document.getElementById('arena-start');
+    const resetBtn = document.getElementById('arena-reset');
+    const scoreboard = document.getElementById('arena-scoreboard');
+
+    if (!teamToggle) return;
+
+    // Sync UI with current settings
+    function syncArenaUI() {
+        const tm = !!appSettings.gameMode?.teamMode;
+        const te = !!appSettings.gameMode?.timerEnabled;
+        teamToggle.checked = tm;
+        teamLabel.textContent = tm ? 'On' : 'Off';
+        teamSetup.classList.toggle('hidden', !tm);
+        timerToggle.checked = te;
+        timerLabel.textContent = te ? 'On' : 'Off';
+        timerSetup.classList.toggle('hidden', !te);
+
+        const count = appSettings.gameMode?.teamCount || 2;
+        if (teamCount) teamCount.value = String(count);
+        const rowC = document.getElementById('arena-team-C-row');
+        const rowD = document.getElementById('arena-team-D-row');
+        if (rowC) rowC.classList.toggle('hidden', count < 3);
+        if (rowD) rowD.classList.toggle('hidden', count < 4);
+        // But show as flex when visible
+        if (rowC && count >= 3) rowC.style.display = 'flex';
+        if (rowD && count >= 4) rowD.style.display = 'flex';
+
+        // Sync team names
+        ['A', 'B', 'C', 'D'].forEach(k => {
+            const input = document.getElementById(`arena-name-${k}`);
+            if (input && appSettings.gameMode?.teams?.[k]) {
+                input.value = appSettings.gameMode.teams[k].name;
+            }
+        });
+
+        if (timerMode) timerMode.value = appSettings.gameMode?.timerPerTurn ? 'per-turn' : 'per-game';
+        if (timerSeconds) {
+            const secs = appSettings.gameMode?.timerPerTurn
+                ? (appSettings.gameMode?.turnTimerSeconds || 30)
+                : (appSettings.gameMode?.timerSeconds || 60);
+            timerSeconds.value = String(secs);
+        }
+
+        updateScoreboard();
+    }
+
+    function updateScoreboard() {
+        if (!scoreboard || !appSettings.gameMode?.teamMode) {
+            if (scoreboard) scoreboard.style.display = 'none';
+            return;
+        }
+        scoreboard.style.display = 'block';
+        const count = appSettings.gameMode?.teamCount || 2;
+        const teams = appSettings.gameMode?.teams || {};
+        const order = ['A', 'B', 'C', 'D'].slice(0, count);
+        const html = order.map(k => {
+            const t = teams[k] || { emoji: '🎯', name: k, treats: 0 };
+            return `<span style="margin:0 6px;">${t.emoji} <strong>${t.name}</strong>: ${'🍕'.repeat(Math.min(t.treats, 15)) || '0'}</span>`;
+        }).join('');
+        scoreboard.innerHTML = `<div style="font-weight:700; margin-bottom:4px;">📊 Scoreboard</div>${html}`;
+    }
+
+    // Event listeners
+    teamToggle.onchange = () => {
+        appSettings.gameMode.teamMode = teamToggle.checked;
+        if (teamToggle.checked) appSettings.gameMode.active = true;
+        syncGameModeActive();
+        syncArenaUI();
+    };
+
+    if (teamCount) teamCount.onchange = () => {
+        appSettings.gameMode.teamCount = parseInt(teamCount.value) || 2;
+        saveSettings();
+        syncArenaUI();
+    };
+
+    ['A', 'B', 'C', 'D'].forEach(k => {
+        const input = document.getElementById(`arena-name-${k}`);
+        if (input) input.oninput = () => {
+            if (!appSettings.gameMode.teams) appSettings.gameMode.teams = {};
+            if (!appSettings.gameMode.teams[k]) appSettings.gameMode.teams[k] = { name: input.value, emoji: ['🦊','🐺','🦉','🐻'][['A','B','C','D'].indexOf(k)], treats: 0 };
+            appSettings.gameMode.teams[k].name = input.value;
+            saveSettings();
+        };
+    });
+
+    timerToggle.onchange = () => {
+        appSettings.gameMode.timerEnabled = timerToggle.checked;
+        if (timerToggle.checked) appSettings.gameMode.active = true;
+        syncGameModeActive();
+        syncArenaUI();
+    };
+
+    if (timerMode) timerMode.onchange = () => {
+        appSettings.gameMode.timerPerTurn = (timerMode.value === 'per-turn');
+        saveSettings();
+    };
+
+    if (timerSeconds) timerSeconds.onchange = () => {
+        const val = parseInt(timerSeconds.value) || 30;
+        if (appSettings.gameMode.timerPerTurn) {
+            appSettings.gameMode.turnTimerSeconds = val;
+        } else {
+            appSettings.gameMode.timerSeconds = val;
+        }
+        saveSettings();
+    };
+
+    if (startBtn) startBtn.onclick = () => {
+        appSettings.gameMode.teamMode = true;
+        appSettings.gameMode.active = true;
+        appSettings.gameMode.activeTeam = 'A';
+        appSettings.gameMode.currentRound = 0;
+        syncGameModeActive(true);
+        saveSettings();
+        renderFunHud();
+        updateFunHudVisibility();
+        syncArenaUI();
+        showToast(`🏆 Arena started! ${getTeamInfo('A').emoji} ${getTeamInfo('A').name} goes first!`);
+        // Close tools menu
+        const toolsMenu = document.getElementById('wq-tools-menu');
+        if (toolsMenu) toolsMenu.classList.remove('is-open');
+    };
+
+    if (resetBtn) resetBtn.onclick = () => {
+        if (!confirm('Reset all team scores to 0?')) return;
+        resetTeamScores();
+        renderFunHud();
+        syncArenaUI();
+        showToast('Scores reset!');
+    };
+
+    syncArenaUI();
 }
 
 function stopLightningTimer() {

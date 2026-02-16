@@ -88,6 +88,8 @@
           <a href="./" style="text-decoration:underline;">WORD QUEST</a>
         </h1>
 
+        <button id="wq-hamburger" type="button" aria-label="Menu" aria-expanded="false">☰</button>
+
         <select id="pattern-select" aria-label="Choose your path" style="max-width:220px; font-size:0.72rem; padding:4px 6px; border-radius:8px;">
             <option value="shuffle" selected>Choose your path?</option>
             <option value="all">All Words</option>
@@ -178,6 +180,16 @@
                   data-tools-tab="teacher"
                   tabindex="-1"
                 >Teacher Word</button>
+                <button
+                  id="wq-tools-tab-arena"
+                  type="button"
+                  class="wq-tools-tab"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="wq-tools-panel-arena"
+                  data-tools-tab="arena"
+                  tabindex="-1"
+                >🏆 Arena</button>
               </div>
 
               <section id="wq-tools-panel-round" class="wq-tools-panel is-active" role="tabpanel" aria-labelledby="wq-tools-tab-round" data-tools-panel="round">
@@ -232,6 +244,10 @@
                       <option value="off">Off</option>
                     </select>
                   </label>
+                </div>
+
+                <div class="wq-tools-subcard" style="text-align:center;">
+                  <button id="wq-replay-tutorial" type="button" class="case-toggle-btn" style="padding:4px 12px; font-size:0.72rem;">❓ How to Play</button>
                 </div>
               </section>
 
@@ -364,6 +380,96 @@
                   </div>
                 </section>
               </section>
+
+              <section id="wq-tools-panel-arena" class="wq-tools-panel hidden" role="tabpanel" aria-labelledby="wq-tools-tab-arena" data-tools-panel="arena" aria-hidden="true">
+                <div class="wq-tools-subcard" style="text-align:center; padding:8px;">
+                  <strong style="font-size:0.85rem;">🏆 Word Quest Arena</strong>
+                  <p style="font-size:0.7rem; color:#64748b; margin:4px 0 0;">Team competition with treats!</p>
+                </div>
+
+                <div class="wq-tools-subcard">
+                  <label class="wq-tools-field">
+                    <span>Team Mode</span>
+                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                      <input id="arena-team-toggle" type="checkbox" />
+                      <span style="font-size:0.72rem;" id="arena-team-label">Off</span>
+                    </label>
+                  </label>
+
+                  <div id="arena-team-setup" class="hidden" style="margin-top:8px;">
+                    <label class="wq-tools-field">
+                      <span>Teams</span>
+                      <select id="arena-team-count" style="font-size:0.78rem; padding:3px 6px; border-radius:6px;">
+                        <option value="2">2 Teams</option>
+                        <option value="3">3 Teams</option>
+                        <option value="4">4 Teams</option>
+                      </select>
+                    </label>
+
+                    <div id="arena-team-names" style="margin-top:6px; display:flex; flex-direction:column; gap:4px;">
+                      <div style="display:flex; gap:4px; align-items:center;">
+                        <span style="font-size:1rem;">🦊</span>
+                        <input id="arena-name-A" type="text" value="Foxes" maxlength="12" style="flex:1; padding:3px 6px; border:1px solid #d1d5db; border-radius:6px; font-size:0.75rem;" />
+                      </div>
+                      <div style="display:flex; gap:4px; align-items:center;">
+                        <span style="font-size:1rem;">🐺</span>
+                        <input id="arena-name-B" type="text" value="Wolves" maxlength="12" style="flex:1; padding:3px 6px; border:1px solid #d1d5db; border-radius:6px; font-size:0.75rem;" />
+                      </div>
+                      <div id="arena-team-C-row" class="hidden" style="display:flex; gap:4px; align-items:center;">
+                        <span style="font-size:1rem;">🦉</span>
+                        <input id="arena-name-C" type="text" value="Owls" maxlength="12" style="flex:1; padding:3px 6px; border:1px solid #d1d5db; border-radius:6px; font-size:0.75rem;" />
+                      </div>
+                      <div id="arena-team-D-row" class="hidden" style="display:flex; gap:4px; align-items:center;">
+                        <span style="font-size:1rem;">🐻</span>
+                        <input id="arena-name-D" type="text" value="Bears" maxlength="12" style="flex:1; padding:3px 6px; border:1px solid #d1d5db; border-radius:6px; font-size:0.75rem;" />
+                      </div>
+                    </div>
+
+                    <div style="margin-top:8px; display:flex; gap:4px; flex-wrap:wrap;">
+                      <button id="arena-start" type="button" class="hint-btn" style="flex:1;">▶ Start Arena</button>
+                      <button id="arena-reset" type="button" class="hint-btn secondary" style="flex:1;">🔄 Reset Scores</button>
+                    </div>
+
+                    <div id="arena-scoreboard" style="margin-top:8px; padding:6px; border-radius:8px; background:rgba(0,0,0,0.04); font-size:0.72rem; text-align:center; display:none;"></div>
+                  </div>
+                </div>
+
+                <div class="wq-tools-subcard">
+                  <strong style="font-size:0.78rem;">⏱ Turn Timer</strong>
+                  <label class="wq-tools-field" style="margin-top:4px;">
+                    <span>Timer</span>
+                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                      <input id="arena-timer-toggle" type="checkbox" />
+                      <span style="font-size:0.72rem;" id="arena-timer-label">Off</span>
+                    </label>
+                  </label>
+
+                  <div id="arena-timer-setup" class="hidden" style="margin-top:6px;">
+                    <label class="wq-tools-field">
+                      <span>Mode</span>
+                      <select id="arena-timer-mode" style="font-size:0.78rem; padding:3px 6px; border-radius:6px;">
+                        <option value="per-turn">Per turn</option>
+                        <option value="per-game">Per game</option>
+                      </select>
+                    </label>
+                    <label class="wq-tools-field">
+                      <span>Seconds</span>
+                      <select id="arena-timer-seconds" style="font-size:0.78rem; padding:3px 6px; border-radius:6px;">
+                        <option value="15">15s</option>
+                        <option value="30" selected>30s</option>
+                        <option value="45">45s</option>
+                        <option value="60">60s</option>
+                        <option value="90">90s</option>
+                        <option value="120">2 min</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="wq-tools-subcard" style="font-size:0.68rem; color:#94a3b8; text-align:center;">
+                  <strong>💡 Tip:</strong> Use "Rotating Captain" — each round a different student types the guess for their team!
+                </div>
+              </section>
             </div>
           </div>
 
@@ -374,6 +480,8 @@
         </nav>
       </div>
       <div id="focus-round-chip" class="focus-round-chip" aria-live="polite"></div>
+      <!-- Mobile hamburger panel (cloned controls for small screens) -->
+      <div id="wq-mobile-panel"></div>
     </header>
 
     <main>
@@ -408,44 +516,133 @@
     <div id="modal-overlay" class="hidden" aria-hidden="true"></div>
 
     <!-- Welcome / Tutorial -->
-    <div id="welcome-modal" class="modal hidden welcome-modal" role="dialog" aria-modal="true" aria-label="How to play Word Quest">
-      <div class="modal-content welcome-tutorial-card" style="max-width:400px; padding:18px 20px 14px; background:linear-gradient(180deg, #f0f4ff 0%, #e8ecf8 100%); border-radius:18px;">
+    <div id="welcome-modal" class="modal hidden welcome-modal" role="dialog" aria-modal="true" aria-label="Welcome to Word Quest">
+      <div class="modal-content welcome-tutorial-card" style="max-width:420px; padding:20px 22px 16px; background:linear-gradient(180deg, #f0f4ff 0%, #e8ecf8 100%); border-radius:18px;">
         <button class="close-btn" type="button" aria-label="Close" onclick="document.getElementById('welcome-modal').classList.add('hidden');document.getElementById('modal-overlay').classList.add('hidden');">✕</button>
-        <h2 style="margin:0 0 2px; font-size:1.1rem; font-weight:800; color:#1e293b; text-align:center;">🎯 Word Quest</h2>
-        <p style="margin:0 0 10px; color:#64748b; font-size:0.78rem; text-align:center;">Can you guess the word in 6 tries? Let's find out!</p>
 
-        <div style="display:flex; gap:10px; margin-bottom:10px;">
-          <div style="flex:1; background:rgba(34,197,94,0.1); border-radius:10px; padding:8px; text-align:center;">
-            <div style="display:flex; gap:3px; justify-content:center; margin-bottom:4px;">
-              <span class="welcome-tile correct" style="width:26px;height:26px;font-size:0.85rem;">S</span>
-              <span class="welcome-tile" style="width:26px;height:26px;font-size:0.85rem;background:#fff;border:1px solid #d1d5db;">T</span>
-            </div>
-            <p style="margin:0; font-size:0.68rem; color:#16a34a; font-weight:600;">🟢 Right spot</p>
-          </div>
-          <div style="flex:1; background:rgba(234,179,8,0.1); border-radius:10px; padding:8px; text-align:center;">
-            <div style="display:flex; gap:3px; justify-content:center; margin-bottom:4px;">
-              <span class="welcome-tile" style="width:26px;height:26px;font-size:0.85rem;background:#fff;border:1px solid #d1d5db;">B</span>
-              <span class="welcome-tile present" style="width:26px;height:26px;font-size:0.85rem;">R</span>
-            </div>
-            <p style="margin:0; font-size:0.68rem; color:#ca8a04; font-weight:600;">🟡 Wrong spot</p>
-          </div>
-          <div style="flex:1; background:rgba(100,116,139,0.08); border-radius:10px; padding:8px; text-align:center;">
-            <div style="display:flex; gap:3px; justify-content:center; margin-bottom:4px;">
-              <span class="welcome-tile" style="width:26px;height:26px;font-size:0.85rem;background:#fff;border:1px solid #d1d5db;">P</span>
-              <span class="welcome-tile absent" style="width:26px;height:26px;font-size:0.85rem;">A</span>
-            </div>
-            <p style="margin:0; font-size:0.68rem; color:#64748b; font-weight:600;">⬜ Not in word</p>
+        <!-- Step 1: Do you know Wordle? -->
+        <div id="onboard-step1">
+          <h2 style="margin:0 0 6px; font-size:1.2rem; font-weight:800; color:#1e293b; text-align:center;">🎯 Welcome to Word Quest!</h2>
+          <p style="margin:0 0 14px; color:#64748b; font-size:0.82rem; text-align:center;">A word-guessing game that helps you become a better speller and reader!</p>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button id="onboard-know-wordle" type="button" style="padding:12px 16px; border-radius:12px; border:2px solid #22c55e; background:linear-gradient(180deg,#f0fdf4,#dcfce7); color:#166534; font-weight:700; font-size:0.9rem; cursor:pointer; text-align:left;">
+              🟩 I know how to play Wordle!
+              <span style="display:block; font-size:0.72rem; font-weight:400; color:#4ade80; margin-top:2px;">Show me what's different</span>
+            </button>
+            <button id="onboard-new-player" type="button" style="padding:12px 16px; border-radius:12px; border:2px solid #3b82f6; background:linear-gradient(180deg,#eff6ff,#dbeafe); color:#1e40af; font-weight:700; font-size:0.9rem; cursor:pointer; text-align:left;">
+              🤔 Show me how to play!
+              <span style="display:block; font-size:0.72rem; font-weight:400; color:#60a5fa; margin-top:2px;">Quick visual guide</span>
+            </button>
           </div>
         </div>
 
-        <p style="margin:0 0 8px; font-size:0.75rem; color:#475569; text-align:center;">Toggle 🔊 <strong>Audio Hints</strong> in the header to hear words before guessing.</p>
+        <!-- Step 2a: I know Wordle — show superpowers -->
+        <div id="onboard-step2a" class="hidden">
+          <h2 style="margin:0 0 8px; font-size:1.1rem; font-weight:800; color:#1e293b; text-align:center;">🌟 Word Quest = Wordle + Superpowers!</h2>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:10px;">
+            <div style="padding:8px; border-radius:10px; background:rgba(59,130,246,0.08); text-align:center;">
+              <div style="font-size:1.2rem;">🔊</div>
+              <div style="font-size:0.68rem; font-weight:600; color:#1e40af;">Hear words spoken</div>
+            </div>
+            <div style="padding:8px; border-radius:10px; background:rgba(234,179,8,0.08); text-align:center;">
+              <div style="font-size:1.2rem;">💡</div>
+              <div style="font-size:0.68rem; font-weight:600; color:#92400e;">Phonics hints & clues</div>
+            </div>
+            <div style="padding:8px; border-radius:10px; background:rgba(16,185,129,0.08); text-align:center;">
+              <div style="font-size:1.2rem;">🌍</div>
+              <div style="font-size:0.68rem; font-weight:600; color:#065f46;">10+ language translations</div>
+            </div>
+            <div style="padding:8px; border-radius:10px; background:rgba(168,85,247,0.08); text-align:center;">
+              <div style="font-size:1.2rem;">🎙</div>
+              <div style="font-size:0.68rem; font-weight:600; color:#6b21a8;">Record yourself</div>
+            </div>
+          </div>
+          <div style="background:rgba(79,70,229,0.06); border-radius:10px; padding:8px 10px; margin-bottom:10px;">
+            <div style="font-size:0.78rem; font-weight:700; color:#4f46e5; margin-bottom:4px;">Two Ways to Play:</div>
+            <div style="font-size:0.72rem; color:#475569; line-height:1.4;">
+              <strong>🎯 Spelling Challenge</strong> — Classic mode, just you and the letters<br>
+              <strong>🔍 Detective Mode</strong> — Audio hints, syllable counts, and clues to help you decode
+            </div>
+          </div>
+          <button id="onboard-go-play" type="button" class="primary-btn" style="width:100%; padding:10px; font-size:0.95rem; border-radius:10px;">Let's Play! 🚀</button>
+        </div>
 
-        <button id="start-playing-btn" type="button" class="primary-btn" style="width:100%; padding:10px; font-size:0.95rem; border-radius:10px; margin-bottom:6px;">Let's Play! 🚀</button>
-        
-        <label style="display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.68rem; color:#94a3b8; cursor:pointer;">
-          <input type="checkbox" id="howto-dont-show" />
-          Don't show this again
-        </label>
+        <!-- Step 2b: New player — visual tutorial -->
+        <div id="onboard-step2b" class="hidden">
+          <div id="onboard-slides">
+            <!-- Slide 1 -->
+            <div class="onboard-slide" data-slide="1">
+              <h2 style="margin:0 0 6px; font-size:1rem; font-weight:800; color:#1e293b; text-align:center;">Type a word and press ENTER</h2>
+              <div style="display:flex; gap:4px; justify-content:center; margin:10px 0;">
+                <span class="welcome-tile" style="width:36px;height:36px;font-size:1rem;background:#fff;border:2px solid #4f46e5;font-weight:800;color:#4f46e5;">C</span>
+                <span class="welcome-tile" style="width:36px;height:36px;font-size:1rem;background:#fff;border:2px solid #4f46e5;font-weight:800;color:#4f46e5;">R</span>
+                <span class="welcome-tile" style="width:36px;height:36px;font-size:1rem;background:#fff;border:2px solid #4f46e5;font-weight:800;color:#4f46e5;">A</span>
+                <span class="welcome-tile" style="width:36px;height:36px;font-size:1rem;background:#fff;border:2px solid #4f46e5;font-weight:800;color:#4f46e5;">N</span>
+                <span class="welcome-tile" style="width:36px;height:36px;font-size:1rem;background:#fff;border:2px solid #4f46e5;font-weight:800;color:#4f46e5;">E</span>
+              </div>
+              <p style="margin:0; font-size:0.78rem; color:#64748b; text-align:center;">Guess any real word with the right number of letters.</p>
+            </div>
+            <!-- Slide 2 -->
+            <div class="onboard-slide hidden" data-slide="2">
+              <h2 style="margin:0 0 6px; font-size:1rem; font-weight:800; color:#1e293b; text-align:center;">Colors are your clues!</h2>
+              <div style="display:flex; flex-direction:column; gap:8px; margin:10px 0;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="welcome-tile correct" style="width:34px;height:34px;font-size:0.95rem;">S</span>
+                  <span style="font-size:0.78rem; color:#166534; font-weight:600;">🟢 Right letter, right spot!</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="welcome-tile present" style="width:34px;height:34px;font-size:0.95rem;">R</span>
+                  <span style="font-size:0.78rem; color:#92400e; font-weight:600;">🟡 Right letter, wrong spot</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="welcome-tile absent" style="width:34px;height:34px;font-size:0.95rem;">A</span>
+                  <span style="font-size:0.78rem; color:#475569; font-weight:600;">⬜ Not in the word</span>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="onboard-slide hidden" data-slide="3">
+              <h2 style="margin:0 0 6px; font-size:1rem; font-weight:800; color:#1e293b; text-align:center;">You get 6 tries!</h2>
+              <div style="display:flex; gap:4px; justify-content:center; margin:8px 0;">
+                <div style="display:flex; flex-direction:column; gap:3px;">
+                  <div style="display:flex; gap:2px;"><span class="welcome-tile absent" style="width:22px;height:22px;font-size:0.65rem;">C</span><span class="welcome-tile present" style="width:22px;height:22px;font-size:0.65rem;">R</span><span class="welcome-tile absent" style="width:22px;height:22px;font-size:0.65rem;">A</span><span class="welcome-tile absent" style="width:22px;height:22px;font-size:0.65rem;">N</span><span class="welcome-tile present" style="width:22px;height:22px;font-size:0.65rem;">E</span></div>
+                  <div style="display:flex; gap:2px;"><span class="welcome-tile correct" style="width:22px;height:22px;font-size:0.65rem;">S</span><span class="welcome-tile absent" style="width:22px;height:22px;font-size:0.65rem;">T</span><span class="welcome-tile correct" style="width:22px;height:22px;font-size:0.65rem;">E</span><span class="welcome-tile absent" style="width:22px;height:22px;font-size:0.65rem;">E</span><span class="welcome-tile correct" style="width:22px;height:22px;font-size:0.65rem;">R</span></div>
+                  <div style="display:flex; gap:2px;"><span class="welcome-tile correct" style="width:22px;height:22px;font-size:0.65rem;">S</span><span class="welcome-tile correct" style="width:22px;height:22px;font-size:0.65rem;">H</span><span class="welcome-tile correct" style="width:22px;height:22px;font-size:0.65rem;">E</span><span class="welcome-tile correct" style="width:22px;height:22px;font-size:0.65rem;">E</span><span class="welcome-tile correct" style="width:22px;height:22px;font-size:0.65rem;">R</span></div>
+                </div>
+              </div>
+              <p style="margin:4px 0 0; font-size:0.78rem; color:#64748b; text-align:center;">Use each guess to get closer. You've got this!</p>
+            </div>
+            <!-- Slide 4: Superpowers -->
+            <div class="onboard-slide hidden" data-slide="4">
+              <h2 style="margin:0 0 6px; font-size:1rem; font-weight:800; color:#1e293b; text-align:center;">✨ Plus Superpowers!</h2>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:8px 0;">
+                <div style="padding:6px; border-radius:8px; background:rgba(59,130,246,0.08); text-align:center;font-size:0.68rem;font-weight:600;color:#1e40af;">🔊 Hear words</div>
+                <div style="padding:6px; border-radius:8px; background:rgba(234,179,8,0.08); text-align:center;font-size:0.68rem;font-weight:600;color:#92400e;">💡 Get hints</div>
+                <div style="padding:6px; border-radius:8px; background:rgba(16,185,129,0.08); text-align:center;font-size:0.68rem;font-weight:600;color:#065f46;">🌍 Translations</div>
+                <div style="padding:6px; border-radius:8px; background:rgba(168,85,247,0.08); text-align:center;font-size:0.68rem;font-weight:600;color:#6b21a8;">🎙 Record yourself</div>
+              </div>
+              <p style="margin:4px 0 0; font-size:0.72rem; color:#475569; text-align:center;">Tap 🔊 to hear the word, or use 💡 Hints for extra help!</p>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+            <button id="onboard-prev" type="button" class="secondary-btn" style="padding:6px 14px; font-size:0.8rem; border-radius:8px; visibility:hidden;">← Back</button>
+            <div id="onboard-dots" style="display:flex; gap:5px;">
+              <span class="onboard-dot active" style="width:8px;height:8px;border-radius:50%;background:#4f46e5;"></span>
+              <span class="onboard-dot" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;"></span>
+              <span class="onboard-dot" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;"></span>
+              <span class="onboard-dot" style="width:8px;height:8px;border-radius:50%;background:#cbd5e1;"></span>
+            </div>
+            <button id="onboard-next" type="button" class="primary-btn" style="padding:6px 14px; font-size:0.8rem; border-radius:8px;">Next →</button>
+          </div>
+        </div>
+
+        <!-- Shared footer -->
+        <div id="onboard-footer" class="hidden" style="margin-top:8px;">
+          <label style="display:flex; align-items:center; justify-content:center; gap:4px; font-size:0.68rem; color:#94a3b8; cursor:pointer;">
+            <input type="checkbox" id="howto-dont-show" />
+            Don't show this again
+          </label>
+        </div>
       </div>
     </div>
 
@@ -541,6 +738,48 @@
         <div id="reveal-record-section" style="text-align:center; margin-top:6px; padding-top:6px; border-top:1px solid rgba(0,0,0,0.06);">
           <button id="reveal-record-btn" type="button" style="padding:8px 18px; border-radius:10px; border:2px solid #e5e7eb; background:linear-gradient(180deg,#fefce8,#fef3c7); color:#92400e; font-weight:700; font-size:0.82rem; cursor:pointer;">🎙 Practice Saying It</button>
           <div id="reveal-record-status" style="margin-top:6px;"></div>
+          <!-- Mini Pronunciation Studio (hidden by default) -->
+          <div id="pronun-studio" class="hidden" style="margin-top:8px; padding:10px; border-radius:14px; background:linear-gradient(180deg,#f8fafc,#f1f5f9); border:1px solid rgba(0,0,0,0.08); text-align:center;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:700; font-size:0.82rem; color:#1e293b;">🎤 Pronunciation Studio</span>
+              <button id="pronun-close" type="button" style="background:none; border:none; font-size:1rem; cursor:pointer; color:#94a3b8; padding:2px 6px;">✕</button>
+            </div>
+            <!-- Step 1: Listen -->
+            <div style="margin-bottom:8px; padding:6px 10px; border-radius:10px; background:#eff6ff; border:1px solid #bfdbfe;">
+              <div style="font-size:0.72rem; font-weight:600; color:#1e40af; margin-bottom:4px;">Step 1: Listen First</div>
+              <button id="pronun-listen" type="button" style="padding:5px 14px; border-radius:8px; border:1px solid #93c5fd; background:#dbeafe; color:#1e40af; font-weight:600; font-size:0.78rem; cursor:pointer;">🔊 Hear the Word</button>
+            </div>
+            <!-- Step 2: Record -->
+            <div style="margin-bottom:8px; padding:6px 10px; border-radius:10px; background:#fefce8; border:1px solid #fde68a;">
+              <div style="font-size:0.72rem; font-weight:600; color:#92400e; margin-bottom:4px;">Step 2: Your Turn</div>
+              <div style="display:flex; gap:6px; justify-content:center; align-items:center; flex-wrap:wrap;">
+                <button id="pronun-record" type="button" style="padding:5px 14px; border-radius:8px; border:1px solid #fbbf24; background:#fef3c7; color:#92400e; font-weight:600; font-size:0.78rem; cursor:pointer;">● Record</button>
+                <span id="pronun-timer" style="font-size:0.72rem; color:#92400e; font-weight:600; display:none;"></span>
+              </div>
+              <canvas id="pronun-waveform" width="260" height="36" style="display:none; margin:6px auto 0; border-radius:6px; background:rgba(0,0,0,0.04);"></canvas>
+              <div id="pronun-playback" style="display:none; margin-top:6px; display:none;">
+                <button id="pronun-play-mine" type="button" style="padding:3px 10px; border-radius:8px; border:1px solid #bbf7d0; background:#f0fdf4; font-size:0.72rem; font-weight:600; cursor:pointer;">▶ Play Back</button>
+                <button id="pronun-redo" type="button" style="padding:3px 10px; border-radius:8px; border:1px solid #fde68a; background:#fefce8; font-size:0.72rem; font-weight:600; cursor:pointer;">🔄 Try Again</button>
+              </div>
+            </div>
+            <!-- Step 3: Compare -->
+            <div id="pronun-compare-section" style="display:none; padding:6px 10px; border-radius:10px; background:#f0fdf4; border:1px solid #bbf7d0;">
+              <div style="font-size:0.72rem; font-weight:600; color:#166534; margin-bottom:4px;">Step 3: Compare</div>
+              <button id="pronun-play-both" type="button" style="padding:5px 14px; border-radius:8px; border:1px solid #86efac; background:#dcfce7; color:#166534; font-weight:600; font-size:0.78rem; cursor:pointer;">▶ Play Both (Model → Yours)</button>
+              <div style="display:flex; gap:8px; justify-content:center; margin-top:6px;">
+                <div style="text-align:center;">
+                  <canvas id="pronun-wave-model" width="110" height="30" style="border-radius:6px; background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.2);"></canvas>
+                  <div style="font-size:0.6rem; color:#3b82f6; margin-top:2px;">Model</div>
+                </div>
+                <div style="text-align:center;">
+                  <canvas id="pronun-wave-yours" width="110" height="30" style="border-radius:6px; background:rgba(249,115,22,0.08); border:1px solid rgba(249,115,22,0.2);"></canvas>
+                  <div style="font-size:0.6rem; color:#f97316; margin-top:2px;">Yours</div>
+                </div>
+              </div>
+              <button id="pronun-save" type="button" style="margin-top:6px; padding:3px 10px; border-radius:8px; border:1px solid #c4b5fd; background:#f5f3ff; font-size:0.72rem; font-weight:600; cursor:pointer;">💾 Save to Portfolio</button>
+            </div>
+          </div>
+        </div>
         </div>
 
         <div class="translation-selector" aria-label="Translate">
