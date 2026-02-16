@@ -2269,6 +2269,34 @@ async function previewSelectedVoice(sampleText = '') {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // ═══════════════════════════════════════════════════════════
+    // RUNTIME INTEGRITY GUARD — Catches breakage from code edits
+    // ═══════════════════════════════════════════════════════════
+    const _wqIntegrity = () => {
+        const issues = [];
+        if (!window.WORD_ENTRIES || typeof window.WORD_ENTRIES !== 'object')
+            issues.push('CRITICAL: window.WORD_ENTRIES missing — words.js not loaded or variable renamed');
+        else if (Object.keys(window.WORD_ENTRIES).length < 100)
+            issues.push('WARNING: WORD_ENTRIES has <100 words — words.js may be corrupted');
+        if (!document.getElementById('game-board'))
+            issues.push('CRITICAL: #game-board missing from HTML');
+        if (!document.getElementById('keyboard'))
+            issues.push('CRITICAL: #keyboard missing from HTML');
+        if (!document.getElementById('pattern-select'))
+            issues.push('WARNING: #pattern-select missing — focus paths unavailable');
+        // Check vowel keys aren't green (common regression)
+        const sampleVowel = document.querySelector('.key.vowel:not(.correct):not(.present):not(.absent)');
+        if (sampleVowel) {
+            const bg = getComputedStyle(sampleVowel).backgroundColor;
+            if (bg && bg.includes('0, 128, 0') || bg.includes('22, 163, 74'))
+                issues.push('WARNING: Vowel keys appear GREEN — should be TEAL. Check CSS.');
+        }
+        if (issues.length) {
+            console.warn('🔴 Word Quest Integrity Check:\n' + issues.join('\n'));
+        }
+    };
+    setTimeout(_wqIntegrity, 1500);
+
     const useLegacyForceLight = shouldUseLegacyForceLight();
     document.body.classList.toggle('force-light', useLegacyForceLight);
     document.documentElement.classList.toggle('force-light', useLegacyForceLight);
@@ -6348,6 +6376,19 @@ function getWordFromDictionary() {
     const allWords = Object.keys(window.WORD_ENTRIES);
     const getFocusTitle = (focusKey = 'all') => {
         if (!focusKey || focusKey === 'all') return 'Any Focus';
+        // Teacher Bucket titles
+        if (typeof focusKey === 'string') {
+            if (focusKey.startsWith('tb:')) {
+                const key = focusKey.slice(3);
+                const titles = { classroom_routines:'Classroom Routines', academic_verbs_connectors:'Academic Verbs & Connectors', measurement_data:'Measurement & Data', sel_language:'SEL Language' };
+                return titles[key] || key;
+            }
+            if (focusKey.startsWith('tbfun:')) {
+                const key = focusKey.slice(6);
+                const titles = { animals:'Animals', plants:'Plants', weather_seasons:'Weather & Seasons', space:'Space', foods_neutral:'Foods (neutral)', jobs:'Jobs', places:'Places' };
+                return titles[key] || key;
+            }
+        }
         return window.FOCUS_INFO?.[focusKey]?.title || focusKey;
     };
     if (!teacherWordList.length) {
@@ -6356,7 +6397,18 @@ function getWordFromDictionary() {
     teacherWordListEnabled = readTeacherWordListEnabled() && teacherWordList.length > 0;
 
     const getPool = ({ focus = 'all', length = targetLen } = {}) => {
-        const curriculumWords = CURRICULUM_FOCUS_LISTS[focus];
+        // Teacher Buckets (from categories.js)
+        let teacherBucketWords = null;
+        if (typeof focus === 'string') {
+            if (focus.startsWith('tb:')) {
+                const key = focus.slice(3);
+                teacherBucketWords = window.TEACHER_BUCKET_LISTS?.[key];
+            } else if (focus.startsWith('tbfun:')) {
+                const key = focus.slice(6);
+                teacherBucketWords = window.TEACHER_BUCKET_LISTS?.fun_rounds_suggested?.[key];
+            }
+        }
+        const curriculumWords = teacherBucketWords || CURRICULUM_FOCUS_LISTS[focus];
         if (Array.isArray(curriculumWords)) {
             const basePool = curriculumWords
                 .map((word) => normalizeCustomWordInput(word))

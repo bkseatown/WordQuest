@@ -5082,15 +5082,16 @@ select{
 
 /* ---------- First-time Word Quest tutorial ---------- */
 body.word-quest-page #welcome-modal.welcome-modal {
-  width: min(720px, calc(100vw - 24px));
-  max-width: min(720px, calc(100vw - 24px));
+  width: min(520px, calc(100vw - 32px));
+  max-width: min(520px, calc(100vw - 32px));
   max-height: min(86vh, 880px);
   border-radius: 22px;
   border: 1px solid rgba(71, 85, 105, 0.28);
   background: linear-gradient(165deg, rgba(248, 251, 255, 0.99) 0%, rgba(237, 244, 255, 0.99) 100%);
   box-shadow: 0 28px 48px rgba(15, 23, 42, 0.24);
   color: #0f172a;
-  text-align: left;
+  text-align: center;
+  margin: auto;
 }
 
 body.word-quest-page #welcome-modal .welcome-tutorial-card {
@@ -7910,8 +7911,8 @@ body.word-quest-page .tile.active.row-active:not(.correct):not(.present):not(.ab
 }
 
 body.word-quest-page .tile.vowel:not(.correct):not(.present):not(.absent) {
-    border-color: rgba(14, 116, 144, 0.46);
-    background: linear-gradient(180deg, #ecfeff 0%, #e0f2fe 100%);
+    border-color: rgba(6, 182, 212, 0.40);
+    background: linear-gradient(180deg, #ecfeff 0%, #e0f7fa 100%);
 }
 
 body.word-quest-page #keyboard {
@@ -9898,19 +9899,23 @@ body.word-quest-page .wq-tools-tabs {
     border-radius: 10px;
     padding: 3px;
     margin-bottom: 8px;
+    flex-wrap: wrap;
 }
 body.word-quest-page .wq-tools-tab {
-    flex: 1;
-    padding: 6px 10px;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 6px 8px;
     border: none;
     border-radius: 8px;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 600;
     cursor: pointer;
     background: transparent;
     color: #64748b;
     transition: all 0.15s;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 body.word-quest-page .wq-tools-tab.is-active {
     background: #fff;
@@ -10335,7 +10340,16 @@ body.word-quest-page[data-wq-scene="classic-contrast"] .key:not(.correct):not(.p
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Vowel keys on dark themes */
+/* Coffeehouse is a LIGHT warm theme - keys need dark text */
+body.word-quest-page[data-wq-scene="coffeehouse"] .key:not(.correct):not(.present):not(.absent) {
+    background: rgba(180, 140, 100, 0.14) !important;
+    color: #4a3728 !important;
+    border: 1px solid rgba(120, 85, 55, 0.28) !important;
+    text-shadow: none !important;
+    box-shadow: 0 3px 0 rgba(120, 85, 55, 0.22), 0 6px 12px rgba(80, 50, 20, 0.08) !important;
+}
+
+/* Vowel keys on dark themes — TEAL (not green, to avoid conflict with correct=green) */
 body.word-quest-page[data-wq-scene="hero-iron"] .key.vowel:not(.correct):not(.present):not(.absent),
 body.word-quest-page[data-wq-scene="hero-shield"] .key.vowel:not(.correct):not(.present):not(.absent),
 body.word-quest-page[data-wq-scene="hero-spider"] .key.vowel:not(.correct):not(.present):not(.absent),
@@ -10344,11 +10358,18 @@ body.word-quest-page[data-wq-scene="slate-steel"] .key.vowel:not(.correct):not(.
 body.word-quest-page[data-wq-scene="mocha-mousse"] .key.vowel:not(.correct):not(.present):not(.absent),
 body.word-quest-page[data-wq-scene="pro-midnight"] .key.vowel:not(.correct):not(.present):not(.absent),
 body.word-quest-page[data-wq-scene="digital-lavender"] .key.vowel:not(.correct):not(.present):not(.absent),
-body.word-quest-page[data-wq-scene="coffeehouse"] .key.vowel:not(.correct):not(.present):not(.absent),
 body.word-quest-page[data-wq-scene="classic-contrast"] .key.vowel:not(.correct):not(.present):not(.absent) {
-    background: rgba(16, 185, 129, 0.25) !important;
-    color: #a7f3d0 !important;
-    border-color: rgba(16, 185, 129, 0.35) !important;
+    background: rgba(6, 182, 212, 0.28) !important;
+    color: #a5f3fc !important;
+    border-color: rgba(6, 182, 212, 0.38) !important;
+}
+
+/* Coffeehouse vowel keys (light theme - needs dark text) */
+body.word-quest-page[data-wq-scene="coffeehouse"] .key.vowel:not(.correct):not(.present):not(.absent) {
+    background: rgba(6, 182, 212, 0.15) !important;
+    color: #155e75 !important;
+    border-color: rgba(6, 182, 212, 0.35) !important;
+    font-weight: 700;
 }
 
 /* --- 3. MOBILE HEADER OVERFLOW FIX --- */
