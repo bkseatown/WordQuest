@@ -77,26 +77,7 @@ const WQAudio = (() => {
   // ─── Playback ───────────────────────────────────
   let _active = null;
 
-  
-  function _speakSynth(text, kind){
-    if (!text || !window.speechSynthesis) return Promise.resolve(false);
-    try{
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.rate  = 0.95;
-      utter.pitch = 1.0;
-      const best = _pickBestVoiceFor(kind);
-      if (best) utter.voice = best;
-      return new Promise(resolve=>{
-        utter.onend = ()=>resolve(true);
-        utter.onerror = ()=>resolve(false);
-        speechSynthesis.speak(utter);
-      });
-    }catch(err){
-      console.warn("[WQAudio] synth error", err);
-      return Promise.resolve(false);
-    }
-  }
-function _stop() {
+  function _stop() {
     if (_active) { _active.pause(); _active.currentTime = 0; _active = null; }
     window.speechSynthesis.cancel();
   }
@@ -151,7 +132,6 @@ function _stop() {
       .sort((a, b) => _scoreVoice(b) - _scoreVoice(a));
   }
 
-  
   function setVoiceMode(mode){
     const m = (mode || "").toLowerCase();
     const allowed = new Set(["recorded","auto","device"]);
@@ -159,7 +139,8 @@ function _stop() {
     try{ localStorage.setItem(VOICE_MODE_KEY, _voiceMode); }catch(e){}
   }
   function getVoiceMode(){ return _voiceMode || "recorded"; }
-function setVoiceByName(name) {
+
+  function setVoiceByName(name) {
     if (name === 'auto') {
       localStorage.removeItem(VOICE_PREF_KEY);
       _selectedVoice = null;

@@ -46,6 +46,8 @@
   applyTheme(prefs.theme || 'default');
   applyProjector(prefs.projector || 'off');
   applyMotion(prefs.motion || 'on');
+  applyHint(prefs.hint || 'on');
+  applyFeedback(prefs.feedback || 'classic');
   WQUI.setCaseMode(prefs.caseMode || 'lower');
 
   // Voice picker populated after brief delay
@@ -65,7 +67,18 @@
     document.documentElement.setAttribute('data-motion', mode);
   }
 
-  function populateVoiceSelector(){ /* voice list removed (simplified modes) */ }
+  function applyHint(mode) {
+    document.documentElement.setAttribute('data-hint', mode);
+  }
+
+  function applyFeedback(mode) {
+    document.documentElement.setAttribute('data-feedback', mode);
+  }
+
+  function populateVoiceSelector() {
+    // Voice selection is handled by WQAudio internals
+    // This can be expanded if you want a dropdown UI later
+  }
 
   // ─── 5. Settings panel wiring ───────────────────────
   _el('settings-btn')?.addEventListener('click', () => {
@@ -121,8 +134,6 @@
 
   _el('s-voice')?.addEventListener('change', e => {
     WQAudio.setVoiceMode(e.target.value);
-    setPref('voice', e.target.value);
-  });
     setPref('voice', e.target.value);
   });
 
