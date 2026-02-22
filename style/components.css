@@ -274,6 +274,139 @@ header {
   cursor:     pointer;
 }
 
+.wq-theme-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.wq-theme-nav-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: var(--brand);
+  color: var(--brand-text);
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.wq-theme-nav-btn:hover {
+  background: var(--brand-dk);
+}
+
+.wq-theme-label {
+  min-width: 120px;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.wq-teacher-tools {
+  border-top: 1px solid var(--panel-border);
+  gap: 8px;
+}
+
+.wq-teacher-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.wq-teacher-heading {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.wq-teacher-arrow {
+  font-size: 0.72rem;
+}
+
+.wq-teacher-status {
+  margin-left: auto;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: var(--brand);
+  color: var(--brand-text);
+}
+
+.wq-teacher-body {
+  display: grid;
+  gap: 8px;
+}
+
+.wq-teacher-help {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.wq-teacher-words {
+  width: 100%;
+  min-height: 90px;
+  resize: vertical;
+  padding: 8px;
+  border: 1.5px solid var(--panel-border);
+  border-radius: 8px;
+  background: var(--modal-bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.86rem;
+}
+
+.wq-teacher-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.wq-teacher-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.wq-teacher-btn-primary {
+  flex: 1;
+  background: var(--brand);
+  color: var(--brand-text);
+}
+
+.wq-teacher-btn-primary:hover {
+  background: var(--brand-dk);
+}
+
+.wq-teacher-btn-muted {
+  background: var(--absent);
+  color: #fff;
+}
+
+.wq-teacher-msg {
+  min-height: 16px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.wq-teacher-msg.is-error {
+  color: #b91c1c;
+}
+
 /* ── Main ────────────────────────────────────────────── */
 main {
   display:         flex;
@@ -346,7 +479,8 @@ main {
 
 .tile.filled { border-color: var(--tile-filled-border); }
 
-[data-motion="on"] .tile.just-typed { animation: tile-jiggle 0.22s ease; }
+html[data-motion="fun"] .tile.just-typed,
+html[data-motion="calm"] .tile.just-typed { animation: tile-jiggle 0.22s ease; }
 
 /* Result states — scale applied here */
 .tile.correct {
@@ -455,8 +589,9 @@ html[data-hint="on"] .key.vowel:not(.correct):not(.present):not(.absent){
 /* Wide keys */
 .key.wide { flex: 1.6; max-width: 80px; font-size: 0.78rem; }
 
-/* Bounce — only when motion is on */
-[data-motion="on"] .key.bounce { animation: key-bounce 0.14s ease; }
+/* Bounce — only when motion is enabled */
+html[data-motion="fun"] .key.bounce,
+html[data-motion="calm"] .key.bounce { animation: key-bounce 0.14s ease; }
 
 /* ── Key result states ───────────────────────────────── */
 .key.correct {
@@ -511,7 +646,7 @@ html[data-hint="on"] .key.vowel:not(.correct):not(.present):not(.absent){
 }
 
 /* ── Reduced motion ──────────────────────────────────── */
-[data-motion="off"] * {
+html[data-motion="reduced"] * {
   animation-duration:        0.001ms !important;
   animation-iteration-count: 1 !important;
   transition-duration:       0.001ms !important;
@@ -641,6 +776,61 @@ html[data-hint="on"] .key.vowel:not(.correct):not(.present):not(.absent){
   z-index:        300;
   width:          100%;
   height:         100%;
+}
+
+/* ── Generic modal shell (voice help, future dialogs) ── */
+.modal {
+  position:        fixed;
+  inset:           0;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         16px;
+  background:      rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  z-index:         420;
+}
+
+.modal-card {
+  width:          min(560px, 100%);
+  max-height:     90dvh;
+  overflow:       auto;
+  background:     var(--modal-bg);
+  border:         1px solid var(--panel-border);
+  border-radius:  var(--radius-panel);
+  box-shadow:     0 24px 60px rgba(0,0,0,0.35);
+}
+
+.modal-head {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  gap:             10px;
+  padding:         12px 16px;
+  border-bottom:   1px solid var(--panel-border);
+  font-size:       0.95rem;
+  font-weight:     700;
+  color:           var(--text);
+}
+
+.modal-body {
+  display:       grid;
+  gap:           10px;
+  padding:       14px 16px 16px;
+  color:         var(--text);
+  line-height:   1.45;
+  font-size:     0.9rem;
+}
+
+.modal-body p {
+  margin: 0;
+}
+
+.modal-body ul {
+  margin: 0 0 0 18px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
 }
 
 /* ── Modal ───────────────────────────────────────────── */

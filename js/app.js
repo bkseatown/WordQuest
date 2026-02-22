@@ -29,10 +29,25 @@
   function setPref(k, v) { prefs[k] = v; savePrefs(prefs); }
 
   const _el = id => document.getElementById(id);
+  const ThemeRegistry = window.WQThemeRegistry || null;
+
+  function getThemeFallback() {
+    if (ThemeRegistry && typeof ThemeRegistry.defaultThemeForMode === 'function') {
+      return ThemeRegistry.defaultThemeForMode('calm');
+    }
+    return 'default';
+  }
+
+  function normalizeTheme(theme, fallback = getThemeFallback()) {
+    if (ThemeRegistry && typeof ThemeRegistry.normalizeTheme === 'function') {
+      return ThemeRegistry.normalizeTheme(theme, fallback);
+    }
+    return theme || fallback;
+  }
 
   // Apply saved values to selects
   const PREF_SELECTS = {
-    's-theme': 'theme', 's-grade': 'grade', 's-length': 'length',
+    's-grade': 'grade', 's-length': 'length',
     's-guesses': 'guesses', 's-case': 'caseMode', 's-hint': 'hint',
     's-dupe': 'dupe', 's-confetti': 'confetti',
     's-projector': 'projector', 's-motion': 'motion'
@@ -42,10 +57,18 @@
     if (el && prefs[key] !== undefined) el.value = prefs[key];
   });
 
+  const themeSelect = _el('s-theme');
+  if (themeSelect && ThemeRegistry && typeof ThemeRegistry.renderThemeOptions === 'function') {
+    ThemeRegistry.renderThemeOptions(themeSelect, prefs.theme || getThemeFallback());
+  } else if (themeSelect && prefs.theme) {
+    themeSelect.value = prefs.theme;
+  }
+
   // Apply theme + modes immediately
-  applyTheme(prefs.theme || 'default');
+  const initialTheme = applyTheme(prefs.theme || getThemeFallback());
+  if (prefs.theme !== initialTheme) setPref('theme', initialTheme);
   applyProjector(prefs.projector || 'off');
-  applyMotion(prefs.motion || 'on');
+  applyMotion(prefs.motion || 'fun');
   applyHint(prefs.hint || 'on');
   applyFeedback(prefs.feedback || 'classic');
   WQUI.setCaseMode(prefs.caseMode || 'lower');
@@ -56,7 +79,11 @@
 
   // ─── 4. Theme / projector / motion helpers ──────────
   function applyTheme(name) {
-    document.documentElement.setAttribute('data-theme', name);
+    const normalized = normalizeTheme(name, getThemeFallback());
+    document.documentElement.setAttribute('data-theme', normalized);
+    const select = _el('s-theme');
+    if (select && select.value !== normalized) select.value = normalized;
+    return normalized;
   }
 
   function applyProjector(mode) {
@@ -90,7 +117,10 @@
 
   
   // Voice help modal
-  const openVoiceHelp = () => _el('voice-help-modal')?.classList.remove('hidden');
+  const openVoiceHelp = () => {
+    _el('settings-panel')?.classList.add('hidden');
+    _el('voice-help-modal')?.classList.remove('hidden');
+  };
   const closeVoiceHelp = () => _el('voice-help-modal')?.classList.add('hidden');
   _el('voice-help-btn')?.addEventListener('click', openVoiceHelp);
   _el('voice-help-close')?.addEventListener('click', closeVoiceHelp);
@@ -107,8 +137,8 @@
   });
 
   _el('s-theme')?.addEventListener('change', e => {
-    applyTheme(e.target.value);
-    setPref('theme', e.target.value);
+    const normalized = applyTheme(e.target.value);
+    setPref('theme', normalized);
   });
   _el('s-projector')?.addEventListener('change', e => {
     applyProjector(e.target.value);
@@ -135,6 +165,27 @@
   _el('s-voice')?.addEventListener('change', e => {
     WQAudio.setVoiceMode(e.target.value);
     setPref('voice', e.target.value);
+  });
+
+  window.WQTheme = Object.freeze({
+    getTheme() {
+      return normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
+    },
+    setTheme(nextTheme, options = {}) {
+      const normalized = applyTheme(nextTheme);
+      if (options.persist !== false) setPref('theme', normalized);
+      return normalized;
+    },
+    getOrder() {
+      if (ThemeRegistry && Array.isArray(ThemeRegistry.order)) return ThemeRegistry.order.slice();
+      return ['default'];
+    },
+    getLabel(themeId) {
+      if (ThemeRegistry && typeof ThemeRegistry.getLabel === 'function') {
+        return ThemeRegistry.getLabel(themeId);
+      }
+      return normalizeTheme(themeId, getThemeFallback());
+    }
   });
 
   // ─── 6. Focus hint ──────────────────────────────────
@@ -444,12 +495,6 @@
     };
   })();
 // ─── 12. Start ───────────────────────────────────────
-  // Apply persisted visual prefs early
-  applyTheme(prefs.theme || 'default');
-  applyProjector(prefs.projector || 'off');
-  applyMotion(prefs.motion || 'fun');
-  applyHint(prefs.hint || 'on');
-  applyFeedback(prefs.feedback || 'classic');
   WQAudio.setVoiceMode(prefs.voice || 'recorded');
   WQMusic.initFromPrefs(prefs);
   newGame();

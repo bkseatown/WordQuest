@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="default" data-case="lower" data-projector="off" data-motion="on">
+<html lang="en" data-theme="default" data-case="lower" data-projector="off" data-motion="fun">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -68,30 +68,7 @@
       <button id="settings-close" class="close-btn" aria-label="Close settings">✕</button>
     </div>
     <div class="settings-body">
-      <div class="setting-row"><label>Theme<select id="s-theme">
-        <optgroup label="Light">
-          <option value="default">🌿 Default</option>
-          <option value="sunset">🌅 Sunset</option>
-          <option value="ocean">🌊 Ocean</option><option value="arctic">❄️ Arctic Blue</option><option value="jungle">🌿 Jungle</option><option value="solar">☀️ Solar Gold</option>
-          <option value="superman">🦸 Superman</option>
-          <option value="marvel">💥 Marvel</option>
-        </optgroup>
-        <optgroup label="Dark — Sports">
-          <option value="seahawks">🦅 Seahawks</option>
-          <option value="huskies">🐾 Huskies</option>
-        </optgroup>
-        <optgroup label="Dark — Pop Culture">
-          <option value="ironman">🔴 Iron Man</option>
-          <option value="demonhunter">🌸 Demon Hunter</option>
-          <option value="harleyquinn">🃏 Harley Quinn</option>
-          <option value="kuromi">🖤 Kuromi</option>
-          <option value="minecraft">⛏️ Minecraft</option>  <option value="pokemon">📟 Pokédex</option>  <option value="mario">🍄 Retro Arcade</option>  <option value="starwars">⭐ Space Saga</option>  <option value="barbie">💖 Pop Pink</option></optgroup>
-        <optgroup label="Dark — Other">
-          <option value="dark">🌙 Dark</option>
-          <option value="coffee">☕ Coffee</option>
-          <option value="matrix">💻 Matrix</option>
-        </optgroup>
-      </select></label></div>
+      <div class="setting-row"><label>Theme<select id="s-theme"><option value="">Loading themes...</option></select></label></div>
       <div class="setting-row"><label>Grade Band<select id="s-grade"><option value="all">All grades</option><option value="K-2">K–2</option><option value="G3-5">Grades 3–5</option><option value="G6-8">Grades 6–8</option><option value="G9-12">Grades 9–12</option></select></label></div>
       <div class="setting-row"><label>Word Length<select id="s-length"><option value="any">Any</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select></label></div>
       <div class="setting-row"><label>Max Guesses<select id="s-guesses"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option></select></label></div>
@@ -184,6 +161,7 @@
   <script src="js/audio.js?v=20260222"></script>
   <script src="js/game.js?v=20260222"></script>
   <script src="js/ui.js?v=20260222"></script>
+  <script src="js/theme-registry.js?v=20260222"></script>
   <script src="js/app.js?v=20260222"></script>
   <script src="js/theme-nav.js"></script>
 </body>

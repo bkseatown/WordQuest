@@ -1,308 +1,275 @@
-/* theme-nav.js — adds ◀ ▶ arrows to cycle themes without opening settings
-   Also adds Teacher Word Input panel to settings.
-   Also fixes default word length to 5.
-   ============================================================= */
-(function() {
+/* theme-nav.js
+   Theme arrows and teacher word tools.
+   Uses theme registry + app theme API as canonical sources.
+*/
+(function () {
   'use strict';
 
-  /* ── Theme order: light → dark ─────────────────────────── */
-  const THEME_ORDER = [
-    'default', 'sunset', 'ocean', 'superman', 'barbie', 'marvel',
-    'seahawks', 'huskies', 'coffee', 'pokemon', 'harleyquinn',
-    'kuromi', 'minecraft', 'ironman', 'demonhunter', 'matrix', 'dark'
-  ];
+  const TEACHER_POOL_KEY = 'wq_teacher_words';
+
+  const byId = (id) => document.getElementById(id);
+
+  function getThemeOrder() {
+    if (window.WQTheme && typeof window.WQTheme.getOrder === 'function') {
+      return window.WQTheme.getOrder();
+    }
+    if (window.WQThemeRegistry && Array.isArray(window.WQThemeRegistry.order)) {
+      return window.WQThemeRegistry.order.slice();
+    }
+    return ['default'];
+  }
+
+  function getThemeLabel(themeId) {
+    if (window.WQTheme && typeof window.WQTheme.getLabel === 'function') {
+      return window.WQTheme.getLabel(themeId);
+    }
+    if (window.WQThemeRegistry && typeof window.WQThemeRegistry.getLabel === 'function') {
+      return window.WQThemeRegistry.getLabel(themeId);
+    }
+    return themeId;
+  }
 
   function getCurrentTheme() {
-    return document.documentElement.getAttribute('data-theme') || 'default';
+    if (window.WQTheme && typeof window.WQTheme.getTheme === 'function') {
+      return window.WQTheme.getTheme();
+    }
+    return document.documentElement.getAttribute('data-theme') || getThemeOrder()[0];
   }
 
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    // Sync the settings dropdown if it exists
-    const sel = document.querySelector('select[data-setting="theme"], #theme-select, select.theme-select');
-    if (sel) sel.value = theme;
-    // Try common patterns for how settings might store theme
-    try {
-      if (typeof WQSettings !== 'undefined' && WQSettings.set) WQSettings.set('theme', theme);
-      if (typeof saveSettings !== 'undefined') saveSettings();
-    } catch(e) {}
-    // Store for page reloads
-    try { sessionStorage.setItem('wq_theme', theme); } catch(e) {}
+  function setTheme(theme, persist = true) {
+    if (window.WQTheme && typeof window.WQTheme.setTheme === 'function') {
+      return window.WQTheme.setTheme(theme, { persist });
+    }
+
+    const normalized = String(theme || '').trim().toLowerCase() || getThemeOrder()[0];
+    document.documentElement.setAttribute('data-theme', normalized);
+
+    const select = byId('s-theme');
+    if (select) {
+      select.value = normalized;
+      if (persist) {
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
+
+    return normalized;
   }
 
-  function cycleTheme(dir) {
-    const current = getCurrentTheme();
-    let idx = THEME_ORDER.indexOf(current);
-    if (idx === -1) idx = 0;
-    idx = (idx + dir + THEME_ORDER.length) % THEME_ORDER.length;
-    applyTheme(THEME_ORDER[idx]);
-    updateNavLabels(THEME_ORDER[idx]);
-  }
+  function updateNavLabels(currentTheme) {
+    const order = getThemeOrder();
+    if (!order.length) return;
 
-  function getThemeLabel(id) {
-    const labels = {
-      default: '🍀 Default', dark: '🌙 Dark', seahawks: '🦅 Seahawks',
-      huskies: '🐺 Huskies', coffee: '☕ Coffee', matrix: '💻 Matrix',
-      sunset: '🌅 Sunset', superman: '🦸 Superman', ironman: '🦾 Iron Man',
-      marvel: '💥 Marvel', demonhunter: '⚔️ Demon Hunter',
-      harleyquinn: '🃏 Harley Quinn', kuromi: '🖤 Kuromi',
-      ocean: '🌊 Ocean', minecraft: '⛏️ Minecraft', pokemon: '🎮 Pokédex',
-      barbie: '🩷 Barbie'
-    };
-    return labels[id] || id;
-  }
+    const current = order.includes(currentTheme) ? currentTheme : order[0];
+    const idx = order.indexOf(current);
+    const prev = order[(idx - 1 + order.length) % order.length];
+    const next = order[(idx + 1) % order.length];
 
-  function updateNavLabels(current) {
-    const idx = THEME_ORDER.indexOf(current);
-    if (idx === -1) return;
-    const prev = THEME_ORDER[(idx - 1 + THEME_ORDER.length) % THEME_ORDER.length];
-    const next = THEME_ORDER[(idx + 1) % THEME_ORDER.length];
-    const lbl = document.getElementById('wq-theme-label');
-    const prevBtn = document.getElementById('wq-theme-prev');
-    const nextBtn = document.getElementById('wq-theme-next');
-    if (lbl) lbl.textContent = getThemeLabel(current);
+    const label = byId('wq-theme-label');
+    const prevBtn = byId('wq-theme-prev');
+    const nextBtn = byId('wq-theme-next');
+
+    if (label) label.textContent = getThemeLabel(current);
     if (prevBtn) prevBtn.title = getThemeLabel(prev);
     if (nextBtn) nextBtn.title = getThemeLabel(next);
   }
 
-  function injectThemeNav() {
-    if (document.getElementById('wq-theme-nav')) return;
+  function cycleTheme(direction) {
+    const order = getThemeOrder();
+    if (!order.length) return;
 
-    // Find the settings panel theme row
-    const settingsPanel = document.querySelector('.settings-panel, .settings, #settings, [class*="settings"]');
-    if (!settingsPanel) {
-      // Fallback: inject into header
-      injectHeaderNav();
-      return;
-    }
+    const current = getCurrentTheme();
+    const currentIdx = Math.max(0, order.indexOf(current));
+    const nextIdx = (currentIdx + direction + order.length) % order.length;
+    const nextTheme = setTheme(order[nextIdx], true);
+    updateNavLabels(nextTheme);
+  }
 
-    // Find theme select dropdown
-    const themeSelect = settingsPanel.querySelector('select');
-    if (!themeSelect) { injectHeaderNav(); return; }
+  function ensureThemeNav() {
+    if (byId('wq-theme-nav')) return;
 
-    const row = themeSelect.closest('tr, .row, .setting-row, div') || themeSelect.parentElement;
+    const themeSelect = byId('s-theme');
+    const row = themeSelect?.closest('.setting-row');
+    if (!row) return;
 
     const nav = document.createElement('div');
     nav.id = 'wq-theme-nav';
-    nav.style.cssText = `
-      display:inline-flex; align-items:center; gap:6px;
-      margin-left:8px; vertical-align:middle;
-    `;
-    nav.innerHTML = `
-      <button id="wq-theme-prev" title="Previous theme" style="
-        background:var(--brand,#16a34a); color:var(--brand-text,#fff);
-        border:none; border-radius:6px; width:28px; height:28px;
-        font-size:14px; cursor:pointer; display:flex; align-items:center;
-        justify-content:center; font-weight:bold;
-      ">◀</button>
-      <span id="wq-theme-label" style="
-        font-size:12px; color:var(--text-muted,#666);
-        min-width:100px; text-align:center; font-weight:600;
-      "></span>
-      <button id="wq-theme-next" title="Next theme" style="
-        background:var(--brand,#16a34a); color:var(--brand-text,#fff);
-        border:none; border-radius:6px; width:28px; height:28px;
-        font-size:14px; cursor:pointer; display:flex; align-items:center;
-        justify-content:center; font-weight:bold;
-      ">▶</button>
-    `;
-
+    nav.className = 'wq-theme-nav';
+    nav.innerHTML = [
+      '<button id="wq-theme-prev" class="wq-theme-nav-btn" type="button" aria-label="Previous theme">◀</button>',
+      '<span id="wq-theme-label" class="wq-theme-label" aria-live="polite"></span>',
+      '<button id="wq-theme-next" class="wq-theme-nav-btn" type="button" aria-label="Next theme">▶</button>'
+    ].join('');
     row.appendChild(nav);
 
-    document.getElementById('wq-theme-prev').addEventListener('click', () => cycleTheme(-1));
-    document.getElementById('wq-theme-next').addEventListener('click', () => cycleTheme(1));
+    byId('wq-theme-prev')?.addEventListener('click', () => cycleTheme(-1));
+    byId('wq-theme-next')?.addEventListener('click', () => cycleTheme(1));
 
-    // Sync when dropdown changes
-    themeSelect.addEventListener('change', (e) => {
-      updateNavLabels(e.target.value);
-    });
+    if (themeSelect && !themeSelect.dataset.wqThemeNavBound) {
+      themeSelect.addEventListener('change', (event) => {
+        const theme = event.target?.value;
+        if (!theme) return;
+        updateNavLabels(theme);
+      });
+      themeSelect.dataset.wqThemeNavBound = '1';
+    }
 
     updateNavLabels(getCurrentTheme());
   }
 
-  function injectHeaderNav() {
-    if (document.getElementById('wq-theme-nav')) return;
-    const header = document.querySelector('header, .header, nav, #header');
-    if (!header) return;
-
-    const nav = document.createElement('div');
-    nav.id = 'wq-theme-nav';
-    nav.style.cssText = `
-      display:inline-flex; align-items:center; gap:6px;
-      position:fixed; bottom:12px; left:50%;
-      transform:translateX(-50%); z-index:999;
-      background:var(--panel-bg,#fff); border:1px solid var(--panel-border,rgba(0,0,0,0.1));
-      border-radius:24px; padding:6px 12px;
-      box-shadow:0 4px 16px rgba(0,0,0,0.15);
-    `;
-    nav.innerHTML = `
-      <button id="wq-theme-prev" style="
-        background:var(--brand,#16a34a); color:var(--brand-text,#fff);
-        border:none; border-radius:6px; width:28px; height:28px;
-        font-size:14px; cursor:pointer; font-weight:bold;
-      ">◀</button>
-      <span id="wq-theme-label" style="
-        font-size:12px; color:var(--text,#333);
-        min-width:110px; text-align:center; font-weight:600;
-      "></span>
-      <button id="wq-theme-next" style="
-        background:var(--brand,#16a34a); color:var(--brand-text,#fff);
-        border:none; border-radius:6px; width:28px; height:28px;
-        font-size:14px; cursor:pointer; font-weight:bold;
-      ">▶</button>
-    `;
-    document.body.appendChild(nav);
-
-    document.getElementById('wq-theme-prev').addEventListener('click', () => cycleTheme(-1));
-    document.getElementById('wq-theme-next').addEventListener('click', () => cycleTheme(1));
-    updateNavLabels(getCurrentTheme());
+  function parseTeacherWords(raw) {
+    return String(raw || '')
+      .split(/[\n,]+/)
+      .map((word) => word.trim().toUpperCase())
+      .filter((word) => /^[A-Z]{2,12}$/.test(word));
   }
 
-  /* ── Teacher Word Input ─────────────────────────────────── */
-  /* Adds a collapsible teacher section at bottom of settings  */
-  let teacherWordPool = null; // null = use normal pool
+  function persistTeacherWords(words) {
+    try {
+      if (Array.isArray(words) && words.length) {
+        sessionStorage.setItem(TEACHER_POOL_KEY, JSON.stringify(words));
+      } else {
+        sessionStorage.removeItem(TEACHER_POOL_KEY);
+      }
+    } catch (_error) {
+      // Storage can be unavailable in private browsing.
+    }
+  }
 
-  function injectTeacherTools() {
-    if (document.getElementById('wq-teacher-tools')) return;
+  function loadTeacherWords() {
+    try {
+      const raw = sessionStorage.getItem(TEACHER_POOL_KEY);
+      const parsed = JSON.parse(raw || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_error) {
+      return [];
+    }
+  }
 
-    // Find settings close button or bottom of settings panel
-    const settingsPanel = document.querySelector('.settings-panel, .settings, #settings, [class*="settings"]');
-    if (!settingsPanel) return;
+  function setTeacherMessage(message, isError) {
+    const msg = byId('wq-teacher-msg');
+    if (!msg) return;
+    msg.textContent = message || '';
+    msg.classList.toggle('is-error', !!isError);
+  }
+
+  function setTeacherStatus(activeWords) {
+    const status = byId('wq-teacher-status');
+    if (!status) return;
+    if (Array.isArray(activeWords) && activeWords.length) {
+      status.textContent = `ACTIVE (${activeWords.length})`;
+      status.classList.remove('hidden');
+      status.setAttribute('aria-hidden', 'false');
+    } else {
+      status.classList.add('hidden');
+      status.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function applyTeacherPool(words, options = {}) {
+    const next = Array.isArray(words) ? words : [];
+    window.__WQ_TEACHER_POOL__ = next.length ? next : null;
+    persistTeacherWords(next);
+    setTeacherStatus(next);
+
+    if (!options.silent) {
+      if (next.length) {
+        const preview = next.slice(0, 5).join(', ');
+        const suffix = next.length > 5 ? '...' : '';
+        setTeacherMessage(`Loaded ${next.length} word${next.length > 1 ? 's' : ''}: ${preview}${suffix}`, false);
+      } else {
+        setTeacherMessage('Word list cleared. Using full word bank.', false);
+      }
+    }
+  }
+
+  function ensureTeacherTools() {
+    if (byId('wq-teacher-tools')) return;
+
+    const settingsBody = document.querySelector('.settings-body');
+    if (!settingsBody) return;
 
     const section = document.createElement('div');
     section.id = 'wq-teacher-tools';
-    section.style.cssText = `
-      border-top:1px solid var(--panel-border,rgba(0,0,0,0.1));
-      margin-top:12px; padding-top:12px;
-    `;
+    section.className = 'setting-row setting-row-full wq-teacher-tools';
+    section.innerHTML = [
+      '<button id="wq-teacher-toggle" class="wq-teacher-toggle" type="button" aria-expanded="false">',
+      '  <span class="wq-teacher-heading">Teacher Word Input</span>',
+      '  <span id="wq-teacher-arrow" class="wq-teacher-arrow" aria-hidden="true">▼</span>',
+      '  <span id="wq-teacher-status" class="wq-teacher-status hidden" aria-hidden="true">ACTIVE</span>',
+      '</button>',
+      '<div id="wq-teacher-body" class="wq-teacher-body hidden">',
+      '  <p class="wq-teacher-help">Enter one word per line or comma-separated. Letters only, 2-12 chars.</p>',
+      '  <textarea id="wq-teacher-words" class="wq-teacher-words" placeholder="cat\ndog\nbat\n(or: cat, dog, bat)"></textarea>',
+      '  <div class="wq-teacher-actions">',
+      '    <button id="wq-teacher-activate" class="wq-teacher-btn wq-teacher-btn-primary" type="button">Activate Word List</button>',
+      '    <button id="wq-teacher-clear" class="wq-teacher-btn wq-teacher-btn-muted" type="button">Clear</button>',
+      '  </div>',
+      '  <div id="wq-teacher-msg" class="wq-teacher-msg" aria-live="polite"></div>',
+      '</div>'
+    ].join('');
 
-    section.innerHTML = `
-      <div style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;"
-           id="wq-teacher-toggle">
-        <span style="font-size:13px;font-weight:700;
-                     text-transform:uppercase;letter-spacing:0.08em;
-                     color:var(--text-muted,#666);">🍎 Teacher Word Input</span>
-        <span id="wq-teacher-arrow" style="color:var(--text-muted,#666);font-size:11px;">▼</span>
-        <span id="wq-teacher-status" style="
-          font-size:11px; background:var(--brand,#16a34a);
-          color:var(--brand-text,#fff); border-radius:10px;
-          padding:1px 8px; display:none;
-        ">ACTIVE</span>
-      </div>
-      <div id="wq-teacher-body" style="display:none;margin-top:10px;">
-        <p style="font-size:12px;color:var(--text-muted,#666);margin:0 0 8px;">
-          Enter one word per line, or comma-separated. The game will use only these words this session.
-        </p>
-        <textarea id="wq-teacher-words" placeholder="cat&#10;dog&#10;bat&#10;(or: cat, dog, bat)"
-          style="
-            width:100%; min-height:80px; padding:8px;
-            border:1px solid var(--panel-border,rgba(0,0,0,0.15));
-            border-radius:8px; font-size:14px;
-            background:var(--modal-bg,#fff); color:var(--text,#333);
-            font-family:var(--font,system-ui); resize:vertical; box-sizing:border-box;
-          "></textarea>
-        <div style="display:flex;gap:8px;margin-top:8px;">
-          <button id="wq-teacher-activate" style="
-            background:var(--brand,#16a34a); color:var(--brand-text,#fff);
-            border:none; border-radius:8px; padding:8px 16px;
-            font-size:13px; font-weight:700; cursor:pointer; flex:1;
-          ">✅ Activate Word List</button>
-          <button id="wq-teacher-clear" style="
-            background:var(--absent,#94a3b8); color:#fff;
-            border:none; border-radius:8px; padding:8px 16px;
-            font-size:13px; font-weight:700; cursor:pointer;
-          ">✖ Clear</button>
-        </div>
-        <div id="wq-teacher-msg" style="
-          font-size:12px;color:var(--brand,#16a34a);margin-top:6px;
-          font-weight:600;min-height:16px;
-        "></div>
-      </div>
-    `;
+    settingsBody.appendChild(section);
 
-    settingsPanel.appendChild(section);
+    const body = byId('wq-teacher-body');
+    const arrow = byId('wq-teacher-arrow');
+    const toggle = byId('wq-teacher-toggle');
+    const wordsInput = byId('wq-teacher-words');
 
-    // Toggle visibility
-    document.getElementById('wq-teacher-toggle').addEventListener('click', () => {
-      const body = document.getElementById('wq-teacher-body');
-      const arrow = document.getElementById('wq-teacher-arrow');
-      const isOpen = body.style.display !== 'none';
-      body.style.display = isOpen ? 'none' : 'block';
+    toggle?.addEventListener('click', () => {
+      if (!body || !arrow || !toggle) return;
+      const isOpen = !body.classList.contains('hidden');
+      body.classList.toggle('hidden', isOpen);
       arrow.textContent = isOpen ? '▼' : '▲';
+      toggle.setAttribute('aria-expanded', String(!isOpen));
     });
 
-    // Activate
-    document.getElementById('wq-teacher-activate').addEventListener('click', () => {
-      const raw = document.getElementById('wq-teacher-words').value;
-      const words = raw.split(/[\n,]+/)
-        .map(w => w.trim().toUpperCase())
-        .filter(w => /^[A-Z]{2,12}$/.test(w));
-
-      if (words.length === 0) {
-        document.getElementById('wq-teacher-msg').textContent = '⚠️ No valid words found. Use letters only, 2-12 chars.';
+    byId('wq-teacher-activate')?.addEventListener('click', () => {
+      const words = parseTeacherWords(wordsInput?.value || '');
+      if (!words.length) {
+        setTeacherMessage('No valid words found. Use letters only, 2-12 chars.', true);
         return;
       }
-
-      teacherWordPool = words;
-      window.__WQ_TEACHER_POOL__ = words; // expose for game.js to pick up
-      document.getElementById('wq-teacher-status').style.display = 'inline';
-      document.getElementById('wq-teacher-msg').textContent =
-        `✅ ${words.length} word${words.length>1?'s':''} loaded: ${words.slice(0,5).join(', ')}${words.length>5?'…':''}`;
-
-      console.log('[WordQuest Teacher] Active word pool:', words);
+      applyTeacherPool(words);
     });
 
-    // Clear
-    document.getElementById('wq-teacher-clear').addEventListener('click', () => {
-      teacherWordPool = null;
-      window.__WQ_TEACHER_POOL__ = null;
-      document.getElementById('wq-teacher-words').value = '';
-      document.getElementById('wq-teacher-status').style.display = 'none';
-      document.getElementById('wq-teacher-msg').textContent = 'Word list cleared. Using full word bank.';
+    byId('wq-teacher-clear')?.addEventListener('click', () => {
+      if (wordsInput) wordsInput.value = '';
+      applyTeacherPool([]);
     });
+
+    const restoredWords = loadTeacherWords();
+    if (restoredWords.length) {
+      if (wordsInput) wordsInput.value = restoredWords.join('\n');
+      applyTeacherPool(restoredWords, { silent: true });
+    } else {
+      setTeacherStatus([]);
+    }
   }
 
-  /* ── Restore theme from session ─────────────────────────── */
-  function restoreTheme() {
-    try {
-      const saved = sessionStorage.getItem('wq_theme');
-      if (saved && THEME_ORDER.includes(saved)) {
-        document.documentElement.setAttribute('data-theme', saved);
-      }
-    } catch(e) {}
-  }
-
-  /* ── Initialize ─────────────────────────────────────────── */
   function init() {
-    restoreTheme();
+    ensureThemeNav();
+    ensureTeacherTools();
 
-    // Watch for settings panel to appear (it's likely hidden until gear click)
-    const observer = new MutationObserver(() => {
-      const panel = document.querySelector(
-        '.settings-panel:not([hidden]), .settings:not([hidden]), #settings:not([hidden]),' +
-        '[class*="settings"][style*="display: block"], [class*="settings"][style*="display:block"],' +
-        '[class*="settings"].open, [class*="settings"].active, [class*="settings"].visible'
-      );
-      if (panel && !document.getElementById('wq-teacher-tools')) {
-        setTimeout(() => {
-          injectThemeNav();
-          injectTeacherTools();
-        }, 80);
-      }
+    byId('settings-btn')?.addEventListener('click', () => {
+      requestAnimationFrame(() => {
+        ensureThemeNav();
+        ensureTeacherTools();
+      });
     });
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true });
 
-    // Also try immediately in case panel is already open
-    setTimeout(() => {
-      injectThemeNav();
-      injectTeacherTools();
-    }, 500);
-
-    // Update nav labels whenever theme changes
     const rootObserver = new MutationObserver(() => {
       updateNavLabels(getCurrentTheme());
     });
-    rootObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    rootObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    const bodyObserver = new MutationObserver(() => {
+      ensureThemeNav();
+      ensureTeacherTools();
+    });
+    bodyObserver.observe(document.body, { childList: true, subtree: true });
   }
 
   if (document.readyState === 'loading') {
@@ -310,5 +277,4 @@
   } else {
     init();
   }
-
 })();

@@ -1,0 +1,10 @@
+{
+  "name": "wordquest",
+  "private": true,
+  "scripts": {
+    "hud:check": "node scripts/check-hud-contract.js",
+    "scope:view": "node scripts/check-change-scope.js",
+    "scope:check": "node scripts/check-change-scope.js",
+    "scope:strict": "node scripts/check-change-scope.js --strict"
+  }
+}

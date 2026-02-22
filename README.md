@@ -1,0 +1,65 @@
+# WordQuest
+
+WordQuest is a classroom-friendly word game built for strong literacy practice with rich audio support, theme variety, and scalable data-driven content.
+
+## Source Of Truth
+- Primary working folder: `/Users/robertwilliamknaus/Desktop/WordQuest`
+- Treat this folder as canonical.
+- Keep `.zip` files as read-only backups, not as active dev sources.
+- Product direction and requirements baseline:
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/VISION.md`
+
+## Quick Start
+1. Run local server:
+   - `cd /Users/robertwilliamknaus/Desktop/WordQuest`
+   - `python3 -m http.server 8787`
+2. Open:
+   - `http://127.0.0.1:8787/index.html?t=1`
+3. Hard refresh when needed:
+   - `Cmd+Shift+R`
+
+## HUD Guardrails
+- Run contract checks:
+  - `npm run hud:check`
+- Run file-scope safety checks:
+  - `npm run scope:view`
+  - `npm run scope:check`
+  - `npm run scope:strict`
+- Main docs:
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/hud-spec-v1.md`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/hud-acceptance-checklist.md`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/HANDOVER.md`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/NONCODER_SAFETY_GUIDE.md`
+
+## Key Architecture Files
+- Entry/UI wiring:
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/index.html`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/app.js`
+- Theme system:
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/theme-registry.js`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/theme-nav.js`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/themes.css`
+- HUD styles/motion:
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/components.css`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/modes.css`
+- Contract tooling:
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-hud-contract.js`
+
+## Collaboration Workflow (Recommended)
+1. Propose a small change batch (1-3 deltas).
+2. Convert request into measurable acceptance rules.
+3. Implement only in scoped files.
+4. Run `npm run hud:check`.
+5. Run smoke test.
+6. Commit only after pass/fail report is clean.
+
+## Request Template For Future Edits
+- `Surface`:
+- `Intent`:
+- `Must Keep`:
+- `Must Avoid`:
+- `Acceptance`:
+
+## Current Known Issue
+- Voice help modal close button can be blocked by settings-panel layering in some states.
+- Track/fix item documented in `/Users/robertwilliamknaus/Desktop/WordQuest/docs/HANDOVER.md`.

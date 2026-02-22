@@ -172,8 +172,8 @@
 /* ── COFFEE / STARBUCKS ── Green #00704A + espresso + cream
    Rich espresso atmosphere. Cream keys like a latte             */
 [data-theme="coffee"] {
-  --page-bg:      #2e2018;
-  --page-bg2:     #201610;
+  --page-bg:      #3a2a20;
+  --page-bg2:     #2c1f18;
   --plate-bg:     rgba(203,160,95,0.08);
   --plate-border: rgba(203,160,95,0.28);
   --tile-face:    linear-gradient(160deg, #fff8ef 0%, #f0dcc8 100%);
@@ -207,8 +207,8 @@
 /* ── MATRIX ── Electric green on deep green. INTENTIONALLY high contrast.
    Dark forest green page — the dark IS the brand here. Mint keys readable. */
 [data-theme="matrix"] {
-  --page-bg:      #0a2214;
-  --page-bg2:     #06160e;
+  --page-bg:      #143225;
+  --page-bg2:     #0d2419;
   --plate-bg:     rgba(34,197,94,0.06);
   --plate-border: rgba(0,255,65,0.22);
   --tile-face:    linear-gradient(160deg, #e8fff0 0%, #c0f8d0 100%);
@@ -311,8 +311,8 @@
    Page: deep burgundy (armor in shadow). Keys: metallic gold.
    Feels like wearing the suit.                                   */
 [data-theme="ironman"] {
-  --page-bg:      #2e0e0e;
-  --page-bg2:     #200808;
+  --page-bg:      #3a1414;
+  --page-bg2:     #2a1010;
   --plate-bg:     rgba(249,199,79,0.06);
   --plate-border: rgba(249,199,79,0.28);
   --tile-face:    linear-gradient(160deg, #fff7ea 0%, #f2e0b8 100%);
