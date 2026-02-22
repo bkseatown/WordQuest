@@ -21,6 +21,9 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 ## HUD Guardrails
 - Run contract checks:
   - `npm run hud:check`
+- Run offline/audio checks:
+  - `npm run audio:manifest`
+  - `npm run offline:check`
 - Run file-scope safety checks:
   - `npm run scope:view`
   - `npm run scope:check`
@@ -30,6 +33,7 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
   - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/hud-acceptance-checklist.md`
   - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/HANDOVER.md`
   - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/NONCODER_SAFETY_GUIDE.md`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/AUDIO_OFFLINE_DEPLOY_CHECKLIST.md`
 
 ## Key Architecture Files
 - Entry/UI wiring:
@@ -44,6 +48,8 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
   - `/Users/robertwilliamknaus/Desktop/WordQuest/style/modes.css`
 - Contract tooling:
   - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-hud-contract.js`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/build-audio-manifest.js`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-offline-contract.js`
 
 ## Collaboration Workflow (Recommended)
 1. Propose a small change batch (1-3 deltas).
@@ -60,6 +66,7 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 - `Must Avoid`:
 - `Acceptance`:
 
-## Current Known Issue
-- Voice help modal close button can be blocked by settings-panel layering in some states.
-- Track/fix item documented in `/Users/robertwilliamknaus/Desktop/WordQuest/docs/HANDOVER.md`.
+## Offline Notes
+- Service worker is registered from `/Users/robertwilliamknaus/Desktop/WordQuest/js/app.js` and defined in `/Users/robertwilliamknaus/Desktop/WordQuest/sw.js`.
+- Audio path inventory is generated to `/Users/robertwilliamknaus/Desktop/WordQuest/data/audio-manifest.json`.
+- Full library offline is browser-storage dependent; app shell and previously used audio are prioritized.

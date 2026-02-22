@@ -12,14 +12,16 @@ const GREEN_RULES = [
   /^scripts\//,
   /^package\.json$/,
   /^index\.html$/,
+  /^sw\.js$/,
+  /^data\/audio-manifest\.json$/,
   /^style\/(components\.css|themes\.css|modes\.css)$/,
-  /^js\/(app\.js|theme-nav\.js|theme-registry\.js)$/
+  /^js\/(app\.js|audio\.js|theme-nav\.js|theme-registry\.js)$/
 ];
 
 const YELLOW_RULES = [
   /^files\/$/,
   /\.?DS_Store$/,
-  /^js\/(game\.js|ui\.js|data\.js|audio\.js)$/,
+  /^js\/(game\.js|ui\.js|data\.js)$/,
   /^data\//
 ];
 
@@ -36,7 +38,7 @@ const RED_RULES = [
 
 function runGitStatus() {
   try {
-    return execSync('git status --porcelain', { encoding: 'utf8' }).trim();
+    return execSync('git status --porcelain', { encoding: 'utf8' });
   } catch (error) {
     console.error('ERROR: Could not read git status. Run this inside the WordQuest repo.');
     process.exit(2);
@@ -44,7 +46,7 @@ function runGitStatus() {
 }
 
 function parsePath(line) {
-  const raw = line.slice(3).trim();
+  const raw = line.replace(/^[ MADRCU?!]{1,2}\s+/, '').trim();
   const renameParts = raw.split(' -> ');
   return renameParts[renameParts.length - 1];
 }
@@ -55,8 +57,8 @@ function matchesAny(path, patterns) {
 
 function classify(path) {
   if (matchesAny(path, RED_RULES)) return 'red';
-  if (matchesAny(path, YELLOW_RULES)) return 'yellow';
   if (matchesAny(path, GREEN_RULES)) return 'green';
+  if (matchesAny(path, YELLOW_RULES)) return 'yellow';
   return 'unknown';
 }
 

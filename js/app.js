@@ -17,6 +17,19 @@
   // ─── 2. Init UI ────────────────────────────────────
   WQUI.init();
 
+  async function registerOfflineRuntime() {
+    if (!('serviceWorker' in navigator)) return;
+    if (!window.isSecureContext && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      return;
+    }
+    try {
+      await navigator.serviceWorker.register('./sw.js', { scope: './' });
+    } catch (error) {
+      console.warn('[WordQuest] Service worker registration skipped:', error?.message || error);
+    }
+  }
+  void registerOfflineRuntime();
+
   // ─── 3. Preferences ────────────────────────────────
   const PREF_KEY = 'wq_v2_prefs';
   function loadPrefs() {
@@ -75,7 +88,15 @@
 
   // Voice picker populated after brief delay
   setTimeout(populateVoiceSelector, 700);
-  window.speechSynthesis.onvoiceschanged = populateVoiceSelector;
+  if (window.speechSynthesis) {
+    const priorVoicesChanged = window.speechSynthesis.onvoiceschanged;
+    window.speechSynthesis.onvoiceschanged = (...args) => {
+      if (typeof priorVoicesChanged === 'function') {
+        try { priorVoicesChanged.apply(window.speechSynthesis, args); } catch {}
+      }
+      populateVoiceSelector();
+    };
+  }
 
   // ─── 4. Theme / projector / motion helpers ──────────
   function applyTheme(name) {
@@ -496,6 +517,9 @@
   })();
 // ─── 12. Start ───────────────────────────────────────
   WQAudio.setVoiceMode(prefs.voice || 'recorded');
+  if (typeof WQAudio.primeAudioManifest === 'function') {
+    void WQAudio.primeAudioManifest();
+  }
   WQMusic.initFromPrefs(prefs);
   newGame();
 

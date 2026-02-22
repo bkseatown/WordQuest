@@ -9,10 +9,82 @@ const WQAudio = (() => {
 
   const VOICE_PREF_KEY = 'wq_v2_voice';
   const VOICE_MODE_KEY = "wq_voice_mode_v1";
+  const AUDIO_MANIFEST_URL = './data/audio-manifest.json';
   let _voiceMode = localStorage.getItem(VOICE_MODE_KEY) || "recorded";
   let _selectedVoice = null;
   let _allVoices = [];
   let _voicesReady = false;
+  let _audioManifestSet = null;
+  let _audioManifestReady = false;
+  let _audioManifestLoad = null;
+  let _assetBasePath = null;
+
+  function _getAssetBasePath() {
+    if (_assetBasePath !== null) return _assetBasePath;
+    const pathname = window.location.pathname || '/';
+    let base = '';
+    if (pathname.endsWith('/')) {
+      base = pathname.slice(0, -1);
+    } else {
+      const last = pathname.split('/').pop() || '';
+      if (last.includes('.')) {
+        base = pathname.slice(0, -(last.length + 1));
+      } else {
+        base = pathname;
+      }
+    }
+    _assetBasePath = base === '/' ? '' : base;
+    return _assetBasePath;
+  }
+
+  function _normalizeAudioPath(path) {
+    if (!path || typeof path !== 'string') return null;
+    const raw = path.trim();
+    if (!raw) return null;
+    if (/^(https?:)?\/\//i.test(raw) || raw.startsWith('blob:') || raw.startsWith('data:')) {
+      return raw;
+    }
+    if (raw.startsWith('./') || raw.startsWith('../')) {
+      try {
+        return new URL(raw, window.location.href).pathname;
+      } catch {
+        return raw;
+      }
+    }
+    const base = _getAssetBasePath();
+    const normalized = raw.startsWith('/') ? raw : `/${raw}`;
+    if (!base) return normalized;
+    if (normalized.startsWith(`${base}/`) || normalized === base) return normalized;
+    if (normalized.startsWith('/assets/')) return `${base}${normalized}`;
+    return normalized;
+  }
+
+  async function _primeAudioManifest() {
+    if (_audioManifestReady) return _audioManifestSet;
+    if (_audioManifestLoad) return _audioManifestLoad;
+    _audioManifestLoad = (async () => {
+      try {
+        const res = await fetch(AUDIO_MANIFEST_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`Manifest request failed: ${res.status}`);
+        const manifest = await res.json();
+        const paths = Array.isArray(manifest?.paths) ? manifest.paths : [];
+        _audioManifestSet = new Set(
+          paths.map((p) => _normalizeAudioPath(p)).filter(Boolean)
+        );
+      } catch {
+        _audioManifestSet = null;
+      } finally {
+        _audioManifestReady = true;
+      }
+      return _audioManifestSet;
+    })();
+    return _audioManifestLoad;
+  }
+
+  function _isKnownAudioPath(path) {
+    if (!_audioManifestSet) return null;
+    return _audioManifestSet.has(path);
+  }
 
   // Score a voice by quality (higher = better)
   function _scoreVoice(v) {
@@ -71,21 +143,24 @@ const WQAudio = (() => {
   }
 
   // Voices load asynchronously on many browsers
-  window.speechSynthesis.onvoiceschanged = _loadVoices;
-  _loadVoices(); // try immediately too
+  if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = _loadVoices;
+    _loadVoices(); // try immediately too
+  }
 
   // ─── Playback ───────────────────────────────────
   let _active = null;
 
   function _stop() {
     if (_active) { _active.pause(); _active.currentTime = 0; _active = null; }
-    window.speechSynthesis.cancel();
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
   }
 
   function _playFile(path) {
     return new Promise((res, rej) => {
       _stop();
       const a = new Audio(path);
+      a.preload = 'auto';
       _active = a;
       a.onended = () => { _active = null; res(); };
       a.onerror = () => { _active = null; rej(); };
@@ -111,10 +186,21 @@ const WQAudio = (() => {
   }
 
   async function _play(path, fallback, rate = 0.88) {
-    if (path) {
-      try { await _playFile(path); return; } catch { /* fall through */ }
+    const mode = (_voiceMode || 'recorded').toLowerCase();
+    const allowRecorded = mode !== 'device';
+    const allowFallbackTTS = mode !== 'recorded';
+    const resolvedPath = _normalizeAudioPath(path);
+
+    void _primeAudioManifest();
+
+    if (allowRecorded && resolvedPath) {
+      const known = _isKnownAudioPath(resolvedPath);
+      if (known !== false) {
+        try { await _playFile(resolvedPath); return; } catch { /* fall through */ }
+      }
     }
-    if (fallback) await _speak(fallback, rate);
+
+    if (allowFallbackTTS && fallback) await _speak(fallback, rate);
   }
 
   // ─── Public API ─────────────────────────────────
@@ -155,7 +241,17 @@ const WQAudio = (() => {
     return _selectedVoice?.name || 'auto';
   }
 
+  function getAudioManifestStatus() {
+    return {
+      ready: _audioManifestReady,
+      entries: _audioManifestSet?.size || 0,
+      basePath: _getAssetBasePath()
+    };
+  }
+
   return { playWord, playDef, playSentence, playFun, stop,
            setVoiceMode, getVoiceMode,
-           getAvailableVoices, setVoiceByName, getCurrentVoiceName };
+           getAvailableVoices, setVoiceByName, getCurrentVoiceName,
+           primeAudioManifest: _primeAudioManifest,
+           getAudioManifestStatus };
 })();
