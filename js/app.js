@@ -1309,6 +1309,182 @@
     }, 7600);
   }
 
+  const QUEST_LOOP_KEY = 'wq_v2_quest_loop_v1';
+  const QUEST_TIERS = Object.freeze([
+    Object.freeze({ id: 'rookie',  label: 'Rookie',  minXp: 0,   reward: 'Bronze chest unlocked' }),
+    Object.freeze({ id: 'allstar', label: 'All-Star', minXp: 220, reward: 'Silver spotlight unlocked' }),
+    Object.freeze({ id: 'legend',  label: 'Legend',  minXp: 520, reward: 'Gold crown unlocked' })
+  ]);
+
+  function localDayKey(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function isConsecutiveDay(prevDay, nextDay) {
+    if (!prevDay || !nextDay) return false;
+    const prev = new Date(`${prevDay}T12:00:00`);
+    const next = new Date(`${nextDay}T12:00:00`);
+    if (Number.isNaN(prev.getTime()) || Number.isNaN(next.getTime())) return false;
+    const diffDays = Math.round((next.getTime() - prev.getTime()) / 86400000);
+    return diffDays === 1;
+  }
+
+  function resolveQuestTier(xpValue) {
+    const xp = Math.max(0, Number(xpValue) || 0);
+    let active = QUEST_TIERS[0];
+    QUEST_TIERS.forEach((tier) => {
+      if (xp >= tier.minXp) active = tier;
+    });
+    return active;
+  }
+
+  function loadQuestLoopState() {
+    const fallback = {
+      xp: 0,
+      rounds: 0,
+      wins: 0,
+      dailyStreak: 0,
+      lastWinDay: ''
+    };
+
+    try {
+      const parsed = JSON.parse(localStorage.getItem(QUEST_LOOP_KEY) || 'null');
+      if (!parsed || typeof parsed !== 'object') return fallback;
+      return {
+        xp: Math.max(0, Math.floor(Number(parsed.xp) || 0)),
+        rounds: Math.max(0, Math.floor(Number(parsed.rounds) || 0)),
+        wins: Math.max(0, Math.floor(Number(parsed.wins) || 0)),
+        dailyStreak: Math.max(0, Math.floor(Number(parsed.dailyStreak) || 0)),
+        lastWinDay: typeof parsed.lastWinDay === 'string' ? parsed.lastWinDay : ''
+      };
+    } catch {
+      return fallback;
+    }
+  }
+
+  function saveQuestLoopState(state) {
+    try {
+      localStorage.setItem(QUEST_LOOP_KEY, JSON.stringify(state));
+    } catch {}
+  }
+
+  function getQuestTierProgress(xpValue) {
+    const xp = Math.max(0, Number(xpValue) || 0);
+    const tier = resolveQuestTier(xp);
+    const tierIndex = QUEST_TIERS.findIndex((item) => item.id === tier.id);
+    const nextTier = QUEST_TIERS[tierIndex + 1] || null;
+    if (!nextTier) {
+      return { percent: 100, nextTier: null, remainingXp: 0 };
+    }
+    const span = Math.max(1, nextTier.minXp - tier.minXp);
+    const progressed = Math.max(0, Math.min(span, xp - tier.minXp));
+    const percent = Math.round((progressed / span) * 100);
+    return {
+      percent,
+      nextTier,
+      remainingXp: Math.max(0, nextTier.minXp - xp)
+    };
+  }
+
+  function renderQuestLoop(state) {
+    const tier = resolveQuestTier(state.xp);
+    const progress = getQuestTierProgress(state.xp);
+
+    const tierChip = _el('quest-tier-chip');
+    const xpLabel = _el('quest-xp');
+    const streakLabel = _el('quest-streak');
+    const progressEl = _el('quest-progress');
+    const progressFill = _el('quest-progress-fill');
+    const nextLabel = _el('quest-next');
+
+    if (tierChip) tierChip.textContent = `Tier: ${tier.label}`;
+    if (xpLabel) xpLabel.textContent = `${state.xp} XP`;
+    if (streakLabel) {
+      const suffix = state.dailyStreak === 1 ? 'day' : 'days';
+      streakLabel.textContent = `Streak: ${state.dailyStreak} ${suffix}`;
+    }
+
+    if (progressFill) {
+      progressFill.style.width = `${progress.percent}%`;
+    }
+    if (progressEl) {
+      progressEl.setAttribute('aria-valuenow', String(progress.percent));
+      progressEl.setAttribute(
+        'aria-valuetext',
+        progress.nextTier
+          ? `${progress.percent}% to ${progress.nextTier.label}`
+          : 'Top tier complete'
+      );
+    }
+
+    if (nextLabel) {
+      nextLabel.textContent = progress.nextTier
+        ? `Next reward: ${progress.nextTier.reward} in ${progress.remainingXp} XP.`
+        : `Top reward unlocked: ${tier.reward}.`;
+    }
+
+    document.querySelectorAll('#quest-track .quest-node').forEach((node) => {
+      const nodeTierId = node.getAttribute('data-tier');
+      const nodeTier = QUEST_TIERS.find((item) => item.id === nodeTierId);
+      if (!nodeTier) return;
+      const unlocked = state.xp >= nodeTier.minXp;
+      const current = nodeTier.id === tier.id;
+      node.classList.toggle('is-unlocked', unlocked);
+      node.classList.toggle('is-current', current);
+    });
+  }
+
+  function initQuestLoop() {
+    renderQuestLoop(loadQuestLoopState());
+  }
+
+  function awardQuestProgress(result) {
+    const state = loadQuestLoopState();
+    const beforeTier = resolveQuestTier(state.xp);
+    const maxGuesses = Math.max(1, Number(WQGame.getState()?.maxGuesses || parseInt(DEFAULT_PREFS.guesses, 10) || 6));
+    const guessesUsed = Math.max(1, Array.isArray(result?.guesses) ? result.guesses.length : maxGuesses);
+
+    let streakIncreased = false;
+    if (result?.won) {
+      const today = localDayKey();
+      if (state.lastWinDay !== today) {
+        state.dailyStreak = isConsecutiveDay(state.lastWinDay, today) ? state.dailyStreak + 1 : 1;
+        state.lastWinDay = today;
+        streakIncreased = true;
+      }
+    }
+
+    let xpEarned = result?.won ? 20 : 6;
+    if (result?.won) {
+      const efficiencyBonus = Math.max(0, maxGuesses - guessesUsed) * 4;
+      const streakBonus = Math.min(12, Math.max(0, state.dailyStreak - 1) * 2);
+      xpEarned += efficiencyBonus + streakBonus;
+    }
+
+    state.xp += xpEarned;
+    state.rounds += 1;
+    if (result?.won) state.wins += 1;
+
+    const afterTier = resolveQuestTier(state.xp);
+    const tierUp = afterTier.id !== beforeTier.id;
+
+    saveQuestLoopState(state);
+    renderQuestLoop(state);
+
+    if (tierUp) {
+      WQUI.showToast(`Tier up: ${afterTier.label}! ${afterTier.reward}.`, 3200);
+    } else if (result?.won && streakIncreased && state.dailyStreak > 1) {
+      WQUI.showToast(`+${xpEarned} XP · ${state.dailyStreak}-day win streak.`, 2400);
+    } else if (result?.won) {
+      WQUI.showToast(`+${xpEarned} XP`, 1800);
+    } else {
+      WQUI.showToast(`+${xpEarned} XP for effort`, 1800);
+    }
+  }
+
   function newGame() {
     if (
       getVoicePracticeMode() === 'required' &&
@@ -1388,6 +1564,7 @@
           showMidgameBoost();
         }
         if (result.won || result.lost) {
+          awardQuestProgress(result);
           hideMidgameBoost();
           setTimeout(() => {
             WQUI.showModal(result);
@@ -1688,6 +1865,7 @@
   musicController = WQMusic;
   WQMusic.initFromPrefs(prefs);
   syncMusicForTheme();
+  initQuestLoop();
   newGame();
 
 })();
