@@ -5,6 +5,9 @@
 - No JS-injected inline style attributes for HUD surfaces (`#wq-theme-nav`, `#wq-teacher-tools`).
 - Every theme in `js/theme-registry.js` has a matching `[data-theme="..."]` block with required tokens.
 - Every theme satisfies page background brightness floors (no near-black page backgrounds).
+- Every theme satisfies token contrast floors:
+  - `--key-text` on `--key-bg` >= 4.5
+  - `--brand-text` on `--brand` >= 4.5
 - No duplicate canonical base selector blocks for owned HUD surfaces in `style/components.css`.
 - `#s-theme` is registry-driven (rendered at runtime, not static option list).
 

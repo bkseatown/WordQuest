@@ -15,6 +15,7 @@ const GREEN_RULES = [
   /^index\.html$/,
   /^sw\.js$/,
   /^data\/audio-manifest\.json$/,
+  /^data\/engagement-boosts\.js$/,
   /^style\/(components\.css|themes\.css|modes\.css)$/,
   /^js\/(app\.js|audio\.js|theme-nav\.js|theme-registry\.js)$/
 ];

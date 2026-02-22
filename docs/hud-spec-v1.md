@@ -75,6 +75,9 @@
   - For `dark` family:
     - `--page-bg` >= 12%
     - `--page-bg2` >= 8%
+- Contrast floor guardrails (WCAG ratio approximation):
+  - `--key-text` on `--key-bg` >= 4.5
+  - `--brand-text` on `--brand` >= 4.5
 
 ## Runtime Behavior Contract
 - Theme select (`#s-theme`) is rendered from the registry, not hardcoded HTML.

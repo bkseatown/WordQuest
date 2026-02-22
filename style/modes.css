@@ -71,9 +71,16 @@ html[data-motion="reduced"] * {
 
 /* Feedback palette switch */
 html[data-feedback="themed"]{
-  --correct: var(--correct-theme, var(--correct));
-  --present: var(--present-theme, var(--present));
-  --absent:  var(--absent-theme,  var(--absent));
+  /* Theme-aware but semantic-safe:
+     correct stays green-ish, present stays yellow/orange-ish, absent stays gray-ish. */
+  --correct:    color-mix(in oklab, #16a34a 84%, var(--brand) 16%);
+  --correct-lt: color-mix(in oklab, #4ade80 86%, var(--accent) 14%);
+  --correct-dk: color-mix(in oklab, #14532d 84%, var(--brand-dk) 16%);
+  --present:    color-mix(in oklab, #d97706 84%, var(--accent) 16%);
+  --present-lt: color-mix(in oklab, #fcd34d 88%, var(--accent) 12%);
+  --present-dk: color-mix(in oklab, #78350f 86%, var(--brand-dk) 14%);
+  --absent:     color-mix(in oklab, #94a3b8 88%, var(--panel-border) 12%);
+  --absent-dk:  color-mix(in oklab, #475569 90%, var(--brand-dk) 10%);
 }
 
 /* Motion tiers */

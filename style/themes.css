@@ -20,9 +20,9 @@
   --playfield-width: 340px;
   --tile-size:       54px;
   --key-h:           52px;
-  --key-min-w:       32px;
+  --key-min-w:       34px;
   --gap-tile:        5px;
-  --gap-key:         9px;
+  --gap-key:         10px;
   --radius-tile:     13px;
   --radius-key:      14px;
   --radius-plate:    20px;
@@ -31,38 +31,38 @@
   --font-logo: 'Nunito', system-ui, sans-serif;
 }
 
-/* ── DEFAULT ── classroom sage green ──────────────────── */
+/* ── DEFAULT ── professional slate / classroom-modern ─── */
 [data-theme="default"] {
-  --page-bg:      #e8f5e9;
-  --page-bg2:     #c8e6c9;
-  --plate-bg:     rgba(30,60,30,0.10);
-  --plate-border: rgba(0,0,0,0.07);
-  --tile-face:    linear-gradient(160deg, #ffffff 0%, #f4faf4 100%);
-  --tile-border:  #c8e6c9;
-  --tile-text:    #1b4332;
-  --tile-shadow:  0 3px 0 #a8c8a8, 0 1px 4px rgba(0,0,0,0.08);
-  --tile-filled-border: #52b788;
-  --key-bg:       #ffffff;
-  --key-text:     #1b4332;
-  --key-shadow:   0 3px 0 #8abf8a, 0 1px 3px rgba(0,0,0,0.1);
-  --key-hover:    #f0f8f0;
-  --vowel-accent: #0d9488;
-  --brand:        #16a34a;
-  --brand-dk:     #14532d;
-  --brand-text:   #ffffff;
-  --accent:       #f59e0b;
-  --header-bg:    #ffffff;
-  --header-border: rgba(0,0,0,0.08);
-  --focusbar-bg:  rgba(255,255,255,0.85);
-  --panel-bg:     #ffffff;
-  --panel-border: rgba(0,0,0,0.10);
-  --panel-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  --text:         #1b4332;
-  --text-muted:   #52796f;
-  --modal-bg:     #ffffff;
-  --fun-bg:       #fffbeb;
-  --fun-text:     #78350f;
-  --fun-border:   #fde68a;
+  --page-bg:      #d8e1ee;
+  --page-bg2:     #acbbd1;
+  --plate-bg:     rgba(19,35,58,0.10);
+  --plate-border: rgba(28,52,82,0.22);
+  --tile-face:    linear-gradient(160deg, #ffffff 0%, #eaf0f7 100%);
+  --tile-border:  #90a4bd;
+  --tile-text:    #102236;
+  --tile-shadow:  0 3px 0 #6f859f, 0 2px 7px rgba(7,16,29,0.12);
+  --tile-filled-border: #4a7db1;
+  --key-bg:       #edf3fb;
+  --key-text:     #102236;
+  --key-shadow:   0 3px 0 #7d92ad, 0 1px 3px rgba(13,26,43,0.16);
+  --key-hover:    #f8fbff;
+  --vowel-accent: #2fa8c4;
+  --brand:        #2d5b8e;
+  --brand-dk:     #1f4168;
+  --brand-text:   #f8fbff;
+  --accent:       #f3b44e;
+  --header-bg:    #f1f6fd;
+  --header-border: rgba(19,40,64,0.16);
+  --focusbar-bg:  rgba(237,244,252,0.84);
+  --panel-bg:     #f3f7fd;
+  --panel-border: rgba(29,53,80,0.14);
+  --panel-shadow: 0 10px 34px rgba(13,29,48,0.18);
+  --text:         #102236;
+  --text-muted:   #4d6380;
+  --modal-bg:     #f6f9fe;
+  --fun-bg:       #fff5e6;
+  --fun-text:     #8a4f00;
+  --fun-border:   #efca87;
 }
 
 /* ── DARK ── visible slate, not void ──────────────────── */
@@ -102,8 +102,8 @@
 /* ── SEAHAWKS ── Navy #002244 + Action Green #69BE28 + Wolf Gray #A5ACAF
    Wolf gray keys (actual brand color), green key shadows = instant ID   */
 [data-theme="seahawks"] {
-  --page-bg:      #1a3848;
-  --page-bg2:     #112238;
+  --page-bg:      #224050;
+  --page-bg2:     #183047;
   --plate-bg:     rgba(0,0,0,0.20);
   --plate-border: rgba(105,190,40,0.40);
   --tile-face:    linear-gradient(160deg, #ffffff 0%, #eef8ee 100%);
@@ -122,8 +122,8 @@
   --accent:       #69be28;
   --header-bg:    #002244;
   --header-border: rgba(105,190,40,0.45);
-  --focusbar-bg:  rgba(0,20,50,0.55);
-  --panel-bg:     #152838;
+  --focusbar-bg:  rgba(12,30,58,0.58);
+  --panel-bg:     #1d3040;
   --panel-border: rgba(105,190,40,0.22);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.5);
   --text:         #d0dce8;
@@ -146,10 +146,10 @@
   --tile-text:    #1a0800;
   --tile-shadow:  0 3px 0 #4b2e83, 0 1px 4px rgba(0,0,0,0.25);
   --tile-filled-border: #c8a840;
-  --key-bg:       #c8a840;
-  --key-text:     #1a0800;
-  --key-shadow:   0 3px 0 #85754d, 0 1px 3px rgba(100,80,0,0.3);
-  --key-hover:    #d8b850;
+  --key-bg:       #efe8d7;
+  --key-text:     #241540;
+  --key-shadow:   0 3px 0 #8f7f58, 0 1px 3px rgba(45,28,78,0.24);
+  --key-hover:    #f6efde;
   --vowel-accent: #f0d880;
   --brand:        #c8a840;
   --brand-dk:     #85754d;
@@ -172,8 +172,8 @@
 /* ── COFFEE / STARBUCKS ── Green #00704A + espresso + cream
    Rich espresso atmosphere. Cream keys like a latte             */
 [data-theme="coffee"] {
-  --page-bg:      #3a2a20;
-  --page-bg2:     #2c1f18;
+  --page-bg:      #48352a;
+  --page-bg2:     #37261e;
   --plate-bg:     rgba(203,160,95,0.08);
   --plate-border: rgba(203,160,95,0.28);
   --tile-face:    linear-gradient(160deg, #fff8ef 0%, #f0dcc8 100%);
@@ -192,13 +192,13 @@
   --accent:       #cba05f;
   --header-bg:    #00704a;
   --header-border: rgba(203,160,95,0.45);
-  --focusbar-bg:  rgba(30,18,10,0.65);
-  --panel-bg:     #1e1610;
+  --focusbar-bg:  rgba(46,30,18,0.66);
+  --panel-bg:     #2a1d16;
   --panel-border: rgba(203,160,95,0.25);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.55);
-  --text:         #f0e4d8;
+  --text:         #f7eadf;
   --text-muted:   #b09060;
-  --modal-bg:     #1e1610;
+  --modal-bg:     #2a1d16;
   --fun-bg:       #180e06;
   --fun-text:     #cba05f;
   --fun-border:   #5a3a10;
@@ -207,8 +207,8 @@
 /* ── MATRIX ── Electric green on deep green. INTENTIONALLY high contrast.
    Dark forest green page — the dark IS the brand here. Mint keys readable. */
 [data-theme="matrix"] {
-  --page-bg:      #143225;
-  --page-bg2:     #0d2419;
+  --page-bg:      #1a3f47;
+  --page-bg2:     #13333a;
   --plate-bg:     rgba(34,197,94,0.06);
   --plate-border: rgba(0,255,65,0.22);
   --tile-face:    linear-gradient(160deg, #e8fff0 0%, #c0f8d0 100%);
@@ -225,15 +225,15 @@
   --brand-dk:     #16a34a;
   --brand-text:   #021a08;
   --accent:       #39ff14;
-  --header-bg:    #16803d;
+  --header-bg:    #16605c;
   --header-border: rgba(0,255,65,0.35);
-  --focusbar-bg:  rgba(4,20,8,0.7);
-  --panel-bg:     #081a10;
+  --focusbar-bg:  rgba(10,30,14,0.72);
+  --panel-bg:     #10272f;
   --panel-border: rgba(0,255,65,0.18);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.65);
-  --text:         #ccffe0;
+  --text:         #d8ffe8;
   --text-muted:   #6ee7b7;
-  --modal-bg:     #081a10;
+  --modal-bg:     #10272f;
   --fun-bg:       #041608;
   --fun-text:     #39ff14;
   --fun-border:   #006600;
@@ -257,7 +257,7 @@
   --vowel-accent: #0d9488;
   --brand:        #ea580c;
   --brand-dk:     #c2410c;
-  --brand-text:   #ffffff;
+  --brand-text:   #2e1200;
   --accent:       #facc15;
   --header-bg:    #ea580c;
   --header-border: rgba(0,0,0,0.07);
@@ -311,8 +311,8 @@
    Page: deep burgundy (armor in shadow). Keys: metallic gold.
    Feels like wearing the suit.                                   */
 [data-theme="ironman"] {
-  --page-bg:      #3a1414;
-  --page-bg2:     #2a1010;
+  --page-bg:      #4a1e1a;
+  --page-bg2:     #35140f;
   --plate-bg:     rgba(249,199,79,0.06);
   --plate-border: rgba(249,199,79,0.28);
   --tile-face:    linear-gradient(160deg, #fff7ea 0%, #f2e0b8 100%);
@@ -331,13 +331,13 @@
   --accent:       #f9c74f;
   --header-bg:    #aa0505;
   --header-border: rgba(249,199,79,0.50);
-  --focusbar-bg:  rgba(25,6,6,0.7);
-  --panel-bg:     #1a0808;
+  --focusbar-bg:  rgba(36,14,10,0.68);
+  --panel-bg:     #24100c;
   --panel-border: rgba(249,199,79,0.28);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.65);
   --text:         #f8f0e0;
   --text-muted:   #c09040;
-  --modal-bg:     #1a0808;
+  --modal-bg:     #24100c;
   --fun-bg:       #140400;
   --fun-text:     #f9c74f;
   --fun-border:   #806000;
@@ -364,7 +364,7 @@
   --vowel-accent: #518cca;
   --brand:        #ed1d24;
   --brand-dk:     #b00000;
-  --brand-text:   #ffffff;
+  --brand-text:   #000000;
   --accent:       #518cca;
   --header-bg:    #ed1d24;
   --header-border: rgba(255,255,255,0.18);
@@ -382,8 +382,8 @@
 
 /* ── DEMON HUNTER ── electric teal-purple neon ─────────── */
 [data-theme="demonhunter"] {
-  --page-bg:      #1e1040;
-  --page-bg2:     #160c30;
+  --page-bg:      #2a1650;
+  --page-bg2:     #1f123f;
   --plate-bg:     rgba(56,189,248,0.07);
   --plate-border: rgba(236,72,153,0.28);
   --tile-face:    linear-gradient(160deg, #f0ebff 0%, #e0d0ff 100%);
@@ -398,17 +398,17 @@
   --vowel-accent: #22d3ee;
   --brand:        #ec4899;
   --brand-dk:     #be0058;
-  --brand-text:   #ffffff;
+  --brand-text:   #2b0418;
   --accent:       #22d3ee;
   --header-bg:    #5b0f80;
   --header-border: rgba(236,72,153,0.50);
-  --focusbar-bg:  rgba(16,8,35,0.70);
-  --panel-bg:     #180c38;
+  --focusbar-bg:  rgba(24,14,48,0.68);
+  --panel-bg:     #23114a;
   --panel-border: rgba(236,72,153,0.22);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.65);
   --text:         #f0e8ff;
   --text-muted:   #9870c0;
-  --modal-bg:     #180c38;
+  --modal-bg:     #23114a;
   --fun-bg:       #0c0820;
   --fun-text:     #22d3ee;
   --fun-border:   #003858;
@@ -434,7 +434,7 @@
   --vowel-accent: #35a2bf;
   --brand:        #ed3a96;
   --brand-dk:     #be0070;
-  --brand-text:   #ffffff;
+  --brand-text:   #2a0016;
   --accent:       #35a2bf;
   --header-bg:    linear-gradient(90deg, #be120a 50%, #001276 50%);
   --header-border: rgba(237,58,150,0.30);
@@ -453,8 +453,8 @@
 /* ── KUROMI ── Sanrio: purple #514283 + pink bow #F181B2
    Pastel goth. Medium dark purple page (NOT black). Pink bow keys.    */
 [data-theme="kuromi"] {
-  --page-bg:      #2a1838;
-  --page-bg2:     #1e1028;
+  --page-bg:      #332046;
+  --page-bg2:     #251436;
   --plate-bg:     rgba(241,129,178,0.07);
   --plate-border: rgba(241,129,178,0.30);
   --tile-face:    linear-gradient(160deg, #fef8ff 0%, #f5e8ff 100%);
@@ -469,17 +469,17 @@
   --vowel-accent: #b090e8;
   --brand:        #f181b2;
   --brand-dk:     #c05088;
-  --brand-text:   #ffffff;
+  --brand-text:   #2a0820;
   --accent:       #c0a0f0;
   --header-bg:    #514283;
   --header-border: rgba(241,129,178,0.50);
-  --focusbar-bg:  rgba(22,10,32,0.65);
-  --panel-bg:     #1c1030;
+  --focusbar-bg:  rgba(30,16,44,0.68);
+  --panel-bg:     #26153a;
   --panel-border: rgba(241,129,178,0.22);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.60);
   --text:         #f5d8f0;
   --text-muted:   #b080b8;
-  --modal-bg:     #1c1030;
+  --modal-bg:     #26153a;
   --fun-bg:       #120820;
   --fun-text:     #f181b2;
   --fun-border:   #602858;
@@ -522,8 +522,8 @@
 /* ── MINECRAFT ── Dirt brown page, stone gray keys, grass green header
    Instantly feels like opening the game.                                */
 [data-theme="minecraft"] {
-  --page-bg:      #3d2b1f;
-  --page-bg2:     #2e1e14;
+  --page-bg:      #4a3628;
+  --page-bg2:     #37271c;
   --plate-bg:     rgba(110,175,50,0.07);
   --plate-border: rgba(110,175,50,0.25);
   --tile-face:    linear-gradient(160deg, #f0f0ec 0%, #e0dcd0 100%);
@@ -538,17 +538,17 @@
   --vowel-accent: #5a8a1c;
   --brand:        #5a8a1c;
   --brand-dk:     #3a5e10;
-  --brand-text:   #ffffff;
+  --brand-text:   #081404;
   --accent:       #8b6914;
   --header-bg:    #558a1c;
   --header-border: rgba(90,138,28,0.35);
-  --focusbar-bg:  rgba(30,20,12,0.65);
-  --panel-bg:     #281a10;
+  --focusbar-bg:  rgba(42,30,20,0.66);
+  --panel-bg:     #322316;
   --panel-border: rgba(110,175,50,0.22);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.60);
   --text:         #f0ece0;
   --text-muted:   #a09070;
-  --modal-bg:     #281a10;
+  --modal-bg:     #322316;
   --fun-bg:       #1e1208;
   --fun-text:     #8b8a1c;
   --fun-border:   #5a4010;
@@ -558,8 +558,8 @@
    Header: Pokédex red. Page: inside-the-dex blue. Keys: PokéBall white.
    Yellow key shadows = Pikachu energy instantly recognizable.           */
 [data-theme="pokemon"] {
-  --page-bg:      #0d2e55;
-  --page-bg2:     #082248;
+  --page-bg:      #16406e;
+  --page-bg2:     #10335c;
   --plate-bg:     rgba(250,204,21,0.07);
   --plate-border: rgba(250,204,21,0.28);
   --tile-face:    linear-gradient(160deg, #ffffff 0%, #e8f0ff 100%);
@@ -578,13 +578,13 @@
   --accent:       #facc15;
   --header-bg:    #cc0000;
   --header-border: rgba(250,204,21,0.50);
-  --focusbar-bg:  rgba(6,18,40,0.65);
-  --panel-bg:     #0a2050;
+  --focusbar-bg:  rgba(12,32,60,0.66);
+  --panel-bg:     #113068;
   --panel-border: rgba(250,204,21,0.28);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.60);
-  --text:         #e0ecff;
+  --text:         #eaf2ff;
   --text-muted:   #80a8e0;
-  --modal-bg:     #0a2050;
+  --modal-bg:     #113068;
   --fun-bg:       #060e28;
   --fun-text:     #facc15;
   --fun-border:   #4a3c00;
@@ -608,7 +608,7 @@
   --vowel-accent: #7c3aed;
   --brand:        #ff4da6;
   --brand-dk:     #c2006a;
-  --brand-text:   #ffffff;
+  --brand-text:   #2d0920;
   --accent:       #7c3aed;
   --header-bg:    linear-gradient(90deg, #ff4da6 0%, #ff87c8 100%);
   --header-border: rgba(255,77,166,0.30);

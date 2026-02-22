@@ -54,6 +54,11 @@ const PAGE_BG_LIGHTNESS_FLOORS = {
   dark: { pageBg: 12, pageBg2: 8 }
 };
 
+const TOKEN_CONTRAST_FLOORS = {
+  key: 4.5,
+  brand: 4.5
+};
+
 function readFile(relativePath) {
   const fullPath = path.join(ROOT, relativePath);
   return fs.readFileSync(fullPath, 'utf8');
@@ -126,6 +131,28 @@ function getLightnessPercent(hexColor) {
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   return ((max + min) / 2) * 100;
+}
+
+function srgbToLinear(channel) {
+  return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+}
+
+function relativeLuminance(hexColor) {
+  const normalized = normalizeHexColor(hexColor);
+  if (!normalized) return null;
+  const r = srgbToLinear(parseInt(normalized.slice(1, 3), 16) / 255);
+  const g = srgbToLinear(parseInt(normalized.slice(3, 5), 16) / 255);
+  const b = srgbToLinear(parseInt(normalized.slice(5, 7), 16) / 255);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function contrastRatio(foreground, background) {
+  const fg = relativeLuminance(foreground);
+  const bg = relativeLuminance(background);
+  if (fg == null || bg == null) return null;
+  const lighter = Math.max(fg, bg);
+  const darker = Math.min(fg, bg);
+  return (lighter + 0.05) / (darker + 0.05);
 }
 
 let failures = 0;
@@ -206,6 +233,40 @@ function run() {
     } else {
       pass(
         `[data-theme="${themeId}"] --page-bg2 lightness ${pageBg2Lightness.toFixed(1)}% meets floor ${floors.pageBg2}%.`
+      );
+    }
+
+    const keyText = extractTokenValue(block, '--key-text');
+    const keyBg = extractTokenValue(block, '--key-bg');
+    const keyContrast = contrastRatio(keyText, keyBg);
+    if (keyContrast == null) {
+      fail(
+        `[data-theme="${themeId}"] uses non-hex key colors (--key-text: ${keyText || 'missing'}, --key-bg: ${keyBg || 'missing'}) so key contrast cannot be validated.`
+      );
+    } else if (keyContrast < TOKEN_CONTRAST_FLOORS.key) {
+      fail(
+        `[data-theme="${themeId}"] key contrast is too low (${keyContrast.toFixed(2)}). Minimum is ${TOKEN_CONTRAST_FLOORS.key.toFixed(1)}.`
+      );
+    } else {
+      pass(
+        `[data-theme="${themeId}"] key contrast ${keyContrast.toFixed(2)} meets floor ${TOKEN_CONTRAST_FLOORS.key.toFixed(1)}.`
+      );
+    }
+
+    const brandText = extractTokenValue(block, '--brand-text');
+    const brandBg = extractTokenValue(block, '--brand');
+    const brandContrast = contrastRatio(brandText, brandBg);
+    if (brandContrast == null) {
+      fail(
+        `[data-theme="${themeId}"] uses non-hex brand colors (--brand-text: ${brandText || 'missing'}, --brand: ${brandBg || 'missing'}) so CTA contrast cannot be validated.`
+      );
+    } else if (brandContrast < TOKEN_CONTRAST_FLOORS.brand) {
+      fail(
+        `[data-theme="${themeId}"] brand contrast is too low (${brandContrast.toFixed(2)}). Minimum is ${TOKEN_CONTRAST_FLOORS.brand.toFixed(1)}.`
+      );
+    } else {
+      pass(
+        `[data-theme="${themeId}"] brand contrast ${brandContrast.toFixed(2)} meets floor ${TOKEN_CONTRAST_FLOORS.brand.toFixed(1)}.`
       );
     }
   }

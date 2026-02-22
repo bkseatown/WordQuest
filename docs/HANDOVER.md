@@ -69,6 +69,7 @@ Known active issue:
 - no inline style injection drift in `theme-nav.js`.
 - canonical ownership blocks in CSS.
 - theme background brightness floors (prevents regression to near-black pages).
+- key/CTA token contrast floors (prevents low-contrast text regressions).
 - file-change safety buckets for non-coder review (green/yellow/red).
   - `scope:check` fails on red only.
   - `scope:strict` fails on yellow, red, or unknown.

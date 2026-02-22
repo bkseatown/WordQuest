@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="default" data-case="lower" data-projector="off" data-motion="fun">
+<html lang="en" data-theme="default" data-case="lower" data-projector="off" data-motion="fun" data-board-style="card" data-key-style="bubble" data-atmosphere="glow">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -34,7 +34,7 @@
   <div class="focus-bar">
     <span class="focus-label">Focus</span>
     <select id="setting-focus">
-      <option value="all">— All Words —</option>
+      <option value="all">— Classic (Wordle 5x6) —</option>
       <optgroup label="SoR Phonics">
         <option value="cvc">CVC · Short Vowels</option>
         <option value="digraph">Digraphs · sh, ch, th</option>
@@ -60,6 +60,7 @@
     </select>
     <span id="focus-hint" class="focus-hint hidden"></span>
   </div>
+  <div id="theme-preview-strip" class="theme-preview-strip" aria-label="Theme preview"></div>
 
   <!-- ── Settings overlay ─────────────────────────── -->
   <div id="settings-panel" class="settings-panel hidden">
@@ -68,17 +69,51 @@
       <button id="settings-close" class="close-btn" aria-label="Close settings">✕</button>
     </div>
     <div class="settings-body">
-      <div class="setting-row"><label>Theme<select id="s-theme"><option value="">Loading themes...</option></select></label></div>
+      <div class="setting-row"><label>Theme (full list)<select id="s-theme"><option value="">Loading themes...</option></select></label></div>
+      <div class="setting-row setting-row-help">Use the Theme Preview arrows above to compare themes without opening a large dropdown.</div>
+      <div class="setting-row"><label>Remember Theme<select id="s-theme-save"><option value="off" selected>Off (reset on refresh)</option><option value="on">On (save this theme)</option></select></label></div>
       <div class="setting-row"><label>Grade Band<select id="s-grade"><option value="all">All grades</option><option value="K-2">K–2</option><option value="G3-5">Grades 3–5</option><option value="G6-8">Grades 6–8</option><option value="G9-12">Grades 9–12</option></select></label></div>
-      <div class="setting-row"><label>Word Length<select id="s-length"><option value="any">Any</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select></label></div>
+      <div class="setting-row"><label>Word Length<select id="s-length"><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="any">Any</option></select></label></div>
       <div class="setting-row"><label>Max Guesses<select id="s-guesses"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option></select></label></div>
+      <div id="focus-grade-note" class="setting-row setting-row-full setting-row-help">Classic uses Grade Band + Word Length. Subject Focus presets both domain and grade.</div>
       <div class="setting-row"><label>Letter Case<select id="s-case"><option value="lower">lowercase</option><option value="upper">UPPERCASE</option></select></label></div>
       <div class="setting-row"><label>Phonics Hint<select id="s-hint"><option value="off">Off</option><option value="on">On</option></select></label></div>
+      <div class="setting-row setting-row-full">
+        <label class="setting-checkbox-label">
+          <input id="s-sor-notation" type="checkbox" checked>
+          Show SoR notation on reveal
+        </label>
+      </div>
       <div class="setting-row"><label>Duplicate Alert<select id="s-dupe"><option value="on">On</option><option value="off">Off</option></select></label></div>
       <div class="setting-row"><label>Win Confetti<select id="s-confetti"><option value="on">On</option><option value="off">Off</option></select></label></div>
       <div class="setting-row"><label>Projector Mode<select id="s-projector"><option value="off">Off</option><option value="on">On · high contrast</option></select></label></div>
       <div class="setting-row"><label>Motion<select id="s-motion"><option value="fun">Fun</option><option value="calm">Calm</option><option value="reduced">Reduced</option></select></label></div>
-      <div class="setting-row"><label>Feedback Colors<select id="s-feedback"><option value="classic">Classic (green/yellow/gray)</option><option value="themed">Themed (matches theme)</option></select></label></div><div class="setting-row"><label>Music<select id="s-music"><option value="lofi">Lo‑fi</option><option value="arcade">8‑bit Arcade</option><option value="fantasy">Fantasy</option><option value="scifi">Sci‑fi</option><option value="sports">Sports Hype</option><option value="off">Off</option></select></label></div><div class="setting-row setting-row-full"><label>Music Volume<input id="s-music-vol" type="range" min="0" max="1" step="0.05" value="0.35"></label></div><div class="setting-row setting-row-full"><label>Audio Voice<select id="s-voice"><option value="recorded">Recorded only (recommended)</option><option value="auto">Recorded → device fallback</option><option value="device">Device voice only (beta)</option></select></label></div><div class="setting-row setting-row-full small-help"><button id="voice-help-btn" class="link-btn" type="button">How to improve device voice</button></div>
+      <div class="setting-row"><label>Board Style<select id="s-board-style"><option value="clean">Clean</option><option value="card" selected>Card</option><option value="patterned">Patterned</option></select></label></div>
+      <div class="setting-row"><label>Key Style<select id="s-key-style"><option value="bubble" selected>Bubble</option><option value="classic">Classic</option><option value="arcade">Arcade</option></select></label></div>
+      <div class="setting-row"><label>Atmosphere<select id="s-atmosphere"><option value="minimal">Minimal</option><option value="glow" selected>Glow</option><option value="spark">Spark</option></select></label></div>
+      <div class="setting-row"><label>Feedback Colors<select id="s-feedback"><option value="themed" selected>Themed (matches theme)</option><option value="classic">Classic (green/yellow/gray)</option></select></label></div>
+      <div class="setting-row setting-row-full">
+        <label class="setting-checkbox-label">
+          <input id="s-meaning-fun-link" type="checkbox" checked>
+          Include extended definition add-on
+        </label>
+        <div class="setting-checkbox-help">Default on. Turn off for simple definition only.</div>
+      </div>
+      <div class="setting-row">
+        <label>Voice Practice
+          <select id="s-voice-task">
+            <option value="optional" selected>Optional</option>
+            <option value="required">Required before next word</option>
+            <option value="off">Off</option>
+          </select>
+        </label>
+      </div>
+      <div class="setting-row"><label>Engagement Popups<select id="s-boost-popups"><option value="on" selected>On</option><option value="off">Off</option></select></label></div>
+      <div class="setting-row"><label>Music<select id="s-music"><option value="off" selected>Off</option><option value="auto">Auto (match theme)</option><option value="chill">Chill</option><option value="lofi">Lo‑fi</option><option value="upbeat">Upbeat</option><option value="coffee">Coffeehouse</option><option value="arcade">8‑bit Arcade</option><option value="fantasy">Fantasy</option><option value="scifi">Sci‑fi</option><option value="sports">Sports Hype</option></select></label></div>
+      <div id="s-music-active" class="setting-row setting-row-full setting-row-help">Auto picks a vibe from the active theme.</div>
+      <div class="setting-row setting-row-full"><label>Music Volume<input id="s-music-vol" type="range" min="0" max="1" step="0.05" value="0.50"></label></div>
+      <div class="setting-row setting-row-full"><label>Audio Voice<select id="s-voice"><option value="recorded">Recorded only (recommended)</option><option value="auto">Recorded → device fallback</option><option value="device">Device voice only (beta)</option></select></label></div>
+      <div class="setting-row setting-row-full small-help"><button id="voice-help-btn" class="link-btn" type="button">How to improve device voice</button></div>
     </div>
   </div>
 
@@ -102,6 +137,7 @@
           Hear Sentence
         </button>
       </div>
+      <div id="midgame-boost" class="midgame-boost hidden" role="status" aria-live="polite"></div>
     </div>
 
     <!-- Keyboard -->
@@ -118,19 +154,40 @@
     <div id="end-modal" class="hidden" role="dialog" aria-modal="true">
       <div id="modal-result"></div>
       <div id="modal-word"></div>
-      <div id="modal-syllables"></div>
-      <div id="modal-badge"></div>
-      <div id="modal-guesses"></div>
-      <div class="modal-divider"></div>
-      <p id="modal-def"></p>
-      <p id="modal-sentence"></p>
-      <div id="modal-fun-wrap"><p id="modal-fun"></p></div>
-      <div class="audio-row">
+      <div class="modal-syllables-wrap">
+        <div id="modal-syllables"></div>
+        <div id="modal-sor" class="hidden"></div>
+      </div>
+      <div class="audio-row audio-row-core">
         <button class="audio-btn" id="hear-word-btn">🔊 Word</button>
         <button class="audio-btn" id="hear-def-btn">📖 Meaning</button>
-        <button class="audio-btn" id="hear-sentence-btn">💬 Sentence</button>
-        <button class="audio-btn" id="hear-fun-btn">✨ Fun</button>
       </div>
+      <div id="modal-voice-practice" class="modal-voice-practice">
+        <div class="voice-practice-head">
+          <strong>🎤 Say It Back</strong>
+          <span id="voice-practice-target"></span>
+        </div>
+        <canvas id="voice-waveform" width="320" height="74" aria-label="Voice waveform"></canvas>
+        <div class="voice-practice-actions">
+          <button class="audio-btn" id="voice-record-btn" type="button">Start Recording</button>
+          <button class="audio-btn" id="voice-stop-btn" type="button" disabled>Stop</button>
+          <button class="audio-btn" id="voice-play-btn" type="button" disabled>Play My Voice</button>
+        </div>
+        <div id="voice-practice-feedback" class="voice-practice-feedback" aria-live="polite">Record your voice, then compare it with the word audio.</div>
+      </div>
+      <details id="modal-more-details" class="modal-more-details">
+        <summary>More details</summary>
+        <div class="modal-more-body">
+          <div id="modal-guesses"></div>
+          <p id="modal-def"></p>
+          <p id="modal-sentence"></p>
+          <div id="modal-fun-wrap"><p id="modal-fun"></p></div>
+          <div id="modal-badge"></div>
+          <div class="audio-row">
+            <button class="audio-btn" id="hear-sentence-btn">💬 Sentence</button>
+          </div>
+        </div>
+      </details>
       <button id="play-again-btn">Play Again →</button>
     </div>
   </div>
@@ -157,6 +214,7 @@
   </div>
 
   <script src="data/words-inline.js"></script>
+  <script src="data/engagement-boosts.js?v=20260222"></script>
   <script src="js/data.js?v=20260222"></script>
   <script src="js/audio.js?v=20260222"></script>
   <script src="js/game.js?v=20260222"></script>

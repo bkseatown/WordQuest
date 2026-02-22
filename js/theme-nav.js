@@ -89,7 +89,9 @@
 
     const themeSelect = byId('s-theme');
     const row = themeSelect?.closest('.setting-row');
-    if (!row) return;
+    const previewStrip = byId('theme-preview-strip');
+    const host = previewStrip || row;
+    if (!host) return;
 
     const nav = document.createElement('div');
     nav.id = 'wq-theme-nav';
@@ -99,10 +101,14 @@
       '<span id="wq-theme-label" class="wq-theme-label" aria-live="polite"></span>',
       '<button id="wq-theme-next" class="wq-theme-nav-btn" type="button" aria-label="Next theme">▶</button>'
     ].join('');
-    row.appendChild(nav);
+    host.appendChild(nav);
 
     byId('wq-theme-prev')?.addEventListener('click', () => cycleTheme(-1));
     byId('wq-theme-next')?.addEventListener('click', () => cycleTheme(1));
+    nav.addEventListener('wheel', (event) => {
+      event.preventDefault();
+      cycleTheme(event.deltaY > 0 ? 1 : -1);
+    }, { passive: false });
 
     if (themeSelect && !themeSelect.dataset.wqThemeNavBound) {
       themeSelect.addEventListener('change', (event) => {
