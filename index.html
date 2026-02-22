@@ -131,6 +131,22 @@
 
   <!-- ── Main game area ───────────────────────────── -->
   <main id="main">
+    <section id="quest-loop" class="quest-loop" aria-label="Quest progress">
+      <div class="quest-loop-top">
+        <span id="quest-tier-chip" class="quest-chip">Tier: Rookie</span>
+        <span id="quest-xp" class="quest-stat">0 XP</span>
+        <span id="quest-streak" class="quest-stat">Streak: 0 days</span>
+      </div>
+      <div id="quest-progress" class="quest-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="quest-progress-fill" class="quest-progress-fill"></div>
+      </div>
+      <div id="quest-track" class="quest-track" aria-hidden="true">
+        <span class="quest-node" data-tier="rookie">Rookie</span>
+        <span class="quest-node" data-tier="allstar">All-Star</span>
+        <span class="quest-node" data-tier="legend">Legend</span>
+      </div>
+      <div id="quest-next" class="quest-next">Next reward: reach All-Star tier.</div>
+    </section>
 
     <!-- Board plate + grid -->
     <div class="board-zone">

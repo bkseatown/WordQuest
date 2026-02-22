@@ -575,6 +575,100 @@ main {
   scrollbar-gutter: stable both-edges;
 }
 
+/* ── Quest loop ─────────────────────────────────────── */
+.quest-loop {
+  width: min(520px, calc(100vw - 24px));
+  display: grid;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 78%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--panel-bg) 88%, #ffffff 12%), color-mix(in oklab, var(--panel-bg) 94%, #000000 6%));
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.quest-loop-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quest-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--brand) 60%, var(--panel-border) 40%);
+  background: color-mix(in oklab, var(--brand) 22%, var(--panel-bg) 78%);
+  color: var(--text);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 3px 10px;
+}
+
+.quest-stat {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.quest-progress {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 80%, transparent);
+  background: color-mix(in oklab, var(--panel-bg) 70%, #000000 30%);
+  overflow: hidden;
+}
+
+.quest-progress-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, color-mix(in oklab, var(--brand) 72%, #ffffff 28%), color-mix(in oklab, var(--accent) 70%, #ffffff 30%));
+  transition: width 0.28s ease;
+}
+
+.quest-track {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.quest-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 82%, transparent);
+  background: color-mix(in oklab, var(--panel-bg) 82%, #ffffff 18%);
+  color: color-mix(in oklab, var(--text-muted) 90%, #ffffff 10%);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.quest-node.is-unlocked {
+  border-color: color-mix(in oklab, var(--brand) 60%, var(--panel-border) 40%);
+  background: color-mix(in oklab, var(--brand) 26%, var(--panel-bg) 74%);
+  color: var(--text);
+}
+
+.quest-node.is-current {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, #ffffff 72%, transparent);
+}
+
+.quest-next {
+  font-size: 0.71rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
 /* ── Board zone ──────────────────────────────────────── */
 .board-zone {
   display:        flex;
@@ -1438,6 +1532,11 @@ html[data-motion="reduced"] * {
   main { padding-top: 36px; }
   .theme-preview-strip { width: min(246px, calc(100vw - 22px)); }
   .key { font-size: 0.78rem; }
+  .quest-loop { padding: 7px 8px; }
+  .quest-loop-top { gap: 6px; }
+  .quest-stat,
+  .quest-chip,
+  .quest-next { font-size: 0.68rem; }
 }
 
 @media (max-height: 760px) {
@@ -1449,6 +1548,9 @@ html[data-motion="reduced"] * {
   main .gameplay-audio { gap: 8px; }
   .audio-ghost-btn { padding: 5px 13px; }
   :root { --key-h: 48px; }
+  .quest-loop { gap: 4px; padding: 6px 8px; }
+  .quest-track,
+  .quest-next { display: none; }
 }
 
 @media (orientation: landscape) and (max-height: 540px) {
