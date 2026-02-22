@@ -4,7 +4,9 @@
   "scripts": {
     "hud:check": "node scripts/check-hud-contract.js",
     "audio:manifest": "node scripts/build-audio-manifest.js",
+    "audio:manifest:check": "node scripts/check-audio-manifest-sync.js",
     "offline:check": "node scripts/check-offline-contract.js",
+    "release:check": "npm run audio:manifest:check && npm run offline:check && npm run hud:check && npm run scope:strict",
     "scope:view": "node scripts/check-change-scope.js",
     "scope:check": "node scripts/check-change-scope.js",
     "scope:strict": "node scripts/check-change-scope.js --strict"

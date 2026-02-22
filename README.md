@@ -23,7 +23,10 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
   - `npm run hud:check`
 - Run offline/audio checks:
   - `npm run audio:manifest`
+  - `npm run audio:manifest:check`
   - `npm run offline:check`
+- Run pre-deploy gate:
+  - `npm run release:check`
 - Run file-scope safety checks:
   - `npm run scope:view`
   - `npm run scope:check`
@@ -49,7 +52,16 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 - Contract tooling:
   - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-hud-contract.js`
   - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/build-audio-manifest.js`
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-audio-manifest-sync.js`
   - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-offline-contract.js`
+
+## Deploy Target
+- GitHub Pages workflow:
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/.github/workflows/deploy-pages.yml`
+- Deployment gate:
+  - `npm run release:check`
+- Deploy trigger:
+  - push to `main` (or run workflow manually in GitHub Actions)
 
 ## Collaboration Workflow (Recommended)
 1. Propose a small change batch (1-3 deltas).

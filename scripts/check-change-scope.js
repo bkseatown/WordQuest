@@ -8,6 +8,7 @@ const GREEN_RULES = [
   /^\.gitignore$/,
   /^README\.md$/,
   /^VISION\.md$/,
+  /^\.github\/workflows\//,
   /^docs\//,
   /^scripts\//,
   /^package\.json$/,

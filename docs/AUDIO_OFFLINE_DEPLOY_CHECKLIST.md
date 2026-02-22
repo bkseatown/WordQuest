@@ -5,12 +5,14 @@ Use this checklist before sharing a teacher-facing URL.
 ## 1. Build and validate locally
 
 - Run `npm run audio:manifest`
+- Run `npm run audio:manifest:check`
 - Run `npm run offline:check`
 - Run `npm run hud:check`
-- Run `npm run scope:check`
+- Run `npm run release:check`
 
 Expected:
 - `data/audio-manifest.json` exists and has thousands of audio paths
+- `data/audio-manifest.json` matches `data/words-inline.js`
 - `sw.js` is present and registered from `js/app.js`
 - HUD/theme guardrails still pass
 
@@ -55,5 +57,15 @@ Important:
 
 For every data/audio refresh:
 - Run `npm run audio:manifest`
+- Run `npm run audio:manifest:check`
 - Commit updated `data/audio-manifest.json`
 - Re-run `npm run offline:check` before deploy
+
+## 7. GitHub Pages pipeline
+
+- Workflow file: `.github/workflows/deploy-pages.yml`
+- In GitHub repo settings, set Pages source to **GitHub Actions**
+- Deploy runs on push to `main` after:
+  - `npm run audio:manifest:check`
+  - `npm run offline:check`
+  - `npm run hud:check`
