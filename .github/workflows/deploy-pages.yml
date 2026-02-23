@@ -53,3 +53,23 @@ jobs:
 
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Smoke-check deployed page
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          target="${PAGE_URL%/}/?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "Smoke checking ${target}"
+          for attempt in 1 2 3 4 5; do
+            html="$(curl -fsSL --max-time 15 "${target}" || true)"
+            if echo "${html}" | grep -q 'id="settings-build-badge"' && \
+               echo "${html}" | grep -q 'id="s-reveal-focus"'; then
+              echo "Smoke check passed on attempt ${attempt}."
+              exit 0
+            fi
+            echo "Smoke check retry ${attempt}/5..."
+            sleep $((attempt * 8))
+          done
+          echo "Smoke check failed: expected markers were not found in deployed HTML." >&2
+          exit 1

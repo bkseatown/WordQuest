@@ -71,6 +71,7 @@
     guesses: '6',
     caseMode: 'lower',
     hint: 'on',
+    revealFocus: 'on',
     dupe: 'on',
     confetti: 'on',
     projector: 'off',
@@ -116,6 +117,7 @@
     if (prefs.atmosphere === undefined) prefs.atmosphere = DEFAULT_PREFS.atmosphere;
     if (prefs.meaningPlusFun === undefined) prefs.meaningPlusFun = DEFAULT_PREFS.meaningPlusFun;
     if (prefs.sorNotation === undefined) prefs.sorNotation = DEFAULT_PREFS.sorNotation;
+    if (prefs.revealFocus === undefined) prefs.revealFocus = DEFAULT_PREFS.revealFocus;
     if (prefs.voicePractice === undefined) prefs.voicePractice = DEFAULT_PREFS.voicePractice;
     if (prefs.boostPopups === undefined) prefs.boostPopups = DEFAULT_PREFS.boostPopups;
     if (prefs.themeSave !== 'on') delete prefs.theme;
@@ -138,6 +140,10 @@
   }
   if (prefs.sorNotation === undefined) {
     prefs.sorNotation = DEFAULT_PREFS.sorNotation;
+    savePrefs(prefs);
+  }
+  if (prefs.revealFocus === undefined) {
+    prefs.revealFocus = DEFAULT_PREFS.revealFocus;
     savePrefs(prefs);
   }
   if (prefs.voicePractice === undefined) {
@@ -164,6 +170,23 @@
   const ThemeRegistry = window.WQThemeRegistry || null;
   const shouldPersistTheme = () => (prefs.themeSave || DEFAULT_PREFS.themeSave) === 'on';
   let musicController = null;
+
+  function resolveBuildLabel() {
+    const appScript = Array.from(document.querySelectorAll('script[src]'))
+      .find((script) => /(?:^|\/)js\/app\.js(?:[?#]|$)/i.test(script.getAttribute('src') || ''));
+    const src = String(appScript?.getAttribute('src') || '');
+    const match = src.match(/[?&]v=([^&#]+)/i);
+    if (match && match[1]) return decodeURIComponent(match[1]);
+    return '';
+  }
+
+  function syncBuildBadge() {
+    const badge = _el('settings-build-badge');
+    if (!badge) return;
+    const label = resolveBuildLabel();
+    badge.textContent = label ? `Build ${label}` : 'Build local';
+    badge.title = label ? `WordQuest build ${label}` : 'WordQuest local build';
+  }
   const themeFamilyById = (() => {
     const map = new Map();
     const themes = Array.isArray(ThemeRegistry?.themes) ? ThemeRegistry.themes : [];
@@ -296,6 +319,7 @@
     's-key-style': 'keyStyle',
     's-chunk-tabs': 'chunkTabs',
     's-atmosphere': 'atmosphere',
+    's-reveal-focus': 'revealFocus',
     's-voice-task': 'voicePractice',
     's-boost-popups': 'boostPopups',
     's-grade': 'grade', 's-length': 'length',
@@ -334,6 +358,7 @@
     voiceSelect.value = selectedVoice;
     if (prefs.voice !== selectedVoice) setPref('voice', selectedVoice);
   }
+  syncBuildBadge();
 
   const themeSelect = _el('s-theme');
   const initialThemeSelection = shouldPersistTheme() ? prefs.theme : getThemeFallback();
@@ -354,6 +379,7 @@
   applyProjector(prefs.projector || DEFAULT_PREFS.projector);
   applyMotion(prefs.motion || DEFAULT_PREFS.motion);
   applyHint(getHintMode());
+  applyRevealFocusMode(prefs.revealFocus || DEFAULT_PREFS.revealFocus, { persist: false });
   applyFeedback(prefs.feedback || DEFAULT_PREFS.feedback);
   applyBoardStyle(prefs.boardStyle || DEFAULT_PREFS.boardStyle);
   applyKeyStyle(prefs.keyStyle || DEFAULT_PREFS.keyStyle);
@@ -396,6 +422,36 @@
 
   function applyHint(mode) {
     document.documentElement.setAttribute('data-hint', mode);
+  }
+
+  function getRevealFocusMode() {
+    const mode = String(_el('s-reveal-focus')?.value || prefs.revealFocus || DEFAULT_PREFS.revealFocus).toLowerCase();
+    return mode === 'off' ? 'off' : 'on';
+  }
+
+  function syncRevealFocusModalSections() {
+    const focusMode = getRevealFocusMode();
+    const practiceDetails = _el('modal-practice-details');
+    if (practiceDetails && !practiceDetails.classList.contains('hidden')) {
+      const requiredPractice = getVoicePracticeMode() === 'required' && !voiceTakeComplete;
+      practiceDetails.open = requiredPractice || focusMode === 'off';
+    }
+    const details = _el('modal-more-details');
+    if (details) {
+      details.open = focusMode === 'off';
+    }
+  }
+
+  function applyRevealFocusMode(mode, options = {}) {
+    const normalized = mode === 'off' ? 'off' : 'on';
+    const select = _el('s-reveal-focus');
+    if (select && select.value !== normalized) select.value = normalized;
+    document.documentElement.setAttribute('data-reveal-focus', normalized);
+    if (options.persist !== false) setPref('revealFocus', normalized);
+    if (!(_el('modal-overlay')?.classList.contains('hidden'))) {
+      syncRevealFocusModalSections();
+    }
+    return normalized;
   }
 
   function getHintMode() {
@@ -529,6 +585,93 @@
     return value !== 'off';
   }
 
+  const TEACHER_PRESETS = Object.freeze({
+    guided: Object.freeze({
+      hint: 'on',
+      revealFocus: 'on',
+      voicePractice: 'required',
+      voice: 'recorded',
+      boostPopups: 'on',
+      confetti: 'on'
+    }),
+    independent: Object.freeze({
+      hint: 'off',
+      revealFocus: 'on',
+      voicePractice: 'optional',
+      voice: 'recorded',
+      boostPopups: 'on',
+      confetti: 'on'
+    }),
+    assessment: Object.freeze({
+      hint: 'off',
+      revealFocus: 'on',
+      voicePractice: 'off',
+      voice: 'off',
+      boostPopups: 'off',
+      confetti: 'off'
+    })
+  });
+
+  function detectTeacherPreset() {
+    const current = {
+      hint: getHintMode(),
+      revealFocus: getRevealFocusMode(),
+      voicePractice: getVoicePracticeMode(),
+      voice: normalizeVoiceMode(_el('s-voice')?.value || prefs.voice || DEFAULT_PREFS.voice),
+      boostPopups: areBoostPopupsEnabled() ? 'on' : 'off',
+      confetti: String(_el('s-confetti')?.value || prefs.confetti || DEFAULT_PREFS.confetti).toLowerCase() === 'off'
+        ? 'off'
+        : 'on'
+    };
+    return Object.entries(TEACHER_PRESETS).find(([, preset]) =>
+      current.hint === preset.hint &&
+      current.revealFocus === preset.revealFocus &&
+      current.voicePractice === preset.voicePractice &&
+      current.voice === preset.voice &&
+      current.boostPopups === preset.boostPopups &&
+      current.confetti === preset.confetti
+    )?.[0] || '';
+  }
+
+  function syncTeacherPresetButtons(activePreset = detectTeacherPreset()) {
+    document.querySelectorAll('[data-teacher-preset]').forEach((btn) => {
+      const isActive = btn.getAttribute('data-teacher-preset') === activePreset;
+      btn.classList.toggle('is-active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+  }
+
+  function applyTeacherPreset(mode) {
+    const preset = TEACHER_PRESETS[mode];
+    if (!preset) return;
+    setHintMode(preset.hint);
+    applyRevealFocusMode(preset.revealFocus);
+
+    const voiceTaskSelect = _el('s-voice-task');
+    if (voiceTaskSelect) voiceTaskSelect.value = preset.voicePractice;
+    setPref('voicePractice', preset.voicePractice);
+
+    const voiceSelect = _el('s-voice');
+    if (voiceSelect) voiceSelect.value = preset.voice;
+    WQAudio.setVoiceMode(preset.voice);
+    setPref('voice', preset.voice);
+
+    const boostSelect = _el('s-boost-popups');
+    if (boostSelect) boostSelect.value = preset.boostPopups;
+    setPref('boostPopups', preset.boostPopups);
+    if (preset.boostPopups === 'off') hideMidgameBoost();
+
+    const confettiSelect = _el('s-confetti');
+    if (confettiSelect) confettiSelect.value = preset.confetti;
+    setPref('confetti', preset.confetti);
+
+    if (preset.voice === 'off') cancelRevealNarration();
+    updateVoicePracticePanel(WQGame.getState());
+    syncRevealFocusModalSections();
+    syncTeacherPresetButtons(mode);
+    WQUI.showToast(`Preset applied: ${mode}.`);
+  }
+
   function populateVoiceSelector() {
     // Voice selection is handled by WQAudio internals
     // This can be expanded if you want a dropdown UI later
@@ -583,8 +726,15 @@
     });
   });
 
+  document.querySelectorAll('[data-teacher-preset]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      applyTeacherPreset(btn.getAttribute('data-teacher-preset') || '');
+    });
+  });
+
   setSettingsView('quick');
   syncHeaderControlsVisibility();
+  syncTeacherPresetButtons();
 
   _el('settings-btn')?.addEventListener('click', () => {
     const panel = _el('settings-panel');
@@ -719,13 +869,24 @@
   });
   _el('s-length')?.addEventListener('change',  e => setPref('length',   e.target.value));
   _el('s-guesses')?.addEventListener('change', e => setPref('guesses',  e.target.value));
-  _el('s-hint')?.addEventListener('change',    e => { setHintMode(e.target.value); });
+  _el('s-hint')?.addEventListener('change',    e => { setHintMode(e.target.value); syncTeacherPresetButtons(); });
+  _el('s-reveal-focus')?.addEventListener('change', e => {
+    const next = applyRevealFocusMode(e.target.value);
+    WQUI.showToast(next === 'on'
+      ? 'Reveal focus is on: word + meaning first.'
+      : 'Reveal focus is off: full detail layout.');
+    syncTeacherPresetButtons();
+  });
   _el('focus-hint-toggle')?.addEventListener('click', () => {
     const next = getHintMode() === 'on' ? 'off' : 'on';
     setHintMode(next, { toast: true });
+    syncTeacherPresetButtons();
   });
   _el('s-dupe')?.addEventListener('change',    e => setPref('dupe',     e.target.value));
-  _el('s-confetti')?.addEventListener('change',e => setPref('confetti', e.target.value));
+  _el('s-confetti')?.addEventListener('change',e => {
+    setPref('confetti', e.target.value);
+    syncTeacherPresetButtons();
+  });
   _el('s-feedback')?.addEventListener('change', e => {
     applyFeedback(e.target.value);
     setPref('feedback', e.target.value);
@@ -759,7 +920,9 @@
     setPref('voicePractice', normalized);
     if (!(_el('modal-overlay')?.classList.contains('hidden'))) {
       updateVoicePracticePanel(WQGame.getState());
+      syncRevealFocusModalSections();
     }
+    syncTeacherPresetButtons();
     WQUI.showToast(normalized === 'required'
       ? 'Voice practice is required before next word.'
       : normalized === 'off'
@@ -771,6 +934,7 @@
     const normalized = e.target.value === 'off' ? 'off' : 'on';
     setPref('boostPopups', normalized);
     if (normalized === 'off') hideMidgameBoost();
+    syncTeacherPresetButtons();
     WQUI.showToast(normalized === 'off' ? 'Engagement popups are off.' : 'Engagement popups are on.');
   });
   _el('s-music')?.addEventListener('change', e => {
@@ -799,6 +963,7 @@
     if (modalOpen) {
       void runRevealNarration(WQGame.getState());
     }
+    syncTeacherPresetButtons();
     WQUI.showToast('Voice read-aloud is on.');
   });
 
@@ -946,11 +1111,85 @@
     frame();
   }
 
-  function setVoicePracticeFeedback(message, isError = false) {
+  function setVoicePracticeFeedback(message, tone = 'default') {
     const feedback = _el('voice-practice-feedback');
     if (!feedback) return;
+    const normalizedTone = tone === true
+      ? 'error'
+      : tone === false
+        ? 'default'
+        : String(tone || 'default').toLowerCase();
     feedback.textContent = message || '';
-    feedback.classList.toggle('is-error', !!isError);
+    feedback.classList.toggle('is-error', normalizedTone === 'error');
+    feedback.classList.toggle('is-warn', normalizedTone === 'warn');
+    feedback.classList.toggle('is-good', normalizedTone === 'good');
+  }
+
+  async function analyzeVoiceClip(blob) {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor || !blob?.size) return null;
+    const ctx = new Ctor();
+    try {
+      const sourceBytes = await blob.arrayBuffer();
+      const audioBuffer = await ctx.decodeAudioData(sourceBytes.slice(0));
+      const duration = Number(audioBuffer.duration) || (VOICE_CAPTURE_MS / 1000);
+      let peak = 0;
+      let sumSquares = 0;
+      let voiced = 0;
+      let samples = 0;
+      const threshold = 0.02;
+      const stride = 2;
+
+      for (let channel = 0; channel < audioBuffer.numberOfChannels; channel += 1) {
+        const data = audioBuffer.getChannelData(channel);
+        for (let i = 0; i < data.length; i += stride) {
+          const abs = Math.abs(data[i] || 0);
+          if (abs > peak) peak = abs;
+          sumSquares += abs * abs;
+          if (abs >= threshold) voiced += 1;
+          samples += 1;
+        }
+      }
+      if (!samples) return null;
+      const rms = Math.sqrt(sumSquares / samples);
+      const voicedRatio = voiced / samples;
+      return { duration, peak, rms, voicedRatio };
+    } catch {
+      return null;
+    } finally {
+      try { await ctx.close(); } catch {}
+    }
+  }
+
+  function buildVoiceFeedback(analysis) {
+    if (!analysis) {
+      return {
+        message: '1-second clip captured. Play it back and compare with the model audio.',
+        tone: 'default'
+      };
+    }
+    if (analysis.duration < 0.55) {
+      return {
+        message: 'Clip was very short. Try tapping Record and speaking right away.',
+        tone: 'warn'
+      };
+    }
+    if (analysis.rms < 0.012 || analysis.voicedRatio < 0.05) {
+      return {
+        message: 'Clip captured, but very quiet. Try a little louder or closer to the mic.',
+        tone: 'warn'
+      };
+    }
+    if (analysis.peak > 0.97 || analysis.rms > 0.25) {
+      return {
+        message: 'Clip captured, but volume may be too high. Step back slightly and retry.',
+        tone: 'warn'
+      };
+    }
+    return {
+      message: 'Great clarity. Play it back, then compare with the model audio.',
+      tone: 'good'
+    };
   }
 
   function updateRevealSorBadge(entry) {
@@ -1000,6 +1239,7 @@
 
     if (practiceDetails) {
       practiceDetails.classList.remove('hidden');
+      if (getRevealFocusMode() === 'off') practiceDetails.open = true;
     }
     panel.classList.remove('hidden');
     if (mode === 'required' && !voiceTakeComplete) {
@@ -1054,8 +1294,13 @@
         if (playBtn) playBtn.disabled = false;
         const saveBtn = _el('voice-save-btn');
         if (saveBtn) saveBtn.disabled = false;
-        setVoicePracticeFeedback('1-second clip captured. Play it back or save it locally.');
+        setVoicePracticeFeedback('Analyzing your clip...');
         updateVoicePracticePanel(WQGame.getState());
+        void analyzeVoiceClip(blob).then((analysis) => {
+          if (!voiceClipBlob || voiceClipBlob !== blob) return;
+          const review = buildVoiceFeedback(analysis);
+          setVoicePracticeFeedback(review.message, review.tone);
+        });
       });
       voiceIsRecording = true;
       setVoiceRecordingUI(true);
@@ -1164,11 +1409,13 @@
       syncRevealMeaningHighlight(state?.entry);
       const practiceDetails = _el('modal-practice-details');
       if (practiceDetails) {
-        practiceDetails.open = getVoicePracticeMode() === 'required';
+        const requiredPractice = getVoicePracticeMode() === 'required';
+        practiceDetails.open = requiredPractice || getRevealFocusMode() === 'off';
       }
       const details = _el('modal-more-details');
-      if (details) details.open = false;
+      if (details) details.open = getRevealFocusMode() === 'off';
       updateVoicePracticePanel(state);
+      syncRevealFocusModalSections();
       void runRevealNarration(state);
       return state;
     };
@@ -2662,20 +2909,41 @@
     await WQAudio.playFun(nextEntry);
   }
 
+  function promptLearnerAfterReveal(options = {}) {
+    if (getVoicePracticeMode() === 'off') return;
+    if (voiceTakeComplete || voiceIsRecording) return;
+    const practiceDetails = _el('modal-practice-details');
+    if (!practiceDetails || practiceDetails.classList.contains('hidden')) return;
+    const required = getVoicePracticeMode() === 'required';
+    if (required) practiceDetails.open = true;
+    setVoicePracticeFeedback('Your turn: tap Start 1-sec Recording, then compare with model audio.', required ? 'warn' : 'default');
+    if (options.toast && !required) {
+      WQUI.showToast('Your turn: open Say It Back and record 1 second.', 2200);
+    }
+  }
+
   async function runRevealNarration(result) {
     if (!result?.entry) return;
     cancelRevealNarration();
     const token = revealNarrationToken;
     showRevealWordToast(result);
     syncRevealMeaningHighlight(result.entry);
-    if (!shouldNarrateReveal()) return;
+    if (!shouldNarrateReveal()) {
+      promptLearnerAfterReveal({ toast: true });
+      return;
+    }
     await new Promise((resolve) => setTimeout(resolve, 260));
     if (token !== revealNarrationToken) return;
     try {
       await WQAudio.playWord(result.entry);
       if (token !== revealNarrationToken) return;
       await playMeaningWithFun(result.entry);
-    } catch {}
+      if (token !== revealNarrationToken) return;
+      promptLearnerAfterReveal({ toast: true });
+    } catch {
+      if (token !== revealNarrationToken) return;
+      promptLearnerAfterReveal({ toast: true });
+    }
   }
 
   _el('g-hear-word')?.addEventListener('click', () => {

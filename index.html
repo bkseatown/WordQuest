@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="default" data-case="lower" data-projector="off" data-motion="fun" data-board-style="soundcard" data-key-style="soundcard" data-keyboard-layout="wilson" data-atmosphere="glow">
+<html lang="en" data-theme="default" data-case="lower" data-projector="off" data-motion="fun" data-board-style="soundcard" data-key-style="soundcard" data-keyboard-layout="wilson" data-atmosphere="glow" data-reveal-focus="on">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -9,8 +9,8 @@
   <!-- Atkinson Hyperlegible: distinct I/l/1, designed for low-vision readers -->
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/modes.css?v=20260223c">
-  <link rel="stylesheet" href="style/themes.css?v=20260223c">
-  <link rel="stylesheet" href="style/components.css?v=20260223e">
+  <link rel="stylesheet" href="style/themes.css?v=20260223d">
+  <link rel="stylesheet" href="style/components.css?v=20260223g">
 </head>
 <body>
 
@@ -68,7 +68,10 @@
   <!-- ── Settings overlay ─────────────────────────── -->
   <div id="settings-panel" class="settings-panel hidden">
     <div class="settings-header">
-      <span>Settings</span>
+      <div class="settings-title-wrap">
+        <span>Settings</span>
+        <span id="settings-build-badge" class="settings-build-badge" aria-live="polite"></span>
+      </div>
       <button id="settings-close" class="close-btn" aria-label="Close settings">✕</button>
     </div>
     <div class="settings-body">
@@ -117,6 +120,15 @@
               </label>
               <div class="setting-checkbox-help">Uses A–Z sound cards with quick chunks. Turn off for standard QWERTY keyboard + simple board.</div>
             </div>
+            <div class="setting-row setting-row-full quick-preset-row">
+              <div class="setting-row-heading">Teacher Presets</div>
+              <div class="quick-preset-actions" role="group" aria-label="Teacher presets">
+                <button class="quick-action-btn" id="preset-guided" data-teacher-preset="guided" type="button">Guided</button>
+                <button class="quick-action-btn" id="preset-independent" data-teacher-preset="independent" type="button">Independent</button>
+                <button class="quick-action-btn" id="preset-assessment" data-teacher-preset="assessment" type="button">Assessment</button>
+              </div>
+              <div class="setting-checkbox-help">One tap applies grouped classroom defaults for hinting, voice, and engagement settings.</div>
+            </div>
             <div class="setting-row"><label>Feedback Colors<select id="s-feedback"><option value="themed" selected>Themed (matches theme)</option><option value="classic">Classic (green/yellow/gray)</option></select></label></div>
             <div class="setting-row"><label>Motion<select id="s-motion"><option value="fun">Fun</option><option value="calm">Calm</option><option value="reduced">Reduced</option></select></label></div>
             <div class="setting-row"><label>Sound Tabs<select id="s-chunk-tabs"><option value="auto" selected>Auto (focus only)</option><option value="on">Always on</option><option value="off">Off</option></select></label></div>
@@ -144,6 +156,7 @@
         <details class="settings-group">
           <summary>Reveal and Assessment</summary>
           <div class="settings-group-grid settings-grid">
+            <div class="setting-row"><label>Reveal Focus Mode<select id="s-reveal-focus"><option value="on" selected>On (word + meaning first)</option><option value="off">Off (full detail layout)</option></select></label></div>
             <div class="setting-row setting-row-full">
               <label class="setting-checkbox-label">
                 <input id="s-meaning-fun-link" type="checkbox" checked>
@@ -300,7 +313,7 @@
   <script src="js/game.js?v=20260222c"></script>
   <script src="js/ui.js?v=20260223e"></script>
   <script src="js/theme-registry.js?v=20260223c"></script>
-  <script src="js/app.js?v=20260223e"></script>
+  <script src="js/app.js?v=20260223g"></script>
   <script src="js/theme-nav.js"></script>
 </body>
 </html>

@@ -348,6 +348,29 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   font-size:       0.88rem;
   color:           var(--text);
 }
+
+.settings-title-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-build-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 18px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--brand) 54%, var(--panel-border) 46%);
+  background: color-mix(in oklab, var(--brand) 16%, var(--panel-bg) 84%);
+  color: color-mix(in oklab, var(--text) 84%, var(--text-muted) 16%);
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
 .close-btn {
   background: transparent; border: none;
   color: var(--text-muted); cursor: pointer;
@@ -576,6 +599,14 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   .settings-grid {
     grid-template-columns: 1fr;
   }
+
+  .quick-preset-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quick-preset-actions .quick-action-btn:last-child {
+    grid-column: 1 / -1;
+  }
 }
 
 .setting-checkbox-label {
@@ -608,6 +639,20 @@ html[data-focus-search-open="true"] .theme-preview-strip {
 
 .quick-preset-row {
   gap: 8px;
+}
+
+.setting-row-heading {
+  font-size: 0.71rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.quick-preset-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
 }
 
 .quick-action-btn {
@@ -2065,6 +2110,14 @@ html[data-motion="reduced"] * {
   color: #dc2626;
 }
 
+.voice-practice-feedback.is-warn {
+  color: color-mix(in oklab, #d97706 86%, var(--text) 14%);
+}
+
+.voice-practice-feedback.is-good {
+  color: color-mix(in oklab, #16a34a 78%, var(--text) 22%);
+}
+
 .modal-meta-row {
   width: 100%;
   display: flex;
@@ -2177,6 +2230,24 @@ html[data-motion="reduced"] * {
   opacity: 0.55;
   cursor: not-allowed;
   background: color-mix(in oklab, var(--brand) 55%, #8b8b8b 45%);
+}
+
+html[data-reveal-focus="on"] .modal-meaning-highlight {
+  border-color: color-mix(in oklab, var(--brand) 64%, var(--panel-border) 36%);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--brand) 24%, transparent);
+}
+
+html[data-reveal-focus="on"] #modal-def-highlight {
+  font-size: 1.06rem;
+}
+
+html[data-reveal-focus="on"] #modal-more-details,
+html[data-reveal-focus="on"] .modal-practice-details {
+  border-color: color-mix(in oklab, var(--panel-border) 84%, transparent);
+}
+
+html[data-reveal-focus="on"] .modal-meta-row {
+  margin-top: -3px;
 }
 
 html[data-layout-mode="wide"] {
