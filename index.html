@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/modes.css?v=20260223c">
   <link rel="stylesheet" href="style/themes.css?v=20260223d">
-  <link rel="stylesheet" href="style/components.css?v=20260223k">
+  <link rel="stylesheet" href="style/components.css?v=20260223m">
 </head>
 <body>
 
@@ -32,11 +32,12 @@
 
   <!-- ── Focus bar ────────────────────────────────── -->
   <div class="focus-bar">
-    <span class="focus-label">Focus</span>
+    <span id="focus-current-label" class="focus-label" aria-live="polite">Focus: Classic</span>
     <div id="focus-inline-wrap" class="focus-inline-wrap">
-      <input id="focus-inline-search" class="focus-inline-search" type="search" aria-label="Focus finder" aria-controls="focus-inline-results" aria-expanded="false" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search focus: math, science, digraph, k-2...">
+      <input id="focus-inline-search" class="focus-inline-search" type="search" aria-label="Focus finder" aria-controls="focus-inline-results" aria-expanded="false" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search focus (math, science, digraph, k-2)">
       <div id="focus-inline-results" class="focus-inline-results hidden" role="listbox" aria-label="Focus finder results"></div>
     </div>
+    <button id="focus-hint-toggle" class="focus-hint-toggle" type="button" aria-pressed="true">Hint: On</button>
     <select id="setting-focus" class="focus-source" aria-hidden="true" tabindex="-1" hidden>
       <option value="all">— Classic (Wordle 5x6) —</option>
       <optgroup label="SoR Phonics">
@@ -79,20 +80,26 @@
         <button id="settings-tab-quick" class="settings-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="settings-quick" data-settings-tab="quick">Quick</button>
         <button id="settings-tab-advanced" class="settings-tab" type="button" role="tab" aria-selected="false" aria-controls="settings-advanced" data-settings-tab="advanced">Advanced</button>
       </div>
+      <div class="settings-top-actions" role="group" aria-label="Quick actions">
+        <button id="s-reset-look-cache" class="quick-action-btn quick-action-btn-warning" type="button">Reset Appearance + Cache</button>
+        <button id="settings-jump-theme" class="quick-action-btn" type="button">Theme Controls</button>
+        <button id="settings-jump-reveal" class="quick-action-btn" type="button">Reveal Controls</button>
+      </div>
 
       <section id="settings-quick" class="settings-section is-active" role="tabpanel" aria-labelledby="settings-tab-quick" data-settings-section="quick">
-        <details class="settings-group" open>
+        <details id="settings-group-core" class="settings-group" open>
           <summary>Core Play</summary>
           <div class="settings-group-grid">
             <div class="setting-row"><label>Grade Band<select id="s-grade"><option value="all">All grades</option><option value="K-2">K–2</option><option value="G3-5">Grades 3–5</option><option value="G6-8">Grades 6–8</option><option value="G9-12">Grades 9–12</option></select></label></div>
             <div class="setting-row"><label>Word Length<select id="s-length"><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="any">Any</option></select></label></div>
             <div class="setting-row"><label>Max Guesses<select id="s-guesses"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option></select></label></div>
             <div class="setting-row"><label>Hint Cues<select id="s-hint"><option value="off">Off</option><option value="on">On</option></select></label></div>
+            <div class="setting-row"><label>Play Style<select id="s-play-style"><option value="detective" selected>Detective (sentence clue only)</option><option value="listening">Listening (word + sentence)</option></select></label></div>
             <div id="focus-grade-note" class="setting-row setting-row-full setting-row-help">Classic uses Grade Band + Word Length. Subject Focus presets both domain and grade.</div>
           </div>
         </details>
 
-        <details class="settings-group">
+        <details id="settings-group-audio" class="settings-group">
           <summary>Audio and Voice</summary>
           <div class="settings-group-grid">
             <div class="setting-row"><label>Music<select id="s-music"><option value="off" selected>Off</option><option value="auto">Auto (match theme)</option><option value="chill">Chill</option><option value="lofi">Lo‑fi</option><option value="coffee">Coffeehouse</option><option value="fantasy">Fantasy</option><option value="scifi">Sci‑fi</option><option value="upbeat">Upbeat</option><option value="arcade">8‑bit Arcade</option><option value="sports">Sports Hype</option><option value="stealth">Space Mystery</option><option value="team">Team Game Hype</option></select></label></div>
@@ -110,7 +117,7 @@
           </div>
         </details>
 
-        <details class="settings-group">
+        <details id="settings-group-classroom" class="settings-group">
           <summary>Classroom UX</summary>
           <div class="settings-group-grid">
             <div class="setting-row setting-row-full quick-preset-row">
@@ -161,7 +168,7 @@
       </section>
 
       <section id="settings-advanced" class="settings-section" role="tabpanel" aria-labelledby="settings-tab-advanced" data-settings-section="advanced" hidden>
-        <details class="settings-group" open>
+        <details id="settings-group-theme" class="settings-group">
           <summary>Theme and Visual System</summary>
           <div id="settings-advanced-tools" class="settings-group-grid settings-grid">
             <div class="setting-row"><label>Theme (full list)<select id="s-theme"><option value="">Loading themes...</option></select></label></div>
@@ -172,13 +179,10 @@
             <div class="setting-row"><label>Projector Mode<select id="s-projector"><option value="off">Off</option><option value="on">On · high contrast</option></select></label></div>
             <div class="setting-row"><label>Letter Case<select id="s-case"><option value="lower">lowercase</option><option value="upper">UPPERCASE</option></select></label></div>
             <div class="setting-row"><label>Duplicate Alert<select id="s-dupe"><option value="on">On</option><option value="off">Off</option></select></label></div>
-            <div class="setting-row setting-row-full">
-              <button id="s-reset-look-cache" class="quick-action-btn quick-action-btn-warning" type="button">Reset Appearance + Cache</button>
-            </div>
           </div>
         </details>
 
-        <details class="settings-group">
+        <details id="settings-group-reveal" class="settings-group">
           <summary>Reveal and Assessment</summary>
           <div class="settings-group-grid settings-grid">
             <div class="setting-row"><label>Reveal Focus Mode<select id="s-reveal-focus"><option value="on" selected>On (word + meaning first)</option><option value="off">Off (full detail layout)</option></select></label></div>
@@ -228,22 +232,29 @@
         <div id="game-board"></div>
       </div>
 
-      <!-- Hear Word / Hear Sentence — visible during gameplay like old version -->
-      <div class="gameplay-audio">
-        <button class="audio-ghost-btn" id="g-hear-word">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-          Hear Word
+      <div class="play-support-row">
+        <!-- Hear Word / Hear Sentence — visible during gameplay like old version -->
+        <div class="gameplay-audio">
+          <button class="audio-ghost-btn" id="g-hear-word">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+            Hear Word
+          </button>
+          <button class="audio-ghost-btn" id="g-hear-sentence">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Hear Sentence
+          </button>
+        </div>
+        <div class="focus-hint-row" role="group" aria-label="Hint cues">
+          <div id="focus-hint" class="focus-hint hidden" aria-live="polite"></div>
+        </div>
+        <button id="keyboard-layout-toggle" class="support-mini-btn" type="button" aria-pressed="false" title="Switch keyboard layout">
+          Keyboard: QWERTY
         </button>
-        <button class="audio-ghost-btn" id="g-hear-sentence">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Hear Sentence
+        <button id="play-style-toggle" class="support-mini-btn" type="button" aria-pressed="true" title="Switch play style">
+          Mode: Detective
         </button>
       </div>
       <div id="midgame-boost" class="midgame-boost hidden" role="status" aria-live="polite"></div>
-      <div class="focus-hint-row" role="group" aria-label="Hint cues">
-        <div id="focus-hint" class="focus-hint hidden" aria-live="polite"></div>
-        <button id="focus-hint-toggle" class="focus-hint-toggle" type="button" aria-pressed="true">Hint: On</button>
-      </div>
     </div>
 
     <!-- Keyboard -->
@@ -371,7 +382,7 @@
   <script src="js/game.js?v=20260222c"></script>
   <script src="js/ui.js?v=20260223e"></script>
   <script src="js/theme-registry.js?v=20260223c"></script>
-  <script src="js/app.js?v=20260223k"></script>
+  <script src="js/app.js?v=20260223m"></script>
   <script src="js/theme-nav.js"></script>
 </body>
 </html>

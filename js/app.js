@@ -111,6 +111,7 @@
     guesses: '6',
     caseMode: 'lower',
     hint: 'on',
+    playStyle: 'detective',
     revealFocus: 'on',
     revealPacing: 'guided',
     revealAutoNext: 'off',
@@ -134,6 +135,21 @@
     chunkTabs: 'auto',
     atmosphere: 'minimal'
   });
+
+  function detectPreferredKeyboardLayout() {
+    const touchPoints = Number(navigator.maxTouchPoints || 0);
+    let hasCoarsePointer = false;
+    let hasFinePointer = false;
+    let canHover = false;
+    try { hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches; } catch {}
+    try { hasFinePointer = window.matchMedia('(pointer: fine)').matches; } catch {}
+    try { canHover = window.matchMedia('(hover: hover)').matches; } catch {}
+    const touchOnlyDevice = touchPoints > 0 && hasCoarsePointer && !hasFinePointer && !canHover;
+    return touchOnlyDevice ? 'wilson' : 'standard';
+  }
+
+  const preferredInitialKeyboardLayout = detectPreferredKeyboardLayout();
+
   function loadPrefs() {
     try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}'); } catch { return {}; }
   }
@@ -142,6 +158,7 @@
   }
   const prefs = loadPrefs();
   function setPref(k, v) { prefs[k] = v; savePrefs(prefs); }
+  let autoPhysicalKeyboardSwitchApplied = false;
 
   // One-time baseline migration so existing installs land on your intended defaults.
   if (localStorage.getItem(PREF_MIGRATION_KEY) !== 'done') {
@@ -153,14 +170,19 @@
     if (prefs.focus === undefined) prefs.focus = DEFAULT_PREFS.focus;
     if (prefs.grade === undefined) prefs.grade = DEFAULT_PREFS.grade;
     if (prefs.themeSave === undefined) prefs.themeSave = DEFAULT_PREFS.themeSave;
-    if (prefs.boardStyle === undefined) prefs.boardStyle = DEFAULT_PREFS.boardStyle;
-    if (prefs.keyStyle === undefined) prefs.keyStyle = DEFAULT_PREFS.keyStyle;
-    if (prefs.keyboardLayout === undefined) prefs.keyboardLayout = DEFAULT_PREFS.keyboardLayout;
+    if (prefs.keyboardLayout === undefined) prefs.keyboardLayout = preferredInitialKeyboardLayout;
+    if (prefs.boardStyle === undefined) {
+      prefs.boardStyle = prefs.keyboardLayout === 'wilson' ? 'soundcard' : DEFAULT_PREFS.boardStyle;
+    }
+    if (prefs.keyStyle === undefined) {
+      prefs.keyStyle = prefs.keyboardLayout === 'wilson' ? 'soundcard' : DEFAULT_PREFS.keyStyle;
+    }
     if (prefs.chunkTabs === undefined) prefs.chunkTabs = DEFAULT_PREFS.chunkTabs;
     if (prefs.atmosphere === undefined) prefs.atmosphere = DEFAULT_PREFS.atmosphere;
     if (prefs.meaningPlusFun === undefined) prefs.meaningPlusFun = DEFAULT_PREFS.meaningPlusFun;
     if (prefs.sorNotation === undefined) prefs.sorNotation = DEFAULT_PREFS.sorNotation;
     if (prefs.revealFocus === undefined) prefs.revealFocus = DEFAULT_PREFS.revealFocus;
+    if (prefs.playStyle === undefined) prefs.playStyle = DEFAULT_PREFS.playStyle;
     if (prefs.voicePractice === undefined) prefs.voicePractice = DEFAULT_PREFS.voicePractice;
     if (prefs.assessmentLock === undefined) prefs.assessmentLock = DEFAULT_PREFS.assessmentLock;
     if (prefs.boostPopups === undefined) prefs.boostPopups = DEFAULT_PREFS.boostPopups;
@@ -385,6 +407,7 @@
     's-chunk-tabs': 'chunkTabs',
     's-atmosphere': 'atmosphere',
     's-reveal-focus': 'revealFocus',
+    's-play-style': 'playStyle',
     's-reveal-pacing': 'revealPacing',
     's-reveal-auto-next': 'revealAutoNext',
     's-voice-task': 'voicePractice',
@@ -462,6 +485,7 @@
   applyProjector(prefs.projector || DEFAULT_PREFS.projector);
   applyMotion(prefs.motion || DEFAULT_PREFS.motion);
   applyHint(getHintMode());
+  applyPlayStyle(prefs.playStyle || DEFAULT_PREFS.playStyle, { persist: false });
   applyRevealFocusMode(prefs.revealFocus || DEFAULT_PREFS.revealFocus, { persist: false });
   applyFeedback(prefs.feedback || DEFAULT_PREFS.feedback);
   applyBoardStyle(prefs.boardStyle || DEFAULT_PREFS.boardStyle);
@@ -618,6 +642,32 @@
     }
   }
 
+  function normalizePlayStyle(mode) {
+    return String(mode || '').toLowerCase() === 'listening' ? 'listening' : 'detective';
+  }
+
+  function syncPlayStyleToggleUI(mode = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle)) {
+    const toggle = _el('play-style-toggle');
+    if (!toggle) return;
+    const listening = mode === 'listening';
+    toggle.textContent = listening ? 'Mode: Listening' : 'Mode: Detective';
+    toggle.setAttribute('aria-pressed', listening ? 'true' : 'false');
+    toggle.classList.toggle('is-listening', listening);
+    toggle.setAttribute('title', listening
+      ? 'Switch to detective mode'
+      : 'Switch to listening mode');
+  }
+
+  function applyPlayStyle(mode, options = {}) {
+    const normalized = normalizePlayStyle(mode);
+    document.documentElement.setAttribute('data-play-style', normalized);
+    const select = _el('s-play-style');
+    if (select && select.value !== normalized) select.value = normalized;
+    syncPlayStyleToggleUI(normalized);
+    if (options.persist !== false) setPref('playStyle', normalized);
+    return normalized;
+  }
+
   function applyFeedback(mode) {
     const normalized = mode === 'classic' ? 'classic' : 'themed';
     document.documentElement.setAttribute('data-feedback', normalized);
@@ -650,7 +700,21 @@
     document.documentElement.setAttribute('data-keyboard-layout', normalized);
     updateWilsonModeToggle();
     syncChunkTabsVisibility();
+    syncKeyboardLayoutToggle();
     return normalized;
+  }
+
+  function syncKeyboardLayoutToggle() {
+    const toggle = _el('keyboard-layout-toggle');
+    if (!toggle) return;
+    const layout = document.documentElement.getAttribute('data-keyboard-layout') || 'standard';
+    const isWilson = layout === 'wilson';
+    toggle.textContent = `Keyboard: ${isWilson ? 'Wilson' : 'QWERTY'}`;
+    toggle.setAttribute('aria-pressed', isWilson ? 'true' : 'false');
+    toggle.setAttribute('title', isWilson
+      ? 'Switch to QWERTY keyboard'
+      : 'Switch to Wilson sound-card keyboard');
+    toggle.classList.toggle('is-wilson', isWilson);
   }
 
   function applyChunkTabsMode(mode) {
@@ -882,6 +946,7 @@
     setPref('feedback', DEFAULT_PREFS.feedback);
     setPref('projector', DEFAULT_PREFS.projector);
     setPref('caseMode', DEFAULT_PREFS.caseMode);
+    setPref('playStyle', applyPlayStyle(DEFAULT_PREFS.playStyle));
     setPref('revealPacing', DEFAULT_PREFS.revealPacing);
     setPref('revealAutoNext', DEFAULT_PREFS.revealAutoNext);
 
@@ -890,6 +955,7 @@
     _el('s-feedback').value = DEFAULT_PREFS.feedback;
     _el('s-projector').value = DEFAULT_PREFS.projector;
     _el('s-case').value = DEFAULT_PREFS.caseMode;
+    _el('s-play-style').value = DEFAULT_PREFS.playStyle;
     _el('s-reveal-pacing').value = DEFAULT_PREFS.revealPacing;
     _el('s-reveal-auto-next').value = DEFAULT_PREFS.revealAutoNext;
 
@@ -984,6 +1050,20 @@
     }
   }
 
+  function jumpToSettingsGroup(groupId) {
+    const group = _el(groupId);
+    if (!group) return;
+    const parentSection = group.closest('[data-settings-section]');
+    const targetView = parentSection?.getAttribute('data-settings-section') || 'quick';
+    setSettingsView(targetView);
+    if (group instanceof HTMLDetailsElement) group.open = true;
+    if (typeof group.scrollIntoView === 'function') {
+      setTimeout(() => {
+        group.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      }, 40);
+    }
+  }
+
   function syncThemePreviewStripVisibility() {
     const strip = _el('theme-preview-strip');
     if (!strip) return;
@@ -1005,6 +1085,8 @@
       setSettingsView(tab.getAttribute('data-settings-tab'));
     });
   });
+  _el('settings-jump-theme')?.addEventListener('click', () => jumpToSettingsGroup('settings-group-theme'));
+  _el('settings-jump-reveal')?.addEventListener('click', () => jumpToSettingsGroup('settings-group-reveal'));
 
   document.querySelectorAll('[data-teacher-preset]').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -1113,6 +1195,25 @@
     }
   }
 
+  function maybeSwitchToQwertyForPhysicalKeyboard(event) {
+    if (autoPhysicalKeyboardSwitchApplied) return;
+    const activeLayout = document.documentElement.getAttribute('data-keyboard-layout') || 'standard';
+    if (activeLayout !== 'wilson') return;
+    // Only auto-switch if the current layout still matches the device-default decision.
+    if (String(prefs.keyboardLayout || '') !== preferredInitialKeyboardLayout) return;
+    if (preferredInitialKeyboardLayout !== 'wilson') return;
+    const key = String(event?.key || '');
+    if (!(key.length === 1 || key === 'Enter' || key === 'Backspace')) return;
+    const sourceCaps = event?.sourceCapabilities;
+    const likelyPhysicalKeyboard = sourceCaps ? sourceCaps.firesTouchEvents === false : true;
+    if (!likelyPhysicalKeyboard) return;
+    autoPhysicalKeyboardSwitchApplied = true;
+    applyWilsonMode(false);
+    refreshKeyboardLayoutPreview();
+    WQUI.showToast('Physical keyboard detected. Switched to QWERTY.');
+  }
+  window.addEventListener('keydown', maybeSwitchToQwertyForPhysicalKeyboard, { passive: true });
+
   _el('s-board-style')?.addEventListener('change', e => {
     const next = applyBoardStyle(e.target.value);
     setPref('boardStyle', next);
@@ -1138,6 +1239,27 @@
       ? 'Wilson sound-card mode is on.'
       : 'Switched to standard keyboard + simple board.');
   });
+  _el('keyboard-layout-toggle')?.addEventListener('click', () => {
+    if (isAssessmentRoundLocked()) {
+      showAssessmentLockNotice();
+      return;
+    }
+    const state = WQGame.getState?.();
+    const hasActiveProgress = Boolean(state?.word && !state?.gameOver && (state?.guesses?.length || 0) > 0);
+    const current = document.documentElement.getAttribute('data-keyboard-layout') || 'standard';
+    const enableWilson = current !== 'wilson';
+    applyWilsonMode(enableWilson);
+    if (hasActiveProgress) {
+      WQUI.showToast(enableWilson
+        ? 'Wilson mode saved. It applies next word.'
+        : 'QWERTY mode saved. It applies next word.');
+      return;
+    }
+    refreshKeyboardLayoutPreview();
+    WQUI.showToast(enableWilson
+      ? 'Keyboard switched to Wilson mode.'
+      : 'Keyboard switched to QWERTY.');
+  });
   _el('s-atmosphere')?.addEventListener('change', e => {
     setPref('atmosphere', applyAtmosphere(e.target.value));
   });
@@ -1160,6 +1282,12 @@
   _el('s-length')?.addEventListener('change',  e => setPref('length',   e.target.value));
   _el('s-guesses')?.addEventListener('change', e => setPref('guesses',  e.target.value));
   _el('s-hint')?.addEventListener('change',    e => { setHintMode(e.target.value); syncTeacherPresetButtons(); });
+  _el('s-play-style')?.addEventListener('change', e => {
+    const next = applyPlayStyle(e.target.value);
+    WQUI.showToast(next === 'listening'
+      ? 'Listening mode: word + sentence audio available.'
+      : 'Detective mode: sentence clue only during gameplay.');
+  });
   _el('s-reveal-focus')?.addEventListener('change', e => {
     const next = applyRevealFocusMode(e.target.value);
     WQUI.showToast(next === 'on'
@@ -1194,6 +1322,14 @@
     const next = getHintMode() === 'on' ? 'off' : 'on';
     setHintMode(next, { toast: true });
     syncTeacherPresetButtons();
+  });
+  _el('play-style-toggle')?.addEventListener('click', () => {
+    const current = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle);
+    const next = current === 'listening' ? 'detective' : 'listening';
+    applyPlayStyle(next);
+    WQUI.showToast(next === 'listening'
+      ? 'Listening mode enabled.'
+      : 'Detective mode enabled.');
   });
   _el('s-dupe')?.addEventListener('change',    e => setPref('dupe',     e.target.value));
   _el('s-confetti')?.addEventListener('change',e => {
@@ -1886,6 +2022,7 @@
       const rootStyle = getComputedStyle(document.documentElement);
       const mainEl = document.querySelector('main');
       const boardZoneEl = document.querySelector('.board-zone');
+      const supportRowEl = document.querySelector('.play-support-row');
       const boardPlateEl = document.querySelector('.board-plate');
       const keyboardEl = _el('keyboard');
       const gameplayAudioEl = document.querySelector('.gameplay-audio');
@@ -1907,7 +2044,8 @@
       const boardZoneGap = parsePx(getComputedStyle(boardZoneEl || document.body).gap, 10);
       const platePadY = parsePx(getComputedStyle(boardPlateEl || document.body).paddingTop, 14) * 2;
       const platePadX = parsePx(getComputedStyle(boardPlateEl || document.body).paddingLeft, 14) * 2;
-      const audioH = gameplayAudioEl?.offsetHeight || 36;
+      const supportH = supportRowEl?.offsetHeight || 0;
+      const audioH = supportH ? 0 : (gameplayAudioEl?.offsetHeight || 36);
       const headerH = headerEl?.offsetHeight || parsePx(rootStyle.getPropertyValue('--header-h'), 50);
       const focusH = focusEl?.offsetHeight || parsePx(rootStyle.getPropertyValue('--focus-h'), 44);
       const themeH = themeStripEl?.offsetHeight || 0;
@@ -1939,8 +2077,9 @@
         ? (chunkRows * chunkKeyH) + ((chunkRows - 1) * 5) + 8
         : 0;
       const hintH = hintRowEl
-        ? Math.max(0, (hintRowEl.offsetHeight || 0) - 8)
+        ? (supportH ? 0 : Math.max(0, (hintRowEl.offsetHeight || 0) - 8))
         : 0;
+      const supportReserveH = supportH ? Math.max(0, supportH - 2) : 0;
       const kbRows = 3;
       const keyboardSafetyPad = keyboardLayout === 'wilson'
         ? (layoutMode === 'compact' ? 34 : layoutMode === 'tight' ? 30 : 26)
@@ -1948,7 +2087,7 @@
       const kbH = kbRows * keyH + (kbRows - 1) * keyGap + chunkRowH + keyboardSafetyPad;
 
       const extraSafetyH = layoutMode === 'compact' ? 56 : layoutMode === 'tight' ? 44 : layoutMode === 'wide' ? 32 : 38;
-      const reservedH = headerH + focusH + themeH + mainPadTop + mainPadBottom + audioH + kbH + boardZoneGap + hintH + extraSafetyH;
+      const reservedH = headerH + focusH + themeH + mainPadTop + mainPadBottom + audioH + kbH + boardZoneGap + hintH + supportReserveH + extraSafetyH;
       const availableBoardH = Math.max(140, viewportH - reservedH);
       const byHeight = Math.floor((availableBoardH - platePadY - tileGap * (maxGuesses - 1) - 6) / maxGuesses);
 
@@ -2180,16 +2319,23 @@
   }
 
   function updateFocusSummaryLabel() {
-    const labelEl = _el('focus-inline-search');
+    const inputEl = _el('focus-inline-search');
+    const chipEl = _el('focus-current-label');
     const focusValue = _el('setting-focus')?.value || 'all';
-    if (!labelEl) return;
-    const currentLabel = getFocusLabel(focusValue).replace(/[—]/g, '').trim();
-    // Keep the field behaving like search: show current focus in placeholder, not as locked text.
-    labelEl.value = '';
-    labelEl.placeholder = currentLabel
-      ? `${currentLabel} · type to search (math, digraph, k-2)`
-      : 'Type to search focus (math, digraph, k-2)';
-    labelEl.setAttribute('title', currentLabel ? `Current focus: ${currentLabel}` : 'Focus finder');
+    const currentLabelRaw = getFocusLabel(focusValue).replace(/[—]/g, '').replace(/\s+/g, ' ').trim();
+    const currentLabel = currentLabelRaw || 'Classic (Wordle 5x6)';
+
+    if (chipEl) {
+      chipEl.textContent = `Focus: ${currentLabel}`;
+      chipEl.setAttribute('title', `Current focus: ${currentLabel}`);
+    }
+
+    if (!inputEl) return;
+    // Keep this as pure search input so intent is clear.
+    inputEl.value = '';
+    inputEl.placeholder = 'Search focus (math, digraph, k-2)';
+    inputEl.setAttribute('title', `Search focus. Current: ${currentLabel}`);
+    inputEl.setAttribute('aria-label', `Search focus. Current focus: ${currentLabel}`);
   }
 
   function escapeHtml(value) {
