@@ -408,14 +408,18 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   top:           max(6px, calc(env(safe-area-inset-top) + 6px));
   left:          50%;
   transform:     translateX(-50%);
-  width:         min(620px, calc(100vw - 12px));
-  background:    color-mix(in oklab, var(--modal-bg) 90%, #ffffff 10%);
-  border:        1px solid color-mix(in oklab, var(--panel-border) 58%, var(--brand) 42%);
+  width:         min(568px, calc(100vw - 14px));
+  background:    linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--panel-bg) 80%, var(--page-bg) 20%) 0%,
+    color-mix(in oklab, var(--modal-bg) 86%, var(--page-bg2) 14%) 100%
+  );
+  border:        1px solid color-mix(in oklab, var(--panel-border) 48%, var(--brand) 52%);
   border-radius: 22px;
   box-shadow:
     0 26px 52px rgba(8, 18, 34, 0.28),
     0 10px 24px rgba(6, 14, 26, 0.18);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   z-index:       40;
   animation:     slideDown 0.18s ease;
   max-height:    calc(100dvh - 12px - env(safe-area-inset-bottom));
@@ -432,8 +436,8 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   border-bottom:   1px solid color-mix(in oklab, var(--panel-border) 82%, transparent);
   background:      linear-gradient(
     180deg,
-    color-mix(in oklab, var(--panel-bg) 72%, #ffffff 28%),
-    color-mix(in oklab, var(--panel-bg) 88%, #ffffff 12%)
+    color-mix(in oklab, var(--panel-bg) 72%, var(--brand) 28%),
+    color-mix(in oklab, var(--panel-bg) 88%, var(--brand) 12%)
   );
   font-weight:     700;
   font-size:       0.88rem;
@@ -559,7 +563,11 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   flex-direction: column;
   gap: 7px;
   padding: 9px;
-  background: color-mix(in oklab, var(--panel-bg) 82%, #ffffff 18%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--panel-bg) 88%, var(--page-bg) 12%),
+    color-mix(in oklab, var(--modal-bg) 90%, var(--page-bg2) 10%)
+  );
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -586,14 +594,14 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   font-size: 0.67rem;
   border-radius: 10px;
   border-width: 1px;
-  background: color-mix(in oklab, var(--panel-bg) 94%, #ffffff 6%);
+  background: color-mix(in oklab, var(--panel-bg) 86%, var(--brand) 14%);
   box-shadow: none;
 }
 
 .settings-tab {
   border: 1px solid color-mix(in oklab, var(--panel-border) 78%, transparent);
   border-radius: 11px;
-  background: color-mix(in oklab, var(--panel-bg) 94%, #ffffff 6%);
+  background: color-mix(in oklab, var(--panel-bg) 84%, var(--brand) 16%);
   color: var(--text-muted);
   font-family: var(--font);
   font-size: 0.78rem;
@@ -611,7 +619,7 @@ html[data-focus-search-open="true"] .theme-preview-strip {
 
 .settings-tab.is-active,
 .settings-tab[aria-selected="true"] {
-  background: color-mix(in oklab, var(--brand) 15%, var(--panel-bg) 85%);
+  background: color-mix(in oklab, var(--brand) 28%, var(--panel-bg) 72%);
   color: var(--text);
   border-color: color-mix(in oklab, var(--brand) 52%, var(--panel-border) 48%);
 }
@@ -627,7 +635,7 @@ html[data-focus-search-open="true"] .theme-preview-strip {
 .settings-group {
   border: 1px solid color-mix(in oklab, var(--panel-border) 64%, transparent);
   border-radius: 12px;
-  background: color-mix(in oklab, var(--modal-bg) 96%, #ffffff 4%);
+  background: color-mix(in oklab, var(--modal-bg) 90%, var(--panel-bg) 10%);
   box-shadow: none;
   overflow: hidden;
 }
@@ -644,7 +652,7 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   font-weight: 800;
   color: var(--text);
   border-bottom: 1px solid color-mix(in oklab, var(--panel-border) 66%, transparent);
-  background: color-mix(in oklab, var(--panel-bg) 90%, #ffffff 10%);
+  background: color-mix(in oklab, var(--panel-bg) 76%, var(--brand) 24%);
 }
 
 .settings-group > summary::-webkit-details-marker {
@@ -674,7 +682,7 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   font-size: 0.74rem;
   font-weight: 700;
   color: var(--text-muted);
-  background: color-mix(in oklab, var(--panel-bg) 86%, #ffffff 14%);
+  background: color-mix(in oklab, var(--panel-bg) 82%, var(--brand) 18%);
   border: 1px solid color-mix(in oklab, var(--panel-border) 72%, transparent);
   border-radius: 14px;
 }
@@ -688,11 +696,11 @@ html[data-focus-search-open="true"] .theme-preview-strip {
 }
 
 .setting-row {
-  min-height: 54px;
+  min-height: 50px;
   padding: 7px 8px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 62%, transparent);
   border-radius: 10px;
-  background: color-mix(in oklab, var(--modal-bg) 96%, #ffffff 4%);
+  background: color-mix(in oklab, var(--modal-bg) 88%, var(--panel-bg) 12%);
 }
 
 .setting-row-full {
@@ -709,7 +717,7 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   padding: 6px 9px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 68%, transparent);
   border-radius: 9px;
-  background: color-mix(in oklab, var(--panel-bg) 92%, #ffffff 8%);
+  background: color-mix(in oklab, var(--panel-bg) 78%, var(--page-bg) 22%);
   color: var(--text);
   font-size: 0.78rem;
   font-weight: 700;
@@ -717,7 +725,7 @@ html[data-focus-search-open="true"] .theme-preview-strip {
 
 .setting-row-help {
   grid-column: 1 / -1;
-  background: color-mix(in oklab, var(--panel-bg) 88%, #ffffff 12%);
+  background: color-mix(in oklab, var(--panel-bg) 80%, var(--brand) 20%);
   font-size: 0.74rem;
 }
 
@@ -1988,6 +1996,60 @@ html[data-motion="reduced"] * {
   border:         1px solid rgba(255,255,255,0.1);
 }
 #toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+#toast.toast-informant {
+  max-width: min(92vw, 660px);
+  padding: 12px 18px;
+  border-radius: 20px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklab, var(--brand) 34%, #0d1a32 66%) 0%,
+    color-mix(in oklab, var(--accent) 24%, #0a1327 76%) 100%
+  );
+  border-color: color-mix(in oklab, var(--accent) 48%, rgba(255,255,255,0.42) 52%);
+  color: color-mix(in oklab, #ffffff 94%, var(--accent) 6%);
+  box-shadow:
+    0 14px 34px rgba(6, 16, 34, 0.38),
+    inset 0 1px 0 rgba(255,255,255,0.24);
+  font-size: 0.95rem;
+  font-weight: 760;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+.hint-clue-card {
+  position: fixed;
+  top: calc(var(--header-h) + var(--focus-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  max-width: min(92vw, 660px);
+  padding: 12px 18px;
+  border-radius: 20px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklab, var(--brand) 34%, #0d1a32 66%) 0%,
+    color-mix(in oklab, var(--accent) 24%, #0a1327 76%) 100%
+  );
+  border: 1px solid color-mix(in oklab, var(--accent) 48%, rgba(255,255,255,0.42) 52%);
+  color: color-mix(in oklab, #ffffff 94%, var(--accent) 6%);
+  box-shadow:
+    0 14px 34px rgba(6, 16, 34, 0.38),
+    inset 0 1px 0 rgba(255,255,255,0.24);
+  font-size: 0.95rem;
+  font-weight: 760;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-align: center;
+  pointer-events: none;
+  z-index: 204;
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.hint-clue-card.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 
 /* Duplicate toast */
 #dupe-toast {

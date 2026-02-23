@@ -677,7 +677,30 @@
     return normalized;
   }
 
+  function hideInformantHintCard() {
+    const card = _el('hint-clue-card');
+    if (!card) return;
+    card.classList.remove('visible');
+    card.classList.add('hidden');
+  }
+
+  function showInformantHintCard(message) {
+    const card = _el('hint-clue-card');
+    if (!card) return;
+    card.textContent = String(message || '');
+    card.classList.remove('hidden');
+    requestAnimationFrame(() => {
+      card.classList.add('visible');
+    });
+  }
+
   function showInformantHintToast() {
+    const card = _el('hint-clue-card');
+    if (card && !card.classList.contains('hidden')) {
+      hideInformantHintCard();
+      return;
+    }
+
     const state = WQGame.getState?.() || {};
     const entry = state?.entry || null;
     const focusValue = _el('setting-focus')?.value || prefs.focus || 'all';
@@ -685,51 +708,58 @@
     const phonicsTag = String(entry?.phonics || '').toLowerCase();
     const wordLength = Math.max(0, Number(state?.wordLength || String(entry?.word || '').trim().length || 0));
     const clues = [];
+    const leadIns = [
+      'Psst, Detective!',
+      'Top-secret clue!',
+      'Agent update!',
+      'Whisper from your informant!'
+    ];
 
     if (!state?.word) {
-      WQUI.showToast('Informant says: start a new word and I will drop a clue.', 3600);
+      showInformantHintCard('Psst, Detective! Tap New Word to open a case, then I will share an inside clue.');
       return;
     }
 
     if (focusValue === 'vowel_team' || /vowel[\s_-]*team/.test(phonicsTag)) {
-      clues.push('Your word has a vowel team in it, like "ea" or "ou".');
+      clues.push('This case has a vowel team. Look for buddy vowels like "ea" in team or "ou" in cloud.');
     }
     if (focusValue === 'digraph' || /digraph/.test(phonicsTag)) {
-      clues.push('A 2-letter sound is hiding in this word, like "sh" or "th".');
+      clues.push('A digraph is hiding. Two letters share one sound, like "sh" in ship or "th" in thumb.');
     }
     if (focusValue === 'trigraph' || /trigraph/.test(phonicsTag)) {
-      clues.push('Look for a 3-letter sound chunk, like "igh" or "tch".');
+      clues.push('Watch for a 3-letter sound chunk, like "igh" in light or "tch" in match.');
     }
     if (focusValue === 'cvce' || /silent[\s-]*e|magic[\s-]*e|cvce/.test(phonicsTag)) {
-      clues.push('A silent-e pattern may be part of this case.');
+      clues.push('Silent e may be on the case. Think "cap" vs "cape" or "kit" vs "kite".');
     }
     if (focusValue === 'r_controlled' || /r[\s_-]*controlled/.test(phonicsTag)) {
-      clues.push('An r-controlled vowel may steer the sound this round.');
+      clues.push('Listen for an r-controlled vowel, like "ar" in car or "or" in storm.');
     }
     if (focusValue === 'diphthong' || /diphthong/.test(phonicsTag)) {
-      clues.push('Listen for a glide sound, like "oi" or "ou".');
+      clues.push('A glide sound may appear, like "oi" in coin or "ou" in loud.');
     }
     if (focusValue === 'prefix' || /prefix/.test(phonicsTag)) {
-      clues.push('The first chunk may be a prefix. Check the beginning.');
+      clues.push('The beginning might hold a prefix, like "un-" in unhappy or "re-" in retell.');
     }
     if (focusValue === 'suffix' || /suffix/.test(phonicsTag)) {
-      clues.push('The ending may hold the key. Check for a suffix.');
+      clues.push('The ending may hold a suffix, like "-ed" in jumped or "-ing" in running.');
     }
     if (wordLength >= 7) {
-      clues.push(`This is a longer suspect (${wordLength} letters). Chunk it before you type.`);
+      clues.push(`Long-word alert: ${wordLength} letters. Split it into chunks before you type.`);
     }
     if (preset.kind === 'subject') {
-      clues.push(`This clue is from ${preset.subject.toUpperCase()} vocabulary at ${preset.gradeBand}.`);
+      clues.push(`This clue is from ${preset.subject.toUpperCase()} words for ${formatGradeBandLabel(preset.gradeBand)}. Think classroom vocabulary.`);
     }
     if (!clues.length && preset.kind === 'phonics') {
-      clues.push('Your focus is a sound pattern. Use the sentence clue and test that pattern first.');
+      clues.push('Your mission is a sound pattern. Use the sentence clue, then test that pattern first.');
     }
     if (!clues.length) {
-      clues.push('Use the sentence clue like a detective. Meaning narrows your suspects fast.');
+      clues.push('Use the sentence clue like a detective. Meaning helps you eliminate wrong suspects quickly.');
     }
 
     const selectedClue = pickRandom(clues) || clues[0];
-    WQUI.showToast(`Informant clue: ${selectedClue}`, 4800);
+    const lead = pickRandom(leadIns) || leadIns[0];
+    showInformantHintCard(`${lead} ${selectedClue}`);
   }
 
   function applyFeedback(mode) {
@@ -1396,9 +1426,19 @@
   document.addEventListener('pointerdown', e => {
     const panel = _el('settings-panel');
     const focusWrap = _el('focus-inline-wrap');
+    const hintToggleBtn = _el('focus-hint-toggle');
+    const hintCard = _el('hint-clue-card');
     if (focusWrap && !focusWrap.contains(e.target)) {
       closeFocusSearchList();
       updateFocusSummaryLabel();
+    }
+    if (
+      hintCard &&
+      !hintCard.classList.contains('hidden') &&
+      e.target !== hintToggleBtn &&
+      !hintToggleBtn?.contains(e.target)
+    ) {
+      hideInformantHintCard();
     }
     if (!panel?.classList.contains('hidden') &&
         !panel.contains(e.target) &&
@@ -1408,7 +1448,7 @@
       syncHeaderControlsVisibility();
     }
     if (_dupeToastEl && !_dupeToastEl.contains(e.target)) removeDupeToast();
-    if (_el('toast')?.classList.contains('visible')) _el('toast').classList.remove('visible');
+    if (_el('toast')?.classList.contains('visible')) _el('toast').classList.remove('visible', 'toast-informant');
     const boost = _el('midgame-boost');
     if (
       boost &&
@@ -3664,6 +3704,7 @@
   }
 
   function newGame() {
+    hideInformantHintCard();
     if (firstRunSetupPending) {
       openFirstRunSetupModal();
       WQUI.showToast('Choose a startup preset first.');
@@ -3786,6 +3827,9 @@
   }
 
   function handleKey(key) {
+    if (_el('hint-clue-card') && !_el('hint-clue-card')?.classList.contains('hidden')) {
+      hideInformantHintCard();
+    }
     if (firstRunSetupPending) return;
     const s = WQGame.getState();
     if (s.gameOver) return;
