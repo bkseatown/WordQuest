@@ -73,6 +73,8 @@
   const PREF_KEY = 'wq_v2_prefs';
   const PREF_MIGRATION_KEY = 'wq_v2_pref_defaults_20260222';
   const PREF_MUSIC_AUTO_MIGRATION_KEY = 'wq_v2_pref_music_auto_20260222';
+  const FIRST_RUN_SETUP_KEY = 'wq_v2_first_run_setup_v1';
+  const SESSION_SUMMARY_KEY = 'wq_v2_teacher_session_summary_v1';
   const ALLOWED_MUSIC_MODES = new Set([
     'auto',
     'chill',
@@ -110,6 +112,8 @@
     caseMode: 'lower',
     hint: 'on',
     revealFocus: 'on',
+    revealPacing: 'guided',
+    revealAutoNext: 'off',
     dupe: 'on',
     confetti: 'on',
     projector: 'off',
@@ -184,6 +188,14 @@
   }
   if (prefs.revealFocus === undefined) {
     prefs.revealFocus = DEFAULT_PREFS.revealFocus;
+    savePrefs(prefs);
+  }
+  if (prefs.revealPacing === undefined) {
+    prefs.revealPacing = DEFAULT_PREFS.revealPacing;
+    savePrefs(prefs);
+  }
+  if (prefs.revealAutoNext === undefined) {
+    prefs.revealAutoNext = DEFAULT_PREFS.revealAutoNext;
     savePrefs(prefs);
   }
   if (prefs.voicePractice === undefined) {
@@ -312,6 +324,23 @@
       : DEFAULT_PREFS.voice;
   }
 
+  function normalizeRevealPacing(mode) {
+    const normalized = String(mode || '').trim().toLowerCase();
+    return normalized === 'quick' || normalized === 'slow'
+      ? normalized
+      : DEFAULT_PREFS.revealPacing;
+  }
+
+  function normalizeRevealAutoNext(mode) {
+    const normalized = String(mode || '').trim().toLowerCase();
+    if (normalized === 'off') return 'off';
+    const seconds = Number.parseInt(normalized, 10);
+    if (!Number.isFinite(seconds) || seconds <= 0) return DEFAULT_PREFS.revealAutoNext;
+    if (seconds <= 3) return '3';
+    if (seconds <= 5) return '5';
+    return '8';
+  }
+
   function resolveAutoMusicMode(themeId) {
     const normalizedTheme = normalizeTheme(themeId, getThemeFallback());
     const directMode = AUTO_MUSIC_BY_THEME[normalizedTheme];
@@ -356,6 +385,8 @@
     's-chunk-tabs': 'chunkTabs',
     's-atmosphere': 'atmosphere',
     's-reveal-focus': 'revealFocus',
+    's-reveal-pacing': 'revealPacing',
+    's-reveal-auto-next': 'revealAutoNext',
     's-voice-task': 'voicePractice',
     's-boost-popups': 'boostPopups',
     's-grade': 'grade', 's-length': 'length',
@@ -397,6 +428,18 @@
     const selectedVoice = normalizeVoiceMode(prefs.voice || DEFAULT_PREFS.voice);
     voiceSelect.value = selectedVoice;
     if (prefs.voice !== selectedVoice) setPref('voice', selectedVoice);
+  }
+  const revealPacingSelect = _el('s-reveal-pacing');
+  if (revealPacingSelect) {
+    const selectedPacing = normalizeRevealPacing(prefs.revealPacing || DEFAULT_PREFS.revealPacing);
+    revealPacingSelect.value = selectedPacing;
+    if (prefs.revealPacing !== selectedPacing) setPref('revealPacing', selectedPacing);
+  }
+  const revealAutoNextSelect = _el('s-reveal-auto-next');
+  if (revealAutoNextSelect) {
+    const selectedAutoNext = normalizeRevealAutoNext(prefs.revealAutoNext || DEFAULT_PREFS.revealAutoNext);
+    revealAutoNextSelect.value = selectedAutoNext;
+    if (prefs.revealAutoNext !== selectedAutoNext) setPref('revealAutoNext', selectedAutoNext);
   }
   syncBuildBadge();
 
@@ -467,6 +510,16 @@
   function getRevealFocusMode() {
     const mode = String(_el('s-reveal-focus')?.value || prefs.revealFocus || DEFAULT_PREFS.revealFocus).toLowerCase();
     return mode === 'off' ? 'off' : 'on';
+  }
+
+  function getRevealPacingMode() {
+    return normalizeRevealPacing(_el('s-reveal-pacing')?.value || prefs.revealPacing || DEFAULT_PREFS.revealPacing);
+  }
+
+  function getRevealAutoNextSeconds() {
+    const mode = normalizeRevealAutoNext(_el('s-reveal-auto-next')?.value || prefs.revealAutoNext || DEFAULT_PREFS.revealAutoNext);
+    if (mode === 'off') return 0;
+    return Number.parseInt(mode, 10) || 0;
   }
 
   function syncRevealFocusModalSections() {
@@ -766,6 +819,125 @@
     WQUI.showToast(`Preset applied: ${mode}.`);
   }
 
+  function markFirstRunSetupDone() {
+    try { localStorage.setItem(FIRST_RUN_SETUP_KEY, 'done'); } catch {}
+  }
+
+  function hasCompletedFirstRunSetup() {
+    try { return localStorage.getItem(FIRST_RUN_SETUP_KEY) === 'done'; } catch { return false; }
+  }
+
+  let firstRunSetupPending = !hasCompletedFirstRunSetup();
+
+  function closeFirstRunSetupModal() {
+    _el('first-run-setup-modal')?.classList.add('hidden');
+  }
+
+  function openFirstRunSetupModal() {
+    const modal = _el('first-run-setup-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    _el('settings-panel')?.classList.add('hidden');
+    syncHeaderControlsVisibility();
+  }
+
+  function bindFirstRunSetupModal() {
+    if (document.body.dataset.wqFirstRunSetupBound === '1') return;
+    document.querySelectorAll('[data-first-run-preset]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-first-run-preset') || '';
+        if (!mode || !TEACHER_PRESETS[mode]) return;
+        applyTeacherPreset(mode);
+        markFirstRunSetupDone();
+        firstRunSetupPending = false;
+        closeFirstRunSetupModal();
+        newGame();
+      });
+    });
+    document.body.dataset.wqFirstRunSetupBound = '1';
+  }
+
+  async function resetAppearanceAndCache() {
+    if (isAssessmentRoundLocked()) {
+      showAssessmentLockNotice('Finish this round first, then reset appearance.');
+      return;
+    }
+
+    cancelRevealNarration();
+    stopVoiceCaptureNow();
+
+    const fallbackTheme = getThemeFallback();
+    const normalizedTheme = applyTheme(fallbackTheme);
+    delete prefs.theme;
+    setPref('themeSave', DEFAULT_PREFS.themeSave);
+    setPref('boardStyle', applyBoardStyle(DEFAULT_PREFS.boardStyle));
+    setPref('keyStyle', applyKeyStyle(DEFAULT_PREFS.keyStyle));
+    setPref('keyboardLayout', applyKeyboardLayout(DEFAULT_PREFS.keyboardLayout));
+    setPref('chunkTabs', applyChunkTabsMode(DEFAULT_PREFS.chunkTabs));
+    syncChunkTabsVisibility();
+    setPref('atmosphere', applyAtmosphere(DEFAULT_PREFS.atmosphere));
+    setPref('motion', DEFAULT_PREFS.motion);
+    setPref('feedback', DEFAULT_PREFS.feedback);
+    setPref('projector', DEFAULT_PREFS.projector);
+    setPref('caseMode', DEFAULT_PREFS.caseMode);
+    setPref('revealPacing', DEFAULT_PREFS.revealPacing);
+    setPref('revealAutoNext', DEFAULT_PREFS.revealAutoNext);
+
+    _el('s-theme-save').value = DEFAULT_PREFS.themeSave;
+    _el('s-motion').value = DEFAULT_PREFS.motion;
+    _el('s-feedback').value = DEFAULT_PREFS.feedback;
+    _el('s-projector').value = DEFAULT_PREFS.projector;
+    _el('s-case').value = DEFAULT_PREFS.caseMode;
+    _el('s-reveal-pacing').value = DEFAULT_PREFS.revealPacing;
+    _el('s-reveal-auto-next').value = DEFAULT_PREFS.revealAutoNext;
+
+    applyProjector(DEFAULT_PREFS.projector);
+    applyMotion(DEFAULT_PREFS.motion);
+    applyFeedback(DEFAULT_PREFS.feedback);
+    WQUI.setCaseMode(DEFAULT_PREFS.caseMode);
+    updateWilsonModeToggle();
+    syncTeacherPresetButtons();
+    syncHeaderControlsVisibility();
+
+    try { sessionStorage.removeItem('wq_sw_controller_reloaded'); } catch {}
+
+    let clearedCaches = 0;
+    if ('caches' in window) {
+      try {
+        const names = await caches.keys();
+        const targets = names.filter((name) => name.startsWith('wq-'));
+        await Promise.all(targets.map((name) => caches.delete(name)));
+        clearedCaches = targets.length;
+      } catch {}
+    }
+
+    if ('serviceWorker' in navigator) {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(async (registration) => {
+          try {
+            registration.waiting?.postMessage({ type: 'WQ_SKIP_WAITING' });
+            await registration.update();
+          } catch {}
+        }));
+      } catch {}
+    }
+
+    WQUI.showToast(clearedCaches
+      ? `Appearance reset. Cleared ${clearedCaches} cache bucket(s). Refreshing...`
+      : 'Appearance reset. Refreshing...');
+
+    const resetUrl = `${location.pathname}?cb=appearance-reset-${Date.now()}`;
+    setTimeout(() => { location.replace(resetUrl); }, 460);
+
+    if (shouldPersistTheme()) {
+      setPref('theme', normalizedTheme);
+    } else if (prefs.theme !== undefined) {
+      delete prefs.theme;
+      savePrefs(prefs);
+    }
+  }
+
   function populateVoiceSelector() {
     // Voice selection is handled by WQAudio internals
     // This can be expanded if you want a dropdown UI later
@@ -830,8 +1002,13 @@
   syncHeaderControlsVisibility();
   syncTeacherPresetButtons();
   syncAssessmentLockRuntime({ closeFocus: false });
+  bindFirstRunSetupModal();
 
   _el('settings-btn')?.addEventListener('click', () => {
+    if (firstRunSetupPending) {
+      openFirstRunSetupModal();
+      return;
+    }
     if (isAssessmentRoundLocked()) {
       showAssessmentLockNotice();
       return;
@@ -976,6 +1153,29 @@
       : 'Reveal focus is off: full detail layout.');
     syncTeacherPresetButtons();
   });
+  _el('s-reveal-pacing')?.addEventListener('change', e => {
+    const next = normalizeRevealPacing(e.target.value);
+    e.target.value = next;
+    setPref('revealPacing', next);
+    WQUI.showToast(
+      next === 'quick'
+        ? 'Reveal pacing: quick.'
+        : next === 'slow'
+          ? 'Reveal pacing: slow.'
+          : 'Reveal pacing: guided.'
+    );
+  });
+  _el('s-reveal-auto-next')?.addEventListener('change', e => {
+    const next = normalizeRevealAutoNext(e.target.value);
+    e.target.value = next;
+    setPref('revealAutoNext', next);
+    if (next === 'off') {
+      clearRevealAutoAdvanceTimer();
+      WQUI.showToast('Auto next word is off.');
+      return;
+    }
+    WQUI.showToast(`Auto next word: ${next} seconds.`);
+  });
   _el('focus-hint-toggle')?.addEventListener('click', () => {
     const next = getHintMode() === 'on' ? 'off' : 'on';
     setHintMode(next, { toast: true });
@@ -1044,6 +1244,9 @@
     if (normalized === 'off') hideMidgameBoost();
     syncTeacherPresetButtons();
     WQUI.showToast(normalized === 'off' ? 'Engagement popups are off.' : 'Engagement popups are on.');
+  });
+  _el('s-reset-look-cache')?.addEventListener('click', () => {
+    void resetAppearanceAndCache();
   });
   _el('s-music')?.addEventListener('change', e => {
     const selected = normalizeMusicMode(e.target.value);
@@ -1484,6 +1687,7 @@
       setVoicePracticeFeedback('Recording is not available on this device.', true);
       return;
     }
+    recordVoiceAttempt();
     try {
       clearVoiceClip();
       voiceTakeComplete = false;
@@ -1619,6 +1823,7 @@
     bindVoicePracticeControls();
     const originalShowModal = WQUI.showModal.bind(WQUI);
     WQUI.showModal = function patchedShowModal(state) {
+      clearRevealAutoAdvanceTimer();
       originalShowModal(state);
       voiceTakeComplete = false;
       stopVoiceCaptureNow();
@@ -1635,7 +1840,10 @@
       if (details) details.open = getRevealFocusMode() === 'off';
       updateVoicePracticePanel(state);
       syncRevealFocusModalSections();
-      void runRevealNarration(state);
+      void runRevealNarration(state).finally(() => {
+        if (_el('modal-overlay')?.classList.contains('hidden')) return;
+        scheduleRevealAutoAdvance();
+      });
       return state;
     };
     WQUI.__revealPatchApplied = true;
@@ -2697,6 +2905,63 @@
     requestAnimationFrame(() => boost.classList.add('is-visible'));
   }
 
+  function loadSessionSummaryState() {
+    const fallback = {
+      rounds: 0,
+      wins: 0,
+      hintRounds: 0,
+      voiceAttempts: 0
+    };
+    try {
+      const parsed = JSON.parse(sessionStorage.getItem(SESSION_SUMMARY_KEY) || 'null');
+      if (!parsed || typeof parsed !== 'object') return fallback;
+      return {
+        rounds: Math.max(0, Math.floor(Number(parsed.rounds) || 0)),
+        wins: Math.max(0, Math.floor(Number(parsed.wins) || 0)),
+        hintRounds: Math.max(0, Math.floor(Number(parsed.hintRounds) || 0)),
+        voiceAttempts: Math.max(0, Math.floor(Number(parsed.voiceAttempts) || 0))
+      };
+    } catch {
+      return fallback;
+    }
+  }
+
+  let sessionSummary = loadSessionSummaryState();
+
+  function saveSessionSummaryState() {
+    try { sessionStorage.setItem(SESSION_SUMMARY_KEY, JSON.stringify(sessionSummary)); } catch {}
+  }
+
+  function renderSessionSummary() {
+    const roundsEl = _el('session-rounds');
+    const winRateEl = _el('session-win-rate');
+    const hintRoundsEl = _el('session-hint-rounds');
+    const voiceAttemptsEl = _el('session-voice-attempts');
+    if (roundsEl) roundsEl.textContent = `Rounds: ${sessionSummary.rounds}`;
+    if (winRateEl) {
+      const winRate = sessionSummary.rounds
+        ? `${Math.round((sessionSummary.wins / sessionSummary.rounds) * 100)}%`
+        : '--';
+      winRateEl.textContent = `Win Rate: ${winRate}`;
+    }
+    if (hintRoundsEl) hintRoundsEl.textContent = `Hint Rounds: ${sessionSummary.hintRounds}`;
+    if (voiceAttemptsEl) voiceAttemptsEl.textContent = `Voice Attempts: ${sessionSummary.voiceAttempts}`;
+  }
+
+  function recordSessionRound(result) {
+    sessionSummary.rounds += 1;
+    if (result?.won) sessionSummary.wins += 1;
+    if (getHintMode() === 'on') sessionSummary.hintRounds += 1;
+    saveSessionSummaryState();
+    renderSessionSummary();
+  }
+
+  function recordVoiceAttempt() {
+    sessionSummary.voiceAttempts += 1;
+    saveSessionSummaryState();
+    renderSessionSummary();
+  }
+
   const QUEST_LOOP_KEY = 'wq_v2_quest_loop_v1';
   const QUEST_TIERS = Object.freeze([
     Object.freeze({ id: 'rookie',  label: 'Rookie',  minXp: 0,   reward: 'Bronze chest unlocked' }),
@@ -2827,6 +3092,7 @@
 
   function initQuestLoop() {
     renderQuestLoop(loadQuestLoopState());
+    renderSessionSummary();
   }
 
   function awardQuestProgress(result) {
@@ -2855,6 +3121,7 @@
     state.xp += xpEarned;
     state.rounds += 1;
     if (result?.won) state.wins += 1;
+    recordSessionRound(result);
 
     const afterTier = resolveQuestTier(state.xp);
     const tierUp = afterTier.id !== beforeTier.id;
@@ -2874,6 +3141,11 @@
   }
 
   function newGame() {
+    if (firstRunSetupPending) {
+      openFirstRunSetupModal();
+      WQUI.showToast('Choose a startup preset first.');
+      return;
+    }
     if (
       getVoicePracticeMode() === 'required' &&
       !(_el('modal-overlay')?.classList.contains('hidden')) &&
@@ -2882,6 +3154,7 @@
       WQUI.showToast('Record your voice before starting the next word.');
       return;
     }
+    clearRevealAutoAdvanceTimer();
     cancelRevealNarration();
     stopVoiceCaptureNow();
     if (voicePreviewAudio) {
@@ -2975,6 +3248,7 @@
   }
 
   function handleKey(key) {
+    if (firstRunSetupPending) return;
     const s = WQGame.getState();
     if (s.gameOver) return;
 
@@ -3121,11 +3395,54 @@
       Object.freeze({ lead: 'Good practice round.', coach: 'Try classic focus for one quick confidence win.' })
     ])
   });
+  const REVEAL_PACING_PRESETS = Object.freeze({
+    guided: Object.freeze({ introDelay: 260, betweenDelay: 140, postMeaningDelay: 200 }),
+    quick: Object.freeze({ introDelay: 140, betweenDelay: 70, postMeaningDelay: 120 }),
+    slow: Object.freeze({ introDelay: 420, betweenDelay: 220, postMeaningDelay: 320 })
+  });
+  let revealAutoAdvanceTimer = 0;
 
   function pickRandom(items) {
     if (!Array.isArray(items) || !items.length) return '';
     const index = Math.floor(Math.random() * items.length);
     return items[index];
+  }
+
+  function clearRevealAutoAdvanceTimer() {
+    if (!revealAutoAdvanceTimer) return;
+    clearTimeout(revealAutoAdvanceTimer);
+    revealAutoAdvanceTimer = 0;
+  }
+
+  function waitMs(ms) {
+    const delay = Math.max(0, Number(ms) || 0);
+    return new Promise((resolve) => setTimeout(resolve, delay));
+  }
+
+  function getRevealPacingPreset() {
+    const mode = getRevealPacingMode();
+    return REVEAL_PACING_PRESETS[mode] || REVEAL_PACING_PRESETS.guided;
+  }
+
+  function scheduleRevealAutoAdvance() {
+    clearRevealAutoAdvanceTimer();
+    const seconds = getRevealAutoNextSeconds();
+    if (seconds <= 0) return;
+    if (getVoicePracticeMode() === 'required') return;
+    if (_el('modal-overlay')?.classList.contains('hidden')) return;
+    WQUI.showToast(`Auto next word in ${seconds} seconds.`, Math.max(1800, seconds * 1000));
+    const tryAdvance = () => {
+      if (_el('modal-overlay')?.classList.contains('hidden')) {
+        clearRevealAutoAdvanceTimer();
+        return;
+      }
+      if (voiceIsRecording) {
+        revealAutoAdvanceTimer = setTimeout(tryAdvance, 900);
+        return;
+      }
+      newGame();
+    };
+    revealAutoAdvanceTimer = setTimeout(tryAdvance, seconds * 1000);
   }
 
   function shouldIncludeFunInMeaning() {
@@ -3232,18 +3549,25 @@
     if (!result?.entry) return;
     cancelRevealNarration();
     const token = revealNarrationToken;
+    const pacing = getRevealPacingPreset();
     showRevealWordToast(result);
     syncRevealMeaningHighlight(result.entry);
     if (!shouldNarrateReveal()) {
+      await waitMs(Math.min(220, pacing.postMeaningDelay));
+      if (token !== revealNarrationToken) return;
       promptLearnerAfterReveal({ toast: true });
       return;
     }
-    await new Promise((resolve) => setTimeout(resolve, 260));
+    await waitMs(pacing.introDelay);
     if (token !== revealNarrationToken) return;
     try {
       await WQAudio.playWord(result.entry);
       if (token !== revealNarrationToken) return;
+      await waitMs(pacing.betweenDelay);
+      if (token !== revealNarrationToken) return;
       await playMeaningWithFun(result.entry);
+      if (token !== revealNarrationToken) return;
+      await waitMs(pacing.postMeaningDelay);
       if (token !== revealNarrationToken) return;
       promptLearnerAfterReveal({ toast: true });
     } catch {
@@ -3515,6 +3839,10 @@
   WQMusic.initFromPrefs(prefs);
   syncMusicForTheme();
   initQuestLoop();
-  newGame();
+  if (firstRunSetupPending) {
+    openFirstRunSetupModal();
+  } else {
+    newGame();
+  }
 
 })();

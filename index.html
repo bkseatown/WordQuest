@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/modes.css?v=20260223c">
   <link rel="stylesheet" href="style/themes.css?v=20260223d">
-  <link rel="stylesheet" href="style/components.css?v=20260223h">
+  <link rel="stylesheet" href="style/components.css?v=20260223j">
 </head>
 <body>
 
@@ -136,6 +136,16 @@
               </label>
               <div class="setting-checkbox-help">When on, settings/focus changes are blocked during an active round and non-essential prompts are muted.</div>
             </div>
+            <div id="teacher-session-panel" class="setting-row setting-row-full teacher-session-panel" role="status" aria-live="polite">
+              <div class="setting-row-heading">Teacher Session Summary</div>
+              <div class="teacher-session-metrics">
+                <span id="session-rounds" class="teacher-session-chip">Rounds: 0</span>
+                <span id="session-win-rate" class="teacher-session-chip">Win Rate: --</span>
+                <span id="session-hint-rounds" class="teacher-session-chip">Hint Rounds: 0</span>
+                <span id="session-voice-attempts" class="teacher-session-chip">Voice Attempts: 0</span>
+              </div>
+              <div class="setting-checkbox-help">Tracks this browser session only.</div>
+            </div>
             <div class="setting-row"><label>Feedback Colors<select id="s-feedback"><option value="themed" selected>Themed (matches theme)</option><option value="classic">Classic (green/yellow/gray)</option></select></label></div>
             <div class="setting-row"><label>Motion<select id="s-motion"><option value="fun">Fun</option><option value="calm">Calm</option><option value="reduced">Reduced</option></select></label></div>
             <div class="setting-row"><label>Sound Tabs<select id="s-chunk-tabs"><option value="auto" selected>Auto (focus only)</option><option value="on">Always on</option><option value="off">Off</option></select></label></div>
@@ -157,6 +167,9 @@
             <div class="setting-row"><label>Projector Mode<select id="s-projector"><option value="off">Off</option><option value="on">On · high contrast</option></select></label></div>
             <div class="setting-row"><label>Letter Case<select id="s-case"><option value="lower">lowercase</option><option value="upper">UPPERCASE</option></select></label></div>
             <div class="setting-row"><label>Duplicate Alert<select id="s-dupe"><option value="on">On</option><option value="off">Off</option></select></label></div>
+            <div class="setting-row setting-row-full">
+              <button id="s-reset-look-cache" class="quick-action-btn quick-action-btn-warning" type="button">Reset Appearance + Cache</button>
+            </div>
           </div>
         </details>
 
@@ -164,6 +177,8 @@
           <summary>Reveal and Assessment</summary>
           <div class="settings-group-grid settings-grid">
             <div class="setting-row"><label>Reveal Focus Mode<select id="s-reveal-focus"><option value="on" selected>On (word + meaning first)</option><option value="off">Off (full detail layout)</option></select></label></div>
+            <div class="setting-row"><label>Reveal Pacing<select id="s-reveal-pacing"><option value="guided" selected>Guided</option><option value="quick">Quick</option><option value="slow">Slow</option></select></label></div>
+            <div class="setting-row"><label>Auto Next Word<select id="s-reveal-auto-next"><option value="off" selected>Off (manual)</option><option value="3">3 seconds</option><option value="5">5 seconds</option><option value="8">8 seconds</option></select></label></div>
             <div class="setting-row setting-row-full">
               <label class="setting-checkbox-label">
                 <input id="s-meaning-fun-link" type="checkbox" checked>
@@ -299,6 +314,24 @@
     </div>
   </div>
 
+  <!-- ── First run setup modal ───────────────────── -->
+  <div id="first-run-setup-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Choose startup preset">
+    <div class="modal-card first-run-setup-card">
+      <div class="modal-head">
+        <strong>Start In Teacher Mode</strong>
+      </div>
+      <div class="modal-body">
+        <p>Choose the classroom setup you want as your starting point.</p>
+        <div class="first-run-preset-actions" role="group" aria-label="First run setup presets">
+          <button class="quick-action-btn" type="button" data-first-run-preset="guided">Guided</button>
+          <button class="quick-action-btn" type="button" data-first-run-preset="independent">Independent</button>
+          <button class="quick-action-btn" type="button" data-first-run-preset="assessment">Assessment</button>
+        </div>
+        <p class="setting-checkbox-help first-run-help">You can change this any time from Settings → Classroom UX.</p>
+      </div>
+    </div>
+  </div>
+
   
   <!-- ── Voice help modal ─────────────────────────── -->
   <div id="voice-help-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Improve device voice">
@@ -329,7 +362,7 @@
   <script src="js/game.js?v=20260222c"></script>
   <script src="js/ui.js?v=20260223e"></script>
   <script src="js/theme-registry.js?v=20260223c"></script>
-  <script src="js/app.js?v=20260223i"></script>
+  <script src="js/app.js?v=20260223j"></script>
   <script src="js/theme-nav.js"></script>
 </body>
 </html>

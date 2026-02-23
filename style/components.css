@@ -684,6 +684,42 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   border-color: color-mix(in oklab, var(--brand) 70%, var(--panel-border) 30%);
 }
 
+.quick-action-btn-warning {
+  border-color: color-mix(in oklab, #d97706 52%, var(--panel-border) 48%);
+  background: color-mix(in oklab, #f59e0b 18%, var(--panel-bg) 82%);
+}
+
+.quick-action-btn-warning:hover {
+  background: color-mix(in oklab, #f59e0b 26%, var(--panel-bg) 74%);
+}
+
+.teacher-session-panel {
+  gap: 8px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 9px 10px;
+  background: color-mix(in oklab, var(--panel-bg) 88%, #ffffff 12%);
+}
+
+.teacher-session-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.teacher-session-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 64%, var(--brand) 36%);
+  background: color-mix(in oklab, var(--panel-bg) 92%, transparent);
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 9px;
+}
+
 .wq-theme-nav {
   display: flex;
   align-items: center;
@@ -1885,6 +1921,26 @@ html[data-motion="reduced"] * {
   font-weight: 800;
   text-decoration-thickness: 1.5px;
   text-underline-offset: 2px;
+}
+
+.first-run-setup-card {
+  width: min(420px, 100%);
+}
+
+.first-run-preset-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.first-run-help {
+  margin-left: 0;
+}
+
+@media (max-width: 460px) {
+  .first-run-preset-actions {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Modal ───────────────────────────────────────────── */
