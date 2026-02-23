@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/modes.css?v=20260223c">
   <link rel="stylesheet" href="style/themes.css?v=20260223d">
-  <link rel="stylesheet" href="style/components.css?v=20260223g">
+  <link rel="stylesheet" href="style/components.css?v=20260223h">
 </head>
 <body>
 
@@ -128,6 +128,13 @@
                 <button class="quick-action-btn" id="preset-assessment" data-teacher-preset="assessment" type="button">Assessment</button>
               </div>
               <div class="setting-checkbox-help">One tap applies grouped classroom defaults for hinting, voice, and engagement settings.</div>
+            </div>
+            <div class="setting-row setting-row-full quick-preset-row">
+              <label class="setting-checkbox-label">
+                <input id="s-assessment-lock" type="checkbox">
+                Assessment Lock (freeze settings mid-round)
+              </label>
+              <div class="setting-checkbox-help">When on, settings/focus changes are blocked during an active round and non-essential prompts are muted.</div>
             </div>
             <div class="setting-row"><label>Feedback Colors<select id="s-feedback"><option value="themed" selected>Themed (matches theme)</option><option value="classic">Classic (green/yellow/gray)</option></select></label></div>
             <div class="setting-row"><label>Motion<select id="s-motion"><option value="fun">Fun</option><option value="calm">Calm</option><option value="reduced">Reduced</option></select></label></div>
@@ -262,6 +269,15 @@
             <button class="audio-btn" id="voice-save-btn" type="button" disabled>Save Clip</button>
           </div>
           <div id="voice-practice-feedback" class="voice-practice-feedback" aria-live="polite">Tap Start to capture a 1-second clip, then compare with the model audio.</div>
+          <div id="voice-history-strip" class="voice-history-strip">
+            <div class="voice-history-head">
+              <span>Recent clips</span>
+              <span id="voice-history-trend" class="voice-history-trend">Trend: —</span>
+            </div>
+            <div id="voice-history-items" class="voice-history-items">
+              <span class="voice-history-empty">No clips yet.</span>
+            </div>
+          </div>
         </div>
       </details>
       <div class="modal-meta-row">
@@ -313,7 +329,7 @@
   <script src="js/game.js?v=20260222c"></script>
   <script src="js/ui.js?v=20260223e"></script>
   <script src="js/theme-registry.js?v=20260223c"></script>
-  <script src="js/app.js?v=20260223g"></script>
+  <script src="js/app.js?v=20260223h"></script>
   <script src="js/theme-nav.js"></script>
 </body>
 </html>

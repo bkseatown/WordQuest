@@ -174,6 +174,11 @@ header {
 }
 .icon-btn:hover { background: rgba(128,128,128,0.1); color: var(--text); }
 
+#settings-btn.is-locked {
+  opacity: 0.6;
+  border-color: color-mix(in oklab, var(--brand) 58%, var(--header-border) 42%);
+}
+
 #new-game-btn {
   background:    var(--brand);
   color:         var(--brand-text);
@@ -2116,6 +2121,95 @@ html[data-motion="reduced"] * {
 
 .voice-practice-feedback.is-good {
   color: color-mix(in oklab, #16a34a 78%, var(--text) 22%);
+}
+
+.voice-history-strip {
+  width: 100%;
+  display: grid;
+  gap: 6px;
+  padding: 8px 9px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--panel-bg) 86%, var(--page-bg) 14%);
+}
+
+.voice-history-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.69rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.voice-history-trend {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--panel-border);
+  padding: 2px 7px;
+  font-size: 0.64rem;
+  letter-spacing: 0.01em;
+}
+
+.voice-history-trend.is-up {
+  border-color: color-mix(in oklab, #16a34a 66%, var(--panel-border) 34%);
+  color: color-mix(in oklab, #16a34a 74%, var(--text) 26%);
+}
+
+.voice-history-trend.is-down {
+  border-color: color-mix(in oklab, #dc2626 66%, var(--panel-border) 34%);
+  color: color-mix(in oklab, #dc2626 74%, var(--text) 26%);
+}
+
+.voice-history-trend.is-steady {
+  border-color: color-mix(in oklab, var(--brand) 52%, var(--panel-border) 48%);
+  color: var(--brand);
+}
+
+.voice-history-items {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.voice-history-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: color-mix(in oklab, var(--panel-bg) 90%, transparent);
+}
+
+.voice-history-chip b {
+  color: var(--text);
+}
+
+.voice-history-chip.is-good {
+  border-color: color-mix(in oklab, #16a34a 64%, var(--panel-border) 36%);
+}
+
+.voice-history-chip.is-warn {
+  border-color: color-mix(in oklab, #d97706 66%, var(--panel-border) 34%);
+}
+
+.voice-history-chip.is-error {
+  border-color: color-mix(in oklab, #dc2626 68%, var(--panel-border) 32%);
+}
+
+.voice-history-empty {
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
 .modal-meta-row {

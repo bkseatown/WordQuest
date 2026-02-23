@@ -80,6 +80,7 @@
     meaningPlusFun: 'on',
     sorNotation: 'on',
     voicePractice: 'optional',
+    assessmentLock: 'off',
     boostPopups: 'on',
     music: 'off',
     musicVol: '0.50',
@@ -119,6 +120,7 @@
     if (prefs.sorNotation === undefined) prefs.sorNotation = DEFAULT_PREFS.sorNotation;
     if (prefs.revealFocus === undefined) prefs.revealFocus = DEFAULT_PREFS.revealFocus;
     if (prefs.voicePractice === undefined) prefs.voicePractice = DEFAULT_PREFS.voicePractice;
+    if (prefs.assessmentLock === undefined) prefs.assessmentLock = DEFAULT_PREFS.assessmentLock;
     if (prefs.boostPopups === undefined) prefs.boostPopups = DEFAULT_PREFS.boostPopups;
     if (prefs.themeSave !== 'on') delete prefs.theme;
     savePrefs(prefs);
@@ -148,6 +150,10 @@
   }
   if (prefs.voicePractice === undefined) {
     prefs.voicePractice = DEFAULT_PREFS.voicePractice;
+    savePrefs(prefs);
+  }
+  if (prefs.assessmentLock === undefined) {
+    prefs.assessmentLock = DEFAULT_PREFS.assessmentLock;
     savePrefs(prefs);
   }
   if (prefs.boostPopups === undefined) {
@@ -342,6 +348,10 @@
   if (sorNotationToggle) {
     sorNotationToggle.checked = (prefs.sorNotation || DEFAULT_PREFS.sorNotation) === 'on';
   }
+  const assessmentLockToggle = _el('s-assessment-lock');
+  if (assessmentLockToggle) {
+    assessmentLockToggle.checked = (prefs.assessmentLock || DEFAULT_PREFS.assessmentLock) === 'on';
+  }
   const musicSelect = _el('s-music');
   if (musicSelect) {
     const selectedMusic = normalizeMusicMode(prefs.music || DEFAULT_PREFS.music);
@@ -452,6 +462,46 @@
       syncRevealFocusModalSections();
     }
     return normalized;
+  }
+
+  let lastAssessmentLockNoticeAt = 0;
+
+  function isAssessmentLockEnabled() {
+    const toggle = _el('s-assessment-lock');
+    if (toggle) return !!toggle.checked;
+    return (prefs.assessmentLock || DEFAULT_PREFS.assessmentLock) === 'on';
+  }
+
+  function isAssessmentRoundLocked() {
+    if (!isAssessmentLockEnabled()) return false;
+    const state = WQGame.getState?.();
+    return Boolean(state?.word && !state?.gameOver);
+  }
+
+  function showAssessmentLockNotice(message = 'Assessment lock is on until this round ends.') {
+    const now = Date.now();
+    if (now - lastAssessmentLockNoticeAt < 1200) return;
+    lastAssessmentLockNoticeAt = now;
+    WQUI.showToast(message);
+  }
+
+  function syncAssessmentLockRuntime(options = {}) {
+    const locked = isAssessmentRoundLocked();
+    const settingsBtn = _el('settings-btn');
+    if (settingsBtn) {
+      settingsBtn.classList.toggle('is-locked', locked);
+      settingsBtn.setAttribute('aria-disabled', locked ? 'true' : 'false');
+      settingsBtn.title = locked
+        ? 'Assessment lock: settings unavailable until round ends.'
+        : 'Settings';
+    }
+    if (locked) {
+      _el('settings-panel')?.classList.add('hidden');
+      if (options.closeFocus !== false) closeFocusSearchList();
+      syncHeaderControlsVisibility();
+    } else {
+      syncThemePreviewStripVisibility();
+    }
   }
 
   function getHintMode() {
@@ -591,6 +641,7 @@
       revealFocus: 'on',
       voicePractice: 'required',
       voice: 'recorded',
+      assessmentLock: 'off',
       boostPopups: 'on',
       confetti: 'on'
     }),
@@ -599,6 +650,7 @@
       revealFocus: 'on',
       voicePractice: 'optional',
       voice: 'recorded',
+      assessmentLock: 'off',
       boostPopups: 'on',
       confetti: 'on'
     }),
@@ -607,6 +659,7 @@
       revealFocus: 'on',
       voicePractice: 'off',
       voice: 'off',
+      assessmentLock: 'on',
       boostPopups: 'off',
       confetti: 'off'
     })
@@ -618,6 +671,7 @@
       revealFocus: getRevealFocusMode(),
       voicePractice: getVoicePracticeMode(),
       voice: normalizeVoiceMode(_el('s-voice')?.value || prefs.voice || DEFAULT_PREFS.voice),
+      assessmentLock: isAssessmentLockEnabled() ? 'on' : 'off',
       boostPopups: areBoostPopupsEnabled() ? 'on' : 'off',
       confetti: String(_el('s-confetti')?.value || prefs.confetti || DEFAULT_PREFS.confetti).toLowerCase() === 'off'
         ? 'off'
@@ -628,6 +682,7 @@
       current.revealFocus === preset.revealFocus &&
       current.voicePractice === preset.voicePractice &&
       current.voice === preset.voice &&
+      current.assessmentLock === preset.assessmentLock &&
       current.boostPopups === preset.boostPopups &&
       current.confetti === preset.confetti
     )?.[0] || '';
@@ -642,6 +697,10 @@
   }
 
   function applyTeacherPreset(mode) {
+    if (isAssessmentRoundLocked()) {
+      showAssessmentLockNotice();
+      return;
+    }
     const preset = TEACHER_PRESETS[mode];
     if (!preset) return;
     setHintMode(preset.hint);
@@ -656,6 +715,10 @@
     WQAudio.setVoiceMode(preset.voice);
     setPref('voice', preset.voice);
 
+    const assessmentLockToggle = _el('s-assessment-lock');
+    if (assessmentLockToggle) assessmentLockToggle.checked = preset.assessmentLock === 'on';
+    setPref('assessmentLock', preset.assessmentLock);
+
     const boostSelect = _el('s-boost-popups');
     if (boostSelect) boostSelect.value = preset.boostPopups;
     setPref('boostPopups', preset.boostPopups);
@@ -668,6 +731,7 @@
     if (preset.voice === 'off') cancelRevealNarration();
     updateVoicePracticePanel(WQGame.getState());
     syncRevealFocusModalSections();
+    syncAssessmentLockRuntime();
     syncTeacherPresetButtons(mode);
     WQUI.showToast(`Preset applied: ${mode}.`);
   }
@@ -709,7 +773,7 @@
     if (!strip) return;
     const panelOpen = !_el('settings-panel')?.classList.contains('hidden');
     const focusOpen = document.documentElement.getAttribute('data-focus-search-open') === 'true';
-    const shouldShow = !panelOpen && !focusOpen;
+    const shouldShow = !panelOpen && !focusOpen && !isAssessmentRoundLocked();
     strip.classList.toggle('hidden', !shouldShow);
     strip.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
   }
@@ -735,8 +799,13 @@
   setSettingsView('quick');
   syncHeaderControlsVisibility();
   syncTeacherPresetButtons();
+  syncAssessmentLockRuntime({ closeFocus: false });
 
   _el('settings-btn')?.addEventListener('click', () => {
+    if (isAssessmentRoundLocked()) {
+      showAssessmentLockNotice();
+      return;
+    }
     const panel = _el('settings-panel');
     if (!panel) return;
     const opening = panel.classList.contains('hidden');
@@ -887,6 +956,15 @@
     setPref('confetti', e.target.value);
     syncTeacherPresetButtons();
   });
+  _el('s-assessment-lock')?.addEventListener('change', e => {
+    const enabled = !!e.target.checked;
+    setPref('assessmentLock', enabled ? 'on' : 'off');
+    syncAssessmentLockRuntime();
+    syncTeacherPresetButtons();
+    WQUI.showToast(enabled
+      ? 'Assessment lock is on for active rounds.'
+      : 'Assessment lock is off.');
+  });
   _el('s-feedback')?.addEventListener('change', e => {
     applyFeedback(e.target.value);
     setPref('feedback', e.target.value);
@@ -957,6 +1035,7 @@
     const modalOpen = !(_el('modal-overlay')?.classList.contains('hidden'));
     if (normalized === 'off') {
       cancelRevealNarration();
+      syncTeacherPresetButtons();
       WQUI.showToast('Voice read-aloud is off.');
       return;
     }
@@ -1003,6 +1082,8 @@
   let revealNarrationToken = 0;
   const VOICE_PRIVACY_TOAST_KEY = 'wq_voice_privacy_toast_seen_v1';
   const VOICE_CAPTURE_MS = 1000;
+  const VOICE_HISTORY_KEY = 'wq_v2_voice_history_v1';
+  const VOICE_HISTORY_LIMIT = 3;
 
   function setVoiceRecordingUI(isRecording) {
     const recordBtn = _el('voice-record-btn');
@@ -1013,6 +1094,101 @@
     }
     const saveBtn = _el('voice-save-btn');
     if (saveBtn && isRecording) saveBtn.disabled = true;
+  }
+
+  function loadVoiceHistory() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(VOICE_HISTORY_KEY) || '[]');
+      if (!Array.isArray(raw)) return [];
+      return raw
+        .map((item) => ({
+          word: String(item?.word || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 12),
+          score: Math.max(0, Math.min(100, Number(item?.score) || 0)),
+          label: String(item?.label || 'Captured').trim().slice(0, 28),
+          tone: ['good', 'warn', 'error'].includes(String(item?.tone || '').toLowerCase())
+            ? String(item.tone).toLowerCase()
+            : 'default',
+          at: Number(item?.at) || Date.now()
+        }))
+        .filter((item) => item.word)
+        .slice(0, VOICE_HISTORY_LIMIT);
+    } catch {
+      return [];
+    }
+  }
+
+  let voiceHistory = loadVoiceHistory();
+
+  function saveVoiceHistory() {
+    try {
+      localStorage.setItem(VOICE_HISTORY_KEY, JSON.stringify(voiceHistory.slice(0, VOICE_HISTORY_LIMIT)));
+    } catch {}
+  }
+
+  function renderVoiceHistoryStrip() {
+    const listEl = _el('voice-history-items');
+    const trendEl = _el('voice-history-trend');
+    if (!listEl || !trendEl) return;
+    const entries = voiceHistory.slice(0, VOICE_HISTORY_LIMIT);
+    listEl.innerHTML = '';
+
+    if (!entries.length) {
+      const empty = document.createElement('span');
+      empty.className = 'voice-history-empty';
+      empty.textContent = 'No clips yet.';
+      listEl.appendChild(empty);
+      trendEl.textContent = 'Trend: —';
+      trendEl.classList.remove('is-up', 'is-down', 'is-steady');
+      return;
+    }
+
+    entries.forEach((entry) => {
+      const chip = document.createElement('span');
+      chip.className = `voice-history-chip${entry.tone === 'good' || entry.tone === 'warn' || entry.tone === 'error' ? ` is-${entry.tone}` : ''}`;
+      const word = document.createElement('b');
+      word.textContent = entry.word;
+      chip.appendChild(word);
+      chip.appendChild(document.createTextNode(` ${entry.label} ${entry.score}`));
+      listEl.appendChild(chip);
+    });
+
+    trendEl.classList.remove('is-up', 'is-down', 'is-steady');
+    if (entries.length < 2) {
+      trendEl.textContent = 'Trend: baseline';
+      trendEl.classList.add('is-steady');
+      return;
+    }
+    const delta = entries[0].score - entries[entries.length - 1].score;
+    if (delta >= 10) {
+      trendEl.textContent = 'Trend: rising ↑';
+      trendEl.classList.add('is-up');
+      return;
+    }
+    if (delta <= -10) {
+      trendEl.textContent = 'Trend: dip ↓';
+      trendEl.classList.add('is-down');
+      return;
+    }
+    trendEl.textContent = 'Trend: steady →';
+    trendEl.classList.add('is-steady');
+  }
+
+  function appendVoiceHistory(review) {
+    const word = String(WQGame.getState()?.word || '')
+      .toUpperCase()
+      .replace(/[^A-Z]/g, '')
+      .slice(0, 12);
+    if (!word) return;
+    const score = Math.max(0, Math.min(100, Number(review?.score) || 0));
+    const label = String(review?.label || 'Captured').trim().slice(0, 28) || 'Captured';
+    const tone = ['good', 'warn', 'error'].includes(String(review?.tone || '').toLowerCase())
+      ? String(review.tone).toLowerCase()
+      : 'default';
+
+    voiceHistory = [{ word, score, label, tone, at: Date.now() }, ...voiceHistory]
+      .slice(0, VOICE_HISTORY_LIMIT);
+    saveVoiceHistory();
+    renderVoiceHistoryStrip();
   }
 
   function clearVoiceClip() {
@@ -1165,30 +1341,40 @@
     if (!analysis) {
       return {
         message: '1-second clip captured. Play it back and compare with the model audio.',
-        tone: 'default'
+        tone: 'default',
+        score: 60,
+        label: 'Captured'
       };
     }
     if (analysis.duration < 0.55) {
       return {
         message: 'Clip was very short. Try tapping Record and speaking right away.',
-        tone: 'warn'
+        tone: 'warn',
+        score: 35,
+        label: 'Short'
       };
     }
     if (analysis.rms < 0.012 || analysis.voicedRatio < 0.05) {
       return {
         message: 'Clip captured, but very quiet. Try a little louder or closer to the mic.',
-        tone: 'warn'
+        tone: 'warn',
+        score: 44,
+        label: 'Quiet'
       };
     }
     if (analysis.peak > 0.97 || analysis.rms > 0.25) {
       return {
         message: 'Clip captured, but volume may be too high. Step back slightly and retry.',
-        tone: 'warn'
+        tone: 'warn',
+        score: 52,
+        label: 'Hot'
       };
     }
     return {
       message: 'Great clarity. Play it back, then compare with the model audio.',
-      tone: 'good'
+      tone: 'good',
+      score: 86,
+      label: 'Clear'
     };
   }
 
@@ -1222,6 +1408,7 @@
 
     if (target) target.textContent = word ? `Target: ${word}` : '';
     if (!panel) return;
+    renderVoiceHistoryStrip();
 
     if (mode === 'off') {
       if (voiceIsRecording) stopVoiceCaptureNow();
@@ -1300,6 +1487,7 @@
           if (!voiceClipBlob || voiceClipBlob !== blob) return;
           const review = buildVoiceFeedback(analysis);
           setVoicePracticeFeedback(review.message, review.tone);
+          appendVoiceHistory(review);
         });
       });
       voiceIsRecording = true;
@@ -1392,6 +1580,7 @@
     document.body.dataset.wqVoicePracticeBound = '1';
     setVoiceRecordingUI(false);
     drawWaveform();
+    renderVoiceHistoryStrip();
   }
 
   function installRevealModalPatch() {
@@ -2085,6 +2274,11 @@
   }
 
   function setFocusValue(nextValue, options = {}) {
+    if (isAssessmentRoundLocked() && !options.force) {
+      showAssessmentLockNotice('Assessment lock is on. Focus changes unlock after this round.');
+      closeFocusSearchList();
+      return;
+    }
     const select = _el('setting-focus');
     if (!select) return;
     const target = String(nextValue || '').trim();
@@ -2229,18 +2423,36 @@
   });
 
   _el('focus-inline-search')?.addEventListener('focus', (event) => {
+    if (isAssessmentRoundLocked()) {
+      showAssessmentLockNotice('Assessment lock is on. Focus changes unlock after this round.');
+      closeFocusSearchList();
+      event.target.blur();
+      return;
+    }
     clearPinnedFocusSearchValue(event.target);
     const query = String(event.target?.value || '').trim();
     renderFocusSearchList(query);
   });
 
   _el('focus-inline-search')?.addEventListener('input', (event) => {
+    if (isAssessmentRoundLocked()) {
+      closeFocusSearchList();
+      return;
+    }
     clearPinnedFocusSearchValue(event.target);
     const query = String(event.target?.value || '').trim();
     renderFocusSearchList(query);
   });
 
   _el('focus-inline-search')?.addEventListener('keydown', (event) => {
+    if (isAssessmentRoundLocked()) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        showAssessmentLockNotice('Assessment lock is on. Focus changes unlock after this round.');
+      }
+      event.stopPropagation();
+      event.preventDefault();
+      return;
+    }
     clearPinnedFocusSearchValue(event.target);
     // Prevent global game key handler from capturing focus-search typing.
     event.stopPropagation();
@@ -2282,6 +2494,11 @@
   });
 
   _el('focus-inline-results')?.addEventListener('click', (event) => {
+    if (isAssessmentRoundLocked()) {
+      showAssessmentLockNotice('Assessment lock is on. Focus changes unlock after this round.');
+      closeFocusSearchList();
+      return;
+    }
     const button = event.target?.closest?.('[data-focus-value]');
     if (!button) return;
     const value = button.getAttribute('data-focus-value');
@@ -2405,6 +2622,7 @@
 
   function showMidgameBoost() {
     if (!areBoostPopupsEnabled()) return;
+    if (isAssessmentRoundLocked()) return;
     const boost = _el('midgame-boost');
     if (!boost) return;
     const card = nextMidgameBoostCard();
@@ -2667,6 +2885,7 @@
       } else {
         WQUI.showToast('No words found — try Classic focus or adjust filters');
       }
+      syncAssessmentLockRuntime();
       return;
     }
     WQUI.calcLayout(result.wordLength, result.maxGuesses);
@@ -2679,6 +2898,7 @@
     removeDupeToast();
     updateVoicePracticePanel(WQGame.getState());
     updateFocusHint();
+    syncAssessmentLockRuntime();
   }
 
   const reflowLayout = () => {
@@ -2757,6 +2977,7 @@
         if (result.won || result.lost) {
           awardQuestProgress(result);
           hideMidgameBoost();
+          syncAssessmentLockRuntime();
           setTimeout(() => {
             WQUI.showModal(result);
             _el('new-game-btn')?.classList.add('pulse');
@@ -2831,23 +3052,50 @@
   // ─── 9. Gameplay audio buttons ──────────────────────
   const entry = () => WQGame.getState()?.entry;
 
-  const REVEAL_WIN_TOASTS = Object.freeze([
-    'Great solve!',
-    'Strong work!',
-    'Awesome job!',
-    'Nice thinking!'
-  ]);
-  const REVEAL_LOSS_TOASTS = Object.freeze([
-    'Good effort.',
-    'Keep going.',
-    'You are building skill.',
-    'Next round is yours.'
-  ]);
+  const REVEAL_WIN_TOASTS = Object.freeze({
+    lightning: Object.freeze([
+      Object.freeze({ lead: 'Lightning solve!', coach: 'Stretch goal: increase word length next round.' }),
+      Object.freeze({ lead: 'Perfect precision!', coach: 'Try turning hints off for a challenge.' }),
+      Object.freeze({ lead: 'Elite read!', coach: 'Move to a harder focus and keep the streak.' })
+    ]),
+    fast: Object.freeze([
+      Object.freeze({ lead: 'Sharp solve!', coach: 'Keep the same pace with a harder word set.' }),
+      Object.freeze({ lead: 'Strong accuracy!', coach: 'Try reducing hints for one round.' }),
+      Object.freeze({ lead: 'Quick pattern match!', coach: 'Push to one fewer guess next time.' })
+    ]),
+    steady: Object.freeze([
+      Object.freeze({ lead: 'Great solve!', coach: 'You are tracking patterns well. Keep scanning vowels first.' }),
+      Object.freeze({ lead: 'Solid work!', coach: 'Next step: lock in opening guesses with stronger coverage.' }),
+      Object.freeze({ lead: 'Nice thinking!', coach: 'Focus on letter placement to shave a guess.' })
+    ]),
+    resilient: Object.freeze([
+      Object.freeze({ lead: 'Clutch finish!', coach: 'Great persistence. Start with a wider first guess next round.' }),
+      Object.freeze({ lead: 'You closed it out!', coach: 'Try checking endings early for faster lock-in.' }),
+      Object.freeze({ lead: 'Strong grit!', coach: 'Use duplicate checks and vowel coverage earlier.' })
+    ])
+  });
+  const REVEAL_LOSS_TOASTS = Object.freeze({
+    close: Object.freeze([
+      Object.freeze({ lead: 'So close.', coach: 'You were one step away. Keep that pattern next round.' }),
+      Object.freeze({ lead: 'Almost there.', coach: 'Great narrowing. Open with broader letter coverage next time.' }),
+      Object.freeze({ lead: 'Near miss.', coach: 'You found the structure. A faster vowel check will finish it.' })
+    ]),
+    mid: Object.freeze([
+      Object.freeze({ lead: 'Good effort.', coach: 'Try balancing vowels and common endings earlier.' }),
+      Object.freeze({ lead: 'You are building skill.', coach: 'Use guess two to test fresh high-value letters.' }),
+      Object.freeze({ lead: 'Keep going.', coach: 'Your next win is close with one stronger opener.' })
+    ]),
+    early: Object.freeze([
+      Object.freeze({ lead: 'Reset and go again.', coach: 'Use a starter with mixed vowels and consonants.' }),
+      Object.freeze({ lead: 'Next round is yours.', coach: 'Aim to test 4-5 new letters in guess two.' }),
+      Object.freeze({ lead: 'Good practice round.', coach: 'Try classic focus for one quick confidence win.' })
+    ])
+  });
 
   function pickRandom(items) {
     if (!Array.isArray(items) || !items.length) return '';
     const index = Math.floor(Math.random() * items.length);
-    return String(items[index] || '').trim();
+    return items[index];
   }
 
   function shouldIncludeFunInMeaning() {
@@ -2884,15 +3132,43 @@
     wrap.classList.toggle('hidden', !(definition || funAddOn));
   }
 
+  function getRevealFeedbackCopy(result) {
+    const guessCount = Math.max(1, Number(result?.guesses?.length || 0));
+    const stateMax = Number(WQGame.getState?.()?.maxGuesses || 0);
+    const prefMax = Number.parseInt(_el('s-guesses')?.value || DEFAULT_PREFS.guesses, 10);
+    const maxGuesses = Math.max(1, Number.isFinite(stateMax) && stateMax > 0
+      ? stateMax
+      : Number.isFinite(prefMax) && prefMax > 0
+        ? prefMax
+        : 6);
+
+    if (result?.won) {
+      let key = 'steady';
+      if (guessCount <= 1) key = 'lightning';
+      else if (guessCount <= Math.max(2, Math.ceil(maxGuesses * 0.34))) key = 'fast';
+      else if (guessCount >= Math.max(4, maxGuesses - 1)) key = 'resilient';
+      return pickRandom(REVEAL_WIN_TOASTS[key]) || { lead: 'Great solve!', coach: '' };
+    }
+
+    const remaining = Math.max(0, maxGuesses - guessCount);
+    let key = 'mid';
+    if (remaining <= 1) key = 'close';
+    else if (guessCount <= 2) key = 'early';
+    return pickRandom(REVEAL_LOSS_TOASTS[key]) || { lead: 'Keep going.', coach: '' };
+  }
+
   function showRevealWordToast(result) {
     if (!result) return;
     const solvedWord = String(result.word || '').trim().toUpperCase();
     if (!solvedWord) return;
-    const lead = result.won ? pickRandom(REVEAL_WIN_TOASTS) : pickRandom(REVEAL_LOSS_TOASTS);
+    const feedback = getRevealFeedbackCopy(result);
+    const lead = String(feedback?.lead || '').trim();
+    const coach = String(feedback?.coach || '').trim();
     const shortDef = trimToastDefinition(result?.entry?.definition);
-    const message = shortDef
+    const base = shortDef
       ? `${lead} ${solvedWord} - ${shortDef}`
       : `${lead} ${solvedWord}`;
+    const message = coach ? `${base} ${coach}` : base;
     WQUI.showToast(message, 3600);
   }
 
@@ -2980,6 +3256,7 @@
   function checkDuplicates(result) {
     // Check if user has disabled this
     if (_el('s-dupe')?.value === 'off') return;
+    if (isAssessmentRoundLocked()) return;
     if (localStorage.getItem(DUPE_PREF_KEY) === 'true') return;
 
     const word = result.word;

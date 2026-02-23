@@ -57,19 +57,61 @@ jobs:
       - name: Smoke-check deployed page
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          CANONICAL_URL: https://bkseatown.github.io/WordQuest/
         run: |
           set -euo pipefail
-          target="${PAGE_URL%/}/?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          echo "Smoke checking ${target}"
-          for attempt in 1 2 3 4 5; do
-            html="$(curl -fsSL --max-time 15 "${target}" || true)"
-            if echo "${html}" | grep -q 'id="settings-build-badge"' && \
-               echo "${html}" | grep -q 'id="s-reveal-focus"'; then
-              echo "Smoke check passed on attempt ${attempt}."
-              exit 0
+          markers=(
+            'id="settings-build-badge"'
+            'id="s-reveal-focus"'
+            'id="s-assessment-lock"'
+            'id="voice-history-strip"'
+          )
+          summary_file="${RUNNER_TEMP}/pages-smoke-summary.md"
+          {
+            echo "### Pages smoke check"
+            echo
+            echo "| URL | Result | Details |"
+            echo "|---|---|---|"
+          } > "${summary_file}"
+
+          failures=0
+          targets=(
+            "${PAGE_URL%/}/?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            "${CANONICAL_URL%/}/?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          )
+
+          for target in "${targets[@]}"; do
+            echo "Smoke checking ${target}"
+            passed=0
+            details="Missing markers after retries."
+            for attempt in 1 2 3 4 5; do
+              html="$(curl -fsSL --max-time 15 "${target}" || true)"
+              missing=()
+              for marker in "${markers[@]}"; do
+                if ! echo "${html}" | grep -q "${marker}"; then
+                  missing+=("${marker}")
+                fi
+              done
+              if [ "${#missing[@]}" -eq 0 ]; then
+                passed=1
+                details="All markers found on attempt ${attempt}."
+                break
+              fi
+              details="Attempt ${attempt}: missing ${missing[*]}"
+              echo "Smoke check retry ${attempt}/5: ${missing[*]}"
+              sleep $((attempt * 8))
+            done
+
+            if [ "${passed}" -eq 1 ]; then
+              echo "| ${target} | ✅ PASS | ${details} |" >> "${summary_file}"
+            else
+              failures=$((failures + 1))
+              echo "| ${target} | ❌ FAIL | ${details} |" >> "${summary_file}"
             fi
-            echo "Smoke check retry ${attempt}/5..."
-            sleep $((attempt * 8))
           done
-          echo "Smoke check failed: expected markers were not found in deployed HTML." >&2
-          exit 1
+
+          cat "${summary_file}" >> "${GITHUB_STEP_SUMMARY}"
+          if [ "${failures}" -gt 0 ]; then
+            echo "Smoke check failed for ${failures} URL target(s)." >&2
+            exit 1
+          fi
