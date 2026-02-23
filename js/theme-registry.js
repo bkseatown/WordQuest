@@ -5,42 +5,39 @@
   'use strict';
 
   var THEME_REGISTRY = Object.freeze([
-    Object.freeze({ id: 'default', label: '🌿 Default', family: 'core' }),
+    Object.freeze({ id: 'default', label: '🌿 Slate Classic', family: 'core' }),
     Object.freeze({ id: 'sunset', label: '🌅 Sunset', family: 'core' }),
     Object.freeze({ id: 'ocean', label: '🌊 Ocean', family: 'core' }),
-    Object.freeze({ id: 'superman', label: '🦸 Superman', family: 'core' }),
-    Object.freeze({ id: 'marvel', label: '💥 Marvel', family: 'core' }),
-
+    Object.freeze({ id: 'coffee', label: '☕ Coffeehouse', family: 'core' }),
     Object.freeze({ id: 'seahawks', label: '🦅 Seahawks', family: 'sports' }),
     Object.freeze({ id: 'huskies', label: '🐾 Huskies', family: 'sports' }),
-
-    Object.freeze({ id: 'ironman', label: '🔴 Iron Man', family: 'inspired' }),
-    Object.freeze({ id: 'harleyquinn', label: '🃏 Harley Quinn', family: 'inspired' }),
-    Object.freeze({ id: 'kuromi', label: '🖤 Kuromi', family: 'inspired' }),
+    Object.freeze({ id: 'superman', label: '🦸 Superman', family: 'inspired' }),
+    Object.freeze({ id: 'pokemon', label: '🕹️ Pokédex', family: 'inspired' }),
     Object.freeze({ id: 'minecraft', label: '⛏️ Minecraft', family: 'inspired' }),
-    Object.freeze({ id: 'pokemon', label: '📟 Pokédex', family: 'inspired' }),
+    Object.freeze({ id: 'marvel', label: '💥 Marvel', family: 'inspired' }),
+    Object.freeze({ id: 'ironman', label: '🔴 Iron Man', family: 'inspired' }),
+    Object.freeze({ id: 'harleyquinn', label: '🎭 Harley Quinn', family: 'inspired' }),
     Object.freeze({ id: 'barbie', label: '💖 Pop Pink', family: 'inspired' }),
+    Object.freeze({ id: 'kuromi', label: '🖤 Kuromi', family: 'inspired' }),
     Object.freeze({ id: 'demonhunter', label: '🌸 Demon Hunter', family: 'inspired' }),
-
     Object.freeze({ id: 'dark', label: '🌙 Dark', family: 'dark' }),
-    Object.freeze({ id: 'coffee', label: '☕ Coffee', family: 'dark' }),
     Object.freeze({ id: 'matrix', label: '💻 Matrix', family: 'dark' })
   ]);
 
   var FAMILY_ORDER = Object.freeze(['core', 'sports', 'inspired', 'dark']);
 
   var FAMILY_LABELS = Object.freeze({
-    core: 'Classic + Professional Core',
+    core: 'Core Themes',
     sports: 'Sports-Inspired',
-    inspired: 'Pop-Culture Inspired',
-    dark: 'Dark Variants'
+    inspired: 'Inspired Themes',
+    dark: 'Dark Themes'
   });
 
   var DEFAULT_BY_MODE = Object.freeze({
     calm: 'default',
-    professional: 'ocean',
+    professional: 'default',
     playful: 'sunset',
-    'high-contrast': 'dark'
+    'high-contrast': 'matrix'
   });
 
   var themeById = new Map();
