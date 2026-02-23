@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/modes.css?v=20260223c">
   <link rel="stylesheet" href="style/themes.css?v=20260223c">
-  <link rel="stylesheet" href="style/components.css?v=20260223d">
+  <link rel="stylesheet" href="style/components.css?v=20260223e">
 </head>
 <body>
 
@@ -102,7 +102,7 @@
             </label></div>
             <div id="s-music-active" class="setting-row setting-row-full setting-row-help">Music is off.</div>
             <div class="setting-row setting-row-full"><label>Music Volume<input id="s-music-vol" type="range" min="0" max="1" step="0.05" value="0.50"></label></div>
-            <div class="setting-row setting-row-full"><label>Audio Voice<select id="s-voice"><option value="recorded">Recorded only (recommended)</option><option value="auto">Recorded → device fallback</option><option value="device">Device voice only (beta)</option></select></label></div>
+            <div class="setting-row setting-row-full"><label>Audio Voice<select id="s-voice"><option value="recorded">Recorded only (recommended)</option><option value="auto">Recorded → device fallback</option><option value="device">Device voice only (beta)</option><option value="off">Off (no read-aloud)</option></select></label></div>
             <div class="setting-row setting-row-full small-help"><button id="voice-help-btn" class="link-btn" type="button">How to improve device voice</button></div>
           </div>
         </details>
@@ -200,7 +200,10 @@
         </button>
       </div>
       <div id="midgame-boost" class="midgame-boost hidden" role="status" aria-live="polite"></div>
-      <div id="focus-hint" class="focus-hint hidden" aria-live="polite"></div>
+      <div class="focus-hint-row" role="group" aria-label="Hint cues">
+        <div id="focus-hint" class="focus-hint hidden" aria-live="polite"></div>
+        <button id="focus-hint-toggle" class="focus-hint-toggle" type="button" aria-pressed="true">Hint: On</button>
+      </div>
     </div>
 
     <!-- Keyboard -->
@@ -217,6 +220,10 @@
     <div id="end-modal" class="hidden" role="dialog" aria-modal="true">
       <div id="modal-result"></div>
       <div id="modal-word"></div>
+      <div id="modal-meaning-highlight" class="modal-meaning-highlight hidden" aria-live="polite">
+        <p id="modal-def-highlight"></p>
+        <p id="modal-fun-highlight" class="hidden"></p>
+      </div>
       <div class="modal-syllables-wrap">
         <div id="modal-syllables"></div>
         <div id="modal-sor" class="hidden"></div>
@@ -237,11 +244,11 @@
           </div>
           <canvas id="voice-waveform" width="320" height="74" aria-label="Voice waveform"></canvas>
           <div class="voice-practice-actions">
-            <button class="audio-btn" id="voice-record-btn" type="button">Start Recording</button>
-            <button class="audio-btn" id="voice-stop-btn" type="button" disabled>Stop</button>
+            <button class="audio-btn" id="voice-record-btn" type="button">Start 1-sec Recording</button>
             <button class="audio-btn" id="voice-play-btn" type="button" disabled>Play My Voice</button>
+            <button class="audio-btn" id="voice-save-btn" type="button" disabled>Save Clip</button>
           </div>
-          <div id="voice-practice-feedback" class="voice-practice-feedback" aria-live="polite">Record your voice, then compare it with the word audio.</div>
+          <div id="voice-practice-feedback" class="voice-practice-feedback" aria-live="polite">Tap Start to capture a 1-second clip, then compare with the model audio.</div>
         </div>
       </details>
       <div class="modal-meta-row">
@@ -289,11 +296,11 @@
   <script src="data/words-inline.js"></script>
   <script src="data/engagement-boosts.js?v=20260222c"></script>
   <script src="js/data.js?v=20260222c"></script>
-  <script src="js/audio.js?v=20260222c"></script>
+  <script src="js/audio.js?v=20260223e"></script>
   <script src="js/game.js?v=20260222c"></script>
-  <script src="js/ui.js?v=20260222c"></script>
+  <script src="js/ui.js?v=20260223e"></script>
   <script src="js/theme-registry.js?v=20260223c"></script>
-  <script src="js/app.js?v=20260223d"></script>
+  <script src="js/app.js?v=20260223e"></script>
   <script src="js/theme-nav.js"></script>
 </body>
 </html>

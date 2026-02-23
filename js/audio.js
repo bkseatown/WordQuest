@@ -10,7 +10,12 @@ const WQAudio = (() => {
   const VOICE_PREF_KEY = 'wq_v2_voice';
   const VOICE_MODE_KEY = "wq_voice_mode_v1";
   const AUDIO_MANIFEST_URL = './data/audio-manifest.json';
-  let _voiceMode = localStorage.getItem(VOICE_MODE_KEY) || "recorded";
+  const ALLOWED_VOICE_MODES = new Set(["recorded", "auto", "device", "off"]);
+  function _normalizeVoiceMode(mode) {
+    const normalized = String(mode || "").toLowerCase().trim();
+    return ALLOWED_VOICE_MODES.has(normalized) ? normalized : "recorded";
+  }
+  let _voiceMode = _normalizeVoiceMode(localStorage.getItem(VOICE_MODE_KEY) || "recorded");
   let _selectedVoice = null;
   let _allVoices = [];
   let _voicesReady = false;
@@ -195,7 +200,11 @@ const WQAudio = (() => {
   }
 
   async function _play(path, fallback, rate = 0.88) {
-    const mode = (_voiceMode || 'recorded').toLowerCase();
+    const mode = _normalizeVoiceMode(_voiceMode || 'recorded');
+    if (mode === 'off') {
+      _stop();
+      return;
+    }
     const allowRecorded = mode !== 'device';
     const allowFallbackTTS = mode !== 'recorded';
     const resolvedPath = _normalizeAudioPath(path);
@@ -233,12 +242,10 @@ const WQAudio = (() => {
   }
 
   function setVoiceMode(mode){
-    const m = (mode || "").toLowerCase();
-    const allowed = new Set(["recorded","auto","device"]);
-    _voiceMode = allowed.has(m) ? m : "recorded";
+    _voiceMode = _normalizeVoiceMode(mode);
     try{ localStorage.setItem(VOICE_MODE_KEY, _voiceMode); }catch(e){}
   }
-  function getVoiceMode(){ return _voiceMode || "recorded"; }
+  function getVoiceMode(){ return _normalizeVoiceMode(_voiceMode || "recorded"); }
 
   function setVoiceByName(name) {
     if (name === 'auto') {

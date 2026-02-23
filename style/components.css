@@ -901,8 +901,18 @@ main {
   padding-top:    2px;
 }
 
+.focus-hint-row {
+  width: min(440px, calc(100vw - 34px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  order: 2;
+}
+
 .focus-hint {
-  max-width: min(340px, calc(100vw - 44px));
+  max-width: min(336px, calc(100vw - 120px));
   padding: 5px 13px;
   border-radius: 999px;
   border: 1.5px solid color-mix(in oklab, var(--brand) 58%, var(--panel-border) 42%);
@@ -914,7 +924,7 @@ main {
   color: var(--text);
   font-size: 0.74rem;
   font-weight: 800;
-  text-align: center;
+  text-align: left;
   line-height: 1.3;
   position: static;
   margin-top: 0;
@@ -923,6 +933,34 @@ main {
   z-index: 1;
   box-shadow: 0 3px 10px rgba(0,0,0,0.14);
   pointer-events: none;
+}
+
+.focus-hint-toggle {
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--panel-bg) 92%, var(--brand) 8%);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  padding: 6px 11px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.focus-hint-toggle:hover {
+  border-color: color-mix(in oklab, var(--brand) 58%, var(--panel-border) 42%);
+  color: var(--text);
+}
+
+.focus-hint-toggle.is-off {
+  background: color-mix(in oklab, var(--panel-bg) 96%, transparent);
+  color: color-mix(in oklab, var(--text-muted) 82%, #666666 18%);
+}
+
+.focus-hint-row.is-off .focus-hint {
+  display: none;
 }
 
 .board-plate {
@@ -1845,6 +1883,39 @@ html[data-motion="reduced"] * {
 }
 #end-modal.loss #modal-word span { background: var(--absent); box-shadow: 0 4px 0 var(--absent-dk); }
 
+.modal-meaning-highlight {
+  width: 100%;
+  display: grid;
+  gap: 7px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--brand) 46%, var(--panel-border) 54%);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--panel-bg) 70%, #ffffff 30%),
+      color-mix(in oklab, var(--brand) 12%, var(--panel-bg) 88%)
+    );
+}
+
+#modal-def-highlight {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+#modal-fun-highlight {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.45;
+  color: var(--fun-text);
+}
+
 .modal-syllables-wrap {
   width: 100%;
   display: grid;
@@ -1978,7 +2049,7 @@ html[data-motion="reduced"] * {
   cursor: not-allowed;
 }
 
-#voice-stop-btn:disabled {
+#voice-save-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
@@ -2172,6 +2243,16 @@ html[data-layout-mode="compact"] .focus-hint {
   font-size: 0.68rem;
   padding: 4px 10px;
   margin-top: 0;
+}
+
+html[data-layout-mode="compact"] .focus-hint-row {
+  width: min(100%, calc(100vw - 20px));
+  gap: 6px;
+}
+
+html[data-layout-mode="compact"] .focus-hint-toggle {
+  font-size: 0.66rem;
+  padding: 4px 9px;
 }
 
 html[data-layout-mode="compact"] #keyboard {

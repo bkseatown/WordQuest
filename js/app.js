@@ -49,6 +49,7 @@
     'team',
     'off'
   ]);
+  const ALLOWED_VOICE_MODES = new Set(['recorded', 'auto', 'device', 'off']);
   const MUSIC_LABELS = Object.freeze({
     auto: 'Auto',
     chill: 'Chill',
@@ -245,6 +246,13 @@
     return ALLOWED_MUSIC_MODES.has(normalized) ? normalized : DEFAULT_PREFS.music;
   }
 
+  function normalizeVoiceMode(mode) {
+    const normalized = String(mode || '').trim().toLowerCase();
+    return ALLOWED_VOICE_MODES.has(normalized)
+      ? normalized
+      : DEFAULT_PREFS.voice;
+  }
+
   function resolveAutoMusicMode(themeId) {
     const normalizedTheme = normalizeTheme(themeId, getThemeFallback());
     const directMode = AUTO_MUSIC_BY_THEME[normalizedTheme];
@@ -320,6 +328,12 @@
   if (musicVolInput) {
     musicVolInput.value = String(prefs.musicVol ?? DEFAULT_PREFS.musicVol);
   }
+  const voiceSelect = _el('s-voice');
+  if (voiceSelect) {
+    const selectedVoice = normalizeVoiceMode(prefs.voice || DEFAULT_PREFS.voice);
+    voiceSelect.value = selectedVoice;
+    if (prefs.voice !== selectedVoice) setPref('voice', selectedVoice);
+  }
 
   const themeSelect = _el('s-theme');
   const initialThemeSelection = shouldPersistTheme() ? prefs.theme : getThemeFallback();
@@ -339,7 +353,7 @@
   }
   applyProjector(prefs.projector || DEFAULT_PREFS.projector);
   applyMotion(prefs.motion || DEFAULT_PREFS.motion);
-  applyHint(prefs.hint || DEFAULT_PREFS.hint);
+  applyHint(getHintMode());
   applyFeedback(prefs.feedback || DEFAULT_PREFS.feedback);
   applyBoardStyle(prefs.boardStyle || DEFAULT_PREFS.boardStyle);
   applyKeyStyle(prefs.keyStyle || DEFAULT_PREFS.keyStyle);
@@ -347,6 +361,7 @@
   applyAtmosphere(prefs.atmosphere || DEFAULT_PREFS.atmosphere);
   WQUI.setCaseMode(prefs.caseMode || DEFAULT_PREFS.caseMode);
   updateWilsonModeToggle();
+  syncHintToggleUI();
 
   // Voice picker populated after brief delay
   setTimeout(populateVoiceSelector, 700);
@@ -381,6 +396,37 @@
 
   function applyHint(mode) {
     document.documentElement.setAttribute('data-hint', mode);
+  }
+
+  function getHintMode() {
+    const mode = String(_el('s-hint')?.value || prefs.hint || DEFAULT_PREFS.hint).toLowerCase();
+    return mode === 'off' ? 'off' : 'on';
+  }
+
+  function syncHintToggleUI(mode = getHintMode()) {
+    const toggle = _el('focus-hint-toggle');
+    if (!toggle) return;
+    const enabled = mode !== 'off';
+    toggle.textContent = enabled ? 'Hint: On' : 'Hint: Off';
+    toggle.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+    toggle.classList.toggle('is-off', !enabled);
+  }
+
+  function setHintMode(mode, options = {}) {
+    const normalized = mode === 'off' ? 'off' : 'on';
+    const select = _el('s-hint');
+    if (select && select.value !== normalized) select.value = normalized;
+    setPref('hint', normalized);
+    applyHint(normalized);
+    syncHintToggleUI(normalized);
+    updateFocusHint();
+    const state = WQGame.getState?.();
+    if (state?.wordLength && state?.maxGuesses && typeof WQUI.calcLayout === 'function') {
+      WQUI.calcLayout(state.wordLength, state.maxGuesses);
+    }
+    if (options.toast) {
+      WQUI.showToast(normalized === 'off' ? 'Hint cues are off.' : 'Hint cues are on.');
+    }
   }
 
   function applyFeedback(mode) {
@@ -673,7 +719,11 @@
   });
   _el('s-length')?.addEventListener('change',  e => setPref('length',   e.target.value));
   _el('s-guesses')?.addEventListener('change', e => setPref('guesses',  e.target.value));
-  _el('s-hint')?.addEventListener('change',    e => { setPref('hint',   e.target.value); applyHint(e.target.value); updateFocusHint(); });
+  _el('s-hint')?.addEventListener('change',    e => { setHintMode(e.target.value); });
+  _el('focus-hint-toggle')?.addEventListener('click', () => {
+    const next = getHintMode() === 'on' ? 'off' : 'on';
+    setHintMode(next, { toast: true });
+  });
   _el('s-dupe')?.addEventListener('change',    e => setPref('dupe',     e.target.value));
   _el('s-confetti')?.addEventListener('change',e => setPref('confetti', e.target.value));
   _el('s-feedback')?.addEventListener('change', e => {
@@ -687,6 +737,9 @@
       ? 'Extended definition add-on is on.'
       : 'Extended definition add-on is off.'
     );
+    if (!(_el('modal-overlay')?.classList.contains('hidden'))) {
+      syncRevealMeaningHighlight(WQGame.getState()?.entry);
+    }
   });
   _el('s-sor-notation')?.addEventListener('change', e => {
     const enabled = !!e.target.checked;
@@ -733,8 +786,20 @@
   });
 
   _el('s-voice')?.addEventListener('change', e => {
-    WQAudio.setVoiceMode(e.target.value);
-    setPref('voice', e.target.value);
+    const normalized = normalizeVoiceMode(e.target.value);
+    e.target.value = normalized;
+    WQAudio.setVoiceMode(normalized);
+    setPref('voice', normalized);
+    const modalOpen = !(_el('modal-overlay')?.classList.contains('hidden'));
+    if (normalized === 'off') {
+      cancelRevealNarration();
+      WQUI.showToast('Voice read-aloud is off.');
+      return;
+    }
+    if (modalOpen) {
+      void runRevealNarration(WQGame.getState());
+    }
+    WQUI.showToast('Voice read-aloud is on.');
   });
 
   window.WQTheme = Object.freeze({
@@ -763,26 +828,26 @@
   let voiceStream = null;
   let voiceChunks = [];
   let voiceClipUrl = null;
+  let voiceClipBlob = null;
   let voicePreviewAudio = null;
   let voiceAnalyser = null;
   let voiceAudioCtx = null;
   let voiceWaveRaf = 0;
   let voiceIsRecording = false;
   let voiceAutoStopTimer = 0;
+  let revealNarrationToken = 0;
   const VOICE_PRIVACY_TOAST_KEY = 'wq_voice_privacy_toast_seen_v1';
-  const VOICE_MAX_RECORD_MS = 9000;
+  const VOICE_CAPTURE_MS = 1000;
 
   function setVoiceRecordingUI(isRecording) {
     const recordBtn = _el('voice-record-btn');
-    const stopBtn = _el('voice-stop-btn');
     if (recordBtn) {
       recordBtn.disabled = !!isRecording;
       recordBtn.classList.toggle('is-recording', !!isRecording);
-      recordBtn.textContent = isRecording ? 'Recording…' : 'Start Recording';
+      recordBtn.textContent = isRecording ? 'Recording...' : 'Start 1-sec Recording';
     }
-    if (stopBtn) {
-      stopBtn.disabled = !isRecording;
-    }
+    const saveBtn = _el('voice-save-btn');
+    if (saveBtn && isRecording) saveBtn.disabled = true;
   }
 
   function clearVoiceClip() {
@@ -790,8 +855,11 @@
       URL.revokeObjectURL(voiceClipUrl);
       voiceClipUrl = null;
     }
+    voiceClipBlob = null;
     const playBtn = _el('voice-play-btn');
     if (playBtn) playBtn.disabled = true;
+    const saveBtn = _el('voice-save-btn');
+    if (saveBtn) saveBtn.disabled = true;
   }
 
   function clearVoiceAutoStopTimer() {
@@ -949,7 +1017,7 @@
       playAgain.removeAttribute('aria-disabled');
     }
     if (!voiceTakeComplete && !voiceIsRecording) {
-      setVoicePracticeFeedback('Record your voice, then compare it with the model audio.');
+      setVoicePracticeFeedback('Tap Start to capture a 1-second clip, then compare with the model audio.');
     }
   }
 
@@ -961,6 +1029,7 @@
     }
     try {
       clearVoiceClip();
+      voiceTakeComplete = false;
       voiceChunks = [];
       voiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       voiceRecorder = new MediaRecorder(voiceStream);
@@ -978,16 +1047,19 @@
           setVoicePracticeFeedback('No audio captured. Please try again.', true);
           return;
         }
+        voiceClipBlob = blob;
         voiceClipUrl = URL.createObjectURL(blob);
         voiceTakeComplete = true;
         const playBtn = _el('voice-play-btn');
         if (playBtn) playBtn.disabled = false;
-        setVoicePracticeFeedback('Nice! Play your recording and compare your pronunciation.');
+        const saveBtn = _el('voice-save-btn');
+        if (saveBtn) saveBtn.disabled = false;
+        setVoicePracticeFeedback('1-second clip captured. Play it back or save it locally.');
         updateVoicePracticePanel(WQGame.getState());
       });
       voiceIsRecording = true;
       setVoiceRecordingUI(true);
-      setVoicePracticeFeedback('Recording... press Stop when you are done.');
+      setVoicePracticeFeedback('Recording for 1 second...');
       if (localStorage.getItem(VOICE_PRIVACY_TOAST_KEY) !== 'seen') {
         WQUI.showToast('Voice recordings stay on this device only. Nothing is uploaded.');
         localStorage.setItem(VOICE_PRIVACY_TOAST_KEY, 'seen');
@@ -995,10 +1067,9 @@
       clearVoiceAutoStopTimer();
       voiceAutoStopTimer = setTimeout(() => {
         if (voiceRecorder && voiceRecorder.state === 'recording') {
-          setVoicePracticeFeedback('Auto-stopped after 9 seconds to protect privacy.');
-          stopVoiceRecording();
+          stopVoiceRecording({ reason: 'auto' });
         }
-      }, VOICE_MAX_RECORD_MS);
+      }, VOICE_CAPTURE_MS);
 
       const Ctor = window.AudioContext || window.webkitAudioContext;
       if (Ctor) {
@@ -1023,11 +1094,12 @@
     }
   }
 
-  function stopVoiceRecording() {
+  function stopVoiceRecording(options = {}) {
     clearVoiceAutoStopTimer();
     if (voiceRecorder && voiceRecorder.state !== 'inactive') {
       voiceRecorder.stop();
-      setVoicePracticeFeedback('Saving your recording...');
+      const reason = String(options.reason || 'manual');
+      setVoicePracticeFeedback(reason === 'auto' ? 'Saving your 1-second clip...' : 'Saving your recording...');
     } else {
       stopVoiceCaptureNow();
     }
@@ -1046,11 +1118,32 @@
     });
   }
 
+  function saveVoiceRecording() {
+    if (!voiceClipBlob || !voiceClipUrl) return;
+    const currentWord = String(WQGame.getState()?.word || 'word')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'word';
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const ext = voiceClipBlob.type.includes('ogg')
+      ? 'ogg'
+      : voiceClipBlob.type.includes('mp4')
+        ? 'm4a'
+        : 'webm';
+    const link = document.createElement('a');
+    link.href = voiceClipUrl;
+    link.download = `wordquest-${currentWord}-${stamp}.${ext}`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setVoicePracticeFeedback('Saved locally to your Downloads folder.');
+  }
+
   function bindVoicePracticeControls() {
     if (document.body.dataset.wqVoicePracticeBound === '1') return;
     _el('voice-record-btn')?.addEventListener('click', () => { void startVoiceRecording(); });
-    _el('voice-stop-btn')?.addEventListener('click', () => stopVoiceRecording());
     _el('voice-play-btn')?.addEventListener('click', () => playVoiceRecording());
+    _el('voice-save-btn')?.addEventListener('click', () => saveVoiceRecording());
     document.body.dataset.wqVoicePracticeBound = '1';
     setVoiceRecordingUI(false);
     drawWaveform();
@@ -1068,6 +1161,7 @@
       clearVoiceClip();
       drawWaveform();
       updateRevealSorBadge(state?.entry);
+      syncRevealMeaningHighlight(state?.entry);
       const practiceDetails = _el('modal-practice-details');
       if (practiceDetails) {
         practiceDetails.open = getVoicePracticeMode() === 'required';
@@ -1075,6 +1169,7 @@
       const details = _el('modal-more-details');
       if (details) details.open = false;
       updateVoicePracticePanel(state);
+      void runRevealNarration(state);
       return state;
     };
     WQUI.__revealPatchApplied = true;
@@ -1100,6 +1195,7 @@
       const focusEl = document.querySelector('.focus-bar');
       const themeStripEl = _el('theme-preview-strip');
       const hintEl = _el('focus-hint');
+      const hintRowEl = hintEl?.closest('.focus-hint-row') || null;
 
       const keyH = parsePx(rootStyle.getPropertyValue('--key-h'), 52);
       const keyGap = parsePx(rootStyle.getPropertyValue('--gap-key'), 8);
@@ -1144,8 +1240,8 @@
       const chunkRowH = chunkRows > 0
         ? (chunkRows * chunkKeyH) + ((chunkRows - 1) * 5) + 8
         : 0;
-      const hintH = hintEl && !hintEl.classList.contains('hidden')
-        ? Math.max(0, (hintEl.offsetHeight || 0) - 10)
+      const hintH = hintRowEl
+        ? Math.max(0, (hintRowEl.offsetHeight || 0) - 8)
         : 0;
       const kbRows = 3;
       const keyboardSafetyPad = keyboardLayout === 'wilson'
@@ -1272,12 +1368,16 @@
   function updateFocusHint() {
     const hintEl = _el('focus-hint');
     if (!hintEl) return;
-    const mode = _el('s-hint')?.value || prefs.hint || DEFAULT_PREFS.hint;
+    const hintRow = hintEl.closest('.focus-hint-row');
+    const mode = getHintMode();
+    syncHintToggleUI(mode);
     if (mode !== 'on') {
       hintEl.textContent = '';
       hintEl.classList.add('hidden');
+      if (hintRow) hintRow.classList.add('is-off');
       return;
     }
+    if (hintRow) hintRow.classList.remove('is-off');
     const state = WQGame.getState?.() || null;
     const entry = state?.entry || null;
     const focusValue = _el('setting-focus')?.value || 'all';
@@ -2287,6 +2387,7 @@
       WQUI.showToast('Record your voice before starting the next word.');
       return;
     }
+    cancelRevealNarration();
     stopVoiceCaptureNow();
     if (voicePreviewAudio) {
       voicePreviewAudio.pause();
@@ -2482,11 +2583,76 @@
 
   // ─── 9. Gameplay audio buttons ──────────────────────
   const entry = () => WQGame.getState()?.entry;
-  const shouldIncludeFunInMeaning = () => {
+
+  const REVEAL_WIN_TOASTS = Object.freeze([
+    'Great solve!',
+    'Strong work!',
+    'Awesome job!',
+    'Nice thinking!'
+  ]);
+  const REVEAL_LOSS_TOASTS = Object.freeze([
+    'Good effort.',
+    'Keep going.',
+    'You are building skill.',
+    'Next round is yours.'
+  ]);
+
+  function pickRandom(items) {
+    if (!Array.isArray(items) || !items.length) return '';
+    const index = Math.floor(Math.random() * items.length);
+    return String(items[index] || '').trim();
+  }
+
+  function shouldIncludeFunInMeaning() {
     const toggle = _el('s-meaning-fun-link');
     if (toggle) return !!toggle.checked;
     return (prefs.meaningPlusFun || DEFAULT_PREFS.meaningPlusFun) === 'on';
-  };
+  }
+
+  function cancelRevealNarration() {
+    revealNarrationToken += 1;
+    WQAudio.stop();
+  }
+
+  function trimToastDefinition(definition) {
+    const text = String(definition || '').replace(/\s+/g, ' ').trim();
+    if (!text) return '';
+    if (text.length <= 72) return text;
+    return `${text.slice(0, 69).trim()}...`;
+  }
+
+  function syncRevealMeaningHighlight(nextEntry) {
+    const wrap = _el('modal-meaning-highlight');
+    const defEl = _el('modal-def-highlight');
+    const funEl = _el('modal-fun-highlight');
+    if (!wrap || !defEl || !funEl) return;
+
+    const definition = String(nextEntry?.definition || '').trim();
+    const funAddOn = shouldIncludeFunInMeaning()
+      ? String(nextEntry?.fun_add_on || '').trim()
+      : '';
+    defEl.textContent = definition;
+    funEl.textContent = funAddOn;
+    funEl.classList.toggle('hidden', !funAddOn);
+    wrap.classList.toggle('hidden', !(definition || funAddOn));
+  }
+
+  function showRevealWordToast(result) {
+    if (!result) return;
+    const solvedWord = String(result.word || '').trim().toUpperCase();
+    if (!solvedWord) return;
+    const lead = result.won ? pickRandom(REVEAL_WIN_TOASTS) : pickRandom(REVEAL_LOSS_TOASTS);
+    const shortDef = trimToastDefinition(result?.entry?.definition);
+    const message = shortDef
+      ? `${lead} ${solvedWord} - ${shortDef}`
+      : `${lead} ${solvedWord}`;
+    WQUI.showToast(message, 3600);
+  }
+
+  function shouldNarrateReveal() {
+    const mode = normalizeVoiceMode(_el('s-voice')?.value || prefs.voice || DEFAULT_PREFS.voice);
+    return mode !== 'off';
+  }
 
   async function playMeaningWithFun(nextEntry) {
     if (!nextEntry) return;
@@ -2496,13 +2662,44 @@
     await WQAudio.playFun(nextEntry);
   }
 
-  _el('g-hear-word')?.addEventListener('click',     () => WQAudio.playWord(entry()));
-  _el('g-hear-sentence')?.addEventListener('click', () => WQAudio.playSentence(entry()));
+  async function runRevealNarration(result) {
+    if (!result?.entry) return;
+    cancelRevealNarration();
+    const token = revealNarrationToken;
+    showRevealWordToast(result);
+    syncRevealMeaningHighlight(result.entry);
+    if (!shouldNarrateReveal()) return;
+    await new Promise((resolve) => setTimeout(resolve, 260));
+    if (token !== revealNarrationToken) return;
+    try {
+      await WQAudio.playWord(result.entry);
+      if (token !== revealNarrationToken) return;
+      await playMeaningWithFun(result.entry);
+    } catch {}
+  }
+
+  _el('g-hear-word')?.addEventListener('click', () => {
+    cancelRevealNarration();
+    void WQAudio.playWord(entry());
+  });
+  _el('g-hear-sentence')?.addEventListener('click', () => {
+    cancelRevealNarration();
+    void WQAudio.playSentence(entry());
+  });
 
   // Modal audio buttons
-  _el('hear-word-btn')?.addEventListener('click',     () => WQAudio.playWord(entry()));
-  _el('hear-def-btn')?.addEventListener('click',      () => { void playMeaningWithFun(entry()); });
-  _el('hear-sentence-btn')?.addEventListener('click', () => WQAudio.playSentence(entry()));
+  _el('hear-word-btn')?.addEventListener('click', () => {
+    cancelRevealNarration();
+    void WQAudio.playWord(entry());
+  });
+  _el('hear-def-btn')?.addEventListener('click', () => {
+    cancelRevealNarration();
+    void playMeaningWithFun(entry());
+  });
+  _el('hear-sentence-btn')?.addEventListener('click', () => {
+    cancelRevealNarration();
+    void WQAudio.playSentence(entry());
+  });
 
   // ─── 10. Duplicate-letter dismissible toast ──────────
   const DUPE_PREF_KEY = 'wq_v2_dupe_dismissed';
@@ -2735,7 +2932,7 @@
     };
   })();
 // ─── 12. Start ───────────────────────────────────────
-  WQAudio.setVoiceMode(prefs.voice || 'recorded');
+  WQAudio.setVoiceMode(normalizeVoiceMode(prefs.voice || DEFAULT_PREFS.voice));
   if (typeof WQAudio.primeAudioManifest === 'function') {
     void WQAudio.primeAudioManifest();
   }
