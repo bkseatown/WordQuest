@@ -2164,6 +2164,74 @@ html[data-motion="reduced"] * {
   text-underline-offset: 2px;
 }
 
+.voice-help-body {
+  gap: 8px;
+}
+
+.voice-help-intro {
+  font-size: 0.86rem;
+  color: color-mix(in oklab, var(--text-muted) 80%, var(--text) 20%);
+}
+
+.voice-help-list {
+  display: grid;
+  gap: 8px;
+}
+
+.voice-help-item {
+  border: 1px solid color-mix(in oklab, var(--panel-border) 72%, transparent);
+  border-radius: 11px;
+  background: color-mix(in oklab, var(--panel-bg) 84%, var(--modal-bg) 16%);
+  overflow: hidden;
+}
+
+.voice-help-item > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 9px 11px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.voice-help-item > summary::-webkit-details-marker {
+  display: none;
+}
+
+.voice-help-item > summary::after {
+  content: 'Open';
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: color-mix(in oklab, var(--brand) 74%, var(--text) 26%);
+}
+
+.voice-help-item[open] > summary::after {
+  content: 'Hide';
+}
+
+.voice-help-item-body {
+  display: grid;
+  gap: 7px;
+  padding: 9px 11px 11px;
+  border-top: 1px solid color-mix(in oklab, var(--panel-border) 72%, transparent);
+  font-size: 0.81rem;
+  color: color-mix(in oklab, var(--text-muted) 78%, var(--text) 22%);
+}
+
+.voice-help-item-body a {
+  font-size: 0.79rem;
+}
+
+.voice-help-footnote {
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: color-mix(in oklab, var(--text-muted) 78%, var(--text) 22%);
+}
+
 .first-run-setup-card {
   width: min(420px, 100%);
 }

@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/modes.css?v=20260223c">
   <link rel="stylesheet" href="style/themes.css?v=20260223e">
-  <link rel="stylesheet" href="style/components.css?v=20260223p">
+  <link rel="stylesheet" href="style/components.css?v=20260223q">
 </head>
 <body>
 
@@ -371,17 +371,38 @@
         <strong>Improve device voice quality</strong>
         <button id="voice-help-close" class="close-btn" aria-label="Close">✕</button>
       </div>
-      <div class="modal-body">
-        <p><b>Best quality (recommended):</b> use the recorded WordQuest audio whenever available.</p>
-        <p>If you must use device voice as a fallback:</p>
-        <ul>
-          <li><b>iPhone/iPad:</b> Settings → Accessibility → Spoken Content → Voices, download <b>Ava (Enhanced)</b> under English (United States). <a href="https://support.apple.com/111798" target="_blank" rel="noopener noreferrer">Quick guide</a>.</li>
-          <li><b>iPad only direct path:</b> Settings → Accessibility → Spoken Content → Voices. <a href="https://support.apple.com/guide/ipad/ipad9a247097/ipados" target="_blank" rel="noopener noreferrer">Apple iPad guide</a>.</li>
-          <li><b>macOS:</b> System Settings → Accessibility → Spoken Content → System Voice → Manage Voices → English (United States) → Ava (Enhanced). <a href="https://support.apple.com/guide/mac-help/mchlp2290/mac" target="_blank" rel="noopener noreferrer">Apple Mac guide</a>.</li>
-          <li><b>Android (Samsung):</b> Settings → Accessibility (or General management) → Text‑to‑speech → install/download high‑quality voices.</li>
-          <li><b>Chrome:</b> device voices vary; try switching to a different downloaded voice in your OS settings.</li>
-        </ul>
-        <p>WordQuest will <b>never auto‑switch</b> to device voice unless you choose a fallback mode.</p>
+      <div class="modal-body voice-help-body">
+        <p class="voice-help-intro"><b>Best quality:</b> use recorded WordQuest audio when available.</p>
+        <p class="voice-help-intro">Choose your device to open steps:</p>
+        <div class="voice-help-list" role="list">
+          <details class="voice-help-item" role="listitem">
+            <summary>iPhone / iPad</summary>
+            <div class="voice-help-item-body">
+              <p>Settings → Accessibility → Spoken Content → Voices → English (United States) → Ava (Enhanced).</p>
+              <p><a href="https://support.apple.com/111798" target="_blank" rel="noopener noreferrer">Quick guide</a> · <a href="https://support.apple.com/guide/ipad/ipad9a247097/ipados" target="_blank" rel="noopener noreferrer">Apple iPad guide</a></p>
+            </div>
+          </details>
+          <details class="voice-help-item" role="listitem">
+            <summary>macOS</summary>
+            <div class="voice-help-item-body">
+              <p>System Settings → Accessibility → Spoken Content → System Voice → Manage Voices → English (United States) → Ava (Enhanced).</p>
+              <p><a href="https://support.apple.com/guide/mac-help/mchlp2290/mac" target="_blank" rel="noopener noreferrer">Apple Mac guide</a></p>
+            </div>
+          </details>
+          <details class="voice-help-item" role="listitem">
+            <summary>Android (Samsung)</summary>
+            <div class="voice-help-item-body">
+              <p>Settings → Accessibility (or General management) → Text-to-speech → install/download high-quality voices.</p>
+            </div>
+          </details>
+          <details class="voice-help-item" role="listitem">
+            <summary>Chrome Browser</summary>
+            <div class="voice-help-item-body">
+              <p>Device voices vary by OS. Try switching to a different downloaded voice in your system settings.</p>
+            </div>
+          </details>
+        </div>
+        <p class="voice-help-footnote">WordQuest will <b>never auto-switch</b> to device voice unless you choose a fallback mode.</p>
       </div>
     </div>
   </div>
