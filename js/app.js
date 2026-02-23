@@ -17,13 +17,52 @@
   // ─── 2. Init UI ────────────────────────────────────
   WQUI.init();
 
+  const SW_RUNTIME_URL = './sw-runtime.js?v=20260223i';
+
   async function registerOfflineRuntime() {
     if (!('serviceWorker' in navigator)) return;
     if (!window.isSecureContext && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
       return;
     }
     try {
-      await navigator.serviceWorker.register('./sw.js', { scope: './' });
+      let shouldAttachReloadListener = true;
+      try {
+        shouldAttachReloadListener = sessionStorage.getItem('wq_sw_controller_reloaded') !== '1';
+      } catch {
+        shouldAttachReloadListener = true;
+      }
+      if (shouldAttachReloadListener) {
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          let alreadyReloaded = false;
+          try {
+            alreadyReloaded = sessionStorage.getItem('wq_sw_controller_reloaded') === '1';
+          } catch {
+            alreadyReloaded = false;
+          }
+          if (alreadyReloaded) return;
+          try {
+            sessionStorage.setItem('wq_sw_controller_reloaded', '1');
+          } catch {}
+          location.reload();
+        }, { once: true });
+      }
+      const registration = await navigator.serviceWorker.register(SW_RUNTIME_URL, {
+        scope: './',
+        updateViaCache: 'none'
+      });
+      registration.addEventListener('updatefound', () => {
+        const installing = registration.installing;
+        if (!installing) return;
+        installing.addEventListener('statechange', () => {
+          if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+            installing.postMessage({ type: 'WQ_SKIP_WAITING' });
+          }
+        });
+      });
+      if (registration.waiting) {
+        registration.waiting.postMessage({ type: 'WQ_SKIP_WAITING' });
+      }
+      registration.update().catch(() => {});
     } catch (error) {
       console.warn('[WordQuest] Service worker registration skipped:', error?.message || error);
     }
@@ -34,7 +73,6 @@
   const PREF_KEY = 'wq_v2_prefs';
   const PREF_MIGRATION_KEY = 'wq_v2_pref_defaults_20260222';
   const PREF_MUSIC_AUTO_MIGRATION_KEY = 'wq_v2_pref_music_auto_20260222';
-  const PREF_WILSON_DEFAULT_MIGRATION_KEY = 'wq_v2_pref_wilson_default_20260223';
   const ALLOWED_MUSIC_MODES = new Set([
     'auto',
     'chill',
@@ -86,11 +124,11 @@
     musicVol: '0.50',
     voice: 'recorded',
     themeSave: 'off',
-    boardStyle: 'soundcard',
-    keyStyle: 'soundcard',
-    keyboardLayout: 'wilson',
+    boardStyle: 'card',
+    keyStyle: 'bubble',
+    keyboardLayout: 'standard',
     chunkTabs: 'auto',
-    atmosphere: 'glow'
+    atmosphere: 'minimal'
   });
   function loadPrefs() {
     try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}'); } catch { return {}; }
@@ -164,14 +202,6 @@
     prefs.music = DEFAULT_PREFS.music;
     savePrefs(prefs);
   }
-  if (localStorage.getItem(PREF_WILSON_DEFAULT_MIGRATION_KEY) !== 'done') {
-    if (!prefs.keyboardLayout) prefs.keyboardLayout = 'wilson';
-    if (!prefs.boardStyle || prefs.boardStyle === 'card') prefs.boardStyle = 'soundcard';
-    if (!prefs.keyStyle || prefs.keyStyle === 'bubble') prefs.keyStyle = 'soundcard';
-    savePrefs(prefs);
-    localStorage.setItem(PREF_WILSON_DEFAULT_MIGRATION_KEY, 'done');
-  }
-
   const _el = id => document.getElementById(id);
   const ThemeRegistry = window.WQThemeRegistry || null;
   const shouldPersistTheme = () => (prefs.themeSave || DEFAULT_PREFS.themeSave) === 'on';

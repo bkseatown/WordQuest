@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="default" data-case="lower" data-projector="off" data-motion="fun" data-board-style="soundcard" data-key-style="soundcard" data-keyboard-layout="wilson" data-atmosphere="glow" data-reveal-focus="on">
+<html lang="en" data-theme="default" data-case="lower" data-projector="off" data-motion="fun" data-board-style="card" data-key-style="bubble" data-keyboard-layout="standard" data-atmosphere="minimal" data-reveal-focus="on">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -115,8 +115,8 @@
           <div class="settings-group-grid">
             <div class="setting-row setting-row-full quick-preset-row">
               <label class="setting-checkbox-label">
-                <input id="s-wilson-mode" type="checkbox" checked>
-                Wilson Sound Card Mode (recommended)
+                <input id="s-wilson-mode" type="checkbox">
+                Wilson Sound Card Mode
               </label>
               <div class="setting-checkbox-help">Uses A–Z sound cards with quick chunks. Turn off for standard QWERTY keyboard + simple board.</div>
             </div>
@@ -151,9 +151,9 @@
           <div id="settings-advanced-tools" class="settings-group-grid settings-grid">
             <div class="setting-row"><label>Theme (full list)<select id="s-theme"><option value="">Loading themes...</option></select></label></div>
             <div class="setting-row"><label>Remember Theme<select id="s-theme-save"><option value="off" selected>Off (reset on refresh)</option><option value="on">On (save this theme)</option></select></label></div>
-            <div class="setting-row"><label>Board Style<select id="s-board-style"><option value="clean">Clean</option><option value="card">Card</option><option value="patterned">Patterned</option><option value="soundcard" selected>Sound Card (SoR)</option></select></label></div>
-            <div class="setting-row"><label>Key Style<select id="s-key-style"><option value="bubble">Bubble</option><option value="classic">Classic</option><option value="arcade">Arcade</option><option value="soundcard" selected>Sound Card (SoR)</option></select></label></div>
-            <div class="setting-row"><label>Atmosphere<select id="s-atmosphere"><option value="minimal">Minimal</option><option value="glow" selected>Glow</option><option value="spark">Spark</option></select></label></div>
+            <div class="setting-row"><label>Board Style<select id="s-board-style"><option value="clean">Clean</option><option value="card" selected>Card</option><option value="patterned">Patterned</option><option value="soundcard">Sound Card (SoR)</option></select></label></div>
+            <div class="setting-row"><label>Key Style<select id="s-key-style"><option value="bubble" selected>Bubble</option><option value="classic">Classic</option><option value="arcade">Arcade</option><option value="soundcard">Sound Card (SoR)</option></select></label></div>
+            <div class="setting-row"><label>Atmosphere<select id="s-atmosphere"><option value="minimal" selected>Minimal</option><option value="glow">Glow</option><option value="spark">Spark</option></select></label></div>
             <div class="setting-row"><label>Projector Mode<select id="s-projector"><option value="off">Off</option><option value="on">On · high contrast</option></select></label></div>
             <div class="setting-row"><label>Letter Case<select id="s-case"><option value="lower">lowercase</option><option value="upper">UPPERCASE</option></select></label></div>
             <div class="setting-row"><label>Duplicate Alert<select id="s-dupe"><option value="on">On</option><option value="off">Off</option></select></label></div>
@@ -329,7 +329,7 @@
   <script src="js/game.js?v=20260222c"></script>
   <script src="js/ui.js?v=20260223e"></script>
   <script src="js/theme-registry.js?v=20260223c"></script>
-  <script src="js/app.js?v=20260223h"></script>
+  <script src="js/app.js?v=20260223i"></script>
   <script src="js/theme-nav.js"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const REQUIRED_FILES = [
   'sw.js',
+  'sw-runtime.js',
   'data/audio-manifest.json',
   'js/app.js',
   'js/audio.js',
@@ -52,11 +53,15 @@ if (!failures) {
 const appJs = exists('js/app.js') ? read('js/app.js') : '';
 const audioJs = exists('js/audio.js') ? read('js/audio.js') : '';
 const swJs = exists('sw.js') ? read('sw.js') : '';
+const swRuntimeJs = exists('sw-runtime.js') ? read('sw-runtime.js') : '';
 
-if (!/serviceWorker\.register\(\s*['"]\.\/sw\.js['"]/.test(appJs)) {
-  fail('js/app.js is missing service worker registration for ./sw.js');
+const hasWorkerRegisterCall = /serviceWorker\.register\(\s*(?:SW_RUNTIME_URL|['"]\.\/sw(?:-runtime)?\.js(?:\?[^'"]*)?['"])/.test(appJs);
+const hasRuntimePath = /(?:SW_RUNTIME_URL\s*=\s*['"]\.\/sw-runtime\.js(?:\?[^'"]*)?['"])|(?:serviceWorker\.register\(\s*['"]\.\/sw(?:-runtime)?\.js(?:\?[^'"]*)?['"])/.test(appJs);
+
+if (!hasWorkerRegisterCall || !hasRuntimePath) {
+  fail('js/app.js is missing service worker registration for ./sw.js or ./sw-runtime.js');
 } else {
-  pass('js/app.js registers ./sw.js');
+  pass('js/app.js registers service worker runtime');
 }
 
 if (!/AUDIO_MANIFEST_URL/.test(audioJs) || !/audio-manifest\.json/.test(audioJs)) {
@@ -65,10 +70,11 @@ if (!/AUDIO_MANIFEST_URL/.test(audioJs) || !/audio-manifest\.json/.test(audioJs)
   pass('js/audio.js references audio manifest');
 }
 
-if (!/assets\/audio/.test(swJs) || !/AUDIO_CACHE/.test(swJs)) {
-  fail('sw.js is missing runtime audio cache strategy');
+const swRuntimeSource = swRuntimeJs || swJs;
+if (!/assets\/audio/.test(swRuntimeSource) || !/AUDIO_CACHE/.test(swRuntimeSource)) {
+  fail('service worker runtime is missing runtime audio cache strategy');
 } else {
-  pass('sw.js defines runtime audio cache strategy');
+  pass('service worker runtime defines runtime audio cache strategy');
 }
 
 if (failures) {
