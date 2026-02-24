@@ -430,6 +430,7 @@
   const shouldPersistTheme = () => (prefs.themeSave || DEFAULT_PREFS.themeSave) === 'on';
   let musicController = null;
   let challengeSprintTimer = 0;
+  let challengeModalReturnFocusEl = null;
 
   function isMissionLabEnabled() {
     return MISSION_LAB_ENABLED;
@@ -1207,11 +1208,16 @@
     const toggle = _el('focus-hint-toggle');
     if (!toggle) return;
     const enabled = mode !== 'off';
-    toggle.textContent = 'Clue';
+    const playStyle = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle);
+    const listening = playStyle === 'listening';
+    toggle.textContent = listening ? 'Phonics Hint' : 'Clue';
     toggle.setAttribute('aria-pressed', 'false');
+    toggle.setAttribute('aria-label', listening ? 'Open optional phonics hint' : 'Open clue card');
     toggle.setAttribute('title', enabled
-      ? 'Ask for a mystery clue with phonics markings'
-      : 'Hint cues are off in settings, but you can still ask for a clue');
+      ? (listening
+          ? 'Optional phonics hint. Primary goal is spelling from audio.'
+          : 'Ask for a mystery clue with phonics markings')
+      : 'Hint cues are off in settings, but you can still ask for support');
     toggle.classList.toggle('is-off', !enabled);
   }
 
@@ -1241,22 +1247,44 @@
     const toggle = _el('play-style-toggle');
     if (!toggle) return;
     const listening = mode === 'listening';
-    toggle.textContent = listening ? 'Audio Game: On' : 'Audio Game: Off';
+    toggle.textContent = listening ? 'Mode: Listening' : 'Mode: Classic';
     toggle.setAttribute('aria-pressed', listening ? 'true' : 'false');
     toggle.classList.toggle('is-listening', listening);
+    toggle.setAttribute('aria-label', listening
+      ? 'Listening challenge mode is on. Switch to classic mode.'
+      : 'Classic mode is on. Switch to listening challenge mode.');
     toggle.setAttribute('title', listening
-      ? 'Switch to detective sentence-clue mode'
-      : 'Switch to listening audio game mode');
+      ? 'Switch to classic word + color strategy mode'
+      : 'Switch to listening challenge mode');
   }
 
   function syncGameplayAudioStrip(mode = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle)) {
     const gameplayAudio = document.querySelector('.gameplay-audio');
     const sentenceBtn = _el('g-hear-sentence');
     if (sentenceBtn) sentenceBtn.remove();
-    if (!gameplayAudio) return;
     const listeningMode = mode === 'listening' && !isMissionLabStandaloneMode();
+    const modeBanner = _el('play-style-banner');
+    if (modeBanner) {
+      modeBanner.textContent = listeningMode
+        ? 'Listening Challenge: hear word + meaning, then spell what you hear.'
+        : '';
+      modeBanner.classList.toggle('hidden', !listeningMode);
+      modeBanner.setAttribute('aria-hidden', listeningMode ? 'false' : 'true');
+    }
+    const hearWordBtn = _el('g-hear-word');
+    const hearWordLabel = _el('g-hear-word-label');
+    if (hearWordLabel) hearWordLabel.textContent = listeningMode ? 'Replay Audio' : 'Hear Word';
+    if (hearWordBtn) {
+      hearWordBtn.setAttribute('title', listeningMode ? 'Replay target word audio' : 'Hear target word audio');
+      hearWordBtn.setAttribute('aria-label', listeningMode ? 'Replay target word audio' : 'Hear target word audio');
+    }
+    if (!gameplayAudio) {
+      syncHintToggleUI(getHintMode());
+      return;
+    }
     gameplayAudio.classList.toggle('hidden', !listeningMode);
     gameplayAudio.setAttribute('aria-hidden', listeningMode ? 'false' : 'true');
+    syncHintToggleUI(getHintMode());
   }
 
   function applyPlayStyle(mode, options = {}) {
@@ -1848,15 +1876,22 @@
     const liveExample = buildLiveHintExample(activeWord, category);
     const profileExamples = Array.isArray(profile.examples) ? profile.examples : [];
     const examples = liveExample ? [liveExample, ...profileExamples] : profileExamples;
-    const message = buildFriendlyHintMessage(category, sourceLabel);
     const playStyle = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle);
+    let message = buildFriendlyHintMessage(category, sourceLabel);
+    if (playStyle === 'listening') {
+      message = message.replace(
+        'Try one guess, then use color feedback to coach the next one.',
+        'Replay the audio, map sounds to letters, then spell what you hear.'
+      );
+      message = `Listening challenge mode: hear word + meaning first. ${message}`;
+    }
     const actionMode = playStyle === 'detective' && !!entry?.sentence
       ? 'sentence'
       : playStyle === 'listening' && !!entry
         ? 'word-meaning'
         : 'none';
     return {
-      title: '🔎 Clue Coach',
+      title: playStyle === 'listening' ? '🎧 Listening Coach' : '🔎 Clue Coach',
       message,
       examples,
       actionMode
@@ -2233,9 +2268,26 @@
     _el('first-run-setup-modal')?.classList.add('hidden');
   }
 
+  function syncFirstRunGradeSelectFromPrefs() {
+    const modalGradeSelect = _el('first-run-grade-band');
+    if (!modalGradeSelect) return;
+    modalGradeSelect.value = String(_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade).trim() || DEFAULT_PREFS.grade;
+  }
+
+  function applyFirstRunGradeSelection() {
+    const modalGradeSelect = _el('first-run-grade-band');
+    const gradeSelect = _el('s-grade');
+    if (!modalGradeSelect || !gradeSelect) return;
+    const nextGradeBand = String(modalGradeSelect.value || DEFAULT_PREFS.grade).trim() || DEFAULT_PREFS.grade;
+    if (String(gradeSelect.value || '').trim() === nextGradeBand) return;
+    gradeSelect.value = nextGradeBand;
+    gradeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
   function openFirstRunSetupModal() {
     const modal = _el('first-run-setup-modal');
     if (!modal) return;
+    syncFirstRunGradeSelectFromPrefs();
     modal.classList.remove('hidden');
     _el('settings-panel')?.classList.add('hidden');
     _el('teacher-panel')?.classList.add('hidden');
@@ -2245,12 +2297,13 @@
   function bindFirstRunSetupModal() {
     if (document.body.dataset.wqFirstRunSetupBound === '1') return;
     const closeTutorial = () => {
+      applyFirstRunGradeSelection();
       markFirstRunSetupDone();
       firstRunSetupPending = false;
       closeFirstRunSetupModal();
       const state = WQGame.getState?.() || {};
       if (!state.word || state.gameOver) {
-        newGame();
+        newGame({ launchMissionLab: !isMissionLabStandaloneMode() });
       }
       updateNextActionLine();
     };
@@ -2454,7 +2507,8 @@
     const pool = WQData.getPlayableWords({
       gradeBand: effectiveGradeBand,
       length: lengthPref || 'any',
-      phonics: focusValue || 'all'
+      phonics: focusValue || 'all',
+      includeLowerBands: shouldExpandGradeBandForFocus(focusValue)
     });
     return new Set(pool.map((word) => normalizeReviewWord(word)));
   }
@@ -2733,11 +2787,11 @@
     } else if (hasActiveRound && guessCount === 0 && activeGuessLength === 0) {
       if (confidenceOn) {
         text = playStyle === 'listening'
-          ? 'No guess is wasted. Try a first word, then tap Hear Word or use Clue for a targeted phonics hint.'
+          ? 'Listening challenge: replay Hear Word, focus on sounds + meaning, then spell what you heard. Use Phonics Hint only if stuck.'
           : 'No guess is wasted. Try a first word, then use colors to guide your next guess.';
       } else {
         text = playStyle === 'listening'
-          ? 'Listening mode: guess first, then use Hear Word or Clue as helpers.'
+          ? 'Listening challenge: hear the word, replay as needed, then spell from sound.'
           : 'Start with a first guess, then use color feedback to refine the next word.';
       }
     } else if (hasActiveRound && guessCount === 0 && activeGuessLength > 0) {
@@ -2748,8 +2802,8 @@
       text = `Review words ready: ${dueCount} due word${dueCount === 1 ? '' : 's'} in this focus.`;
     } else if (playStyle === 'listening') {
       text = hasActiveRound
-        ? 'Listening mode: keep guessing and use audio buttons when needed.'
-        : 'Tap New Word to start. You can use Hear Word or Clue anytime.';
+        ? 'Listening challenge: keep spelling from audio. Phonics Hint is optional support.'
+        : 'Tap New Word to start a listening round. Goal: hear and spell, not clue hunt.';
     } else {
       text = hasActiveRound
         ? 'Keep guessing and use color feedback to narrow the word.'
@@ -2893,10 +2947,10 @@
     });
   });
 
-  pageMode = normalizePageMode(readPageModeFromQuery());
-  if (pageMode === 'wordquest') {
-    pageMode = loadStoredPageMode();
-  }
+  // Always land in WordQuest first. Deep Dive opens only from the dedicated tab button.
+  pageMode = 'wordquest';
+  persistPageMode('wordquest');
+  updatePageModeUrl('wordquest');
 
   setSettingsView('quick');
   syncPageModeUI();
@@ -3235,13 +3289,35 @@
     updateLessonPackNote(packId, targetId);
     applyLessonTargetConfig(packId, targetId, { toast: true });
   });
+  function syncFocusSearchForCurrentGrade() {
+    const listEl = _el('focus-inline-results');
+    if (!listEl || listEl.classList.contains('hidden')) return;
+    renderFocusSearchList(_el('focus-inline-search')?.value || '');
+  }
+
+  function enforceFocusSelectionForGrade(selectedGradeBand, options = {}) {
+    const focusSelect = _el('setting-focus');
+    if (!focusSelect) return false;
+    const currentFocus = String(focusSelect.value || 'all').trim() || 'all';
+    if (isFocusValueCompatibleWithGrade(currentFocus, selectedGradeBand)) return false;
+    focusSelect.value = 'all';
+    focusSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    if (options.toast !== false) {
+      WQUI.showToast(`Quest reset to Classic for grade ${formatGradeBandLabel(selectedGradeBand)}.`);
+    }
+    return true;
+  }
+
   _el('s-grade')?.addEventListener('change',   e => {
-    setPref('grade', e.target.value);
+    const selectedGradeBand = String(e.target?.value || DEFAULT_PREFS.grade).trim() || DEFAULT_PREFS.grade;
+    setPref('grade', selectedGradeBand);
     applyAllGradeLengthDefault({ toast: true });
     releaseLessonPackToManualMode();
+    enforceFocusSelectionForGrade(selectedGradeBand, { toast: true });
     updateFocusGradeNote();
     updateGradeTargetInline();
     refreshStandaloneMissionLabHub();
+    syncFocusSearchForCurrentGrade();
   });
   _el('s-length')?.addEventListener('change',  e => {
     setPref('length', e.target.value);
@@ -3333,8 +3409,8 @@
   _el('s-play-style')?.addEventListener('change', e => {
     const next = applyPlayStyle(e.target.value);
     WQUI.showToast(next === 'listening'
-      ? 'Audio game is on: hear word + definition, then spell it.'
-      : 'Audio game is off: detective sentence clues are active.');
+      ? 'Listening challenge on: hear word + meaning, then spell.'
+      : 'Classic mode on: use tile colors and clue strategy.');
   });
   _el('s-reveal-focus')?.addEventListener('change', e => {
     const next = applyRevealFocusMode(e.target.value);
@@ -3369,10 +3445,12 @@
   _el('focus-hint-toggle')?.addEventListener('click', () => {
     showInformantHintToast();
   });
-  _el('hint-clue-close-btn')?.addEventListener('click', (event) => {
+  const closeHintClueCard = (event) => {
     event.preventDefault();
     hideInformantHintCard();
-  });
+  };
+  _el('hint-clue-close-btn')?.addEventListener('click', closeHintClueCard);
+  _el('hint-clue-close-icon')?.addEventListener('click', closeHintClueCard);
   _el('hint-clue-sentence-btn')?.addEventListener('click', (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -3401,8 +3479,8 @@
     const next = current === 'listening' ? 'detective' : 'listening';
     applyPlayStyle(next);
     WQUI.showToast(next === 'listening'
-      ? 'Audio game is on.'
-      : 'Audio game is off.');
+      ? 'Listening challenge on: spell what you hear.'
+      : 'Classic mode on.');
   });
   _el('s-dupe')?.addEventListener('change',    e => setPref('dupe',     e.target.value));
   _el('s-confetti')?.addEventListener('change',e => {
@@ -5091,6 +5169,11 @@
       : String(selectedGradeBand || SAFE_DEFAULT_GRADE_BAND).trim();
   }
 
+  function shouldExpandGradeBandForFocus(focusValue = 'all') {
+    const preset = parseFocusPreset(focusValue);
+    return preset.kind === 'phonics';
+  }
+
   function applyAllGradeLengthDefault(options = {}) {
     const focusValue = _el('setting-focus')?.value || prefs.focus || 'all';
     const preset = parseFocusPreset(focusValue);
@@ -5260,7 +5343,75 @@
     return String(fallbackGroup || 'General').trim() || 'General';
   }
 
-  function getFocusEntries() {
+  const QUEST_FILTER_GRADE_ORDER = Object.freeze(['K-2', 'G3-5', 'G6-8', 'G9-12']);
+  const FOCUS_SUGGESTED_GRADE_BAND = Object.freeze({
+    cvc: 'K-2',
+    digraph: 'K-2',
+    ccvc: 'K-2',
+    cvcc: 'K-2',
+    cvce: 'K-2',
+    floss: 'K-2',
+    welded: 'K-2',
+    trigraph: 'G3-5',
+    vowel_team: 'G3-5',
+    r_controlled: 'G3-5',
+    diphthong: 'G3-5',
+    schwa: 'G3-5',
+    prefix: 'G3-5',
+    suffix: 'G3-5',
+    compound: 'G3-5',
+    multisyllable: 'G3-5'
+  });
+
+  function normalizeQuestGradeBand(value) {
+    const raw = String(value || 'all').trim();
+    if (!raw) return 'all';
+    const normalized = raw.toLowerCase();
+    if (normalized === 'all') return 'all';
+    if (normalized === 'k-2' || normalized === 'k2') return 'K-2';
+    if (normalized === 'g3-5' || normalized === '3-5') return 'G3-5';
+    if (normalized === 'g6-8' || normalized === '6-8') return 'G6-8';
+    if (normalized === 'g9-12' || normalized === '9-12') return 'G9-12';
+    return 'all';
+  }
+
+  function getQuestFilterGradeBand() {
+    return normalizeQuestGradeBand(_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade);
+  }
+
+  function isEntryGradeBandCompatible(selectedGradeBand, entryGradeBand) {
+    const selected = normalizeQuestGradeBand(selectedGradeBand);
+    if (selected === 'all') return true;
+    const selectedRank = QUEST_FILTER_GRADE_ORDER.indexOf(selected);
+    if (selectedRank < 0) return true;
+    const entry = normalizeQuestGradeBand(entryGradeBand);
+    if (entry === 'all') return true;
+    const entryRank = QUEST_FILTER_GRADE_ORDER.indexOf(entry);
+    if (entryRank < 0) return true;
+    return entryRank <= selectedRank;
+  }
+
+  function getFocusSuggestedGradeBand(value) {
+    const preset = parseFocusPreset(value);
+    if (preset.kind === 'subject') return preset.gradeBand || '';
+    if (preset.kind === 'classic') return '';
+    return FOCUS_SUGGESTED_GRADE_BAND[preset.focus] || '';
+  }
+
+  function isFocusValueCompatibleWithGrade(value, selectedGradeBand = getQuestFilterGradeBand()) {
+    const suggestedBand = getFocusSuggestedGradeBand(value);
+    return isEntryGradeBandCompatible(selectedGradeBand, suggestedBand);
+  }
+
+  function getCurriculumTargetsForGrade(packId, selectedGradeBand = getQuestFilterGradeBand()) {
+    const pack = getLessonPackDefinition(packId);
+    if (!pack || !Array.isArray(pack.targets)) return [];
+    return pack.targets.filter((target) => (
+      target?.id && isEntryGradeBandCompatible(selectedGradeBand, target.gradeBand)
+    ));
+  }
+
+  function getFocusEntries(selectedGradeBand = getQuestFilterGradeBand()) {
     const select = _el('setting-focus');
     if (!select) return [];
     return Array.from(select.options)
@@ -5276,42 +5427,47 @@
           label: getFocusDisplayLabel(value, option.textContent || value),
           group: getFocusDisplayGroup(value, rawGroup),
           kind: 'focus',
+          gradeBand: getFocusSuggestedGradeBand(value),
           questValue: `focus::${value}`
         };
-      });
+      })
+      .filter((entry) => isFocusValueCompatibleWithGrade(entry.value, selectedGradeBand));
   }
 
-  function getCurriculumProgramEntries() {
+  function getCurriculumProgramEntries(selectedGradeBand = getQuestFilterGradeBand()) {
     return CURRICULUM_PACK_ORDER.map((packId) => {
       const pack = getLessonPackDefinition(packId);
+      const visibleTargets = getCurriculumTargetsForGrade(packId, selectedGradeBand);
+      if (!visibleTargets.length) return null;
       return {
         value: `curriculum-pack::${packId}`,
         label: pack.label,
         group: 'Curriculum',
         kind: 'curriculum-pack',
         packId,
+        gradeBand: selectedGradeBand,
         targetId: 'custom',
         questValue: `curriculum-pack::${packId}`
       };
-    });
+    }).filter(Boolean);
   }
 
-  function getCurriculumQuestEntries(packFilter = '') {
+  function getCurriculumQuestEntries(packFilter = '', selectedGradeBand = getQuestFilterGradeBand()) {
     const normalizedFilter = normalizeLessonPackId(packFilter);
     const useFilter = normalizedFilter !== 'custom' && normalizedFilter.length > 0;
     const entries = [];
     CURRICULUM_PACK_ORDER.forEach((packId) => {
       if (useFilter && packId !== normalizedFilter) return;
       const pack = getLessonPackDefinition(packId);
-      if (!pack || !Array.isArray(pack.targets)) return;
-      pack.targets.forEach((target) => {
-        if (!target?.id) return;
+      const targets = getCurriculumTargetsForGrade(packId, selectedGradeBand);
+      targets.forEach((target) => {
         entries.push({
           value: `curriculum::${packId}::${target.id}`,
           label: target.label,
           group: pack.label,
           kind: 'curriculum',
           packId,
+          gradeBand: target.gradeBand,
           targetId: target.id,
           questValue: `curriculum::${packId}::${target.id}`
         });
@@ -5320,11 +5476,11 @@
     return entries;
   }
 
-  function getQuestEntries() {
+  function getQuestEntries(selectedGradeBand = getQuestFilterGradeBand()) {
     return [
-      ...getFocusEntries(),
-      ...getCurriculumProgramEntries(),
-      ...getCurriculumQuestEntries()
+      ...getFocusEntries(selectedGradeBand),
+      ...getCurriculumProgramEntries(selectedGradeBand),
+      ...getCurriculumQuestEntries('', selectedGradeBand)
     ];
   }
 
@@ -5686,10 +5842,17 @@
     const inputEl = _el('focus-inline-search');
     if (!listEl) return;
     const query = String(rawQuery || '').trim().toLowerCase();
-    const focusEntries = getFocusEntries();
-    const curriculumProgramEntries = getCurriculumProgramEntries();
-    const curriculumLessonEntries = getCurriculumQuestEntries(focusCurriculumPackFilter);
-    const entries = getQuestEntries();
+    const selectedGradeBand = getQuestFilterGradeBand();
+    const focusEntries = getFocusEntries(selectedGradeBand);
+    const curriculumProgramEntries = getCurriculumProgramEntries(selectedGradeBand);
+    if (
+      focusCurriculumPackFilter &&
+      !curriculumProgramEntries.some((entry) => entry.packId === focusCurriculumPackFilter)
+    ) {
+      focusCurriculumPackFilter = '';
+    }
+    const curriculumLessonEntries = getCurriculumQuestEntries(focusCurriculumPackFilter, selectedGradeBand);
+    const entries = getQuestEntries(selectedGradeBand);
     if (!entries.length) {
       listEl.innerHTML = '<div class="focus-search-empty">Focus options are loading...</div>';
       listEl.classList.remove('hidden');
@@ -5960,13 +6123,18 @@
   if (!WQData.__focusPatchApplied) {
     const originalGetPlayableWords = WQData.getPlayableWords.bind(WQData);
     WQData.getPlayableWords = function getPlayableWordsWithFocus(opts = {}) {
-      const preset = parseFocusPreset(opts.focus || opts.phonics || 'all');
+      const focusValue = opts.focus || opts.phonics || 'all';
+      const preset = parseFocusPreset(focusValue);
       const requestedGradeBand = preset.kind === 'subject' ? preset.gradeBand : opts.gradeBand;
-      const effectiveGradeBand = getEffectiveGameplayGradeBand(requestedGradeBand, opts.focus || opts.phonics || 'all');
+      const effectiveGradeBand = getEffectiveGameplayGradeBand(requestedGradeBand, focusValue);
+      const includeLowerBands = preset.kind === 'phonics'
+        ? (opts.includeLowerBands !== false)
+        : false;
       const basePool = originalGetPlayableWords({
         gradeBand: effectiveGradeBand || SAFE_DEFAULT_GRADE_BAND,
         length: opts.length,
-        phonics: 'all'
+        phonics: 'all',
+        includeLowerBands
       });
 
       if (preset.kind === 'classic') return basePool;
@@ -6100,6 +6268,7 @@
     applyLessonTargetConfig(initialLessonPackState.packId, initialLessonPackState.targetId);
   }
   syncGradeFromFocus(_el('setting-focus')?.value || prefs.focus || 'all', { silent: true });
+  enforceFocusSelectionForGrade(_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade, { toast: false });
   applyAllGradeLengthDefault();
   updateFocusHint();
   updateFocusGradeNote();
@@ -7876,7 +8045,8 @@
     const pool = WQData.getPlayableWords({
       gradeBand,
       length,
-      focus
+      phonics: focus,
+      includeLowerBands: shouldExpandGradeBandForFocus(focus)
     });
     if (!Array.isArray(pool) || !pool.length) return [];
     const copy = [...pool];
@@ -8950,7 +9120,7 @@
     renderQuestLoop(state);
   }
 
-  function newGame() {
+  function newGame(options = {}) {
     hideInformantHintCard();
     closeRevealChallengeModal({ silent: true });
     clearClassroomTurnTimer();
@@ -8960,6 +9130,10 @@
       return;
     }
     if (isMissionLabStandaloneMode()) {
+      if (options.launchMissionLab === false) {
+        refreshStandaloneMissionLabHub();
+        return;
+      }
       startStandaloneMissionLab();
       return;
     }
@@ -9189,7 +9363,12 @@
     }
     const challengeOpen = !(_el('challenge-modal')?.classList.contains('hidden'));
     if (challengeOpen) {
-      if (e.key === 'Escape') closeRevealChallengeModal();
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeRevealChallengeModal();
+      } else if (e.key === 'Tab') {
+        trapChallengeModalTab(e);
+      }
       return;
     }
     if (isMissionLabStandaloneMode()) return;
@@ -9320,7 +9499,7 @@
     if (current) void WQAudio.playSentence(current);
   });
   _el('challenge-open-practice')?.addEventListener('click', () => {
-    closeRevealChallengeModal({ silent: true });
+    closeRevealChallengeModal({ silent: true, restoreFocus: false });
     openVoicePracticeAndRecord({ autoStart: true });
   });
   _el('challenge-save-reflection')?.addEventListener('click', () => {
@@ -9531,17 +9710,20 @@
     const focus = _el('setting-focus')?.value || prefs.focus || 'all';
     const selectedGrade = _el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade;
     const gradeBand = getEffectiveGameplayGradeBand(selectedGrade, focus);
+    const includeLowerBands = shouldExpandGradeBandForFocus(focus);
     const length = String(_el('s-length')?.value || prefs.length || DEFAULT_PREFS.length).trim() || DEFAULT_PREFS.length;
     let pool = WQData.getPlayableWords({
       gradeBand,
       length,
-      phonics: focus
+      phonics: focus,
+      includeLowerBands
     });
     if (!pool.length && length !== 'any') {
       pool = WQData.getPlayableWords({
         gradeBand,
         length: 'any',
-        phonics: focus
+        phonics: focus,
+        includeLowerBands
       });
     }
     if (!pool.length) {
@@ -9656,8 +9838,13 @@
 
     revealChallengeState = nextState;
     revealChallengeState.sprintEndsAt = Date.now() + (CHALLENGE_SPRINT_SECONDS * 1000);
+    const activeElement = document.activeElement;
+    challengeModalReturnFocusEl = activeElement instanceof HTMLElement && activeElement !== document.body
+      ? activeElement
+      : null;
     renderRevealChallengeModal();
     _el('challenge-modal')?.classList.remove('hidden');
+    focusChallengeModalStart();
     startChallengeSprint();
     return true;
   }
@@ -9792,6 +9979,34 @@
     return 'Tap the target sound chunk.';
   }
 
+  function scorePatternFallbackChunk(label) {
+    const chunk = String(label || '').toUpperCase().replace(/[^A-Z]/g, '');
+    if (!chunk) return Number.NEGATIVE_INFINITY;
+    const vowelCount = (chunk.match(/[AEIOUY]/g) || []).length;
+    const hasAnchorCluster = /(AI|AY|AU|AW|EA|EE|EI|EY|IE|OA|OE|OI|OO|OU|OW|OY|UE|UI|AR|ER|IR|OR|UR|IGH|CH|SH|TH|PH|WH|TCH|DGE|CK|NG|NK)/.test(chunk);
+    let score = vowelCount * 5;
+    if (hasAnchorCluster) score += 3;
+    if (vowelCount === 0) score -= 4;
+    score += Math.min(2, chunk.length * 0.3);
+    return score;
+  }
+
+  function resolveFallbackPatternChoiceIndex(choices) {
+    const list = Array.isArray(choices) ? choices : [];
+    if (!list.length) return 0;
+    let bestIndex = -1;
+    let bestScore = Number.NEGATIVE_INFINITY;
+    list.forEach((choice, index) => {
+      const score = scorePatternFallbackChunk(choice?.label);
+      if (score > bestScore) {
+        bestScore = score;
+        bestIndex = index;
+      }
+    });
+    if (bestIndex >= 0) return bestIndex;
+    return Math.max(0, Math.floor((list.length - 1) / 2));
+  }
+
   function buildDeepDivePatternTask(result) {
     const entryData = result?.entry || null;
     const word = normalizeChallengeWord(result?.word || entryData?.word || '');
@@ -9844,17 +10059,25 @@
       }];
     }
 
+    let usedFallbackAnchor = false;
     let correctChoice = choices.find((choice) => choice.correct);
     if (!correctChoice) {
-      const fallbackIndex = Math.max(0, Math.floor((choices.length - 1) / 2));
-      correctChoice = choices[fallbackIndex];
-      if (correctChoice) correctChoice.correct = true;
+      const fallbackIndex = resolveFallbackPatternChoiceIndex(choices);
+      correctChoice = choices[fallbackIndex] || choices[0];
+      if (correctChoice) {
+        correctChoice.correct = true;
+        if (!correctChoice.mark) correctChoice.mark = 'letter';
+        usedFallbackAnchor = true;
+      }
     }
 
     const prefixLike = !!correctChoice && choices[0] && correctChoice.id === choices[0].id;
+    const helperNote = String(live?.note || '').trim();
     return {
       prompt: resolvePatternPrompt(correctChoice?.mark || '', prefixLike),
-      helper: String(live?.note || '').trim(),
+      helper: helperNote || (usedFallbackAnchor
+        ? `Look for the chunk that carries the vowel anchor in ${word.toUpperCase()}.`
+        : ''),
       choices: choices.map((choice) => ({
         id: choice.id,
         label: choice.label,
@@ -10540,7 +10763,8 @@
     const meta = _el('modal-challenge-launch-meta');
     const helper = _el('modal-challenge-launch-helper');
     if (!wrap || !meta) return;
-    if (!isMissionLabEnabled()) {
+    // Keep Deep Dive detached from core WordQuest reveal flow.
+    if (!isMissionLabEnabled() || !isMissionLabStandaloneMode()) {
       revealChallengeState = null;
       meta.textContent = '';
       if (helper) helper.textContent = '';
@@ -10561,11 +10785,56 @@
     }
     meta.textContent = `${next.topic} · Grade ${next.grade} · ${CHALLENGE_SPRINT_SECONDS}s timed deep dive`;
     if (helper) {
-      helper.textContent = 'Optional extension only: 3 quick cards for pattern, meaning, and sentence use.';
+      helper.textContent = 'Optional extension only: finish any 2 of 3 quick cards for pattern, meaning, and sentence use.';
     }
     wrap.classList.remove('hidden');
     setChallengeFeedback('');
     updateChallengeProgressUI();
+  }
+
+  function getChallengeModalFocusableElements() {
+    const modal = _el('challenge-modal');
+    if (!modal || modal.classList.contains('hidden')) return [];
+    return Array.from(
+      modal.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')
+    )
+      .filter((node) => node instanceof HTMLElement)
+      .filter((node) => node.getAttribute('aria-hidden') !== 'true')
+      .filter((node) => node.getClientRects().length > 0);
+  }
+
+  function focusChallengeModalStart() {
+    const closeBtn = _el('challenge-modal-close');
+    const focusTarget = closeBtn || getChallengeModalFocusableElements()[0] || null;
+    if (!focusTarget || typeof focusTarget.focus !== 'function') return;
+    try {
+      focusTarget.focus({ preventScroll: true });
+    } catch {
+      focusTarget.focus();
+    }
+  }
+
+  function trapChallengeModalTab(event) {
+    const focusables = getChallengeModalFocusableElements();
+    if (!focusables.length) {
+      event.preventDefault();
+      return;
+    }
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+    const currentIndex = focusables.indexOf(active);
+    if (event.shiftKey) {
+      if (currentIndex <= 0) {
+        event.preventDefault();
+        last.focus();
+      }
+      return;
+    }
+    if (currentIndex === -1 || currentIndex >= focusables.length - 1) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   function openRevealChallengeModal() {
@@ -10581,15 +10850,33 @@
     if (!Number.isFinite(revealChallengeState.sprintEndsAt) || revealChallengeState.sprintEndsAt <= Date.now()) {
       revealChallengeState.sprintEndsAt = Date.now() + (CHALLENGE_SPRINT_SECONDS * 1000);
     }
+    const activeElement = document.activeElement;
+    challengeModalReturnFocusEl = activeElement instanceof HTMLElement && activeElement !== document.body
+      ? activeElement
+      : null;
     hideInformantHintCard();
     renderRevealChallengeModal();
     _el('challenge-modal')?.classList.remove('hidden');
+    focusChallengeModalStart();
     startChallengeSprint();
   }
 
   function closeRevealChallengeModal(options = {}) {
     clearChallengeSprintTimer();
-    _el('challenge-modal')?.classList.add('hidden');
+    const modal = _el('challenge-modal');
+    const wasOpen = !!modal && !modal.classList.contains('hidden');
+    modal?.classList.add('hidden');
+    const returnFocusEl = challengeModalReturnFocusEl;
+    challengeModalReturnFocusEl = null;
+    if (wasOpen && options.restoreFocus !== false && returnFocusEl && document.contains(returnFocusEl)) {
+      if (typeof returnFocusEl.focus === 'function') {
+        try {
+          returnFocusEl.focus({ preventScroll: true });
+        } catch {
+          returnFocusEl.focus();
+        }
+      }
+    }
     if (!options.preserveFeedback) setChallengeFeedback('');
   }
 
@@ -11604,22 +11891,34 @@
 
     const playCatalogTrack = async (playMode, token) => {
       await loadCatalog();
-      if (token !== playbackToken || playMode !== mode || !catalog) return false;
+      if (token !== playbackToken || playMode !== mode || !catalog) {
+        return { started: false, blocked: false };
+      }
       const track = chooseTrack(playMode);
-      if (!track) return false;
+      if (!track) return { started: false, blocked: false };
 
       const player = ensureAudioEl();
-      const resolvedTrackUrl = new URL(track.src, window.location.href).toString();
-      if (player.src !== resolvedTrackUrl) player.src = track.src;
+      const resolveTrackSrc = (rawSrc) => {
+        const src = String(rawSrc || '').trim();
+        if (!src) return '';
+        if (/^(?:blob:|data:|https?:)/i.test(src)) return src;
+        // Support GH Pages subpath deploys by resolving root-like paths as app-relative.
+        const normalized = src.startsWith('/') ? src.slice(1) : src;
+        return new URL(normalized, window.location.href).toString();
+      };
+      const resolvedTrackUrl = resolveTrackSrc(track.src);
+      if (!resolvedTrackUrl) return { started: false, blocked: false };
+      if (player.src !== resolvedTrackUrl) player.src = resolvedTrackUrl;
       player.currentTime = 0;
       setTrackVolume(track.gain);
       try {
         await player.play();
         activeTrackId = track.id;
         player.dataset.wqTrackGain = String(track.gain || 1);
-        return true;
-      } catch {
-        return false;
+        return { started: true, blocked: false };
+      } catch (error) {
+        const blocked = String(error?.name || '').toLowerCase() === 'notallowederror';
+        return { started: false, blocked };
       }
     };
 
@@ -11633,9 +11932,15 @@
         return;
       }
 
-      const startedCatalogTrack = await playCatalogTrack(playMode, token);
+      const catalogPlayback = await playCatalogTrack(playMode, token);
       if (token !== playbackToken || playMode !== mode) return;
-      if (!startedCatalogTrack) {
+      if (!catalogPlayback.started) {
+        if (catalogPlayback.blocked) {
+          // Browser autoplay gate: wait for user interaction to resume real tracks.
+          activeTrackId = '';
+          stopSynth();
+          return;
+        }
         activeTrackId = '';
         stopTrack();
         startSynth(playMode);
@@ -11697,6 +12002,6 @@
   WQMusic.initFromPrefs(prefs);
   syncMusicForTheme();
   initQuestLoop();
-  newGame();
+  newGame({ launchMissionLab: false });
 
 })();
