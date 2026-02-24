@@ -1210,13 +1210,13 @@
     const enabled = mode !== 'off';
     const playStyle = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle);
     const listening = playStyle === 'listening';
-    toggle.textContent = listening ? 'Phonics Hint' : 'Clue';
+    toggle.textContent = 'Hint';
     toggle.setAttribute('aria-pressed', 'false');
-    toggle.setAttribute('aria-label', listening ? 'Open optional phonics hint' : 'Open clue card');
+    toggle.setAttribute('aria-label', listening ? 'Open optional phonics hint for listening and encoding support' : 'Open optional detective hint');
     toggle.setAttribute('title', enabled
       ? (listening
-          ? 'Optional phonics hint. Primary goal is spelling from audio.'
-          : 'Ask for a mystery clue with phonics markings')
+          ? 'Optional phonics hint. Primary goal is listen, map sounds, and spell.'
+          : 'Optional detective hint with phonics markings')
       : 'Hint cues are off in settings, but you can still ask for support');
     toggle.classList.toggle('is-off', !enabled);
   }
@@ -1247,15 +1247,30 @@
     const toggle = _el('play-style-toggle');
     if (!toggle) return;
     const listening = mode === 'listening';
-    toggle.textContent = listening ? 'Mode: Listening' : 'Mode: Classic';
+    toggle.textContent = listening ? 'Listening' : 'Detective';
+    toggle.style.whiteSpace = 'nowrap';
     toggle.setAttribute('aria-pressed', listening ? 'true' : 'false');
     toggle.classList.toggle('is-listening', listening);
     toggle.setAttribute('aria-label', listening
-      ? 'Listening challenge mode is on. Switch to classic mode.'
-      : 'Classic mode is on. Switch to listening challenge mode.');
+      ? 'Listening mode on. Hear meaning and encode what you hear.'
+      : 'Detective mode on. Use tile colors and clues to encode.');
     toggle.setAttribute('title', listening
-      ? 'Switch to classic word + color strategy mode'
-      : 'Switch to listening challenge mode');
+      ? 'Listening mode: hear word plus meaning, then spell by sound'
+      : 'Detective mode: use color feedback and clues');
+  }
+
+  function syncHeaderClueLauncherUI(mode = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle)) {
+    const button = _el('phonics-clue-open-btn');
+    if (!button) return;
+    const listening = mode === 'listening';
+    button.textContent = listening ? 'Clue+' : 'Clue+';
+    button.style.whiteSpace = 'nowrap';
+    button.setAttribute('title', listening
+      ? 'Open Clue Sprint for listening and encoding practice'
+      : 'Open Clue Sprint for detective-style clue practice');
+    button.setAttribute('aria-label', listening
+      ? 'Open Clue Sprint for listening and encoding practice'
+      : 'Open Clue Sprint for detective clue practice');
   }
 
   function syncGameplayAudioStrip(mode = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle)) {
@@ -1293,6 +1308,7 @@
     const select = _el('s-play-style');
     if (select && select.value !== normalized) select.value = normalized;
     syncPlayStyleToggleUI(normalized);
+    syncHeaderClueLauncherUI(normalized);
     syncGameplayAudioStrip(normalized);
     if (options.persist !== false) setPref('playStyle', normalized);
     updateNextActionLine();
@@ -2035,7 +2051,7 @@
     const layout = normalizeKeyboardLayout(document.documentElement.getAttribute('data-keyboard-layout') || 'standard');
     const next = getNextKeyboardLayout(layout);
     const isWilson = layout === 'wilson';
-    toggle.textContent = '⌨';
+    toggle.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="6" width="18" height="12" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 10h1M9 10h1M12 10h1M15 10h1M18 10h0M6 13h1M9 13h1M12 13h1M15 13h1M6 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
     toggle.setAttribute('aria-pressed', isWilson ? 'true' : 'false');
     toggle.setAttribute('aria-label', `${getKeyboardLayoutLabel(layout)} keyboard on. Tap for ${getKeyboardLayoutLabel(next)}.`);
     toggle.setAttribute('title', `${getKeyboardLayoutLabel(layout)} keyboard on. Tap for ${getKeyboardLayoutLabel(next)}.`);
@@ -4584,7 +4600,9 @@
       const sizeFloor = layoutMode === 'compact' ? 26 : layoutMode === 'tight' ? 30 : 32;
       const size = Math.max(sizeFloor, Math.min(byHeight, byWidth, sizeCap));
       const boardWidth = wordLength * size + (wordLength - 1) * tileGap;
+      const boardHeight = maxGuesses * size + (maxGuesses - 1) * tileGap;
       const playfieldW = Math.ceil(boardWidth);
+      const playfieldH = Math.ceil(boardHeight);
 
       const adaptiveKeyFloor = layoutMode === 'compact' ? 36 : layoutMode === 'tight' ? 44 : 48;
       const adaptiveKeyCeil = layoutMode === 'wide' ? 58 : 54;
@@ -4602,10 +4620,17 @@
 
       document.documentElement.style.setProperty('--tile-size', `${size}px`);
       document.documentElement.style.setProperty('--playfield-width', `${playfieldW}px`);
+      document.documentElement.style.setProperty('--playfield-height', `${playfieldH}px`);
       document.documentElement.style.setProperty('--key-h', `${adaptiveKeyH}px`);
       document.documentElement.style.setProperty('--key-min-w', `${adaptiveKeyMinW}px`);
       document.documentElement.style.setProperty('--gap-key', `${Math.max(6, adaptiveKeyGap).toFixed(1)}px`);
       document.documentElement.style.setProperty('--keyboard-max-width', `${Math.ceil(maxKeyboardW)}px`);
+
+      if (boardPlateEl) {
+        // Keep the far backplate visually square-ish to the board stack.
+        const targetPlateWidth = Math.max(playfieldW + 68, playfieldH + 56);
+        boardPlateEl.style.width = `min(${Math.ceil(targetPlateWidth)}px, calc(100vw - 20px), calc(100% - 4px))`;
+      }
 
       if (keyboardEl && keyboardEl.offsetWidth > maxKeyboardW) {
         document.documentElement.style.setProperty('--key-min-w', `${Math.max(minKeyFloor, adaptiveKeyMinW - 2)}px`);
