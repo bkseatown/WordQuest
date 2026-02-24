@@ -722,11 +722,12 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
 }
 
 .theme-preview-strip {
-  width:         auto;
+  width:         min(700px, calc(100vw - 26px));
+  max-width:     calc(100vw - 26px);
   min-height:    34px;
   display:       flex;
   align-items:   center;
-  justify-content: center;
+  justify-content: space-between;
   gap:           6px;
   padding:       4px 6px;
   background:    color-mix(in oklab, var(--panel-bg) 82%, var(--focusbar-bg) 18%);
@@ -752,6 +753,21 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   flex: 0 0 auto;
 }
 
+.quick-theme-cluster {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.quick-music-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding-left: 6px;
+  margin-left: 2px;
+  border-left: 1px solid color-mix(in oklab, var(--panel-border) 68%, transparent);
+}
+
 .theme-preview-music {
   flex: 0 0 auto;
   width: 28px;
@@ -767,6 +783,11 @@ html[data-focus-search-open="true"] .theme-preview-strip {
   justify-content: center;
   cursor: pointer;
   transition: border-color 0.14s ease, background 0.14s ease, color 0.14s ease;
+}
+
+.quick-music-step {
+  font-size: 0.74rem;
+  font-weight: 800;
 }
 
 .theme-preview-music:hover {
@@ -807,7 +828,7 @@ html[data-focus-search-open="true"] .theme-preview-strip {
 }
 
 .quick-music-vol {
-  width: 74px;
+  width: 88px;
   accent-color: var(--brand);
 }
 
@@ -820,44 +841,32 @@ html[data-focus-search-open="true"] .theme-preview-strip {
 
 .quick-media-dock {
   position: fixed;
-  right: max(10px, calc(env(safe-area-inset-right) + 10px));
+  left: max(10px, calc(env(safe-area-inset-left) + 10px));
   bottom: max(10px, calc(env(safe-area-inset-bottom) + 10px));
+  right: auto;
 }
 
 .quick-media-dock .wq-theme-nav {
-  gap: 4px;
+  gap: 5px;
 }
 
 .quick-media-dock .wq-theme-nav-btn,
 .quick-media-dock .wq-theme-label-btn {
-  width: 28px;
   height: 28px;
   min-height: 28px;
-  border-radius: 50%;
+  border-radius: 999px;
+}
+
+.quick-media-dock .wq-theme-nav-btn {
+  width: 28px;
+  min-width: 28px;
   padding: 0;
 }
 
 .quick-media-dock .wq-theme-label-btn {
-  min-width: 28px;
-  max-width: 28px;
-  position: relative;
-}
-
-.quick-media-dock .wq-theme-label-btn::before {
-  content: '🎨';
-  font-size: 0.86rem;
-  line-height: 1;
-}
-
-.quick-media-dock .wq-theme-label {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
+  min-width: clamp(148px, 19vw, 214px);
+  max-width: min(44vw, 220px);
+  padding: 0 10px;
 }
 
 /* ── Settings overlay ───────────────────────────────── */
@@ -1067,7 +1076,7 @@ html[data-focus-search-open="true"] .theme-preview-strip {
 }
 
 .settings-view-switch {
-  display: inline-grid;
+  display: none;
   grid-template-columns: 1fr;
   gap: 4px;
   padding: 3px;
@@ -2030,28 +2039,20 @@ html[data-focus-search-open="true"] .theme-preview-strip {
 }
 
 .theme-preview-strip.quick-media-dock .wq-theme-nav {
-  gap: 4px;
+  gap: 5px;
 }
 
 .theme-preview-strip.quick-media-dock .wq-theme-nav-btn,
 .theme-preview-strip.quick-media-dock .wq-theme-label-btn {
-  width: 28px;
   height: 28px;
-  min-width: 28px;
-  max-width: 28px;
   min-height: 28px;
-  border-radius: 50%;
-  padding: 0;
+  border-radius: 999px;
 }
 
 .theme-preview-strip.quick-media-dock .wq-theme-label-btn {
-  position: relative;
-}
-
-.theme-preview-strip.quick-media-dock .wq-theme-label-btn::before {
-  content: '🎨';
-  font-size: 0.86rem;
-  line-height: 1;
+  min-width: clamp(148px, 19vw, 214px);
+  max-width: min(44vw, 220px);
+  padding: 0 10px;
 }
 
 /* ── Main ────────────────────────────────────────────── */
@@ -4626,7 +4627,7 @@ html[data-layout-mode="wide"] {
 }
 
 html[data-layout-mode="wide"] .theme-preview-strip {
-  width: min(430px, calc(100vw - 34px));
+  width: min(760px, calc(100vw - 30px));
 }
 
 html[data-layout-mode="wide"] .focus-inline-results {
@@ -4839,6 +4840,39 @@ html[data-layout-mode="compact"] .key.key-chunk {
 
   .teacher-panel-grid {
     grid-template-columns: 1fr;
+  }
+
+  .theme-preview-strip {
+    width: min(100vw - 16px, 620px);
+    max-width: calc(100vw - 16px);
+    gap: 4px;
+    padding: 4px 5px;
+  }
+
+  .quick-music-cluster {
+    gap: 4px;
+    padding-left: 4px;
+    margin-left: 0;
+  }
+
+  .quick-music-vol {
+    width: 62px;
+  }
+
+  .quick-media-dock .wq-theme-label-btn,
+  .theme-preview-strip.quick-media-dock .wq-theme-label-btn {
+    min-width: 124px;
+    max-width: 34vw;
+  }
+}
+
+@media (max-width: 420px) {
+  #quick-music-shuffle {
+    display: none;
+  }
+
+  .quick-music-vol {
+    width: 52px;
   }
 }
 

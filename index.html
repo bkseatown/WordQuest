@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/modes.css?v=20260223c">
   <link rel="stylesheet" href="style/themes.css?v=20260224u">
-  <link rel="stylesheet" href="style/components.css?v=20260224w">
+  <link rel="stylesheet" href="style/components.css?v=20260224x">
 </head>
 <body>
 
@@ -21,17 +21,14 @@
     <div class="header-main-row">
       <div class="logo">Word<span>Quest</span></div>
       <div class="header-right">
-        <button id="focus-hint-toggle" class="header-quick-btn focus-hint-toggle" type="button" aria-pressed="false" title="Reveal a mystery clue">
-          Clue
-        </button>
         <button id="teacher-panel-btn" class="icon-btn" type="button" aria-label="Teacher Hub" title="Teacher Hub">
-          👩‍🏫
+          ✏️
         </button>
         <button id="case-toggle-btn" class="icon-btn micro-toggle-btn" type="button" aria-pressed="false" aria-label="Toggle letter case" title="Toggle letter case">
-          🔡
+          Aa
         </button>
         <button id="keyboard-layout-toggle" class="icon-btn micro-toggle-btn" type="button" aria-pressed="false" aria-label="Toggle keyboard layout" title="Toggle keyboard layout">
-          ⌨️
+          ⌨
         </button>
         <button id="settings-btn" class="icon-btn" title="Settings" aria-label="Settings">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -83,19 +80,18 @@
     </div>
   </div>
   <div id="theme-preview-strip" class="theme-preview-strip quick-media-dock hidden" role="region" aria-label="Quick style controls">
-    <div id="theme-preview-slot" class="theme-preview-slot" aria-label="Theme carousel"></div>
-    <label class="quick-music-vol-wrap" for="quick-music-vol" title="Music volume">
-      <span class="quick-music-vol-icon" aria-hidden="true">♪</span>
-      <input id="quick-music-vol" class="quick-music-vol" type="range" min="0" max="1" step="0.05" value="0.50" aria-label="Music volume">
-    </label>
-    <button id="quick-music-toggle" class="theme-preview-music theme-preview-music-icon" type="button" aria-pressed="false" aria-label="Toggle music" title="Turn music on">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M4 13v-2h4l5-4v10l-5-4H4z"></path>
-        <path d="M16 9c1.8 1.2 1.8 4.8 0 6"></path>
-        <path d="M18.5 7c3.4 2.5 3.4 7.5 0 10"></path>
-      </svg>
-    </button>
-    <span id="quick-music-label" class="sr-only" aria-live="polite">Muted</span>
+    <div id="theme-preview-slot" class="theme-preview-slot quick-theme-cluster" aria-label="Theme selector"></div>
+    <div class="quick-music-cluster" role="group" aria-label="Music controls">
+      <button id="quick-music-prev" class="theme-preview-music quick-music-step" type="button" aria-label="Previous music vibe" title="Previous vibe">⏮</button>
+      <button id="quick-music-toggle" class="theme-preview-music theme-preview-music-icon" type="button" aria-pressed="false" aria-label="Play music" title="Play music">▶</button>
+      <button id="quick-music-next" class="theme-preview-music quick-music-step" type="button" aria-label="Next music vibe" title="Next vibe">⏭</button>
+      <button id="quick-music-shuffle" class="theme-preview-music quick-music-step" type="button" aria-label="Shuffle music vibe" title="Shuffle vibe">🔀</button>
+      <label class="quick-music-vol-wrap" for="quick-music-vol" title="Music volume">
+        <span class="quick-music-vol-icon" aria-hidden="true">♪</span>
+        <input id="quick-music-vol" class="quick-music-vol" type="range" min="0" max="1" step="0.05" value="0.50" aria-label="Music volume">
+      </label>
+      <span id="quick-music-label" class="theme-preview-music-label" aria-live="polite">Stopped</span>
+    </div>
   </div>
   <div id="next-action-line" class="next-action-line hidden" aria-live="polite"></div>
   <div id="classroom-turn-line" class="classroom-turn-line hidden" aria-live="polite"></div>
@@ -143,7 +139,6 @@
                   <label>Program
                     <select id="s-lesson-pack">
                       <option value="custom" selected>Manual (no pack)</option>
-                      <option value="phonics">Phonics Curriculum</option>
                       <option value="ufli">UFLI Foundations</option>
                       <option value="fundations">Fundations</option>
                       <option value="wilson">Wilson Reading</option>
@@ -199,6 +194,9 @@
             </label></div>
             <div id="s-music-active" class="setting-row setting-row-full setting-row-help">Music is off.</div>
             <div class="setting-row setting-row-full"><label>Music Volume<input id="s-music-vol" type="range" min="0" max="1" step="0.05" value="0.50"></label></div>
+            <div class="setting-row setting-row-full"><label>Upload MP3s (device only)<input id="s-music-upload" type="file" accept="audio/mpeg,audio/*" multiple></label></div>
+            <div id="s-music-upload-msg" class="setting-row setting-row-full setting-row-help">No local MP3 files loaded yet.</div>
+            <div class="setting-row setting-row-full"><button id="s-music-clear-local" class="quick-action-btn" type="button">Clear Local MP3s</button></div>
             <div class="setting-row setting-row-full"><label>Audio Voice<select id="s-voice"><option value="recorded">Recorded only (recommended)</option><option value="auto">Recorded → device fallback</option><option value="device">Device voice only (beta)</option><option value="off">Off (no read-aloud)</option></select></label></div>
             <div class="setting-row setting-row-full small-help"><button id="voice-help-btn" class="link-btn" type="button">How to improve device voice</button></div>
           </div>
@@ -625,6 +623,9 @@
       <div class="play-support-row">
         <!-- Hear Word remains visible during gameplay -->
         <div class="gameplay-audio">
+          <button id="focus-hint-toggle" class="audio-ghost-btn focus-hint-toggle" type="button" aria-pressed="false" title="Reveal a mystery clue">
+            Clue
+          </button>
           <button class="audio-ghost-btn" id="g-hear-word">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
             Hear Word
@@ -966,7 +967,7 @@
   <script src="js/game.js?v=20260223g"></script>
   <script src="js/ui.js?v=20260223f"></script>
   <script src="js/theme-registry.js?v=20260223c"></script>
-  <script src="js/app.js?v=20260224x"></script>
-  <script src="js/theme-nav.js?v=20260224d"></script>
+  <script src="js/app.js?v=20260224y"></script>
+  <script src="js/theme-nav.js?v=20260224e"></script>
 </body>
 </html>

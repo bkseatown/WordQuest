@@ -71,8 +71,8 @@
 
     if (label) label.textContent = getThemeLabel(current);
     if (labelBtn) {
-      labelBtn.title = `Current theme: ${getThemeLabel(current)} (use arrows to change)`;
-      labelBtn.setAttribute('aria-label', `Current theme: ${getThemeLabel(current)}. Use arrows to change.`);
+      labelBtn.title = `${getThemeLabel(current)} (use arrows to change)`;
+      labelBtn.setAttribute('aria-label', `Current style: ${getThemeLabel(current)}. Use arrows to change.`);
     }
     if (prevBtn) prevBtn.title = getThemeLabel(prev);
     if (nextBtn) nextBtn.title = getThemeLabel(next);
@@ -106,11 +106,11 @@
     nav.id = 'wq-theme-nav';
     nav.className = 'wq-theme-nav';
     nav.innerHTML = [
-      '<button id="wq-theme-prev" class="wq-theme-nav-btn" type="button" aria-label="Previous theme">◀</button>',
-      '<button id="wq-theme-label-btn" class="wq-theme-label-btn" type="button" aria-label="Current theme">',
+      '<button id="wq-theme-prev" class="wq-theme-nav-btn" type="button" aria-label="Previous style">◀</button>',
+      '<button id="wq-theme-label-btn" class="wq-theme-label-btn" type="button" aria-label="Current style">',
       '  <span id="wq-theme-label" class="wq-theme-label">Default</span>',
       '</button>',
-      '<button id="wq-theme-next" class="wq-theme-nav-btn" type="button" aria-label="Next theme">▶</button>'
+      '<button id="wq-theme-next" class="wq-theme-nav-btn" type="button" aria-label="Next style">▶</button>'
     ].join('');
     host.appendChild(nav);
 

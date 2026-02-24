@@ -121,6 +121,19 @@
     team: 'Team Game Hype',
     off: 'Off'
   });
+  const QUICK_MUSIC_VIBE_ORDER = Object.freeze([
+    'focus',
+    'chill',
+    'lofi',
+    'coffee',
+    'fantasy',
+    'scifi',
+    'upbeat',
+    'arcade',
+    'sports',
+    'stealth',
+    'team'
+  ]);
   const DEFAULT_PREFS = Object.freeze({
     focus: 'all',
     lessonPack: 'custom',
@@ -560,7 +573,7 @@
       ])
     })
   });
-  const CURRICULUM_PACK_ORDER = Object.freeze(['phonics', 'ufli', 'fundations', 'wilson', 'justwords']);
+  const CURRICULUM_PACK_ORDER = Object.freeze(['ufli', 'fundations', 'wilson', 'justwords']);
 
   const CHUNK_TAB_FOCUS_KEYS = new Set([
     'digraph',
@@ -664,7 +677,7 @@
     const status = _el('s-music-active');
     if (!status) return;
     if (selectedMode === 'off') {
-      status.textContent = 'Music is off.';
+      status.textContent = 'Music is stopped.';
       syncQuickMusicDock('off', activeMode);
       return;
     }
@@ -680,6 +693,9 @@
 
   function syncQuickMusicDock(selectedMode, activeMode) {
     const toggleBtn = _el('quick-music-toggle');
+    const prevBtn = _el('quick-music-prev');
+    const nextBtn = _el('quick-music-next');
+    const shuffleBtn = _el('quick-music-shuffle');
     const labelEl = _el('quick-music-label');
     if (!toggleBtn) return;
     const selected = normalizeMusicMode(selectedMode || _el('s-music')?.value || prefs.music || DEFAULT_PREFS.music);
@@ -687,15 +703,24 @@
       ? resolveAutoMusicMode(normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback()))
       : selected));
     const isOn = selected !== 'off';
+    const activeLabel = MUSIC_LABELS[active] || active;
     toggleBtn.setAttribute('aria-pressed', isOn ? 'true' : 'false');
     toggleBtn.classList.toggle('is-on', isOn);
     toggleBtn.setAttribute('data-music-state', isOn ? 'on' : 'off');
+    toggleBtn.textContent = isOn ? '⏸' : '▶';
     toggleBtn.setAttribute('aria-label', isOn
-      ? `Music on. Tap to turn off. Current vibe: ${MUSIC_LABELS[active] || active}.`
-      : 'Music off. Tap to turn on.');
-    toggleBtn.title = isOn ? `Turn music off (currently ${MUSIC_LABELS[active] || active}).` : 'Turn music on.';
+      ? `Pause music. Current vibe: ${activeLabel}.`
+      : 'Play music.');
+    toggleBtn.title = isOn ? `Pause music (${activeLabel}).` : 'Play music.';
+    [prevBtn, nextBtn, shuffleBtn].forEach((btn) => {
+      if (!btn) return;
+      btn.classList.toggle('is-on', isOn);
+    });
+    if (prevBtn) prevBtn.title = `Previous vibe (now ${activeLabel}).`;
+    if (nextBtn) nextBtn.title = `Next vibe (now ${activeLabel}).`;
+    if (shuffleBtn) shuffleBtn.title = `Shuffle vibe (now ${activeLabel}).`;
     if (labelEl) {
-      labelEl.textContent = isOn ? (MUSIC_LABELS[active] || active) : 'Muted';
+      labelEl.textContent = isOn ? activeLabel : 'Stopped';
     }
     if (isOn) {
       try { localStorage.setItem(LAST_NON_OFF_MUSIC_KEY, selected === 'auto' ? 'auto' : active); } catch {}
@@ -726,6 +751,80 @@
     if (select) select.value = next;
     setPref('music', next);
     syncMusicForTheme({ toast: true });
+  }
+
+  function getCurrentMusicVibeForControls() {
+    const selected = normalizeMusicMode(_el('s-music')?.value || prefs.music || DEFAULT_PREFS.music);
+    if (selected === 'off') return getPreferredMusicOnMode();
+    if (selected === 'auto') {
+      const activeTheme = normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
+      return resolveAutoMusicMode(activeTheme);
+    }
+    return selected;
+  }
+
+  function applyMusicModeFromQuick(mode, options = {}) {
+    const next = normalizeMusicMode(mode);
+    if (next === 'off') return;
+    const select = _el('s-music');
+    if (select) select.value = next;
+    setPref('music', next);
+    syncMusicForTheme({ toast: options.toast !== false });
+  }
+
+  function stepMusicVibe(direction = 1) {
+    const current = getCurrentMusicVibeForControls();
+    const idx = Math.max(0, QUICK_MUSIC_VIBE_ORDER.indexOf(current));
+    const next = QUICK_MUSIC_VIBE_ORDER[(idx + direction + QUICK_MUSIC_VIBE_ORDER.length) % QUICK_MUSIC_VIBE_ORDER.length];
+    applyMusicModeFromQuick(next, { toast: true });
+  }
+
+  function shuffleMusicVibe() {
+    const current = getCurrentMusicVibeForControls();
+    const pool = QUICK_MUSIC_VIBE_ORDER.filter((mode) => mode !== current);
+    const next = pool[Math.floor(Math.random() * pool.length)] || current;
+    applyMusicModeFromQuick(next, { toast: true });
+  }
+
+  function setLocalMusicFiles(fileList) {
+    const msgEl = _el('s-music-upload-msg');
+    const teacherMsg = _el('teacher-studio-msg');
+    const files = Array.from(fileList || [])
+      .filter((file) => file && /^audio\//i.test(String(file.type || '')) && Number(file.size || 0) > 0);
+    if (!musicController || typeof musicController.setCustomFiles !== 'function') {
+      if (msgEl) msgEl.textContent = 'Local upload is unavailable in this build.';
+      return;
+    }
+    if (!files.length) {
+      if (msgEl) msgEl.textContent = 'No valid audio files selected.';
+      return;
+    }
+    const result = musicController.setCustomFiles(files);
+    const count = Number(result?.count || 0);
+    const selected = normalizeMusicMode(_el('s-music')?.value || prefs.music || DEFAULT_PREFS.music);
+    if (selected === 'off') {
+      applyMusicModeFromQuick(getPreferredMusicOnMode(), { toast: false });
+    } else {
+      syncMusicForTheme({ toast: false });
+    }
+    const message = count > 0
+      ? `Loaded ${count} local track${count === 1 ? '' : 's'} for this device.`
+      : 'No valid audio files selected.';
+    if (msgEl) msgEl.textContent = message;
+    if (teacherMsg) teacherMsg.textContent = message;
+    WQUI.showToast(message);
+  }
+
+  function clearLocalMusicFiles() {
+    const msgEl = _el('s-music-upload-msg');
+    const teacherMsg = _el('teacher-studio-msg');
+    if (musicController && typeof musicController.clearCustomFiles === 'function') {
+      musicController.clearCustomFiles();
+    }
+    syncMusicForTheme({ toast: false });
+    if (msgEl) msgEl.textContent = 'Local MP3 list cleared.';
+    if (teacherMsg) teacherMsg.textContent = 'Local MP3 list cleared.';
+    WQUI.showToast('Local MP3 list cleared.');
   }
 
   function syncMusicForTheme(options = {}) {
@@ -1575,6 +1674,107 @@
     return 'cvc';
   }
 
+  function buildMarkedHintParts(word, start, end, mark) {
+    const upper = String(word || '').toUpperCase();
+    const left = upper.slice(0, Math.max(0, start));
+    const middle = upper.slice(Math.max(0, start), Math.max(start, end));
+    const right = upper.slice(Math.max(start, end));
+    const parts = [];
+    if (left) parts.push(Object.freeze({ text: left }));
+    if (middle) parts.push(Object.freeze({ text: middle, mark: mark || 'letter' }));
+    if (right) parts.push(Object.freeze({ text: right }));
+    return Object.freeze(parts);
+  }
+
+  function buildLiveHintExample(wordValue, category) {
+    const word = String(wordValue || '').toLowerCase().replace(/[^a-z]/g, '');
+    if (!word) return null;
+
+    const teamMatch = word.match(/(ai|ay|ea|ee|oa|oe|ie|ue|ui|oo|oi|oy|ou|ow|au|aw|ew)/);
+    const digraphMatch = word.match(/(sh|ch|th|wh|ph|ck|ng|qu)/);
+    const rControlledMatch = word.match(/(ar|or|er|ir|ur)/);
+    const prefixMatch = word.match(/^(un|re|pre|dis|mis|non|sub|inter|trans|over|under|anti|de)/);
+    const suffixMatch = word.match(/(ing|ed|er|est|ly|tion|sion|ment|ness|less|ful|able|ible|ous|ive|al|y)$/);
+
+    if (category === 'vowel_team' && teamMatch?.[0]) {
+      const start = teamMatch.index || 0;
+      const end = start + teamMatch[0].length;
+      return Object.freeze({
+        parts: buildMarkedHintParts(word, start, end, 'team'),
+        note: 'Vowel team clue: these letters share one vowel sound.'
+      });
+    }
+
+    if ((category === 'digraph' || category === 'trigraph' || category === 'welded') && digraphMatch?.[0]) {
+      const start = digraphMatch.index || 0;
+      const end = start + digraphMatch[0].length;
+      return Object.freeze({
+        parts: buildMarkedHintParts(word, start, end, 'team'),
+        note: 'Sound team clue: these letters work together as one sound.'
+      });
+    }
+
+    if (category === 'r_controlled' && rControlledMatch?.[0]) {
+      const start = rControlledMatch.index || 0;
+      const end = start + rControlledMatch[0].length;
+      return Object.freeze({
+        parts: buildMarkedHintParts(word, start, end, 'team'),
+        note: 'Bossy R clue: the vowel + r shifts the vowel sound.'
+      });
+    }
+
+    if (category === 'prefix' && prefixMatch?.[0]) {
+      return Object.freeze({
+        parts: buildMarkedHintParts(word, 0, prefixMatch[0].length, 'affix'),
+        note: 'Prefix clue: read the beginning chunk first.'
+      });
+    }
+
+    if (category === 'suffix' && suffixMatch?.[0]) {
+      const end = word.length;
+      const start = end - suffixMatch[0].length;
+      return Object.freeze({
+        parts: buildMarkedHintParts(word, start, end, 'affix'),
+        note: 'Suffix clue: lock in the ending chunk.'
+      });
+    }
+
+    if (category === 'cvce' && /[^aeiou][aeiou][^aeiou]e$/.test(word)) {
+      return Object.freeze({
+        parts: Object.freeze([
+          Object.freeze({ text: word.slice(0, -1).toUpperCase() }),
+          Object.freeze({ text: 'E', mark: 'silent' })
+        ]),
+        note: 'Magic E clue: the final e is silent and changes the vowel sound.'
+      });
+    }
+
+    return null;
+  }
+
+  function buildFriendlyHintMessage(category, sourceLabel) {
+    const focusText = sourceLabel ? `We are practicing ${sourceLabel}. ` : '';
+    const ruleByCategory = Object.freeze({
+      cvc: 'Say each sound in order: first, middle, last.',
+      digraph: 'Look for two letters that make one sound.',
+      trigraph: 'Watch for a three-letter sound team.',
+      cvce: 'Look for a magic e at the end changing the vowel sound.',
+      vowel_team: 'Look for two vowels teaming up in the word.',
+      r_controlled: 'Look for a vowel with r that changes the vowel sound.',
+      diphthong: 'Watch for a sliding vowel sound like oi/oy or ou/ow.',
+      welded: 'Look for a welded chunk like -ang or -ing.',
+      floss: 'Listen for a short vowel before double ff/ll/ss/zz.',
+      prefix: 'Spot the beginning chunk first, then read the base word.',
+      suffix: 'Find the ending chunk, then blend the whole word.',
+      multisyllable: 'Split into chunks, read each chunk, then blend.',
+      compound: 'Find the two smaller words and join them.',
+      subject: 'Use the sentence clue first, then map the sounds to spell.',
+      general: 'Use one sound clue at a time, then adjust with tile colors.'
+    });
+    const rule = ruleByCategory[category] || ruleByCategory.general;
+    return `${focusText}${rule} Try one guess, then use color feedback to coach the next one.`;
+  }
+
   function buildInformantHintPayload(state) {
     const entry = state?.entry || null;
     const activeWord = String(state?.word || entry?.word || '').trim();
@@ -1593,8 +1793,10 @@
       : preset.kind === 'phonics'
         ? getFocusLabel(preset.focus).replace(/[—]/g, '').replace(/\s+/g, ' ').trim()
         : '';
-    const sourceLine = sourceLabel ? `Focus signal: ${sourceLabel}.` : '';
-    const message = `${profile.catchphrase} mission: ${profile.concept}. ${profile.rule}${sourceLine ? ` ${sourceLine}` : ''}`;
+    const liveExample = buildLiveHintExample(activeWord, category);
+    const profileExamples = Array.isArray(profile.examples) ? profile.examples : [];
+    const examples = liveExample ? [liveExample, ...profileExamples] : profileExamples;
+    const message = buildFriendlyHintMessage(category, sourceLabel);
     const playStyle = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle);
     const actionMode = playStyle === 'detective' && !!entry?.sentence
       ? 'sentence'
@@ -1602,9 +1804,9 @@
         ? 'word-meaning'
         : 'none';
     return {
-      title: '🕵️ Secret Decoder Clue',
+      title: '🔎 Clue Coach',
       message,
-      examples: Array.isArray(profile.examples) ? profile.examples : [],
+      examples,
       actionMode
     };
   }
@@ -1654,8 +1856,8 @@
     if (!card) return;
     const normalized = (payload && typeof payload === 'object')
       ? payload
-      : { title: '🕵️ Secret Decoder Clue', message: String(payload || '').trim(), examples: [], actionMode: 'none' };
-    const title = String(normalized.title || '🕵️ Secret Decoder Clue').trim() || '🕵️ Secret Decoder Clue';
+      : { title: '🔎 Clue Coach', message: String(payload || '').trim(), examples: [], actionMode: 'none' };
+    const title = String(normalized.title || '🔎 Clue Coach').trim() || '🔎 Clue Coach';
     const text = String(normalized.message || '').trim();
     if (!text) return;
     if (isMissionLabStandaloneMode() || isAnyOverlayModalOpen()) return;
@@ -1690,8 +1892,8 @@
     const state = WQGame.getState?.() || {};
     if (!state?.word) {
       showInformantHintCard({
-        title: '🕵️ Secret Decoder Clue',
-        message: 'Start a new word first. Then tap Clue to unlock a focused phonics clue with marked examples.',
+        title: '🔎 Clue Coach',
+        message: 'Tap New Word first, then press Clue for a kid-friendly phonics hint.',
         examples: [],
         actionMode: 'none'
       });
@@ -1743,7 +1945,7 @@
     if (!toggle) return;
     const layout = document.documentElement.getAttribute('data-keyboard-layout') || 'standard';
     const isWilson = layout === 'wilson';
-    toggle.textContent = isWilson ? '🧩' : '⌨️';
+    toggle.textContent = '⌨';
     toggle.setAttribute('aria-pressed', isWilson ? 'true' : 'false');
     toggle.setAttribute('aria-label', isWilson
       ? 'Sound cards on. Tap to switch to letter keyboard.'
@@ -1759,7 +1961,7 @@
     if (!toggle) return;
     const mode = String(document.documentElement.getAttribute('data-case') || prefs.caseMode || DEFAULT_PREFS.caseMode).toLowerCase();
     const isUpper = mode === 'upper';
-    toggle.textContent = isUpper ? '🔠' : '🔡';
+    toggle.textContent = 'Aa';
     toggle.setAttribute('aria-pressed', isUpper ? 'true' : 'false');
     toggle.setAttribute('aria-label', isUpper
       ? 'Uppercase letters on. Tap to switch to lowercase.'
@@ -3355,6 +3557,15 @@
   _el('quick-music-toggle')?.addEventListener('click', () => {
     toggleMusicQuick();
   });
+  _el('quick-music-prev')?.addEventListener('click', () => {
+    stepMusicVibe(-1);
+  });
+  _el('quick-music-next')?.addEventListener('click', () => {
+    stepMusicVibe(1);
+  });
+  _el('quick-music-shuffle')?.addEventListener('click', () => {
+    shuffleMusicVibe();
+  });
   _el('s-music')?.addEventListener('change', e => {
     const selected = normalizeMusicMode(e.target.value);
     e.target.value = selected;
@@ -3375,6 +3586,21 @@
     setPref('musicVol', normalized);
     if (musicController) musicController.setVolume(next);
     syncQuickMusicVolume(next);
+  });
+  _el('s-music-upload')?.addEventListener('change', (event) => {
+    const files = event.target?.files || [];
+    setLocalMusicFiles(files);
+  });
+  _el('teacher-studio-music-upload')?.addEventListener('change', (event) => {
+    const files = event.target?.files || [];
+    setLocalMusicFiles(files);
+  });
+  _el('s-music-clear-local')?.addEventListener('click', () => {
+    clearLocalMusicFiles();
+    const settingsInput = _el('s-music-upload');
+    const teacherInput = _el('teacher-studio-music-upload');
+    if (settingsInput) settingsInput.value = '';
+    if (teacherInput) teacherInput.value = '';
   });
 
   _el('s-voice')?.addEventListener('change', e => {
@@ -5047,6 +5273,15 @@
   const FOCUS_EMPTY_VISIBLE_LIMIT = 24;
   const FOCUS_QUERY_VISIBLE_LIMIT = 20;
   const CURRICULUM_QUICK_VALUES = Object.freeze([]);
+  const PHONICS_SEARCH_SHORTCUT = Object.freeze({
+    value: '__phonics_curriculum__',
+    label: 'Phonics Curriculum',
+    group: 'Curriculum',
+    kind: 'curriculum',
+    packId: 'phonics',
+    targetId: 'phonics-k2-cvc',
+    questValue: 'curriculum::phonics::phonics-k2-cvc'
+  });
 
   // Prioritize options that are most common for everyday classroom use.
   const FOCUS_POPULARITY = Object.freeze({
@@ -5336,6 +5571,10 @@
         visible.push(entry);
         used.add(entry.value);
       });
+      const hasPhonicsShortcut = visible.some((entry) => entry.questValue === PHONICS_SEARCH_SHORTCUT.questValue);
+      if (!hasPhonicsShortcut) {
+        visible = [...visible, PHONICS_SEARCH_SHORTCUT];
+      }
     } else {
       visible = getRankedFocusMatches(entries, query);
     }
@@ -5365,8 +5604,10 @@
       : '';
     listEl.innerHTML = actions + guidance + visible.map((entry) => {
       const questValue = entry.questValue || `focus::${entry.value}`;
-      const activeClass = questValue === activeQuestValue ? ' is-active' : '';
-      const selected = questValue === activeQuestValue ? 'true' : 'false';
+      const isPhonicsShortcut = entry.packId === 'phonics';
+      const isActive = questValue === activeQuestValue || (isPhonicsShortcut && activePack === 'phonics');
+      const activeClass = isActive ? ' is-active' : '';
+      const selected = isActive ? 'true' : 'false';
       const meta = entry.value === 'all' ? '' : `<small>${escapeHtml(entry.group)}</small>`;
       return `<button type="button" class="focus-search-item${activeClass}" data-quest-value="${escapeHtml(questValue)}" role="option" aria-selected="${selected}"><span>${escapeHtml(entry.label)}</span>${meta}</button>`;
     }).join('');
@@ -10749,6 +10990,7 @@
     let catalogPromise = null;
     let activeTrackId = '';
     let playbackToken = 0;
+    let customTracks = [];
 
     const PLAYBACK_PRESETS = Object.freeze({
       focus:   Object.freeze({ seq: [220, 0, 247, 0, 262, 0, 247, 0], tempo: 430, dur: 0.12, wave: 'triangle', level: 0.11 }),
@@ -10923,13 +11165,23 @@
     };
 
     const chooseTrack = (playMode) => {
-      const options = catalog?.modeIndex?.[playMode] || [];
+      const options = customTracks.length
+        ? customTracks
+        : (catalog?.modeIndex?.[playMode] || []);
       if (!options.length) return null;
       if (options.length === 1) return options[0];
       const pool = options.filter((track) => track.id !== activeTrackId);
       const source = pool.length ? pool : options;
       const index = Math.floor(Math.random() * source.length);
       return source[index];
+    };
+
+    const clearCustomTracks = () => {
+      customTracks.forEach((track) => {
+        if (!track?.src || !String(track.src).startsWith('blob:')) return;
+        try { URL.revokeObjectURL(track.src); } catch {}
+      });
+      customTracks = [];
     };
 
     const setTrackVolume = (trackGain = 1) => {
@@ -10995,6 +11247,31 @@
         if (synthGain) synthGain.gain.value = vol;
         void loadCatalog();
         void start();
+      },
+      setCustomFiles(fileList) {
+        const files = Array.from(fileList || [])
+          .filter((file) => file && /^audio\//i.test(String(file.type || '')) && Number(file.size || 0) > 0);
+        clearCustomTracks();
+        const modeTags = Object.keys(PLAYBACK_PRESETS);
+        customTracks = files.map((file, index) => ({
+          id: `local-${Date.now()}-${index}`,
+          src: URL.createObjectURL(file),
+          modes: modeTags,
+          gain: 1,
+          name: file.name || `Track ${index + 1}`
+        }));
+        activeTrackId = '';
+        if (mode !== 'off') void start();
+        return { count: customTracks.length };
+      },
+      clearCustomFiles() {
+        clearCustomTracks();
+        activeTrackId = '';
+        if (mode !== 'off') void start();
+        return { count: 0 };
+      },
+      getCustomFileCount() {
+        return customTracks.length;
       }
     };
   })();
