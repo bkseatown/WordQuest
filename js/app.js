@@ -2772,17 +2772,23 @@
       return false;
     }
     const nextPack = normalizeLessonPackId(rawValue);
+    const preferredTarget = nextPack === 'custom'
+      ? 'custom'
+      : resolveDefaultLessonTargetId(nextPack);
     lessonPackApplying = true;
     let nextTarget = 'custom';
     try {
       getLessonPackSelectElements().forEach((select) => { select.value = nextPack; });
-      nextTarget = populateLessonTargetSelect(nextPack, 'custom');
+      nextTarget = populateLessonTargetSelect(nextPack, preferredTarget);
     } finally {
       lessonPackApplying = false;
     }
     setLessonPackPrefs(nextPack, nextTarget);
     updateLessonPackNote(nextPack, nextTarget);
     refreshStandaloneMissionLabHub();
+    if (nextPack !== 'custom' && nextTarget !== 'custom') {
+      applyLessonTargetConfig(nextPack, nextTarget, { toast: false });
+    }
     return true;
   }
 
@@ -2824,11 +2830,14 @@
       refreshStandaloneMissionLabHub();
       return;
     }
+    const preferredTarget = next.targetId === 'custom'
+      ? resolveDefaultLessonTargetId(next.packId)
+      : next.targetId;
     getLessonPackSelectElements().forEach((select) => { select.value = next.packId; });
     lessonPackApplying = true;
     let normalizedTarget = 'custom';
     try {
-      normalizedTarget = populateLessonTargetSelect(next.packId, next.targetId);
+      normalizedTarget = populateLessonTargetSelect(next.packId, preferredTarget);
     } finally {
       lessonPackApplying = false;
     }
@@ -4010,9 +4019,9 @@
       const chunkTabsOn = document.documentElement.getAttribute('data-chunk-tabs') !== 'off';
       const isLandscape = viewportW >= viewportH;
       let layoutMode = 'default';
-      if (viewportW >= 1040 && viewportH >= 700) layoutMode = 'wide';
-      else if (viewportH <= 620 || (isLandscape && viewportH <= 700)) layoutMode = 'compact';
-      else if (viewportH <= 760) layoutMode = 'tight';
+      if (viewportW >= 1040 && viewportH >= 680) layoutMode = 'wide';
+      else if (viewportH <= 600 || (isLandscape && viewportH <= 660)) layoutMode = 'compact';
+      else if (viewportH <= 740) layoutMode = 'tight';
       document.documentElement.setAttribute('data-layout-mode', layoutMode);
       document.documentElement.setAttribute('data-viewport-orientation', isLandscape ? 'landscape' : 'portrait');
 
@@ -4037,11 +4046,11 @@
       const supportReserveH = supportH ? Math.max(0, supportH - 2) : 0;
       const kbRows = 3;
       const keyboardSafetyPad = keyboardLayout === 'wilson'
-        ? (layoutMode === 'compact' ? 34 : layoutMode === 'tight' ? 30 : 26)
-        : 16;
+        ? (layoutMode === 'compact' ? 30 : layoutMode === 'tight' ? 24 : 22)
+        : 12;
       const kbH = kbRows * keyH + (kbRows - 1) * keyGap + chunkRowH + keyboardSafetyPad;
 
-      const extraSafetyH = layoutMode === 'compact' ? 56 : layoutMode === 'tight' ? 44 : layoutMode === 'wide' ? 32 : 38;
+      const extraSafetyH = layoutMode === 'compact' ? 48 : layoutMode === 'tight' ? 36 : layoutMode === 'wide' ? 24 : 28;
       const reservedH = headerH + focusH + curriculumH + nextActionH + classroomTurnH + themeH + mainPadTop + mainPadBottom + audioH + kbH + boardZoneGap + hintH + supportReserveH + extraSafetyH;
       const availableBoardH = Math.max(140, viewportH - reservedH);
       const byHeight = Math.floor((availableBoardH - platePadY - tileGap * (maxGuesses - 1) - 6) / maxGuesses);
@@ -4055,13 +4064,15 @@
       const boardWidth = wordLength * size + (wordLength - 1) * tileGap;
       const playfieldW = Math.ceil(boardWidth);
 
-      const adaptiveKeyH = Math.max(layoutMode === 'compact' ? 34 : 42, Math.min(layoutMode === 'wide' ? 56 : 52, Math.round(size * 0.94)));
-      let adaptiveKeyMinW = Math.max(layoutMode === 'compact' ? 22 : 26, Math.min(46, Math.round(size * 0.76)));
-      let adaptiveKeyGap = Math.max(5.8, Math.min(10, Math.round(size * 0.16)));
+      const adaptiveKeyFloor = layoutMode === 'compact' ? 34 : layoutMode === 'tight' ? 41 : 46;
+      const adaptiveKeyCeil = layoutMode === 'wide' ? 58 : 54;
+      const adaptiveKeyH = Math.max(adaptiveKeyFloor, Math.min(adaptiveKeyCeil, Math.round(size * 0.96)));
+      let adaptiveKeyMinW = Math.max(layoutMode === 'compact' ? 22 : layoutMode === 'tight' ? 25 : 29, Math.min(48, Math.round(size * 0.8)));
+      let adaptiveKeyGap = Math.max(layoutMode === 'compact' ? 5.6 : 6.2, Math.min(10, Math.round(size * 0.16)));
       const maxKeyboardW = Math.max(286, Math.min(window.innerWidth - 16, mainInnerW - 4));
       const activeCols = keyboardLayout === 'wilson' ? 10 : 10;
       const estimateKeyboardW = () => (adaptiveKeyMinW * activeCols) + (adaptiveKeyGap * (activeCols - 1));
-      const minKeyFloor = layoutMode === 'compact' ? 22 : 24;
+      const minKeyFloor = layoutMode === 'compact' ? 22 : layoutMode === 'tight' ? 23 : 24;
       while (estimateKeyboardW() > maxKeyboardW && adaptiveKeyMinW > minKeyFloor) {
         adaptiveKeyMinW -= 1;
         if (adaptiveKeyGap > 5.4) adaptiveKeyGap -= 0.2;
@@ -4250,6 +4261,19 @@
     return scored[0] || null;
   }
 
+  function resolveDefaultLessonTargetId(packId) {
+    const normalizedPack = normalizeLessonPackId(packId);
+    if (normalizedPack === 'custom') return 'custom';
+    const recommended = getCurrentWeekRecommendedLessonTarget(normalizedPack);
+    const recommendedId = recommended?.target?.id || '';
+    if (recommendedId) {
+      return normalizeLessonTargetId(normalizedPack, recommendedId);
+    }
+    const pack = getLessonPackDefinition(normalizedPack);
+    const firstId = pack.targets?.[0]?.id || 'custom';
+    return normalizeLessonTargetId(normalizedPack, firstId);
+  }
+
   function populateLessonTargetSelect(packId, preferredTarget = 'custom') {
     const targetSelects = getLessonTargetSelectElements();
     if (!targetSelects.length) return 'custom';
@@ -4307,15 +4331,12 @@
     const orderedPacks = ['ufli', 'fundations', 'wilson', 'justwords'];
     orderedPacks.forEach((packId) => {
       const pack = getLessonPackDefinition(packId);
-      options.push({
-        value: `${packId}::custom`,
-        label: `${pack.label} · Select a lesson target`,
-        group: pack.label
-      });
+      const recommendedId = getCurrentWeekRecommendedLessonTarget(packId)?.target?.id || '';
       pack.targets.forEach((target) => {
+        const prefix = target.id === recommendedId ? '★ ' : '';
         options.push({
           value: `${packId}::${target.id}`,
-          label: target.label,
+          label: `${prefix}${target.label}`,
           group: pack.label
         });
       });
@@ -4351,7 +4372,7 @@
     });
 
     const preferredValue = formatMainCurriculumStepValue(packId, targetId);
-    const fallbackValue = formatMainCurriculumStepValue(packId, 'custom');
+    const fallbackValue = formatMainCurriculumStepValue(packId, resolveDefaultLessonTargetId(packId));
     const hasPreferred = options.some((option) => option.value === preferredValue);
     const hasFallback = options.some((option) => option.value === fallbackValue);
     const selectedValue = hasPreferred
@@ -5867,9 +5888,6 @@
     const category = classifyRoundErrorPattern(result);
     if (!category) return;
     currentRoundErrorCounts[category] = (currentRoundErrorCounts[category] || 0) + 1;
-    if (currentRoundErrorCounts[category] > 1) return;
-    const message = ERROR_COACH_COPY[category];
-    if (message) WQUI.showToast(message, 2300);
   }
 
   function loadSessionSummaryState() {
