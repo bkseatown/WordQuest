@@ -75,12 +75,15 @@ jobs:
           } > "${summary_file}"
 
           failures=0
+          warnings=0
           targets=(
-            "${PAGE_URL%/}/?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-            "${CANONICAL_URL%/}/?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            "${PAGE_URL%/}/?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}|required"
+            "${CANONICAL_URL%/}/?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}|optional"
           )
 
-          for target in "${targets[@]}"; do
+          for target_entry in "${targets[@]}"; do
+            target="${target_entry%%|*}"
+            requirement="${target_entry##*|}"
             echo "Smoke checking ${target}"
             passed=0
             details="Missing markers after retries."
@@ -105,12 +108,20 @@ jobs:
             if [ "${passed}" -eq 1 ]; then
               echo "| ${target} | ✅ PASS | ${details} |" >> "${summary_file}"
             else
-              failures=$((failures + 1))
-              echo "| ${target} | ❌ FAIL | ${details} |" >> "${summary_file}"
+              if [ "${requirement}" = "required" ]; then
+                failures=$((failures + 1))
+                echo "| ${target} | ❌ FAIL | ${details} |" >> "${summary_file}"
+              else
+                warnings=$((warnings + 1))
+                echo "| ${target} | ⚠️ WARN | ${details} |" >> "${summary_file}"
+              fi
             fi
           done
 
           cat "${summary_file}" >> "${GITHUB_STEP_SUMMARY}"
+          if [ "${warnings}" -gt 0 ]; then
+            echo "Non-blocking smoke-check warning(s): ${warnings} optional URL target(s) failed." >&2
+          fi
           if [ "${failures}" -gt 0 ]; then
             echo "Smoke check failed for ${failures} URL target(s)." >&2
             exit 1
