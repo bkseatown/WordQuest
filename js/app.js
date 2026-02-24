@@ -498,6 +498,17 @@
       label: 'Manual (no pack)',
       targets: Object.freeze([])
     }),
+    phonics: Object.freeze({
+      label: 'Phonics Curriculum',
+      targets: Object.freeze([
+        Object.freeze({ id: 'phonics-k2-cvc', label: 'Phonics K-2 · CVC and short vowels', focus: 'cvc', gradeBand: 'K-2', length: '3', pacing: 'Weeks 1-6 (Sep-Oct)' }),
+        Object.freeze({ id: 'phonics-k2-digraph', label: 'Phonics K-2 · Digraphs and blends', focus: 'digraph', gradeBand: 'K-2', length: '4', pacing: 'Weeks 7-12 (Oct-Nov)' }),
+        Object.freeze({ id: 'phonics-k2-cvce', label: 'Phonics K-2 · Magic E (CVCe)', focus: 'cvce', gradeBand: 'K-2', length: '4', pacing: 'Weeks 13-18 (Dec-Jan)' }),
+        Object.freeze({ id: 'phonics-35-vowel-team', label: 'Phonics G3-5 · Vowel teams', focus: 'vowel_team', gradeBand: 'G3-5', length: '5', pacing: 'Weeks 19-24 (Feb-Mar)' }),
+        Object.freeze({ id: 'phonics-35-r-controlled', label: 'Phonics G3-5 · R-controlled vowels', focus: 'r_controlled', gradeBand: 'G3-5', length: '5', pacing: 'Weeks 25-30 (Apr-May)' }),
+        Object.freeze({ id: 'phonics-35-multisyllable', label: 'Phonics G3-5 · Multisyllable transfer', focus: 'multisyllable', gradeBand: 'G3-5', length: '6', pacing: 'Weeks 31-36 (May-Jun)' })
+      ])
+    }),
     ufli: Object.freeze({
       label: 'UFLI Foundations',
       targets: Object.freeze([
@@ -549,6 +560,7 @@
       ])
     })
   });
+  const CURRICULUM_PACK_ORDER = Object.freeze(['phonics', 'ufli', 'fundations', 'wilson', 'justwords']);
 
   const CHUNK_TAB_FOCUS_KEYS = new Set([
     'digraph',
@@ -4440,8 +4452,7 @@
 
   function buildMainCurriculumStepOptions() {
     const options = [{ value: 'custom::custom', label: 'Manual (no curriculum pack)', group: '' }];
-    const orderedPacks = ['ufli', 'fundations', 'wilson', 'justwords'];
-    orderedPacks.forEach((packId) => {
+    CURRICULUM_PACK_ORDER.forEach((packId) => {
       const pack = getLessonPackDefinition(packId);
       const recommendedId = getCurrentWeekRecommendedLessonTarget(packId)?.target?.id || '';
       pack.targets.forEach((target) => {
@@ -4917,8 +4928,7 @@
       targetId: 'custom',
       questValue: 'curriculum::custom::custom'
     }];
-    const orderedPacks = ['ufli', 'fundations', 'wilson', 'justwords'];
-    orderedPacks.forEach((packId) => {
+    CURRICULUM_PACK_ORDER.forEach((packId) => {
       const pack = getLessonPackDefinition(packId);
       if (!pack || !Array.isArray(pack.targets)) return;
       pack.targets.forEach((target) => {
