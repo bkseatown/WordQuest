@@ -461,6 +461,11 @@
   }
   enforceLockedDemoDefaults();
   const _el = id => document.getElementById(id);
+  const HOVER_NOTE_DELAY_MS = 500;
+  const HOVER_NOTE_TARGET_SELECTOR = '.icon-btn, .header-quick-btn, .theme-preview-music, .wq-theme-nav-btn, .quick-popover-done';
+  let hoverNoteTimer = 0;
+  let hoverNoteTarget = null;
+  let hoverNoteEl = null;
   const ThemeRegistry = window.WQThemeRegistry || null;
   const shouldPersistTheme = () => (prefs.themeSave || DEFAULT_PREFS.themeSave) === 'on';
   let musicController = null;
@@ -515,6 +520,135 @@
     const label = resolveBuildLabel();
     badge.textContent = label ? `Build ${label}` : 'Build local';
     badge.title = label ? `WordQuest build ${label}` : 'WordQuest local build';
+  }
+
+  function setHoverNoteForElement(el, note) {
+    if (!el) return;
+    const text = String(note || '').replace(/\s+/g, ' ').trim();
+    if (!text) {
+      el.removeAttribute('data-hover-note');
+      return;
+    }
+    el.setAttribute('data-hover-note', text);
+    if (el.hasAttribute('title')) el.removeAttribute('title');
+  }
+
+  function getHoverNoteText(el) {
+    if (!el) return '';
+    const explicit = el.getAttribute('data-hover-note');
+    const fromHint = el.getAttribute('data-hint');
+    const fromAria = el.getAttribute('aria-label');
+    const fromTitle = el.getAttribute('title');
+    const raw = String(explicit || fromHint || fromAria || fromTitle || '').replace(/\s+/g, ' ').trim();
+    if (!raw) return '';
+    if (raw.length <= 120) return raw;
+    return `${raw.slice(0, 117).trimEnd()}...`;
+  }
+
+  function ensureHoverNoteToast() {
+    if (hoverNoteEl && document.body.contains(hoverNoteEl)) return hoverNoteEl;
+    const el = document.createElement('div');
+    el.id = 'hover-note-toast';
+    el.className = 'hover-note-toast hidden';
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
+    el.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(el);
+    hoverNoteEl = el;
+    return hoverNoteEl;
+  }
+
+  function hideHoverNoteToast() {
+    if (hoverNoteTimer) {
+      clearTimeout(hoverNoteTimer);
+      hoverNoteTimer = 0;
+    }
+    hoverNoteTarget = null;
+    if (!hoverNoteEl) return;
+    hoverNoteEl.classList.remove('is-visible');
+    hoverNoteEl.classList.add('hidden');
+    hoverNoteEl.setAttribute('aria-hidden', 'true');
+  }
+
+  function showHoverNoteToast(targetEl) {
+    if (!targetEl || !document.contains(targetEl)) return;
+    const text = getHoverNoteText(targetEl);
+    if (!text) return;
+    const toast = ensureHoverNoteToast();
+    toast.textContent = `✨ ${text}`;
+    toast.classList.remove('hidden');
+    const rect = targetEl.getBoundingClientRect();
+    const showAbove = rect.top > 84;
+    const placement = showAbove ? 'top' : 'bottom';
+    const top = showAbove ? (rect.top - 10) : (rect.bottom + 10);
+    const left = Math.max(14, Math.min(window.innerWidth - 14, rect.left + (rect.width / 2)));
+    toast.style.left = `${left}px`;
+    toast.style.top = `${Math.max(10, Math.min(window.innerHeight - 10, top))}px`;
+    toast.setAttribute('data-placement', placement);
+    toast.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(() => {
+      toast.classList.add('is-visible');
+    });
+  }
+
+  function scheduleHoverNoteToast(targetEl, delay = HOVER_NOTE_DELAY_MS) {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+    if (hoverNoteTimer) {
+      clearTimeout(hoverNoteTimer);
+      hoverNoteTimer = 0;
+    }
+    hoverNoteTarget = targetEl;
+    hoverNoteTimer = window.setTimeout(() => {
+      hoverNoteTimer = 0;
+      if (hoverNoteTarget !== targetEl) return;
+      showHoverNoteToast(targetEl);
+    }, Math.max(0, delay));
+  }
+
+  function initHoverNoteToasts() {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+    const captureHoverNote = (eventTarget) => {
+      const node = eventTarget?.closest?.(HOVER_NOTE_TARGET_SELECTOR);
+      if (!node || !document.contains(node)) return null;
+      if (node.matches(':disabled,[aria-disabled="true"]')) return null;
+      return node;
+    };
+
+    document.addEventListener('mouseover', (event) => {
+      const node = captureHoverNote(event.target);
+      if (!node) return;
+      if (node.hasAttribute('title') && !node.hasAttribute('data-hover-note')) {
+        setHoverNoteForElement(node, node.getAttribute('title'));
+      }
+      scheduleHoverNoteToast(node);
+    }, true);
+
+    document.addEventListener('mouseout', (event) => {
+      const node = captureHoverNote(event.target);
+      if (!node) return;
+      const related = event.relatedTarget;
+      if (related && node.contains(related)) return;
+      hideHoverNoteToast();
+    }, true);
+
+    document.addEventListener('focusin', (event) => {
+      const node = captureHoverNote(event.target);
+      if (!node) return;
+      scheduleHoverNoteToast(node, 320);
+    }, true);
+
+    document.addEventListener('focusout', (event) => {
+      const node = captureHoverNote(event.target);
+      if (!node) return;
+      const related = event.relatedTarget;
+      if (related && node.contains(related)) return;
+      hideHoverNoteToast();
+    }, true);
+
+    document.addEventListener('pointerdown', hideHoverNoteToast, true);
+    document.addEventListener('keydown', hideHoverNoteToast, true);
+    window.addEventListener('scroll', hideHoverNoteToast, { passive: true });
+    window.addEventListener('resize', hideHoverNoteToast, { passive: true });
   }
 
   async function runAutoCacheRepairForBuild() {
@@ -798,14 +932,14 @@
     toggleBtn.setAttribute('aria-label', isOn
       ? `Pause music. Current vibe: ${activeLabel}.`
       : 'Play music.');
-    toggleBtn.title = isOn ? `Pause music (${activeLabel}).` : 'Play music.';
+    setHoverNoteForElement(toggleBtn, isOn ? `Pause music (${activeLabel}).` : 'Play music.');
     [prevBtn, nextBtn, shuffleBtn].forEach((btn) => {
       if (!btn) return;
       btn.classList.toggle('is-on', isOn);
     });
-    if (prevBtn) prevBtn.title = `Previous vibe (now ${activeLabel}).`;
-    if (nextBtn) nextBtn.title = `Next vibe (now ${activeLabel}).`;
-    if (shuffleBtn) shuffleBtn.title = `Shuffle vibe (now ${activeLabel}).`;
+    if (prevBtn) setHoverNoteForElement(prevBtn, `Previous vibe (now ${activeLabel}).`);
+    if (nextBtn) setHoverNoteForElement(nextBtn, `Next vibe (now ${activeLabel}).`);
+    if (shuffleBtn) setHoverNoteForElement(shuffleBtn, `Shuffle vibe (now ${activeLabel}).`);
     if (labelEl) {
       labelEl.textContent = isOn ? activeLabel : 'Stopped';
     }
@@ -1048,6 +1182,7 @@
   }
   normalizeHeaderControlLayout();
   syncHeaderStaticIcons();
+  initHoverNoteToasts();
 
   // Apply theme + modes immediately
   const initialTheme = applyTheme(initialThemeSelection || getThemeFallback());
@@ -1204,9 +1339,12 @@
     if (settingsBtn) {
       settingsBtn.classList.toggle('is-locked', locked);
       settingsBtn.setAttribute('aria-disabled', locked ? 'true' : 'false');
-      settingsBtn.title = locked
-        ? 'Assessment lock: settings unavailable until round ends.'
-        : 'Settings';
+      setHoverNoteForElement(
+        settingsBtn,
+        locked
+          ? 'Assessment lock: settings unavailable until round ends.'
+          : 'Settings'
+      );
     }
     if (locked) {
       _el('settings-panel')?.classList.add('hidden');
@@ -1255,11 +1393,14 @@
     toggle.setAttribute('aria-label', listening
       ? 'Open optional sound help for listening and spelling'
       : 'Open optional clue hint');
-    toggle.setAttribute('title', enabled
-      ? (listening
-          ? `Optional support. Unlocks after ${minimumGuesses} submitted ${guessNoun}.`
-          : `Optional clue support with phonics markings. Unlocks after ${minimumGuesses} submitted ${guessNoun}.`)
-      : 'Hint cues are off in settings, but you can still ask for support');
+    setHoverNoteForElement(
+      toggle,
+      enabled
+        ? (listening
+            ? `Optional support. Unlocks after ${minimumGuesses} submitted ${guessNoun}.`
+            : `Optional clue support with phonics markings. Unlocks after ${minimumGuesses} submitted ${guessNoun}.`)
+        : 'Hint cues are off in settings, but you can still ask for support'
+    );
     toggle.classList.toggle('is-off', !enabled);
   }
 
@@ -1296,9 +1437,12 @@
     toggle.setAttribute('aria-label', listening
       ? 'Listening mode on. Hear meaning and encode what you hear.'
       : 'Classic mode on. Use tile colors and clues to encode.');
-    toggle.setAttribute('title', listening
-      ? 'Listening mode: hear word plus meaning, then spell by sound'
-      : 'Classic mode: use color feedback and clues');
+    setHoverNoteForElement(
+      toggle,
+      listening
+        ? 'Listening mode: hear word plus meaning, then spell by sound.'
+        : 'Classic mode: use color feedback and clues.'
+    );
   }
 
   function syncHeaderClueLauncherUI(mode = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle)) {
@@ -1307,9 +1451,12 @@
     const listening = mode === 'listening';
     button.textContent = listening ? 'Coach' : 'Clue+';
     button.style.whiteSpace = 'nowrap';
-    button.setAttribute('title', listening
-      ? 'Open listening coach support'
-      : 'Open Clue Sprint for detective-style clue practice');
+    setHoverNoteForElement(
+      button,
+      listening
+        ? 'Open listening coach support.'
+        : 'Open Clue Sprint for detective-style clue practice.'
+    );
     button.setAttribute('aria-label', listening
       ? 'Open listening coach support'
       : 'Open Clue Sprint for detective clue practice');
@@ -2166,10 +2313,16 @@
     const teacherBtn = _el('teacher-panel-btn');
     if (teacherBtn) {
       teacherBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 5h18v10H3z"/><path d="M12 15v5"/><path d="M8 20h8"/><circle cx="8" cy="10" r="2"/><path d="M8 12v2"/><path d="M13 10h5"/></svg>';
+      setHoverNoteForElement(teacherBtn, 'Teacher Hub: class tools, reports, and weekly planning.');
     }
+    const themeBtn = _el('theme-dock-toggle-btn');
+    setHoverNoteForElement(themeBtn, 'Open style picker.');
+    const musicBtn = _el('music-dock-toggle-btn');
+    setHoverNoteForElement(musicBtn, 'Open music controls.');
     const settingsBtn = _el('settings-btn');
     if (settingsBtn) {
       settingsBtn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+      setHoverNoteForElement(settingsBtn, 'Open settings.');
     }
   }
 
@@ -2231,7 +2384,7 @@
     toggle.setAttribute('aria-pressed', isWilson ? 'true' : 'false');
     toggle.setAttribute('aria-label', keyboardHint);
     toggle.dataset.hint = keyboardHint;
-    toggle.removeAttribute('title');
+    setHoverNoteForElement(toggle, keyboardHint);
     toggle.classList.toggle('is-wilson', isWilson);
   }
 
@@ -2248,7 +2401,7 @@
     toggle.setAttribute('aria-pressed', isUpper ? 'true' : 'false');
     toggle.setAttribute('aria-label', caseHint);
     toggle.dataset.hint = caseHint;
-    toggle.removeAttribute('title');
+    setHoverNoteForElement(toggle, caseHint);
   }
 
   function applyChunkTabsMode(mode) {
@@ -5954,7 +6107,6 @@
     inputEl.value = currentLabel;
     inputEl.dataset.lockedLabel = currentLabel.toLowerCase();
     inputEl.placeholder = 'Select your quest or track';
-    inputEl.setAttribute('title', `Select your quest or track. Current selection: ${currentLabel}`);
     inputEl.setAttribute('aria-label', `Select your quest or track. Current selection: ${currentLabel}`);
   }
 

@@ -311,75 +311,54 @@ header {
   transition:    background 0.15s, border-color 0.15s, color 0.15s, transform 0.12s;
 }
 
-.icon-btn[data-hint] {
-  position: relative;
-  overflow: visible;
-}
-
-.icon-btn[data-hint]::before {
-  content: '';
-  position: absolute;
+.hover-note-toast {
+  position: fixed;
   left: 50%;
-  top: calc(100% + 4px);
-  width: 10px;
-  height: 10px;
-  border-left: 1px solid color-mix(in oklab, var(--brand) 48%, var(--panel-border) 52%);
-  border-top: 1px solid color-mix(in oklab, var(--brand) 48%, var(--panel-border) 52%);
-  background: color-mix(in oklab, var(--panel-bg) 88%, #ffffff 12%);
-  transform: translateX(-50%) rotate(45deg) scale(0.8);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.16s ease, transform 0.16s ease;
-  z-index: 34;
-}
-
-.icon-btn[data-hint]::after {
-  content: attr(data-hint);
-  position: absolute;
-  top: calc(100% + 9px);
-  left: 50%;
-  transform: translate(-50%, -6px) scale(0.96);
-  min-width: 162px;
-  max-width: min(280px, 72vw);
-  padding: 8px 11px;
-  border-radius: 14px;
+  top: 50%;
+  transform: translate(-50%, 0);
+  max-width: min(270px, calc(100vw - 28px));
+  padding: 7px 10px;
+  border-radius: 12px;
   border: 1px solid color-mix(in oklab, var(--brand) 48%, var(--panel-border) 52%);
   background: linear-gradient(
     145deg,
-    color-mix(in oklab, var(--panel-bg) 84%, #ffffff 16%),
+    color-mix(in oklab, var(--panel-bg) 86%, #ffffff 14%),
     color-mix(in oklab, var(--panel-bg) 68%, var(--brand) 32%)
   );
   color: color-mix(in oklab, var(--text) 90%, #ffffff 10%);
   font-size: 0.66rem;
   font-weight: 760;
+  letter-spacing: 0.01em;
   line-height: 1.24;
   text-align: center;
-  letter-spacing: 0.01em;
-  white-space: normal;
-  box-shadow: 0 10px 20px rgba(8, 18, 34, 0.24);
+  box-shadow: 0 11px 22px rgba(8, 18, 34, 0.24);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.16s ease, transform 0.16s ease;
-  z-index: 35;
+  transition: opacity 0.16s ease, transform 0.18s ease;
+  z-index: 250;
 }
 
-.icon-btn[data-hint]:hover::before,
-.icon-btn[data-hint]:hover::after,
-.icon-btn[data-hint]:focus-visible::before,
-.icon-btn[data-hint]:focus-visible::after {
+.hover-note-toast[data-placement="top"] {
+  transform: translate(-50%, -100%);
+}
+
+.hover-note-toast[data-placement="bottom"] {
+  transform: translate(-50%, 0);
+}
+
+.hover-note-toast.is-visible[data-placement="top"] {
   opacity: 1;
-  transform: translateX(-50%) rotate(45deg) scale(1);
+  transform: translate(-50%, calc(-100% - 6px));
 }
 
-.icon-btn[data-hint]:hover::after,
-.icon-btn[data-hint]:focus-visible::after {
-  transform: translate(-50%, 0) scale(1);
+.hover-note-toast.is-visible[data-placement="bottom"] {
+  opacity: 1;
+  transform: translate(-50%, 6px);
 }
 
 @media (hover: none) {
-  .icon-btn[data-hint]::before,
-  .icon-btn[data-hint]::after {
-    display: none;
+  .hover-note-toast {
+    display: none !important;
   }
 }
 
