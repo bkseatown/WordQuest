@@ -132,8 +132,15 @@ async function run() {
       return panel.classList.contains('hidden') || panel.hidden || panel.getAttribute('aria-hidden') === 'true';
     }, { timeout: 15000 });
 
-    await page.click('#new-game-btn');
-    const targetWord = await page.evaluate(() => window.WQGame?.getState?.()?.word || '');
+    await clickWithRetries('#new-game-btn', { attempts: 4, settleMs: 300 });
+    await page.waitForFunction(() => {
+      const word = window.WQGame?.getState?.()?.word;
+      return typeof word === 'string' && word.trim().length > 0;
+    }, { timeout: 10000 });
+    const targetWord = await page.evaluate(() => {
+      const word = window.WQGame?.getState?.()?.word || '';
+      return String(word).trim().toLowerCase();
+    });
     if (!targetWord) throw new Error('No active word found after clicking New/Next Word.');
     await page.keyboard.type(String(targetWord));
     await page.keyboard.press('Enter');
