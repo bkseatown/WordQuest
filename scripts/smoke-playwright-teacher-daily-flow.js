@@ -6,8 +6,10 @@ const http = require('http');
 const path = require('path');
 
 async function run() {
+  const SMOKE_VERSION = 'teacher-daily-flow-v5';
   let playwright;
   try {
+    console.log(`Starting ${SMOKE_VERSION}`);
     playwright = require('playwright');
   } catch {
     throw new Error('Playwright is required. Run: npm install --no-save playwright');
