@@ -309,15 +309,15 @@ const WQUI = (() => {
     const headerH    = _el('header')?.offsetHeight    || 50;
     const focusH     = document.querySelector('.focus-bar')?.offsetHeight || 44;
     const mainPad    = 20;  // 10px top + 10px bottom
-    const boardGap   = 12;  // board zone gap
+    const boardGap   = 16;  // board zone gap
     const audioH     = 36;  // gameplay audio buttons height
     const audioGap   = 10;
     const kbGap      = 10;
     const keyH       = 50;
     const kbRows     = 3;
     const kbH        = kbRows * keyH + (kbRows - 1) * 5 + 8;
-    const tileGap    = 7;
-    const platePad   = 18 * 2;  // 18px top/bottom
+    const tileGap    = 9;
+    const platePad   = 22 * 2;  // 22px top/bottom
     const tileGaps   = (maxGuesses - 1) * tileGap;
     const chrome     = headerH + focusH + mainPad + platePad + boardGap + audioH + audioGap + kbGap + kbH;
     const availableH = window.innerHeight - chrome;
@@ -325,9 +325,9 @@ const WQUI = (() => {
 
     // Width: constrain to viewport
     const vw = Math.min(window.innerWidth, 560) - 24; // 12px each side
-    const byWidth = Math.floor((vw - 36 - (wordLength - 1) * tileGap) / wordLength); // 36 = plate sides
+    const byWidth = Math.floor((vw - 52 - (wordLength - 1) * tileGap) / wordLength); // 52 = plate sides
 
-    const size = Math.max(38, Math.min(byHeight, byWidth, 90));
+    const size = Math.max(44, Math.min(byHeight, byWidth, 102));
 
     // Keyboard width matches the board width including plate padding
     const boardWidth = wordLength * size + (wordLength - 1) * tileGap;
