@@ -16,7 +16,7 @@
 </head>
 <body>
 
-  <div id="loading-screen"><div class="spinner"></div><span>Loading…</span></div>
+  <div id="loading-screen" data-testid="loading-screen"><div class="spinner"></div><span>Loading…</span></div>
 
   <!-- ── Header ───────────────────────────────────── -->
   <header>
@@ -24,7 +24,7 @@
       <div class="logo">Word<span>Quest</span></div>
       <div class="header-right">
         <div class="header-icon-controls">
-          <button id="teacher-panel-btn" class="icon-btn" type="button" aria-label="Teacher Hub" title="Teacher Hub">
+          <button id="teacher-panel-btn" data-testid="teacher-panel-btn" class="icon-btn" type="button" aria-label="Teacher Hub" title="Teacher Hub">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <path d="M3 5h18v10H3z"/>
               <path d="M12 15v5"/>
@@ -57,7 +57,7 @@
               <rect x="13.5" y="13.5" width="7" height="7" rx="1.4"></rect>
             </svg>
           </button>
-          <button id="settings-btn" class="icon-btn" title="Settings" aria-label="Settings">
+          <button id="settings-btn" data-testid="settings-btn" class="icon-btn" title="Settings" aria-label="Settings">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"/>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -82,7 +82,7 @@
               <path d="M12 2a6 6 0 0 0-3.8 10.6c.8.7 1.3 1.4 1.6 2.4h4.4c.3-1 .8-1.7 1.6-2.4A6 6 0 0 0 12 2z"></path>
             </svg>
           </button>
-          <button id="new-game-btn">Next Word</button>
+          <button id="new-game-btn" data-testid="new-game-btn">Next Word</button>
         </div>
       </div>
     </div>
@@ -151,7 +151,7 @@
         <span>Settings</span>
         <span id="settings-build-badge" class="settings-build-badge" aria-live="polite"></span>
       </div>
-      <button id="settings-close" class="close-btn" aria-label="Close settings">✕</button>
+      <button id="settings-close" data-testid="settings-close" class="close-btn" aria-label="Close settings">✕</button>
     </div>
     <div class="settings-body">
       <div class="settings-view-switch" role="tablist" aria-label="Settings view">
@@ -512,7 +512,7 @@
                 <button id="session-copy-outcomes-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Session Outcomes</button>
                 <button id="session-copy-probe-export-btn" class="quick-action-btn teacher-session-btn teacher-export-only-btn" type="button">Copy Probe</button>
                 <button id="session-copy-probe-csv-export-btn" class="quick-action-btn teacher-session-btn teacher-export-only-btn" type="button">Copy Probe CSV</button>
-                <button id="session-reset-btn" class="quick-action-btn teacher-session-btn" data-nonexport="true" type="button">Reset Session</button>
+                <button id="session-reset-btn" data-testid="session-reset-btn" class="quick-action-btn teacher-session-btn" data-nonexport="true" type="button">Reset Session</button>
                 <button id="session-rerun-onboarding-btn" class="quick-action-btn teacher-session-btn" data-nonexport="true" type="button">Re-run Setup</button>
               </div>
               <div class="setting-checkbox-help">Tracks this browser session only.</div>
@@ -601,7 +601,7 @@
     <div class="teacher-panel-card">
       <div class="teacher-panel-head">
         <strong>Teacher Hub</strong>
-        <button id="teacher-panel-close" class="close-btn" aria-label="Close teacher hub">✕</button>
+        <button id="teacher-panel-close" data-testid="teacher-panel-close" class="close-btn" aria-label="Close teacher hub">✕</button>
       </div>
       <div class="teacher-panel-body">
         <div class="teacher-panel-grid">
@@ -689,7 +689,7 @@
           <div class="teacher-hub-actions">
             <button id="session-group-add-active-btn" class="quick-action-btn teacher-session-btn" type="button">Add Active Student</button>
             <button id="session-group-remove-active-btn" class="quick-action-btn teacher-session-btn" type="button">Remove Active Student</button>
-            <button id="session-group-assign-target-btn" class="quick-action-btn teacher-session-btn" type="button">Assign Current Target</button>
+            <button id="session-group-assign-target-btn" data-testid="session-group-assign-target-btn" class="quick-action-btn teacher-session-btn" type="button">Assign Current Target</button>
           </div>
           <div class="teacher-session-metrics">
             <span id="session-group-summary" class="teacher-session-chip">Group: --</span>
@@ -1105,11 +1105,11 @@
   </div>
 
   <!-- ── First run setup modal ───────────────────── -->
-  <div id="first-run-setup-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="How to play WordQuest">
+  <div id="first-run-setup-modal" data-testid="first-run-setup-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="How to play WordQuest">
     <div class="modal-card first-run-setup-card">
       <div class="modal-head">
         <strong>How to Play</strong>
-        <button id="first-run-skip-btn" class="quick-action-btn first-run-skip-btn" type="button" aria-label="Close tutorial">Got it</button>
+        <button id="first-run-skip-btn" data-testid="first-run-skip-btn" class="quick-action-btn first-run-skip-btn" type="button" aria-label="Close tutorial">Got it</button>
       </div>
       <div class="modal-body">
         <p class="first-run-lead">Pick a grade and game style, then solve the word in 6 tries.</p>
@@ -1166,7 +1166,7 @@
           <input id="first-run-hide-again" type="checkbox" checked>
           <span>Don’t show this welcome card again</span>
         </label>
-        <button id="first-run-start-btn" class="quick-action-btn first-run-start-btn" type="button">Start Quest</button>
+        <button id="first-run-start-btn" data-testid="first-run-start-btn" class="quick-action-btn first-run-start-btn" type="button">Start Quest</button>
       </div>
     </div>
   </div>

@@ -6,7 +6,20 @@ const http = require('http');
 const path = require('path');
 
 async function run() {
-  const SMOKE_VERSION = 'teacher-daily-flow-v5';
+  const SMOKE_VERSION = 'teacher-daily-flow-v6';
+  const SEL = {
+    loadingScreen: '[data-testid="loading-screen"]',
+    firstRunSetupModal: '[data-testid="first-run-setup-modal"]',
+    firstRunStartBtn: '[data-testid="first-run-start-btn"]',
+    firstRunSkipBtn: '[data-testid="first-run-skip-btn"]',
+    teacherPanelBtn: '[data-testid="teacher-panel-btn"]',
+    teacherPanelClose: '[data-testid="teacher-panel-close"]',
+    assignTargetBtn: '[data-testid="session-group-assign-target-btn"]',
+    newGameBtn: '[data-testid="new-game-btn"]',
+    settingsBtn: '[data-testid="settings-btn"]',
+    sessionResetBtn: '[data-testid="session-reset-btn"]',
+    settingsClose: '[data-testid="settings-close"]'
+  };
   let playwright;
   try {
     console.log(`Starting ${SMOKE_VERSION}`);
@@ -98,22 +111,22 @@ async function run() {
     }
 
     await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForSelector('#loading-screen', { state: 'hidden', timeout: 30000 });
-    const firstRunVisible = await page.locator('#first-run-setup-modal:not(.hidden)').count();
+    await page.waitForSelector(SEL.loadingScreen, { state: 'hidden', timeout: 30000 });
+    const firstRunVisible = await page.locator(`${SEL.firstRunSetupModal}:not(.hidden)`).count();
     if (firstRunVisible) {
-      if (await page.locator('#first-run-start-btn').count()) {
-        await page.click('#first-run-start-btn');
-      } else if (await page.locator('#first-run-skip-btn').count()) {
-        await page.click('#first-run-skip-btn');
+      if (await page.locator(SEL.firstRunStartBtn).count()) {
+        await page.click(SEL.firstRunStartBtn);
+      } else if (await page.locator(SEL.firstRunSkipBtn).count()) {
+        await page.click(SEL.firstRunSkipBtn);
       }
-      await page.waitForSelector('#first-run-setup-modal', { state: 'hidden', timeout: 10000 });
+      await page.waitForSelector(SEL.firstRunSetupModal, { state: 'hidden', timeout: 10000 });
     }
 
-    await page.waitForSelector('#teacher-panel-btn', { state: 'visible', timeout: 10000 });
-    await page.evaluate(() => {
-      const btn = document.getElementById('teacher-panel-btn');
+    await page.waitForSelector(SEL.teacherPanelBtn, { state: 'visible', timeout: 10000 });
+    await page.evaluate((selector) => {
+      const btn = document.querySelector(selector);
       if (btn instanceof HTMLElement) btn.click();
-    });
+    }, SEL.teacherPanelBtn);
     await page.waitForFunction(() => {
       const panel = document.getElementById('teacher-panel');
       if (!(panel instanceof HTMLElement)) return false;
@@ -123,11 +136,11 @@ async function run() {
       const visuallyHidden = style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0';
       return !hiddenClass && !hiddenAttr && !visuallyHidden;
     }, { timeout: 15000 });
-    await clickWithRetries('#session-group-assign-target-btn', { attempts: 3, optional: true, settleMs: 300 });
-    await page.evaluate(() => {
-      const btn = document.getElementById('teacher-panel-close');
+    await clickWithRetries(SEL.assignTargetBtn, { attempts: 3, optional: true, settleMs: 300 });
+    await page.evaluate((selector) => {
+      const btn = document.querySelector(selector);
       if (btn instanceof HTMLElement) btn.click();
-    });
+    }, SEL.teacherPanelClose);
     await page.waitForFunction(() => {
       const panel = document.getElementById('teacher-panel');
       if (!(panel instanceof HTMLElement)) return true;
@@ -154,7 +167,7 @@ async function run() {
 
     let targetWord = '';
     for (let attempt = 0; attempt < 4; attempt += 1) {
-      await clickWithRetries('#new-game-btn', { attempts: 3, settleMs: 250 });
+      await clickWithRetries(SEL.newGameBtn, { attempts: 3, settleMs: 250 });
       try {
         await page.waitForFunction(() => {
           const word = (typeof WQGame !== 'undefined' ? WQGame?.getState?.()?.word : '');
@@ -205,20 +218,20 @@ async function run() {
       await page.waitForSelector('#modal-overlay', { state: 'hidden', timeout: 10000 });
     }
 
-    await clickWithRetries('#settings-btn', { attempts: 3, settleMs: 200 });
+    await clickWithRetries(SEL.settingsBtn, { attempts: 3, settleMs: 200 });
     await page.waitForFunction(() => {
       const panel = document.getElementById('settings-panel');
       if (!(panel instanceof HTMLElement)) return false;
       return !panel.classList.contains('hidden');
     }, { timeout: 10000 });
-    const resetClicked = await clickWithRetries('#session-reset-btn', { attempts: 3, optional: true, settleMs: 150 });
+    const resetClicked = await clickWithRetries(SEL.sessionResetBtn, { attempts: 3, optional: true, settleMs: 150 });
     if (!resetClicked) {
-      const resetDispatched = await page.evaluate(() => {
-        const button = document.getElementById('session-reset-btn');
+      const resetDispatched = await page.evaluate((selector) => {
+        const button = document.querySelector(selector);
         if (!(button instanceof HTMLElement)) return false;
         button.click();
         return true;
-      });
+      }, SEL.sessionResetBtn);
       if (!resetDispatched) {
         throw new Error('Session reset control not available.');
       }
@@ -227,7 +240,7 @@ async function run() {
       const chip = document.getElementById('session-rounds');
       return chip && /Rounds:\s*0\b/.test(String(chip.textContent || ''));
     }, { timeout: 10000 });
-    await clickWithRetries('#settings-close', { attempts: 3, optional: true });
+    await clickWithRetries(SEL.settingsClose, { attempts: 3, optional: true });
 
     if (pageErrors.length) {
       throw new Error(`Runtime page errors: ${pageErrors.join(' | ')}`);
