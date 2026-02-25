@@ -1,6 +1,9 @@
 name: UI Runtime Smoke
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   schedule:
     - cron: '0 10 * * *'
