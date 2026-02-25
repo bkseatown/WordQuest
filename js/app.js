@@ -2403,8 +2403,8 @@
     const headerRight = document.querySelector('.header-right');
     if (!headerRight) return;
 
-    const iconIds = ['teacher-panel-btn', 'case-toggle-btn', 'keyboard-layout-toggle', 'settings-btn'];
-    const quickIds = ['play-style-toggle', 'phonics-clue-open-btn', 'mission-lab-nav-btn', 'new-game-btn'];
+    const iconIds = ['teacher-panel-btn', 'case-toggle-btn', 'keyboard-layout-toggle', 'mission-lab-nav-btn', 'settings-btn'];
+    const quickIds = ['play-style-toggle', 'phonics-clue-open-btn', 'new-game-btn'];
 
     let iconGroup = headerRight.querySelector('.header-icon-controls');
     if (!iconGroup) {
@@ -3510,11 +3510,15 @@
     const navBtn = _el('mission-lab-nav-btn');
     if (navBtn) {
       navBtn.classList.toggle('hidden', !missionEnabled);
-      navBtn.textContent = missionMode ? 'WordQuest' : 'Deep Dive';
+      navBtn.innerHTML = missionMode
+        ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3.5h13.5V17"></path><path d="M20.5 3.5L9.5 14.5"></path><path d="M3.5 9.5V20.5H14.5"></path></svg>'
+        : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="7" height="7" rx="1.4"></rect><rect x="13.5" y="3.5" width="7" height="7" rx="1.4"></rect><rect x="3.5" y="13.5" width="7" height="7" rx="1.4"></rect><rect x="13.5" y="13.5" width="7" height="7" rx="1.4"></rect></svg>';
       navBtn.setAttribute('aria-pressed', missionMode ? 'true' : 'false');
+      navBtn.setAttribute('aria-label', missionMode ? 'Return to WordQuest' : 'Open more activities');
       navBtn.title = missionMode
         ? 'Return to WordQuest gameplay mode'
-        : 'Open Deep Dive as a standalone activity';
+        : 'Open more activities';
+      setHoverNoteForElement(navBtn, missionMode ? 'Return to WordQuest gameplay mode.' : 'Open more activities like Deep Dive.');
     }
     const newWordBtn = _el('new-game-btn');
     if (newWordBtn) {
