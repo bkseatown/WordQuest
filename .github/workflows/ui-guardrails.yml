@@ -29,3 +29,13 @@ jobs:
         if: github.event_name == 'push'
         run: |
           npm run scope:check
+      - name: Teacher daily flow smoke test
+        run: |
+          npm run smoke:teacher-daily-flow
+      - name: Install Playwright runtime
+        run: |
+          npm install --no-save playwright
+          npx playwright install chromium
+      - name: Teacher daily flow runtime smoke (Playwright)
+        run: |
+          npm run smoke:teacher-daily-flow:playwright

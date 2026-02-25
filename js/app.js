@@ -92,6 +92,7 @@
   const SHUFFLE_BAG_KEY = 'wq_v2_shuffle_bag';
   const REVIEW_QUEUE_KEY = 'wq_v2_spaced_review_queue_v1';
   const TELEMETRY_QUEUE_KEY = 'wq_v2_telemetry_queue_v1';
+  const DIAGNOSTICS_LAST_RESET_KEY = 'wq_v2_diag_last_reset_v1';
   const PAGE_MODE_KEY = 'wq_v2_page_mode_v1';
   const LAST_NON_OFF_MUSIC_KEY = 'wq_v2_last_non_off_music_v1';
   const MISSION_LAB_ENABLED = true;
@@ -500,10 +501,14 @@
   const _el = id => document.getElementById(id);
   const TELEMETRY_ENABLED_KEY = 'wq_v2_telemetry_enabled_v1';
   const TELEMETRY_DEVICE_ID_KEY = 'wq_v2_device_id_local_v1';
+  const TELEMETRY_ENDPOINT_KEY = 'wq_v2_telemetry_endpoint_v1';
+  const TELEMETRY_LAST_UPLOAD_KEY = 'wq_v2_telemetry_last_upload_v1';
   const TELEMETRY_QUEUE_LIMIT = 500;
   const TELEMETRY_SESSION_ID = `sess_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
   const telemetrySessionStartedAt = Date.now();
   let telemetryLastMusicSignature = '';
+  let telemetryUploadInFlight = false;
+  let telemetryUploadIntervalId = 0;
   const HOVER_NOTE_DELAY_MS = 500;
   const HOVER_NOTE_TARGET_SELECTOR = '.icon-btn, .header-quick-btn, .theme-preview-music, .wq-theme-nav-btn, .quick-popover-done';
   let hoverNoteTimer = 0;
@@ -553,6 +558,116 @@
     try {
       localStorage.setItem(TELEMETRY_QUEUE_KEY, JSON.stringify(Array.isArray(queue) ? queue.slice(-TELEMETRY_QUEUE_LIMIT) : []));
     } catch {}
+  }
+
+  function normalizeTelemetryEndpoint(raw) {
+    const value = String(raw || '').trim();
+    if (!value) return '';
+    if (value.startsWith('/')) return value;
+    if (/^https?:\/\//i.test(value)) return value;
+    return '';
+  }
+
+  function resolveTelemetryEndpoint() {
+    let queryValue = '';
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      queryValue = params.get('telemetry_endpoint') || params.get('telemetryEndpoint') || '';
+    } catch {}
+    const queryEndpoint = normalizeTelemetryEndpoint(queryValue);
+    if (queryEndpoint) {
+      try { localStorage.setItem(TELEMETRY_ENDPOINT_KEY, queryEndpoint); } catch {}
+      return queryEndpoint;
+    }
+    try {
+      return normalizeTelemetryEndpoint(localStorage.getItem(TELEMETRY_ENDPOINT_KEY) || '');
+    } catch {
+      return '';
+    }
+  }
+
+  function getTelemetryUploadMeta() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(TELEMETRY_LAST_UPLOAD_KEY) || 'null');
+      if (!parsed || typeof parsed !== 'object') return null;
+      return {
+        ts: Math.max(0, Number(parsed.ts) || 0),
+        count: Math.max(0, Number(parsed.count) || 0),
+        endpoint: normalizeTelemetryEndpoint(parsed.endpoint || '')
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  function setTelemetryUploadMeta(meta) {
+    const row = {
+      ts: Date.now(),
+      count: Math.max(0, Number(meta?.count) || 0),
+      endpoint: normalizeTelemetryEndpoint(meta?.endpoint || '')
+    };
+    try { localStorage.setItem(TELEMETRY_LAST_UPLOAD_KEY, JSON.stringify(row)); } catch {}
+  }
+
+  async function uploadTelemetryQueue(reason = 'manual', options = {}) {
+    if (telemetryUploadInFlight) return false;
+    const endpoint = resolveTelemetryEndpoint();
+    if (!endpoint || !readTelemetryEnabled()) return false;
+    const queue = getTelemetryQueue();
+    if (!queue.length) return true;
+    telemetryUploadInFlight = true;
+    try {
+      const rows = queue.slice(-200);
+      const payload = {
+        app: 'wordquest',
+        reason: String(reason || 'manual').trim() || 'manual',
+        sent_at_ms: Date.now(),
+        rows
+      };
+      const shouldUseBeacon = !!options.useBeacon;
+      if (shouldUseBeacon && navigator?.sendBeacon) {
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        const ok = navigator.sendBeacon(endpoint, blob);
+        if (ok) {
+          setTelemetryQueue([]);
+          setTelemetryUploadMeta({ count: rows.length, endpoint });
+          return true;
+        }
+      }
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(payload),
+        keepalive: shouldUseBeacon
+      });
+      if (!response.ok) return false;
+      setTelemetryQueue([]);
+      setTelemetryUploadMeta({ count: rows.length, endpoint });
+      return true;
+    } catch {
+      return false;
+    } finally {
+      telemetryUploadInFlight = false;
+    }
+  }
+
+  function initTelemetryUploader() {
+    if (document.body.dataset.wqTelemetryUploaderBound === '1') return;
+    document.body.dataset.wqTelemetryUploaderBound = '1';
+    if (telemetryUploadIntervalId) clearInterval(telemetryUploadIntervalId);
+    telemetryUploadIntervalId = window.setInterval(() => {
+      void uploadTelemetryQueue('interval');
+    }, 90_000);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        void uploadTelemetryQueue('visibility_hidden', { useBeacon: true });
+      }
+    });
+    window.addEventListener('pagehide', () => {
+      void uploadTelemetryQueue('pagehide', { useBeacon: true });
+    });
   }
 
   function getTelemetryContext() {
@@ -605,9 +720,21 @@
       } catch {}
     },
     isEnabled: readTelemetryEnabled,
+    setEndpoint(url) {
+      const endpoint = normalizeTelemetryEndpoint(url);
+      try {
+        if (endpoint) localStorage.setItem(TELEMETRY_ENDPOINT_KEY, endpoint);
+        else localStorage.removeItem(TELEMETRY_ENDPOINT_KEY);
+      } catch {}
+      return endpoint;
+    },
+    getEndpoint: resolveTelemetryEndpoint,
     peek(limit = 20) {
       const count = Math.max(1, Math.min(200, Number(limit) || 20));
       return getTelemetryQueue().slice(-count);
+    },
+    async uploadNow(reason = 'manual') {
+      return uploadTelemetryQueue(reason);
     },
     flush() {
       const rows = getTelemetryQueue();
@@ -615,6 +742,7 @@
       return rows;
     }
   });
+  initTelemetryUploader();
 
   function isMissionLabEnabled() {
     return MISSION_LAB_ENABLED;
@@ -664,6 +792,134 @@
     const label = resolveBuildLabel();
     badge.textContent = label ? `Build ${label}` : 'Build local';
     badge.title = label ? `WordQuest build ${label}` : 'WordQuest local build';
+  }
+
+  function formatDiagnosticDate(ts) {
+    const value = Number(ts) || 0;
+    if (!value) return '--';
+    return new Date(value).toLocaleString();
+  }
+
+  function readDiagnosticsLastReset() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(DIAGNOSTICS_LAST_RESET_KEY) || 'null');
+      if (!parsed || typeof parsed !== 'object') return null;
+      return {
+        ts: Math.max(0, Number(parsed.ts) || 0),
+        reason: String(parsed.reason || '').trim() || 'maintenance',
+        build: String(parsed.build || '').trim() || 'local'
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  async function collectRuntimeDiagnostics() {
+    const build = resolveBuildLabel() || 'local';
+    const lastReset = readDiagnosticsLastReset();
+    const activePrefs = [
+      `focus:${_el('setting-focus')?.value || prefs.focus || DEFAULT_PREFS.focus}`,
+      `grade:${_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade}`,
+      `length:${_el('s-length')?.value || prefs.length || DEFAULT_PREFS.length}`,
+      `pack:${normalizeLessonPackId(prefs.lessonPack || _el('s-lesson-pack')?.value || DEFAULT_PREFS.lessonPack)}`,
+      `target:${normalizeLessonTargetId(
+        normalizeLessonPackId(prefs.lessonPack || _el('s-lesson-pack')?.value || DEFAULT_PREFS.lessonPack),
+        prefs.lessonTarget || _el('s-lesson-target')?.value || DEFAULT_PREFS.lessonTarget
+      )}`,
+      `voice:${normalizeVoiceMode(_el('s-voice')?.value || prefs.voice || DEFAULT_PREFS.voice)}`
+    ].join(' | ');
+
+    let cacheBuckets = 0;
+    if ('caches' in window) {
+      try {
+        const cacheNames = await caches.keys();
+        cacheBuckets = cacheNames.filter((name) => String(name || '').startsWith('wq-')).length;
+      } catch {}
+    }
+
+    let swRegistrations = 0;
+    let swRuntimeVersion = SW_RUNTIME_VERSION;
+    if ('serviceWorker' in navigator) {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        swRegistrations = registrations.length;
+        const activeScript = registrations[0]?.active?.scriptURL || '';
+        if (activeScript.includes('sw-runtime.js?v=')) {
+          const match = activeScript.match(/sw-runtime\.js\?v=([^&#]+)/i);
+          if (match?.[1]) swRuntimeVersion = decodeURIComponent(match[1]);
+        }
+      } catch {}
+    }
+
+    const telemetryEndpoint = resolveTelemetryEndpoint();
+    const telemetryMeta = getTelemetryUploadMeta();
+    const telemetryQueueSize = getTelemetryQueue().length;
+
+    return {
+      build,
+      swRuntimeVersion,
+      swRegistrations,
+      cacheBuckets,
+      activePrefs,
+      lastReset,
+      telemetry: {
+        endpoint: telemetryEndpoint,
+        queueSize: telemetryQueueSize,
+        lastUpload: telemetryMeta
+      }
+    };
+  }
+
+  async function renderDiagnosticsPanel() {
+    const buildEl = _el('diag-build');
+    if (!buildEl) return;
+    const snapshot = await collectRuntimeDiagnostics();
+    const swVersionEl = _el('diag-sw-version');
+    const swRegistrationsEl = _el('diag-sw-registrations');
+    const cacheBucketsEl = _el('diag-cache-buckets');
+    const telemetryEl = _el('diag-telemetry');
+    const activePrefsEl = _el('diag-active-prefs');
+    const lastResetEl = _el('diag-last-reset');
+
+    buildEl.textContent = `Build: ${snapshot.build}`;
+    if (swVersionEl) swVersionEl.textContent = `SW Runtime: ${snapshot.swRuntimeVersion || '--'}`;
+    if (swRegistrationsEl) swRegistrationsEl.textContent = `SW Registrations: ${snapshot.swRegistrations}`;
+    if (cacheBucketsEl) cacheBucketsEl.textContent = `Cache Buckets: ${snapshot.cacheBuckets}`;
+    if (telemetryEl) {
+      const endpointLabel = snapshot.telemetry.endpoint || '(disabled)';
+      const uploaded = snapshot.telemetry.lastUpload?.ts
+        ? `last ${formatDiagnosticDate(snapshot.telemetry.lastUpload.ts)}`
+        : 'never uploaded';
+      telemetryEl.textContent = `Telemetry Sink: ${endpointLabel} · Queue ${snapshot.telemetry.queueSize} · ${uploaded}`;
+    }
+    if (activePrefsEl) activePrefsEl.textContent = `Active Prefs: ${snapshot.activePrefs}`;
+    if (lastResetEl) {
+      const resetLabel = snapshot.lastReset
+        ? `${formatDiagnosticDate(snapshot.lastReset.ts)} (${snapshot.lastReset.reason}, ${snapshot.lastReset.build})`
+        : '--';
+      lastResetEl.textContent = `Last Reset: ${resetLabel}`;
+    }
+  }
+
+  async function copyDiagnosticsSummary() {
+    const snapshot = await collectRuntimeDiagnostics();
+    const lines = [
+      'WordQuest Diagnostics',
+      `Build: ${snapshot.build}`,
+      `SW Runtime: ${snapshot.swRuntimeVersion || '--'}`,
+      `SW Registrations: ${snapshot.swRegistrations}`,
+      `Cache Buckets: ${snapshot.cacheBuckets}`,
+      `Telemetry Sink: ${snapshot.telemetry.endpoint || '(disabled)'}`,
+      `Telemetry Queue: ${snapshot.telemetry.queueSize}`,
+      `Telemetry Last Upload: ${snapshot.telemetry.lastUpload?.ts ? formatDiagnosticDate(snapshot.telemetry.lastUpload.ts) : '--'}`,
+      `Active Prefs: ${snapshot.activePrefs}`,
+      `Last Reset: ${snapshot.lastReset ? `${formatDiagnosticDate(snapshot.lastReset.ts)} (${snapshot.lastReset.reason}, ${snapshot.lastReset.build})` : '--'}`
+    ];
+    await copyTextToClipboard(
+      lines.join('\n'),
+      'Diagnostics copied.',
+      'Could not copy diagnostics on this device.'
+    );
   }
 
   function setHoverNoteForElement(el, note) {
@@ -1498,6 +1754,9 @@
   syncHeaderStaticIcons();
   initHoverNoteToasts();
   emitTelemetry('wq_session_start', {
+    source: 'app_init'
+  });
+  emitTelemetry('wq_funnel_session_start', {
     source: 'app_init'
   });
 
@@ -2613,7 +2872,7 @@
     if (!state?.word) {
       showInformantHintCard({
         title: '🔎 Clue Coach',
-        message: 'Tap New Word first, then tap Clue for a quick helper tip.',
+        message: 'Tap Next Word first, then tap Clue for a quick helper tip.',
         examples: [],
         actionMode: 'none'
       });
@@ -2760,7 +3019,7 @@
     const source = String(options.source || 'manual').toLowerCase();
 
     if (!state.word || state.gameOver) {
-      if (titleEl) titleEl.textContent = 'Try These Words';
+      if (titleEl) titleEl.textContent = 'Try a Starter Word';
       if (messageEl) messageEl.textContent = 'Start a round first, then open this to see starter ideas.';
       renderStarterWordList([]);
       card.classList.remove('hidden');
@@ -2770,7 +3029,7 @@
 
     const words = pickStarterWordsForRound(state, 9);
     currentRoundStarterWordsShown = true;
-    if (titleEl) titleEl.textContent = source === 'auto' ? 'Try These Words' : 'Need Ideas? Try These Words';
+    if (titleEl) titleEl.textContent = source === 'auto' ? 'Try a Starter Word' : 'Need Ideas? Try a Starter Word';
     if (messageEl) {
       messageEl.textContent = source === 'auto'
         ? `You have ${guessCount} guesses in. Pick one idea to keep momentum.`
@@ -3025,10 +3284,10 @@
     syncTeacherPresetButtons();
     if (options.toast) {
       WQUI.showToast(normalized === 'required'
-        ? 'Voice practice is required before next word.'
+        ? 'Voice practice is required before moving on.'
         : normalized === 'off'
           ? 'Voice practice is off.'
-          : 'Voice practice is optional.'
+          : 'Voice practice is optional for this round.'
       );
     }
     return normalized;
@@ -3071,6 +3330,45 @@
       assessmentLock: 'on',
       boostPopups: 'off',
       confetti: 'off'
+    }),
+    'k2-phonics': Object.freeze({
+      hint: 'on',
+      confidenceCoaching: 'on',
+      revealFocus: 'on',
+      voicePractice: 'required',
+      voice: 'recorded',
+      assessmentLock: 'off',
+      boostPopups: 'on',
+      confetti: 'on',
+      focus: 'cvc',
+      grade: 'K-2',
+      lessonPack: 'custom'
+    }),
+    '35-vocab': Object.freeze({
+      hint: 'on',
+      confidenceCoaching: 'off',
+      revealFocus: 'on',
+      voicePractice: 'optional',
+      voice: 'recorded',
+      assessmentLock: 'off',
+      boostPopups: 'on',
+      confetti: 'on',
+      focus: 'vocab-ela-35',
+      grade: 'G3-5',
+      lessonPack: 'custom'
+    }),
+    intervention: Object.freeze({
+      hint: 'on',
+      confidenceCoaching: 'on',
+      revealFocus: 'on',
+      voicePractice: 'required',
+      voice: 'recorded',
+      assessmentLock: 'on',
+      boostPopups: 'off',
+      confetti: 'off',
+      focus: 'digraph',
+      grade: 'K-2',
+      lessonPack: 'custom'
     })
   });
 
@@ -3085,7 +3383,10 @@
       boostPopups: areBoostPopupsEnabled() ? 'on' : 'off',
       confetti: String(_el('s-confetti')?.value || prefs.confetti || DEFAULT_PREFS.confetti).toLowerCase() === 'off'
         ? 'off'
-        : 'on'
+        : 'on',
+      focus: String(_el('setting-focus')?.value || prefs.focus || DEFAULT_PREFS.focus).trim() || DEFAULT_PREFS.focus,
+      grade: String(_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade).trim() || DEFAULT_PREFS.grade,
+      lessonPack: normalizeLessonPackId(prefs.lessonPack || _el('s-lesson-pack')?.value || DEFAULT_PREFS.lessonPack)
     };
     return Object.entries(TEACHER_PRESETS).find(([, preset]) =>
       current.hint === preset.hint &&
@@ -3095,7 +3396,10 @@
       current.voice === preset.voice &&
       current.assessmentLock === preset.assessmentLock &&
       current.boostPopups === preset.boostPopups &&
-      current.confetti === preset.confetti
+      current.confetti === preset.confetti &&
+      (preset.focus ? current.focus === preset.focus : true) &&
+      (preset.grade ? current.grade === preset.grade : true) &&
+      (preset.lessonPack ? current.lessonPack === preset.lessonPack : true)
     )?.[0] || '';
   }
 
@@ -3137,6 +3441,20 @@
     const confettiSelect = _el('s-confetti');
     if (confettiSelect) confettiSelect.value = preset.confetti;
     setPref('confetti', preset.confetti);
+
+    if (preset.lessonPack) {
+      handleLessonPackSelectionChange(preset.lessonPack);
+    }
+    if (preset.grade) {
+      const gradeSelect = _el('s-grade');
+      if (gradeSelect) {
+        gradeSelect.value = preset.grade;
+        gradeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
+    if (preset.focus) {
+      setFocusValue(preset.focus, { force: true });
+    }
 
     if (preset.voice === 'off') cancelRevealNarration();
     updateVoicePracticePanel(WQGame.getState());
@@ -3257,6 +3575,16 @@
     document.body.dataset.wqFirstRunSetupBound = '1';
   }
 
+  function markDiagnosticsReset(reason = 'maintenance') {
+    const row = {
+      ts: Date.now(),
+      reason: String(reason || 'maintenance').trim() || 'maintenance',
+      build: resolveBuildLabel() || 'local'
+    };
+    try { localStorage.setItem(DIAGNOSTICS_LAST_RESET_KEY, JSON.stringify(row)); } catch {}
+    return row;
+  }
+
   async function resetAppearanceAndCache() {
     if (isAssessmentRoundLocked()) {
       showAssessmentLockNotice('Finish this round first, then reset appearance.');
@@ -3318,6 +3646,8 @@
     syncHeaderControlsVisibility();
 
     try { sessionStorage.removeItem('wq_sw_controller_reloaded'); } catch {}
+    markDiagnosticsReset('appearance_reset');
+    emitTelemetry('wq_funnel_reset_used', { source: 'settings' });
 
     let clearedCaches = 0;
     if ('caches' in window) {
@@ -3366,6 +3696,8 @@
     try { sessionStorage.removeItem('wq_sw_controller_reloaded'); } catch {}
     try { sessionStorage.removeItem('wq_v2_build_remote_check_v1'); } catch {}
     try { localStorage.removeItem('wq_v2_cache_repair_build_v1'); } catch {}
+    markDiagnosticsReset('force_update');
+    emitTelemetry('wq_funnel_force_update_used', { source: 'settings' });
 
     let clearedCaches = 0;
     if ('caches' in window) {
@@ -3819,11 +4151,11 @@
     } else if (playStyle === 'listening') {
       text = hasActiveRound
         ? 'Listening challenge: keep spelling from audio. Phonics Hint is optional support.'
-        : 'Tap New Word to start a listening round. Goal: hear and spell, not clue hunt.';
+        : 'Tap Next Word to start a listening round. Goal: hear and spell.';
     } else {
       text = hasActiveRound
         ? 'Keep guessing and use color feedback to narrow the word.'
-        : 'Tap New Word to start. Make your first guess when ready.';
+        : 'Tap Next Word to start. Make your first guess when ready.';
     }
 
     const showTopLine = firstRunSetupPending;
@@ -4022,10 +4354,10 @@
     }
     const newWordBtn = _el('new-game-btn');
     if (newWordBtn) {
-      newWordBtn.textContent = missionMode ? 'New Deep Dive' : 'New Word';
+      newWordBtn.textContent = missionMode ? 'New Deep Dive' : 'Next Word';
       newWordBtn.title = missionMode
         ? 'Start a standalone Deep Dive round'
-        : 'Start a new word round';
+        : 'Start the next word round';
       if (missionMode) newWordBtn.classList.remove('pulse');
     }
     _el('mission-lab-hub')?.classList.toggle('hidden', !missionMode);
@@ -4132,7 +4464,10 @@
     _el('teacher-panel')?.classList.add('hidden');
     const opening = panel.classList.contains('hidden');
     panel.classList.toggle('hidden');
-    if (opening) setSettingsView('quick');
+    if (opening) {
+      setSettingsView('quick');
+      void renderDiagnosticsPanel();
+    }
     syncHeaderControlsVisibility();
   });
   _el('settings-close')?.addEventListener('click', () => {
@@ -4541,13 +4876,13 @@
   _el('s-starter-words')?.addEventListener('change', e => {
     const mode = applyStarterWordMode(e.target.value);
     if (mode === 'off') {
-      WQUI.showToast('Try These Words is off.');
+      WQUI.showToast('Starter word suggestions are off.');
       return;
     }
     const threshold = getStarterWordAutoThreshold(mode);
     WQUI.showToast(threshold > 0
-      ? `Try These Words will auto-open after ${threshold} guesses.`
-      : 'Try These Words is available on demand.');
+      ? `Starter word suggestions will auto-open after ${threshold} guesses.`
+      : 'Starter word suggestions are available on demand.');
   });
   _el('s-confidence-coaching')?.addEventListener('change', e => {
     setConfidenceCoachingMode(!!e.target.checked, { toast: true });
@@ -4738,6 +5073,12 @@
   _el('s-force-update-now-top')?.addEventListener('click', () => {
     void forceUpdateNow();
   });
+  _el('diag-refresh-btn')?.addEventListener('click', () => {
+    void renderDiagnosticsPanel();
+  });
+  _el('diag-copy-btn')?.addEventListener('click', () => {
+    void copyDiagnosticsSummary();
+  });
   _el('session-copy-btn')?.addEventListener('click', () => {
     void copySessionSummary();
   });
@@ -4768,6 +5109,9 @@
   _el('session-download-class-rollup-btn')?.addEventListener('click', () => {
     downloadClassRollupCsv();
   });
+  _el('session-copy-outcomes-btn')?.addEventListener('click', () => {
+    void copySessionOutcomesSummary();
+  });
   _el('session-copy-probe-export-btn')?.addEventListener('click', () => {
     void copyProbeSummary();
   });
@@ -4776,6 +5120,7 @@
   });
   _el('session-reset-btn')?.addEventListener('click', () => {
     resetSessionSummary();
+    emitTelemetry('wq_funnel_reset_used', { source: 'teacher_session' });
     WQUI.showToast('Teacher session summary reset.');
   });
   _el('session-probe-start-btn')?.addEventListener('click', () => {
@@ -7306,8 +7651,27 @@
     return out;
   }
 
-  function getCurriculumFocusChipLabel(focusValue) {
+  function getCurriculumFocusChipLabel(focusValue, packId = '') {
     const focus = String(focusValue || 'all').trim().toLowerCase() || 'all';
+    const pack = String(packId || '').trim().toLowerCase();
+    if (pack === 'ufli' || pack === 'fundations' || pack === 'wilson') {
+      const curated = Object.freeze({
+        cvc: 'pattern: cvc short vowels',
+        digraph: 'pattern: digraph team (sh/ch/th/wh)',
+        ccvc: 'pattern: initial blends',
+        cvcc: 'pattern: final blends',
+        cvce: 'pattern: vce (magic e)',
+        vowel_team: 'pattern: vowel teams (ai/ay, ee/ea, oa/ow)',
+        r_controlled: 'pattern: r-controlled (ar/or/er/ir/ur)',
+        welded: 'pattern: welded sounds (ang/ing/ank/ink)',
+        diphthong: 'pattern: diphthongs (oi/oy, ou/ow)',
+        prefix: 'pattern: prefixes',
+        suffix: 'pattern: suffixes',
+        multisyllable: 'pattern: syllable division',
+        all: 'pattern: mixed review'
+      });
+      return curated[focus] || `pattern: ${focus.replaceAll('_', ' ')}`;
+    }
     const shortLabels = Object.freeze({
       cvc: 'cvc (short vowels)',
       digraph: 'digraphs',
@@ -7361,8 +7725,11 @@
     const target = getLessonTarget(entry.packId, entry.targetId);
     if (!target) return '';
     const examples = getCurriculumExampleWordsForTarget(target, cacheKey);
-    const focusLabel = getCurriculumFocusChipLabel(target.focus);
-    const text = examples.length ? `${focusLabel}: ${examples.join(', ')}` : '';
+    const focusLabel = getCurriculumFocusChipLabel(target.focus, entry.packId);
+    const useCuratedPatternOnly = ['ufli', 'fundations', 'wilson'].includes(String(entry.packId || '').toLowerCase());
+    const text = useCuratedPatternOnly
+      ? focusLabel
+      : (examples.length ? `${focusLabel}: ${examples.join(', ')}` : '');
     curriculumEntryExampleCache.set(cacheKey, text);
     return text;
   }
@@ -7621,6 +7988,11 @@
       const [, packRaw = 'custom'] = raw.split('::');
       const packId = normalizeLessonPackId(packRaw);
       if (packId === 'custom') return;
+      emitTelemetry('wq_funnel_quest_select', {
+        source: 'focus_search',
+        selection_type: 'curriculum_pack',
+        lesson_pack_id: packId
+      });
       focusCurriculumPackFilter = packId;
       const inputEl = _el('focus-inline-search');
       if (inputEl) {
@@ -7649,6 +8021,12 @@
       }
       handleLessonPackSelectionChange(packId);
       handleLessonTargetSelectionChange(targetId);
+      emitTelemetry('wq_funnel_quest_select', {
+        source: 'focus_search',
+        selection_type: 'curriculum',
+        lesson_pack_id: packId,
+        lesson_target_id: targetId
+      });
       if (options.toast) {
         const pack = getLessonPackDefinition(packId);
         const target = getLessonTarget(packId, targetId);
@@ -7660,6 +8038,11 @@
       return;
     }
     const focusValue = raw.startsWith('focus::') ? raw.slice('focus::'.length) : raw;
+    emitTelemetry('wq_funnel_quest_select', {
+      source: 'focus_search',
+      selection_type: 'focus',
+      focus_id: focusValue
+    });
     setFocusValue(focusValue, options);
   }
 
@@ -9028,11 +9411,11 @@
       if (!Array.isArray(parsed)) return [];
       return parsed
         .map((entry) => {
-          const event = String(entry?.event || entry?.name || '').trim().toLowerCase();
-          const timestamp = Number(entry?.ts || entry?.timestamp || entry?.time || 0);
+          const event = String(entry?.event_name || entry?.event || entry?.name || '').trim().toLowerCase();
+          const timestamp = Number(entry?.ts_ms || entry?.ts || entry?.timestamp || entry?.time || 0);
           const payload = entry?.payload && typeof entry.payload === 'object'
             ? entry.payload
-            : (entry?.data && typeof entry.data === 'object' ? entry.data : {});
+            : (entry?.data && typeof entry.data === 'object' ? entry.data : entry);
           return { event, timestamp, payload };
         })
         .filter((entry) => entry.event && Number.isFinite(entry.timestamp) && entry.timestamp > 0);
@@ -9273,6 +9656,47 @@
 
     if (noteEl) {
       noteEl.textContent = `Data readiness: ${availableCount}/${totalCount} KPIs active (7-day local window).`;
+    }
+  }
+
+  function renderTelemetryDashboards() {
+    const adoptionEl = _el('telemetry-dashboard-adoption');
+    const learningEl = _el('telemetry-dashboard-learning');
+    const reliabilityEl = _el('telemetry-dashboard-reliability');
+    const noteEl = _el('telemetry-dashboard-note');
+    if (!adoptionEl || !learningEl || !reliabilityEl) return;
+
+    const adoptionSnapshot = buildAdoptionHealthMetrics();
+    const adoptionScore = adoptionSnapshot.overallScore;
+    adoptionEl.textContent = adoptionScore === null ? 'Adoption: --' : `Adoption: ${adoptionScore}/100`;
+    applyChipTone(adoptionEl, adoptionSnapshot.overallTone || '');
+
+    const rows = loadTelemetryRows();
+    const rounds = rows.filter((row) => row.event === 'wq_round_complete');
+    const wins = rounds.filter((row) => Boolean(row.payload?.won)).length;
+    const roundWinRate = rounds.length ? (wins / rounds.length) : null;
+    const deepDive = rows.filter((row) => row.event === 'wq_funnel_deep_dive_completed' || row.event === 'wq_deep_dive_complete');
+    const deepDiveCompletion = deepDive.length
+      ? (deepDive.reduce((sum, row) => sum + Math.max(0, Math.min(1, Number(row.payload?.completion_rate || 0))), 0) / deepDive.length)
+      : null;
+    const learningScoreRaw = [roundWinRate, deepDiveCompletion].filter((value) => value !== null);
+    const learningScore = learningScoreRaw.length
+      ? Math.round((learningScoreRaw.reduce((sum, value) => sum + value, 0) / learningScoreRaw.length) * 100)
+      : null;
+    learningEl.textContent = learningScore === null ? 'Learning: --' : `Learning: ${learningScore}/100`;
+    applyChipTone(learningEl, learningScore === null ? '' : (learningScore >= 80 ? 'good' : learningScore >= 60 ? 'warn' : 'bad'));
+
+    const errorRows = rows.filter((row) => row.event === 'wq_error');
+    const blockerCount = errorRows.filter((row) => {
+      const severity = String(row.payload?.severity || row.payload?.level || '').toLowerCase();
+      return severity === 'blocker' || severity === 'critical' || severity === 'fatal';
+    }).length;
+    const reliabilityScore = Math.max(0, 100 - (blockerCount * 20));
+    reliabilityEl.textContent = `Reliability: ${reliabilityScore}/100`;
+    applyChipTone(reliabilityEl, blockerCount === 0 ? 'good' : blockerCount <= 2 ? 'warn' : 'bad');
+
+    if (noteEl) {
+      noteEl.textContent = `Funnel events tracked: ${rows.filter((row) => row.event.startsWith('wq_funnel_')).length}.`;
     }
   }
 
@@ -10135,6 +10559,7 @@
       missionLevelEl.textContent = `Deep Dive Top Level: ${missionStats.topLevelLabel} · On-time ${missionStats.completedCount ? `${Math.round(missionStats.onTimeRate * 100)}%` : '--'}`;
     }
     renderAdoptionHealthPanel();
+    renderTelemetryDashboards();
     renderMasteryTable();
     renderMiniLessonPanel();
   }
@@ -10799,6 +11224,37 @@
       buildSessionSummaryText(),
       'Session summary copied.',
       'Could not copy summary on this device.'
+    );
+  }
+
+  function buildSessionOutcomesSummaryText() {
+    const rounds = Math.max(0, Number(sessionSummary.rounds) || 0);
+    const masteryRows = getSortedMasteryRows();
+    const topSkill = masteryRows[0] || null;
+    const missionStats = buildMissionSummaryStats({
+      sessionOnly: true,
+      student: getActiveStudentLabel() === 'Class' ? '' : getActiveStudentLabel()
+    });
+    const trend = getComparableProbeTrend(getActiveStudentLabel());
+    const hasTrend = Boolean(trend.current && trend.previous && trend.current.roundsDone > 0 && trend.previous.roundsDone > 0);
+    const trendLabel = hasTrend
+      ? `Accuracy ${formatSignedDelta((trend.current.accuracyRate - trend.previous.accuracyRate) * 100, 0)} pts, Avg guesses ${formatSignedDelta(trend.current.avgGuesses - trend.previous.avgGuesses)}`
+      : 'Not enough probe trend data yet.';
+    const startedAt = new Date(sessionSummary.startedAt || Date.now()).toLocaleString();
+    return [
+      `Session outcomes (${startedAt})`,
+      `Attempts: ${rounds}`,
+      `Mastery trend: ${topSkill ? `${topSkill.label} at ${topSkill.accuracyLabel} across ${topSkill.attempts} attempts` : 'No mastery rows yet.'}`,
+      `Probe trend: ${trendLabel}`,
+      `Deep Dive completion: ${missionStats.count ? `${Math.round(missionStats.completionRate * 100)}% (${missionStats.completedCount}/${missionStats.count})` : '--'}`
+    ].join('\n');
+  }
+
+  async function copySessionOutcomesSummary() {
+    await copyTextToClipboard(
+      buildSessionOutcomesSummaryText(),
+      'Session outcomes copied.',
+      'Could not copy session outcomes on this device.'
     );
   }
 
@@ -12048,7 +12504,7 @@
       level
     });
     if (!nextState) {
-      WQUI.showToast('Deep Dive could not start for this word.');
+      WQUI.showToast('Deep Dive could not start with this word.');
       return false;
     }
 
@@ -12062,6 +12518,11 @@
     syncChallengeQuickstartCard(revealChallengeState);
     focusChallengeModalStart();
     emitTelemetry('wq_deep_dive_start', {
+      source: 'standalone',
+      word_id: normalizeReviewWord(word),
+      level: level || ''
+    });
+    emitTelemetry('wq_funnel_deep_dive_started', {
       source: 'standalone',
       word_id: normalizeReviewWord(word),
       level: level || ''
@@ -13346,7 +13807,7 @@
         startStandaloneMissionLab();
         return;
       }
-      WQUI.showToast('Finish a word to unlock Deep Dive Quest.');
+      WQUI.showToast('Solve a word first to unlock Deep Dive Quest.');
       return;
     }
     const activeElement = document.activeElement;
@@ -13360,6 +13821,11 @@
     focusChallengeModalStart();
     emitTelemetry('wq_deep_dive_open', {
       source: revealChallengeState?.source || 'reveal'
+    });
+    emitTelemetry('wq_funnel_deep_dive_started', {
+      source: revealChallengeState?.source || 'reveal',
+      word_id: normalizeReviewWord(revealChallengeState?.word),
+      level: revealChallengeState?.challenge?.level || ''
     });
   }
 
@@ -13501,6 +13967,12 @@
       score_total: Number(score.total) || 0,
       points_earned: pointsEarned,
       rank: rank?.label || ''
+    });
+    emitTelemetry('wq_funnel_deep_dive_completed', {
+      source: revealChallengeState?.source || 'reveal',
+      word_id: normalizeReviewWord(revealChallengeState?.word),
+      level: revealChallengeState?.challenge?.level || '',
+      completion_rate: Number((doneCount / 3).toFixed(2))
     });
     clearChallengeDraft(revealChallengeState);
     renderSessionSummary();

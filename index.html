@@ -82,7 +82,7 @@
               <path d="M12 2a6 6 0 0 0-3.8 10.6c.8.7 1.3 1.4 1.6 2.4h4.4c.3-1 .8-1.7 1.6-2.4A6 6 0 0 0 12 2z"></path>
             </svg>
           </button>
-          <button id="new-game-btn">New Word</button>
+          <button id="new-game-btn">Next Word</button>
         </div>
       </div>
     </div>
@@ -289,6 +289,9 @@
                 <button class="quick-action-btn" id="preset-guided" data-teacher-preset="guided" type="button">Guided</button>
                 <button class="quick-action-btn" id="preset-independent" data-teacher-preset="independent" type="button">Independent</button>
                 <button class="quick-action-btn" id="preset-assessment" data-teacher-preset="assessment" type="button">Assessment</button>
+                <button class="quick-action-btn" id="preset-k2-phonics" data-teacher-preset="k2-phonics" type="button">K-2 Phonics Group</button>
+                <button class="quick-action-btn" id="preset-35-vocab" data-teacher-preset="35-vocab" type="button">3-5 Vocab Block</button>
+                <button class="quick-action-btn" id="preset-intervention" data-teacher-preset="intervention" type="button">Intervention Sprint</button>
               </div>
               <div class="setting-checkbox-help">One tap applies grouped classroom defaults for hinting, voice, and engagement settings.</div>
             </div>
@@ -342,6 +345,17 @@
                   <span id="session-adoption-reliability" class="teacher-session-chip">Reliability: --</span>
                 </div>
                 <div id="session-adoption-note" class="setting-checkbox-help">Scores update from local session/probe telemetry in this browser.</div>
+              </div>
+              <div class="teacher-session-adoption-row">
+                <div class="setting-row-heading">Telemetry Dashboards</div>
+                <div class="teacher-session-metrics teacher-session-adoption-overall">
+                  <span id="telemetry-dashboard-adoption" class="teacher-session-chip">Adoption: --</span>
+                </div>
+                <div class="teacher-session-metrics teacher-session-adoption-metrics">
+                  <span id="telemetry-dashboard-learning" class="teacher-session-chip">Learning: --</span>
+                  <span id="telemetry-dashboard-reliability" class="teacher-session-chip">Reliability: --</span>
+                </div>
+                <div id="telemetry-dashboard-note" class="setting-checkbox-help">Built from local funnel telemetry in this browser.</div>
               </div>
               <div class="teacher-session-roster-row">
                 <label>Student Roster
@@ -495,6 +509,7 @@
                 <button id="session-download-family-handout-btn" class="quick-action-btn teacher-session-btn" type="button">Download Family Handout</button>
                 <button id="session-download-csv-bundle-btn" class="quick-action-btn teacher-session-btn" type="button">Download CSV Bundle</button>
                 <button id="session-download-class-rollup-btn" class="quick-action-btn teacher-session-btn" type="button">Download Class Rollup CSV</button>
+                <button id="session-copy-outcomes-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Session Outcomes</button>
                 <button id="session-copy-probe-export-btn" class="quick-action-btn teacher-session-btn teacher-export-only-btn" type="button">Copy Probe</button>
                 <button id="session-copy-probe-csv-export-btn" class="quick-action-btn teacher-session-btn teacher-export-only-btn" type="button">Copy Probe CSV</button>
                 <button id="session-reset-btn" class="quick-action-btn teacher-session-btn" data-nonexport="true" type="button">Reset Session</button>
@@ -553,6 +568,26 @@
         <div class="settings-inline-note">
           Visual and cache repair runs automatically after updates. Use maintenance actions only if a tab is stuck on an older build.
         </div>
+        <details id="settings-group-diagnostics" class="settings-group">
+          <summary>Diagnostics</summary>
+          <div class="settings-group-grid settings-grid">
+            <div class="setting-row setting-row-full teacher-session-metrics">
+              <span id="diag-build" class="teacher-session-chip">Build: --</span>
+              <span id="diag-sw-version" class="teacher-session-chip">SW Runtime: --</span>
+              <span id="diag-sw-registrations" class="teacher-session-chip">SW Registrations: --</span>
+              <span id="diag-cache-buckets" class="teacher-session-chip">Cache Buckets: --</span>
+              <span id="diag-telemetry" class="teacher-session-chip">Telemetry Sink: --</span>
+            </div>
+            <div class="setting-row setting-row-full teacher-session-metrics">
+              <span id="diag-active-prefs" class="teacher-session-chip">Active Prefs: --</span>
+              <span id="diag-last-reset" class="teacher-session-chip">Last Reset: --</span>
+            </div>
+            <div class="setting-row setting-row-full">
+              <button id="diag-refresh-btn" class="quick-action-btn" type="button">Refresh Diagnostics</button>
+              <button id="diag-copy-btn" class="quick-action-btn" type="button">Copy Diagnostics</button>
+            </div>
+          </div>
+        </details>
         <div class="settings-inline-actions settings-maintenance-row">
           <button id="s-reset-look-cache" class="quick-action-btn" type="button">Reset Appearance</button>
           <button id="s-force-update-now" class="quick-action-btn quick-action-btn-warning" type="button">Force Update Now</button>
@@ -802,7 +837,7 @@
   </div>
   <div id="hint-clue-card" class="hint-clue-card hidden" role="dialog" aria-label="Phonics clue">
     <div class="hint-clue-head">
-      <div id="hint-clue-title" class="hint-clue-title">Here is your clue</div>
+      <div id="hint-clue-title" class="hint-clue-title">Quick Clue</div>
       <button id="hint-clue-close-icon" class="hint-clue-close-icon" type="button" aria-label="Close clue">✕</button>
     </div>
     <div id="hint-clue-message" class="hint-clue-message"></div>
@@ -814,10 +849,10 @@
   </div>
   <div id="starter-word-card" class="starter-word-card hidden" role="dialog" aria-label="Try these words">
     <div class="starter-word-head">
-      <div id="starter-word-title" class="starter-word-title">Try These Words</div>
+      <div id="starter-word-title" class="starter-word-title">Try a Starter Word</div>
       <button id="starter-word-close-icon" class="starter-word-close-icon" type="button" aria-label="Close word ideas">✕</button>
     </div>
-    <div id="starter-word-message" class="starter-word-message">Pick one to jump-start your next guess.</div>
+    <div id="starter-word-message" class="starter-word-message">Choose one to start your next guess faster.</div>
     <div id="starter-word-list" class="starter-word-list" role="list"></div>
     <div class="starter-word-actions">
       <button id="starter-word-refresh-btn" class="audio-btn starter-word-btn" type="button">New Ideas</button>
@@ -839,7 +874,7 @@
         <div class="modal-challenge-launch-copy">
           <span class="modal-challenge-launch-title">Deep Dive Quest (Optional)</span>
           <span id="modal-challenge-launch-meta" class="modal-challenge-launch-meta"></span>
-          <span id="modal-challenge-launch-helper" class="modal-challenge-launch-helper">Optional extension after each solved word. No typing required.</span>
+          <span id="modal-challenge-launch-helper" class="modal-challenge-launch-helper">Optional after each solved word. Complete 3 quick steps.</span>
         </div>
         <button id="modal-open-challenge" class="audio-btn modal-open-challenge-btn" type="button">Start Deep Dive</button>
       </div>
@@ -866,7 +901,7 @@
           </div>
           <div id="voice-karaoke-guide" class="voice-karaoke-guide" role="group" aria-label="Read-along guide">
             <div id="voice-karaoke-word" class="voice-karaoke-word" aria-live="polite"></div>
-            <div id="voice-karaoke-hint" class="voice-karaoke-hint">Tap Guide Me to see pacing, then record.</div>
+            <div id="voice-karaoke-hint" class="voice-karaoke-hint">Tap Guide Me for pacing, then record your best try.</div>
           </div>
           <div class="voice-practice-actions">
             <button class="audio-btn" id="voice-guide-btn" type="button">Guide Me</button>
@@ -874,7 +909,7 @@
             <button class="audio-btn" id="voice-play-btn" type="button" disabled>Play My Voice</button>
             <button class="audio-btn" id="voice-save-btn" type="button" disabled>Save Clip</button>
           </div>
-          <div id="voice-practice-feedback" class="voice-practice-feedback" aria-live="polite">Tap Record to start a 3-second countdown, then capture your clip.</div>
+          <div id="voice-practice-feedback" class="voice-practice-feedback" aria-live="polite">Tap Record for a 3-second countdown, then say the word clearly.</div>
           <div id="voice-history-strip" class="voice-history-strip">
             <div class="voice-history-head">
               <span>Recent clips</span>
