@@ -2871,7 +2871,7 @@
     if (!state?.word) {
       showInformantHintCard({
         title: '🔎 Clue Coach',
-        message: 'Tap Next Word first, then tap Clue for a quick helper tip.',
+        message: 'Tap Next Word first, then tap Clue for one quick sound hint.',
         examples: [],
         actionMode: 'none'
       });
@@ -3019,7 +3019,7 @@
 
     if (!state.word || state.gameOver) {
       if (titleEl) titleEl.textContent = 'Try a Starter Word';
-      if (messageEl) messageEl.textContent = 'Start a round first, then open this to see starter ideas.';
+      if (messageEl) messageEl.textContent = 'Start a round first, then open this for starter ideas.';
       renderStarterWordList([]);
       card.classList.remove('hidden');
       card.classList.add('visible');
@@ -3031,8 +3031,8 @@
     if (titleEl) titleEl.textContent = source === 'auto' ? 'Try a Starter Word' : 'Need Ideas? Try a Starter Word';
     if (messageEl) {
       messageEl.textContent = source === 'auto'
-        ? `You have ${guessCount} guesses in. Pick one idea to keep momentum.`
-        : 'Pick one to jump-start your next guess.';
+        ? `You are ${guessCount} guesses in. Pick one idea to keep momentum.`
+        : 'Pick one to test your next guess.';
     }
     renderStarterWordList(words);
     card.classList.remove('hidden');
@@ -4134,12 +4134,12 @@
     } else if (hasActiveRound && guessCount === 0 && activeGuessLength === 0) {
       if (confidenceOn) {
         text = playStyle === 'listening'
-          ? 'Listening challenge: use Listen to Word and Listen to Definition, focus on sounds + meaning, then spell what you heard. Use Phonics Hint only if stuck.'
-          : 'No guess is wasted. Try a first word, then use colors to guide your next guess.';
+          ? 'Listening mode: tap Listen to Word, then Listen to Definition, then spell what you hear. Use Sound Clue only if stuck.'
+          : 'Start with any test word. Then use tile colors to guide the next guess.';
       } else {
         text = playStyle === 'listening'
-          ? 'Listening challenge: hear the word, use Listen to Definition as needed, then spell from sound.'
-          : 'Start with a first guess, then use color feedback to refine the next word.';
+          ? 'Listening mode: hear the word, check meaning if needed, then spell from sound.'
+          : 'Try a first guess, then use tile colors to refine.';
       }
     } else if (hasActiveRound && guessCount === 0 && activeGuessLength > 0) {
       text = `Build your first test word (${Math.min(activeGuessLength, wordLength)}/${wordLength}), then press Enter.`;
@@ -4149,8 +4149,8 @@
       text = `Review words ready: ${dueCount} due word${dueCount === 1 ? '' : 's'} in this focus.`;
     } else if (playStyle === 'listening') {
       text = hasActiveRound
-        ? 'Listening challenge: keep spelling from audio. Phonics Hint is optional support.'
-        : 'Tap Next Word to start a listening round. Goal: hear and spell.';
+        ? 'Keep spelling from audio. Sound Clue is optional support.'
+        : 'Tap Next Word to start listening mode. Goal: hear and spell.';
     } else {
       text = hasActiveRound
         ? 'Keep guessing and use color feedback to narrow the word.'
@@ -7511,22 +7511,55 @@
     const focus = String(focusValue || 'all').trim().toLowerCase() || 'all';
     const pack = String(packId || '').trim().toLowerCase();
     if (pack === 'ufli' || pack === 'fundations' || pack === 'wilson') {
-      const curated = Object.freeze({
-        cvc: 'pattern: cvc short vowels',
-        digraph: 'pattern: digraph team (sh/ch/th/wh)',
-        ccvc: 'pattern: initial blends',
-        cvcc: 'pattern: final blends',
-        cvce: 'pattern: vce (magic e)',
-        vowel_team: 'pattern: vowel teams (ai/ay, ee/ea, oa/ow)',
-        r_controlled: 'pattern: r-controlled (ar/or/er/ir/ur)',
-        welded: 'pattern: welded sounds (ang/ing/ank/ink)',
-        diphthong: 'pattern: diphthongs (oi/oy, ou/ow)',
-        prefix: 'pattern: prefixes',
-        suffix: 'pattern: suffixes',
-        multisyllable: 'pattern: syllable division',
-        all: 'pattern: mixed review'
+      const curatedByPack = Object.freeze({
+        ufli: Object.freeze({
+          cvc: 'pattern-first: cvc short-vowel words',
+          digraph: 'pattern-first: digraph spellings (sh/ch/th/wh)',
+          ccvc: 'pattern-first: initial blends',
+          cvcc: 'pattern-first: final blends',
+          cvce: 'pattern-first: vce (magic e)',
+          vowel_team: 'pattern-first: vowel teams (ai/ay, ee/ea, oa/ow)',
+          r_controlled: 'pattern-first: r-controlled vowels (ar/or/er/ir/ur)',
+          welded: 'pattern-first: welded sounds (ang/ing/ank/ink)',
+          diphthong: 'pattern-first: diphthongs (oi/oy, ou/ow)',
+          prefix: 'pattern-first: prefixes',
+          suffix: 'pattern-first: suffixes',
+          multisyllable: 'pattern-first: syllable division',
+          all: 'pattern-first: mixed review'
+        }),
+        fundations: Object.freeze({
+          cvc: 'pattern-first: closed syllables (cvc)',
+          digraph: 'pattern-first: digraph spellings',
+          ccvc: 'pattern-first: blend starters',
+          cvcc: 'pattern-first: blend endings',
+          cvce: 'pattern-first: vce words',
+          vowel_team: 'pattern-first: vowel team spellings',
+          r_controlled: 'pattern-first: r-controlled spellings',
+          welded: 'pattern-first: welded chunks',
+          diphthong: 'pattern-first: diphthong spellings',
+          prefix: 'pattern-first: prefixes',
+          suffix: 'pattern-first: suffixes',
+          multisyllable: 'pattern-first: syllable division',
+          all: 'pattern-first: mixed review'
+        }),
+        wilson: Object.freeze({
+          cvc: 'pattern-first: closed syllable words',
+          digraph: 'pattern-first: digraph/spelling patterns',
+          ccvc: 'pattern-first: blend openings',
+          cvcc: 'pattern-first: blend endings',
+          cvce: 'pattern-first: v-e syllable',
+          vowel_team: 'pattern-first: vowel team syllable',
+          r_controlled: 'pattern-first: r-controlled syllable',
+          welded: 'pattern-first: welded sounds',
+          diphthong: 'pattern-first: diphthong syllable',
+          prefix: 'pattern-first: prefix + base',
+          suffix: 'pattern-first: suffix + base',
+          multisyllable: 'pattern-first: multisyllable decoding',
+          all: 'pattern-first: mixed review'
+        })
       });
-      return curated[focus] || `pattern: ${focus.replaceAll('_', ' ')}`;
+      const curated = curatedByPack[pack] || curatedByPack.ufli;
+      return curated[focus] || `pattern-first: ${focus.replaceAll('_', ' ')}`;
     }
     const shortLabels = Object.freeze({
       cvc: 'cvc (short vowels)',

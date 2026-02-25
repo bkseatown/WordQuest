@@ -13,10 +13,11 @@ function requireText(source, pattern, message) {
 }
 
 requireText(indexHtml, /id="new-game-btn">Next Word</, 'Primary CTA text should be "Next Word".');
-requireText(indexHtml, /id="hint-clue-title"[^>]*>Quick Clue</, 'Hint card title microcopy regressed.');
+requireText(indexHtml, /id="hint-clue-title"[^>]*>Sound Clue</, 'Hint card title microcopy regressed.');
 requireText(indexHtml, /id="starter-word-title"[^>]*>Try a Starter Word</, 'Starter word title microcopy regressed.');
 requireText(indexHtml, /id="modal-challenge-launch-helper"[^>]*>Optional after each solved word\. Complete 3 quick steps\.</, 'Deep Dive helper microcopy regressed.');
 requireText(appSource, /'Tap Next Word to start\. Make your first guess when ready\.'/, 'Next action prompt microcopy regressed.');
+requireText(appSource, /'Start with any test word\. Then use tile colors to guide the next guess\.'/, 'Guided first-guess microcopy regressed.');
 requireText(appSource, /'Voice practice is required before moving on\.'/, 'Voice practice microcopy regressed.');
 
 console.log('regression check passed: student microcopy');

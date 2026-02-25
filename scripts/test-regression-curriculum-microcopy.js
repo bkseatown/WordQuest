@@ -19,8 +19,16 @@ requireText(
   'Curated pattern labels are missing for UFLI/Fundations/Wilson.'
 );
 requireText(
-  /pattern:\s*cvc short vowels/,
+  /pattern-first:\s*cvc short-vowel words/,
   'Pattern-first chip microcopy for core phonics labels is missing.'
+);
+requireText(
+  /pattern-first:\s*closed syllables \(cvc\)/,
+  'Fundations pattern-first chip labels regressed.'
+);
+requireText(
+  /pattern-first:\s*v-e syllable/,
+  'Wilson pattern-first chip labels regressed.'
 );
 requireText(
   /useCuratedPatternOnly = \['ufli', 'fundations', 'wilson'\]/,
