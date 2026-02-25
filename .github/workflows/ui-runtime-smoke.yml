@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Debug checkout and smoke version
+        run: |
+          echo "Commit: $(git rev-parse --short HEAD)"
+          echo "Branch ref: ${GITHUB_REF}"
+          rg -n "SMOKE_VERSION|session-reset-btn|data-testid=\\\"session-reset-btn\\\"" scripts/smoke-playwright-teacher-daily-flow.js index.html || true
       - uses: actions/setup-node@v4
         with:
           node-version: 20
