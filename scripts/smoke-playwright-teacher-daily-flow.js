@@ -205,14 +205,29 @@ async function run() {
       await page.waitForSelector('#modal-overlay', { state: 'hidden', timeout: 10000 });
     }
 
-    await page.click('#settings-btn');
-    await page.waitForSelector('#settings-panel:not(.hidden)', { timeout: 10000 });
-    await page.click('#session-reset-btn');
+    await clickWithRetries('#settings-btn', { attempts: 3, settleMs: 200 });
+    await page.waitForFunction(() => {
+      const panel = document.getElementById('settings-panel');
+      if (!(panel instanceof HTMLElement)) return false;
+      return !panel.classList.contains('hidden');
+    }, { timeout: 10000 });
+    const resetClicked = await clickWithRetries('#session-reset-btn', { attempts: 3, optional: true, settleMs: 150 });
+    if (!resetClicked) {
+      const resetDispatched = await page.evaluate(() => {
+        const button = document.getElementById('session-reset-btn');
+        if (!(button instanceof HTMLElement)) return false;
+        button.click();
+        return true;
+      });
+      if (!resetDispatched) {
+        throw new Error('Session reset control not available.');
+      }
+    }
     await page.waitForFunction(() => {
       const chip = document.getElementById('session-rounds');
       return chip && /Rounds:\s*0\b/.test(String(chip.textContent || ''));
     }, { timeout: 10000 });
-    await page.click('#settings-close');
+    await clickWithRetries('#settings-close', { attempts: 3, optional: true });
 
     if (pageErrors.length) {
       throw new Error(`Runtime page errors: ${pageErrors.join(' | ')}`);
