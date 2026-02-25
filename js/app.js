@@ -10724,6 +10724,11 @@
   document.addEventListener('keydown', e => {
     if (e.defaultPrevented) return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const listeningHelpOpen = !(_el('listening-mode-overlay')?.classList.contains('hidden'));
+    if (listeningHelpOpen) {
+      if (e.key === 'Escape') hideListeningModeExplainer();
+      return;
+    }
     const phonicsClueOpen = !(_el('phonics-clue-modal')?.classList.contains('hidden'));
     if (phonicsClueOpen) {
       if (e.key === 'Escape') closePhonicsClueModal();
