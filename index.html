@@ -70,16 +70,15 @@
           <button id="phonics-clue-open-btn" class="header-quick-btn" type="button" title="Open clue card" aria-label="Open Clue Sprint for detective clue practice">
             <span class="quick-btn-label">Clue</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <path d="M8 4h3a2 2 0 1 1 4 0h1a2 2 0 0 1 2 2v3a2 2 0 1 1 0 4v5a2 2 0 0 1-2 2h-3a2 2 0 1 1-4 0H6a2 2 0 0 1-2-2v-3a2 2 0 1 1 0-4V6a2 2 0 0 1 2-2z"></path>
+              <path d="M9 3h6a2 2 0 0 1 2 2v2.5a1.5 1.5 0 1 0 0 3V13a2 2 0 0 1-2 2h-2.5a1.5 1.5 0 1 0-3 0H7a2 2 0 0 1-2-2v-2.5a1.5 1.5 0 1 0 0-3V5a2 2 0 0 1 2-2h2"></path>
             </svg>
           </button>
           <button id="starter-word-open-btn" class="header-quick-btn" type="button" title="Show starter word ideas" aria-label="Show try these words list">
             <span class="quick-btn-label">Need Ideas</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <path d="M4.5 7.5h5l2-2h8a1.5 1.5 0 0 1 1.5 1.5v3.6a1.9 1.9 0 0 0-1.9 1.9A1.9 1.9 0 0 0 21 14.4V18a1.5 1.5 0 0 1-1.5 1.5h-8l-2-2h-5A1.5 1.5 0 0 1 3 16V9a1.5 1.5 0 0 1 1.5-1.5z"></path>
-              <path d="M10.7 12h.01"></path>
-              <path d="M13.7 12h.01"></path>
-              <path d="M16.7 12h.01"></path>
+              <path d="M9 18h6"></path>
+              <path d="M10 22h4"></path>
+              <path d="M12 2a6 6 0 0 0-3.8 10.6c.8.7 1.3 1.4 1.6 2.4h4.4c.3-1 .8-1.7 1.6-2.4A6 6 0 0 0 12 2z"></path>
             </svg>
           </button>
           <button id="new-game-btn">New Word</button>
@@ -230,7 +229,7 @@
         <details id="settings-group-audio" class="settings-group hidden" aria-hidden="true">
           <summary>Audio and Voice</summary>
           <div class="settings-group-grid">
-            <div class="setting-row"><label>Music<select id="s-music"><option value="off" selected>Off</option><option value="auto">Auto (match theme)</option><option value="focus">Focus Flow</option><option value="chill">Chill</option><option value="lofi">Lo‑fi</option><option value="coffee">Coffeehouse</option><option value="fantasy">Fantasy</option><option value="scifi">Sci‑fi</option><option value="upbeat">Upbeat</option><option value="arcade">8‑bit Arcade</option><option value="sports">Sports Hype</option><option value="stealth">Space Mystery</option><option value="team">Team Game Hype</option></select></label></div>
+            <div class="setting-row"><label>Music<select id="s-music"><option value="off" selected>Off</option><option value="auto">Auto (match theme)</option><option value="deepfocus">Deep Focus</option><option value="classicalbeats">Classical Beats</option><option value="nerdcore">Nerdcore Instrumental</option><option value="focus">Focus Flow</option><option value="chill">Chill</option><option value="lofi">Lo‑fi</option><option value="coffee">Coffeehouse</option><option value="fantasy">Fantasy</option><option value="scifi">Sci‑fi</option><option value="upbeat">Upbeat</option><option value="arcade">8‑bit Arcade</option><option value="sports">Sports Hype</option><option value="stealth">Space Mystery</option><option value="team">Team Game Hype</option></select></label></div>
             <div class="setting-row"><label>Voice Practice
               <select id="s-voice-task">
                 <option value="optional" selected>Optional</option>
@@ -697,6 +696,16 @@
   </main>
 
   <div id="toast" role="alert" aria-live="polite"></div>
+  <div id="listening-mode-overlay" class="listening-mode-overlay hidden" role="dialog" aria-modal="true" aria-label="Listening mode helper">
+    <div id="listening-mode-card" class="listening-mode-card">
+      <div class="listening-mode-head">
+        <div class="listening-mode-title">Listening Mode</div>
+        <button id="listening-mode-close" class="listening-mode-close" type="button" aria-label="Close listening mode helper">✕</button>
+      </div>
+      <p class="listening-mode-copy">In Listening Mode, you hear the word and what it means. Then you try to spell the word correctly.</p>
+      <p class="listening-mode-copy">Tap outside this card or press close when you are ready.</p>
+    </div>
+  </div>
   <div id="hint-clue-card" class="hint-clue-card hidden" role="dialog" aria-label="Phonics clue">
     <div class="hint-clue-head">
       <div id="hint-clue-title" class="hint-clue-title">Here is your clue</div>

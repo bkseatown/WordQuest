@@ -260,26 +260,6 @@
     document.body.dataset.wqTeacherHubControlBound = '1';
   }
 
-  function bindTeacherStudioUploads() {
-    if (document.body.dataset.wqTeacherStudioBound === '1') return;
-    const msg = byId('teacher-studio-msg');
-    const update = () => {
-      const musicCount = byId('teacher-studio-music-upload')?.files?.length || 0;
-      const wordCount = byId('teacher-studio-word-audio-upload')?.files?.length || 0;
-      const phonemeCount = byId('teacher-studio-phoneme-upload')?.files?.length || 0;
-      if (!msg) return;
-      if (!musicCount && !wordCount && !phonemeCount) {
-        msg.textContent = 'Files stay local on this device for now.';
-        return;
-      }
-      msg.textContent = `Local files ready: music ${musicCount}, word audio ${wordCount}, phoneme voice ${phonemeCount}.`;
-    };
-    byId('teacher-studio-music-upload')?.addEventListener('change', update);
-    byId('teacher-studio-word-audio-upload')?.addEventListener('change', update);
-    byId('teacher-studio-phoneme-upload')?.addEventListener('change', update);
-    document.body.dataset.wqTeacherStudioBound = '1';
-  }
-
   function openTeacherPanel() {
     const panel = byId('teacher-panel');
     if (!panel) return;
@@ -342,7 +322,6 @@
     }
 
     bindTeacherHubControlSync();
-    bindTeacherStudioUploads();
     bindTeacherPanel();
     document.body.dataset.wqTeacherToolsBound = '1';
   }

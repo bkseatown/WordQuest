@@ -5,100 +5,202 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'assets', 'music', 'tracks', 'focus-flow');
-const SAMPLE_RATE = 22050;
-const DURATION_SEC = 24;
+const SAMPLE_RATE = 32000;
+const DURATION_SEC = 36;
 const MAX_PEAK = 0.92;
 
 const TRACKS = [
   {
-    title: 'Sunrise Drift',
-    slug: 'sunrise-drift',
-    bpm: 90,
-    rootMidi: 50,
-    modes: ['focus', 'chill', 'lofi', 'coffee'],
+    title: 'Cognitive Anchor',
+    slug: 'cognitive-anchor',
+    bpm: 72,
+    rootMidi: 46,
+    modes: ['deepfocus', 'focus', 'chill', 'coffee', 'stealth'],
     energy: 'low',
+    profile: 'adhd-focus',
+    prog: [
+      [0, 3, 7],
+      [2, 5, 9],
+      [5, 8, 12],
+      [3, 7, 10]
+    ],
+    melody: [0, 2, 3, 5, 3, 2, 0, 2]
+  },
+  {
+    title: 'Flow State Lattice',
+    slug: 'flow-state-lattice',
+    bpm: 80,
+    rootMidi: 48,
+    modes: ['deepfocus', 'focus', 'lofi', 'coffee'],
+    energy: 'low',
+    profile: 'adhd-focus',
+    prog: [
+      [0, 4, 7],
+      [2, 5, 9],
+      [5, 9, 12],
+      [4, 7, 11]
+    ],
+    melody: [0, 2, 4, 5, 7, 5, 4, 2]
+  },
+  {
+    title: 'Hyperfocus Halo',
+    slug: 'hyperfocus-halo',
+    bpm: 88,
+    rootMidi: 50,
+    modes: ['deepfocus', 'focus', 'lofi', 'chill'],
+    energy: 'mid',
+    profile: 'adhd-focus',
     prog: [
       [0, 3, 7],
       [5, 8, 12],
-      [7, 10, 14],
-      [3, 7, 10]
+      [2, 5, 9],
+      [4, 7, 11]
     ],
     melody: [0, 3, 5, 7, 8, 7, 5, 3]
   },
   {
-    title: 'Steady Lanterns',
-    slug: 'steady-lanterns',
-    bpm: 95,
-    rootMidi: 48,
-    modes: ['focus', 'chill', 'coffee'],
-    energy: 'low',
-    prog: [
-      [0, 4, 7],
-      [2, 5, 9],
-      [4, 7, 11],
-      [5, 9, 12]
-    ],
-    melody: [0, 2, 4, 7, 9, 7, 4, 2]
-  },
-  {
-    title: 'Soft Blocks',
-    slug: 'soft-blocks',
-    bpm: 100,
+    title: 'Task Tunnel',
+    slug: 'task-tunnel',
+    bpm: 96,
     rootMidi: 52,
-    modes: ['focus', 'chill', 'lofi'],
+    modes: ['deepfocus', 'focus', 'upbeat', 'team'],
     energy: 'mid',
-    prog: [
-      [0, 3, 7],
-      [5, 8, 12],
-      [2, 5, 9],
-      [7, 10, 14]
-    ],
-    melody: [0, 2, 3, 5, 7, 5, 3, 2]
-  },
-  {
-    title: 'Quiet Quest',
-    slug: 'quiet-quest',
-    bpm: 85,
-    rootMidi: 50,
-    modes: ['focus', 'fantasy', 'chill'],
-    energy: 'low',
-    prog: [
-      [0, 3, 7],
-      [7, 10, 14],
-      [5, 8, 12],
-      [3, 7, 10]
-    ],
-    melody: [0, 3, 7, 8, 10, 8, 7, 3]
-  },
-  {
-    title: 'Pixel Breeze',
-    slug: 'pixel-breeze',
-    bpm: 100,
-    rootMidi: 55,
-    modes: ['focus', 'arcade', 'upbeat'],
-    energy: 'mid',
+    profile: 'adhd-focus',
     prog: [
       [0, 4, 7],
       [5, 9, 12],
       [7, 11, 14],
       [2, 5, 9]
     ],
-    melody: [0, 4, 7, 11, 12, 11, 7, 4]
+    melody: [0, 2, 4, 7, 9, 11, 9, 7]
   },
   {
-    title: 'Team Spark Lite',
-    slug: 'team-spark-lite',
-    bpm: 105,
-    rootMidi: 57,
-    modes: ['focus', 'team', 'sports', 'upbeat'],
+    title: 'String Theory Sprint',
+    slug: 'string-theory-sprint',
+    bpm: 104,
+    rootMidi: 55,
+    modes: ['classicalbeats', 'focus', 'upbeat', 'sports'],
     energy: 'mid',
+    profile: 'classical-beats',
     prog: [
       [0, 4, 7],
       [2, 5, 9],
       [4, 7, 11],
+      [5, 9, 12]
+    ],
+    melody: [0, 4, 7, 9, 11, 9, 7, 4]
+  },
+  {
+    title: 'Baroque Pulse',
+    slug: 'baroque-pulse',
+    bpm: 112,
+    rootMidi: 57,
+    modes: ['classicalbeats', 'focus', 'arcade', 'upbeat'],
+    energy: 'mid',
+    profile: 'classical-beats',
+    prog: [
+      [0, 3, 7],
+      [7, 10, 14],
+      [5, 8, 12],
+      [3, 7, 10]
+    ],
+    melody: [0, 3, 7, 10, 12, 10, 7, 3]
+  },
+  {
+    title: 'Counterpoint Drive',
+    slug: 'counterpoint-drive',
+    bpm: 118,
+    rootMidi: 53,
+    modes: ['classicalbeats', 'focus', 'sports', 'team'],
+    energy: 'mid',
+    profile: 'classical-beats',
+    prog: [
+      [0, 4, 7],
+      [5, 9, 12],
+      [2, 5, 9],
       [7, 11, 14]
     ],
-    melody: [0, 2, 4, 7, 9, 11, 9, 7]
+    melody: [0, 2, 4, 7, 9, 7, 4, 2]
+  },
+  {
+    title: 'Fugue Runner',
+    slug: 'fugue-runner',
+    bpm: 126,
+    rootMidi: 50,
+    modes: ['classicalbeats', 'focus', 'upbeat', 'arcade'],
+    energy: 'mid',
+    profile: 'classical-beats',
+    prog: [
+      [0, 3, 7],
+      [2, 5, 9],
+      [7, 10, 14],
+      [5, 8, 12]
+    ],
+    melody: [0, 2, 3, 5, 7, 10, 12, 10]
+  },
+  {
+    title: 'Code Cipher Run',
+    slug: 'code-cipher-run',
+    bpm: 132,
+    rootMidi: 58,
+    modes: ['nerdcore', 'focus', 'scifi', 'arcade', 'upbeat'],
+    energy: 'mid',
+    profile: 'nerdcore-inst',
+    prog: [
+      [0, 4, 7],
+      [7, 11, 14],
+      [5, 9, 12],
+      [2, 5, 9]
+    ],
+    melody: [0, 4, 7, 11, 12, 11, 7, 4]
+  },
+  {
+    title: 'Pixel Sonata Rush',
+    slug: 'pixel-sonata-rush',
+    bpm: 138,
+    rootMidi: 55,
+    modes: ['nerdcore', 'focus', 'arcade', 'sports', 'team'],
+    energy: 'mid',
+    profile: 'nerdcore-inst',
+    prog: [
+      [0, 3, 7],
+      [5, 8, 12],
+      [7, 10, 14],
+      [2, 5, 9]
+    ],
+    melody: [0, 3, 5, 7, 10, 12, 10, 7]
+  },
+  {
+    title: 'Boss Stage Blueprint',
+    slug: 'boss-stage-blueprint',
+    bpm: 142,
+    rootMidi: 57,
+    modes: ['nerdcore', 'focus', 'scifi', 'team'],
+    energy: 'mid',
+    profile: 'nerdcore-inst',
+    prog: [
+      [0, 4, 7],
+      [2, 5, 9],
+      [5, 9, 12],
+      [7, 11, 14]
+    ],
+    melody: [0, 2, 4, 7, 11, 9, 7, 4]
+  },
+  {
+    title: 'Arcade Algorithm',
+    slug: 'arcade-algorithm',
+    bpm: 128,
+    rootMidi: 52,
+    modes: ['nerdcore', 'focus', 'arcade', 'scifi', 'upbeat'],
+    energy: 'low',
+    profile: 'nerdcore-inst',
+    prog: [
+      [0, 3, 7],
+      [5, 8, 12],
+      [2, 5, 9],
+      [7, 10, 14]
+    ],
+    melody: [0, 2, 3, 5, 7, 8, 10, 8]
   }
 ];
 
@@ -264,6 +366,10 @@ function renderTrack(track) {
   const barSec = beatSec * 4;
   const bars = Math.floor(DURATION_SEC / barSec);
   const melodyLen = track.melody.length;
+  const profile = String(track.profile || '').trim().toLowerCase();
+  const isAdhdFocus = profile === 'adhd-focus';
+  const isClassicalBeats = profile === 'classical-beats';
+  const isNerdcoreInst = profile === 'nerdcore-inst';
 
   for (let bar = 0; bar < bars; bar += 1) {
     const barStart = bar * barSec;
@@ -272,25 +378,37 @@ function renderTrack(track) {
     // Pad chord: long, soft, wide.
     chord.forEach((interval, idx) => {
       const midi = track.rootMidi + interval + (idx === 2 ? 12 : 0);
-      addTone(samples, barStart, barSec * 0.95, midiToHz(midi), 0.048, 'triangle', idx === 0 ? 0.19 : 0.12);
+      const padAmp = isAdhdFocus ? 0.058 : 0.048;
+      const padWave = isClassicalBeats ? 'sine' : 'triangle';
+      addTone(samples, barStart, barSec * 0.95, midiToHz(midi), padAmp, padWave, idx === 0 ? 0.19 : 0.12);
+      if (isClassicalBeats && idx <= 1) {
+        addTone(samples, barStart + (idx * beatSec * 0.5), beatSec * 0.46, midiToHz(midi + 12), 0.043, 'triangle', 0.06);
+      }
     });
 
     // Bass pulse each beat.
     for (let beat = 0; beat < 4; beat += 1) {
       const beatStart = barStart + beat * beatSec;
       const bassMidi = track.rootMidi + chord[0] - 12;
-      addTone(samples, beatStart, beatSec * 0.62, midiToHz(bassMidi), 0.14, 'sine', 0.09);
+      addTone(samples, beatStart, beatSec * 0.62, midiToHz(bassMidi), isAdhdFocus ? 0.12 : 0.14, 'sine', 0.09);
 
       // Kick on each beat, stronger on 1 + 3.
-      addKick(samples, beatStart, beat % 2 === 0 ? 0.66 : 0.52);
+      const kickAmp = isAdhdFocus ? (beat % 2 === 0 ? 0.48 : 0.39) : (beat % 2 === 0 ? 0.66 : 0.52);
+      addKick(samples, beatStart, kickAmp);
 
       // Snare on beats 2 and 4.
       if (beat === 1 || beat === 3) {
-        addSnare(samples, beatStart + beatSec * 0.02, rand, track.energy === 'mid' ? 0.24 : 0.2);
+        const snareAmp = isAdhdFocus
+          ? (track.energy === 'mid' ? 0.16 : 0.13)
+          : (track.energy === 'mid' ? 0.24 : 0.2);
+        addSnare(samples, beatStart + beatSec * 0.02, rand, snareAmp);
       }
 
       // Hi-hat on eighth notes.
-      addHat(samples, beatStart + beatSec * 0.5, rand, track.energy === 'mid' ? 0.13 : 0.1);
+      const hatAmp = isAdhdFocus
+        ? (track.energy === 'mid' ? 0.065 : 0.05)
+        : (track.energy === 'mid' ? 0.13 : 0.1);
+      addHat(samples, beatStart + beatSec * 0.5, rand, hatAmp);
     }
 
     // Melody on eighth notes.
@@ -301,15 +419,22 @@ function renderTrack(track) {
       const dur = (beatSec / 2) * 0.82;
       const octave = step % 2 === 0 ? 12 : 0;
       const midi = track.rootMidi + interval + octave;
+      const melodyWave = isClassicalBeats ? 'triangle' : isNerdcoreInst ? 'square' : (track.energy === 'mid' ? 'square' : 'triangle');
+      const melodyAmp = isAdhdFocus
+        ? (track.energy === 'mid' ? 0.06 : 0.05)
+        : (track.energy === 'mid' ? 0.082 : 0.068);
       addTone(
         samples,
         start,
         dur,
         midiToHz(midi),
-        track.energy === 'mid' ? 0.082 : 0.068,
-        track.energy === 'mid' ? 'square' : 'triangle',
+        melodyAmp,
+        melodyWave,
         0.16
       );
+      if (isNerdcoreInst && step % 2 === 1) {
+        addTone(samples, start, dur * 0.72, midiToHz(midi + 12), 0.03, 'square', 0.12);
+      }
     }
   }
 
@@ -321,7 +446,7 @@ function renderTrack(track) {
 
   normalize(samples);
 
-  const filename = `${track.slug}__modes-${track.modes.join('+')}__bpm-${track.bpm}__energy-${track.energy}.wav`;
+  const filename = `${track.slug}__modes-${track.modes.join('+')}__bpm-${track.bpm}__energy-${track.energy}__license-original-focus-flow-pack.wav`;
   const outPath = path.join(OUT_DIR, filename);
   writeWavMono16(outPath, samples);
   return { outPath, filename };
@@ -329,6 +454,11 @@ function renderTrack(track) {
 
 function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
+  fs.readdirSync(OUT_DIR)
+    .filter((name) => name.toLowerCase().endsWith('.wav'))
+    .forEach((name) => {
+      fs.unlinkSync(path.join(OUT_DIR, name));
+    });
   const made = TRACKS.map(renderTrack);
   console.log(`Generated ${made.length} focus-flow tracks:`);
   made.forEach((entry) => {

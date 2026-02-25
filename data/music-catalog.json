@@ -1,135 +1,119 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-02-24T15:57:58.429Z",
+  "updatedAt": "2026-02-25T06:49:49.028Z",
   "trackCount": 12,
   "modeIndex": {
+    "nerdcore": [
+      "arcade-algorithm-99433352",
+      "boss-stage-blueprint-7d1172f5",
+      "code-cipher-run-85612e41",
+      "pixel-sonata-rush-37d34e94"
+    ],
     "focus": [
-      "after-class-calm-eca31855",
-      "library-rain-c06436aa",
-      "midnight-notes-8f61c898",
-      "notebook-nights-56e368c3",
-      "pencil-groove-74979387",
-      "pixel-breeze-a376a61a",
-      "quiet-quest-cdc988f5",
-      "soft-blocks-6f38abca",
-      "steady-lanterns-3ee0fe95",
-      "sunday-study-99611ad5",
-      "sunrise-drift-fcd990b5",
-      "team-spark-lite-f3782018"
-    ],
-    "chill": [
-      "after-class-calm-eca31855",
-      "library-rain-c06436aa",
-      "midnight-notes-8f61c898",
-      "notebook-nights-56e368c3",
-      "pencil-groove-74979387",
-      "quiet-quest-cdc988f5",
-      "soft-blocks-6f38abca",
-      "steady-lanterns-3ee0fe95",
-      "sunday-study-99611ad5",
-      "sunrise-drift-fcd990b5"
-    ],
-    "coffee": [
-      "after-class-calm-eca31855",
-      "library-rain-c06436aa",
-      "midnight-notes-8f61c898",
-      "steady-lanterns-3ee0fe95",
-      "sunday-study-99611ad5",
-      "sunrise-drift-fcd990b5"
-    ],
-    "fantasy": [
-      "after-class-calm-eca31855",
-      "quiet-quest-cdc988f5"
-    ],
-    "lofi": [
-      "midnight-notes-8f61c898",
-      "notebook-nights-56e368c3",
-      "pencil-groove-74979387",
-      "soft-blocks-6f38abca",
-      "sunday-study-99611ad5",
-      "sunrise-drift-fcd990b5"
-    ],
-    "upbeat": [
-      "notebook-nights-56e368c3",
-      "pixel-breeze-a376a61a",
-      "team-spark-lite-f3782018"
+      "arcade-algorithm-99433352",
+      "baroque-pulse-e921cfb3",
+      "boss-stage-blueprint-7d1172f5",
+      "code-cipher-run-85612e41",
+      "cognitive-anchor-81271724",
+      "counterpoint-drive-9fdf791c",
+      "flow-state-lattice-6d250682",
+      "fugue-runner-7c9284bf",
+      "hyperfocus-halo-91d03a10",
+      "pixel-sonata-rush-37d34e94",
+      "string-theory-sprint-093d703c",
+      "task-tunnel-a89071cb"
     ],
     "arcade": [
-      "pixel-breeze-a376a61a"
+      "arcade-algorithm-99433352",
+      "baroque-pulse-e921cfb3",
+      "code-cipher-run-85612e41",
+      "fugue-runner-7c9284bf",
+      "pixel-sonata-rush-37d34e94"
+    ],
+    "scifi": [
+      "arcade-algorithm-99433352",
+      "boss-stage-blueprint-7d1172f5",
+      "code-cipher-run-85612e41"
+    ],
+    "upbeat": [
+      "arcade-algorithm-99433352",
+      "baroque-pulse-e921cfb3",
+      "code-cipher-run-85612e41",
+      "fugue-runner-7c9284bf",
+      "string-theory-sprint-093d703c",
+      "task-tunnel-a89071cb"
+    ],
+    "classicalbeats": [
+      "baroque-pulse-e921cfb3",
+      "counterpoint-drive-9fdf791c",
+      "fugue-runner-7c9284bf",
+      "string-theory-sprint-093d703c"
     ],
     "team": [
-      "team-spark-lite-f3782018"
+      "boss-stage-blueprint-7d1172f5",
+      "counterpoint-drive-9fdf791c",
+      "pixel-sonata-rush-37d34e94",
+      "task-tunnel-a89071cb"
+    ],
+    "deepfocus": [
+      "cognitive-anchor-81271724",
+      "flow-state-lattice-6d250682",
+      "hyperfocus-halo-91d03a10",
+      "task-tunnel-a89071cb"
+    ],
+    "chill": [
+      "cognitive-anchor-81271724",
+      "hyperfocus-halo-91d03a10"
+    ],
+    "coffee": [
+      "cognitive-anchor-81271724",
+      "flow-state-lattice-6d250682"
+    ],
+    "stealth": [
+      "cognitive-anchor-81271724"
     ],
     "sports": [
-      "team-spark-lite-f3782018"
+      "counterpoint-drive-9fdf791c",
+      "pixel-sonata-rush-37d34e94",
+      "string-theory-sprint-093d703c"
+    ],
+    "lofi": [
+      "flow-state-lattice-6d250682",
+      "hyperfocus-halo-91d03a10"
     ]
   },
   "tracks": [
     {
-      "id": "after-class-calm-eca31855",
-      "title": "After Class Calm",
-      "src": "./assets/music/tracks/focus-flow/after-class-calm__modes-focus+chill+coffee+fantasy__bpm-84__energy-low__license-original-focus-flow-pack.wav",
+      "id": "arcade-algorithm-99433352",
+      "title": "Arcade Algorithm",
+      "src": "./assets/music/tracks/focus-flow/arcade-algorithm__modes-nerdcore+focus+arcade+scifi+upbeat__bpm-128__energy-low__license-original-focus-flow-pack.wav",
       "format": "wav",
       "modes": [
+        "nerdcore",
         "focus",
-        "chill",
-        "coffee",
-        "fantasy"
-      ],
-      "bpm": 84,
-      "energy": "low",
-      "gain": 1,
-      "collection": "focus-flow",
-      "sourceType": "file-drop",
-      "licenseRef": "original-focus-flow-pack"
-    },
-    {
-      "id": "library-rain-c06436aa",
-      "title": "Library Rain",
-      "src": "./assets/music/tracks/focus-flow/library-rain__modes-focus+chill+coffee__bpm-82__energy-low__license-original-focus-flow-pack.wav",
-      "format": "wav",
-      "modes": [
-        "focus",
-        "chill",
-        "coffee"
-      ],
-      "bpm": 82,
-      "energy": "low",
-      "gain": 1,
-      "collection": "focus-flow",
-      "sourceType": "file-drop",
-      "licenseRef": "original-focus-flow-pack"
-    },
-    {
-      "id": "midnight-notes-8f61c898",
-      "title": "Midnight Notes",
-      "src": "./assets/music/tracks/focus-flow/midnight-notes__modes-focus+chill+lofi+coffee__bpm-78__energy-low__license-original-focus-flow-pack.wav",
-      "format": "wav",
-      "modes": [
-        "focus",
-        "chill",
-        "lofi",
-        "coffee"
-      ],
-      "bpm": 78,
-      "energy": "low",
-      "gain": 1,
-      "collection": "focus-flow",
-      "sourceType": "file-drop",
-      "licenseRef": "original-focus-flow-pack"
-    },
-    {
-      "id": "notebook-nights-56e368c3",
-      "title": "Notebook Nights",
-      "src": "./assets/music/tracks/focus-flow/notebook-nights__modes-focus+chill+lofi+upbeat__bpm-92__energy-mid__license-original-focus-flow-pack.wav",
-      "format": "wav",
-      "modes": [
-        "focus",
-        "chill",
-        "lofi",
+        "arcade",
+        "scifi",
         "upbeat"
       ],
-      "bpm": 92,
+      "bpm": 128,
+      "energy": "low",
+      "gain": 1,
+      "collection": "focus-flow",
+      "sourceType": "file-drop",
+      "licenseRef": "original-focus-flow-pack"
+    },
+    {
+      "id": "baroque-pulse-e921cfb3",
+      "title": "Baroque Pulse",
+      "src": "./assets/music/tracks/focus-flow/baroque-pulse__modes-classicalbeats+focus+arcade+upbeat__bpm-112__energy-mid__license-original-focus-flow-pack.wav",
+      "format": "wav",
+      "modes": [
+        "classicalbeats",
+        "focus",
+        "arcade",
+        "upbeat"
+      ],
+      "bpm": 112,
       "energy": "mid",
       "gain": 1,
       "collection": "focus-flow",
@@ -137,14 +121,125 @@
       "licenseRef": "original-focus-flow-pack"
     },
     {
-      "id": "pencil-groove-74979387",
-      "title": "Pencil Groove",
-      "src": "./assets/music/tracks/focus-flow/pencil-groove__modes-focus+chill+lofi__bpm-88__energy-mid__license-original-focus-flow-pack.wav",
+      "id": "boss-stage-blueprint-7d1172f5",
+      "title": "Boss Stage Blueprint",
+      "src": "./assets/music/tracks/focus-flow/boss-stage-blueprint__modes-nerdcore+focus+scifi+team__bpm-142__energy-mid__license-original-focus-flow-pack.wav",
       "format": "wav",
       "modes": [
+        "nerdcore",
+        "focus",
+        "scifi",
+        "team"
+      ],
+      "bpm": 142,
+      "energy": "mid",
+      "gain": 1,
+      "collection": "focus-flow",
+      "sourceType": "file-drop",
+      "licenseRef": "original-focus-flow-pack"
+    },
+    {
+      "id": "code-cipher-run-85612e41",
+      "title": "Code Cipher Run",
+      "src": "./assets/music/tracks/focus-flow/code-cipher-run__modes-nerdcore+focus+scifi+arcade+upbeat__bpm-132__energy-mid__license-original-focus-flow-pack.wav",
+      "format": "wav",
+      "modes": [
+        "nerdcore",
+        "focus",
+        "scifi",
+        "arcade",
+        "upbeat"
+      ],
+      "bpm": 132,
+      "energy": "mid",
+      "gain": 1,
+      "collection": "focus-flow",
+      "sourceType": "file-drop",
+      "licenseRef": "original-focus-flow-pack"
+    },
+    {
+      "id": "cognitive-anchor-81271724",
+      "title": "Cognitive Anchor",
+      "src": "./assets/music/tracks/focus-flow/cognitive-anchor__modes-deepfocus+focus+chill+coffee+stealth__bpm-72__energy-low__license-original-focus-flow-pack.wav",
+      "format": "wav",
+      "modes": [
+        "deepfocus",
         "focus",
         "chill",
-        "lofi"
+        "coffee",
+        "stealth"
+      ],
+      "bpm": 72,
+      "energy": "low",
+      "gain": 1,
+      "collection": "focus-flow",
+      "sourceType": "file-drop",
+      "licenseRef": "original-focus-flow-pack"
+    },
+    {
+      "id": "counterpoint-drive-9fdf791c",
+      "title": "Counterpoint Drive",
+      "src": "./assets/music/tracks/focus-flow/counterpoint-drive__modes-classicalbeats+focus+sports+team__bpm-118__energy-mid__license-original-focus-flow-pack.wav",
+      "format": "wav",
+      "modes": [
+        "classicalbeats",
+        "focus",
+        "sports",
+        "team"
+      ],
+      "bpm": 118,
+      "energy": "mid",
+      "gain": 1,
+      "collection": "focus-flow",
+      "sourceType": "file-drop",
+      "licenseRef": "original-focus-flow-pack"
+    },
+    {
+      "id": "flow-state-lattice-6d250682",
+      "title": "Flow State Lattice",
+      "src": "./assets/music/tracks/focus-flow/flow-state-lattice__modes-deepfocus+focus+lofi+coffee__bpm-80__energy-low__license-original-focus-flow-pack.wav",
+      "format": "wav",
+      "modes": [
+        "deepfocus",
+        "focus",
+        "lofi",
+        "coffee"
+      ],
+      "bpm": 80,
+      "energy": "low",
+      "gain": 1,
+      "collection": "focus-flow",
+      "sourceType": "file-drop",
+      "licenseRef": "original-focus-flow-pack"
+    },
+    {
+      "id": "fugue-runner-7c9284bf",
+      "title": "Fugue Runner",
+      "src": "./assets/music/tracks/focus-flow/fugue-runner__modes-classicalbeats+focus+upbeat+arcade__bpm-126__energy-mid__license-original-focus-flow-pack.wav",
+      "format": "wav",
+      "modes": [
+        "classicalbeats",
+        "focus",
+        "upbeat",
+        "arcade"
+      ],
+      "bpm": 126,
+      "energy": "mid",
+      "gain": 1,
+      "collection": "focus-flow",
+      "sourceType": "file-drop",
+      "licenseRef": "original-focus-flow-pack"
+    },
+    {
+      "id": "hyperfocus-halo-91d03a10",
+      "title": "Hyperfocus Halo",
+      "src": "./assets/music/tracks/focus-flow/hyperfocus-halo__modes-deepfocus+focus+lofi+chill__bpm-88__energy-mid__license-original-focus-flow-pack.wav",
+      "format": "wav",
+      "modes": [
+        "deepfocus",
+        "focus",
+        "lofi",
+        "chill"
       ],
       "bpm": 88,
       "energy": "mid",
@@ -154,121 +249,54 @@
       "licenseRef": "original-focus-flow-pack"
     },
     {
-      "id": "pixel-breeze-a376a61a",
-      "title": "Pixel Breeze",
-      "src": "./assets/music/tracks/focus-flow/pixel-breeze__modes-focus+arcade+upbeat__bpm-100__energy-mid.wav",
+      "id": "pixel-sonata-rush-37d34e94",
+      "title": "Pixel Sonata Rush",
+      "src": "./assets/music/tracks/focus-flow/pixel-sonata-rush__modes-nerdcore+focus+arcade+sports+team__bpm-138__energy-mid__license-original-focus-flow-pack.wav",
       "format": "wav",
       "modes": [
+        "nerdcore",
         "focus",
         "arcade",
-        "upbeat"
-      ],
-      "bpm": 100,
-      "energy": "mid",
-      "gain": 1,
-      "collection": "focus-flow",
-      "sourceType": "file-drop",
-      "licenseRef": "original-focus-flow-pack"
-    },
-    {
-      "id": "quiet-quest-cdc988f5",
-      "title": "Quiet Quest",
-      "src": "./assets/music/tracks/focus-flow/quiet-quest__modes-focus+fantasy+chill__bpm-85__energy-low.wav",
-      "format": "wav",
-      "modes": [
-        "focus",
-        "fantasy",
-        "chill"
-      ],
-      "bpm": 85,
-      "energy": "low",
-      "gain": 1,
-      "collection": "focus-flow",
-      "sourceType": "file-drop",
-      "licenseRef": "original-focus-flow-pack"
-    },
-    {
-      "id": "soft-blocks-6f38abca",
-      "title": "Soft Blocks",
-      "src": "./assets/music/tracks/focus-flow/soft-blocks__modes-focus+chill+lofi__bpm-100__energy-mid.wav",
-      "format": "wav",
-      "modes": [
-        "focus",
-        "chill",
-        "lofi"
-      ],
-      "bpm": 100,
-      "energy": "mid",
-      "gain": 1,
-      "collection": "focus-flow",
-      "sourceType": "file-drop",
-      "licenseRef": "original-focus-flow-pack"
-    },
-    {
-      "id": "steady-lanterns-3ee0fe95",
-      "title": "Steady Lanterns",
-      "src": "./assets/music/tracks/focus-flow/steady-lanterns__modes-focus+chill+coffee__bpm-95__energy-low.wav",
-      "format": "wav",
-      "modes": [
-        "focus",
-        "chill",
-        "coffee"
-      ],
-      "bpm": 95,
-      "energy": "low",
-      "gain": 1,
-      "collection": "focus-flow",
-      "sourceType": "file-drop",
-      "licenseRef": "original-focus-flow-pack"
-    },
-    {
-      "id": "sunday-study-99611ad5",
-      "title": "Sunday Study",
-      "src": "./assets/music/tracks/focus-flow/sunday-study__modes-focus+chill+lofi+coffee__bpm-86__energy-low__license-original-focus-flow-pack.wav",
-      "format": "wav",
-      "modes": [
-        "focus",
-        "chill",
-        "lofi",
-        "coffee"
-      ],
-      "bpm": 86,
-      "energy": "low",
-      "gain": 1,
-      "collection": "focus-flow",
-      "sourceType": "file-drop",
-      "licenseRef": "original-focus-flow-pack"
-    },
-    {
-      "id": "sunrise-drift-fcd990b5",
-      "title": "Sunrise Drift",
-      "src": "./assets/music/tracks/focus-flow/sunrise-drift__modes-focus+chill+lofi+coffee__bpm-90__energy-low.wav",
-      "format": "wav",
-      "modes": [
-        "focus",
-        "chill",
-        "lofi",
-        "coffee"
-      ],
-      "bpm": 90,
-      "energy": "low",
-      "gain": 1,
-      "collection": "focus-flow",
-      "sourceType": "file-drop",
-      "licenseRef": "original-focus-flow-pack"
-    },
-    {
-      "id": "team-spark-lite-f3782018",
-      "title": "Team Spark Lite",
-      "src": "./assets/music/tracks/focus-flow/team-spark-lite__modes-focus+team+sports+upbeat__bpm-105__energy-mid.wav",
-      "format": "wav",
-      "modes": [
-        "focus",
-        "team",
         "sports",
-        "upbeat"
+        "team"
       ],
-      "bpm": 105,
+      "bpm": 138,
+      "energy": "mid",
+      "gain": 1,
+      "collection": "focus-flow",
+      "sourceType": "file-drop",
+      "licenseRef": "original-focus-flow-pack"
+    },
+    {
+      "id": "string-theory-sprint-093d703c",
+      "title": "String Theory Sprint",
+      "src": "./assets/music/tracks/focus-flow/string-theory-sprint__modes-classicalbeats+focus+upbeat+sports__bpm-104__energy-mid__license-original-focus-flow-pack.wav",
+      "format": "wav",
+      "modes": [
+        "classicalbeats",
+        "focus",
+        "upbeat",
+        "sports"
+      ],
+      "bpm": 104,
+      "energy": "mid",
+      "gain": 1,
+      "collection": "focus-flow",
+      "sourceType": "file-drop",
+      "licenseRef": "original-focus-flow-pack"
+    },
+    {
+      "id": "task-tunnel-a89071cb",
+      "title": "Task Tunnel",
+      "src": "./assets/music/tracks/focus-flow/task-tunnel__modes-deepfocus+focus+upbeat+team__bpm-96__energy-mid__license-original-focus-flow-pack.wav",
+      "format": "wav",
+      "modes": [
+        "deepfocus",
+        "focus",
+        "upbeat",
+        "team"
+      ],
+      "bpm": 96,
       "energy": "mid",
       "gain": 1,
       "collection": "focus-flow",

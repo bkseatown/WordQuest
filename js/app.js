@@ -95,6 +95,9 @@
   const REVIEW_QUEUE_MAX_ITEMS = 36;
   const ALLOWED_MUSIC_MODES = new Set([
     'auto',
+    'deepfocus',
+    'classicalbeats',
+    'nerdcore',
     'focus',
     'chill',
     'lofi',
@@ -111,6 +114,9 @@
   const ALLOWED_VOICE_MODES = new Set(['recorded', 'auto', 'device', 'off']);
   const MUSIC_LABELS = Object.freeze({
     auto: 'Auto',
+    deepfocus: 'Deep Focus',
+    classicalbeats: 'Classical Beats',
+    nerdcore: 'Nerdcore Instrumental',
     focus: 'Focus Flow',
     chill: 'Chill',
     lofi: 'Lo-fi',
@@ -125,6 +131,9 @@
     off: 'Off'
   });
   const QUICK_MUSIC_VIBE_ORDER = Object.freeze([
+    'deepfocus',
+    'classicalbeats',
+    'nerdcore',
     'focus',
     'chill',
     'lofi',
@@ -926,10 +935,7 @@
   const TEAM_LABELS = Object.freeze(['Team A', 'Team B', 'Team C', 'Team D']);
 
   function getThemeFallback() {
-    if (ThemeRegistry && typeof ThemeRegistry.defaultThemeForMode === 'function') {
-      return ThemeRegistry.defaultThemeForMode('calm');
-    }
-    return 'default';
+    return 'seahawks';
   }
 
   function normalizeTheme(theme, fallback = getThemeFallback()) {
@@ -1582,7 +1588,7 @@
     const button = _el('phonics-clue-open-btn');
     if (!button) return;
     const listening = mode === 'listening';
-    button.innerHTML = '<span class="quick-btn-label">Clue</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 4h3a2 2 0 1 1 4 0h1a2 2 0 0 1 2 2v3a2 2 0 1 1 0 4v5a2 2 0 0 1-2 2h-3a2 2 0 1 1-4 0H6a2 2 0 0 1-2-2v-3a2 2 0 1 1 0-4V6a2 2 0 0 1 2-2z"></path></svg>';
+    button.innerHTML = '<span class="quick-btn-label">Clue</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 3h6a2 2 0 0 1 2 2v2.5a1.5 1.5 0 1 0 0 3V13a2 2 0 0 1-2 2h-2.5a1.5 1.5 0 1 0-3 0H7a2 2 0 0 1-2-2v-2.5a1.5 1.5 0 1 0 0-3V5a2 2 0 0 1 2-2h2"></path></svg>';
     setHoverNoteForElement(
       button,
       listening
@@ -1607,6 +1613,7 @@
   function syncStarterWordLauncherUI(mode = getStarterWordMode()) {
     const button = _el('starter-word-open-btn');
     if (!button) return;
+    button.innerHTML = '<span class="quick-btn-label">Need Ideas</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a6 6 0 0 0-3.8 10.6c.8.7 1.3 1.4 1.6 2.4h4.4c.3-1 .8-1.7 1.6-2.4A6 6 0 0 0 12 2z"></path></svg>';
     const normalized = normalizeStarterWordMode(mode);
     const missionMode = isMissionLabStandaloneMode();
     const hidden = normalized === 'off' || missionMode;
@@ -1635,6 +1642,16 @@
     return normalized;
   }
 
+  function hideListeningModeExplainer() {
+    _el('listening-mode-overlay')?.classList.add('hidden');
+  }
+
+  function showListeningModeExplainer() {
+    const overlay = _el('listening-mode-overlay');
+    if (!overlay || isMissionLabStandaloneMode()) return;
+    overlay.classList.remove('hidden');
+  }
+
   function syncGameplayAudioStrip(mode = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle)) {
     const gameplayAudio = document.querySelector('.gameplay-audio');
     const sentenceBtn = _el('g-hear-sentence');
@@ -1642,12 +1659,9 @@
     const listeningMode = mode === 'listening' && !isMissionLabStandaloneMode();
     const modeBanner = _el('play-style-banner');
     if (modeBanner) {
-      modeBanner.textContent = listeningMode
-        ? 'Listening mode: hear word + meaning, then spell it.'
-        : '';
-      modeBanner.classList.toggle('hidden', !listeningMode);
-      modeBanner.classList.toggle('is-listening', listeningMode);
-      modeBanner.setAttribute('aria-hidden', listeningMode ? 'false' : 'true');
+      modeBanner.textContent = '';
+      modeBanner.classList.add('hidden');
+      modeBanner.setAttribute('aria-hidden', 'true');
     }
     const hearWordBtn = _el('g-hear-word');
     const hearWordLabel = _el('g-hear-word-label');
@@ -1686,6 +1700,11 @@
         from_mode: beforeMode,
         to_mode: normalized
       });
+      if (normalized === 'listening') {
+        showListeningModeExplainer();
+      } else {
+        hideListeningModeExplainer();
+      }
     }
     updateNextActionLine();
     return normalized;
@@ -1695,7 +1714,8 @@
     const revealOpen = !_el('modal-overlay')?.classList.contains('hidden');
     const missionOpen = !_el('challenge-modal')?.classList.contains('hidden');
     const setupOpen = !_el('first-run-setup-modal')?.classList.contains('hidden');
-    return !!(revealOpen || missionOpen || setupOpen);
+    const listeningOpen = !_el('listening-mode-overlay')?.classList.contains('hidden');
+    return !!(revealOpen || missionOpen || setupOpen || listeningOpen);
   }
 
   function hideInformantHintCard() {
@@ -3937,12 +3957,40 @@
     }
   });
 
+  function evaluateGuessForKeyboard(guess, targetWord) {
+    const target = String(targetWord || '').toLowerCase().split('');
+    const chars = String(guess || '').toLowerCase().split('');
+    const result = Array(target.length).fill('absent');
+    chars.forEach((ch, idx) => {
+      if (ch === target[idx]) {
+        result[idx] = 'correct';
+        target[idx] = '';
+        chars[idx] = '';
+      }
+    });
+    chars.forEach((ch, idx) => {
+      if (!ch) return;
+      const foundIndex = target.indexOf(ch);
+      if (foundIndex < 0) return;
+      result[idx] = 'present';
+      target[foundIndex] = '';
+    });
+    return result;
+  }
+
+  function restoreKeyboardStateFromRound(state) {
+    if (!state?.word || !Array.isArray(state.guesses) || !state.guesses.length) return;
+    state.guesses.forEach((guess) => {
+      const result = evaluateGuessForKeyboard(guess, state.word);
+      WQUI.updateKeyboard(result, guess);
+    });
+  }
+
   function refreshKeyboardLayoutPreview() {
     const state = WQGame.getState?.();
     if (!state?.word) return;
-    // Avoid resetting key-state mid-round; apply immediately only before first submitted guess.
-    if (state.guesses.length > 0) return;
     WQUI.buildKeyboard();
+    restoreKeyboardStateFromRound(state);
     if (state.guess) {
       WQUI.updateCurrentRow(state.guess, state.wordLength, state.guesses.length);
     }
@@ -3989,15 +4037,9 @@
       syncKeyboardPresetControl();
       return;
     }
-    const state = WQGame.getState?.();
-    const hasActiveProgress = Boolean(state?.word && !state?.gameOver && (state?.guesses?.length || 0) > 0);
     const next = applyKeyboardLayout(e.target.value);
     setPref('keyboardLayout', next);
     syncKeyboardPresetControl();
-    if (hasActiveProgress) {
-      WQUI.showToast(`${getKeyboardLayoutLabel(next)} saved. It applies next word.`);
-      return;
-    }
     refreshKeyboardLayoutPreview();
     WQUI.showToast(`Keyboard switched to ${getKeyboardLayoutLabel(next)}.`);
   });
@@ -4020,16 +4062,10 @@
       showAssessmentLockNotice();
       return;
     }
-    const state = WQGame.getState?.();
-    const hasActiveProgress = Boolean(state?.word && !state?.gameOver && (state?.guesses?.length || 0) > 0);
     const current = normalizeKeyboardLayout(document.documentElement.getAttribute('data-keyboard-layout') || 'standard');
     const next = applyKeyboardLayout(getNextKeyboardLayout(current));
     setPref('keyboardLayout', next);
     syncKeyboardPresetControl();
-    if (hasActiveProgress) {
-      WQUI.showToast(`${getKeyboardLayoutLabel(next)} saved. It applies next word.`);
-      return;
-    }
     refreshKeyboardLayoutPreview();
     WQUI.showToast(`Keyboard switched to ${getKeyboardLayoutLabel(next)}.`);
   });
@@ -10773,6 +10809,13 @@
   _el('starter-word-close-icon')?.addEventListener('click', () => {
     hideStarterWordCard();
   });
+  _el('listening-mode-close')?.addEventListener('click', () => {
+    hideListeningModeExplainer();
+  });
+  _el('listening-mode-overlay')?.addEventListener('pointerdown', (event) => {
+    if (event.target?.id !== 'listening-mode-overlay') return;
+    hideListeningModeExplainer();
+  });
   _el('phonics-clue-close')?.addEventListener('click', () => closePhonicsClueModal());
   _el('phonics-clue-modal')?.addEventListener('pointerdown', (event) => {
     if (event.target?.id !== 'phonics-clue-modal') return;
@@ -13232,6 +13275,9 @@
     let customTracks = [];
 
     const PLAYBACK_PRESETS = Object.freeze({
+      deepfocus: Object.freeze({ seq: [196, 0, 220, 0, 247, 0, 220, 0], tempo: 500, dur: 0.15, wave: 'sine', level: 0.1 }),
+      classicalbeats: Object.freeze({ seq: [262, 330, 392, 330, 440, 392, 330, 262], tempo: 280, dur: 0.11, wave: 'triangle', level: 0.12 }),
+      nerdcore: Object.freeze({ seq: [523, 659, 784, 988, 784, 659, 523, 659], tempo: 220, dur: 0.1, wave: 'square', level: 0.12 }),
       focus:   Object.freeze({ seq: [220, 0, 247, 0, 262, 0, 247, 0], tempo: 430, dur: 0.12, wave: 'triangle', level: 0.11 }),
       chill:   Object.freeze({ seq: [196, 0, 220, 0, 247, 0, 220, 0], tempo: 520, dur: 0.16, wave: 'sine', level: 0.12 }),
       lofi:    Object.freeze({ seq: [220, 0, 247, 0, 196, 0, 220, 0], tempo: 420, dur: 0.13, wave: 'triangle', level: 0.14 }),
@@ -13246,6 +13292,9 @@
     });
 
     const ALT_SEQS = Object.freeze({
+      deepfocus: [174, 0, 196, 0, 220, 0, 196, 0],
+      classicalbeats: [294, 370, 440, 370, 494, 440, 370, 294],
+      nerdcore: [659, 784, 988, 1175, 988, 784, 659, 784],
       focus:   [196, 0, 220, 0, 247, 0, 220, 0],
       chill:   [220, 0, 247, 0, 262, 0, 247, 0],
       lofi:    [196, 0, 220, 0, 247, 0, 196, 0],

@@ -455,9 +455,9 @@ header {
 
 #new-game-btn {
   flex: 0 0 auto;
-  background:    linear-gradient(145deg, color-mix(in oklab, var(--brand) 92%, #ffffff 8%), color-mix(in oklab, var(--brand-dk) 74%, #000000 26%));
-  color:         var(--brand-text);
-  border:        1px solid color-mix(in oklab, var(--brand) 56%, var(--panel-border) 44%);
+  background:    linear-gradient(145deg, color-mix(in oklab, var(--accent) 44%, var(--brand) 56%), color-mix(in oklab, var(--brand-dk) 68%, #000000 32%));
+  color:         #f7fbff;
+  border:        1px solid color-mix(in oklab, var(--accent) 56%, var(--panel-border) 44%);
   border-radius: 999px;
   min-height:    31px;
   padding:       4px 12px;
@@ -467,10 +467,11 @@ header {
   cursor:        pointer;
   transition:    background 0.15s, transform 0.12s ease;
   white-space:   nowrap;
-  box-shadow:    none;
+  box-shadow:    0 1px 0 rgba(255,255,255,0.15) inset;
+  text-shadow:   0 1px 1px rgba(6, 16, 32, 0.45);
 }
 #new-game-btn:hover {
-  background: linear-gradient(145deg, color-mix(in oklab, var(--brand) 82%, #ffffff 18%), color-mix(in oklab, var(--brand-dk) 82%, #000000 18%));
+  background: linear-gradient(145deg, color-mix(in oklab, var(--accent) 54%, var(--brand) 46%), color-mix(in oklab, var(--brand-dk) 74%, #000000 26%));
 }
 #new-game-btn:active { transform: translateY(1px); }
 #new-game-btn.pulse { animation: pulse 1.4s ease infinite; }
@@ -2452,24 +2453,7 @@ html[data-page-mode="mission-lab"] #focus-hint-toggle {
 }
 
 .play-style-banner {
-  width: 100%;
-  max-width: none;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0;
-  flex-wrap: nowrap;
-  padding: 0;
-  border-radius: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  font-size: 0.74rem;
-  font-weight: 760;
-  color: color-mix(in oklab, var(--text-muted) 86%, var(--text) 14%);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: none !important;
 }
 
 .play-style-chip {
@@ -2804,6 +2788,8 @@ html[data-key-style="pebble"] .tile {
     0 12px 20px rgba(8, 16, 30, 0.2),
     inset 0 1px 0 rgba(255,255,255,0.66),
     inset 0 -2px 0 rgba(12, 22, 40, 0.2);
+  color: color-mix(in oklab, #ffffff 92%, var(--text) 8%);
+  text-shadow: 0 1px 1px rgba(6, 14, 30, 0.58);
 }
 
 html[data-board-style="soundcard"] .tile {
@@ -2923,9 +2909,10 @@ html[data-board-style="soundcard"] .tile.flip {
   gap:      6px;
   order: 0;
   flex-wrap: nowrap;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  min-width: max-content;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .gameplay-audio.is-single-action {
@@ -3178,11 +3165,17 @@ html[data-board-style="soundcard"] .tile.flip {
 }
 
 html[data-play-style="listening"] .play-support-row {
-  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: min(var(--keyboard-max-width, 540px), calc(100vw - 18px));
 }
 
 html[data-play-style="listening"] .gameplay-audio {
   gap: 6px;
+  width: 100%;
+  justify-content: center;
 }
 
 html[data-play-style="listening"] .gameplay-audio .audio-ghost-btn {
@@ -3193,6 +3186,7 @@ html[data-play-style="listening"] .gameplay-audio .audio-ghost-btn {
   border-width: 1px;
   color: var(--text);
   box-shadow: none;
+  max-width: 100%;
 }
 
 html[data-play-style="listening"] #focus-hint-toggle {
@@ -4002,6 +3996,65 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
   border-color: color-mix(in oklab, #b9d2c6 58%, var(--panel-border) 42%);
   background: linear-gradient(145deg, #f5faf7 0%, #ecf3ef 100%);
   color: #355245;
+}
+
+.listening-mode-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 20, 36, 0.42);
+  padding: 14px;
+}
+
+.listening-mode-card {
+  width: min(540px, calc(100vw - 24px));
+  border-radius: 16px;
+  border: 1px solid color-mix(in oklab, var(--accent) 52%, var(--panel-border) 48%);
+  background: linear-gradient(
+    165deg,
+    color-mix(in oklab, var(--panel-bg) 92%, #ffffff 8%) 0%,
+    color-mix(in oklab, var(--panel-bg) 84%, var(--accent) 16%) 100%
+  );
+  box-shadow: 0 20px 36px rgba(8, 20, 36, 0.34);
+  padding: 12px 12px 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.listening-mode-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.listening-mode-title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.listening-mode-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 64%, var(--accent) 36%);
+  background: color-mix(in oklab, var(--panel-bg) 88%, #ffffff 12%);
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.listening-mode-copy {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: color-mix(in oklab, var(--text) 88%, var(--text-muted) 12%);
+  font-weight: 760;
 }
 
 @media (max-width: 760px) {
