@@ -853,6 +853,31 @@
     '912': 'G9-12'
   });
 
+  function normalizeCurriculumTarget(rawTarget) {
+    if (!rawTarget || typeof rawTarget !== 'object') return null;
+    const id = String(rawTarget.id || '').trim();
+    const label = String(rawTarget.label || '').trim();
+    if (!id || !label) return null;
+    return Object.freeze({
+      id,
+      label,
+      focus: String(rawTarget.focus || 'cvc').trim(),
+      gradeBand: String(rawTarget.gradeBand || 'K-2').trim(),
+      length: String(rawTarget.length || 'any').trim(),
+      pacing: String(rawTarget.pacing || '').trim()
+    });
+  }
+
+  function getMappedCurriculumTargets(packId) {
+    const table = window.WQCurriculumTaxonomy;
+    if (!table || typeof table !== 'object') return [];
+    const rows = table[packId];
+    if (!Array.isArray(rows) || !rows.length) return [];
+    return rows
+      .map((row) => normalizeCurriculumTarget(row))
+      .filter(Boolean);
+  }
+
   function resolveUfliLessonMeta(lessonNumber) {
     if (lessonNumber <= 8) return { focus: 'cvc', gradeBand: 'K-2', length: '3' };
     if (lessonNumber <= 24) return { focus: 'digraph', gradeBand: 'K-2', length: '4' };
@@ -865,6 +890,8 @@
   }
 
   function buildUfliLessonTargets() {
+    const mapped = getMappedCurriculumTargets('ufli');
+    if (mapped.length) return Object.freeze(mapped);
     const targets = [];
     for (let lesson = 1; lesson <= 128; lesson += 1) {
       const meta = resolveUfliLessonMeta(lesson);
@@ -897,6 +924,8 @@
   }
 
   function buildFundationsLessonTargets() {
+    const mapped = getMappedCurriculumTargets('fundations');
+    if (mapped.length) return Object.freeze(mapped);
     const byLevel = Object.freeze([
       Object.freeze({ level: 1, units: 14 }),
       Object.freeze({ level: 2, units: 17 }),
@@ -932,6 +961,8 @@
   }
 
   function buildWilsonLessonTargets() {
+    const mapped = getMappedCurriculumTargets('wilson');
+    if (mapped.length) return Object.freeze(mapped);
     const targets = [];
     for (let step = 1; step <= 12; step += 1) {
       for (let lesson = 1; lesson <= 5; lesson += 1) {
@@ -948,6 +979,15 @@
       }
     }
     return Object.freeze(targets);
+  }
+
+  function buildLexiaWidaLessonTargets() {
+    const mapped = getMappedCurriculumTargets('lexiawida');
+    if (mapped.length) return Object.freeze(mapped);
+    return Object.freeze([
+      Object.freeze({ id: 'lexia-wida-entering-k2', label: 'Lexia English WIDA Entering (1) · Grade K-2 · Lessons 1-2', focus: 'cvc', gradeBand: 'K-2', length: '3', pacing: 'Entering 1 · K-2' }),
+      Object.freeze({ id: 'lexia-wida-entering-36', label: 'Lexia English WIDA Entering (1) · Grades 3-6 · Lessons 1-3', focus: 'multisyllable', gradeBand: 'G3-5', length: '5', pacing: 'Entering 1 · Grades 3-6' })
+    ]);
   }
 
   const CURRICULUM_LESSON_PACKS = Object.freeze({
@@ -978,6 +1018,10 @@
       label: 'Wilson Reading System',
       targets: buildWilsonLessonTargets()
     }),
+    lexiawida: Object.freeze({
+      label: 'Lexia English (WIDA)',
+      targets: buildLexiaWidaLessonTargets()
+    }),
     justwords: Object.freeze({
       label: 'Just Words',
       targets: Object.freeze([
@@ -989,7 +1033,7 @@
       ])
     })
   });
-  const CURRICULUM_PACK_ORDER = Object.freeze(['ufli', 'fundations', 'wilson', 'justwords']);
+  const CURRICULUM_PACK_ORDER = Object.freeze(['ufli', 'fundations', 'wilson', 'lexiawida', 'justwords']);
 
   const CHUNK_TAB_FOCUS_KEYS = new Set([
     'digraph',
@@ -7195,7 +7239,7 @@
           map[key].push(entry);
           return map;
         }, Object.create(null));
-        const orderedPacks = ['UFLI', 'Fundations', 'Wilson Reading System', 'Just Words'];
+        const orderedPacks = ['UFLI', 'Fundations', 'Wilson Reading System', 'Lexia English (WIDA)', 'Just Words'];
         const lessonBlocks = orderedPacks
           .filter((packLabel) => Array.isArray(groupedLessons[packLabel]) && groupedLessons[packLabel].length)
           .map((packLabel) => (
