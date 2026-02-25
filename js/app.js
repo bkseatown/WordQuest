@@ -7333,9 +7333,9 @@
     if (!label || entry?.kind !== 'curriculum') return label;
     if (entry.packId === 'fundations') {
       const match = label.match(/Fundations\\s+Level\\s+([A-Za-z0-9]+)\\s+Unit\\s+([A-Za-z0-9]+)/i);
-      if (match) return `Fundations ${match[1]}.${match[2]}`;
+      if (match) return `Lesson ${match[1]} Unit ${match[2]}`;
       const compactMatch = label.match(/Fundations\\s+L\\.\\s*([A-Za-z0-9]+)\\s+U\\.\\s*([A-Za-z0-9]+)/i);
-      if (compactMatch) return `Fundations ${compactMatch[1]}.${compactMatch[2]}`;
+      if (compactMatch) return `Lesson ${compactMatch[1]} Unit ${compactMatch[2]}`;
     }
     if (entry.packId === 'ufli') {
       const match = label.match(/Lesson\\s+(\\d+)/i);
