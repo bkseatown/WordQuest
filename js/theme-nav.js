@@ -286,7 +286,7 @@
     syncTeacherHubSelectsFromSettings();
     byId('settings-panel')?.classList.add('hidden');
     panel.classList.remove('hidden');
-    window.dispatchEvent(new Event('wq:teacher-panel-toggle'));
+    window.dispatchEvent(new CustomEvent('wq:teacher-panel-toggle', { detail: { open: true } }));
     byId('wq-teacher-words')?.focus();
   }
 
@@ -294,7 +294,7 @@
     const panel = byId('teacher-panel');
     if (!panel) return;
     panel.classList.add('hidden');
-    window.dispatchEvent(new Event('wq:teacher-panel-toggle'));
+    window.dispatchEvent(new CustomEvent('wq:teacher-panel-toggle', { detail: { open: false } }));
   }
 
   function bindTeacherPanel() {

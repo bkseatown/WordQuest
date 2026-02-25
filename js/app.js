@@ -461,6 +461,13 @@
   }
   enforceLockedDemoDefaults();
   const _el = id => document.getElementById(id);
+  const TELEMETRY_ENABLED_KEY = 'wq_v2_telemetry_enabled_v1';
+  const TELEMETRY_DEVICE_ID_KEY = 'wq_v2_device_id_local_v1';
+  const TELEMETRY_QUEUE_KEY = 'wq_v2_telemetry_queue_v1';
+  const TELEMETRY_QUEUE_LIMIT = 500;
+  const TELEMETRY_SESSION_ID = `sess_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+  const telemetrySessionStartedAt = Date.now();
+  let telemetryLastMusicSignature = '';
   const HOVER_NOTE_DELAY_MS = 500;
   const HOVER_NOTE_TARGET_SELECTOR = '.icon-btn, .header-quick-btn, .theme-preview-music, .wq-theme-nav-btn, .quick-popover-done';
   let hoverNoteTimer = 0;
@@ -471,6 +478,106 @@
   let musicController = null;
   let challengeSprintTimer = 0;
   let challengeModalReturnFocusEl = null;
+
+  function readTelemetryEnabled() {
+    try {
+      const raw = String(localStorage.getItem(TELEMETRY_ENABLED_KEY) || '').trim().toLowerCase();
+      if (!raw) return true;
+      return raw !== 'off' && raw !== '0' && raw !== 'false';
+    } catch {
+      return true;
+    }
+  }
+
+  function getTelemetryDeviceId() {
+    let deviceId = '';
+    try {
+      deviceId = String(localStorage.getItem(TELEMETRY_DEVICE_ID_KEY) || '').trim();
+      if (!deviceId) {
+        deviceId = `dev_${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36).slice(-4)}`;
+        localStorage.setItem(TELEMETRY_DEVICE_ID_KEY, deviceId);
+      }
+    } catch {
+      deviceId = `dev_mem_${Math.random().toString(36).slice(2, 10)}`;
+    }
+    return deviceId;
+  }
+
+  function getTelemetryQueue() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(TELEMETRY_QUEUE_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function setTelemetryQueue(queue) {
+    try {
+      localStorage.setItem(TELEMETRY_QUEUE_KEY, JSON.stringify(Array.isArray(queue) ? queue.slice(-TELEMETRY_QUEUE_LIMIT) : []));
+    } catch {}
+  }
+
+  function getTelemetryContext() {
+    const state = WQGame.getState?.() || {};
+    const build = resolveBuildLabel() || 'local';
+    const focusValue = _el('setting-focus')?.value || prefs.focus || DEFAULT_PREFS.focus || 'all';
+    const gradeBand = getEffectiveGameplayGradeBand(
+      _el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade || 'all',
+      focusValue
+    );
+    const lessonPackId = normalizeLessonPackId(prefs.lessonPack || _el('s-lesson-pack')?.value || DEFAULT_PREFS.lessonPack);
+    const lessonTargetId = normalizeLessonTargetId(
+      lessonPackId,
+      prefs.lessonTarget || _el('s-lesson-target')?.value || DEFAULT_PREFS.lessonTarget
+    );
+    return {
+      ts_ms: Date.now(),
+      session_id: TELEMETRY_SESSION_ID,
+      device_id_local: getTelemetryDeviceId(),
+      app_version: build,
+      page_mode: normalizePageMode(document.documentElement.getAttribute('data-page-mode') || loadStoredPageMode()),
+      play_style: normalizePlayStyle(document.documentElement.getAttribute('data-play-style') || prefs.playStyle || DEFAULT_PREFS.playStyle),
+      grade_band: gradeBand,
+      focus_id: String(focusValue || 'all'),
+      lesson_pack_id: lessonPackId,
+      lesson_target_id: lessonTargetId,
+      word_length: Number(state?.wordLength || 0) || null
+    };
+  }
+
+  function emitTelemetry(eventName, payload = {}) {
+    if (!readTelemetryEnabled()) return;
+    const name = String(eventName || '').trim().toLowerCase();
+    if (!name) return;
+    const row = {
+      event_name: name.startsWith('wq_') ? name : `wq_${name}`,
+      ...getTelemetryContext(),
+      ...(payload && typeof payload === 'object' ? payload : {})
+    };
+    const queue = getTelemetryQueue();
+    queue.push(row);
+    setTelemetryQueue(queue);
+  }
+
+  window.WQTelemetry = Object.freeze({
+    emit: emitTelemetry,
+    setEnabled(next) {
+      try {
+        localStorage.setItem(TELEMETRY_ENABLED_KEY, next ? 'on' : 'off');
+      } catch {}
+    },
+    isEnabled: readTelemetryEnabled,
+    peek(limit = 20) {
+      const count = Math.max(1, Math.min(200, Number(limit) || 20));
+      return getTelemetryQueue().slice(-count);
+    },
+    flush() {
+      const rows = getTelemetryQueue();
+      setTelemetryQueue([]);
+      return rows;
+    }
+  });
 
   function isMissionLabEnabled() {
     return MISSION_LAB_ENABLED;
@@ -1054,6 +1161,15 @@
     const effective = selected === 'auto' ? resolveAutoMusicMode(activeTheme) : selected;
     if (musicController) musicController.setMode(effective);
     updateMusicStatus(selected, effective);
+    const signature = `${selected}::${effective}`;
+    if (telemetryLastMusicSignature !== signature) {
+      telemetryLastMusicSignature = signature;
+      emitTelemetry('wq_music_change', {
+        selected_music_mode: selected,
+        active_music_mode: effective,
+        source: options.toast ? 'user' : 'system'
+      });
+    }
     if (options.toast) {
       const label = MUSIC_LABELS[effective] || effective;
       WQUI.showToast(selected === 'auto' ? `Music auto: ${label}.` : `Music: ${label}.`);
@@ -1183,6 +1299,9 @@
   normalizeHeaderControlLayout();
   syncHeaderStaticIcons();
   initHoverNoteToasts();
+  emitTelemetry('wq_session_start', {
+    source: 'app_init'
+  });
 
   // Apply theme + modes immediately
   const initialTheme = applyTheme(initialThemeSelection || getThemeFallback());
@@ -1240,12 +1359,19 @@
 
   function applyTheme(name) {
     const normalized = normalizeTheme(name, getThemeFallback());
+    const beforeTheme = normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
     document.documentElement.setAttribute('data-theme', normalized);
     document.documentElement.setAttribute('data-theme-family', getThemeFamily(normalized));
     const select = _el('s-theme');
     if (select && select.value !== normalized) select.value = normalized;
     syncSettingsThemeName(normalized);
     syncMusicForTheme();
+    if (beforeTheme !== normalized) {
+      emitTelemetry('wq_theme_change', {
+        from_theme: beforeTheme,
+        to_theme: normalized
+      });
+    }
     return normalized;
   }
 
@@ -1498,6 +1624,7 @@
   }
 
   function applyPlayStyle(mode, options = {}) {
+    const beforeMode = normalizePlayStyle(document.documentElement.getAttribute('data-play-style') || prefs.playStyle || DEFAULT_PREFS.playStyle);
     const normalized = normalizePlayStyle(mode);
     document.documentElement.setAttribute('data-play-style', normalized);
     const select = _el('s-play-style');
@@ -1506,6 +1633,12 @@
     syncHeaderClueLauncherUI(normalized);
     syncGameplayAudioStrip(normalized);
     if (options.persist !== false) setPref('playStyle', normalized);
+    if (beforeMode !== normalized) {
+      emitTelemetry('wq_mode_change', {
+        from_mode: beforeMode,
+        to_mode: normalized
+      });
+    }
     updateNextActionLine();
     return normalized;
   }
@@ -2245,6 +2378,10 @@
       return;
     }
     currentRoundHintRequested = true;
+    emitTelemetry('wq_support_used', {
+      support_type: playStyle === 'listening' ? 'listening_sound_help' : 'phonics_clue',
+      guess_count: guessCount
+    });
     showInformantHintCard(buildInformantHintPayload(state));
   }
 
@@ -3475,6 +3612,10 @@
     openFirstRunSetupModal();
   }
   window.addEventListener('wq:teacher-panel-toggle', () => {
+    const isOpen = !_el('teacher-panel')?.classList.contains('hidden');
+    emitTelemetry(isOpen ? 'wq_teacher_hub_open' : 'wq_teacher_hub_close', {
+      source: 'teacher_panel_toggle_event'
+    });
     syncHeaderControlsVisibility();
   });
   window.addEventListener('wq:open-teacher-hub', () => {
@@ -5624,6 +5765,7 @@
   function applyLessonTargetConfig(packId, targetId, options = {}) {
     const target = getLessonTarget(packId, targetId);
     if (!target) return false;
+    const pack = getLessonPackDefinition(packId);
     const focusSelect = _el('setting-focus');
     const gradeSelect = _el('s-grade');
     const lengthSelect = _el('s-length');
@@ -5654,9 +5796,16 @@
     updateFocusSummaryLabel();
     refreshStandaloneMissionLabHub();
     if (options.toast) {
-      const pack = getLessonPackDefinition(packId);
       WQUI.showToast(`${pack.label}: ${target.label} applied (${formatLessonTargetPacing(target)}).`);
     }
+    emitTelemetry('wq_target_apply', {
+      program_id: packId,
+      program_label: pack?.label || packId,
+      lesson_id: target.id,
+      lesson_label: target.label,
+      pacing_label: formatLessonTargetPacing(target),
+      source: options.toast ? 'manual_apply' : 'auto_apply'
+    });
     return true;
   }
 
@@ -7235,6 +7384,13 @@
       const skill = getSkillDescriptorForRound(nextResult);
       currentRoundSkillKey = skill.key;
       currentRoundSkillLabel = skill.label;
+      emitTelemetry('wq_round_start', {
+        word_id: normalizeReviewWord(nextResult.word),
+        word_length: Number(nextResult.wordLength) || String(nextResult.word || '').length || null,
+        skill_key: currentRoundSkillKey,
+        skill_label: currentRoundSkillLabel,
+        source: 'new_game'
+      });
       return;
     }
     activeRoundStartedAt = 0;
@@ -9703,6 +9859,9 @@
   }
 
   function newGame(options = {}) {
+    emitTelemetry('wq_new_word_click', {
+      source: options.launchMissionLab ? 'mission_lab_new' : 'wordquest_new'
+    });
     hideInformantHintCard();
     closeRevealChallengeModal({ silent: true });
     clearClassroomTurnTimer();
@@ -9800,6 +9959,10 @@
   window.addEventListener('resize', reflowLayout);
   window.visualViewport?.addEventListener('resize', reflowLayout);
   window.addEventListener('beforeunload', () => {
+    emitTelemetry('wq_session_end', {
+      duration_ms: Math.max(0, Date.now() - telemetrySessionStartedAt),
+      reason: 'beforeunload'
+    });
     stopVoiceCaptureNow();
     clearClassroomTurnTimer();
     finishWeeklyProbe({ silent: true });
@@ -9853,6 +10016,11 @@
       const themeAtSubmit = normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
       const result = WQGame.submitGuess();
       if (!result) return;
+      emitTelemetry('wq_guess_submit', {
+        guess_index: (Array.isArray(result?.guesses) ? result.guesses.length : 0) || 0,
+        guess_length: String(result?.guess || '').length,
+        submit_result: result.error ? String(result.error) : 'accepted'
+      });
       if (result.error === 'too_short') {
         WQUI.showToast('Fill in all the letters first');
         WQUI.shakeRow(s.guesses, s.wordLength);
@@ -9879,6 +10047,24 @@
         }
         if (result.won || result.lost) {
           const roundMetrics = buildRoundMetrics(result, s.maxGuesses);
+          const guessesUsed = Math.max(1, Number(roundMetrics.guessesUsed) || 1);
+          const zpdInBand = Boolean(
+            (result.won && guessesUsed >= 3 && guessesUsed <= 5) ||
+            (!result.won && result.lost && guessesUsed >= 5 && !!roundMetrics.hintRequested)
+          );
+          emitTelemetry('wq_round_complete', {
+            word_id: normalizeReviewWord(result.word),
+            won: !!result.won,
+            lost: !!result.lost,
+            guesses_used: guessesUsed,
+            max_guesses: Number(s.maxGuesses) || null,
+            hint_used: !!roundMetrics.hintRequested,
+            voice_attempts: Math.max(0, Number(roundMetrics.voiceAttempts) || 0),
+            duration_ms: Math.max(0, Number(roundMetrics.durationMs) || 0),
+            skill_key: roundMetrics.skillKey,
+            skill_label: roundMetrics.skillLabel,
+            zpd_in_band: zpdInBand
+          });
           clearClassroomTurnTimer();
           updateClassroomTurnLine();
           awardQuestProgress(result, roundMetrics);
@@ -10490,6 +10676,11 @@
     renderRevealChallengeModal();
     _el('challenge-modal')?.classList.remove('hidden');
     focusChallengeModalStart();
+    emitTelemetry('wq_deep_dive_start', {
+      source: 'standalone',
+      word_id: normalizeReviewWord(word),
+      level: level || ''
+    });
     return true;
   }
 
@@ -11614,6 +11805,9 @@
     renderRevealChallengeModal();
     _el('challenge-modal')?.classList.remove('hidden');
     focusChallengeModalStart();
+    emitTelemetry('wq_deep_dive_open', {
+      source: revealChallengeState?.source || 'reveal'
+    });
   }
 
   function closeRevealChallengeModal(options = {}) {
@@ -11736,6 +11930,15 @@
     const rank = resolveChallengeRank(progress.points);
     const line = pickRandom(CHALLENGE_COMPLETE_LINES) || 'Deep Dive complete.';
     setChallengeFeedback(`${line} +${pointsEarned} points · Rank ${rank.label}.`, 'good');
+    emitTelemetry('wq_deep_dive_complete', {
+      source: revealChallengeState?.source || 'reveal',
+      word_id: normalizeReviewWord(revealChallengeState?.word),
+      level: revealChallengeState?.challenge?.level || '',
+      done_count: doneCount,
+      score_total: Number(score.total) || 0,
+      points_earned: pointsEarned,
+      rank: rank?.label || ''
+    });
     clearChallengeDraft(revealChallengeState);
     renderSessionSummary();
     setTimeout(() => {
