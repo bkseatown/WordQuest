@@ -206,15 +206,11 @@
     'alphabet'
   ]);
   const ALLOWED_KEYBOARD_LAYOUTS = new Set([
-    ...KEYBOARD_LAYOUT_ORDER,
-    'alphabet-arc',
-    'wilson'
+    ...KEYBOARD_LAYOUT_ORDER
   ]);
   const KEYBOARD_LAYOUT_LABELS = Object.freeze({
     standard: 'QWERTY',
-    alphabet: 'Alphabet',
-    'alphabet-arc': 'Alphabet Arc',
-    wilson: 'Wilson Sound Cards'
+    alphabet: 'Alphabet'
   });
   const KEYBOARD_PRESET_CONFIG = Object.freeze({
     'qwerty-bubble': Object.freeze({
@@ -223,23 +219,11 @@
       keyStyle: 'bubble',
       label: 'QWERTY · Puffy Rounded'
     }),
-    'qwerty-oval': Object.freeze({
-      id: 'qwerty-oval',
-      layout: 'standard',
-      keyStyle: 'pebble',
-      label: 'QWERTY · Oval / Typewriter'
-    }),
     'alphabet-bubble': Object.freeze({
       id: 'alphabet-bubble',
       layout: 'alphabet',
       keyStyle: 'bubble',
       label: 'Alphabet · Puffy Rounded'
-    }),
-    'alphabet-oval': Object.freeze({
-      id: 'alphabet-oval',
-      layout: 'alphabet',
-      keyStyle: 'pebble',
-      label: 'Alphabet · Oval / Typewriter'
     })
   });
 
@@ -247,7 +231,6 @@
     const raw = String(mode || '').trim().toLowerCase();
     if (raw === 'qwerty') return 'standard';
     if (raw === 'alpha' || raw === 'abc') return 'alphabet';
-    if (raw === 'alphabet_arc' || raw === 'alpha-arc') return 'alphabet-arc';
     return ALLOWED_KEYBOARD_LAYOUTS.has(raw) ? raw : DEFAULT_PREFS.keyboardLayout;
   }
 
@@ -271,10 +254,8 @@
 
   function deriveKeyboardPresetId(layoutMode, keyStyleMode) {
     const layout = normalizeKeyboardLayout(layoutMode);
-    const keyStyle = String(keyStyleMode || '').trim().toLowerCase();
-    const family = layout === 'alphabet' || layout === 'alphabet-arc' ? 'alphabet' : 'qwerty';
-    const shape = keyStyle === 'pebble' ? 'oval' : 'bubble';
-    return normalizeKeyboardPresetId(`${family}-${shape}`);
+    const family = layout === 'alphabet' ? 'alphabet' : 'qwerty';
+    return normalizeKeyboardPresetId(`${family}-bubble`);
   }
 
   function detectPreferredKeyboardLayout() {
@@ -309,10 +290,10 @@
     if (prefs.themeSave === undefined) prefs.themeSave = DEFAULT_PREFS.themeSave;
     if (prefs.keyboardLayout === undefined) prefs.keyboardLayout = preferredInitialKeyboardLayout;
     if (prefs.boardStyle === undefined) {
-      prefs.boardStyle = prefs.keyboardLayout === 'wilson' ? 'soundcard' : DEFAULT_PREFS.boardStyle;
+      prefs.boardStyle = DEFAULT_PREFS.boardStyle;
     }
     if (prefs.keyStyle === undefined) {
-      prefs.keyStyle = prefs.keyboardLayout === 'wilson' ? 'soundcard' : DEFAULT_PREFS.keyStyle;
+      prefs.keyStyle = DEFAULT_PREFS.keyStyle;
     }
     if (prefs.chunkTabs === undefined) prefs.chunkTabs = DEFAULT_PREFS.chunkTabs;
     if (prefs.atmosphere === undefined) prefs.atmosphere = DEFAULT_PREFS.atmosphere;
@@ -413,6 +394,14 @@
   }
   if (prefs.confidenceCoaching === undefined) {
     prefs.confidenceCoaching = DEFAULT_PREFS.confidenceCoaching;
+    savePrefs(prefs);
+  }
+  if (prefs.keyboardLayout !== 'standard' && prefs.keyboardLayout !== 'alphabet') {
+    prefs.keyboardLayout = DEFAULT_PREFS.keyboardLayout;
+    savePrefs(prefs);
+  }
+  if (prefs.keyStyle !== 'bubble') {
+    prefs.keyStyle = DEFAULT_PREFS.keyStyle;
     savePrefs(prefs);
   }
   if (!ALLOWED_MUSIC_MODES.has(String(prefs.music || '').toLowerCase())) {
@@ -2403,8 +2392,7 @@
   }
 
   function applyKeyStyle(mode) {
-    const raw = String(mode || '').trim().toLowerCase();
-    const normalized = ALLOWED_KEY_STYLES.has(raw) ? raw : DEFAULT_PREFS.keyStyle;
+    const normalized = DEFAULT_PREFS.keyStyle;
     document.documentElement.setAttribute('data-key-style', normalized);
     const select = _el('s-key-style');
     if (select && select.value !== normalized) select.value = normalized;
@@ -2515,14 +2503,13 @@
     if (!toggle) return;
     const layout = normalizeKeyboardLayout(document.documentElement.getAttribute('data-keyboard-layout') || 'standard');
     const next = getNextKeyboardLayout(layout);
-    const isWilson = layout === 'wilson';
     const keyboardHint = `${getKeyboardLayoutLabel(layout)} keys ready. Tap to try ${getKeyboardLayoutLabel(next)}.`;
     toggle.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="6" width="18" height="12" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 10h1M9 10h1M12 10h1M15 10h1M18 10h0M6 13h1M9 13h1M12 13h1M15 13h1M6 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
-    toggle.setAttribute('aria-pressed', isWilson ? 'true' : 'false');
+    toggle.setAttribute('aria-pressed', layout === 'alphabet' ? 'true' : 'false');
     toggle.setAttribute('aria-label', keyboardHint);
     toggle.dataset.hint = keyboardHint;
     setHoverNoteForElement(toggle, keyboardHint);
-    toggle.classList.toggle('is-wilson', isWilson);
+    toggle.classList.toggle('is-wilson', false);
   }
 
   function syncCaseToggleUI() {
@@ -3746,25 +3733,6 @@
     }
   }
 
-  function maybeSwitchToQwertyForPhysicalKeyboard(event) {
-    if (autoPhysicalKeyboardSwitchApplied) return;
-    const activeLayout = document.documentElement.getAttribute('data-keyboard-layout') || 'standard';
-    if (activeLayout !== 'wilson') return;
-    // Only auto-switch if the current layout still matches the device-default decision.
-    if (String(prefs.keyboardLayout || '') !== preferredInitialKeyboardLayout) return;
-    if (preferredInitialKeyboardLayout !== 'wilson') return;
-    const key = String(event?.key || '');
-    if (!(key.length === 1 || key === 'Enter' || key === 'Backspace')) return;
-    const sourceCaps = event?.sourceCapabilities;
-    const likelyPhysicalKeyboard = sourceCaps ? sourceCaps.firesTouchEvents === false : true;
-    if (!likelyPhysicalKeyboard) return;
-    autoPhysicalKeyboardSwitchApplied = true;
-    setPref('keyboardLayout', applyKeyboardLayout('standard'));
-    refreshKeyboardLayoutPreview();
-    WQUI.showToast('Physical keyboard detected. Switched to QWERTY layout.');
-  }
-  window.addEventListener('keydown', maybeSwitchToQwertyForPhysicalKeyboard, { passive: true });
-
   _el('s-keyboard-preset')?.addEventListener('change', e => {
     if (isAssessmentRoundLocked()) {
       showAssessmentLockNotice();
@@ -3789,12 +3757,9 @@
     syncKeyboardPresetControl();
     refreshKeyboardLayoutPreview();
   });
-  _el('s-key-style')?.addEventListener('change', e => {
-    const next = applyKeyStyle(e.target.value);
+  _el('s-key-style')?.addEventListener('change', () => {
+    const next = applyKeyStyle(DEFAULT_PREFS.keyStyle);
     setPref('keyStyle', next);
-    if (next === 'pebble') {
-      setPref('boardStyle', applyBoardStyle('card'));
-    }
     updateWilsonModeToggle();
     syncKeyboardPresetControl();
     refreshKeyboardLayoutPreview();

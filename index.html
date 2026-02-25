@@ -143,21 +143,16 @@
       </div>
 
       <section id="settings-quick" class="settings-section is-active" role="tabpanel" aria-labelledby="settings-tab-quick" data-settings-section="quick">
-        <div class="settings-fun-intro">Gameplay essentials: word length, max guesses, and keyboard style. Grade band and class controls live in Teacher Hub.</div>
-        <div class="settings-quick-jump" role="group" aria-label="Jump to settings section">
-          <button class="settings-jump-chip" type="button" data-settings-jump="settings-group-core">Gameplay</button>
-        </div>
         <details id="settings-group-core" class="settings-group" open>
           <summary>Gameplay</summary>
           <div class="settings-group-grid">
             <div class="setting-row setting-row-internal hidden" aria-hidden="true"><label>Grade Band<select id="s-grade"><option value="all">All grades (K-2 safe)</option><option value="K-2">K–2</option><option value="G3-5">Grades 3–5</option><option value="G6-8">Grades 6–8</option><option value="G9-12">Grades 9–12</option></select></label></div>
             <div class="setting-row"><label>Word Length<select id="s-length"><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="any">Any</option></select></label></div>
             <div class="setting-row"><label>Max Guesses<select id="s-guesses"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option></select></label></div>
-            <div class="setting-row setting-row-full"><label>Keyboard Option<select id="s-keyboard-preset"><option value="qwerty-bubble" selected>QWERTY · Puffy Rounded</option><option value="qwerty-oval">QWERTY · Oval / Typewriter</option><option value="alphabet-bubble">Alphabet · Puffy Rounded</option><option value="alphabet-oval">Alphabet · Oval / Typewriter</option></select></label></div>
             <div class="setting-row hidden" aria-hidden="true"><label>Hint Cues<select id="s-hint"><option value="off">Off</option><option value="on">On</option></select></label></div>
             <div class="setting-row hidden" aria-hidden="true"><label>Game Mode<select id="s-play-style"><option value="detective" selected>Classic Wordle (color + clue strategy)</option><option value="listening">Listening Challenge (hear + spell)</option></select></label></div>
-            <div class="setting-row hidden" aria-hidden="true"><label>Keyboard Layout<select id="s-keyboard-layout"><option value="standard" selected>QWERTY</option><option value="alphabet">Alphabet</option><option value="alphabet-arc">Alphabet Arc</option><option value="wilson">Wilson Sound Cards</option></select></label></div>
-            <div class="setting-row hidden" aria-hidden="true"><label>Keyboard Style<select id="s-key-style"><option value="bubble" selected>Bubble</option><option value="classic">Classic</option><option value="arcade">Arcade</option><option value="soundcard">Sound Cards</option><option value="typewriter">Typewriter</option><option value="pebble">Pebble</option></select></label></div>
+            <div class="setting-row hidden" aria-hidden="true"><label>Keyboard Layout<select id="s-keyboard-layout"><option value="standard" selected>QWERTY</option><option value="alphabet">Alphabet</option></select></label></div>
+            <div class="setting-row hidden" aria-hidden="true"><label>Keyboard Style<select id="s-key-style"><option value="bubble" selected>Puffy Rounded</option></select></label></div>
             <div class="setting-row setting-row-full setting-row-help hidden" aria-hidden="true">Listening mode gives direct Word + Meaning support. Detective mode keeps sentence-only clue hints.</div>
             <div class="setting-row setting-row-full quick-preset-row hidden">
               <label class="setting-checkbox-label">
