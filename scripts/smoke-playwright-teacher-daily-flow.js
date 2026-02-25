@@ -56,7 +56,7 @@ async function run() {
 
   try {
     await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForSelector('#loading-screen.hidden', { timeout: 30000 });
+    await page.waitForSelector('#loading-screen', { state: 'hidden', timeout: 30000 });
 
     await page.click('#teacher-panel-btn');
     await page.waitForSelector('#teacher-panel:not(.hidden)', { timeout: 10000 });
