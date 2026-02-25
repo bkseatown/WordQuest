@@ -157,11 +157,11 @@ async function run() {
       await clickWithRetries('#new-game-btn', { attempts: 3, settleMs: 250 });
       try {
         await page.waitForFunction(() => {
-          const word = window.WQGame?.getState?.()?.word;
+          const word = (typeof WQGame !== 'undefined' ? WQGame?.getState?.()?.word : '');
           return typeof word === 'string' && word.trim().length > 0;
         }, { timeout: 5000 });
         targetWord = await page.evaluate(() => {
-          const word = window.WQGame?.getState?.()?.word || '';
+          const word = (typeof WQGame !== 'undefined' ? WQGame?.getState?.()?.word : '') || '';
           return String(word).trim().toLowerCase();
         });
         if (targetWord) break;
@@ -170,19 +170,21 @@ async function run() {
     }
     if (!targetWord) {
       targetWord = await page.evaluate(() => {
-        const result = window.WQGame?.startGame?.({
+        const result = (typeof WQGame !== 'undefined' ? WQGame?.startGame?.({
           gradeBand: 'all',
           length: '5',
           phonics: 'all',
           maxGuesses: 6
-        });
-        return String(result?.word || window.WQGame?.getState?.()?.word || '').trim().toLowerCase();
+        }) : null);
+        const word = (typeof WQGame !== 'undefined' ? WQGame?.getState?.()?.word : '') || '';
+        return String(result?.word || word || '').trim().toLowerCase();
       });
     }
     if (!targetWord) {
       const debug = await page.evaluate(() => ({
-        state: window.WQGame?.getState?.() || null,
-        startError: window.WQGame?.getLastStartError?.() || null
+        hasWQGame: (typeof WQGame !== 'undefined'),
+        state: (typeof WQGame !== 'undefined' ? WQGame?.getState?.() : null) || null,
+        startError: (typeof WQGame !== 'undefined' ? WQGame?.getLastStartError?.() : null) || null
       }));
       throw new Error(`No active word found after clicking New/Next Word. debug=${JSON.stringify(debug)}`);
     }
@@ -191,7 +193,7 @@ async function run() {
     await page.waitForFunction(() => {
       const modal = document.getElementById('modal-overlay');
       const modalOpen = modal instanceof HTMLElement && !modal.classList.contains('hidden');
-      const gameOver = !!window.WQGame?.getState?.()?.gameOver;
+      const gameOver = !!(typeof WQGame !== 'undefined' ? WQGame?.getState?.()?.gameOver : false);
       return modalOpen || gameOver;
     }, { timeout: 10000 });
     const modalOpen = await page.evaluate(() => {
