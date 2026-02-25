@@ -3219,6 +3219,7 @@ html[data-play-style="listening"] .board-zone {
 html[data-play-style="listening"] .gameplay-audio {
   gap: 6px;
   width: 100%;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
@@ -3249,6 +3250,10 @@ html[data-play-style="listening"] #g-hear-word {
 html[data-play-style="listening"] #g-hear-word svg {
   width: 16px;
   height: 16px;
+}
+
+html[data-play-style="listening"] #keyboard {
+  margin-bottom: max(var(--keyboard-bottom-gap, 16px), env(safe-area-inset-bottom));
 }
 
 html[data-play-style="detective"] .gameplay-audio {
