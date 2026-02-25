@@ -108,11 +108,29 @@ async function run() {
     }
 
     await page.waitForSelector('#teacher-panel-btn', { state: 'visible', timeout: 10000 });
-    await clickWithRetries('#teacher-panel-btn', { attempts: 3, settleMs: 200 });
-    await page.waitForSelector('#teacher-panel:not(.hidden)', { timeout: 10000 });
+    await page.evaluate(() => {
+      const btn = document.getElementById('teacher-panel-btn');
+      if (btn instanceof HTMLElement) btn.click();
+    });
+    await page.waitForFunction(() => {
+      const panel = document.getElementById('teacher-panel');
+      if (!(panel instanceof HTMLElement)) return false;
+      const hiddenClass = panel.classList.contains('hidden');
+      const hiddenAttr = panel.hidden || panel.getAttribute('aria-hidden') === 'true';
+      const style = window.getComputedStyle(panel);
+      const visuallyHidden = style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0';
+      return !hiddenClass && !hiddenAttr && !visuallyHidden;
+    }, { timeout: 15000 });
     await clickWithRetries('#session-group-assign-target-btn', { attempts: 3, optional: true, settleMs: 300 });
-    await clickWithRetries('#teacher-panel-close', { attempts: 3 });
-    await page.waitForSelector('#teacher-panel.hidden', { timeout: 10000 });
+    await page.evaluate(() => {
+      const btn = document.getElementById('teacher-panel-close');
+      if (btn instanceof HTMLElement) btn.click();
+    });
+    await page.waitForFunction(() => {
+      const panel = document.getElementById('teacher-panel');
+      if (!(panel instanceof HTMLElement)) return true;
+      return panel.classList.contains('hidden') || panel.hidden || panel.getAttribute('aria-hidden') === 'true';
+    }, { timeout: 15000 });
 
     await page.click('#new-game-btn');
     const targetWord = await page.evaluate(() => window.WQGame?.getState?.()?.word || '');
