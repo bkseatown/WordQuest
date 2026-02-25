@@ -1564,8 +1564,7 @@
     const button = _el('phonics-clue-open-btn');
     if (!button) return;
     const listening = mode === 'listening';
-    button.textContent = listening ? 'Coach' : 'Clue+';
-    button.style.whiteSpace = 'nowrap';
+    button.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"></circle><path d="M15.8 15.8L21 21"></path><path d="M6.3 7.7h0.01"></path></svg>';
     setHoverNoteForElement(
       button,
       listening
@@ -5303,9 +5302,7 @@
       document.documentElement.style.setProperty('--keyboard-bottom-gap', `${keyboardBottomGap}px`);
 
       if (boardPlateEl) {
-        // Keep the far backplate visually square-ish to the board stack.
-        const targetPlateWidth = Math.max(playfieldW + 124, playfieldH + 102);
-        boardPlateEl.style.width = `min(${Math.ceil(targetPlateWidth)}px, calc(100vw - 20px), calc(100% - 4px))`;
+        boardPlateEl.style.removeProperty('width');
       }
 
       if (keyboardEl && keyboardEl.offsetWidth > maxKeyboardW) {
