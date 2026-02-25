@@ -60,6 +60,41 @@ async function run() {
   });
 
   try {
+    async function clickWithRetries(selector, options = {}) {
+      const attempts = Math.max(1, Number(options.attempts) || 3);
+      const optional = !!options.optional;
+      const settleMs = Math.max(0, Number(options.settleMs) || 0);
+      let lastError = null;
+      for (let attempt = 0; attempt < attempts; attempt += 1) {
+        try {
+          const locator = page.locator(selector);
+          if (!(await locator.count())) {
+            if (optional) return false;
+            throw new Error(`Selector not found: ${selector}`);
+          }
+          await locator.first().waitFor({ state: 'visible', timeout: 10000 });
+          await page.waitForFunction((sel) => {
+            const node = document.querySelector(sel);
+            if (!node) return false;
+            if (!(node instanceof HTMLElement)) return false;
+            if (node.getAttribute('aria-disabled') === 'true') return false;
+            return !node.hasAttribute('disabled');
+          }, selector, { timeout: 10000 });
+          await locator.first().click({ force: true, timeout: 5000 });
+          if (settleMs) await page.waitForTimeout(settleMs);
+          return true;
+        } catch (error) {
+          lastError = error;
+          if (attempt < attempts - 1) {
+            await page.waitForTimeout((attempt + 1) * 500);
+            continue;
+          }
+        }
+      }
+      if (optional) return false;
+      throw lastError || new Error(`Click failed for ${selector}`);
+    }
+
     await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForSelector('#loading-screen', { state: 'hidden', timeout: 30000 });
     const firstRunVisible = await page.locator('#first-run-setup-modal:not(.hidden)').count();
@@ -73,19 +108,10 @@ async function run() {
     }
 
     await page.waitForSelector('#teacher-panel-btn', { state: 'visible', timeout: 10000 });
-    await page.click('#teacher-panel-btn');
+    await clickWithRetries('#teacher-panel-btn', { attempts: 3, settleMs: 200 });
     await page.waitForSelector('#teacher-panel:not(.hidden)', { timeout: 10000 });
-
-    const assignBtn = page.locator('#session-group-assign-target-btn');
-    if (await assignBtn.count()) {
-      await assignBtn.waitFor({ state: 'visible', timeout: 10000 });
-      await assignBtn.click();
-      await page.waitForTimeout(300);
-    }
-
-    const teacherCloseBtn = page.locator('#teacher-panel-close');
-    await teacherCloseBtn.waitFor({ state: 'visible', timeout: 10000 });
-    await teacherCloseBtn.click();
+    await clickWithRetries('#session-group-assign-target-btn', { attempts: 3, optional: true, settleMs: 300 });
+    await clickWithRetries('#teacher-panel-close', { attempts: 3 });
     await page.waitForSelector('#teacher-panel.hidden', { timeout: 10000 });
 
     await page.click('#new-game-btn');
