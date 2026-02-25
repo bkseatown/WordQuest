@@ -9554,11 +9554,11 @@
     }
     if (missionCompletionEl) {
       missionCompletionEl.textContent = missionStats.count
-        ? `Deep Dive Completion: ${Math.round(missionStats.completionRate * 100)}% · On-time ${missionStats.completedCount ? `${Math.round(missionStats.onTimeRate * 100)}%` : '--'}`
+        ? `Deep Dive Completion: ${Math.round(missionStats.completionRate * 100)}% · Avg Attempts ${missionStats.avgAttemptsPerStation.toFixed(1)}/station`
         : 'Deep Dive Completion: --';
     }
     if (missionLevelEl) {
-      missionLevelEl.textContent = `Deep Dive Top Level: ${missionStats.topLevelLabel}`;
+      missionLevelEl.textContent = `Deep Dive Top Level: ${missionStats.topLevelLabel} · On-time ${missionStats.completedCount ? `${Math.round(missionStats.onTimeRate * 100)}%` : '--'}`;
     }
     renderAdoptionHealthPanel();
     renderMasteryTable();
@@ -9987,9 +9987,25 @@
       .filter((record) => record && typeof record === 'object')
       .map((record) => {
         const tasks = record.tasks && typeof record.tasks === 'object' ? record.tasks : {};
+        const taskOutcomesRaw = Array.isArray(record.taskOutcomes) ? record.taskOutcomes : [];
+        const taskOutcomesByTask = taskOutcomesRaw.reduce((map, row) => {
+          const key = String(row?.task || '').trim();
+          if (!key) return map;
+          map[key] = row;
+          return map;
+        }, Object.create(null));
+        const taskOutcomes = CHALLENGE_TASK_FLOW.map((task) => {
+          const row = taskOutcomesByTask[task];
+          return {
+            task,
+            complete: typeof row?.complete === 'boolean' ? !!row.complete : !!tasks?.[task],
+            attempts: Math.max(0, Number(row?.attempts) || 0)
+          };
+        });
         const score = Math.max(0, Number(record.score) || 0);
         const doneCount = ['listen', 'analyze', 'create']
-          .reduce((count, task) => count + (tasks?.[task] ? 1 : 0), 0);
+          .reduce((count, task) => count + (taskOutcomes.find((row) => row.task === task)?.complete ? 1 : 0), 0);
+        const attemptTotal = taskOutcomes.reduce((sum, row) => sum + row.attempts, 0);
         const completed = typeof record.completed === 'boolean'
           ? !!record.completed
           : doneCount >= 2;
@@ -10016,10 +10032,13 @@
           analyze: String(record.analyze || '').trim(),
           create: String(record.create || '').trim(),
           tasks: {
-            listen: !!tasks.listen,
-            analyze: !!tasks.analyze,
-            create: !!tasks.create
-          }
+            listen: !!taskOutcomes.find((row) => row.task === 'listen')?.complete,
+            analyze: !!taskOutcomes.find((row) => row.task === 'analyze')?.complete,
+            create: !!taskOutcomes.find((row) => row.task === 'create')?.complete
+          },
+          taskOutcomes,
+          attemptTotal,
+          avgAttemptsPerStation: attemptTotal / CHALLENGE_TASK_FLOW.length
         };
       })
       .filter((record) => record.ts > 0);
@@ -10040,6 +10059,7 @@
         records,
         count: 0,
         avgScore: 0,
+        avgAttemptsPerStation: 0,
         completionRate: 0,
         completedCount: 0,
         onTimeRate: 0,
@@ -10051,6 +10071,7 @@
     const totalScore = records.reduce((sum, record) => sum + Math.max(0, Number(record.score) || 0), 0);
     const completedCount = records.reduce((count, record) => count + (record.completed ? 1 : 0), 0);
     const onTimeCount = records.reduce((count, record) => count + (record.completed && record.onTime ? 1 : 0), 0);
+    const totalAttempts = records.reduce((sum, record) => sum + Math.max(0, Number(record.attemptTotal) || 0), 0);
     const strongCount = records.reduce((count, record) => (
       count + (record.score >= CHALLENGE_STRONG_SCORE_MIN ? 1 : 0)
     ), 0);
@@ -10067,6 +10088,7 @@
       records,
       count: records.length,
       avgScore: totalScore / records.length,
+      avgAttemptsPerStation: (totalAttempts / records.length) / CHALLENGE_TASK_FLOW.length,
       completionRate: completedCount / records.length,
       completedCount,
       onTimeRate: completedCount ? (onTimeCount / completedCount) : 0,
@@ -10092,6 +10114,7 @@
       `Deep Dive average score: ${stats.count ? `${Math.round(stats.avgScore)}/100` : '--'}`,
       `Strong+ rounds: ${stats.count ? `${Math.round(stats.strongRate * 100)}%` : '--'}`,
       `Deep Dive completion: ${stats.count ? `${Math.round(stats.completionRate * 100)}%` : '--'}`,
+      `Average attempts per station: ${stats.count ? stats.avgAttemptsPerStation.toFixed(1) : '--'}`,
       `On-time finishes: ${stats.completedCount ? `${Math.round(stats.onTimeRate * 100)}%` : '--'}`,
       `Most-used thinking level: ${stats.topLevelLabel}`
     ];
@@ -11066,6 +11089,12 @@
     analyze: 'Meaning Match',
     create: 'Use in Context'
   });
+  const DEEP_DIVE_VARIANTS = Object.freeze({
+    listen: Object.freeze(['chunk', 'anchor']),
+    analyze: Object.freeze(['definition', 'context']),
+    create: Object.freeze(['sentence_pick', 'sentence_fix'])
+  });
+  const CHALLENGE_PACING_NUDGE_MS = 45 * 1000;
   const CHALLENGE_WORD_ROLE_META = Object.freeze({
     noun: Object.freeze({
       label: 'Noun',
@@ -11503,7 +11532,12 @@
     return [word.slice(0, 2), word.slice(2, word.length - 2), word.slice(word.length - 2)].filter(Boolean);
   }
 
-  function resolvePatternPrompt(mark, isPrefixLike) {
+  function resolvePatternPrompt(mark, isPrefixLike, variant = 'chunk') {
+    if (variant === 'anchor') {
+      if (mark === 'affix') return isPrefixLike ? 'Tap the chunk at the start that guides pronunciation.' : 'Tap the chunk at the end that guides pronunciation.';
+      if (mark === 'silent') return 'Tap the chunk that changes the sound without saying every letter.';
+      return 'Tap the chunk that best anchors the vowel sound.';
+    }
     if (mark === 'team') return 'Tap the sound team chunk.';
     if (mark === 'silent') return 'Tap the silent letter chunk.';
     if (mark === 'affix') return isPrefixLike ? 'Tap the prefix chunk.' : 'Tap the suffix chunk.';
@@ -11540,7 +11574,34 @@
     return Math.max(0, Math.floor((list.length - 1) / 2));
   }
 
-  function buildDeepDivePatternTask(result) {
+  function computeWordVariantSeed(word) {
+    const text = String(word || '').toLowerCase();
+    let seed = 0;
+    for (let i = 0; i < text.length; i += 1) {
+      seed = ((seed * 31) + text.charCodeAt(i)) % 2147483647;
+    }
+    seed += (Date.now() % 997);
+    return Math.abs(seed);
+  }
+
+  function pickDeepDiveTaskVariant(result, task) {
+    const options = DEEP_DIVE_VARIANTS[task];
+    if (!Array.isArray(options) || !options.length) return '';
+    const entryData = result?.entry || null;
+    const word = String(result?.word || entryData?.word || '').trim();
+    const seed = computeWordVariantSeed(`${word}:${task}`);
+    return options[seed % options.length] || options[0];
+  }
+
+  function buildDeepDiveVariants(result) {
+    return {
+      listen: pickDeepDiveTaskVariant(result, 'listen') || 'chunk',
+      analyze: pickDeepDiveTaskVariant(result, 'analyze') || 'definition',
+      create: pickDeepDiveTaskVariant(result, 'create') || 'sentence_pick'
+    };
+  }
+
+  function buildDeepDivePatternTask(result, variant = 'chunk') {
     const entryData = result?.entry || null;
     const word = normalizeChallengeWord(result?.word || entryData?.word || '');
     if (!word) {
@@ -11607,7 +11668,7 @@
     const prefixLike = !!correctChoice && choices[0] && correctChoice.id === choices[0].id;
     const helperNote = String(live?.note || '').trim();
     return {
-      prompt: resolvePatternPrompt(correctChoice?.mark || '', prefixLike),
+      prompt: resolvePatternPrompt(correctChoice?.mark || '', prefixLike, variant),
       helper: helperNote || (usedFallbackAnchor
         ? `Look for the chunk that carries the vowel anchor in ${word.toUpperCase()}.`
         : ''),
@@ -11619,10 +11680,11 @@
     };
   }
 
-  function buildDeepDiveMeaningTask(result, roleMeta) {
+  function buildDeepDiveMeaningTask(result, roleMeta, variant = 'definition') {
     const entryData = result?.entry || null;
     const word = String(result?.word || entryData?.word || '').trim().toUpperCase();
     const correctDefinition = String(entryData?.definition || '').replace(/\s+/g, ' ').trim();
+    const sentence = String(entryData?.sentence || '').replace(/\s+/g, ' ').trim();
 
     const selectedGrade = _el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade;
     const focus = _el('setting-focus')?.value || prefs.focus || 'all';
@@ -11675,14 +11737,19 @@
       }))
     ]);
 
+    let prompt = `Pick the meaning that matches this ${roleMeta?.kidLabel || 'word'}: "${word}".`;
+    if (variant === 'context' && sentence) {
+      prompt = `Use the sentence clue to choose the best meaning for "${word}": ${compact(sentence)}`;
+    }
+
     return {
-      prompt: `Pick the meaning that matches this ${roleMeta?.kidLabel || 'word'}: "${word}".`,
+      prompt,
       choices,
       distractorWords
     };
   }
 
-  function buildDeepDiveSyntaxTask(result, meaningTask, roleMeta) {
+  function buildDeepDiveSyntaxTask(result, meaningTask, roleMeta, variant = 'sentence_pick') {
     const entryData = result?.entry || null;
     const word = String(result?.word || entryData?.word || '').trim().toUpperCase();
     const normalizedWord = normalizeChallengeWord(word);
@@ -11711,11 +11778,18 @@
       return `${clean.slice(0, 117).trim()}...`;
     };
 
+    const prompt = variant === 'sentence_fix'
+      ? `Which sentence needs "${word}" to make sense?`
+      : `Which sentence uses this ${roleMeta?.kidLabel || 'word'} correctly: "${word}"?`;
+    const wrongLabel = variant === 'sentence_fix'
+      ? compact(`The class planned to ${distractorWord.toLowerCase()} the story during lunch.`)
+      : compact(wrongSentence);
+
     return {
-      prompt: `Which sentence uses this ${roleMeta?.kidLabel || 'word'} correctly: "${word}"?`,
+      prompt,
       choices: shuffleList([
         { id: 'syntax-correct', label: compact(correctSentence), correct: true },
-        { id: 'syntax-wrong', label: compact(wrongSentence), correct: false }
+        { id: 'syntax-wrong', label: wrongLabel, correct: false }
       ])
     };
   }
@@ -11723,11 +11797,19 @@
   function buildDeepDiveState(result) {
     const entryData = result?.entry || null;
     const roleMeta = getChallengeWordRoleMeta(entryData, result?.word || entryData?.word || '');
-    const patternTask = buildDeepDivePatternTask(result);
-    const meaningTask = buildDeepDiveMeaningTask(result, roleMeta);
-    const syntaxTask = buildDeepDiveSyntaxTask(result, meaningTask, roleMeta);
+    const variants = buildDeepDiveVariants(result);
+    const patternTask = buildDeepDivePatternTask(result, variants.listen);
+    const meaningTask = buildDeepDiveMeaningTask(result, roleMeta, variants.analyze);
+    const syntaxTask = buildDeepDiveSyntaxTask(result, meaningTask, roleMeta, variants.create);
+    const analyzeHelper = variants.analyze === 'context'
+      ? `Use context clues first, then confirm the definition for this ${roleMeta.kidLabel}.`
+      : `Choose the definition that fits this ${roleMeta.kidLabel}.`;
+    const createHelper = variants.create === 'sentence_fix'
+      ? 'Find the sentence where the target word makes the meaning sound right.'
+      : (roleMeta.contextHelper || 'Pick the sentence where the word fits naturally.');
     return {
       role: roleMeta,
+      variants,
       titles: {
         listen: `1. ${CHALLENGE_TASK_LABELS.listen}`,
         analyze: `2. ${CHALLENGE_TASK_LABELS.analyze}`,
@@ -11740,8 +11822,8 @@
       },
       helpers: {
         listen: patternTask.helper || 'Find the chunk that carries the key sound.',
-        analyze: `Choose the definition that fits this ${roleMeta.kidLabel}.`,
-        create: roleMeta.contextHelper || 'Pick the sentence where the word fits naturally.'
+        analyze: analyzeHelper,
+        create: createHelper
       },
       choices: {
         listen: patternTask.choices,
@@ -11857,6 +11939,57 @@
       nextBtn.disabled = !canAdvance;
       nextBtn.textContent = doneCount >= 3 ? 'All Stations Complete' : 'Next Station';
     }
+  }
+
+  function syncChallengePacingTimer(state = revealChallengeState) {
+    if (!state || state.completedAt || getChallengeDoneCount(state) >= CHALLENGE_TASK_FLOW.length) {
+      clearChallengeSprintTimer();
+      return;
+    }
+    const modal = _el('challenge-modal');
+    const modalOpen = !!modal && !modal.classList.contains('hidden');
+    if (!modalOpen) {
+      clearChallengeSprintTimer();
+      return;
+    }
+    const activeTask = setChallengeActiveTask(state.activeTask, state);
+    if (!activeTask || state.tasks?.[activeTask]) return;
+    if (!state.pacing || typeof state.pacing !== 'object') {
+      state.pacing = { task: activeTask, startedAt: Date.now(), nudged: false };
+    } else if (state.pacing.task !== activeTask) {
+      state.pacing.task = activeTask;
+      state.pacing.startedAt = Date.now();
+      state.pacing.nudged = false;
+    }
+    if (challengeSprintTimer) return;
+    challengeSprintTimer = setInterval(() => {
+      if (!revealChallengeState || revealChallengeState.completedAt || getChallengeDoneCount(revealChallengeState) >= CHALLENGE_TASK_FLOW.length) {
+        clearChallengeSprintTimer();
+        return;
+      }
+      const liveModal = _el('challenge-modal');
+      if (!liveModal || liveModal.classList.contains('hidden')) {
+        clearChallengeSprintTimer();
+        return;
+      }
+      const currentTask = setChallengeActiveTask(revealChallengeState.activeTask, revealChallengeState);
+      if (!currentTask) return;
+      if (!revealChallengeState.pacing || typeof revealChallengeState.pacing !== 'object') {
+        revealChallengeState.pacing = { task: currentTask, startedAt: Date.now(), nudged: false };
+      } else if (revealChallengeState.pacing.task !== currentTask) {
+        revealChallengeState.pacing.task = currentTask;
+        revealChallengeState.pacing.startedAt = Date.now();
+        revealChallengeState.pacing.nudged = false;
+      }
+      if (revealChallengeState.tasks?.[currentTask]) return;
+      const startedAt = Math.max(0, Number(revealChallengeState.pacing.startedAt) || 0);
+      if (!startedAt) return;
+      const elapsed = Math.max(0, Date.now() - startedAt);
+      if (!revealChallengeState.pacing.nudged && elapsed >= CHALLENGE_PACING_NUDGE_MS) {
+        revealChallengeState.pacing.nudged = true;
+        setChallengeFeedback('Quick pace check: spend about 30-60 seconds on this station, then keep moving.', 'default');
+      }
+    }, 1000);
   }
 
   function getChallengeChoice(task, choiceId, stateOverride = revealChallengeState) {
@@ -12431,6 +12564,7 @@
       setChallengeFeedback('One station at a time. Complete all 3 stations to finish.', 'default');
     }
     updateChallengeProgressUI();
+    syncChallengePacingTimer(state);
   }
 
   function buildRevealChallengeState(result, options = {}) {
@@ -12452,6 +12586,7 @@
       activeTask: CHALLENGE_TASK_FLOW[0],
       responses: { analyze: '', create: '' },
       deepDive: buildDeepDiveState(result),
+      pacing: { task: CHALLENGE_TASK_FLOW[0], startedAt: Date.now(), nudged: false },
       score: { clarity: 0, evidence: 0, vocabulary: 0, total: 0 },
       completedAt: 0
     };
