@@ -1246,6 +1246,27 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   box-shadow: 0 0 0 1px color-mix(in oklab, var(--brand) 36%, transparent);
 }
 
+.focus-search-heading {
+  grid-column: 1 / -1;
+  margin-top: 3px;
+  padding: 7px 4px 4px;
+  border-top: 1px dashed color-mix(in oklab, var(--panel-border) 72%, transparent);
+  color: color-mix(in oklab, var(--text-muted) 80%, var(--text) 20%);
+  font-size: 0.64rem;
+  font-weight: 840;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.focus-search-subheading {
+  grid-column: 1 / -1;
+  margin-top: 1px;
+  padding: 4px 6px 2px;
+  color: color-mix(in oklab, var(--text-muted) 70%, var(--text) 30%);
+  font-size: 0.62rem;
+  font-weight: 820;
+}
+
 .focus-search-empty {
   grid-column: 1 / -1;
   font-size: 0.66rem;

@@ -852,6 +852,103 @@
     '912': 'G9-12'
   });
 
+  function resolveUfliLessonMeta(lessonNumber) {
+    if (lessonNumber <= 8) return { focus: 'cvc', gradeBand: 'K-2', length: '3' };
+    if (lessonNumber <= 24) return { focus: 'digraph', gradeBand: 'K-2', length: '4' };
+    if (lessonNumber <= 34) return { focus: 'cvce', gradeBand: 'K-2', length: '4' };
+    if (lessonNumber <= 52) return { focus: 'vowel_team', gradeBand: 'K-2', length: '5' };
+    if (lessonNumber <= 64) return { focus: 'r_controlled', gradeBand: 'K-2', length: '5' };
+    if (lessonNumber <= 80) return { focus: 'welded', gradeBand: 'G3-5', length: '6' };
+    if (lessonNumber <= 104) return { focus: 'multisyllable', gradeBand: 'G3-5', length: '6' };
+    return { focus: 'suffix', gradeBand: 'G3-5', length: '6' };
+  }
+
+  function buildUfliLessonTargets() {
+    const targets = [];
+    for (let lesson = 1; lesson <= 128; lesson += 1) {
+      const meta = resolveUfliLessonMeta(lesson);
+      targets.push(Object.freeze({
+        id: `ufli-lesson-${lesson}`,
+        label: `UFLI Lesson ${lesson}`,
+        focus: meta.focus,
+        gradeBand: meta.gradeBand,
+        length: meta.length,
+        pacing: `Lesson ${lesson}`
+      }));
+    }
+    return Object.freeze(targets);
+  }
+
+  function resolveFundationsUnitMeta(level, unitNumber) {
+    if (level === 1) {
+      if (unitNumber <= 4) return { focus: 'cvc', gradeBand: 'K-2', length: '3' };
+      if (unitNumber <= 8) return { focus: 'digraph', gradeBand: 'K-2', length: '4' };
+      return { focus: 'welded', gradeBand: 'K-2', length: '5' };
+    }
+    if (level === 2) {
+      if (unitNumber <= 6) return { focus: 'r_controlled', gradeBand: 'G3-5', length: '5' };
+      if (unitNumber <= 11) return { focus: 'vowel_team', gradeBand: 'G3-5', length: '6' };
+      return { focus: 'suffix', gradeBand: 'G3-5', length: '6' };
+    }
+    if (unitNumber <= 6) return { focus: 'multisyllable', gradeBand: 'G6-8', length: '7' };
+    if (unitNumber <= 11) return { focus: 'prefix', gradeBand: 'G6-8', length: '7' };
+    return { focus: 'suffix', gradeBand: 'G6-8', length: '7' };
+  }
+
+  function buildFundationsLessonTargets() {
+    const byLevel = Object.freeze([
+      Object.freeze({ level: 1, units: 14 }),
+      Object.freeze({ level: 2, units: 17 }),
+      Object.freeze({ level: 3, units: 16 })
+    ]);
+    const targets = [];
+    byLevel.forEach((row) => {
+      for (let unit = 1; unit <= row.units; unit += 1) {
+        const meta = resolveFundationsUnitMeta(row.level, unit);
+        targets.push(Object.freeze({
+          id: `fundations-l${row.level}-u${unit}`,
+          label: `Fundations Level ${row.level} Unit ${unit}`,
+          focus: meta.focus,
+          gradeBand: meta.gradeBand,
+          length: meta.length,
+          pacing: `Level ${row.level} · Unit ${unit}`
+        }));
+      }
+    });
+    return Object.freeze(targets);
+  }
+
+  function resolveWilsonStepFocus(step) {
+    if (step === 1) return 'cvc';
+    if (step === 2) return 'welded';
+    if (step === 3) return 'cvce';
+    if (step === 4) return 'r_controlled';
+    if (step === 5) return 'vowel_team';
+    if (step <= 7) return 'multisyllable';
+    if (step === 8) return 'prefix';
+    if (step === 9) return 'suffix';
+    return 'multisyllable';
+  }
+
+  function buildWilsonLessonTargets() {
+    const targets = [];
+    for (let step = 1; step <= 12; step += 1) {
+      for (let lesson = 1; lesson <= 5; lesson += 1) {
+        const gradeBand = step <= 5 ? 'G3-5' : 'G6-8';
+        const length = step <= 5 ? '6' : '7';
+        targets.push(Object.freeze({
+          id: `wilson-step-${step}-lesson-${lesson}`,
+          label: `Wilson Step ${step} Lesson ${lesson}`,
+          focus: resolveWilsonStepFocus(step),
+          gradeBand,
+          length,
+          pacing: `Step ${step} · Lesson ${lesson}`
+        }));
+      }
+    }
+    return Object.freeze(targets);
+  }
+
   const CURRICULUM_LESSON_PACKS = Object.freeze({
     custom: Object.freeze({
       label: 'Manual (no pack)',
@@ -870,43 +967,15 @@
     }),
     ufli: Object.freeze({
       label: 'UFLI',
-      targets: Object.freeze([
-        Object.freeze({ id: 'ufli-l1-cvc', label: 'UFLI Lessons 1-8 · CVC and short vowels', focus: 'cvc', gradeBand: 'K-2', length: '3', pacing: 'Weeks 1-4 (Aug-Sep)' }),
-        Object.freeze({ id: 'ufli-l2-digraph', label: 'UFLI Lessons 9-24 · Digraphs and blends', focus: 'digraph', gradeBand: 'K-2', length: '4', pacing: 'Weeks 5-11 (Oct-Nov)' }),
-        Object.freeze({ id: 'ufli-l3-cvce', label: 'UFLI Lessons 25-34 · Magic E (CVCe)', focus: 'cvce', gradeBand: 'K-2', length: '4', pacing: 'Weeks 12-15 (Dec)' }),
-        Object.freeze({ id: 'ufli-l4-vowel-team', label: 'UFLI Lessons 35-52 · Vowel teams', focus: 'vowel_team', gradeBand: 'K-2', length: '5', pacing: 'Weeks 16-23 (Jan-Feb)' }),
-        Object.freeze({ id: 'ufli-l5-r-controlled', label: 'UFLI Lessons 53-64 · R-controlled vowels', focus: 'r_controlled', gradeBand: 'K-2', length: '5', pacing: 'Weeks 24-29 (Mar-Apr)' }),
-        Object.freeze({ id: 'ufli-l6-syllable', label: 'UFLI Lessons 65+ · Syllable and affix transfer', focus: 'multisyllable', gradeBand: 'G3-5', length: '6', pacing: 'Weeks 30-36 (May-Jun)' })
-      ])
+      targets: buildUfliLessonTargets()
     }),
     fundations: Object.freeze({
       label: 'Fundations',
-      targets: Object.freeze([
-        Object.freeze({ id: 'fund-l1-u1', label: 'Fundations Level 1 · Unit 1-4 (CVC)', focus: 'cvc', gradeBand: 'K-2', length: '3', pacing: 'Weeks 1-8 (Sep-Oct)' }),
-        Object.freeze({ id: 'fund-l1-u2', label: 'Fundations Level 1 · Unit 5-8 (digraph/blend)', focus: 'digraph', gradeBand: 'K-2', length: '4', pacing: 'Weeks 9-16 (Nov-Jan)' }),
-        Object.freeze({ id: 'fund-l1-u3', label: 'Fundations Level 1 · Unit 9-14 (welded sounds)', focus: 'welded', gradeBand: 'K-2', length: '5', pacing: 'Weeks 17-36 (Feb-Jun)' }),
-        Object.freeze({ id: 'fund-l2-u1', label: 'Fundations Level 2 · Unit 1-6 (silent e / r-controlled)', focus: 'r_controlled', gradeBand: 'G3-5', length: '5', pacing: 'Weeks 1-12 (Sep-Nov)' }),
-        Object.freeze({ id: 'fund-l2-u2', label: 'Fundations Level 2 · Unit 7-11 (vowel teams)', focus: 'vowel_team', gradeBand: 'G3-5', length: '6', pacing: 'Weeks 13-22 (Dec-Feb)' }),
-        Object.freeze({ id: 'fund-l2-u3', label: 'Fundations Level 2 · Unit 12-17 (suffixes)', focus: 'suffix', gradeBand: 'G3-5', length: '6', pacing: 'Weeks 23-36 (Mar-Jun)' }),
-        Object.freeze({ id: 'fund-l3-u1', label: 'Fundations Level 3 · Unit 1-4 (syllable division)', focus: 'multisyllable', gradeBand: 'G6-8', length: '7', pacing: 'Weeks 1-11 (Sep-Nov)' }),
-        Object.freeze({ id: 'fund-l3-u2', label: 'Fundations Level 3 · Unit 5-8 (prefixes)', focus: 'prefix', gradeBand: 'G6-8', length: '7', pacing: 'Weeks 12-23 (Dec-Mar)' }),
-        Object.freeze({ id: 'fund-l3-u3', label: 'Fundations Level 3 · Unit 9+ (suffix/root transfer)', focus: 'suffix', gradeBand: 'G6-8', length: '7', pacing: 'Weeks 24-36 (Apr-Jun)' })
-      ])
+      targets: buildFundationsLessonTargets()
     }),
     wilson: Object.freeze({
       label: 'Wilson Reading System',
-      targets: Object.freeze([
-        Object.freeze({ id: 'wilson-step-1', label: 'Wilson Step 1 · Closed syllable', focus: 'cvc', gradeBand: 'G3-5', length: '4', pacing: 'Weeks 1-3 (Sep)' }),
-        Object.freeze({ id: 'wilson-step-2', label: 'Wilson Step 2 · Welded sounds', focus: 'welded', gradeBand: 'G3-5', length: '5', pacing: 'Weeks 4-7 (Sep-Oct)' }),
-        Object.freeze({ id: 'wilson-step-3', label: 'Wilson Step 3 · Silent E', focus: 'cvce', gradeBand: 'G3-5', length: '5', pacing: 'Weeks 8-11 (Oct-Nov)' }),
-        Object.freeze({ id: 'wilson-step-4', label: 'Wilson Step 4 · R-controlled syllables', focus: 'r_controlled', gradeBand: 'G3-5', length: '6', pacing: 'Weeks 12-15 (Dec)' }),
-        Object.freeze({ id: 'wilson-step-5', label: 'Wilson Step 5 · Vowel teams', focus: 'vowel_team', gradeBand: 'G3-5', length: '6', pacing: 'Weeks 16-20 (Jan-Feb)' }),
-        Object.freeze({ id: 'wilson-step-6', label: 'Wilson Step 6 · Syllable types', focus: 'multisyllable', gradeBand: 'G6-8', length: '7', pacing: 'Weeks 21-25 (Mar)' }),
-        Object.freeze({ id: 'wilson-step-7', label: 'Wilson Step 7 · Advanced multisyllable', focus: 'multisyllable', gradeBand: 'G6-8', length: '8', pacing: 'Weeks 26-29 (Apr)' }),
-        Object.freeze({ id: 'wilson-step-8', label: 'Wilson Step 8 · Prefixes', focus: 'prefix', gradeBand: 'G6-8', length: '7', pacing: 'Weeks 30-32 (May)' }),
-        Object.freeze({ id: 'wilson-step-9', label: 'Wilson Step 9 · Suffixes', focus: 'suffix', gradeBand: 'G6-8', length: '7', pacing: 'Weeks 33-35 (May-Jun)' }),
-        Object.freeze({ id: 'wilson-step-10', label: 'Wilson Step 10+ · Morphology transfer', focus: 'vocab-ela-68', gradeBand: 'G6-8', length: 'any', pacing: 'Weeks 36+ (Jun and summer bridge)' })
-      ])
+      targets: buildWilsonLessonTargets()
     }),
     justwords: Object.freeze({
       label: 'Just Words',
@@ -919,7 +988,7 @@
       ])
     })
   });
-  const CURRICULUM_PACK_ORDER = Object.freeze(['wilson', 'fundations', 'justwords', 'ufli']);
+  const CURRICULUM_PACK_ORDER = Object.freeze(['ufli', 'fundations', 'wilson', 'justwords']);
 
   const CHUNK_TAB_FOCUS_KEYS = new Set([
     'digraph',
@@ -6505,12 +6574,15 @@
     return isEntryGradeBandCompatible(selectedGradeBand, suggestedBand);
   }
 
-  function getCurriculumTargetsForGrade(packId, selectedGradeBand = getQuestFilterGradeBand()) {
+  function getCurriculumTargetsForGrade(packId, selectedGradeBand = getQuestFilterGradeBand(), options = {}) {
     const pack = getLessonPackDefinition(packId);
     if (!pack || !Array.isArray(pack.targets)) return [];
-    return pack.targets.filter((target) => (
-      target?.id && isEntryGradeBandCompatible(selectedGradeBand, target.gradeBand)
-    ));
+    const gradeFiltered = options.matchSelectedGrade === true;
+    return pack.targets.filter((target) => {
+      if (!target?.id) return false;
+      if (!gradeFiltered) return true;
+      return isEntryGradeBandCompatible(selectedGradeBand, target.gradeBand);
+    });
   }
 
   function getFocusEntries(selectedGradeBand = getQuestFilterGradeBand()) {
@@ -6539,7 +6611,7 @@
   function getCurriculumProgramEntries(selectedGradeBand = getQuestFilterGradeBand()) {
     return CURRICULUM_PACK_ORDER.map((packId) => {
       const pack = getLessonPackDefinition(packId);
-      const visibleTargets = getCurriculumTargetsForGrade(packId, selectedGradeBand);
+      const visibleTargets = getCurriculumTargetsForGrade(packId, selectedGradeBand, { matchSelectedGrade: false });
       if (!visibleTargets.length) return null;
       return {
         value: `curriculum-pack::${packId}`,
@@ -6547,6 +6619,7 @@
         group: 'Curriculum',
         kind: 'curriculum-pack',
         packId,
+        lessonCount: visibleTargets.length,
         gradeBand: selectedGradeBand,
         targetId: 'custom',
         questValue: `curriculum-pack::${packId}`
@@ -6561,7 +6634,7 @@
     CURRICULUM_PACK_ORDER.forEach((packId) => {
       if (useFilter && packId !== normalizedFilter) return;
       const pack = getLessonPackDefinition(packId);
-      const targets = getCurriculumTargetsForGrade(packId, selectedGradeBand);
+      const targets = getCurriculumTargetsForGrade(packId, selectedGradeBand, { matchSelectedGrade: false });
       targets.forEach((target) => {
         entries.push({
           value: `curriculum::${packId}::${target.id}`,
@@ -6678,8 +6751,8 @@
     'vowel_team',
     'r_controlled'
   ]);
-  const FOCUS_EMPTY_VISIBLE_LIMIT = 12;
-  const FOCUS_QUERY_VISIBLE_LIMIT = 18;
+  const FOCUS_EMPTY_VISIBLE_LIMIT = 72;
+  const FOCUS_QUERY_VISIBLE_LIMIT = 36;
   const CURRICULUM_QUICK_VALUES = Object.freeze([]);
 
   // Prioritize options that are most common for everyday classroom use.
@@ -6935,6 +7008,103 @@
     }
   }
 
+  function getGradeBandRank(value) {
+    const order = Object.freeze({ 'K-2': 0, 'G3-5': 1, 'G6-8': 2, 'G9-12': 3 });
+    return Number.isFinite(order[String(value || '').toUpperCase()]) ? order[String(value || '').toUpperCase()] : 9;
+  }
+
+  function getFocusEntrySectionKey(entry) {
+    if (!entry) return 'phonics';
+    if (entry.kind === 'curriculum' || entry.kind === 'curriculum-pack') return 'curriculum';
+    const preset = parseFocusPreset(entry.value);
+    if (preset.kind === 'subject') return 'subjects';
+    return 'phonics';
+  }
+
+  function getFocusEntryMeta(entry) {
+    if (!entry) return '';
+    if (entry.kind === 'curriculum-pack') {
+      const count = Math.max(0, Number(entry.lessonCount) || 0);
+      return count ? `${count} lessons` : 'Open lessons';
+    }
+    if (entry.kind === 'curriculum') return entry.group || 'Curriculum';
+    const preset = parseFocusPreset(entry.value);
+    if (preset.kind === 'subject' && preset.gradeBand) return `Grade ${formatGradeBandLabel(preset.gradeBand)}`;
+    return '';
+  }
+
+  function getSectionHeadingMarkup(text) {
+    return `<div class="focus-search-heading" role="presentation">${escapeHtml(text)}</div>`;
+  }
+
+  function renderFocusSectionItems(entries, activeQuestValue, activePack, activePackLabel) {
+    return entries.map((entry) => {
+      const questValue = entry.questValue || `focus::${entry.value}`;
+      const isProgram = entry.kind === 'curriculum-pack';
+      const isActive = isProgram
+        ? (entry.packId === activePack || entry.packId === focusCurriculumPackFilter)
+        : (questValue === activeQuestValue);
+      const activeClass = isActive ? ' is-active' : '';
+      const selected = isActive ? 'true' : 'false';
+      const label = isProgram ? `${entry.label} · Choose Lesson` : entry.label;
+      const meta = getFocusEntryMeta(entry);
+      return `<button type="button" class="focus-search-item${activeClass}" data-quest-value="${escapeHtml(questValue)}" role="option" aria-selected="${selected}" title="${escapeHtml(isProgram ? `Open ${entry.label} lesson groups` : `${entry.group || activePackLabel}`)}"><span>${escapeHtml(label)}</span>${meta ? `<small>${escapeHtml(meta)}</small>` : ''}</button>`;
+    }).join('');
+  }
+
+  function buildFocusSearchSections(entries, options = {}) {
+    const query = String(options.query || '').trim();
+    const sectionOrder = Object.freeze(['phonics', 'subjects', 'curriculum']);
+    const sections = {
+      phonics: [],
+      subjects: [],
+      curriculum: []
+    };
+    entries.forEach((entry) => {
+      const key = getFocusEntrySectionKey(entry);
+      if (!sections[key]) return;
+      sections[key].push(entry);
+    });
+
+    sections.phonics.sort((a, b) => String(a.label || '').localeCompare(String(b.label || '')));
+    sections.subjects.sort((a, b) => {
+      const left = parseFocusPreset(a.value);
+      const right = parseFocusPreset(b.value);
+      const rankDiff = getGradeBandRank(left.gradeBand) - getGradeBandRank(right.gradeBand);
+      if (rankDiff !== 0) return rankDiff;
+      return String(a.label || '').localeCompare(String(b.label || ''));
+    });
+    sections.curriculum.sort((a, b) => {
+      if (a.kind === 'curriculum-pack' && b.kind !== 'curriculum-pack') return -1;
+      if (a.kind !== 'curriculum-pack' && b.kind === 'curriculum-pack') return 1;
+      if (a.kind === 'curriculum' && b.kind === 'curriculum') {
+        const byPack = String(a.group || '').localeCompare(String(b.group || ''));
+        if (byPack !== 0) return byPack;
+      }
+      return String(a.label || '').localeCompare(String(b.label || ''));
+    });
+
+    const output = [];
+    sectionOrder.forEach((key) => {
+      const rows = sections[key];
+      if (!rows.length) return;
+      if (key === 'phonics') {
+        output.push({ heading: 'Phonics Skills', entries: rows });
+        return;
+      }
+      if (key === 'subjects') {
+        output.push({ heading: 'Grade Band Subjects', entries: rows });
+        return;
+      }
+      if (!query) {
+        output.push({ heading: 'Curriculum', entries: rows });
+        return;
+      }
+      output.push({ heading: 'Curriculum Matches', entries: rows });
+    });
+    return output;
+  }
+
   function renderFocusSearchList(rawQuery = '') {
     const listEl = _el('focus-inline-results');
     const inputEl = _el('focus-inline-search');
@@ -6963,25 +7133,19 @@
 
     let visible = [];
     if (!query) {
-      const used = new Set();
-      FOCUS_QUICK_VALUES.forEach((value) => {
-        if (visible.length >= FOCUS_EMPTY_VISIBLE_LIMIT) return;
-        const found = focusEntries.find((entry) => entry.value === value);
-        if (found && !used.has(found.value)) {
-          visible.push(found);
-          used.add(found.value);
-        }
-      });
       if (focusCurriculumPackFilter) {
         visible = curriculumLessonEntries;
       } else {
-        focusEntries.forEach((entry) => {
-          if (entry.value === 'all') return;
-          if (visible.length >= FOCUS_EMPTY_VISIBLE_LIMIT || used.has(entry.value)) return;
-          visible.push(entry);
-          used.add(entry.value);
+        const phonicsEntries = focusEntries.filter((entry) => {
+          if (entry.value === 'all') return false;
+          return parseFocusPreset(entry.value).kind === 'phonics';
         });
-        visible = [...visible, ...curriculumProgramEntries];
+        const subjectEntries = focusEntries.filter((entry) => parseFocusPreset(entry.value).kind === 'subject');
+        visible = [
+          ...phonicsEntries,
+          ...subjectEntries,
+          ...curriculumProgramEntries
+        ].slice(0, FOCUS_EMPTY_VISIBLE_LIMIT);
       }
     } else {
       visible = getRankedFocusMatches(entries, query);
@@ -7016,19 +7180,44 @@
     const guidance = !query
       ? focusCurriculumPackFilter
         ? `<div class="focus-search-empty focus-search-empty-hint">${escapeHtml(getLessonPackDefinition(focusCurriculumPackFilter).label)}: choose a lesson group.</div>`
-        : '<div class="focus-search-empty focus-search-empty-hint">Choose a quest, or choose a curriculum program to open lesson groups.</div>'
+        : '<div class="focus-search-empty focus-search-empty-hint">Choose a phonics skill, a grade-band subject, or a curriculum program to open all lessons.</div>'
       : '';
-    listEl.innerHTML = actions.join('') + guidance + visible.map((entry) => {
-      const questValue = entry.questValue || `focus::${entry.value}`;
-      const isProgram = entry.kind === 'curriculum-pack';
-      const isActive = isProgram
-        ? (entry.packId === activePack || entry.packId === focusCurriculumPackFilter)
-        : (questValue === activeQuestValue);
-      const activeClass = isActive ? ' is-active' : '';
-      const selected = isActive ? 'true' : 'false';
-      const label = isProgram ? `${entry.label} · Choose Lesson` : entry.label;
-      return `<button type="button" class="focus-search-item${activeClass}" data-quest-value="${escapeHtml(questValue)}" role="option" aria-selected="${selected}" title="${escapeHtml(isProgram ? `Open ${entry.label} lesson groups` : `${entry.group || activePackLabel}`)}"><span>${escapeHtml(label)}</span></button>`;
+    const sections = buildFocusSearchSections(visible, { query });
+    const sectionMarkup = sections.map((section) => {
+      if (section.heading === 'Curriculum' || section.heading === 'Curriculum Matches') {
+        const curriculumRows = section.entries;
+        const programRows = curriculumRows.filter((entry) => entry.kind === 'curriculum-pack');
+        const lessonRows = curriculumRows.filter((entry) => entry.kind === 'curriculum');
+        const groupedLessons = lessonRows.reduce((map, entry) => {
+          const key = String(entry.group || 'Curriculum').trim();
+          if (!map[key]) map[key] = [];
+          map[key].push(entry);
+          return map;
+        }, Object.create(null));
+        const orderedPacks = ['UFLI', 'Fundations', 'Wilson Reading System', 'Just Words'];
+        const lessonBlocks = orderedPacks
+          .filter((packLabel) => Array.isArray(groupedLessons[packLabel]) && groupedLessons[packLabel].length)
+          .map((packLabel) => (
+            `<div class="focus-search-subheading" role="presentation">${escapeHtml(packLabel)}</div>` +
+            renderFocusSectionItems(groupedLessons[packLabel], activeQuestValue, activePack, activePackLabel)
+          ));
+        Object.keys(groupedLessons)
+          .filter((packLabel) => !orderedPacks.includes(packLabel))
+          .sort((a, b) => a.localeCompare(b))
+          .forEach((packLabel) => {
+            lessonBlocks.push(
+              `<div class="focus-search-subheading" role="presentation">${escapeHtml(packLabel)}</div>` +
+              renderFocusSectionItems(groupedLessons[packLabel], activeQuestValue, activePack, activePackLabel)
+            );
+          });
+        return getSectionHeadingMarkup(section.heading) +
+          renderFocusSectionItems(programRows, activeQuestValue, activePack, activePackLabel) +
+          lessonBlocks.join('');
+      }
+      return getSectionHeadingMarkup(section.heading) +
+        renderFocusSectionItems(section.entries, activeQuestValue, activePack, activePackLabel);
     }).join('');
+    listEl.innerHTML = actions.join('') + guidance + sectionMarkup;
     getFocusSearchButtons().forEach((button, idx) => {
       button.id = `focus-search-option-${idx}`;
       button.classList.remove('is-nav-active');
