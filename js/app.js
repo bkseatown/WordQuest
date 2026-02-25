@@ -3379,6 +3379,7 @@
   let currentRoundErrorCounts = Object.create(null);
   let currentRoundSkillKey = 'classic';
   let currentRoundSkillLabel = 'Classic mixed practice';
+  let blockedLetterToastAt = 0;
 
   let classroomTurnTimer = 0;
   let classroomTurnEndsAt = 0;
@@ -3439,6 +3440,35 @@
       : '';
     line.textContent = `${getCurrentTeamLabel()} turn${timerPart} · Type a guess, then press Enter.`;
     line.classList.remove('hidden');
+  }
+
+  function isKnownAbsentLetter(letter) {
+    const normalized = String(letter || '').toLowerCase();
+    if (!/^[a-z]$/.test(normalized)) return false;
+    const keyEl = document.querySelector(`#keyboard .key[data-key="${normalized}"]`);
+    if (!keyEl) return false;
+    return keyEl.classList.contains('absent')
+      && !keyEl.classList.contains('present')
+      && !keyEl.classList.contains('correct');
+  }
+
+  function pulseBlockedLetterKey(letter) {
+    const normalized = String(letter || '').toLowerCase();
+    if (!/^[a-z]$/.test(normalized)) return;
+    const keyEl = document.querySelector(`#keyboard .key[data-key="${normalized}"]`);
+    if (!keyEl) return;
+    keyEl.classList.remove('dupe-pulse');
+    void keyEl.offsetWidth;
+    keyEl.classList.add('dupe-pulse');
+    setTimeout(() => keyEl.classList.remove('dupe-pulse'), 220);
+  }
+
+  function maybeShowBlockedLetterToast(letter) {
+    const now = Date.now();
+    if (now - blockedLetterToastAt < 700) return;
+    blockedLetterToastAt = now;
+    const safeLetter = String(letter || '').toUpperCase().slice(0, 1);
+    WQUI.showToast(`Nice try. We already tested ${safeLetter}. Pick a different letter.`);
   }
 
   function clearCurrentGuessInput() {
@@ -10706,6 +10736,13 @@
       updateNextActionLine();
 
     } else if (/^[a-zA-Z]$/.test(key)) {
+      const normalizedLetter = String(key || '').toLowerCase();
+      if (isKnownAbsentLetter(normalizedLetter)) {
+        pulseBlockedLetterKey(normalizedLetter);
+        maybeShowBlockedLetterToast(normalizedLetter);
+        updateNextActionLine();
+        return;
+      }
       WQGame.addLetter(key);
       const s2 = WQGame.getState();
       WQUI.updateCurrentRow(s2.guess, s2.wordLength, s2.guesses.length);
