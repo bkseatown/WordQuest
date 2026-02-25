@@ -56,7 +56,7 @@ const swJs = exists('sw.js') ? read('sw.js') : '';
 const swRuntimeJs = exists('sw-runtime.js') ? read('sw-runtime.js') : '';
 
 const hasWorkerRegisterCall = /serviceWorker\.register\(\s*(?:SW_RUNTIME_URL|['"]\.\/sw(?:-runtime)?\.js(?:\?[^'"]*)?['"])/.test(appJs);
-const hasRuntimePath = /(?:SW_RUNTIME_URL\s*=\s*['"]\.\/sw-runtime\.js(?:\?[^'"]*)?['"])|(?:serviceWorker\.register\(\s*['"]\.\/sw(?:-runtime)?\.js(?:\?[^'"]*)?['"])/.test(appJs);
+const hasRuntimePath = /(?:SW_RUNTIME_URL\s*=\s*[`'"]\.\/sw-runtime\.js(?:\?[^`'"]*)?[`'"])|(?:serviceWorker\.register\(\s*['"]\.\/sw(?:-runtime)?\.js(?:\?[^'"]*)?['"])/.test(appJs);
 
 if (!hasWorkerRegisterCall || !hasRuntimePath) {
   fail('js/app.js is missing service worker registration for ./sw.js or ./sw-runtime.js');
