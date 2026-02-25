@@ -1525,6 +1525,23 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   gap: 8px;
 }
 
+.teacher-hub-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.teacher-hub-grid-2 label {
+  display: grid;
+  gap: 5px;
+}
+
+.teacher-hub-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
 .wq-teacher-heading-row {
   display: flex;
   align-items: center;
@@ -6031,6 +6048,11 @@ html[data-layout-mode="compact"] .key.key-chunk {
   }
 
   .teacher-panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-hub-grid-2,
+  .teacher-hub-actions {
     grid-template-columns: 1fr;
   }
 

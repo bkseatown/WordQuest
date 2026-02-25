@@ -85,6 +85,8 @@
   const PROBE_HISTORY_KEY = 'wq_v2_weekly_probe_history_v1';
   const STUDENT_GOALS_KEY = 'wq_v2_student_goals_v1';
   const PLAYLIST_STATE_KEY = 'wq_v2_assignment_playlists_v1';
+  const GROUP_PLAN_STATE_KEY = 'wq_v2_group_plan_state_v1';
+  const STUDENT_TARGET_LOCKS_KEY = 'wq_v2_student_target_locks_v1';
   const SHUFFLE_BAG_KEY = 'wq_v2_shuffle_bag';
   const REVIEW_QUEUE_KEY = 'wq_v2_spaced_review_queue_v1';
   const TELEMETRY_QUEUE_KEY = 'wq_v2_telemetry_queue_v1';
@@ -4728,6 +4730,7 @@
     rosterState.active = rosterState.students.includes(next) ? next : '';
     saveRosterState();
     renderRosterControls();
+    maybeApplyStudentPlanForActiveStudent();
     renderSessionSummary();
     renderProbePanel();
   });
@@ -4766,6 +4769,165 @@
     renderSessionSummary();
     renderProbePanel();
     WQUI.showToast('Roster cleared for this device.');
+  });
+  _el('s-group-select')?.addEventListener('change', (event) => {
+    setSelectedGroupPlanId(event.target?.value || '');
+    renderGroupBuilderPanel();
+  });
+  _el('session-group-new-btn')?.addEventListener('click', () => {
+    const nextName = String(_el('s-group-name')?.value || '').trim() || `Group ${groupPlanState.groups.length + 1}`;
+    const nextTier = String(_el('s-group-tier')?.value || 'tier2').trim().toLowerCase();
+    const entry = {
+      id: `group-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      name: nextName,
+      tier: nextTier === 'tier1' || nextTier === 'tier3' ? nextTier : 'tier2',
+      students: [],
+      assignment: { packId: 'custom', targetId: 'custom', updatedAt: 0 },
+      updatedAt: Date.now()
+    };
+    groupPlanState.groups.push(entry);
+    groupPlanState.groups = groupPlanState.groups.slice(-40);
+    setSelectedGroupPlanId(entry.id);
+    saveGroupPlanState();
+    window.dispatchEvent(new CustomEvent('wq:assignment-updated', { detail: { type: 'group_created', group: entry } }));
+    renderGroupBuilderPanel();
+    WQUI.showToast('New group created.');
+  });
+  _el('session-group-save-btn')?.addEventListener('click', () => {
+    const selected = getSelectedGroupPlan();
+    if (!selected) {
+      WQUI.showToast('Select or create a group first.');
+      return;
+    }
+    const nextName = String(_el('s-group-name')?.value || '').trim() || selected.name;
+    const nextTierRaw = String(_el('s-group-tier')?.value || selected.tier || 'tier2').trim().toLowerCase();
+    selected.name = nextName;
+    selected.tier = nextTierRaw === 'tier1' || nextTierRaw === 'tier3' ? nextTierRaw : 'tier2';
+    selected.updatedAt = Date.now();
+    saveGroupPlanState();
+    window.dispatchEvent(new CustomEvent('wq:assignment-updated', { detail: { type: 'group_saved', group: selected } }));
+    renderGroupBuilderPanel();
+    WQUI.showToast('Group saved.');
+  });
+  _el('session-group-delete-btn')?.addEventListener('click', () => {
+    const selected = getSelectedGroupPlan();
+    if (!selected) {
+      WQUI.showToast('Select a group to delete.');
+      return;
+    }
+    groupPlanState.groups = groupPlanState.groups.filter((entry) => entry.id !== selected.id);
+    setSelectedGroupPlanId(groupPlanState.groups[0]?.id || '');
+    saveGroupPlanState();
+    window.dispatchEvent(new CustomEvent('wq:assignment-updated', { detail: { type: 'group_deleted', groupId: selected.id } }));
+    renderGroupBuilderPanel();
+    WQUI.showToast('Group deleted.');
+  });
+  _el('session-group-add-active-btn')?.addEventListener('click', () => {
+    const selected = getSelectedGroupPlan();
+    const student = getActiveStudentLabel();
+    if (!selected) {
+      WQUI.showToast('Select a group first.');
+      return;
+    }
+    if (!student || student === 'Class') {
+      WQUI.showToast('Select a student first.');
+      return;
+    }
+    if (!selected.students.includes(student)) selected.students.push(student);
+    selected.students.sort((a, b) => a.localeCompare(b));
+    selected.updatedAt = Date.now();
+    saveGroupPlanState();
+    window.dispatchEvent(new CustomEvent('wq:assignment-updated', { detail: { type: 'group_members_updated', group: selected } }));
+    renderGroupBuilderPanel();
+    WQUI.showToast(`${student} added to ${selected.name}.`);
+  });
+  _el('session-group-remove-active-btn')?.addEventListener('click', () => {
+    const selected = getSelectedGroupPlan();
+    const student = getActiveStudentLabel();
+    if (!selected) {
+      WQUI.showToast('Select a group first.');
+      return;
+    }
+    if (!student || student === 'Class') {
+      WQUI.showToast('Select a student first.');
+      return;
+    }
+    selected.students = selected.students.filter((name) => name !== student);
+    selected.updatedAt = Date.now();
+    saveGroupPlanState();
+    window.dispatchEvent(new CustomEvent('wq:assignment-updated', { detail: { type: 'group_members_updated', group: selected } }));
+    renderGroupBuilderPanel();
+    WQUI.showToast(`${student} removed from ${selected.name}.`);
+  });
+  _el('session-group-assign-target-btn')?.addEventListener('click', () => {
+    const selected = getSelectedGroupPlan();
+    if (!selected) {
+      WQUI.showToast('Select a group first.');
+      return;
+    }
+    const snapshot = buildCurrentCurriculumSnapshot();
+    selected.assignment = {
+      packId: snapshot.packId || 'custom',
+      targetId: snapshot.targetId || 'custom',
+      updatedAt: Date.now()
+    };
+    selected.updatedAt = Date.now();
+    saveGroupPlanState();
+    window.dispatchEvent(new CustomEvent('wq:assignment-updated', { detail: { type: 'group_target_assigned', group: selected } }));
+    renderGroupBuilderPanel();
+    WQUI.showToast(`Assigned current target to ${selected.name}.`);
+  });
+  _el('s-lock-pack')?.addEventListener('change', (event) => {
+    const nextPack = normalizeLessonPackId(event.target?.value || 'custom');
+    populateTargetSelectForPack(_el('s-lock-target'), nextPack, 'custom', { includeCustom: true });
+  });
+  _el('session-lock-save-btn')?.addEventListener('click', () => {
+    const student = getActiveStudentLabel();
+    if (!student || student === 'Class') {
+      WQUI.showToast('Select a student first.');
+      return;
+    }
+    const enabled = !!_el('s-lock-enabled')?.checked;
+    const packId = normalizeLessonPackId(_el('s-lock-pack')?.value || 'custom');
+    const targetId = normalizeLessonTargetId(packId, _el('s-lock-target')?.value || 'custom');
+    const duration = String(_el('s-lock-duration')?.value || '1w').trim().toLowerCase();
+    const now = Date.now();
+    let expiresAt = 0;
+    if (duration === '1w') expiresAt = now + (7 * 24 * 60 * 60 * 1000);
+    if (duration === '2w') expiresAt = now + (14 * 24 * 60 * 60 * 1000);
+    if (duration === '4w') expiresAt = now + (28 * 24 * 60 * 60 * 1000);
+    if (duration === 'never') expiresAt = 0;
+    if (!setStudentTargetLock(student, { enabled, packId, targetId, expiresAt, updatedAt: now })) {
+      WQUI.showToast('Could not save lock.');
+      return;
+    }
+    renderStudentLockPanel();
+    WQUI.showToast(`Target lock saved for ${student}.`);
+  });
+  _el('session-lock-apply-btn')?.addEventListener('click', () => {
+    const student = getActiveStudentLabel();
+    if (!student || student === 'Class') {
+      WQUI.showToast('Select a student first.');
+      return;
+    }
+    if (!maybeApplyStudentPlanForActiveStudent({ toast: true })) {
+      WQUI.showToast('No active lock or group assignment to apply.');
+      return;
+    }
+    renderStudentLockPanel();
+  });
+  _el('session-lock-clear-btn')?.addEventListener('click', () => {
+    const student = getActiveStudentLabel();
+    if (!student || student === 'Class') {
+      WQUI.showToast('Select a student first.');
+      return;
+    }
+    if (!clearStudentTargetLock(student)) {
+      WQUI.showToast('No lock set for this student.');
+      return;
+    }
+    renderStudentLockPanel();
+    WQUI.showToast(`Target lock cleared for ${student}.`);
   });
   _el('session-goal-save-btn')?.addEventListener('click', () => {
     const student = getActiveStudentLabel();
@@ -8268,6 +8430,92 @@
     }
   }
 
+  function createEmptyGroupPlanState() {
+    return { groups: [], selectedId: '' };
+  }
+
+  function normalizeGroupPlanEntry(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    const id = String(raw.id || '').trim();
+    if (!id) return null;
+    const tierRaw = String(raw.tier || 'tier2').trim().toLowerCase();
+    const tier = tierRaw === 'tier1' || tierRaw === 'tier3' ? tierRaw : 'tier2';
+    const name = String(raw.name || '').trim() || 'Group';
+    const students = Array.isArray(raw.students)
+      ? Array.from(new Set(raw.students
+        .map((item) => String(item || '').trim().replace(/\s+/g, ' '))
+        .filter(Boolean)))
+      : [];
+    const assignment = raw.assignment && typeof raw.assignment === 'object'
+      ? {
+          packId: normalizeLessonPackId(raw.assignment.packId || 'custom'),
+          targetId: normalizeLessonTargetId(
+            normalizeLessonPackId(raw.assignment.packId || 'custom'),
+            raw.assignment.targetId || 'custom'
+          ),
+          updatedAt: Math.max(0, Number(raw.assignment.updatedAt) || 0)
+        }
+      : { packId: 'custom', targetId: 'custom', updatedAt: 0 };
+    return {
+      id,
+      name,
+      tier,
+      students,
+      assignment,
+      updatedAt: Math.max(0, Number(raw.updatedAt) || Date.now())
+    };
+  }
+
+  function loadGroupPlanState() {
+    const fallback = createEmptyGroupPlanState();
+    try {
+      const parsed = JSON.parse(localStorage.getItem(GROUP_PLAN_STATE_KEY) || 'null');
+      if (!parsed || typeof parsed !== 'object') return fallback;
+      const groups = Array.isArray(parsed.groups)
+        ? parsed.groups.map((entry) => normalizeGroupPlanEntry(entry)).filter(Boolean).slice(0, 40)
+        : [];
+      const selectedId = String(parsed.selectedId || '').trim();
+      return {
+        groups,
+        selectedId: groups.some((entry) => entry.id === selectedId) ? selectedId : (groups[0]?.id || '')
+      };
+    } catch {
+      return fallback;
+    }
+  }
+
+  function normalizeStudentTargetLockEntry(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    const enabled = !!raw.enabled;
+    const packId = normalizeLessonPackId(raw.packId || 'custom');
+    const targetId = normalizeLessonTargetId(packId, raw.targetId || 'custom');
+    return {
+      enabled,
+      packId,
+      targetId,
+      expiresAt: Math.max(0, Number(raw.expiresAt) || 0),
+      updatedAt: Math.max(0, Number(raw.updatedAt) || Date.now())
+    };
+  }
+
+  function loadStudentTargetLocksState() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STUDENT_TARGET_LOCKS_KEY) || '{}');
+      if (!parsed || typeof parsed !== 'object') return Object.create(null);
+      const normalized = Object.create(null);
+      Object.entries(parsed).forEach(([key, value]) => {
+        const lockKey = String(key || '').trim();
+        if (!lockKey) return;
+        const entry = normalizeStudentTargetLockEntry(value);
+        if (!entry) return;
+        normalized[lockKey] = entry;
+      });
+      return normalized;
+    } catch {
+      return Object.create(null);
+    }
+  }
+
   function saveProbeHistory() {
     try { localStorage.setItem(PROBE_HISTORY_KEY, JSON.stringify(probeHistory.slice(0, 24))); } catch {}
   }
@@ -8278,6 +8526,14 @@
 
   function savePlaylistState() {
     try { localStorage.setItem(PLAYLIST_STATE_KEY, JSON.stringify(playlistState)); } catch {}
+  }
+
+  function saveGroupPlanState() {
+    try { localStorage.setItem(GROUP_PLAN_STATE_KEY, JSON.stringify(groupPlanState)); } catch {}
+  }
+
+  function saveStudentTargetLocksState() {
+    try { localStorage.setItem(STUDENT_TARGET_LOCKS_KEY, JSON.stringify(studentTargetLocksState)); } catch {}
   }
 
   function normalizeProbeRounds(value) {
@@ -8307,6 +8563,8 @@
   let probeHistory = loadProbeHistory();
   let studentGoalState = loadStudentGoalState();
   let playlistState = loadPlaylistState();
+  let groupPlanState = loadGroupPlanState();
+  let studentTargetLocksState = loadStudentTargetLocksState();
   let probeState = createEmptyProbeState();
   let sessionSummary = loadSessionSummaryState();
   let activeMiniLessonKey = 'top';
@@ -8321,6 +8579,131 @@
 
   function getActiveStudentLabel() {
     return rosterState.active || 'Class';
+  }
+
+  function getStudentLockKey(studentLabel) {
+    const label = String(studentLabel || '').trim();
+    if (!label || label === 'Class') return '';
+    return `student:${label}`;
+  }
+
+  function getSelectedGroupPlan() {
+    const selectedId = String(groupPlanState.selectedId || '').trim();
+    if (!selectedId) return null;
+    return groupPlanState.groups.find((entry) => entry.id === selectedId) || null;
+  }
+
+  function setSelectedGroupPlanId(groupId) {
+    const nextId = String(groupId || '').trim();
+    if (!nextId) {
+      groupPlanState.selectedId = '';
+    } else if (groupPlanState.groups.some((entry) => entry.id === nextId)) {
+      groupPlanState.selectedId = nextId;
+    } else {
+      groupPlanState.selectedId = '';
+    }
+    saveGroupPlanState();
+  }
+
+  function getGroupPlanForStudent(studentLabel) {
+    const label = String(studentLabel || '').trim();
+    if (!label || label === 'Class') return null;
+    return groupPlanState.groups.find((entry) => Array.isArray(entry.students) && entry.students.includes(label)) || null;
+  }
+
+  function getStudentTargetLock(studentLabel) {
+    const key = getStudentLockKey(studentLabel);
+    if (!key) return null;
+    return studentTargetLocksState[key] || null;
+  }
+
+  function isStudentTargetLockActive(lock) {
+    if (!lock || !lock.enabled) return false;
+    if (!lock.expiresAt) return true;
+    return lock.expiresAt >= Date.now();
+  }
+
+  function setStudentTargetLock(studentLabel, payload) {
+    const key = getStudentLockKey(studentLabel);
+    if (!key) return false;
+    const entry = normalizeStudentTargetLockEntry(payload);
+    if (!entry) return false;
+    studentTargetLocksState[key] = entry;
+    saveStudentTargetLocksState();
+    window.dispatchEvent(new CustomEvent('wq:student-lock-updated', {
+      detail: { student: studentLabel, lock: entry }
+    }));
+    return true;
+  }
+
+  function clearStudentTargetLock(studentLabel) {
+    const key = getStudentLockKey(studentLabel);
+    if (!key || !studentTargetLocksState[key]) return false;
+    delete studentTargetLocksState[key];
+    saveStudentTargetLocksState();
+    window.dispatchEvent(new CustomEvent('wq:student-lock-updated', {
+      detail: { student: studentLabel, lock: null }
+    }));
+    return true;
+  }
+
+  function populatePackSelect(selectEl, selectedPackId = 'custom', options = {}) {
+    if (!selectEl) return;
+    const includeCustom = options.includeCustom !== false;
+    const normalizedSelected = normalizeLessonPackId(selectedPackId);
+    const optionsList = [];
+    if (includeCustom) {
+      optionsList.push({ value: 'custom', label: 'Manual (no pack)' });
+    }
+    CURRICULUM_PACK_ORDER.forEach((packId) => {
+      const pack = getLessonPackDefinition(packId);
+      optionsList.push({ value: packId, label: pack.label });
+    });
+    selectEl.innerHTML = '';
+    optionsList.forEach((item) => {
+      const option = document.createElement('option');
+      option.value = item.value;
+      option.textContent = item.label;
+      selectEl.appendChild(option);
+    });
+    selectEl.value = optionsList.some((item) => item.value === normalizedSelected) ? normalizedSelected : optionsList[0]?.value || 'custom';
+  }
+
+  function populateTargetSelectForPack(selectEl, packId, selectedTargetId = 'custom', options = {}) {
+    if (!selectEl) return 'custom';
+    const normalizedPack = normalizeLessonPackId(packId);
+    const includeCustom = options.includeCustom !== false;
+    const targets = normalizedPack === 'custom'
+      ? []
+      : getCurriculumTargetsForGrade(normalizedPack, getQuestFilterGradeBand(), { matchSelectedGrade: false });
+    selectEl.innerHTML = '';
+    if (includeCustom || !targets.length) {
+      const manual = document.createElement('option');
+      manual.value = 'custom';
+      manual.textContent = 'Manual';
+      selectEl.appendChild(manual);
+    }
+    targets.forEach((target) => {
+      const option = document.createElement('option');
+      option.value = target.id;
+      option.textContent = target.label;
+      selectEl.appendChild(option);
+    });
+    const normalizedTarget = normalizeLessonTargetId(normalizedPack, selectedTargetId);
+    if (Array.from(selectEl.options).some((option) => option.value === normalizedTarget)) {
+      selectEl.value = normalizedTarget;
+    } else {
+      selectEl.value = includeCustom ? 'custom' : (targets[0]?.id || 'custom');
+    }
+    return selectEl.value || 'custom';
+  }
+
+  function applyStudentTargetConfig(packId, targetId, options = {}) {
+    const normalizedPack = normalizeLessonPackId(packId);
+    const normalizedTarget = normalizeLessonTargetId(normalizedPack, targetId);
+    if (normalizedPack === 'custom' || normalizedTarget === 'custom') return false;
+    syncLessonPackControlsFromPrefs({ packId: normalizedPack, targetId: normalizedTarget });
+    return applyLessonTargetConfig(normalizedPack, normalizedTarget, { toast: !!options.toast });
   }
 
   function getAssigneeKeyForStudent(name) {
@@ -9227,6 +9610,128 @@
     const chip = _el('session-active-student');
     if (chip) chip.textContent = `Student: ${getActiveStudentLabel()}`;
     renderPlaylistControls();
+    renderGroupBuilderPanel();
+    renderStudentLockPanel();
+  }
+
+  function renderGroupBuilderPanel() {
+    const selectEl = _el('s-group-select');
+    const nameEl = _el('s-group-name');
+    const tierEl = _el('s-group-tier');
+    const summaryEl = _el('session-group-summary');
+    const studentsEl = _el('session-group-students');
+    const targetEl = _el('session-group-target');
+    if (!selectEl) return;
+
+    selectEl.innerHTML = '';
+    const none = document.createElement('option');
+    none.value = '';
+    none.textContent = 'No group selected';
+    selectEl.appendChild(none);
+    groupPlanState.groups
+      .slice()
+      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')))
+      .forEach((group) => {
+        const option = document.createElement('option');
+        option.value = group.id;
+        option.textContent = `${group.name} (${String(group.tier || 'tier2').toUpperCase()})`;
+        selectEl.appendChild(option);
+      });
+    if (groupPlanState.selectedId && Array.from(selectEl.options).some((option) => option.value === groupPlanState.selectedId)) {
+      selectEl.value = groupPlanState.selectedId;
+    }
+
+    const selected = getSelectedGroupPlan();
+    if (nameEl && !nameEl.matches(':focus')) nameEl.value = selected?.name || '';
+    if (tierEl) tierEl.value = selected?.tier || 'tier2';
+
+    if (!selected) {
+      if (summaryEl) summaryEl.textContent = 'Group: --';
+      if (studentsEl) studentsEl.textContent = 'Students: --';
+      if (targetEl) targetEl.textContent = 'Target: --';
+      return;
+    }
+
+    const packLabel = getLessonPackDefinition(selected.assignment?.packId || 'custom').label;
+    const target = getLessonTarget(selected.assignment?.packId || 'custom', selected.assignment?.targetId || 'custom');
+    const members = Array.isArray(selected.students) ? selected.students : [];
+    if (summaryEl) summaryEl.textContent = `Group: ${selected.name} (${String(selected.tier || 'tier2').toUpperCase()})`;
+    if (studentsEl) studentsEl.textContent = members.length ? `Students: ${members.join(', ')}` : 'Students: none yet';
+    if (targetEl) {
+      targetEl.textContent = target
+        ? `Target: ${packLabel} · ${target.label}`
+        : `Target: ${packLabel === 'Manual (no pack)' ? 'manual' : `${packLabel} (not set)`}`;
+    }
+  }
+
+  function renderStudentLockPanel() {
+    const student = getActiveStudentLabel();
+    const enabledEl = _el('s-lock-enabled');
+    const packEl = _el('s-lock-pack');
+    const targetEl = _el('s-lock-target');
+    const durationEl = _el('s-lock-duration');
+    const statusEl = _el('session-lock-status');
+    const targetChipEl = _el('session-lock-target');
+
+    if (!packEl || !targetEl) return;
+    const lock = getStudentTargetLock(student);
+    const packId = lock?.packId || 'custom';
+    const targetId = lock?.targetId || 'custom';
+
+    populatePackSelect(packEl, packId, { includeCustom: true });
+    populateTargetSelectForPack(targetEl, packEl.value, targetId, { includeCustom: true });
+    if (enabledEl) enabledEl.checked = !!lock?.enabled;
+    if (durationEl && lock?.expiresAt) {
+      const days = Math.max(0, Math.ceil((lock.expiresAt - Date.now()) / (24 * 60 * 60 * 1000)));
+      durationEl.value = days > 21 ? '4w' : days > 10 ? '2w' : '1w';
+    }
+
+    if (!statusEl || !targetChipEl) return;
+    if (!student || student === 'Class') {
+      statusEl.textContent = 'Lock: select a student';
+      targetChipEl.textContent = 'Target: --';
+      applyChipTone(statusEl, '');
+      applyChipTone(targetChipEl, '');
+      return;
+    }
+    if (!lock) {
+      statusEl.textContent = 'Lock: not set';
+      targetChipEl.textContent = 'Target: --';
+      applyChipTone(statusEl, '');
+      applyChipTone(targetChipEl, '');
+      return;
+    }
+    const active = isStudentTargetLockActive(lock);
+    const packLabel = getLessonPackDefinition(lock.packId).label;
+    const target = getLessonTarget(lock.packId, lock.targetId);
+    statusEl.textContent = active
+      ? `Lock: active${lock.expiresAt ? ` until ${new Date(lock.expiresAt).toLocaleDateString()}` : ''}`
+      : 'Lock: expired';
+    targetChipEl.textContent = target
+      ? `Target: ${packLabel} · ${target.label}`
+      : `Target: ${packLabel} · not set`;
+    applyChipTone(statusEl, active ? 'good' : 'warn');
+    applyChipTone(targetChipEl, active ? 'good' : '');
+  }
+
+  function maybeApplyStudentPlanForActiveStudent(options = {}) {
+    const student = getActiveStudentLabel();
+    if (!student || student === 'Class') return false;
+    if (isAssessmentRoundLocked()) return false;
+
+    const lock = getStudentTargetLock(student);
+    if (lock && isStudentTargetLockActive(lock)) {
+      const applied = applyStudentTargetConfig(lock.packId, lock.targetId, { toast: !!options.toast });
+      if (applied) return true;
+    }
+
+    const group = getGroupPlanForStudent(student);
+    if (group && group.assignment) {
+      const { packId, targetId } = group.assignment;
+      const applied = applyStudentTargetConfig(packId, targetId, { toast: !!options.toast });
+      if (applied) return true;
+    }
+    return false;
   }
 
   function addRosterStudent(rawName) {
@@ -9251,6 +9756,15 @@
     if (!active) return false;
     rosterState.students = rosterState.students.filter((name) => name !== active);
     rosterState.active = rosterState.students[0] || '';
+    const lockKey = getStudentLockKey(active);
+    if (lockKey && studentTargetLocksState[lockKey]) {
+      delete studentTargetLocksState[lockKey];
+      saveStudentTargetLocksState();
+    }
+    groupPlanState.groups.forEach((group) => {
+      group.students = Array.isArray(group.students) ? group.students.filter((name) => name !== active) : [];
+    });
+    saveGroupPlanState();
     saveRosterState();
     renderRosterControls();
     return true;
@@ -9258,6 +9772,12 @@
 
   function clearRosterStudents() {
     rosterState = { students: [], active: '' };
+    studentTargetLocksState = Object.create(null);
+    groupPlanState.groups.forEach((group) => {
+      group.students = [];
+    });
+    saveStudentTargetLocksState();
+    saveGroupPlanState();
     saveRosterState();
     renderRosterControls();
   }
@@ -10703,6 +11223,7 @@
     renderSessionSummary();
     renderProbePanel();
     renderMiniLessonPanel();
+    maybeApplyStudentPlanForActiveStudent();
     refreshStandaloneMissionLabHub();
   }
 

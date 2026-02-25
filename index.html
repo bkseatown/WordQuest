@@ -615,6 +615,85 @@
           <div id="wq-teacher-msg" class="wq-teacher-msg" aria-live="polite"></div>
         </section>
 
+        <section id="wq-group-builder" class="wq-teacher-tools">
+          <div class="wq-teacher-heading-row">
+            <strong class="wq-teacher-heading">Group Builder (Tier 2)</strong>
+          </div>
+          <p class="wq-teacher-help">Create flexible groups, add/remove the active student, and assign the current curriculum target to the selected group.</p>
+          <div class="teacher-hub-grid-2">
+            <label>Group
+              <select id="s-group-select">
+                <option value="">No group selected</option>
+              </select>
+            </label>
+            <label>Tier
+              <select id="s-group-tier">
+                <option value="tier2" selected>Tier 2</option>
+                <option value="tier1">Tier 1</option>
+                <option value="tier3">Tier 3</option>
+              </select>
+            </label>
+          </div>
+          <label>Group Name
+            <input id="s-group-name" class="settings-text-input" type="text" placeholder="Vowel Team Group">
+          </label>
+          <div class="teacher-hub-actions">
+            <button id="session-group-new-btn" class="quick-action-btn teacher-session-btn" type="button">New</button>
+            <button id="session-group-save-btn" class="quick-action-btn teacher-session-btn" type="button">Save</button>
+            <button id="session-group-delete-btn" class="quick-action-btn teacher-session-btn" type="button">Delete</button>
+          </div>
+          <div class="teacher-hub-actions">
+            <button id="session-group-add-active-btn" class="quick-action-btn teacher-session-btn" type="button">Add Active Student</button>
+            <button id="session-group-remove-active-btn" class="quick-action-btn teacher-session-btn" type="button">Remove Active Student</button>
+            <button id="session-group-assign-target-btn" class="quick-action-btn teacher-session-btn" type="button">Assign Current Target</button>
+          </div>
+          <div class="teacher-session-metrics">
+            <span id="session-group-summary" class="teacher-session-chip">Group: --</span>
+            <span id="session-group-students" class="teacher-session-chip">Students: --</span>
+            <span id="session-group-target" class="teacher-session-chip">Target: --</span>
+          </div>
+        </section>
+
+        <section id="wq-student-lock" class="wq-teacher-tools">
+          <div class="wq-teacher-heading-row">
+            <strong class="wq-teacher-heading">Student Target Lock (Tier 3)</strong>
+          </div>
+          <p class="wq-teacher-help">Lock the active student to a specific curriculum target for focused intervention.</p>
+          <label class="setting-checkbox-label">
+            <input id="s-lock-enabled" type="checkbox">
+            Enable lock for active student
+          </label>
+          <div class="teacher-hub-grid-2">
+            <label>Program
+              <select id="s-lock-pack">
+                <option value="custom">Manual (no pack)</option>
+              </select>
+            </label>
+            <label>Lesson Target
+              <select id="s-lock-target">
+                <option value="custom">Manual</option>
+              </select>
+            </label>
+          </div>
+          <label>Lock Duration
+            <select id="s-lock-duration">
+              <option value="1w" selected>1 week</option>
+              <option value="2w">2 weeks</option>
+              <option value="4w">4 weeks</option>
+              <option value="never">No expiration</option>
+            </select>
+          </label>
+          <div class="teacher-hub-actions">
+            <button id="session-lock-save-btn" class="quick-action-btn teacher-session-btn" type="button">Save Lock</button>
+            <button id="session-lock-apply-btn" class="quick-action-btn teacher-session-btn" type="button">Apply Now</button>
+            <button id="session-lock-clear-btn" class="quick-action-btn teacher-session-btn" type="button">Clear Lock</button>
+          </div>
+          <div class="teacher-session-metrics">
+            <span id="session-lock-status" class="teacher-session-chip">Lock: --</span>
+            <span id="session-lock-target" class="teacher-session-chip">Target: --</span>
+          </div>
+        </section>
+
       </div>
     </div>
   </div>
@@ -1092,6 +1171,7 @@
   <script src="js/ui.js?v=20260224h"></script>
   <script src="js/theme-registry.js?v=20260223c"></script>
   <script src="data/curriculum-taxonomy.js?v=20260225a"></script>
+  <script src="data/assignment-schema.js?v=20260225a"></script>
   <script src="js/app.js?v=20260224ag"></script>
   <script src="js/deep-dive-plus.js"></script>
   <script src="js/theme-nav.js?v=20260224e"></script>
