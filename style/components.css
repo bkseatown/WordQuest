@@ -3241,7 +3241,7 @@ html[data-play-style="detective"] .gameplay-audio {
   max-width:      min(calc(100vw - 16px), calc(100% - 6px));
   flex-shrink:    0;
   margin-top:     2px;
-  margin-bottom:  max(2px, env(safe-area-inset-bottom));
+  margin-bottom:  max(var(--keyboard-bottom-gap, 10px), env(safe-area-inset-bottom));
   padding-inline: 0;
 }
 
