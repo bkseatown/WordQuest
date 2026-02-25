@@ -64,8 +64,9 @@
    ══════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html {
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
   color-scheme: light;
 }
 
@@ -80,8 +81,11 @@ body {
   font-family:    var(--font);
   background:     linear-gradient(145deg, var(--page-bg) 0%, var(--page-bg2) 100%);
   color:          var(--text);
-  height:         100dvh;
-  overflow:       hidden;
+  min-height:     100dvh;
+  height:         auto;
+  width:          100%;
+  overflow-x:     hidden;
+  overflow-y:     auto;
   display:        flex;
   flex-direction: column;
   align-items:    center;
@@ -2280,8 +2284,8 @@ main {
   width:           100%;
   max-width:       var(--main-max-width);
   padding:         12px 12px calc(8px + env(safe-area-inset-bottom));
-  overflow-x:      hidden;
-  overflow-y:      hidden;
+  overflow-x:      clip;
+  overflow-y:      auto;
   scrollbar-gutter: auto;
 }
 
@@ -5790,7 +5794,7 @@ html[data-layout-mode="compact"] .key.key-chunk {
   main {
     gap: 6px;
     padding-top: 10px;
-    overflow-y: hidden;
+    overflow-y: auto;
   }
   .board-zone { gap: 6px; }
   main .gameplay-audio { gap: 7px; }
