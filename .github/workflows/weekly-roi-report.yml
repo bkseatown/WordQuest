@@ -1,0 +1,49 @@
+name: Weekly ROI Report
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 13 * * 1'
+
+jobs:
+  roi-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Prepare telemetry input
+        env:
+          TELEMETRY_REPORT_URL: ${{ secrets.TELEMETRY_REPORT_URL }}
+          TELEMETRY_REPORT_TOKEN: ${{ secrets.TELEMETRY_REPORT_TOKEN }}
+        run: |
+          mkdir -p reports
+          if [ -n "${TELEMETRY_REPORT_URL}" ]; then
+            echo "Fetching telemetry report input from configured URL..."
+            if [ -n "${TELEMETRY_REPORT_TOKEN}" ]; then
+              curl -fsSL -H "Authorization: Bearer ${TELEMETRY_REPORT_TOKEN}" "${TELEMETRY_REPORT_URL}" -o reports/telemetry-input.json
+            else
+              curl -fsSL "${TELEMETRY_REPORT_URL}" -o reports/telemetry-input.json
+            fi
+          elif [ -f data/telemetry-weekly.json ]; then
+            cp data/telemetry-weekly.json reports/telemetry-input.json
+          else
+            echo "[]" > reports/telemetry-input.json
+          fi
+
+      - name: Build weekly ROI report
+        run: |
+          node scripts/build-weekly-roi-report.js --input reports/telemetry-input.json --output reports/weekly-roi-report.md
+
+      - name: Publish report to step summary
+        run: |
+          cat reports/weekly-roi-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-roi-report
+          path: reports/weekly-roi-report.md

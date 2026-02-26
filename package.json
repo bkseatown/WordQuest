@@ -26,6 +26,7 @@
     "test:regressions": "npm run test:regression:curriculum-microcopy && npm run test:regression:prefs-reset && npm run test:regression:force-update && npm run test:regression:sw-upgrade && npm run test:regression:focus-search-placeholder && npm run test:regression:student-microcopy && npm run test:regression:session-outcomes-export",
     "telemetry:funnel:check": "node scripts/check-funnel-telemetry-contract.js",
     "telemetry:dashboards:check": "node scripts/check-telemetry-dashboard-contract.js",
+    "telemetry:roi:report": "node scripts/build-weekly-roi-report.js",
     "offline:check": "node scripts/check-offline-contract.js",
     "release:check": "npm run audio:manifest:check && npm run offline:check && npm run grade:check && npm run hud:check && npm run telemetry:funnel:check && npm run telemetry:dashboards:check && npm run scope:strict",
     "release:gate": "npm run release:check && npm run smoke:teacher-daily-flow && npm run test:regressions",
