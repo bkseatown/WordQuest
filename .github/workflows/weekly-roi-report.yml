@@ -103,6 +103,106 @@ jobs:
             });
             core.info(`Created ROI alert issue: #${created.data.number}`);
 
+      - name: Open weekly release health issue
+        uses: actions/github-script@v7
+        env:
+          WEEK_ID: ${{ steps.alert_check.outputs.week_id }}
+        with:
+          script: |
+            const fs = require('fs');
+
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const weekId = process.env.WEEK_ID || 'unknown-week';
+            const title = `[Release Health] Weekly snapshot (${weekId})`;
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            const report = fs.readFileSync('reports/weekly-roi-report.md', 'utf8');
+
+            const scoreFor = (name) => {
+              const regex = new RegExp(`\\|\\s*${name}\\s*\\|\\s*([^|]+?)\\s*\\|`, 'i');
+              const match = report.match(regex);
+              return match ? match[1].trim() : '--';
+            };
+
+            const adoption = scoreFor('Adoption');
+            const learning = scoreFor('Learning');
+            const reliability = scoreFor('Reliability');
+
+            const sinceMs = Date.now() - (7 * 24 * 60 * 60 * 1000);
+            const fmtPct = (value) => (value === null ? '--' : `${Math.round(value)}%`);
+            const fmtLatest = (run) => {
+              if (!run) return '--';
+              return `[${run.conclusion || run.status}](${run.html_url})`;
+            };
+
+            async function workflowStats(workflowId) {
+              const response = await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: workflowId,
+                per_page: 100
+              });
+              const recentCompleted = (response.data.workflow_runs || [])
+                .filter((run) => run.status === 'completed')
+                .filter((run) => new Date(run.created_at).getTime() >= sinceMs);
+              const successCount = recentCompleted.filter((run) => run.conclusion === 'success').length;
+              const rate = recentCompleted.length ? (successCount / recentCompleted.length) * 100 : null;
+              const latest = recentCompleted[0] || null;
+              return { rate, total: recentCompleted.length, latest };
+            }
+
+            const [deploy, smoke] = await Promise.all([
+              workflowStats('deploy-pages.yml'),
+              workflowStats('ui-runtime-smoke.yml')
+            ]);
+
+            const body = [
+              'Automated weekly release health snapshot.',
+              '',
+              `- Workflow run: ${runUrl}`,
+              '',
+              '## Reliability Dashboards',
+              '',
+              `- Adoption score: **${adoption}**`,
+              `- Learning score: **${learning}**`,
+              `- Reliability score: **${reliability}**`,
+              '',
+              '## CI Pass Rates (last 7 days)',
+              '',
+              `- Deploy GitHub Pages: **${fmtPct(deploy.rate)}** (${deploy.total} runs), latest ${fmtLatest(deploy.latest)}`,
+              `- UI Runtime Smoke: **${fmtPct(smoke.rate)}** (${smoke.total} runs), latest ${fmtLatest(smoke.latest)}`,
+              '',
+              '## Weekly ROI Report',
+              '',
+              report
+            ].join('\n');
+
+            const existing = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100
+            });
+            const duplicate = existing.find((issue) => issue.title === title);
+            if (duplicate) {
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: duplicate.number,
+                body
+              });
+              core.info(`Updated existing release health issue: #${duplicate.number}`);
+              return;
+            }
+
+            const created = await github.rest.issues.create({
+              owner,
+              repo,
+              title,
+              body
+            });
+            core.info(`Created release health issue: #${created.data.number}`);
+
       - name: Upload report artifact
         uses: actions/upload-artifact@v4
         with:
