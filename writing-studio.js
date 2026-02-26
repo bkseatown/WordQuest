@@ -251,9 +251,9 @@
       label: "Elementary School",
       paths: [
         {
-          id: "es-literacy", label: "Literacy Workshop", units: [
+          id: "es-ela", label: "ES ELA Workshop", units: [
             {
-              id: "es-u1", label: "Unit 1: Opinion and Evidence", lessons: [
+              id: "es-u1", label: "Unit: Opinion / Informational Foundations", lessons: [
                 { id: "es-u1-l1", label: "Lesson 1: State a clear opinion", mode: "paragraph", gradeBand: "35", target: "Write a focused opinion claim and support with one reason.", criteria: "Claim is clear, reason is relevant, connector used.", frame: "I think __ because __.", gap: "write one topic sentence and one because sentence." },
                 { id: "es-u1-l2", label: "Lesson 2: Add text evidence", mode: "paragraph", gradeBand: "35", target: "Use one text detail to support your claim.", criteria: "Evidence sentence references text, explanation follows.", frame: "According to the text, __. This shows __.", gap: "match one claim to one evidence line from class text." }
               ]
@@ -261,10 +261,20 @@
           ]
         },
         {
-          id: "es-ss", label: "Integrated Social Studies Writing", units: [
+          id: "es-content", label: "ES Integrated Content Writing", units: [
             {
               id: "es-u2", label: "Unit 2: Sequence and Explanation", lessons: [
                 { id: "es-u2-l1", label: "Lesson 1: Sequence clearly", mode: "sentence", gradeBand: "35", target: "Write sequence sentences using first/next/then.", criteria: "At least 3 ordered steps, transition words present.", frame: "First __. Next __. Then __.", gap: "reorder 3 mixed steps and rewrite with transitions." }
+              ]
+            }
+          ]
+        },
+        {
+          id: "es-support", label: "ES Learning Support / EAL", units: [
+            {
+              id: "es-u3", label: "Unit 3: Strategic Writing Intervention", lessons: [
+                { id: "es-u3-l1", label: "Lesson 1: Oral rehearsal to sentence", mode: "sentence", gradeBand: "35", target: "Rehearse orally, then write one complete sentence.", criteria: "One complete sentence with capital and period.", frame: "I can say: __. I can write: __.", gap: "say the sentence out loud 2x before writing." },
+                { id: "es-u3-l2", label: "Lesson 2: Expand one sentence", mode: "sentence", gradeBand: "35", target: "Expand a base sentence with one detail phrase.", criteria: "Adds who/what/where detail without run-on.", frame: "__ happened __.", gap: "choose one detail from who/what/where and add it." }
               ]
             }
           ]
@@ -275,7 +285,7 @@
       label: "Middle School",
       paths: [
         {
-          id: "ms-english", label: "English / Humanities", units: [
+          id: "ms-english", label: "MS English / Humanities", units: [
             {
               id: "ms-u1", label: "Unit 1: Claim-Evidence-Reasoning", lessons: [
                 { id: "ms-u1-l1", label: "Lesson 1: Arguable claim", mode: "paragraph", gradeBand: "68", target: "Develop an arguable claim and one supporting reason.", criteria: "Claim is debatable, reason is specific.", frame: "My claim is __ because __.", gap: "convert a fact statement into an arguable claim." },
@@ -285,10 +295,20 @@
           ]
         },
         {
-          id: "ms-science", label: "Science Writing", units: [
+          id: "ms-science", label: "MS Science Writing", units: [
             {
               id: "ms-u2", label: "Unit 2: Lab Explanation", lessons: [
                 { id: "ms-u2-l1", label: "Lesson 1: Explain a result", mode: "paragraph", gradeBand: "68", target: "Explain a scientific result using data language.", criteria: "Claim references result, evidence includes data point, reasoning links cause/effect.", frame: "The data show __. This suggests __ because __.", gap: "write one sentence that names result + one sentence that explains why." }
+              ]
+            }
+          ]
+        },
+        {
+          id: "ms-support", label: "MS Strategic Learning / Learning Support", units: [
+            {
+              id: "ms-u3", label: "Unit 3: Executive Function Writing Routines", lessons: [
+                { id: "ms-u3-l1", label: "Lesson 1: Plan in 3 bullets", mode: "sentence", gradeBand: "68", target: "Generate a 3-point plan before drafting.", criteria: "Plan includes claim/topic + two support points.", frame: "Point 1 __ / Point 2 __ / Point 3 __", gap: "fill the 3 bullets before any draft sentence." },
+                { id: "ms-u3-l2", label: "Lesson 2: Draft in chunks", mode: "paragraph", gradeBand: "68", target: "Draft one chunk at a time with check-ins.", criteria: "Completes claim chunk, evidence chunk, reasoning chunk.", frame: "Chunk 1: __. Chunk 2: __. Chunk 3: __.", gap: "write only chunk 1, pause, then continue." }
               ]
             }
           ]
@@ -299,7 +319,7 @@
       label: "High School",
       paths: [
         {
-          id: "hs-english", label: "English / Humanities", units: [
+          id: "hs-english", label: "HS English / Humanities", units: [
             {
               id: "hs-u1", label: "Unit 1: Analytical Writing", lessons: [
                 { id: "hs-u1-l1", label: "Lesson 1: Thesis move", mode: "paragraph", gradeBand: "912", target: "Write a nuanced thesis with one qualification.", criteria: "Thesis is precise and acknowledges complexity.", frame: "Although __, __ because __.", gap: "revise an overgeneralized claim into a nuanced thesis." },
@@ -309,10 +329,20 @@
           ]
         },
         {
-          id: "hs-science", label: "Science and Technical Writing", units: [
+          id: "hs-science", label: "HS Science and Technical Writing", units: [
             {
               id: "hs-u2", label: "Unit 2: Scientific Argument", lessons: [
                 { id: "hs-u2-l1", label: "Lesson 1: Claim with evidence set", mode: "paragraph", gradeBand: "912", target: "Develop a scientific claim using two evidence points.", criteria: "Claim is testable, evidence is specific, reasoning addresses validity.", frame: "Based on __ and __, the claim is __ because __.", gap: "choose the strongest evidence pair and explain why it supports the claim." }
+              ]
+            }
+          ]
+        },
+        {
+          id: "hs-support", label: "HS Learning Support / EAL / Co-Taught Support", units: [
+            {
+              id: "hs-u3", label: "Unit 3: High School Support Routines", lessons: [
+                { id: "hs-u3-l1", label: "Lesson 1: Thesis to paragraph bridge", mode: "paragraph", gradeBand: "912", target: "Bridge from thesis statement to a full analytical paragraph.", criteria: "Thesis aligns with paragraph claim and evidence.", frame: "Thesis: __. Paragraph claim: __. Evidence: __. Analysis: __.", gap: "write thesis + one claim sentence only, then expand." },
+                { id: "hs-u3-l2", label: "Lesson 2: Assignment unpack protocol", mode: "sentence", gradeBand: "912", target: "Unpack prompt demands before drafting.", criteria: "Identifies task verbs, evidence expectations, and output structure.", frame: "Task verb: __. Evidence needed: __. Structure: __.", gap: "fill prompt-unpack template before writing response." }
               ]
             }
           ]
@@ -1383,6 +1413,11 @@
     return paths.find(function (p) { return p.id === pathId; }) || paths[0] || null;
   }
 
+  function getSelectedFishTankDivisionLabel() {
+    var division = String(fishTankGradeSelect && fishTankGradeSelect.value || getFishTankBand());
+    return (FISHTANK_SCOPE[division] && FISHTANK_SCOPE[division].label) || "School";
+  }
+
   function getSelectedFishTankUnit() {
     var path = getSelectedFishTankPath();
     if (!path) return null;
@@ -1499,8 +1534,9 @@
   function getLessonSummaryLine() {
     var lesson = currentFishTankLesson || getSelectedFishTankLesson();
     var path = getSelectedFishTankPath();
+    var divisionLabel = getSelectedFishTankDivisionLabel();
     if (!lesson) return "Curriculum lesson: not selected";
-    return "Curriculum lesson: " + (path ? path.label + " - " : "") + lesson.label;
+    return "Curriculum lesson: " + divisionLabel + " / " + (path ? path.label + " - " : "") + lesson.label;
   }
 
   function getWritingSnapshot() {
