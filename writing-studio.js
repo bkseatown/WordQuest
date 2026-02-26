@@ -127,6 +127,9 @@
   var planAddBtn = document.getElementById("ws-plan-add");
   var planUseBtn = document.getElementById("ws-plan-use");
   var planListEl = document.getElementById("ws-plan-list");
+  var planMeterTextEl = document.getElementById("ws-plan-meter-text");
+  var planMeterFillEl = document.getElementById("ws-plan-meter-fill");
+  var planMeterNoteEl = document.getElementById("ws-plan-meter-note");
   var organizerTypeSelect = document.getElementById("ws-organizer-type");
   var organizerApplyBtn = document.getElementById("ws-organizer-apply");
   var organizerPreviewEl = document.getElementById("ws-organizer-preview");
@@ -202,13 +205,45 @@
   }
 
   function getPlanningReadiness(text, words, sentenceCount) {
+    return getPlanningStatus(text, words, sentenceCount).ready;
+  }
+
+  function getPlanningStatus(text, words, sentenceCount) {
     var claimSignal = CLAIM_RE.test(text);
     var hasPlanItems = planItems.length >= 2;
     var hasOrganizer = Boolean(ORGANIZER_TEMPLATES[getOrganizerType()]);
+    var hasStarterText = sentenceCount >= 1 || words >= 6;
+    var paragraphTextReady = claimSignal || words >= 12;
+    var checks = [];
+
+    checks.push({ ok: hasPlanItems, label: "Add at least 2 idea items" });
+    checks.push({ ok: hasOrganizer, label: "Select an organizer" });
     if (currentMode === "paragraph") {
-      return hasPlanItems && (claimSignal || words >= 12) && hasOrganizer;
+      checks.push({ ok: paragraphTextReady, label: "Write a claim starter or 12+ words" });
+    } else {
+      checks.push({ ok: hasStarterText, label: "Write at least 1 sentence starter" });
     }
-    return hasPlanItems && (sentenceCount >= 1 || words >= 6);
+
+    var total = checks.length;
+    var done = checks.filter(function (c) { return c.ok; }).length;
+    var pct = Math.round((done / total) * 100);
+    return {
+      ready: done === total,
+      percent: pct,
+      checks: checks,
+      missing: checks.filter(function (c) { return !c.ok; }).map(function (c) { return c.label; })
+    };
+  }
+
+  function renderPlanningMeter(text, words, sentenceCount) {
+    var status = getPlanningStatus(text, words, sentenceCount);
+    if (planMeterTextEl) planMeterTextEl.textContent = status.percent + "%";
+    if (planMeterFillEl) planMeterFillEl.style.width = status.percent + "%";
+    if (planMeterNoteEl) {
+      planMeterNoteEl.textContent = status.ready
+        ? "Planning ready. Move to Draft."
+        : "Still needed: " + status.missing.join(" • ");
+    }
   }
 
   function renderFlowState(text, words, sentenceCount) {
@@ -687,6 +722,7 @@
     renderCoachTips(text, words, sentences);
     renderGlowGrowGo(text, words, sentences);
     renderConferenceCopilot(text, words, sentences);
+    renderPlanningMeter(text, words, sentences);
   }
 
   function renderVocabPills() {

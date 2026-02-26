@@ -53,6 +53,16 @@
         </div>
         <div id="ws-plan" class="ws-plan" aria-label="Idea builder">
           <div class="ws-meta">Idea Builder</div>
+          <div class="ws-plan-meter-wrap" aria-live="polite">
+            <div class="ws-plan-meter-head">
+              <span class="ws-meta">Planning Readiness</span>
+              <span id="ws-plan-meter-text" class="ws-meta">0%</span>
+            </div>
+            <div class="ws-plan-meter-track">
+              <div id="ws-plan-meter-fill" class="ws-plan-meter-fill"></div>
+            </div>
+            <div id="ws-plan-meter-note" class="ws-organizer-line">Add ideas to unlock Draft.</div>
+          </div>
           <div class="ws-plan-row ws-plan-row-organizer">
             <select id="ws-organizer-type" class="ws-plan-input">
               <option value="sequence">Organizer: Sequence</option>
