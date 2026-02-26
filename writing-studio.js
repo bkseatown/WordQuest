@@ -6,6 +6,7 @@
   var STUDIO_THEME_KEY = "ws_theme_v1";
   var FRAMEWORK_KEY = "ws_framework_v1";
   var AUDIENCE_KEY = "ws_audience_v1";
+  var STEPUP_KEY = "ws_stepup_mode_v1";
   var FALLBACK_ACCENT = "#7aa7ff";
   var ACADEMIC_WORDS = {
     k2: ["detail", "clear", "because", "first", "next", "then", "show", "explain"],
@@ -183,6 +184,24 @@
       { topic: "Solution", detail: "What action could solve it?" }
     ]
   };
+  var STEPUP_SEQUENCE = {
+    k2: {
+      sentence: "K-2 sentence focus: name topic -> add one detail -> use because/and.",
+      paragraph: "K-2 paragraph focus: state opinion -> one reason -> one explain sentence."
+    },
+    "35": {
+      sentence: "3-5 sentence focus: topic sentence -> two detail sentences -> transition.",
+      paragraph: "3-5 paragraph focus: topic/claim -> evidence detail -> explanation sentence."
+    },
+    "68": {
+      sentence: "6-8 sentence focus: precise claim -> evidence phrase -> logic connector.",
+      paragraph: "6-8 paragraph focus: arguable claim -> evidence -> reasoning -> counterpoint."
+    },
+    "912": {
+      sentence: "9-12 sentence focus: nuanced assertion -> qualification -> precise diction.",
+      paragraph: "9-12 paragraph focus: thesis move -> integrated evidence -> analysis -> synthesis."
+    }
+  };
 
   var body = document.body;
   var subtitleEl = document.getElementById("ws-subtitle");
@@ -214,6 +233,17 @@
   var benchmarkConfidenceEl = document.getElementById("ws-benchmark-confidence");
   var exemplarListEl = document.getElementById("ws-exemplars");
   var scaffoldCueEl = document.getElementById("ws-scaffold-cue");
+  var stepUpToggleBtn = document.getElementById("ws-stepup-toggle");
+  var stepUpTargetEl = document.getElementById("ws-stepup-target");
+  var stepUpGradeTargetEl = document.getElementById("ws-stepup-grade-target");
+  var stepUpSeqEl = document.getElementById("ws-stepup-seq");
+  var stepUpColorsEl = document.getElementById("ws-stepup-colors");
+  var markTopicBtn = document.getElementById("ws-mark-topic");
+  var markDetailBtn = document.getElementById("ws-mark-detail");
+  var markExplainBtn = document.getElementById("ws-mark-explain");
+  var markTransitionBtn = document.getElementById("ws-mark-transition");
+  var markVocabBtn = document.getElementById("ws-mark-vocab");
+  var stepUpCopyBtn = document.getElementById("ws-stepup-copy");
   var scaffoldNextBtn = document.getElementById("ws-scaffold-next");
   var scaffoldStemBtn = document.getElementById("ws-scaffold-stem");
   var scaffoldIdeaBtn = document.getElementById("ws-scaffold-idea");
@@ -259,6 +289,7 @@
   var currentStep = "plan";
   var currentFramework = "ccss";
   var currentAudience = "student";
+  var stepUpEnabled = true;
   var teacherModel = false;
   var sprintTotalSeconds = PROFILE_CONFIG.whole.sprintSeconds;
   var sprintRemaining = sprintTotalSeconds;
@@ -1050,6 +1081,88 @@
     if (scaffoldCueEl) scaffoldCueEl.textContent = text;
   }
 
+  function getStepUpSequenceText() {
+    var byBand = STEPUP_SEQUENCE[currentGradeBand] || STEPUP_SEQUENCE["35"];
+    return byBand[currentMode] || byBand.sentence;
+  }
+
+  function renderStepUpMode() {
+    if (stepUpToggleBtn) {
+      stepUpToggleBtn.classList.toggle("is-active", stepUpEnabled);
+      stepUpToggleBtn.setAttribute("aria-pressed", stepUpEnabled ? "true" : "false");
+      stepUpToggleBtn.textContent = stepUpEnabled ? "Step Up Mode" : "Step Up Off";
+    }
+    if (stepUpSeqEl) stepUpSeqEl.style.display = stepUpEnabled ? "" : "none";
+    if (stepUpColorsEl) stepUpColorsEl.style.display = stepUpEnabled ? "" : "none";
+    var text = getStepUpSequenceText();
+    if (stepUpTargetEl) stepUpTargetEl.textContent = text;
+    if (stepUpGradeTargetEl) stepUpGradeTargetEl.textContent = text;
+  }
+
+  function toggleStepUpMode() {
+    stepUpEnabled = !stepUpEnabled;
+    renderStepUpMode();
+    try {
+      localStorage.setItem(STEPUP_KEY, stepUpEnabled ? "on" : "off");
+    } catch (_error) {
+      // Ignore storage write errors.
+    }
+    showToast(stepUpEnabled ? "Step Up Mode on" : "Step Up Mode off");
+  }
+
+  function loadStepUpMode() {
+    var stored = "on";
+    try {
+      stored = localStorage.getItem(STEPUP_KEY) || "on";
+    } catch (_error) {
+      stored = "on";
+    }
+    stepUpEnabled = stored !== "off";
+    renderStepUpMode();
+  }
+
+  function insertMarker(code, label) {
+    if (!stepUpEnabled) {
+      showToast("Enable Step Up Mode first");
+      return;
+    }
+    var start = Number(editor.selectionStart || 0);
+    var end = Number(editor.selectionEnd || 0);
+    var value = editor.value || "";
+    if (end > start) {
+      var selected = value.slice(start, end);
+      editor.value = value.slice(0, start) + "[" + code + ": " + selected + "]" + value.slice(end);
+      editor.selectionStart = editor.selectionEnd = start + code.length + selected.length + 4;
+    } else {
+      var marker = "[" + code + "] ";
+      editor.value = value.slice(0, start) + marker + value.slice(start);
+      editor.selectionStart = editor.selectionEnd = start + marker.length;
+    }
+    editor.focus();
+    updateMetricsAndCoach();
+    showToast(label + " marked");
+  }
+
+  function copyMarkedDraft() {
+    var text = (editor.value || "").trim();
+    if (!text) {
+      showToast("Draft is empty");
+      return;
+    }
+    var header = "Step Up Marked Draft (" + (currentGradeBand === "k2" ? "K-2" : currentGradeBand === "35" ? "3-5" : currentGradeBand === "68" ? "6-8" : "9-12") + ", " + currentMode + ")\n";
+    var key = "Marking Key: [T]=Topic [D]=Detail [E]=Explain [TR]=Transition [V]=Vocab\n";
+    var payload = header + key + text;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(payload).then(function () {
+        showToast("Marked draft copied");
+      }).catch(function () {
+        showToast("Copy blocked by browser");
+      });
+      return;
+    }
+    showToast("Clipboard not available");
+  }
+
   function setAudience(audience, options) {
     var normalized = audience === "teacher" || audience === "family" ? audience : "student";
     currentAudience = normalized;
@@ -1305,6 +1418,7 @@
     if (gradeBandSelect) gradeBandSelect.value = normalized;
     renderChecklist();
     renderVocabPills();
+    renderStepUpMode();
     updateMetricsAndCoach();
     showToast("Grade band: " + (normalized === "k2" ? "K-2" : normalized === "35" ? "3-5" : normalized === "68" ? "6-8" : "9-12"));
   }
@@ -1386,6 +1500,7 @@
       checklistInputs.forEach(function (input) { input.checked = false; });
       currentStep = "plan";
     }
+    renderStepUpMode();
     renderChecklist();
     renderVocabPills();
     setImagePrompts(imagePromptItems.length ? buildImagePrompts(imagePromptLabel || "this image") : []);
@@ -1591,6 +1706,13 @@
   }
   if (sprintStartBtn) sprintStartBtn.addEventListener("click", toggleSprint);
   if (sprintResetBtn) sprintResetBtn.addEventListener("click", resetSprint);
+  if (stepUpToggleBtn) stepUpToggleBtn.addEventListener("click", toggleStepUpMode);
+  if (markTopicBtn) markTopicBtn.addEventListener("click", function () { insertMarker("T", "Topic"); });
+  if (markDetailBtn) markDetailBtn.addEventListener("click", function () { insertMarker("D", "Detail"); });
+  if (markExplainBtn) markExplainBtn.addEventListener("click", function () { insertMarker("E", "Explain"); });
+  if (markTransitionBtn) markTransitionBtn.addEventListener("click", function () { insertMarker("TR", "Transition"); });
+  if (markVocabBtn) markVocabBtn.addEventListener("click", function () { insertMarker("V", "Vocab"); });
+  if (stepUpCopyBtn) stepUpCopyBtn.addEventListener("click", copyMarkedDraft);
   if (scaffoldNextBtn) scaffoldNextBtn.addEventListener("click", applyNextSmallStep);
   if (scaffoldStemBtn) scaffoldStemBtn.addEventListener("click", insertStem);
   if (scaffoldIdeaBtn) scaffoldIdeaBtn.addEventListener("click", insertIdeaPrompt);
@@ -1610,6 +1732,7 @@
   renderOrganizerPreview();
   renderPlanItems();
   renderSprint();
+  loadStepUpMode();
   loadAudience();
   loadFramework();
   loadDraft();

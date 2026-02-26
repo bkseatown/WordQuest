@@ -387,6 +387,39 @@ body.cs-page-writing {
   background: rgba(122, 167, 255, 0.2);
 }
 
+.ws-stepup-seq {
+  margin-top: -2px;
+}
+
+.ws-stepup-colors {
+  margin-top: -2px;
+}
+
+.ws-color-topic {
+  background: rgba(255, 218, 121, 0.22);
+  border-color: rgba(255, 218, 121, 0.5);
+}
+
+.ws-color-detail {
+  background: rgba(122, 167, 255, 0.22);
+  border-color: rgba(122, 167, 255, 0.5);
+}
+
+.ws-color-explain {
+  background: rgba(125, 227, 170, 0.2);
+  border-color: rgba(125, 227, 170, 0.45);
+}
+
+.ws-color-transition {
+  background: rgba(198, 173, 255, 0.22);
+  border-color: rgba(198, 173, 255, 0.45);
+}
+
+.ws-color-vocab {
+  background: rgba(255, 170, 131, 0.22);
+  border-color: rgba(255, 170, 131, 0.45);
+}
+
 #ws-rail {
   display: flex;
   flex-direction: column;
