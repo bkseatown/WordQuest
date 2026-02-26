@@ -280,9 +280,9 @@
       label: "Elementary School",
       paths: [
         {
-          id: "es-ela", label: "ES Reading/Writing Workshop (Units of Study)", units: [
+          id: "es-ela", label: "ES Structured Literacy Writing (SOR-Aligned)", units: [
             {
-              id: "es-u1", label: "K-5 Writing Workshop Progressions", lessons: [
+              id: "es-u1", label: "K-5 Explicit Writing Progressions", lessons: [
                 { id: "es-u1-l1", label: "Lesson 1: Opinion/Information claim", mode: "paragraph", gradeBand: "35", target: "Write a focused opinion or information claim and support with one reason.", criteria: "Claim is clear, reason is relevant, connector used.", frame: "I think __ because __.", gap: "write one topic sentence and one because sentence." },
                 { id: "es-u1-l2", label: "Lesson 2: Narrative detail and sequence", mode: "paragraph", gradeBand: "35", target: "Use sequence and details to build a short narrative paragraph.", criteria: "Sequence is clear, detail is specific, ending sentence closes idea.", frame: "First __. Next __. Finally __.", gap: "reorder three events, then write sequence sentences." }
               ]
