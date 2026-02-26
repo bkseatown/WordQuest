@@ -207,6 +207,12 @@
   var calibrationEl = document.getElementById("ws-calibration");
   var benchmarkConfidenceEl = document.getElementById("ws-benchmark-confidence");
   var exemplarListEl = document.getElementById("ws-exemplars");
+  var scaffoldCueEl = document.getElementById("ws-scaffold-cue");
+  var scaffoldNextBtn = document.getElementById("ws-scaffold-next");
+  var scaffoldStemBtn = document.getElementById("ws-scaffold-stem");
+  var scaffoldIdeaBtn = document.getElementById("ws-scaffold-idea");
+  var scaffoldEvidenceBtn = document.getElementById("ws-scaffold-evidence");
+  var scaffoldCalmBtn = document.getElementById("ws-scaffold-calm");
   var miniLessonEl = document.getElementById("ws-mini-lesson");
   var sprintTimeEl = document.getElementById("ws-sprint-time");
   var sprintStartBtn = document.getElementById("ws-sprint-start");
@@ -950,6 +956,73 @@
     });
   }
 
+  function setScaffoldCue(text) {
+    if (scaffoldCueEl) scaffoldCueEl.textContent = text;
+  }
+
+  function getMicroStepCue() {
+    var map = {
+      plan: currentMode === "paragraph" ? "Write only your claim first." : "Write only your topic sentence first.",
+      draft: currentMode === "paragraph" ? "Add one evidence sentence only." : "Add one detail sentence only.",
+      revise: "Change one word to a stronger word.",
+      publish: "Read one line aloud and fix one part."
+    };
+    return map[currentStep] || "Write one clear line.";
+  }
+
+  function insertStem() {
+    var stem = (MODEL_STEMS[currentMode] && MODEL_STEMS[currentMode][currentStep]) || "";
+    if (!stem) stem = currentMode === "paragraph" ? "Claim: ___ because ___." : "First, ___ because ___.";
+    var prefix = editor.value.trim().length === 0 ? "" : "\n";
+    editor.value += prefix + stem;
+    editor.focus();
+    updateMetricsAndCoach();
+    setScaffoldCue("Stem added. Fill the blanks, then continue.");
+    showToast("Sentence stem added");
+  }
+
+  function insertIdeaPrompt() {
+    var cue = currentMode === "paragraph"
+      ? "Idea Prompt: What is your main point? Why does it matter to your reader?"
+      : "Idea Prompt: Who/what is this about? What is happening? Why?";
+    var prefix = editor.value.trim().length === 0 ? "" : "\n";
+    editor.value += prefix + cue;
+    editor.focus();
+    updateMetricsAndCoach();
+    setScaffoldCue("Answer the prompt in one sentence.");
+    showToast("Idea prompt added");
+  }
+
+  function insertEvidenceFrame() {
+    var frame = currentMode === "paragraph"
+      ? "According to the text, ___. This shows ___."
+      : "Because ___, ___ happened.";
+    var prefix = editor.value.trim().length === 0 ? "" : "\n";
+    editor.value += prefix + frame;
+    editor.focus();
+    updateMetricsAndCoach();
+    setScaffoldCue("Complete one evidence frame.");
+    showToast("Evidence frame added");
+  }
+
+  function applyCalmReset() {
+    stopSprint();
+    setStep("plan");
+    setScaffoldCue("Pause. Breathe in for 4, out for 4. Then write one line only.");
+    showToast("Calm reset loaded");
+  }
+
+  function applyNextSmallStep() {
+    var cue = getMicroStepCue();
+    setScaffoldCue(cue);
+    if (currentStep === "plan") {
+      planTopicInput && planTopicInput.focus();
+    } else {
+      editor.focus();
+    }
+    showToast("Next small step");
+  }
+
   function renderMasterySnapshot(text, words, sentenceCount) {
     if (!rubric1El || !rubric2El || !rubric3El || !rubricScoreEl || !miniLessonEl) return;
     var t = getBandThresholds();
@@ -1161,6 +1234,7 @@
     checklistInputs.forEach(function (input) { input.checked = false; });
     currentStep = "plan";
     if (window.speechSynthesis) window.speechSynthesis.cancel();
+    setScaffoldCue("Use one tool, then write one line.");
     updateMetricsAndCoach();
     showToast("Draft cleared");
   }
@@ -1397,6 +1471,11 @@
   }
   if (sprintStartBtn) sprintStartBtn.addEventListener("click", toggleSprint);
   if (sprintResetBtn) sprintResetBtn.addEventListener("click", resetSprint);
+  if (scaffoldNextBtn) scaffoldNextBtn.addEventListener("click", applyNextSmallStep);
+  if (scaffoldStemBtn) scaffoldStemBtn.addEventListener("click", insertStem);
+  if (scaffoldIdeaBtn) scaffoldIdeaBtn.addEventListener("click", insertIdeaPrompt);
+  if (scaffoldEvidenceBtn) scaffoldEvidenceBtn.addEventListener("click", insertEvidenceFrame);
+  if (scaffoldCalmBtn) scaffoldCalmBtn.addEventListener("click", applyCalmReset);
 
   editor.addEventListener("input", updateMetricsAndCoach);
   saveBtn.addEventListener("click", saveDraft);
