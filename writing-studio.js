@@ -471,6 +471,7 @@
   var fishTankHandoffBtn = document.getElementById("ws-ft-handoff");
   var fishTankSsmBtn = document.getElementById("ws-ft-ssm");
   var fishTankIespBtn = document.getElementById("ws-ft-iesp");
+  var fishTankPacketBtn = document.getElementById("ws-ft-packet");
   var fishTankTargetEl = document.getElementById("ws-ft-target");
   var quickWholeBtn = document.getElementById("ws-quick-whole");
   var quickSmallBtn = document.getElementById("ws-quick-small");
@@ -1680,6 +1681,64 @@
     ].join("\n");
   }
 
+  function buildLSTeamPacket() {
+    var snap = getWritingSnapshot();
+    var benchmark = benchmarkLevelEl ? benchmarkLevelEl.textContent : "Local estimate pending";
+    var planning = getPlanningStatus(snap.text, snap.words, snap.sentences);
+    var profileLabel = currentProfile === "whole" ? "Whole class" : currentProfile === "small" ? "Small group" : "1:1 intensive";
+    var barrier = growEl ? growEl.textContent : "Writing initiation and planning";
+    var scaffold = scaffoldCueEl ? scaffoldCueEl.textContent : "Sentence frame + chunked prompt";
+    var frame = currentFishTankLesson ? currentFishTankLesson.frame : "I think __ because __.";
+    var startSentences = Math.max(1, snap.sentences);
+    var targetSentences = Math.max(3, startSentences + 2);
+    var startScore = snap.scores.total;
+    var targetScore = Math.min(9, startScore + 2);
+    return [
+      "LS Team Packet (Writing Support)",
+      "Date: " + new Date().toLocaleDateString(),
+      getLessonSummaryLine(),
+      "",
+      "A) Diagnostic Snapshot",
+      "- Baseline output: " + snap.sentences + " sentence(s), " + snap.words + " word(s)",
+      "- Rubric baseline: " + startScore + "/9 (" + benchmark + ")",
+      "- Planning readiness: " + planning.percent + "%",
+      "- Barrier signal: " + barrier,
+      "- Evidence span: " + snap.evidence,
+      "",
+      "B) SMART Goal Draft",
+      "- In 8-10 instructional weeks, student will produce a structured paragraph with at least " + targetSentences + " sentences and score " + targetScore + "/9 or higher on the writing snapshot rubric in 3 of 4 samples, with planned scaffold fade.",
+      "",
+      "C) 4-Week Intervention Cycle",
+      "1) Week 1: diagnostic quick-write + organizer coaching + one modeled paragraph chunk.",
+      "2) Week 2: claim/topic + evidence chunk with immediate feedback and revision patch.",
+      "3) Week 3: reasoning/elaboration chunk + transition upgrade + timed warm-up transfer.",
+      "4) Week 4: independent attempt with reduced prompts and conference check.",
+      "",
+      "D) Progress Monitoring Plan",
+      "- Frequency: weekly (1 sample/week).",
+      "- Measures: sentence count, word count, rubric /9, planning readiness %, checklist completion.",
+      "- PLC review: every 2 weeks; adjust scaffold intensity by profile (" + profileLabel + ").",
+      "",
+      "E) Co-Teaching / Inclusion Moves",
+      "- Before class: 2-minute pre-write with frame \"" + frame + "\".",
+      "- During class: chunk directions into plan -> draft -> revise checkpoints.",
+      "- After class: copy teacher handoff and target one carryover move in core class.",
+      "",
+      "F) Accommodation Plan Draft",
+      "- Chunked task timing (2-5 minute bursts) with visible step tracker.",
+      "- Oral rehearsal before writing, sentence stems, and reduced writing load for first attempt.",
+      "- Preferential check-ins at start and midpoint of task.",
+      "- Alternative response option during fatigue: dictate first draft, then edit one chunk.",
+      "",
+      "G) Family Communication (5-minute routine)",
+      "- Read one line aloud, name one strength, add one sentence with frame \"" + frame + "\".",
+      "",
+      "H) Next Team Meeting Agenda",
+      "- Review baseline-to-current trend and decide: maintain, intensify, or fade support.",
+      "- Confirm who owns each action: LS teacher, classroom teacher, student, family."
+    ].join("\n");
+  }
+
   function normalizeWordQuestGrade(rawGrade) {
     var value = String(rawGrade || "").trim().toUpperCase();
     if (value === "K-2") return "k2";
@@ -2823,6 +2882,9 @@
   });
   if (fishTankIespBtn) fishTankIespBtn.addEventListener("click", function () {
     copyTextPayload(buildIESPGoalDraft(), "IESP goal draft copied");
+  });
+  if (fishTankPacketBtn) fishTankPacketBtn.addEventListener("click", function () {
+    copyTextPayload(buildLSTeamPacket(), "LS team packet copied");
   });
   if (frameworkSelect) frameworkSelect.addEventListener("change", function () { setFramework(frameworkSelect.value); });
   if (dictateBtn) dictateBtn.addEventListener("click", toggleDictation);
