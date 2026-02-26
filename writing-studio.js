@@ -4,6 +4,7 @@
   var DRAFT_KEY = "ws_draft_v1";
   var PREF_KEY = "wq_v2_prefs";
   var STUDIO_THEME_KEY = "ws_theme_v1";
+  var FRAMEWORK_KEY = "ws_framework_v1";
   var FALLBACK_ACCENT = "#7aa7ff";
   var ACADEMIC_WORDS = {
     k2: ["detail", "clear", "because", "first", "next", "then", "show", "explain"],
@@ -50,6 +51,40 @@
   var CONJUNCTION_RE = /\b(and|but|or|so|because|although|however|therefore|while|if)\b/i;
   var EVIDENCE_RE = /\b(according to|for example|for instance|the text says|in the text|evidence)\b/i;
   var CLAIM_RE = /\b(i think|i believe|this shows|the author|the text)\b/i;
+  var ABSOLUTE_RE = /\b(always|never|everyone|no one|all|none)\b/i;
+  var COUNTER_RE = /\b(however|although|on the other hand|some may say|counter)\b/i;
+  var FRAMEWORK_BANDS = {
+    ccss: [
+      { min: 0, level: "Below", note: "Build clear structure and details to reach grade-level writing expectations." },
+      { min: 4, level: "Approaching", note: "Core structure is present, but reasoning and detail need consistency." },
+      { min: 6, level: "Meeting", note: "Writing generally meets expected proficiency for structure, evidence, and language." },
+      { min: 8, level: "Exceeding", note: "Writing exceeds expectations with strong organization and precise language." }
+    ],
+    ib: [
+      { min: 0, level: "MYP 1-2", note: "Limited control; prioritize clear organization and basic support." },
+      { min: 4, level: "MYP 3-4", note: "Developing control with partial evidence and uneven precision." },
+      { min: 6, level: "MYP 5-6", note: "Secure communication with relevant support and mostly clear style." },
+      { min: 8, level: "MYP 7-8", note: "Sophisticated control, purposeful evidence, and effective style choices." }
+    ],
+    cambridge: [
+      { min: 0, level: "Emerging", note: "Ideas are present but need clearer sequencing and fuller development." },
+      { min: 4, level: "Developing", note: "Writing is partially effective with growing control of evidence and form." },
+      { min: 6, level: "Secure", note: "Writing is clear and controlled with relevant detail and appropriate register." },
+      { min: 8, level: "Extending", note: "Writing is precise, convincing, and consistently well crafted." }
+    ],
+    naplan: [
+      { min: 0, level: "Needs Additional Support", note: "Focus on sentence control, text structure, and idea development." },
+      { min: 4, level: "Developing", note: "Writing shows progress but requires stronger cohesion and elaboration." },
+      { min: 6, level: "Strong", note: "Writing is generally strong across audience, ideas, and language features." },
+      { min: 8, level: "Exceeding", note: "Writing is highly effective with control, depth, and fluency." }
+    ],
+    cefr: [
+      { min: 0, level: "A1", note: "Can write simple phrases and short connected statements." },
+      { min: 3, level: "A2", note: "Can produce short connected text on familiar topics with basic linking." },
+      { min: 5, level: "B1", note: "Can write connected text with reasons, examples, and clear sequencing." },
+      { min: 7, level: "B2", note: "Can present clear, detailed text and support viewpoints with control." }
+    ]
+  };
   var STEP_ORDER = ["plan", "draft", "revise", "publish"];
   var GOALS_BY_MODE = {
     sentence: {
@@ -148,6 +183,9 @@
   var rubric2El = document.getElementById("ws-rubric-2");
   var rubric3El = document.getElementById("ws-rubric-3");
   var rubricScoreEl = document.getElementById("ws-rubric-score");
+  var frameworkSelect = document.getElementById("ws-framework");
+  var benchmarkLevelEl = document.getElementById("ws-benchmark-level");
+  var benchmarkNoteEl = document.getElementById("ws-benchmark-note");
   var miniLessonEl = document.getElementById("ws-mini-lesson");
   var sprintTimeEl = document.getElementById("ws-sprint-time");
   var sprintStartBtn = document.getElementById("ws-sprint-start");
@@ -185,6 +223,7 @@
   var currentGradeBand = "35";
   var currentProfile = "whole";
   var currentStep = "plan";
+  var currentFramework = "ccss";
   var teacherModel = false;
   var sprintTotalSeconds = PROFILE_CONFIG.whole.sprintSeconds;
   var sprintRemaining = sprintTotalSeconds;
@@ -573,6 +612,13 @@
       } else {
         tips.push("Academic language is strong. Keep your explanation precise.");
       }
+
+      if (ABSOLUTE_RE.test(text) && !hasEvidenceSignal) {
+        tips.push("Reasoning check: avoid always/never claims unless your evidence proves them.");
+      }
+      if (currentGradeBand !== "k2" && words >= 24 && !COUNTER_RE.test(text)) {
+        tips.push("Critical thinking move: add one counterpoint line, then respond to it.");
+      }
     } else {
       if (avgLength < 8 && words > 0) {
         tips.push("Step Up move: add one detail phrase to each sentence.");
@@ -709,6 +755,41 @@
       : "Teach word upgrade pass: replace one simple word with a stronger academic choice.";
   }
 
+  function getWeakestDomain(scores) {
+    var weakest = "structure";
+    var min = scores.structure;
+    if (scores.detail < min) {
+      min = scores.detail;
+      weakest = "detail";
+    }
+    if (scores.language < min) {
+      weakest = "language";
+    }
+    return weakest;
+  }
+
+  function resolveBenchmarkBand(total) {
+    var bands = FRAMEWORK_BANDS[currentFramework] || FRAMEWORK_BANDS.ccss;
+    var current = bands[0];
+    for (var i = 0; i < bands.length; i += 1) {
+      if (total >= bands[i].min) current = bands[i];
+    }
+    return current;
+  }
+
+  function renderBenchmarkLens(total, scores) {
+    if (!benchmarkLevelEl || !benchmarkNoteEl) return;
+    var band = resolveBenchmarkBand(total);
+    var weak = getWeakestDomain(scores);
+    var target = weak === "structure"
+      ? "Prioritize organization and claim clarity next."
+      : (weak === "detail"
+        ? "Prioritize evidence/detail elaboration next."
+        : "Prioritize vocabulary precision and sentence control next.");
+    benchmarkLevelEl.textContent = band.level + " (local estimate)";
+    benchmarkNoteEl.textContent = band.note + " " + target;
+  }
+
   function renderMasterySnapshot(text, words, sentenceCount) {
     if (!rubric1El || !rubric2El || !rubric3El || !rubricScoreEl || !miniLessonEl) return;
     var t = getBandThresholds();
@@ -741,6 +822,7 @@
     rubric2El.textContent = detail + "/3";
     rubric3El.textContent = language + "/3";
     rubricScoreEl.textContent = total + "/9";
+    renderBenchmarkLens(total, { structure: structure, detail: detail, language: language });
     miniLessonEl.textContent = getMiniLessonRecommendation({ structure: structure, detail: detail, language: language });
   }
 
@@ -878,6 +960,21 @@
     showToast("Grade band: " + (normalized === "k2" ? "K-2" : normalized === "35" ? "3-5" : normalized === "68" ? "6-8" : "9-12"));
   }
 
+  function setFramework(framework, options) {
+    var normalized = Object.prototype.hasOwnProperty.call(FRAMEWORK_BANDS, framework) ? framework : "ccss";
+    currentFramework = normalized;
+    if (frameworkSelect) frameworkSelect.value = normalized;
+    updateMetricsAndCoach();
+    if (!(options && options.silent)) {
+      showToast("Benchmark updated");
+    }
+    try {
+      localStorage.setItem(FRAMEWORK_KEY, normalized);
+    } catch (_error) {
+      // Ignore storage write errors.
+    }
+  }
+
   function showToast(message) {
     var toast = document.getElementById("ws-toast");
     if (!toast) {
@@ -913,6 +1010,16 @@
       editor.value = saved;
     }
     updateMetricsAndCoach();
+  }
+
+  function loadFramework() {
+    var stored = "ccss";
+    try {
+      stored = localStorage.getItem(FRAMEWORK_KEY) || "ccss";
+    } catch (_error) {
+      stored = "ccss";
+    }
+    setFramework(stored, { silent: true });
   }
 
   function setMode(mode) {
@@ -1117,6 +1224,7 @@
   if (organizerTypeSelect) organizerTypeSelect.addEventListener("change", renderOrganizerPreview);
   if (organizerApplyBtn) organizerApplyBtn.addEventListener("click", applyOrganizerTemplate);
   if (gradeBandSelect) gradeBandSelect.addEventListener("change", function () { setGradeBand(gradeBandSelect.value); });
+  if (frameworkSelect) frameworkSelect.addEventListener("change", function () { setFramework(frameworkSelect.value); });
   if (dictateBtn) dictateBtn.addEventListener("click", toggleDictation);
   if (readBtn) readBtn.addEventListener("click", readDraftAloud);
   if (imageBtn && imageInput) {
@@ -1142,6 +1250,7 @@
   renderOrganizerPreview();
   renderPlanItems();
   renderSprint();
+  loadFramework();
   loadDraft();
   setGradeBand("35");
   setProfile("whole");

@@ -225,6 +225,10 @@ body.cs-page-writing {
   grid-template-columns: 1fr auto;
 }
 
+.ws-benchmark-controls {
+  margin: var(--ws-gap-1) 0;
+}
+
 .ws-plan-input {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.14);
