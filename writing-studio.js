@@ -495,6 +495,9 @@
   var flowButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-step[data-step]"));
   var goalEl = document.getElementById("ws-goal");
   var nextStepBtn = document.getElementById("ws-next-step");
+  var missionWarmupBtn = document.getElementById("ws-mission-warmup");
+  var missionPlanBtn = document.getElementById("ws-mission-plan");
+  var missionPowerBtn = document.getElementById("ws-mission-power");
   var launchpadCopyEl = document.getElementById("ws-launchpad-copy");
   var fishTankGradeSelect = document.getElementById("ws-ft-division");
   var fishTankPathSelect = document.getElementById("ws-ft-path");
@@ -546,6 +549,11 @@
   var backBtn = document.getElementById("ws-back");
   var setupToggleBtn = document.getElementById("ws-setup-toggle");
   var controlsPanelEl = document.getElementById("ws-controls-panel");
+  var railEl = document.getElementById("ws-rail");
+  var railPrevBtn = document.getElementById("ws-rail-prev");
+  var railNextBtn = document.getElementById("ws-rail-next");
+  var railToggleBtn = document.getElementById("ws-rail-toggle");
+  var railTitleEl = document.getElementById("ws-rail-title");
   var settingsBtn = document.getElementById("ws-settings");
   var gradeBandSelect = document.getElementById("ws-grade-band");
   var currentMode = "sentence";
@@ -583,6 +591,9 @@
   var isDictating = false;
   var imagePromptLabel = "";
   var currentFishTankLesson = null;
+  var railBlocks = [];
+  var railIndex = 0;
+  var railShowAll = false;
   var roiState = { totalMinutes: 0, artifacts: 0, counts: {} };
   var qualityStreak = 0;
   var bestQualityStreak = 0;
@@ -2375,6 +2386,89 @@
     showToast("Playbook applied");
   }
 
+  function getRailBlockTitle(block) {
+    if (!block) return "Section";
+    var heading = block.querySelector(".ws-h2");
+    return heading ? String(heading.textContent || "Section").trim() : "Section";
+  }
+
+  function renderRailPager() {
+    if (!railEl || !railBlocks.length) return;
+    railEl.classList.toggle("is-paged", !railShowAll);
+    railBlocks.forEach(function (block, idx) {
+      var hidden = !railShowAll && idx !== railIndex;
+      block.classList.toggle("ws-panel-hidden", hidden);
+    });
+    if (railTitleEl) railTitleEl.textContent = getRailBlockTitle(railBlocks[railIndex]);
+    if (railPrevBtn) railPrevBtn.disabled = !railShowAll && railIndex <= 0;
+    if (railNextBtn) railNextBtn.disabled = !railShowAll && railIndex >= railBlocks.length - 1;
+    if (railToggleBtn) {
+      railToggleBtn.textContent = railShowAll ? "Show One" : "Show All";
+      railToggleBtn.setAttribute("aria-pressed", railShowAll ? "true" : "false");
+    }
+  }
+
+  function goToRailPanelById(id) {
+    if (!id || !railBlocks.length) return;
+    var idx = railBlocks.findIndex(function (block) { return block.id === id; });
+    if (idx < 0) return;
+    railIndex = idx;
+    railShowAll = false;
+    renderRailPager();
+  }
+
+  function goToRailPanel(delta) {
+    if (!railBlocks.length) return;
+    railIndex = Math.max(0, Math.min(railBlocks.length - 1, railIndex + delta));
+    railShowAll = false;
+    renderRailPager();
+  }
+
+  function toggleRailView() {
+    railShowAll = !railShowAll;
+    renderRailPager();
+  }
+
+  function initRailPager() {
+    if (!railEl) return;
+    railBlocks = Array.prototype.slice.call(railEl.querySelectorAll(".ws-rail-block"));
+    railIndex = 0;
+    railShowAll = false;
+    renderRailPager();
+  }
+
+  function runMission(type) {
+    if (type === "warmup") {
+      withMutedToasts(function () {
+        setMode("sentence");
+        setStep("plan");
+      });
+      goToRailPanelById("ws-block-warmup");
+      setScaffoldCue("Mission: fix one sentence, then write one better sentence.");
+      showToast("Mission loaded: Warm-Up");
+      return;
+    }
+    if (type === "plan") {
+      withMutedToasts(function () {
+        setMode("sentence");
+        setStep("plan");
+      });
+      goToRailPanelById("ws-block-scaffold");
+      setScaffoldCue("Mission: add 2 idea bullets, then insert plan into draft.");
+      if (planTopicInput) planTopicInput.focus();
+      showToast("Mission loaded: Build a Plan");
+      return;
+    }
+    withMutedToasts(function () {
+      setMode("paragraph");
+      setStep("draft");
+    });
+    goToRailPanelById("ws-block-coach");
+    setScaffoldCue("Mission: write claim, evidence, and one explanation line.");
+    editor.focus();
+    showToast("Mission loaded: Power Paragraph");
+  }
+
   function normalizeWordQuestGrade(rawGrade) {
     var value = String(rawGrade || "").trim().toUpperCase();
     if (value === "K-2") return "k2";
@@ -3495,6 +3589,9 @@
   if (mtssCopyBtn) mtssCopyBtn.addEventListener("click", function () {
     copyTextPayload(buildMTSSWeeklyReview(), "MTSS weekly review copied");
   });
+  if (missionWarmupBtn) missionWarmupBtn.addEventListener("click", function () { runMission("warmup"); });
+  if (missionPlanBtn) missionPlanBtn.addEventListener("click", function () { runMission("plan"); });
+  if (missionPowerBtn) missionPowerBtn.addEventListener("click", function () { runMission("power"); });
   if (nextStepBtn) nextStepBtn.addEventListener("click", handleNextMove);
   if (quickWholeBtn) quickWholeBtn.addEventListener("click", function () { runQuickLaunch("whole"); });
   if (quickSmallBtn) quickSmallBtn.addEventListener("click", function () { runQuickLaunch("small"); });
@@ -3548,6 +3645,9 @@
   if (caseCopyBtn) caseCopyBtn.addEventListener("click", copyCaseloadBoard);
   if (playbookApplyBtn) playbookApplyBtn.addEventListener("click", applyPlaybook);
   if (caseListEl) caseListEl.addEventListener("click", handleCaseloadAction);
+  if (railPrevBtn) railPrevBtn.addEventListener("click", function () { goToRailPanel(-1); });
+  if (railNextBtn) railNextBtn.addEventListener("click", function () { goToRailPanel(1); });
+  if (railToggleBtn) railToggleBtn.addEventListener("click", toggleRailView);
   if (frameworkSelect) frameworkSelect.addEventListener("change", function () { setFramework(frameworkSelect.value); });
   if (dictateBtn) dictateBtn.addEventListener("click", toggleDictation);
   if (readBtn) readBtn.addEventListener("click", readDraftAloud);
@@ -3649,6 +3749,7 @@
   loadEngagementState();
   renderROIDashboard();
   renderImpactSnapshot();
+  initRailPager();
   loadStepUpMode();
   loadAudience();
   loadFramework();

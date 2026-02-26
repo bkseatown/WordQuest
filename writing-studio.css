@@ -278,6 +278,12 @@ body.cs-page-writing {
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+.ws-missions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ws-gap-2);
+}
+
 .ws-goal {
   flex: 1;
   font-size: 14px;
@@ -567,7 +573,8 @@ body.cs-page-writing {
   padding-right: var(--ws-gap-1);
 }
 
-.ws-rail-nav {
+.ws-rail-nav,
+.ws-rail-pager {
   position: sticky;
   top: 0;
   z-index: 3;
@@ -590,6 +597,15 @@ body.cs-page-writing {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.ws-rail-title {
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(122, 167, 255, 0.32);
+  background: rgba(122, 167, 255, 0.16);
+}
+
 #ws-rail .ws-h2 {
   font-size: 16px;
   letter-spacing: 0.01em;
@@ -604,6 +620,10 @@ body.cs-page-writing {
 
 .ws-rail-block:last-child {
   border-bottom: none;
+}
+
+#ws-rail.is-paged .ws-rail-block.ws-panel-hidden {
+  display: none;
 }
 
 .ws-coach {

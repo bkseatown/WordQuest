@@ -81,6 +81,11 @@
           <div id="ws-goal" class="ws-goal">Plan your first idea.</div>
           <button class="ws-secondary" id="ws-next-step" type="button">Do This Next</button>
         </div>
+        <div class="ws-missions" aria-label="Quick missions">
+          <button class="ws-secondary" id="ws-mission-warmup" type="button">Mission 1: Fix It Warm-Up</button>
+          <button class="ws-secondary" id="ws-mission-plan" type="button">Mission 2: Build a Plan</button>
+          <button class="ws-secondary" id="ws-mission-power" type="button">Mission 3: Power Paragraph</button>
+        </div>
         <div class="ws-launchpad" id="ws-launchpad" aria-label="60 second class launch">
           <div class="ws-launchpad-head">
             <div class="ws-h2">Class Launch (60 sec)</div>
@@ -180,14 +185,12 @@
       </section>
 
       <aside id="ws-rail">
-        <nav class="ws-rail-nav" aria-label="Studio sections">
-          <a class="ws-rail-link" href="#ws-block-coach">Coach</a>
-          <a class="ws-rail-link" href="#ws-block-scaffold">Scaffold</a>
-          <a class="ws-rail-link" href="#ws-block-caseload">Caseload</a>
-          <a class="ws-rail-link" href="#ws-block-warmup">Warm-Up</a>
-          <a class="ws-rail-link" href="#ws-block-mastery">Mastery</a>
-          <a class="ws-rail-link" href="#ws-block-publish">Publish</a>
-        </nav>
+        <div class="ws-rail-pager" aria-label="Studio sections">
+          <button class="ws-rail-link" id="ws-rail-prev" type="button">Prev</button>
+          <div class="ws-rail-title" id="ws-rail-title">Coach</div>
+          <button class="ws-rail-link" id="ws-rail-next" type="button">Next</button>
+          <button class="ws-rail-link" id="ws-rail-toggle" type="button" aria-pressed="false">Show All</button>
+        </div>
         <div class="ws-rail-block" id="ws-block-coach">
           <div class="ws-h2">Coach</div>
           <div class="ws-coach" id="ws-coach"></div>
