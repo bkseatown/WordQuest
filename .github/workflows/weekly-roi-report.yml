@@ -5,6 +5,10 @@ on:
   schedule:
     - cron: '0 13 * * 1'
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   roi-report:
     runs-on: ubuntu-latest
@@ -41,6 +45,63 @@ jobs:
       - name: Publish report to step summary
         run: |
           cat reports/weekly-roi-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Detect threshold alerts
+        id: alert_check
+        run: |
+          week_id="$(date -u +%G-W%V)"
+          echo "week_id=${week_id}" >> "$GITHUB_OUTPUT"
+          if grep -q "No threshold alerts this week." reports/weekly-roi-report.md; then
+            echo "has_alerts=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_alerts=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open issue for threshold alerts
+        if: steps.alert_check.outputs.has_alerts == 'true'
+        uses: actions/github-script@v7
+        env:
+          WEEK_ID: ${{ steps.alert_check.outputs.week_id }}
+        with:
+          script: |
+            const fs = require('fs');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const weekId = process.env.WEEK_ID || 'unknown-week';
+            const title = `[ROI Alert] Weekly thresholds triggered (${weekId})`;
+            const report = fs.readFileSync('reports/weekly-roi-report.md', 'utf8');
+
+            const existing = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100
+            });
+            const duplicate = existing.find((issue) => issue.title === title);
+
+            if (duplicate) {
+              core.info(`Existing alert issue found: #${duplicate.number}`);
+              return;
+            }
+
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            const body = [
+              'Automated weekly ROI report detected threshold alerts.',
+              '',
+              `- Workflow run: ${runUrl}`,
+              '',
+              '---',
+              '',
+              report
+            ].join('\n');
+
+            const created = await github.rest.issues.create({
+              owner,
+              repo,
+              title,
+              body
+            });
+            core.info(`Created ROI alert issue: #${created.data.number}`);
 
       - name: Upload report artifact
         uses: actions/upload-artifact@v4
