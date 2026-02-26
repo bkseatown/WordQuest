@@ -51,7 +51,34 @@
           <div id="ws-goal" class="ws-goal">Plan your first idea.</div>
           <button class="ws-secondary" id="ws-next-step" type="button">Next Move</button>
         </div>
+        <div id="ws-plan" class="ws-plan" aria-label="Idea builder">
+          <div class="ws-meta">Idea Builder</div>
+          <div class="ws-plan-row ws-plan-row-organizer">
+            <select id="ws-organizer-type" class="ws-plan-input">
+              <option value="sequence">Organizer: Sequence</option>
+              <option value="cer">Organizer: Claim-Evidence-Reasoning</option>
+              <option value="problem">Organizer: Problem-Solution</option>
+            </select>
+            <button class="ws-secondary" id="ws-organizer-apply" type="button">Apply Organizer</button>
+          </div>
+          <div id="ws-organizer-preview" class="ws-organizer-preview"></div>
+          <div id="ws-image-prompts" class="ws-pills"></div>
+          <div class="ws-plan-row">
+            <input id="ws-plan-topic" class="ws-plan-input" type="text" placeholder="Topic or claim idea">
+            <input id="ws-plan-detail" class="ws-plan-input" type="text" placeholder="Detail or evidence">
+            <button class="ws-secondary" id="ws-plan-add" type="button">Add Idea</button>
+          </div>
+          <div id="ws-plan-list" class="ws-plan-list"></div>
+          <button class="ws-secondary" id="ws-plan-use" type="button">Use Plan In Draft</button>
+        </div>
         <textarea id="ws-editor" placeholder="Start here…"></textarea>
+        <div class="ws-canvas-foot">
+          <button class="ws-secondary" id="ws-dictate" type="button" aria-pressed="false">Dictate</button>
+          <button class="ws-secondary" id="ws-read" type="button">Read Aloud</button>
+          <button class="ws-secondary" id="ws-image-btn" type="button">Image Prompt</button>
+          <input id="ws-image-input" type="file" accept="image/*" hidden>
+        </div>
+        <div id="ws-image-preview" class="ws-image-preview"></div>
         <div class="ws-canvas-foot">
           <button class="ws-primary" id="ws-save" type="button">Save Draft</button>
           <button class="ws-secondary" id="ws-clear" type="button">Clear</button>

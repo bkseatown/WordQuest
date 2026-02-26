@@ -79,6 +79,23 @@
     small: { sprintSeconds: 180, scaffold: "medium", complexity: "supported" },
     one: { sprintSeconds: 120, scaffold: "high", complexity: "explicit" }
   };
+  var ORGANIZER_TEMPLATES = {
+    sequence: [
+      { topic: "Beginning", detail: "What happened first?" },
+      { topic: "Middle", detail: "What happened next?" },
+      { topic: "Ending", detail: "How did it end or change?" }
+    ],
+    cer: [
+      { topic: "Claim", detail: "What is your answer or point?" },
+      { topic: "Evidence", detail: "What proof from text or observation supports it?" },
+      { topic: "Reasoning", detail: "How does the evidence prove your claim?" }
+    ],
+    problem: [
+      { topic: "Problem", detail: "What challenge needs solving?" },
+      { topic: "Cause", detail: "Why is this happening?" },
+      { topic: "Solution", detail: "What action could solve it?" }
+    ]
+  };
 
   var body = document.body;
   var editor = document.getElementById("ws-editor");
@@ -105,6 +122,20 @@
   var flowButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-step[data-step]"));
   var goalEl = document.getElementById("ws-goal");
   var nextStepBtn = document.getElementById("ws-next-step");
+  var planTopicInput = document.getElementById("ws-plan-topic");
+  var planDetailInput = document.getElementById("ws-plan-detail");
+  var planAddBtn = document.getElementById("ws-plan-add");
+  var planUseBtn = document.getElementById("ws-plan-use");
+  var planListEl = document.getElementById("ws-plan-list");
+  var organizerTypeSelect = document.getElementById("ws-organizer-type");
+  var organizerApplyBtn = document.getElementById("ws-organizer-apply");
+  var organizerPreviewEl = document.getElementById("ws-organizer-preview");
+  var imagePromptsEl = document.getElementById("ws-image-prompts");
+  var dictateBtn = document.getElementById("ws-dictate");
+  var readBtn = document.getElementById("ws-read");
+  var imageBtn = document.getElementById("ws-image-btn");
+  var imageInput = document.getElementById("ws-image-input");
+  var imagePreviewEl = document.getElementById("ws-image-preview");
   var checklistInputs = Array.prototype.slice.call(document.querySelectorAll(".ws-check input"));
   var backBtn = document.getElementById("ws-back");
   var settingsBtn = document.getElementById("ws-settings");
@@ -116,6 +147,12 @@
   var sprintRemaining = sprintTotalSeconds;
   var sprintTimer = null;
   var sprintChunkIndex = 0;
+  var planItems = [];
+  var imagePromptItems = [];
+  var currentImageUrl = "";
+  var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  var recognition = null;
+  var isDictating = false;
 
   if (!editor || !metrics || !coach || !vocab || !saveBtn || !clearBtn) {
     return;
@@ -170,6 +207,217 @@
       btn.classList.toggle("is-active", step === currentStep);
       btn.classList.toggle("is-done", done && step !== currentStep);
     });
+  }
+
+  function renderPlanItems() {
+    if (!planListEl) return;
+    planListEl.innerHTML = "";
+    planItems.slice(0, 6).forEach(function (item) {
+      var tag = document.createElement("button");
+      tag.type = "button";
+      tag.className = "ws-plan-item";
+      tag.textContent = item.topic + ": " + item.detail;
+      tag.addEventListener("click", function () {
+        editor.value = (editor.value ? editor.value + "\n" : "") + item.topic + ": " + item.detail;
+        updateMetricsAndCoach();
+      });
+      planListEl.appendChild(tag);
+    });
+  }
+
+  function getOrganizerType() {
+    var raw = String(organizerTypeSelect && organizerTypeSelect.value || "sequence").trim().toLowerCase();
+    return ORGANIZER_TEMPLATES[raw] ? raw : "sequence";
+  }
+
+  function renderOrganizerPreview() {
+    if (!organizerPreviewEl) return;
+    var template = ORGANIZER_TEMPLATES[getOrganizerType()] || ORGANIZER_TEMPLATES.sequence;
+    organizerPreviewEl.innerHTML = "";
+    template.forEach(function (item, idx) {
+      var line = document.createElement("div");
+      line.className = "ws-organizer-line";
+      line.textContent = (idx + 1) + ". " + item.topic + " - " + item.detail;
+      organizerPreviewEl.appendChild(line);
+    });
+  }
+
+  function applyOrganizerTemplate() {
+    var template = ORGANIZER_TEMPLATES[getOrganizerType()] || ORGANIZER_TEMPLATES.sequence;
+    planItems = template.slice(0, 3).map(function (item) {
+      return { topic: item.topic, detail: item.detail };
+    });
+    renderPlanItems();
+    showToast("Organizer loaded");
+  }
+
+  function setImagePrompts(prompts) {
+    imagePromptItems = Array.isArray(prompts) ? prompts.slice(0, 4) : [];
+    if (!imagePromptsEl) return;
+    imagePromptsEl.innerHTML = "";
+    imagePromptItems.forEach(function (prompt) {
+      var pill = document.createElement("button");
+      pill.type = "button";
+      pill.className = "ws-pill";
+      pill.textContent = prompt;
+      pill.addEventListener("click", function () {
+        if (planTopicInput) planTopicInput.value = currentMode === "paragraph" ? "Claim" : "Topic";
+        if (planDetailInput) planDetailInput.value = prompt;
+        showToast("Prompt added to idea builder");
+      });
+      imagePromptsEl.appendChild(pill);
+    });
+  }
+
+  function buildImagePrompts(label) {
+    var seed = label || "this image";
+    if (currentMode === "paragraph") {
+      return [
+        "Claim about " + seed + ": What is the main idea?",
+        "Evidence from " + seed + ": What details prove your claim?",
+        "Reasoning: Why do those details matter?"
+      ];
+    }
+    return [
+      "What do you notice first in " + seed + "?",
+      "What detail can you describe clearly?",
+      "How can you connect ideas with because or so?"
+    ];
+  }
+
+  function normalizeImageLabel(fileName) {
+    var base = String(fileName || "image").replace(/\.[^/.]+$/, "").replace(/[_-]+/g, " ").trim();
+    return base || "image";
+  }
+
+  function renderImagePreview(file, url) {
+    if (!imagePreviewEl) return;
+    imagePreviewEl.innerHTML = "";
+    var img = document.createElement("img");
+    img.src = url;
+    img.alt = "Selected image prompt";
+    var meta = document.createElement("div");
+    meta.className = "ws-image-caption";
+    meta.textContent = "Image prompt: " + file.name;
+    imagePreviewEl.appendChild(img);
+    imagePreviewEl.appendChild(meta);
+  }
+
+  function handleImageFile(file) {
+    if (!file) return;
+    if (currentImageUrl) {
+      try { URL.revokeObjectURL(currentImageUrl); } catch (_err) {}
+    }
+    currentImageUrl = URL.createObjectURL(file);
+    renderImagePreview(file, currentImageUrl);
+    var label = normalizeImageLabel(file.name);
+    setImagePrompts(buildImagePrompts(label));
+    if (currentStep === "plan") showToast("Image prompts ready");
+  }
+
+  function initRecognition() {
+    if (!SpeechRecognitionCtor || recognition) return;
+    recognition = new SpeechRecognitionCtor();
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.onresult = function (event) {
+      var transcript = "";
+      for (var i = event.resultIndex; i < event.results.length; i += 1) {
+        if (event.results[i].isFinal) transcript += event.results[i][0].transcript + " ";
+      }
+      transcript = transcript.trim();
+      if (!transcript) return;
+      var joiner = editor.value.trim().length ? " " : "";
+      editor.value = editor.value + joiner + transcript;
+      updateMetricsAndCoach();
+    };
+    recognition.onend = function () {
+      isDictating = false;
+      if (dictateBtn) {
+        dictateBtn.classList.remove("is-active");
+        dictateBtn.setAttribute("aria-pressed", "false");
+        dictateBtn.textContent = "Dictate";
+      }
+    };
+  }
+
+  function toggleDictation() {
+    initRecognition();
+    if (!recognition) {
+      showToast("Dictation not supported");
+      return;
+    }
+    if (isDictating) {
+      recognition.stop();
+      isDictating = false;
+      return;
+    }
+    try {
+      recognition.start();
+      isDictating = true;
+      if (dictateBtn) {
+        dictateBtn.classList.add("is-active");
+        dictateBtn.setAttribute("aria-pressed", "true");
+        dictateBtn.textContent = "Stop Dictation";
+      }
+      showToast("Dictation on");
+    } catch (_err) {
+      showToast("Dictation unavailable");
+    }
+  }
+
+  function readDraftAloud() {
+    var text = String(editor.value || "").trim();
+    if (!text) {
+      showToast("Nothing to read yet");
+      return;
+    }
+    if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
+      showToast("Read aloud not supported");
+      return;
+    }
+    window.speechSynthesis.cancel();
+    var utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    window.speechSynthesis.speak(utterance);
+    showToast("Reading draft");
+  }
+
+  function addPlanItem() {
+    var topic = String(planTopicInput && planTopicInput.value || "").trim();
+    var detail = String(planDetailInput && planDetailInput.value || "").trim();
+    if (!topic || !detail) {
+      showToast("Add topic + detail");
+      return;
+    }
+    planItems.push({ topic: topic, detail: detail });
+    if (planItems.length > 6) planItems = planItems.slice(-6);
+    if (planTopicInput) planTopicInput.value = "";
+    if (planDetailInput) planDetailInput.value = "";
+    renderPlanItems();
+    showToast("Idea added");
+  }
+
+  function usePlanInDraft() {
+    if (!planItems.length) {
+      showToast("Add ideas first");
+      return;
+    }
+    var lines = planItems.map(function (item, idx) {
+      return (idx + 1) + ". " + item.topic + " -> " + item.detail;
+    });
+    var outline = currentMode === "paragraph"
+      ? "Plan:\nClaim: " + (planItems[0] ? planItems[0].topic : "___") + "\nEvidence:\n- " + lines.join("\n- ")
+      : "Plan:\n- " + lines.join("\n- ");
+    editor.value = outline + "\n\n" + editor.value;
+    if (currentStep === "plan") {
+      setStep("draft");
+    } else {
+      updateMetricsAndCoach();
+    }
+    showToast("Plan inserted");
   }
 
   function renderGoal(text, words, sentenceCount) {
@@ -452,6 +700,7 @@
     localStorage.removeItem(DRAFT_KEY);
     checklistInputs.forEach(function (input) { input.checked = false; });
     currentStep = "plan";
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
     updateMetricsAndCoach();
     showToast("Draft cleared");
   }
@@ -480,6 +729,7 @@
     }
     renderChecklist();
     renderVocabPills();
+    setImagePrompts(imagePromptItems.length ? buildImagePrompts("this image") : []);
     updateMetricsAndCoach();
   }
 
@@ -657,6 +907,19 @@
   });
   if (modelBtn) modelBtn.addEventListener("click", toggleTeacherModel);
   if (nextStepBtn) nextStepBtn.addEventListener("click", handleNextMove);
+  if (planAddBtn) planAddBtn.addEventListener("click", addPlanItem);
+  if (planUseBtn) planUseBtn.addEventListener("click", usePlanInDraft);
+  if (organizerTypeSelect) organizerTypeSelect.addEventListener("change", renderOrganizerPreview);
+  if (organizerApplyBtn) organizerApplyBtn.addEventListener("click", applyOrganizerTemplate);
+  if (dictateBtn) dictateBtn.addEventListener("click", toggleDictation);
+  if (readBtn) readBtn.addEventListener("click", readDraftAloud);
+  if (imageBtn && imageInput) {
+    imageBtn.addEventListener("click", function () { imageInput.click(); });
+    imageInput.addEventListener("change", function () {
+      var file = imageInput.files && imageInput.files[0];
+      handleImageFile(file);
+    });
+  }
   if (sprintStartBtn) sprintStartBtn.addEventListener("click", toggleSprint);
   if (sprintResetBtn) sprintResetBtn.addEventListener("click", resetSprint);
 
@@ -670,6 +933,8 @@
   settingsBtn.addEventListener("click", cycleTheme);
 
   applyTheme(resolveInitialTheme());
+  renderOrganizerPreview();
+  renderPlanItems();
   renderSprint();
   loadDraft();
   setProfile("whole");

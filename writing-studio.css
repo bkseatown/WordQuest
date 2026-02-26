@@ -178,6 +178,90 @@ body.cs-page-writing {
   color: rgba(255, 255, 255, 0.92);
 }
 
+.ws-plan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ws-gap-2);
+  padding: var(--ws-gap-2);
+  border-radius: var(--ws-radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ws-plan-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: var(--ws-gap-2);
+}
+
+.ws-plan-row-organizer {
+  grid-template-columns: 1fr auto;
+}
+
+.ws-plan-input {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 14, 20, 0.3);
+  color: rgba(255, 255, 255, 0.92);
+  padding: var(--ws-gap-1) var(--ws-gap-2);
+  font-size: 13px;
+  outline: none;
+}
+
+.ws-plan-input:focus {
+  border-color: rgba(122, 167, 255, 0.55);
+}
+
+.ws-plan-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ws-gap-1);
+}
+
+.ws-organizer-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ws-gap-1);
+}
+
+.ws-organizer-line {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.84);
+  padding: 0 var(--ws-gap-1);
+}
+
+.ws-plan-item {
+  border-radius: 999px;
+  padding: var(--ws-gap-1) var(--ws-gap-2);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 12px;
+}
+
+.ws-image-preview {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: var(--ws-gap-2);
+  align-items: start;
+}
+
+.ws-image-preview:empty {
+  display: none;
+}
+
+.ws-image-preview img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--ws-radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.ws-image-caption {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
 #ws-editor {
   width: 100%;
   min-height: 46vh;
@@ -220,6 +304,11 @@ body.cs-page-writing {
 .ws-secondary {
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.92);
+}
+
+.ws-secondary.is-active {
+  border-color: rgba(122, 167, 255, 0.55);
+  background: rgba(122, 167, 255, 0.2);
 }
 
 #ws-rail {
@@ -368,5 +457,19 @@ body.cs-page-writing {
   .ws-guidance {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .ws-plan-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ws-image-preview {
+    grid-template-columns: 1fr;
+  }
+
+  .ws-image-preview img {
+    width: 100%;
+    height: auto;
+    max-height: 180px;
   }
 }
