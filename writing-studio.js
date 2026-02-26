@@ -241,7 +241,17 @@
     return String((prefs && prefs.themeSave) || "").toLowerCase() === "on";
   }
 
+  function getQueryTheme() {
+    try {
+      return normalizeTheme(new URLSearchParams(window.location.search).get("theme"));
+    } catch (_err) {
+      return "";
+    }
+  }
+
   function resolveInitialTheme() {
+    var fromQuery = getQueryTheme();
+    if (fromQuery) return fromQuery;
     var prefs = loadPrefs();
     if (shouldPersistTheme(prefs) && prefs.theme) {
       return normalizeTheme(prefs.theme);

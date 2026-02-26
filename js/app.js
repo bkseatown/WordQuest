@@ -3127,7 +3127,7 @@
     if (!headerRight) return;
 
     const iconIds = ['teacher-panel-btn', 'case-toggle-btn', 'keyboard-layout-toggle', 'mission-lab-nav-btn', 'settings-btn'];
-    const quickIds = ['play-style-toggle', 'phonics-clue-open-btn', 'starter-word-open-btn', 'new-game-btn'];
+    const quickIds = ['play-style-toggle', 'phonics-clue-open-btn', 'starter-word-open-btn', 'writing-studio-btn', 'new-game-btn'];
 
     let iconGroup = headerRight.querySelector('.header-icon-controls');
     if (!iconGroup) {
@@ -3171,6 +3171,8 @@
       settingsBtn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
       setHoverNoteForElement(settingsBtn, 'Open settings.');
     }
+    const writingBtn = _el('writing-studio-btn');
+    setHoverNoteForElement(writingBtn, 'Open Writing Studio.');
   }
 
   function applyKeyboardLayout(mode) {
@@ -4528,6 +4530,13 @@
   _el('voice-help-modal')?.addEventListener('click', e => { if (e.target.id === 'voice-help-modal') closeVoiceHelp(); });
   _el('mission-lab-nav-btn')?.addEventListener('click', () => {
     setPageMode(isMissionLabStandaloneMode() ? 'wordquest' : 'mission-lab');
+  });
+  _el('writing-studio-btn')?.addEventListener('click', () => {
+    const activeTheme = normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
+    try { localStorage.setItem('ws_theme_v1', activeTheme); } catch {}
+    const url = new URL('writing-studio.html', window.location.href);
+    url.searchParams.set('theme', activeTheme);
+    window.location.href = url.toString();
   });
   _el('home-logo-btn')?.addEventListener('click', () => {
     setPageMode('wordquest', { force: true });
