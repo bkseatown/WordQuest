@@ -14,6 +14,10 @@
   --present-dk:   #8f7f35;
   --absent:       #94a3b8;
   --absent-dk:    #475569;
+  --state-correct: var(--correct);
+  --state-present: var(--present);
+  --state-absent:  var(--absent);
+  --state-text-on: #ffffff;
 
   --header-h:        50px;
   --focus-h:         44px;

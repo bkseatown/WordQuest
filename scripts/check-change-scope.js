@@ -17,7 +17,7 @@ const GREEN_RULES = [
   /^sw-runtime\.js$/,
   /^data\/audio-manifest\.json$/,
   /^data\/engagement-boosts\.js$/,
-  /^style\/(components\.css|themes\.css|modes\.css)$/,
+  /^style\/(components\.css|themes\.css|modes\.css|world-themes\.css)$/,
   /^js\/(app\.js|audio\.js|theme-nav\.js|theme-registry\.js)$/
 ];
 

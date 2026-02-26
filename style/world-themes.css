@@ -1,0 +1,107 @@
+/* =====================================================
+   Word Quest — world-themes.css
+   Incremental world-theme layer. Safe rollback:
+   html[data-world-themes="1"] enables this layer.
+   ===================================================== */
+
+:root {
+  --state-correct: var(--correct);
+  --state-present: var(--present);
+  --state-absent: var(--absent);
+  --state-text-on: #ffffff;
+}
+
+html[data-world-themes="1"] {
+  --state-correct: var(--correct);
+  --state-present: var(--present);
+  --state-absent: var(--absent);
+  --state-text-on: #ffffff;
+}
+
+html[data-world-themes="1"] .tile.correct,
+html[data-world-themes="1"][data-board-style="soundcard"] .tile.correct {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--state-correct) 74%, #ffffff 26%),
+    var(--state-correct)
+  );
+  color: var(--state-text-on);
+  border-color: color-mix(in oklab, var(--state-correct) 56%, #101010 44%);
+  box-shadow: 0 4px 0 color-mix(in oklab, var(--state-correct) 56%, #101010 44%), 0 1px 8px color-mix(in oklab, var(--state-correct) 36%, transparent 64%);
+}
+
+html[data-world-themes="1"] .tile.present,
+html[data-world-themes="1"][data-board-style="soundcard"] .tile.present {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--state-present) 76%, #ffffff 24%),
+    var(--state-present)
+  );
+  color: var(--state-text-on);
+  border-color: color-mix(in oklab, var(--state-present) 58%, #101010 42%);
+  box-shadow: 0 4px 0 color-mix(in oklab, var(--state-present) 58%, #101010 42%);
+}
+
+html[data-world-themes="1"] .tile.absent,
+html[data-world-themes="1"][data-board-style="soundcard"] .tile.absent {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--state-absent) 58%, #ffffff 42%),
+    var(--state-absent)
+  );
+  color: color-mix(in oklab, var(--state-absent) 22%, #0f172a 78%);
+  border-color: color-mix(in oklab, var(--state-absent) 58%, #111111 42%);
+  box-shadow: 0 3px 0 color-mix(in oklab, var(--state-absent) 58%, #111111 42%);
+}
+
+html[data-world-themes="1"] .key.correct,
+html[data-world-themes="1"][data-key-style="soundcard"] .key.correct {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--state-correct) 74%, #ffffff 26%),
+    var(--state-correct)
+  );
+  color: var(--state-text-on);
+  box-shadow: 0 2px 0 color-mix(in oklab, var(--state-correct) 56%, #111111 44%);
+}
+
+html[data-world-themes="1"] .key.present,
+html[data-world-themes="1"][data-key-style="soundcard"] .key.present {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--state-present) 76%, #ffffff 24%),
+    var(--state-present)
+  );
+  color: var(--state-text-on);
+  box-shadow: 0 2px 0 color-mix(in oklab, var(--state-present) 58%, #111111 42%);
+}
+
+html[data-world-themes="1"] .key.absent,
+html[data-world-themes="1"][data-key-style="soundcard"] .key.absent {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--state-absent) 58%, #ffffff 42%),
+    var(--state-absent)
+  );
+  color: color-mix(in oklab, var(--state-absent) 18%, #0f172a 82%);
+  box-shadow: 0 2px 0 color-mix(in oklab, var(--state-absent) 58%, #111111 42%);
+  opacity: 0.82;
+}
+
+html[data-world-themes="1"] .first-run-wordle-tile.is-correct {
+  border-color: var(--state-correct);
+  background: var(--state-correct);
+  color: var(--state-text-on);
+}
+
+html[data-world-themes="1"] .first-run-wordle-tile.is-present {
+  border-color: var(--state-present);
+  background: var(--state-present);
+  color: var(--state-text-on);
+}
+
+html[data-world-themes="1"] .first-run-wordle-tile.is-absent {
+  border-color: var(--state-absent);
+  background: var(--state-absent);
+  color: var(--state-text-on);
+}
