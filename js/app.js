@@ -4387,11 +4387,18 @@
     }
     const newWordBtn = _el('new-game-btn');
     if (newWordBtn) {
-      newWordBtn.textContent = missionMode ? 'New Deep Dive' : 'Next Word';
+      newWordBtn.textContent = missionMode ? 'Deep Dive Mode' : 'Next Word';
       newWordBtn.title = missionMode
         ? 'Start a standalone Deep Dive round'
         : 'Start the next word round';
       if (missionMode) newWordBtn.classList.remove('pulse');
+    }
+    const focusInput = _el('focus-inline-search');
+    if (focusInput) {
+      focusInput.placeholder = missionMode
+        ? 'Choose Deep Dive track'
+        : 'Select your quest or track';
+      focusInput.setAttribute('aria-label', missionMode ? 'Deep Dive track finder' : 'Quest finder');
     }
     _el('mission-lab-hub')?.classList.toggle('hidden', !missionMode);
     syncStarterWordLauncherUI();
@@ -4521,6 +4528,18 @@
   _el('voice-help-modal')?.addEventListener('click', e => { if (e.target.id === 'voice-help-modal') closeVoiceHelp(); });
   _el('mission-lab-nav-btn')?.addEventListener('click', () => {
     setPageMode(isMissionLabStandaloneMode() ? 'wordquest' : 'mission-lab');
+  });
+  _el('home-logo-btn')?.addEventListener('click', () => {
+    setPageMode('wordquest', { force: true });
+    closeFocusSearchList();
+    closeQuickPopover('all');
+    _el('settings-panel')?.classList.add('hidden');
+    _el('teacher-panel')?.classList.add('hidden');
+    _el('modal-overlay')?.classList.add('hidden');
+    _el('end-modal')?.classList.add('hidden');
+    _el('challenge-modal')?.classList.add('hidden');
+    _el('modal-challenge-launch')?.classList.add('hidden');
+    syncHeaderControlsVisibility();
   });
 // Close settings when clicking outside
   document.addEventListener('pointerdown', e => {
@@ -7502,46 +7521,46 @@
         ufli: Object.freeze({
           cvc: 'short-vowel CVC words',
           digraph: 'digraph spellings (sh/ch/th/wh)',
-          ccvc: 'initial blends',
-          cvcc: 'final blends',
-          cvce: 'VCe (magic e)',
+          ccvc: 'initial blends (st-/bl-/tr-)',
+          cvcc: 'final blends (-mp/-nd/-st)',
+          cvce: 'VCe (magic e: a_e/i_e/o_e/u_e)',
           vowel_team: 'vowel teams (ai/ay, ee/ea, oa/ow)',
           r_controlled: 'r-controlled vowels (ar/or/er/ir/ur)',
-          welded: 'welded sounds (ang/ing/ank/ink)',
+          welded: 'welded sounds (ang/ing/ong/ank/ink)',
           diphthong: 'diphthongs (oi/oy, ou/ow)',
-          prefix: 'prefixes',
-          suffix: 'suffixes',
-          multisyllable: 'syllable division',
+          prefix: 'prefixes (re-/un-/pre-)',
+          suffix: 'suffixes (-s/-ed/-ing)',
+          multisyllable: 'syllable division (V/CV, VC/V)',
           all: 'mixed review'
         }),
         fundations: Object.freeze({
           cvc: 'closed syllables (CVC)',
-          digraph: 'digraph spellings',
+          digraph: 'digraph spellings (sh/ch/th/wh)',
           ccvc: 'blend starters',
           cvcc: 'blend endings',
-          cvce: 'VCe words',
-          vowel_team: 'vowel team spellings',
-          r_controlled: 'r-controlled spellings',
-          welded: 'welded chunks',
-          diphthong: 'diphthong spellings',
-          prefix: 'prefixes',
-          suffix: 'suffixes',
-          multisyllable: 'syllable division',
+          cvce: 'VCe words (a_e/i_e/o_e/u_e)',
+          vowel_team: 'vowel team spellings (ai/ay, ee/ea, oa/ow)',
+          r_controlled: 'r-controlled spellings (ar/or/er/ir/ur)',
+          welded: 'welded chunks (ang/ing/ong/ank/ink)',
+          diphthong: 'diphthong spellings (oi/oy, ou/ow)',
+          prefix: 'prefixes (re-/un-/pre-)',
+          suffix: 'suffixes (-s/-ed/-ing)',
+          multisyllable: 'syllable division (V/CV, VC/V)',
           all: 'mixed review'
         }),
         wilson: Object.freeze({
-          cvc: 'closed syllable words',
-          digraph: 'digraph/spelling patterns',
-          ccvc: 'blend openings',
-          cvcc: 'blend endings',
-          cvce: 'V-e syllable',
-          vowel_team: 'vowel team syllable',
-          r_controlled: 'r-controlled syllable',
-          welded: 'welded sounds',
-          diphthong: 'diphthong syllable',
-          prefix: 'prefix + base',
-          suffix: 'suffix + base',
-          multisyllable: 'multisyllable decoding',
+          cvc: 'closed syllable words (CVC)',
+          digraph: 'digraph patterns (sh/ch/th/wh)',
+          ccvc: 'blend openings (st-/bl-/tr-)',
+          cvcc: 'blend endings (-mp/-nd/-st)',
+          cvce: 'V-e syllable (a_e/i_e/o_e/u_e)',
+          vowel_team: 'vowel team syllable (ai/ay, ee/ea, oa/ow)',
+          r_controlled: 'r-controlled syllable (ar/or/er/ir/ur)',
+          welded: 'welded sounds (ang/ing/ong/ank/ink)',
+          diphthong: 'diphthong syllable (oi/oy, ou/ow)',
+          prefix: 'prefix + base (re-/un-/pre-)',
+          suffix: 'suffix + base (-s/-ed/-ing)',
+          multisyllable: 'multisyllable decoding (V/CV, VC/V)',
           all: 'mixed review'
         })
       });
@@ -7549,21 +7568,21 @@
       return curated[focus] || focus.replaceAll('_', ' ');
     }
     const shortLabels = Object.freeze({
-      cvc: 'cvc (short vowels)',
-      digraph: 'digraphs',
-      ccvc: 'initial blends',
-      cvcc: 'final blends',
-      trigraph: 'trigraphs',
-      cvce: 'magic e',
-      vowel_team: 'vowel teams',
-      r_controlled: 'r-controlled',
-      diphthong: 'diphthongs',
-      welded: 'welded sounds',
-      prefix: 'prefixes',
-      suffix: 'suffixes',
-      multisyllable: 'multisyllable',
-      schwa: 'schwa',
-      floss: 'floss'
+      cvc: 'cvc short vowels (CVC)',
+      digraph: 'digraphs (sh/ch/th/wh)',
+      ccvc: 'initial blends (st-/bl-/tr-)',
+      cvcc: 'final blends (-mp/-nd/-st)',
+      trigraph: 'trigraphs (tch/dge/igh)',
+      cvce: 'magic e (a_e/i_e/o_e/u_e)',
+      vowel_team: 'vowel teams (ai/ay, ee/ea, oa/ow)',
+      r_controlled: 'r-controlled (ar/or/er/ir/ur)',
+      diphthong: 'diphthongs (oi/oy, ou/ow)',
+      welded: 'welded sounds (ang/ing/ong/ank/ink)',
+      prefix: 'prefixes (re-/un-/pre-)',
+      suffix: 'suffixes (-s/-ed/-ing)',
+      multisyllable: 'multisyllable (V/CV, VC/V)',
+      schwa: 'schwa (about/sofa)',
+      floss: 'floss (-ff/-ll/-ss/-zz)'
     });
     return shortLabels[focus] || focus;
   }
@@ -7571,13 +7590,14 @@
   function formatCurriculumLessonLabel(entry) {
     const label = String(entry?.label || '').trim();
     if (!label || entry?.kind !== 'curriculum') return label;
+    const packAbbrev = getCurriculumPackAbbrev(entry.packId);
     if (entry.packId === 'fundations') {
       const bonusMatch = label.match(/Fundations\s+Level\s+([A-Za-z0-9]+)\s+Bonus\s+Unit/i);
-      if (bonusMatch) return `L${bonusMatch[1]} Bonus`;
+      if (bonusMatch) return `Level ${bonusMatch[1]} Bonus Unit`;
       const match = label.match(/Fundations\s+Level\s+([A-Za-z0-9]+)\s+Unit\s+([A-Za-z0-9]+)/i);
-      if (match) return `L${match[1]} U${match[2]}`;
+      if (match) return `Level ${match[1]} Unit ${match[2]}`;
       const compactMatch = label.match(/Fundations\s+L\.\s*([A-Za-z0-9]+)\s+U\.\s*([A-Za-z0-9]+)/i);
-      if (compactMatch) return `L${compactMatch[1]} U${compactMatch[2]}`;
+      if (compactMatch) return `Level ${compactMatch[1]} Unit ${compactMatch[2]}`;
       if (/^Fundations\b/i.test(label)) {
         const stripped = label.replace(/^Fundations\s*/i, '').trim();
         return stripped || 'Fundations Lesson';
@@ -7585,19 +7605,19 @@
     }
     if (entry.packId === 'ufli') {
       const match = label.match(/Lesson\\s+(\\d+)/i);
-      if (match) return `UFLI ${match[1]}`;
+      if (match) return `${packAbbrev || 'UFL'} L${match[1]}`;
     }
     if (entry.packId === 'wilson') {
       const mappedMatch = label.match(/Wilson\\s+Reading\\s+System\\s+([0-9]+(?:\\.[0-9]+)?)/i);
-      if (mappedMatch) return `Wilson ${mappedMatch[1]}`;
+      if (mappedMatch) return `${packAbbrev || 'WRS'} ${mappedMatch[1]}`;
       const match = label.match(/Step\\s+(\\d+)\\s+Lesson\\s+(\\d+)/i);
-      if (match) return `Wilson ${match[1]}.${match[2]}`;
+      if (match) return `${packAbbrev || 'WRS'} S${match[1]} L${match[2]}`;
     }
     if (entry.packId === 'justwords') {
       const match = label.match(/Unit\\s+([A-Za-z0-9]+)/i);
-      if (match) return `Just Words ${match[1]}`;
+      if (match) return `${packAbbrev || 'JW'} U${match[1]}`;
     }
-    return label;
+    return packAbbrev ? `${packAbbrev} ${label}` : label;
   }
 
   function getCurriculumEntryMeta(entry) {
@@ -7633,6 +7653,95 @@
     return `<div class="focus-search-heading" role="presentation">${escapeHtml(text)}</div>`;
   }
 
+  function getCurriculumPackAbbrev(packId) {
+    const id = String(packId || '').trim().toLowerCase();
+    if (id === 'fundations') return 'FND';
+    if (id === 'ufli') return 'UFL';
+    if (id === 'wilson') return 'WRS';
+    if (id === 'lexia') return 'LEX';
+    if (id === 'justwords') return 'JW';
+    return '';
+  }
+
+  function parseCurriculumNumbers(entry) {
+    if (!entry || entry.kind !== 'curriculum') return null;
+    const packId = String(entry.packId || '').trim().toLowerCase();
+    const targetId = String(entry.targetId || '').trim().toLowerCase();
+    const label = String(entry.label || '').trim();
+
+    if (packId === 'fundations') {
+      const rankLevelToken = (rawToken) => {
+        const token = String(rawToken || '').trim().toUpperCase();
+        if (token === 'K') return 0;
+        const numeric = Number(token);
+        return Number.isFinite(numeric) && numeric > 0 ? numeric : 999;
+      };
+      const idMatch = targetId.match(/fundations-l([a-z0-9]+)-u([a-z0-9]+)/i);
+      if (idMatch) return { pack: 'fundations', level: rankLevelToken(idMatch[1]), unit: Number(idMatch[2]) || 0 };
+      const levelUnitMatch = label.match(/level\s+([a-z0-9]+)\s+unit\s+([a-z0-9]+)/i);
+      if (levelUnitMatch) return { pack: 'fundations', level: rankLevelToken(levelUnitMatch[1]), unit: Number(levelUnitMatch[2]) || 0 };
+      const bonusMatch = label.match(/level\s+([a-z0-9]+)\s+bonus\s+unit/i);
+      if (bonusMatch) return { pack: 'fundations', level: rankLevelToken(bonusMatch[1]), unit: 999 };
+    }
+
+    if (packId === 'ufli') {
+      const idMatch = targetId.match(/ufli-lesson-(\d+)/i);
+      if (idMatch) return { pack: 'ufli', lesson: Number(idMatch[1]) || 0 };
+      const labelMatch = label.match(/lesson\s+(\d+)/i);
+      if (labelMatch) return { pack: 'ufli', lesson: Number(labelMatch[1]) || 0 };
+    }
+
+    if (packId === 'wilson') {
+      const stepLesson = targetId.match(/wilson-step-(\d+)-lesson-(\d+)/i);
+      if (stepLesson) return { pack: 'wilson', step: Number(stepLesson[1]) || 0, lesson: Number(stepLesson[2]) || 0 };
+      const labelMatch = label.match(/step\s+(\d+)\s+lesson\s+(\d+)/i);
+      if (labelMatch) return { pack: 'wilson', step: Number(labelMatch[1]) || 0, lesson: Number(labelMatch[2]) || 0 };
+    }
+
+    if (packId === 'justwords') {
+      const labelMatch = label.match(/unit\s+([0-9]+)/i);
+      if (labelMatch) return { pack: 'justwords', unit: Number(labelMatch[1]) || 0 };
+    }
+
+    return null;
+  }
+
+  function compareCurriculumEntries(leftEntry, rightEntry) {
+    if (!leftEntry || !rightEntry) return 0;
+    const leftPack = String(leftEntry.packId || '').trim().toLowerCase();
+    const rightPack = String(rightEntry.packId || '').trim().toLowerCase();
+    if (leftPack !== rightPack) {
+      return String(leftEntry.group || '').localeCompare(String(rightEntry.group || ''));
+    }
+
+    const leftParsed = parseCurriculumNumbers(leftEntry);
+    const rightParsed = parseCurriculumNumbers(rightEntry);
+    if (leftParsed && rightParsed) {
+      if (leftParsed.pack === 'fundations' && rightParsed.pack === 'fundations') {
+        const levelDiff = (leftParsed.level || 0) - (rightParsed.level || 0);
+        if (levelDiff !== 0) return levelDiff;
+        const unitDiff = (leftParsed.unit || 0) - (rightParsed.unit || 0);
+        if (unitDiff !== 0) return unitDiff;
+      }
+      if (leftParsed.pack === 'ufli' && rightParsed.pack === 'ufli') {
+        const diff = (leftParsed.lesson || 0) - (rightParsed.lesson || 0);
+        if (diff !== 0) return diff;
+      }
+      if (leftParsed.pack === 'wilson' && rightParsed.pack === 'wilson') {
+        const stepDiff = (leftParsed.step || 0) - (rightParsed.step || 0);
+        if (stepDiff !== 0) return stepDiff;
+        const lessonDiff = (leftParsed.lesson || 0) - (rightParsed.lesson || 0);
+        if (lessonDiff !== 0) return lessonDiff;
+      }
+      if (leftParsed.pack === 'justwords' && rightParsed.pack === 'justwords') {
+        const diff = (leftParsed.unit || 0) - (rightParsed.unit || 0);
+        if (diff !== 0) return diff;
+      }
+    }
+
+    return String(leftEntry.label || '').localeCompare(String(rightEntry.label || ''), undefined, { numeric: true, sensitivity: 'base' });
+  }
+
   function renderFocusSectionItems(entries, activeQuestValue, activePack, activePackLabel) {
     return entries.map((entry) => {
       const questValue = entry.questValue || `focus::${entry.value}`;
@@ -7644,7 +7753,11 @@
       const selected = isActive ? 'true' : 'false';
       const label = isProgram ? `${entry.label} · Choose Lesson` : formatCurriculumLessonLabel(entry);
       const meta = getFocusEntryMeta(entry);
-      return `<button type="button" class="focus-search-item${activeClass}" data-quest-value="${escapeHtml(questValue)}" role="option" aria-selected="${selected}" title="${escapeHtml(isProgram ? `Open ${entry.label} lesson groups` : `${entry.group || activePackLabel}`)}"><span>${escapeHtml(label)}</span>${meta ? `<small>${escapeHtml(meta)}</small>` : ''}</button>`;
+      const scopeClass = isProgram ? ' is-program' : ' is-curriculum';
+      const ariaLabel = isProgram
+        ? `Open ${entry.label} lesson groups`
+        : `${entry.group || activePackLabel} ${label}${meta ? ` ${meta}` : ''}`;
+      return `<button type="button" class="focus-search-item${scopeClass}${activeClass}" data-quest-value="${escapeHtml(questValue)}" role="option" aria-selected="${selected}" aria-label="${escapeHtml(ariaLabel)}"><span>${escapeHtml(label)}</span>${meta ? `<small>${escapeHtml(meta)}</small>` : ''}</button>`;
     }).join('');
   }
 
@@ -7674,10 +7787,9 @@
       if (a.kind === 'curriculum-pack' && b.kind !== 'curriculum-pack') return -1;
       if (a.kind !== 'curriculum-pack' && b.kind === 'curriculum-pack') return 1;
       if (a.kind === 'curriculum' && b.kind === 'curriculum') {
-        const byPack = String(a.group || '').localeCompare(String(b.group || ''));
-        if (byPack !== 0) return byPack;
+        return compareCurriculumEntries(a, b);
       }
-      return String(a.label || '').localeCompare(String(b.label || ''));
+      return String(a.label || '').localeCompare(String(b.label || ''), undefined, { numeric: true, sensitivity: 'base' });
     });
 
     const output = [];
@@ -7706,6 +7818,10 @@
     const inputEl = _el('focus-inline-search');
     if (!listEl) return;
     const query = String(rawQuery || '').trim().toLowerCase();
+    const isCurriculumLessonListMode = !query && Boolean(focusCurriculumPackFilter);
+    const isFundationsLessonMode = isCurriculumLessonListMode && focusCurriculumPackFilter === 'fundations';
+    listEl.classList.toggle('is-curriculum-list', isCurriculumLessonListMode);
+    listEl.classList.toggle('is-fundations-grid', isFundationsLessonMode);
     const selectedGradeBand = getQuestFilterGradeBand();
     const focusEntries = getFocusEntries(selectedGradeBand);
     const curriculumProgramEntries = getCurriculumProgramEntries(selectedGradeBand);
@@ -7728,6 +7844,7 @@
     }
 
     let visible = [];
+    const shouldResetScroll = !query;
     if (!query) {
       if (focusCurriculumPackFilter) {
         visible = curriculumLessonEntries;
@@ -7767,15 +7884,19 @@
       ? `curriculum::${activePack}::${activeTarget}`
       : `focus::${activeFocus}`;
     const activePackLabel = getLessonPackDefinition(activePack).label;
-    const actions = [
-      '<button type="button" class="focus-search-action" data-focus-action="teacher-words">Open Teacher Hub</button>'
-    ];
+    const actions = [];
     if (!query && focusCurriculumPackFilter) {
-      actions.push('<button type="button" class="focus-search-action" data-focus-action="curriculum-back">Back to Program List</button>');
+      const packLabel = getLessonPackDefinition(focusCurriculumPackFilter).label;
+      actions.push(
+        `<div class="focus-search-topbar">` +
+          `<button type="button" class="focus-search-back-mini" data-focus-action="curriculum-back" aria-label="Back to program list" title="Back to program list">←</button>` +
+          `<div class="focus-search-pack-title">${escapeHtml(packLabel)}</div>` +
+        `</div>`
+      );
     }
     const guidance = !query
       ? focusCurriculumPackFilter
-        ? `<div class="focus-search-empty focus-search-empty-hint">${escapeHtml(getLessonPackDefinition(focusCurriculumPackFilter).label)}: choose a lesson group.</div>`
+        ? ''
         : '<div class="focus-search-empty focus-search-empty-hint">Choose a phonics skill, a grade-band subject, or a curriculum program to open all lessons.</div>'
       : '';
     const sections = buildFocusSearchSections(visible, { query });
@@ -7793,20 +7914,23 @@
         const orderedPacks = ['UFLI', 'Fundations', 'Wilson Reading System', 'Lexia English (WIDA)', 'Just Words'];
         const lessonBlocks = orderedPacks
           .filter((packLabel) => Array.isArray(groupedLessons[packLabel]) && groupedLessons[packLabel].length)
-          .map((packLabel) => (
-            `<div class="focus-search-subheading" role="presentation">${escapeHtml(packLabel)}</div>` +
-            renderFocusSectionItems(groupedLessons[packLabel], activeQuestValue, activePack, activePackLabel)
-          ));
+          .map((packLabel) => {
+            groupedLessons[packLabel].sort(compareCurriculumEntries);
+            return `<div class="focus-search-subheading" role="presentation">${escapeHtml(packLabel)}</div>` +
+              renderFocusSectionItems(groupedLessons[packLabel], activeQuestValue, activePack, activePackLabel);
+          });
         Object.keys(groupedLessons)
           .filter((packLabel) => !orderedPacks.includes(packLabel))
           .sort((a, b) => a.localeCompare(b))
           .forEach((packLabel) => {
+            groupedLessons[packLabel].sort(compareCurriculumEntries);
             lessonBlocks.push(
               `<div class="focus-search-subheading" role="presentation">${escapeHtml(packLabel)}</div>` +
               renderFocusSectionItems(groupedLessons[packLabel], activeQuestValue, activePack, activePackLabel)
             );
           });
-        return getSectionHeadingMarkup(section.heading) +
+        const includeCurriculumHeading = !(isCurriculumLessonListMode && !query);
+        return `${includeCurriculumHeading ? getSectionHeadingMarkup(section.heading) : ''}` +
           renderFocusSectionItems(programRows, activeQuestValue, activePack, activePackLabel) +
           lessonBlocks.join('');
       }
@@ -7814,6 +7938,7 @@
         renderFocusSectionItems(section.entries, activeQuestValue, activePack, activePackLabel);
     }).join('');
     listEl.innerHTML = actions.join('') + guidance + sectionMarkup;
+    if (shouldResetScroll) listEl.scrollTop = 0;
     getFocusSearchButtons().forEach((button, idx) => {
       button.id = `focus-search-option-${idx}`;
       button.classList.remove('is-nav-active');
@@ -7833,6 +7958,7 @@
     focusNavIndex = -1;
     if (inputEl) inputEl.removeAttribute('aria-activedescendant');
     if (inputEl) inputEl.setAttribute('aria-expanded', 'false');
+    list.classList.remove('is-curriculum-list');
     list.classList.add('hidden');
     setFocusSearchOpen(false);
   }
@@ -12314,7 +12440,10 @@
     if (!select && !note && !meta) return;
 
     const { pool, focus, gradeBand, length } = getStandaloneMissionWordPool();
-    const focusLabel = getFocusLabel(focus).replace(/[—]/g, '').replace(/\s+/g, ' ').trim() || 'Classic';
+    const rawFocusLabel = getFocusLabel(focus).replace(/[—]/g, '').replace(/\s+/g, ' ').trim();
+    const focusLabel = focus === 'all'
+      ? 'Track: Core Vocabulary'
+      : `Track: ${rawFocusLabel || 'Targeted Skill'}`;
     const gradeLabel = formatGradeBandLabel(gradeBand);
     const lengthLabel = String(length || '').toLowerCase() === 'any'
       ? 'Any word length'
@@ -12350,8 +12479,8 @@
     }
     if (note) {
       note.textContent = pool.length
-        ? `${pool.length} Deep Dive-ready words in this filter. Launch now or pick a word and level.`
-        : 'No Deep Dive words in this filter. Switch quest or grade, then try again.';
+        ? `${pool.length} ready words. Start now, or choose a word + level below.`
+        : 'No words match this filter yet. Change quest focus or grade, then try again.';
     }
   }
 

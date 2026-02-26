@@ -128,7 +128,12 @@ header {
   align-items:     center;
   justify-content: space-between;
   gap:             6px;
-  background:      var(--header-bg);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--header-bg) 72%, #b7bec8 28%) 0%,
+      color-mix(in oklab, var(--header-bg) 84%, #9ea8b6 16%) 100%
+    );
   border:          1px solid color-mix(in oklab, var(--header-border) 86%, transparent);
   border-bottom:   0;
   border-radius:   16px 16px 0 0;
@@ -162,6 +167,25 @@ header {
   white-space: nowrap;
   flex-shrink: 0;
   text-shadow: 0 1px 1px rgba(8, 16, 28, 0.2);
+}
+
+.logo-btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.logo-btn:hover {
+  filter: brightness(1.08);
+}
+
+.logo-btn:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--brand) 64%, #ffffff 36%);
+  outline-offset: 4px;
+  border-radius: 8px;
 }
 .logo span {
   color: var(--logo-quest, color-mix(in oklab, #f3fff8 86%, var(--vowel-accent) 14%));
@@ -204,6 +228,13 @@ header {
   box-shadow: none;
 }
 
+html[data-page-mode="wordquest"] #case-toggle-btn,
+html[data-page-mode="wordquest"] #keyboard-layout-toggle,
+html[data-page-mode="wordquest"] #music-dock-toggle-btn,
+html[data-page-mode="wordquest"] #mission-lab-nav-btn {
+  display: none !important;
+}
+
 .header-quick-controls {
   grid-area: quick;
   width: 100%;
@@ -233,7 +264,7 @@ header {
   border-radius: 999px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 70%, var(--brand) 30%);
   background: color-mix(in oklab, var(--panel-bg) 90%, #ffffff 10%);
-  color: color-mix(in oklab, var(--text) 86%, var(--text-muted) 14%);
+  color: color-mix(in oklab, var(--text) 26%, #ffffff 74%);
   font-family: var(--font);
   font-size: 0.66rem;
   font-weight: 820;
@@ -553,7 +584,7 @@ header {
   border: 1px solid color-mix(in oklab, var(--header-border) 76%, var(--brand) 24%);
   border-radius: 14px;
   background: color-mix(in oklab, var(--panel-bg) 92%, #ffffff 8%);
-  color: var(--text);
+  color: color-mix(in oklab, var(--text) 24%, #ffffff 76%);
   font-family: var(--font);
   font-size: 0.78rem;
   font-weight: 760;
@@ -572,7 +603,7 @@ header {
 }
 
 .focus-inline-search::placeholder {
-  color: color-mix(in oklab, var(--text-muted) 84%, #ffffff 16%);
+  color: color-mix(in oklab, var(--text-muted) 18%, #ffffff 82%);
   font-weight: 680;
   opacity: 0.88;
 }
@@ -587,7 +618,7 @@ header {
   font-size: 0.63rem;
   font-weight: 780;
   letter-spacing: 0.02em;
-  color: color-mix(in oklab, var(--text-muted) 84%, var(--text) 16%);
+  color: color-mix(in oklab, var(--text-muted) 18%, #ffffff 82%);
   text-transform: none;
   white-space: nowrap;
   overflow: hidden;
@@ -724,17 +755,17 @@ header {
 .mission-lab-hub {
   width: min(var(--quest-max-width), calc(100vw - 24px));
   display: grid;
-  gap: 8px;
-  padding: 10px 11px;
-  border-radius: 13px;
-  border: 1px solid color-mix(in oklab, var(--brand) 36%, var(--panel-border) 64%);
+  gap: 10px;
+  padding: 14px 14px 12px;
+  border-radius: 15px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 62%, transparent);
   background:
     linear-gradient(
       180deg,
-      color-mix(in oklab, var(--panel-bg) 90%, #ffffff 10%),
-      color-mix(in oklab, var(--brand) 9%, var(--panel-bg) 91%)
+      color-mix(in oklab, var(--panel-bg) 74%, #c9ced6 26%),
+      color-mix(in oklab, var(--panel-bg) 82%, #9ba3ae 18%)
     );
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.11);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
 }
 
 .mission-lab-hub-head {
@@ -750,36 +781,48 @@ header {
   min-width: 0;
 }
 
+.mission-lab-hub-steps {
+  font-size: 0.86rem;
+  font-weight: 740;
+  letter-spacing: 0.01em;
+  color: color-mix(in oklab, var(--text-muted) 14%, #ffffff 86%);
+}
+
 .mission-lab-hub-title-wrap strong {
-  font-size: 0.9rem;
+  font-size: 1.08rem;
   letter-spacing: 0.02em;
-  color: var(--text);
+  color: color-mix(in oklab, var(--text) 10%, #ffffff 90%);
 }
 
 .mission-lab-hub-meta {
-  font-size: 0.73rem;
-  font-weight: 740;
-  color: color-mix(in oklab, var(--text-muted) 82%, var(--text) 18%);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: color-mix(in oklab, var(--text-muted) 16%, #ffffff 84%);
 }
 
 .mission-lab-start-btn {
   white-space: nowrap;
+  min-height: 54px;
+  font-size: 1.03rem;
+  font-weight: 820;
 }
 
 .mission-lab-customize {
-  border: 1px solid color-mix(in oklab, var(--panel-border) 76%, transparent);
-  border-radius: 11px;
-  background: color-mix(in oklab, var(--panel-bg) 84%, var(--page-bg) 16%);
+  border: 0;
+  border-top: 1px solid color-mix(in oklab, var(--panel-border) 70%, transparent);
+  border-bottom: 1px solid color-mix(in oklab, var(--panel-border) 70%, transparent);
+  border-radius: 0;
+  background: transparent;
   overflow: hidden;
 }
 
 .mission-lab-customize > summary {
   list-style: none;
   cursor: pointer;
-  padding: 7px 10px;
-  font-size: 0.72rem;
-  font-weight: 780;
-  color: color-mix(in oklab, var(--text-muted) 84%, var(--text) 16%);
+  padding: 10px 2px 8px;
+  font-size: 0.98rem;
+  font-weight: 760;
+  color: color-mix(in oklab, var(--text-muted) 12%, #ffffff 88%);
 }
 
 .mission-lab-customize > summary::-webkit-details-marker {
@@ -799,36 +842,70 @@ header {
 .mission-lab-customize-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
-  padding: 0 10px 10px;
+  gap: 10px;
+  padding: 0 0 10px;
 }
 
 .mission-lab-customize-grid label {
   display: grid;
   gap: 4px;
-  font-size: 0.69rem;
-  font-weight: 760;
-  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 720;
+  color: color-mix(in oklab, var(--text-muted) 14%, #ffffff 86%);
 }
 
 .mission-lab-customize-grid select {
   width: 100%;
-  height: 31px;
+  height: 38px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 70%, transparent);
-  border-radius: 11px;
-  background: color-mix(in oklab, var(--panel-bg) 90%, #ffffff 10%);
-  color: var(--text);
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--panel-bg) 76%, #c9ced6 24%);
+  color: color-mix(in oklab, var(--text) 12%, #ffffff 88%);
   font-family: var(--font);
-  font-size: 0.74rem;
-  font-weight: 760;
+  font-size: 0.9rem;
+  font-weight: 720;
   padding: 0 10px;
 }
 
 .mission-lab-hub-note {
-  font-size: 0.71rem;
-  font-weight: 740;
+  font-size: 0.92rem;
+  font-weight: 700;
   line-height: 1.35;
-  color: color-mix(in oklab, var(--text-muted) 86%, var(--text) 14%);
+  color: color-mix(in oklab, var(--text-muted) 14%, #ffffff 86%);
+}
+
+html[data-page-mode="mission-lab"] .top-control-hub {
+  border: 1px solid color-mix(in oklab, var(--panel-border) 58%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--panel-bg) 78%, #b9c0cb 22%),
+      color-mix(in oklab, var(--panel-bg) 90%, #93a0af 10%)
+    );
+}
+
+html[data-page-mode="mission-lab"] .focus-inline-search {
+  height: 40px;
+  font-size: 1.02rem;
+  font-weight: 760;
+  background: color-mix(in oklab, var(--panel-bg) 72%, #c3cad4 28%);
+  color: color-mix(in oklab, var(--text) 20%, #ffffff 80%);
+}
+
+html[data-page-mode="mission-lab"] .focus-inline-search::placeholder {
+  color: color-mix(in oklab, var(--text-muted) 12%, #ffffff 88%);
+  font-size: 1rem;
+}
+
+html[data-page-mode="mission-lab"] .grade-target-inline {
+  font-size: 0.94rem;
+  font-weight: 740;
+  color: color-mix(in oklab, var(--text-muted) 14%, #ffffff 86%);
+  background: color-mix(in oklab, var(--panel-bg) 74%, #c3cad4 26%);
+}
+
+html[data-page-mode="mission-lab"] #phonics-clue-open-btn {
+  display: none !important;
 }
 
 html[data-mission-lab="off"] #mission-lab-nav-btn,
@@ -861,9 +938,57 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   padding: 7px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 76%, transparent);
   border-radius: 13px;
-  background: color-mix(in oklab, var(--modal-bg) 94%, #ffffff 6%);
+  background: color-mix(in oklab, var(--modal-bg) 90%, #ffffff 10%);
   box-shadow: var(--panel-shadow);
   z-index: 50;
+}
+
+.focus-inline-results.is-curriculum-list {
+  grid-template-columns: 1fr !important;
+}
+
+.focus-inline-results.is-curriculum-list .focus-search-subheading {
+  display: none !important;
+}
+
+.focus-inline-results.is-curriculum-list.is-fundations-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.focus-search-topbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 2px 8px;
+}
+
+.focus-search-pack-title {
+  font-size: 1.16rem;
+  font-weight: 860;
+  letter-spacing: 0.01em;
+  color: color-mix(in oklab, var(--text) 10%, #ffffff 90%);
+}
+
+.focus-search-back-mini {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 60%, transparent);
+  background: color-mix(in oklab, var(--panel-bg) 76%, #c8d0da 24%);
+  color: color-mix(in oklab, var(--text) 16%, #ffffff 84%);
+  font-size: 1rem;
+  font-weight: 820;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.focus-search-back-mini:hover {
+  border-color: color-mix(in oklab, var(--brand) 62%, var(--panel-border) 38%);
+  background: color-mix(in oklab, var(--brand) 16%, var(--panel-bg) 84%);
 }
 
 .focus-inline-results::-webkit-scrollbar {
@@ -1189,9 +1314,9 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   border: 1px solid transparent;
   border-radius: 9px;
   background: transparent;
-  color: var(--text);
+  color: color-mix(in oklab, var(--text) 16%, #ffffff 84%);
   font-family: var(--font);
-  font-size: 0.74rem;
+  font-size: 0.86rem;
   font-weight: 700;
   line-height: 1.18;
   text-align: left;
@@ -1199,7 +1324,7 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 8px;
 }
 
@@ -1208,20 +1333,48 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: color-mix(in oklab, var(--text) 14%, #ffffff 86%);
+}
+
+.focus-search-item.is-curriculum {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.focus-search-item.is-curriculum small {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0 0 0 10px;
+  color: color-mix(in oklab, var(--text-muted) 14%, #ffffff 86%);
+  font-size: 0.9rem;
+  font-weight: 720;
+  line-height: 1.34;
+  text-align: left;
+}
+
+.focus-search-item.is-curriculum small::before {
+  content: '\2022 ';
+  color: color-mix(in oklab, var(--text-muted) 18%, #ffffff 82%);
+  margin-right: 0.26em;
 }
 
 .focus-search-item small {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   border-radius: 999px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 72%, transparent);
-  background: color-mix(in oklab, var(--panel-bg) 90%, transparent);
-  padding: 2px 6px;
-  font-size: 0.62rem;
+  background: color-mix(in oklab, var(--panel-bg) 82%, transparent);
+  padding: 3px 9px;
+  font-size: 0.76rem;
   font-weight: 800;
-  color: color-mix(in oklab, var(--text-muted) 88%, var(--text) 12%);
+  color: color-mix(in oklab, var(--text-muted) 26%, #ffffff 74%);
+  text-align: left;
 }
 
 .focus-search-item:hover,
@@ -1251,8 +1404,8 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   margin-top: 3px;
   padding: 7px 4px 4px;
   border-top: 1px dashed color-mix(in oklab, var(--panel-border) 72%, transparent);
-  color: color-mix(in oklab, var(--text-muted) 80%, var(--text) 20%);
-  font-size: 0.64rem;
+  color: color-mix(in oklab, var(--text-muted) 14%, #ffffff 86%);
+  font-size: 0.8rem;
   font-weight: 840;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1261,8 +1414,8 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
 .focus-search-subheading {
   grid-column: 1 / -1;
   margin-top: 1px;
-  padding: 4px 6px 2px;
-  color: color-mix(in oklab, var(--text-muted) 70%, var(--text) 30%);
+  padding: 6px 6px 2px;
+  color: color-mix(in oklab, var(--text-muted) 14%, #ffffff 86%);
   font-size: 0.62rem;
   font-weight: 820;
 }
@@ -2376,6 +2529,11 @@ html[data-page-mode="mission-lab"] #focus-hint-toggle {
   display: none !important;
 }
 
+html[data-page-mode="mission-lab"] #starter-word-open-btn,
+html[data-page-mode="mission-lab"] #new-game-btn {
+  display: none !important;
+}
+
 html[data-page-mode="mission-lab"] #teacher-panel-btn,
 html[data-page-mode="mission-lab"] #case-toggle-btn,
 html[data-page-mode="mission-lab"] #keyboard-layout-toggle,
@@ -2383,6 +2541,29 @@ html[data-page-mode="mission-lab"] #theme-dock-toggle-btn,
 html[data-page-mode="mission-lab"] #music-dock-toggle-btn,
 html[data-page-mode="mission-lab"] #mission-lab-nav-btn {
   display: none !important;
+}
+
+html[data-page-mode="mission-lab"] main {
+  position: relative;
+}
+
+html[data-page-mode="mission-lab"] main::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: clamp(220px, 34vh, 340px);
+  pointer-events: none;
+  background:
+    radial-gradient(60% 60% at 18% 18%, color-mix(in oklab, var(--panel-bg) 68%, #c3cad4 32%) 0%, transparent 78%),
+    radial-gradient(45% 45% at 82% 12%, color-mix(in oklab, var(--brand) 18%, #cfd5de 82%) 0%, transparent 76%);
+  opacity: 0.34;
+  z-index: 0;
+}
+
+html[data-page-mode="mission-lab"] .top-control-hub,
+html[data-page-mode="mission-lab"] .mission-lab-hub {
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Quest loop ─────────────────────────────────────── */

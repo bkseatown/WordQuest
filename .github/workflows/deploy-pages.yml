@@ -86,22 +86,25 @@ jobs:
             echo "Smoke checking ${target}"
             passed=0
             details="Missing markers after retries."
-            for attempt in 1 2 3 4 5; do
-              html="$(curl -fsSL --max-time 15 "${target}" || true)"
+            for attempt in 1 2 3 4 5 6 7 8; do
+              tmp_html="${RUNNER_TEMP}/pages-smoke-${attempt}.html"
+              http_code="$(curl -sSLo "${tmp_html}" -w "%{http_code}" --max-time 20 "${target}" || true)"
+              html="$(cat "${tmp_html}" 2>/dev/null || true)"
+              bytes="$(wc -c < "${tmp_html}" 2>/dev/null || echo 0)"
               missing=()
               for marker in "${markers[@]}"; do
                 if [[ "${html}" != *"${marker}"* ]]; then
                   missing+=("${marker}")
                 fi
               done
-              if [ "${#missing[@]}" -eq 0 ]; then
+              if [ "${http_code}" = "200" ] && [ "${#missing[@]}" -eq 0 ]; then
                 passed=1
-                details="All markers found on attempt ${attempt}."
+                details="All markers found on attempt ${attempt} (HTTP ${http_code}, ${bytes} bytes)."
                 break
               fi
-              details="Attempt ${attempt}: missing ${missing[*]}"
-              echo "Smoke check retry ${attempt}/5: ${missing[*]}"
-              sleep $((attempt * 8))
+              details="Attempt ${attempt}: HTTP ${http_code}, ${bytes} bytes, missing ${missing[*]}"
+              echo "Smoke check retry ${attempt}/8: HTTP ${http_code}, ${bytes} bytes, missing ${missing[*]}"
+              sleep $((attempt * 10))
             done
 
             if [ "${passed}" -eq 1 ]; then

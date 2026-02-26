@@ -31,6 +31,7 @@ jobs:
           npm run scope:check
       - name: Teacher daily flow smoke test
         run: |
+          npm run visual:check
           npm run telemetry:funnel:check
           npm run telemetry:dashboards:check
           npm run dom:hooks:check
