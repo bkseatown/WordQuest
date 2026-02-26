@@ -1777,7 +1777,6 @@
   applyBoardStyle(prefs.boardStyle || DEFAULT_PREFS.boardStyle);
   applyKeyStyle(prefs.keyStyle || DEFAULT_PREFS.keyStyle);
   applyKeyboardLayout(prefs.keyboardLayout || DEFAULT_PREFS.keyboardLayout);
-  syncKeyboardPresetControl();
   applyAtmosphere(prefs.atmosphere || DEFAULT_PREFS.atmosphere);
   WQUI.setCaseMode(prefs.caseMode || DEFAULT_PREFS.caseMode);
   syncCaseToggleUI();
@@ -3143,15 +3142,6 @@
     return normalized;
   }
 
-  function syncKeyboardPresetControl() {
-    const select = _el('s-keyboard-preset');
-    if (!select) return;
-    const layout = document.documentElement.getAttribute('data-keyboard-layout') || prefs.keyboardLayout || DEFAULT_PREFS.keyboardLayout;
-    const keyStyle = document.documentElement.getAttribute('data-key-style') || prefs.keyStyle || DEFAULT_PREFS.keyStyle;
-    const next = deriveKeyboardPresetId(layout, keyStyle);
-    if (select.value !== next) select.value = next;
-  }
-
   function applyKeyboardPreset(mode, options = {}) {
     const normalized = normalizeKeyboardPresetId(mode);
     const preset = KEYBOARD_PRESET_CONFIG[normalized] || KEYBOARD_PRESET_CONFIG['qwerty-bubble'];
@@ -3167,7 +3157,6 @@
       setPref('keyStyle', keyStyle);
       if (preset.keyStyle === 'pebble') setPref('boardStyle', boardStyle);
     }
-    syncKeyboardPresetControl();
     updateWilsonModeToggle();
     return Object.freeze({
       id: normalized,
@@ -4606,26 +4595,22 @@
     const next = applyBoardStyle(e.target.value);
     setPref('boardStyle', next);
     updateWilsonModeToggle();
-    syncKeyboardPresetControl();
     refreshKeyboardLayoutPreview();
   });
   _el('s-key-style')?.addEventListener('change', () => {
     const next = applyKeyStyle(DEFAULT_PREFS.keyStyle);
     setPref('keyStyle', next);
     updateWilsonModeToggle();
-    syncKeyboardPresetControl();
     refreshKeyboardLayoutPreview();
   });
   _el('s-keyboard-layout')?.addEventListener('change', e => {
     if (isAssessmentRoundLocked()) {
       showAssessmentLockNotice();
       e.target.value = normalizeKeyboardLayout(document.documentElement.getAttribute('data-keyboard-layout') || DEFAULT_PREFS.keyboardLayout);
-      syncKeyboardPresetControl();
       return;
     }
     const next = applyKeyboardLayout(e.target.value);
     setPref('keyboardLayout', next);
-    syncKeyboardPresetControl();
     refreshKeyboardLayoutPreview();
     WQUI.showToast(`Keyboard switched to ${getKeyboardLayoutLabel(next)}.`);
   });
@@ -4637,7 +4622,6 @@
   _el('s-wilson-mode')?.addEventListener('change', e => {
     const enabled = !!e.target.checked;
     applyWilsonMode(enabled);
-    syncKeyboardPresetControl();
     refreshKeyboardLayoutPreview();
     WQUI.showToast(enabled
       ? 'Wilson sound-card mode is on.'
@@ -4651,7 +4635,6 @@
     const current = normalizeKeyboardLayout(document.documentElement.getAttribute('data-keyboard-layout') || 'standard');
     const next = applyKeyboardLayout(getNextKeyboardLayout(current));
     setPref('keyboardLayout', next);
-    syncKeyboardPresetControl();
     refreshKeyboardLayoutPreview();
     WQUI.showToast(`Keyboard switched to ${getKeyboardLayoutLabel(next)}.`);
   });
@@ -6131,12 +6114,9 @@
       const gameplayAudioEl = document.querySelector('.gameplay-audio');
       const headerEl = document.querySelector('header');
       const focusEl = document.querySelector('.focus-bar');
-      const curriculumEl = _el('curriculum-main-bar');
       const nextActionEl = _el('next-action-line');
       const classroomTurnEl = _el('classroom-turn-line');
       const themeStripEl = _el('theme-preview-strip');
-      const hintEl = _el('focus-hint');
-      const hintRowEl = hintEl?.closest('.focus-hint-row') || null;
 
       const keyH = parsePx(rootStyle.getPropertyValue('--key-h'), 52);
       const keyGap = parsePx(rootStyle.getPropertyValue('--gap-key'), 8);
@@ -6154,8 +6134,6 @@
       const audioH = supportH ? 0 : (gameplayAudioEl?.offsetHeight || 36);
       const headerH = headerEl?.offsetHeight || parsePx(rootStyle.getPropertyValue('--header-h'), 50);
       const focusH = focusEl?.offsetHeight || parsePx(rootStyle.getPropertyValue('--focus-h'), 44);
-      const curriculumNestedInFocus = Boolean(curriculumEl && focusEl && focusEl.contains(curriculumEl));
-      const curriculumH = curriculumNestedInFocus ? 0 : (curriculumEl?.offsetHeight || 0);
       const nextActionH = nextActionEl && !nextActionEl.classList.contains('hidden')
         ? Math.max(0, nextActionEl.offsetHeight || 0)
         : 0;
@@ -6204,9 +6182,6 @@
       const chunkRowH = chunkRows > 0
         ? (chunkRows * chunkKeyH) + ((chunkRows - 1) * 5) + 8
         : 0;
-      const hintH = hintRowEl
-        ? (supportH ? 0 : Math.max(0, (hintRowEl.offsetHeight || 0) - 8))
-        : 0;
       const supportReserveH = supportH ? Math.max(0, supportH - 2) : 0;
       const kbRows = 3;
       const keyboardSafetyPad = keyboardLayout === 'wilson'
@@ -6216,7 +6191,7 @@
 
       const extraSafetyH = layoutMode === 'compact' ? 30 : layoutMode === 'tight' ? 22 : layoutMode === 'wide' ? 14 : 18;
       const listeningReserveH = playStyle === 'listening' ? 12 : 0;
-      const reservedH = headerH + focusH + curriculumH + nextActionH + classroomTurnH + themeH + mainPadTop + mainPadBottom + audioH + kbH + (keyboardBottomGap + listeningBottomGapBoost) + boardZoneGap + hintH + supportReserveH + extraSafetyH + listeningReserveH;
+      const reservedH = headerH + focusH + nextActionH + classroomTurnH + themeH + mainPadTop + mainPadBottom + audioH + kbH + (keyboardBottomGap + listeningBottomGapBoost) + boardZoneGap + supportReserveH + extraSafetyH + listeningReserveH;
       const availableBoardH = Math.max(140, viewportH - reservedH);
       const guessDensityRelief = maxGuesses > 5 ? Math.min(12, (maxGuesses - 5) * 6) : 0;
       const byHeight = Math.floor((availableBoardH + guessDensityRelief - platePadY - tileGap * (maxGuesses - 1) + 2) / maxGuesses);
@@ -6807,44 +6782,7 @@
   }
 
   function updateFocusHint() {
-    const mode = getHintMode();
-    syncHintToggleUI(mode);
-    const hintEl = _el('focus-hint');
-    if (!hintEl) return;
-    const hintRow = hintEl.closest('.focus-hint-row');
-    if (mode !== 'on') {
-      hintEl.textContent = '';
-      hintEl.classList.add('hidden');
-      if (hintRow) hintRow.classList.add('is-off');
-      return;
-    }
-    if (hintRow) hintRow.classList.remove('is-off');
-    const state = WQGame.getState?.() || null;
-    const entry = state?.entry || null;
-    const focusValue = _el('setting-focus')?.value || 'all';
-    const preset = parseFocusPreset(focusValue);
-    const phonicsTag = String(entry?.phonics || '').trim();
-    let hintText = '';
-
-    if (preset.kind === 'classic') {
-      hintText = '';
-    } else if (phonicsTag && phonicsTag.toLowerCase() !== 'all') {
-      hintText = phonicsTag;
-    } else if (preset.kind === 'subject') {
-      hintText = `${preset.subject.toUpperCase()} · ${preset.gradeBand}`;
-    } else {
-      hintText = '';
-    }
-
-    if (!hintText) {
-      hintEl.textContent = '';
-      hintEl.classList.add('hidden');
-      if (hintRow) hintRow.classList.add('is-off');
-      return;
-    }
-
-    hintEl.textContent = hintText;
-    hintEl.classList.remove('hidden');
+    syncHintToggleUI(getHintMode());
   }
 
   function syncChunkTabsVisibility() {

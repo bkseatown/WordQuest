@@ -33,4 +33,5 @@ jobs:
         run: |
           npm run telemetry:funnel:check
           npm run telemetry:dashboards:check
+          npm run dom:hooks:check
           npm run smoke:teacher-daily-flow
