@@ -15,6 +15,7 @@
   var CASELOAD_KEY = "ws_caseload_v1";
   var ROI_KEY = "ws_roi_v1";
   var ENGAGE_KEY = "ws_engage_v1";
+  var TOUR_KEY = "ws_tour_done_v1";
   var FALLBACK_ACCENT = "#7aa7ff";
   var ACADEMIC_WORDS = {
     k2: ["detail", "clear", "because", "first", "next", "then", "show", "explain"],
@@ -490,8 +491,16 @@
   var impactCloseBtn = document.getElementById("ws-impact-close");
   var impactLineEl = document.getElementById("ws-impact-line");
   var impactSubEl = document.getElementById("ws-impact-sub");
+  var impactTrendEl = document.getElementById("ws-impact-trend");
   var mtssReviewEl = document.getElementById("ws-mtss-review");
   var mtssCopyBtn = document.getElementById("ws-mtss-copy");
+  var tourEl = document.getElementById("ws-tour");
+  var tourCloseBtn = document.getElementById("ws-tour-close");
+  var tourPrevBtn = document.getElementById("ws-tour-prev");
+  var tourNextBtn = document.getElementById("ws-tour-next");
+  var tourStartBtn = document.getElementById("ws-tour-start");
+  var tourStepEl = document.getElementById("ws-tour-step");
+  var tourTextEl = document.getElementById("ws-tour-text");
   var flowButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-step[data-step]"));
   var goalEl = document.getElementById("ws-goal");
   var nextStepBtn = document.getElementById("ws-next-step");
@@ -521,6 +530,9 @@
   var caseAddBtn = document.getElementById("ws-case-add");
   var caseCopyBtn = document.getElementById("ws-case-copy");
   var caseListEl = document.getElementById("ws-case-list");
+  var weekPlanBuildBtn = document.getElementById("ws-week-plan-build");
+  var weekPlanCopyBtn = document.getElementById("ws-week-plan-copy");
+  var weekPlanTextEl = document.getElementById("ws-week-plan-text");
   var roiMinutesEl = document.getElementById("ws-roi-minutes");
   var roiArtifactsEl = document.getElementById("ws-roi-artifacts");
   var roiTopEl = document.getElementById("ws-roi-top");
@@ -554,6 +566,7 @@
   var railNextBtn = document.getElementById("ws-rail-next");
   var railToggleBtn = document.getElementById("ws-rail-toggle");
   var railTitleEl = document.getElementById("ws-rail-title");
+  var advancedCanvasEl = document.getElementById("ws-advanced-canvas");
   var settingsBtn = document.getElementById("ws-settings");
   var gradeBandSelect = document.getElementById("ws-grade-band");
   var currentMode = "sentence";
@@ -598,6 +611,8 @@
   var qualityStreak = 0;
   var bestQualityStreak = 0;
   var impactOpen = false;
+  var tourOpen = false;
+  var tourIndex = 0;
 
   if (!editor || !metrics || !coach || !vocab || !saveBtn || !clearBtn) {
     return;
@@ -1806,6 +1821,41 @@
     ].join("\n");
   }
 
+  function buildImpactTrendChart() {
+    var series = [];
+    caseloadItems.forEach(function (item) {
+      var history = Array.isArray(item.history) ? item.history : [];
+      if (!history.length) return;
+      series.push(history.slice(-8).map(function (h) { return Number(h.score || 0); }));
+    });
+    if (!series.length) return "Trend chart will appear as student history grows.";
+    var maxLen = series.reduce(function (m, arr) { return Math.max(m, arr.length); }, 0);
+    var avg = [];
+    for (var i = 0; i < maxLen; i += 1) {
+      var sum = 0;
+      var c = 0;
+      series.forEach(function (arr) {
+        if (arr[i] != null) {
+          sum += arr[i];
+          c += 1;
+        }
+      });
+      avg.push(c ? (sum / c) : 0);
+    }
+    var width = 260;
+    var height = 42;
+    var pad = 4;
+    var den = Math.max(1, avg.length - 1);
+    var pts = avg.map(function (value, idx) {
+      var x = Math.round((idx / den) * (width - pad * 2) + pad);
+      var y = Math.round((1 - Math.min(9, value) / 9) * (height - pad * 2) + pad);
+      return x + "," + y;
+    }).join(" ");
+    return "Average score trend (last samples)\n" +
+      "<svg viewBox='0 0 " + width + " " + height + "' width='" + width + "' height='" + height + "' aria-hidden='true'>" +
+      "<polyline fill='none' stroke='#5ec8ff' stroke-width='3' points='" + pts + "' /></svg>";
+  }
+
   function renderImpactSnapshot() {
     if (!impactLineEl || !impactSubEl) return;
     var totalStudents = caseloadItems.length;
@@ -1817,12 +1867,16 @@
       var review = buildMTSSWeeklyReview();
       mtssReviewEl.textContent = review;
     }
+    if (impactTrendEl) {
+      impactTrendEl.innerHTML = buildImpactTrendChart();
+    }
   }
 
   function setImpactOpen(open) {
     if (!impactOverlayEl || !impactToggleBtn) return;
     impactOpen = !!open;
     if (impactOpen) closeShowcase();
+    if (impactOpen) setTourOpen(false, { silent: true });
     impactOverlayEl.classList.toggle("is-open", impactOpen);
     impactOverlayEl.setAttribute("aria-hidden", impactOpen ? "false" : "true");
     impactToggleBtn.classList.toggle("is-active", impactOpen);
@@ -1832,6 +1886,103 @@
 
   function toggleImpact() {
     setImpactOpen(!impactOpen);
+  }
+
+  function getTourSteps() {
+    return [
+      "Step 1: Pick a Mission. Finish one small task first.",
+      "Step 2: Use Do This Next and complete Plan -> Draft -> Revise.",
+      "Step 3: Save draft, update caseload from draft, then copy MTSS review."
+    ];
+  }
+
+  function renderTour() {
+    if (!tourStepEl || !tourTextEl) return;
+    var steps = getTourSteps();
+    var idx = Math.max(0, Math.min(steps.length - 1, tourIndex));
+    tourStepEl.textContent = "Step " + (idx + 1) + " of " + steps.length;
+    tourTextEl.textContent = steps[idx];
+    if (tourPrevBtn) tourPrevBtn.disabled = idx === 0;
+    if (tourNextBtn) tourNextBtn.disabled = idx >= steps.length - 1;
+  }
+
+  function setTourOpen(open, options) {
+    if (!tourEl) return;
+    tourOpen = !!open;
+    if (tourOpen) {
+      setImpactOpen(false);
+      closeShowcase();
+    }
+    tourEl.classList.toggle("is-open", tourOpen);
+    tourEl.setAttribute("aria-hidden", tourOpen ? "false" : "true");
+    if (tourOpen) renderTour();
+    if (!(options && options.silent) && !tourOpen) showToast("Tour closed");
+  }
+
+  function nextTourStep() {
+    tourIndex = Math.min(getTourSteps().length - 1, tourIndex + 1);
+    renderTour();
+  }
+
+  function prevTourStep() {
+    tourIndex = Math.max(0, tourIndex - 1);
+    renderTour();
+  }
+
+  function maybeStartTour() {
+    var seen = "1";
+    try {
+      seen = localStorage.getItem(TOUR_KEY) || "0";
+    } catch (_error) {
+      seen = "0";
+    }
+    if (seen === "1") return;
+    tourIndex = 0;
+    setTourOpen(true, { silent: true });
+  }
+
+  function finishTour() {
+    try {
+      localStorage.setItem(TOUR_KEY, "1");
+    } catch (_error) {
+      // Ignore storage write errors.
+    }
+    setTourOpen(false, { silent: true });
+    showToast("You are ready");
+  }
+
+  function applyTaskHandoffFromHash() {
+    var hash = String(window.location.hash || "");
+    if (hash.indexOf("#task-") !== 0) return;
+    var payload = hash.slice(6);
+    var decoded = "";
+    try {
+      decoded = decodeURIComponent(payload);
+    } catch (_error) {
+      return;
+    }
+    var params = new URLSearchParams(decoded);
+    var student = String(params.get("student") || "").trim();
+    var goal = String(params.get("goal") || "").trim();
+    var task = String(params.get("task") || "").trim();
+    var mode = String(params.get("mode") || "").trim();
+    var grade = String(params.get("grade") || "").trim();
+    withMutedToasts(function () {
+      setAudience("student", { silent: true });
+      if (mode) setMode(mode);
+      if (grade) setGradeBand(grade);
+    });
+    if (planTopicInput && goal) planTopicInput.value = goal;
+    if (planDetailInput && task) planDetailInput.value = task;
+    if (student && launchContextEl) {
+      launchContextEl.textContent = "Task handoff for " + student;
+      launchContextEl.hidden = false;
+    }
+    setScaffoldCue("Handoff task loaded: complete this step first.");
+    if (task) {
+      editor.value = "Task: " + task + "\n\n" + (editor.value || "");
+    }
+    showToast("Student task loaded");
   }
 
   function getLessonSummaryLine() {
@@ -2150,6 +2301,23 @@
     return scorePart + ", " + wordPart;
   }
 
+  function buildSparkline(history, key, maxValue, color) {
+    var points = Array.isArray(history) ? history.slice(-8) : [];
+    if (!points.length) return "";
+    var width = 130;
+    var height = 28;
+    var pad = 2;
+    var den = Math.max(1, points.length - 1);
+    var line = points.map(function (point, idx) {
+      var value = Number(point[key] || 0);
+      var x = Math.round((idx / den) * (width - pad * 2) + pad);
+      var y = Math.round((1 - Math.min(maxValue, value) / maxValue) * (height - pad * 2) + pad);
+      return x + "," + y;
+    }).join(" ");
+    return "<svg viewBox='0 0 " + width + " " + height + "' width='" + width + "' height='" + height + "' aria-hidden='true'>" +
+      "<polyline fill='none' stroke='" + color + "' stroke-width='2.5' points='" + line + "' /></svg>";
+  }
+
   function renderCaseload() {
     if (!caseListEl) return;
     caseListEl.innerHTML = "";
@@ -2190,6 +2358,12 @@
         " | " + (item.lastScore || "no rubric") +
         " | Trend: " + getCaseTrendText(item);
 
+      var trendRow = document.createElement("div");
+      trendRow.className = "ws-case-trends";
+      trendRow.innerHTML =
+        "<span class='ws-case-trend-label'>Score</span>" + buildSparkline(item.history, "score", 9, "#5ec8ff") +
+        "<span class='ws-case-trend-label'>Words</span>" + buildSparkline(item.history, "words", 80, "#ffbf69");
+
       var actions = document.createElement("div");
       actions.className = "ws-case-actions";
 
@@ -2221,6 +2395,20 @@
       taskBtn.setAttribute("data-case-id", item.id);
       taskBtn.textContent = "Copy Task";
 
+      var linkBtn = document.createElement("button");
+      linkBtn.className = "ws-secondary";
+      linkBtn.type = "button";
+      linkBtn.setAttribute("data-case-action", "link");
+      linkBtn.setAttribute("data-case-id", item.id);
+      linkBtn.textContent = "Task Link";
+
+      var qrBtn = document.createElement("button");
+      qrBtn.className = "ws-secondary";
+      qrBtn.type = "button";
+      qrBtn.setAttribute("data-case-action", "qr");
+      qrBtn.setAttribute("data-case-id", item.id);
+      qrBtn.textContent = "Show QR";
+
       var homeBtn = document.createElement("button");
       homeBtn.className = "ws-secondary";
       homeBtn.type = "button";
@@ -2239,12 +2427,15 @@
       actions.appendChild(cycleBtn);
       actions.appendChild(assignBtn);
       actions.appendChild(taskBtn);
+      actions.appendChild(linkBtn);
+      actions.appendChild(qrBtn);
       actions.appendChild(homeBtn);
       actions.appendChild(deleteBtn);
 
       card.appendChild(head);
       card.appendChild(meta);
       card.appendChild(sample);
+      card.appendChild(trendRow);
       card.appendChild(actions);
       caseListEl.appendChild(card);
     });
@@ -2321,6 +2512,34 @@
     ].join("\n");
   }
 
+  function buildCaseTaskLink(item) {
+    var params = new URLSearchParams();
+    params.set("student", item && item.name ? item.name : "Student");
+    params.set("goal", item && item.goal ? item.goal : "Writing growth");
+    params.set("task", item && item.next ? item.next : deriveNextTask(item));
+    params.set("mode", currentMode);
+    params.set("grade", currentGradeBand);
+    return String(window.location.origin + window.location.pathname + "#task-" + encodeURIComponent(params.toString()));
+  }
+
+  function showCaseTaskQR(item) {
+    var link = buildCaseTaskLink(item);
+    var qr = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=" + encodeURIComponent(link);
+    var payload = [
+      "Student Task Handoff",
+      "Student: " + (item ? item.name : "Student"),
+      "Open link: " + link,
+      "",
+      "QR: " + qr
+    ].join("\n");
+    try {
+      window.open(qr, "_blank", "noopener");
+    } catch (_error) {
+      // Ignore popup blockers.
+    }
+    copyTextPayload(payload, "Task handoff copied");
+  }
+
   function buildCaseHomePlan(item) {
     var barrier = inferBarrierCategory();
     var homePlan = getHomePlanByBarrier(barrier);
@@ -2352,6 +2571,10 @@
       showToast("Next task assigned");
     } else if (action === "task") {
       copyTextPayload(buildCaseTaskCard(item), "Task card copied");
+    } else if (action === "link") {
+      copyTextPayload(buildCaseTaskLink(item), "Task link copied");
+    } else if (action === "qr") {
+      showCaseTaskQR(item);
     } else if (action === "home") {
       copyTextPayload(buildCaseHomePlan(item), "Home plan copied");
     } else if (action === "delete") {
@@ -2365,6 +2588,42 @@
 
   function copyCaseloadBoard() {
     copyTextPayload(buildCaseloadBoardText(), "Caseload board copied");
+  }
+
+  function buildWeeklyPlan() {
+    if (!caseloadItems.length) return "No caseload students yet.";
+    var slots = [
+      { day: "Mon", block: "Block A" }, { day: "Mon", block: "Block B" },
+      { day: "Tue", block: "Block A" }, { day: "Tue", block: "Block B" },
+      { day: "Wed", block: "Block A" }, { day: "Wed", block: "Block B" },
+      { day: "Thu", block: "Block A" }, { day: "Thu", block: "Block B" },
+      { day: "Fri", block: "Check-in" }
+    ];
+    var sorted = caseloadItems.slice().sort(function (a, b) {
+      var rank = { active: 0, watch: 1, ready: 2 };
+      return (rank[a.status] || 3) - (rank[b.status] || 3);
+    });
+    var lines = [
+      "Weekly MTSS Writing Plan",
+      "Date: " + new Date().toLocaleDateString(),
+      ""
+    ];
+    sorted.forEach(function (item, idx) {
+      var slot = slots[Math.min(idx, slots.length - 1)];
+      var status = getCaseWeeklyStatus(item);
+      lines.push(slot.day + " " + slot.block + ": " + item.name + " (" + status.level + ") -> " + status.action);
+    });
+    return lines.join("\n");
+  }
+
+  function buildAndRenderWeeklyPlan() {
+    var plan = buildWeeklyPlan();
+    if (weekPlanTextEl) weekPlanTextEl.textContent = plan.split("\n").slice(0, 4).join(" | ");
+    showToast("Week plan generated");
+  }
+
+  function copyWeeklyPlan() {
+    copyTextPayload(buildWeeklyPlan(), "Week plan copied");
   }
 
   function applyPlaybook() {
@@ -2431,7 +2690,9 @@
 
   function initRailPager() {
     if (!railEl) return;
-    railBlocks = Array.prototype.slice.call(railEl.querySelectorAll(".ws-rail-block"));
+    railBlocks = Array.prototype.slice.call(railEl.querySelectorAll(".ws-rail-block")).filter(function (block) {
+      return !block.hidden;
+    });
     railIndex = 0;
     railShowAll = false;
     renderRailPager();
@@ -2972,8 +3233,21 @@
     showToast("Clipboard not available");
   }
 
+  function applyRoleVisibility() {
+    var blocks = Array.prototype.slice.call(document.querySelectorAll("#ws-rail .ws-rail-block"));
+    blocks.forEach(function (block) {
+      var groups = String(block.getAttribute("data-role-group") || "all").split(",").map(function (t) { return t.trim(); });
+      var visible = groups.indexOf("all") >= 0 || groups.indexOf(currentAudience) >= 0;
+      block.hidden = !visible;
+    });
+    if (advancedCanvasEl) {
+      advancedCanvasEl.open = currentAudience === "teacher" || currentAudience === "support";
+    }
+    initRailPager();
+  }
+
   function setAudience(audience, options) {
-    var normalized = audience === "teacher" || audience === "family" ? audience : "student";
+    var normalized = audience === "teacher" || audience === "family" || audience === "support" ? audience : "student";
     currentAudience = normalized;
     audienceButtons.forEach(function (btn) {
       btn.classList.toggle("is-active", btn.getAttribute("data-audience") === normalized);
@@ -2981,18 +3255,22 @@
 
     if (subtitleEl) {
       if (normalized === "teacher") subtitleEl.textContent = "Launch writing in 60 seconds, then coach live.";
+      else if (normalized === "support") subtitleEl.textContent = "Run targeted LS/EAL support with clear intervention steps.";
       else if (normalized === "family") subtitleEl.textContent = "Support writing at home with calm, clear next steps.";
       else subtitleEl.textContent = "Build ideas with structure — not stress.";
     }
 
     if (welcomeEl) {
       if (normalized === "teacher") welcomeEl.textContent = "Teacher view: pick launch mode, model one move, and circulate.";
+      else if (normalized === "support") welcomeEl.textContent = "LS/EAL view: assign one step, update from draft, track growth.";
       else if (normalized === "family") welcomeEl.textContent = "Family view: praise effort, then prompt one next move.";
       else welcomeEl.textContent = "Student view: one small step at a time.";
     }
 
     if (normalized === "teacher") {
       setScaffoldCue("Try: Glow first, then one clear Grow point.");
+    } else if (normalized === "support") {
+      setScaffoldCue("Use one scaffold, one draft line, then immediate feedback.");
     } else if (normalized === "family") {
       setScaffoldCue("At home: celebrate one strength, then add one sentence together.");
     } else {
@@ -3004,8 +3282,9 @@
     } catch (_error) {
       // Ignore storage write errors.
     }
+    applyRoleVisibility();
     renderLaunchpadCopy();
-    if (!(options && options.silent)) showToast("Audience: " + (normalized === "teacher" ? "Teacher" : normalized === "family" ? "Family" : "Student"));
+    if (!(options && options.silent)) showToast("Audience: " + (normalized === "teacher" ? "Teacher" : normalized === "support" ? "LS/EAL" : normalized === "family" ? "Family" : "Student"));
   }
 
   function loadAudience() {
@@ -3032,6 +3311,10 @@
     }
     if (currentAudience === "family") {
       launchpadCopyEl.textContent = "Family: read one line aloud, praise one strength, add one next sentence.";
+      return;
+    }
+    if (currentAudience === "support") {
+      launchpadCopyEl.textContent = "LS/EAL: assign one micro-task, write one line, then update caseload.";
       return;
     }
     launchpadCopyEl.textContent = "Students: pick a start mode, write one line now, then press Next Move.";
@@ -3641,6 +3924,8 @@
   if (fishTankPacketBtn) fishTankPacketBtn.addEventListener("click", function () {
     copyTextPayload(buildLSTeamPacket(), "LS team packet copied");
   });
+  if (weekPlanBuildBtn) weekPlanBuildBtn.addEventListener("click", buildAndRenderWeeklyPlan);
+  if (weekPlanCopyBtn) weekPlanCopyBtn.addEventListener("click", copyWeeklyPlan);
   if (caseAddBtn) caseAddBtn.addEventListener("click", addCaseloadStudent);
   if (caseCopyBtn) caseCopyBtn.addEventListener("click", copyCaseloadBoard);
   if (playbookApplyBtn) playbookApplyBtn.addEventListener("click", applyPlaybook);
@@ -3677,6 +3962,10 @@
   if (wallClearBtn) wallClearBtn.addEventListener("click", clearPublishWall);
   if (showcaseToggleBtn) showcaseToggleBtn.addEventListener("click", toggleShowcase);
   if (showcaseCloseBtn) showcaseCloseBtn.addEventListener("click", closeShowcase);
+  if (tourCloseBtn) tourCloseBtn.addEventListener("click", finishTour);
+  if (tourPrevBtn) tourPrevBtn.addEventListener("click", prevTourStep);
+  if (tourNextBtn) tourNextBtn.addEventListener("click", nextTourStep);
+  if (tourStartBtn) tourStartBtn.addEventListener("click", finishTour);
   if (familyCopyBtn) familyCopyBtn.addEventListener("click", copyFamilyPrompt);
   if (warmupInput) warmupInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
@@ -3714,6 +4003,10 @@
       setImpactOpen(false);
       return;
     }
+    if (event.key === "Escape" && tourOpen) {
+      finishTour();
+      return;
+    }
     if (event.key === "Escape" && setupToggleBtn && setupToggleBtn.getAttribute("aria-expanded") === "true") {
       setSetupPanelOpen(false);
     }
@@ -3731,6 +4024,9 @@
     if (showcaseOpen && showcaseEl && target === showcaseEl) {
       closeShowcase();
     }
+    if (tourOpen && tourEl && target === tourEl) {
+      finishTour();
+    }
   });
 
   applyTheme(resolveInitialTheme());
@@ -3745,6 +4041,7 @@
   renderPublishWall();
   loadCaseload();
   renderCaseload();
+  buildAndRenderWeeklyPlan();
   loadROIState();
   loadEngagementState();
   renderROIDashboard();
@@ -3764,7 +4061,9 @@
     renderFishTankTarget(getSelectedFishTankLesson());
   }
   loadPresetPack();
+  applyTaskHandoffFromHash();
   applyWordQuestContext();
+  maybeStartTour();
   setSetupPanelOpen(false);
   renderLaunchpadCopy();
 })();

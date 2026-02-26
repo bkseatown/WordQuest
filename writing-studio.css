@@ -324,6 +324,31 @@ body.cs-page-writing.cs-hv2-theme-seahawks #ws-editor {
   gap: var(--ws-gap-2);
 }
 
+.ws-advanced-canvas {
+  margin-top: -2px;
+}
+
+.ws-advanced-canvas > summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--ws-muted);
+  list-style: none;
+  padding: 2px 0 6px;
+}
+
+.ws-advanced-canvas > summary::-webkit-details-marker {
+  display: none;
+}
+
+.ws-advanced-canvas > summary::before {
+  content: "+ ";
+  color: var(--ws-10-accent);
+}
+
+.ws-advanced-canvas[open] > summary::before {
+  content: "- ";
+}
+
 .ws-goal {
   flex: 1;
   font-size: 14px;
@@ -818,6 +843,25 @@ body.cs-page-writing.cs-hv2-theme-seahawks #ws-editor {
   flex-wrap: wrap;
   gap: var(--ws-gap-1);
   margin-top: 2px;
+}
+
+.ws-case-trends {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px var(--ws-gap-1);
+  align-items: center;
+}
+
+.ws-case-trend-label {
+  font-size: 11px;
+  color: var(--ws-muted);
+}
+
+.ws-case-trends svg {
+  width: 100%;
+  max-width: 130px;
+  height: 28px;
+  opacity: 0.96;
 }
 
 .ws-case-actions .ws-secondary {

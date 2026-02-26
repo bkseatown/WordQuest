@@ -36,6 +36,7 @@
           <div class="ws-controls-row">
             <button class="ws-chip is-active" data-audience="student" type="button">Student</button>
             <button class="ws-chip" data-audience="teacher" type="button">Teacher</button>
+            <button class="ws-chip" data-audience="support" type="button">LS/EAL</button>
             <button class="ws-chip" data-audience="family" type="button">Family</button>
             <button class="ws-chip is-active" data-profile="whole" type="button">Whole Class</button>
             <button class="ws-chip" data-profile="small" type="button">Small Group</button>
@@ -97,6 +98,8 @@
             <button class="ws-secondary" id="ws-quick-one" type="button">1:1 Intensive Start</button>
           </div>
         </div>
+        <details class="ws-advanced-canvas" id="ws-advanced-canvas">
+          <summary>Advanced Tools</summary>
         <div class="ws-fishtank" id="ws-fishtank" aria-label="Curriculum lesson launcher">
           <div class="ws-fishtank-head">
             <div class="ws-h2">Curriculum Launcher (ES/MS/HS)</div>
@@ -140,6 +143,7 @@
           <span class="ws-pill ws-color-transition">Transition</span>
           <span class="ws-pill ws-color-vocab">Vocab</span>
         </div>
+        </details>
         <div id="ws-plan" class="ws-plan" aria-label="Idea builder">
           <div class="ws-meta">Idea Builder</div>
           <div class="ws-plan-meter-wrap" aria-live="polite">
@@ -191,12 +195,12 @@
           <button class="ws-rail-link" id="ws-rail-next" type="button">Next</button>
           <button class="ws-rail-link" id="ws-rail-toggle" type="button" aria-pressed="false">Show All</button>
         </div>
-        <div class="ws-rail-block" id="ws-block-coach">
+        <div class="ws-rail-block" id="ws-block-coach" data-role-group="all">
           <div class="ws-h2">Coach</div>
           <div class="ws-coach" id="ws-coach"></div>
         </div>
 
-        <div class="ws-rail-block" id="ws-block-scaffold">
+        <div class="ws-rail-block" id="ws-block-scaffold" data-role-group="student,support,teacher">
           <div class="ws-h2">Scaffold Tools</div>
           <div class="ws-pills" id="ws-scaffold-tools">
             <button class="ws-pill" id="ws-scaffold-next" type="button">Next Small Step</button>
@@ -208,7 +212,7 @@
           <div class="ws-tip"><strong>Support Cue:</strong> <span id="ws-scaffold-cue">Use one tool, then write one line.</span></div>
         </div>
 
-        <div class="ws-rail-block" id="ws-block-caseload">
+        <div class="ws-rail-block" id="ws-block-caseload" data-role-group="teacher,support">
           <div class="ws-h2">Caseload Board</div>
           <div class="ws-plan-row ws-plan-row-organizer">
             <select id="ws-playbook" class="ws-plan-input" aria-label="Intervention playbook">
@@ -229,9 +233,14 @@
           </div>
           <div class="ws-tip"><strong>Tip:</strong> Click <em>From Draft</em> to update sample date, score, and words for a student.</div>
           <div id="ws-case-list" class="ws-case-list"></div>
+          <div class="ws-plan-row ws-plan-row-organizer">
+            <button class="ws-secondary" id="ws-week-plan-build" type="button">Build Week Plan</button>
+            <button class="ws-secondary" id="ws-week-plan-copy" type="button">Copy Week Plan</button>
+          </div>
+          <div class="ws-tip"><strong>Week Plan:</strong> <span id="ws-week-plan-text">Build a plan to auto-fill intervention blocks.</span></div>
         </div>
 
-        <div class="ws-rail-block">
+        <div class="ws-rail-block" data-role-group="teacher,support">
           <div class="ws-h2">Teacher Time Dashboard</div>
           <div class="ws-pills">
             <span class="ws-pill">Minutes Saved: <span id="ws-roi-minutes">0</span></span>
@@ -241,7 +250,7 @@
           <div class="ws-tip"><strong>Top Saver:</strong> <span id="ws-roi-top">Session Note</span></div>
         </div>
 
-        <div class="ws-rail-block">
+        <div class="ws-rail-block" data-role-group="support,teacher">
           <div class="ws-h2">Step Up Toolkit</div>
           <div class="ws-tip"><strong>Target:</strong> <span id="ws-stepup-grade-target">3-5 sentence focus: topic + 2 details + transition.</span></div>
           <div class="ws-plan-row">
@@ -267,7 +276,7 @@
           <button class="ws-secondary" id="ws-stepup-copy" type="button">Copy Marked Draft</button>
         </div>
 
-        <div class="ws-rail-block" id="ws-block-warmup">
+        <div class="ws-rail-block" id="ws-block-warmup" data-role-group="all">
           <div class="ws-h2">Warm-Up: Fix It</div>
           <div class="ws-pills">
             <span class="ws-pill">Streak: <span id="ws-warmup-streak">0</span></span>
@@ -291,7 +300,7 @@
           </div>
         </div>
 
-        <div class="ws-rail-block">
+        <div class="ws-rail-block" data-role-group="student,support,teacher">
           <div class="ws-h2">Feedback</div>
           <div id="ws-feedback" class="ws-feedback">
             <div class="ws-tip"><strong>Glow:</strong> <span id="ws-glow">You are getting started.</span></div>
@@ -303,7 +312,7 @@
           </div>
         </div>
 
-        <div class="ws-rail-block">
+        <div class="ws-rail-block" data-role-group="student,support,teacher">
           <div class="ws-h2">Sprint</div>
           <div class="ws-sprint">
             <div id="ws-sprint-time" class="ws-sprint-time" aria-live="polite">03:00</div>
@@ -314,12 +323,12 @@
           </div>
         </div>
 
-        <div class="ws-rail-block">
+        <div class="ws-rail-block" data-role-group="student,support,teacher">
           <div class="ws-h2">Vocabulary</div>
           <div class="ws-pills" id="ws-vocab"></div>
         </div>
 
-        <div class="ws-rail-block">
+        <div class="ws-rail-block" data-role-group="teacher,support">
           <div class="ws-h2">Conference Copilot</div>
           <div id="ws-conference" class="ws-conference">
             <div class="ws-tip"><strong>Strength:</strong> <span id="ws-conference-strength">Student has started.</span></div>
@@ -328,7 +337,7 @@
           </div>
         </div>
 
-        <div class="ws-rail-block" id="ws-block-mastery">
+        <div class="ws-rail-block" id="ws-block-mastery" data-role-group="all">
           <div class="ws-h2">Mastery Snapshot</div>
           <div class="ws-plan-row ws-plan-row-organizer ws-benchmark-controls">
             <select id="ws-framework" class="ws-plan-input" aria-label="Benchmark framework">
@@ -352,12 +361,12 @@
           <div class="ws-tip"><strong>Mini-Lesson Next:</strong> <span id="ws-mini-lesson">Teach how to start with one clear idea.</span></div>
         </div>
 
-        <div class="ws-rail-block">
+        <div class="ws-rail-block" data-role-group="student,teacher,support">
           <div class="ws-h2">Anchor Exemplars</div>
           <div id="ws-exemplars" class="ws-coach"></div>
         </div>
 
-        <div class="ws-rail-block" id="ws-block-publish">
+        <div class="ws-rail-block" id="ws-block-publish" data-role-group="student,teacher,support">
           <div class="ws-h2">Publishing Wall</div>
           <div class="ws-canvas-foot">
             <button class="ws-secondary" id="ws-pin-line" type="button">Pin Best Line</button>
@@ -366,7 +375,7 @@
           <div id="ws-publish-wall" class="ws-publish-wall"></div>
         </div>
 
-        <div class="ws-rail-block">
+        <div class="ws-rail-block" data-role-group="family,teacher,support">
           <div class="ws-h2">Family 5-Minute Plan</div>
           <div class="ws-tip"><strong>1.</strong> Ask your child to read one sentence aloud.</div>
           <div class="ws-tip"><strong>2.</strong> Praise one strength (clarity, detail, or vocabulary).</div>
@@ -374,7 +383,7 @@
           <button class="ws-secondary" id="ws-family-copy" type="button">Copy Home Prompt</button>
         </div>
 
-        <div class="ws-rail-block">
+        <div class="ws-rail-block" data-role-group="student,support,teacher">
           <div class="ws-h2">Checklist</div>
           <label class="ws-check"><input type="checkbox"><span id="ws-check-1">Topic sentence is clear</span></label>
           <label class="ws-check"><input type="checkbox"><span id="ws-check-2">I added two details</span></label>
@@ -399,8 +408,21 @@
     <div class="ws-showcase-title">Impact Snapshot</div>
     <div class="ws-showcase-sub" id="ws-impact-sub">Operational and student-growth evidence from your current studio data.</div>
     <div class="ws-showcase-line" id="ws-impact-line">No impact data yet.</div>
+    <div class="ws-showcase-line ws-impact-review" id="ws-impact-trend">Trend chart will appear as student history grows.</div>
     <div class="ws-showcase-line ws-impact-review" id="ws-mtss-review">MTSS weekly review will appear after at least two samples per student.</div>
     <button class="ws-secondary" id="ws-mtss-copy" type="button">Copy MTSS Weekly Review</button>
+  </div>
+
+  <div id="ws-tour" class="ws-showcase" aria-hidden="true">
+    <button class="ws-ghost ws-showcase-close" id="ws-tour-close" type="button">Skip</button>
+    <div class="ws-showcase-title">Quick Tour</div>
+    <div class="ws-showcase-sub" id="ws-tour-step">Step 1 of 3</div>
+    <div class="ws-showcase-line ws-impact-review" id="ws-tour-text">Start with one Mission and complete one small task.</div>
+    <div class="ws-canvas-foot">
+      <button class="ws-secondary" id="ws-tour-prev" type="button">Back</button>
+      <button class="ws-secondary" id="ws-tour-next" type="button">Next</button>
+      <button class="ws-primary" id="ws-tour-start" type="button">Start</button>
+    </div>
   </div>
 </body>
 </html>
