@@ -50,24 +50,52 @@ function runGitStatus() {
 
 function runGitDiff(base) {
   try {
-    return execSync(`git diff --name-only ${base}...HEAD`, { encoding: 'utf8' });
+    return execSync(`git diff --name-status ${base}...HEAD`, { encoding: 'utf8' });
   } catch (error) {
     console.error(`ERROR: Could not diff against base "${base}".`);
     process.exit(2);
   }
 }
 
-function parsePath(line) {
-  const raw = line.replace(/^[ MADRCU?!]{1,2}\s+/, '').trim();
+function parsePath(rawPath) {
+  const raw = String(rawPath || '').trim();
   const renameParts = raw.split(' -> ');
   return renameParts[renameParts.length - 1];
+}
+
+function parseStatusLine(line) {
+  const trimmed = String(line || '').trim();
+  if (!trimmed) return null;
+  const parts = trimmed.split('\t');
+  const statusToken = String(parts[0] || '').trim();
+  const status = statusToken.charAt(0).toUpperCase() || 'M';
+  const rawPath = parts.length > 1 ? parts[parts.length - 1] : statusToken;
+  const path = parsePath(rawPath);
+  if (!path) return null;
+  return { path, status };
+}
+
+function parsePorcelainLine(line) {
+  const raw = String(line || '');
+  if (!raw.trim()) return null;
+  const statusCode = raw.slice(0, 2);
+  const status = statusCode.includes('D') ? 'D' : 'M';
+  const path = parsePath(raw.replace(/^[ MADRCU?!]{1,2}\s+/, ''));
+  if (!path) return null;
+  return { path, status };
 }
 
 function matchesAny(path, patterns) {
   return patterns.some((pattern) => pattern.test(path));
 }
 
-function classify(path) {
+function isMetadataDelete(change) {
+  return change.status === 'D' && /\.?DS_Store$/i.test(change.path);
+}
+
+function classify(change) {
+  if (isMetadataDelete(change)) return 'green';
+  const path = change.path;
   if (matchesAny(path, RED_RULES)) return 'red';
   if (matchesAny(path, GREEN_RULES)) return 'green';
   if (matchesAny(path, YELLOW_RULES)) return 'yellow';
@@ -82,8 +110,8 @@ function printGroup(title, paths) {
 
 const baseRef = process.env.GUARDRAIL_BASE && process.env.GUARDRAIL_BASE.trim();
 const changed = baseRef
-  ? runGitDiff(baseRef).split('\n').map((line) => line.trim()).filter(Boolean)
-  : runGitStatus().split('\n').filter(Boolean).map(parsePath);
+  ? runGitDiff(baseRef).split('\n').map(parseStatusLine).filter(Boolean)
+  : runGitStatus().split('\n').map(parsePorcelainLine).filter(Boolean);
 
 if (!changed.length) {
   if (baseRef) {
@@ -101,8 +129,8 @@ const groups = {
   unknown: []
 };
 
-changed.forEach((path) => {
-  groups[classify(path)].push(path);
+changed.forEach((change) => {
+  groups[classify(change)].push(change.path);
 });
 
 console.log(`Found ${changed.length} changed file(s).`);
