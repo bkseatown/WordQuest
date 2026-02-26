@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Writing Studio</title>
+  <link rel="stylesheet" href="./writing-studio.css">
+</head>
+<body class="cs-page-writing cs-hv2-theme-default">
+  <div id="ws-bg">
+    <header id="ws-topbar">
+      <div class="ws-brand">
+        <div class="ws-dot"></div>
+        <div>
+          <div class="ws-title">Writing Studio</div>
+          <div class="ws-subtitle">Build ideas with structure — not stress.</div>
+        </div>
+      </div>
+
+      <div class="ws-controls">
+        <button class="ws-chip is-active" data-mode="sentence" type="button">Sentence</button>
+        <button class="ws-chip" data-mode="paragraph" type="button">Paragraph</button>
+        <button class="ws-ghost" id="ws-settings" type="button">Theme</button>
+      </div>
+    </header>
+
+    <main id="ws-stage">
+      <section id="ws-canvas">
+        <div class="ws-canvas-head">
+          <div class="ws-h2">Draft</div>
+          <div class="ws-meta"><span id="ws-metrics">0 sentences • 0 words</span></div>
+        </div>
+        <textarea id="ws-editor" placeholder="Start here…"></textarea>
+        <div class="ws-canvas-foot">
+          <button class="ws-primary" id="ws-save" type="button">Save Draft</button>
+          <button class="ws-secondary" id="ws-clear" type="button">Clear</button>
+        </div>
+      </section>
+
+      <aside id="ws-rail">
+        <div class="ws-rail-block">
+          <div class="ws-h2">Coach</div>
+          <div class="ws-coach" id="ws-coach"></div>
+        </div>
+
+        <div class="ws-rail-block">
+          <div class="ws-h2">Vocabulary</div>
+          <div class="ws-pills" id="ws-vocab"></div>
+        </div>
+
+        <div class="ws-rail-block">
+          <div class="ws-h2">Checklist</div>
+          <label class="ws-check"><input type="checkbox"> Topic is clear</label>
+          <label class="ws-check"><input type="checkbox"> I added details</label>
+          <label class="ws-check"><input type="checkbox"> I reread it</label>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="./writing-studio.js" defer></script>
+</body>
+</html>
