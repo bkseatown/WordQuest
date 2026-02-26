@@ -74,7 +74,11 @@
       publish: "Read your final paragraph and check claim/evidence/explanation."
     }
   };
-  var SPRINT_SECONDS = 180;
+  var PROFILE_CONFIG = {
+    whole: { sprintSeconds: 300, scaffold: "light", complexity: "grade" },
+    small: { sprintSeconds: 180, scaffold: "medium", complexity: "supported" },
+    one: { sprintSeconds: 120, scaffold: "high", complexity: "explicit" }
+  };
 
   var body = document.body;
   var editor = document.getElementById("ws-editor");
@@ -96,6 +100,7 @@
   var saveBtn = document.getElementById("ws-save");
   var clearBtn = document.getElementById("ws-clear");
   var modeButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-chip[data-mode]"));
+  var profileButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-chip[data-profile]"));
   var modelBtn = document.getElementById("ws-model");
   var flowButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-step[data-step]"));
   var goalEl = document.getElementById("ws-goal");
@@ -104,9 +109,11 @@
   var backBtn = document.getElementById("ws-back");
   var settingsBtn = document.getElementById("ws-settings");
   var currentMode = "sentence";
+  var currentProfile = "whole";
   var currentStep = "plan";
   var teacherModel = false;
-  var sprintRemaining = SPRINT_SECONDS;
+  var sprintTotalSeconds = PROFILE_CONFIG.whole.sprintSeconds;
+  var sprintRemaining = sprintTotalSeconds;
   var sprintTimer = null;
   var sprintChunkIndex = 0;
 
@@ -186,7 +193,7 @@
     var stepTips = STEP_TIPS_BY_MODE[currentMode] || STEP_TIPS_BY_MODE.sentence;
 
     tips.push(stepTips[currentStep] || stepTips.plan);
-    if (teacherModel && MODEL_STEMS[currentMode] && MODEL_STEMS[currentMode][currentStep]) {
+    if ((teacherModel || PROFILE_CONFIG[currentProfile].scaffold === "high") && MODEL_STEMS[currentMode] && MODEL_STEMS[currentMode][currentStep]) {
       tips.push("Model aloud: " + MODEL_STEMS[currentMode][currentStep]);
     }
 
@@ -203,7 +210,7 @@
         tips.push("You included evidence. Add one sentence explaining why it matters.");
       }
 
-      if (academicCount < 2) {
+      if (academicCount < (currentProfile === "whole" ? 2 : 1)) {
         tips.push("Use academic words: evidence, analyze, and impact.");
       } else {
         tips.push("Academic language is strong. Keep your explanation precise.");
@@ -228,8 +235,9 @@
       }
     }
 
+    var maxTips = currentProfile === "whole" ? 2 : 3;
     coach.innerHTML = "";
-    tips.slice(0, 3).forEach(function (tip) {
+    tips.slice(0, maxTips).forEach(function (tip) {
       var el = document.createElement("div");
       el.className = "ws-tip";
       el.textContent = tip;
@@ -269,7 +277,11 @@
       glowEl.textContent = "Academic vocabulary is showing up clearly.";
     }
 
-    goEl.textContent = goals[currentStep] || stepTips[currentStep] || goals.plan;
+    var baseGo = goals[currentStep] || stepTips[currentStep] || goals.plan;
+    if (PROFILE_CONFIG[currentProfile].scaffold === "high") {
+      baseGo += " One step only: complete this before anything else.";
+    }
+    goEl.textContent = baseGo;
   }
 
   function renderConferenceCopilot(text, words, sentenceCount) {
@@ -322,8 +334,9 @@
   }
 
   function setStepByChunk() {
-    var elapsed = SPRINT_SECONDS - sprintRemaining;
-    var chunk = Math.min(3, Math.floor(elapsed / 45));
+    var elapsed = sprintTotalSeconds - sprintRemaining;
+    var chunkWindow = Math.max(30, Math.floor(sprintTotalSeconds / 4));
+    var chunk = Math.min(3, Math.floor(elapsed / chunkWindow));
     if (chunk !== sprintChunkIndex) {
       sprintChunkIndex = chunk;
       setStep(STEP_ORDER[sprintChunkIndex] || "plan");
@@ -354,10 +367,28 @@
 
   function resetSprint() {
     stopSprint();
-    sprintRemaining = SPRINT_SECONDS;
+    sprintRemaining = sprintTotalSeconds;
     sprintChunkIndex = 0;
     setStep("plan");
     renderSprint();
+  }
+
+  function setProfile(profile) {
+    var next = PROFILE_CONFIG[profile] ? profile : "whole";
+    currentProfile = next;
+    profileButtons.forEach(function (btn) {
+      btn.classList.toggle("is-active", btn.getAttribute("data-profile") === next);
+    });
+    sprintTotalSeconds = PROFILE_CONFIG[next].sprintSeconds;
+    teacherModel = next === "one" ? true : teacherModel;
+    if (modelBtn) {
+      modelBtn.classList.toggle("is-active", teacherModel);
+      modelBtn.setAttribute("aria-pressed", teacherModel ? "true" : "false");
+      modelBtn.textContent = teacherModel ? "Teacher Model: On" : "Teacher Model: Off";
+    }
+    resetSprint();
+    updateMetricsAndCoach();
+    showToast("Profile: " + (next === "whole" ? "Whole Class" : next === "small" ? "Small Group" : "1:1"));
   }
 
   function updateMetricsAndCoach() {
@@ -614,6 +645,11 @@
       setMode(btn.getAttribute("data-mode"));
     });
   });
+  profileButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      setProfile(btn.getAttribute("data-profile"));
+    });
+  });
   flowButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
       setStep(btn.getAttribute("data-step"));
@@ -636,5 +672,6 @@
   applyTheme(resolveInitialTheme());
   renderSprint();
   loadDraft();
+  setProfile("whole");
   setMode("sentence");
 })();
