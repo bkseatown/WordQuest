@@ -87,6 +87,7 @@
   const PROBE_HISTORY_KEY = 'wq_v2_weekly_probe_history_v1';
   const STUDENT_GOALS_KEY = 'wq_v2_student_goals_v1';
   const PLAYLIST_STATE_KEY = 'wq_v2_assignment_playlists_v1';
+  const WRITING_STUDIO_RETURN_KEY = 'ws_return_to_wordquest_v1';
   const EVENT_BUS_EVENTS = window.WQEventBusContract?.events || {};
   const TEACHER_ASSIGNMENTS_CONTRACT = window.WQTeacherAssignmentsContract || {};
   const DEEP_DIVE_CONTRACT = window.WQDeepDiveContract || {};
@@ -1427,6 +1428,49 @@
     } catch {
       return '';
     }
+  }
+
+  function readWritingStudioReturnFlag() {
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      return params.get('wq_studio_return') === '1';
+    } catch {
+      return false;
+    }
+  }
+
+  function consumeWritingStudioReturnSummary() {
+    if (!readWritingStudioReturnFlag()) return;
+    let payload = null;
+    try {
+      payload = JSON.parse(localStorage.getItem(WRITING_STUDIO_RETURN_KEY) || 'null');
+      localStorage.removeItem(WRITING_STUDIO_RETURN_KEY);
+    } catch {
+      payload = null;
+    }
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      params.delete('wq_studio_return');
+      const query = params.toString();
+      const nextUrl = `${location.pathname}${query ? `?${query}` : ''}${location.hash || ''}`;
+      history.replaceState(null, '', nextUrl);
+    } catch {}
+    if (!payload || typeof payload !== 'object') return;
+    const words = Math.max(0, Number(payload.words) || 0);
+    const sentences = Math.max(0, Number(payload.sentences) || 0);
+    const mode = String(payload.mode || '').toLowerCase() === 'paragraph' ? 'paragraph' : 'sentence';
+    const modeLabel = mode === 'paragraph' ? 'Paragraph' : 'Sentence';
+    const planItems = Math.max(0, Number(payload.planItems) || 0);
+    const focus = String(payload.focus || '').trim();
+    const topicPrefix = focus ? `${focus}: ` : '';
+    WQUI.showToast(`Studio return: ${topicPrefix}${sentences} sentence${sentences === 1 ? '' : 's'} • ${words} words • ${modeLabel} mode • ${planItems} plan idea${planItems === 1 ? '' : 's'}.`);
+    emitTelemetry('studio_return', {
+      studio_words: words,
+      studio_sentences: sentences,
+      studio_mode: mode,
+      studio_plan_items: planItems,
+      studio_focus: focus || null
+    });
   }
 
   function normalizeMusicMode(mode) {
@@ -15054,5 +15098,6 @@
   syncMusicForTheme();
   initQuestLoop();
   newGame({ launchMissionLab: false });
+  consumeWritingStudioReturnSummary();
 
 })();

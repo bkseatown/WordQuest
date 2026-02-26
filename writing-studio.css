@@ -100,6 +100,19 @@ body.cs-page-writing {
   color: rgba(255, 255, 255, 0.82);
 }
 
+.ws-launch-context {
+  margin-top: var(--ws-gap-1);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ws-gap-1);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(122, 167, 255, 0.36);
+  background: rgba(122, 167, 255, 0.16);
+}
+
 .ws-controls {
   display: flex;
   gap: var(--ws-gap-2);

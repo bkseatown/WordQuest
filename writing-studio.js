@@ -11,6 +11,7 @@
   var WARMUP_STATS_KEY = "ws_warmup_stats_v1";
   var WALL_KEY = "ws_publish_wall_v1";
   var PRESET_KEY = "ws_preset_pack_v1";
+  var RETURN_KEY = "ws_return_to_wordquest_v1";
   var FALLBACK_ACCENT = "#7aa7ff";
   var ACADEMIC_WORDS = {
     k2: ["detail", "clear", "because", "first", "next", "then", "show", "explain"],
@@ -268,6 +269,7 @@
   var body = document.body;
   var subtitleEl = document.getElementById("ws-subtitle");
   var welcomeEl = document.getElementById("ws-welcome");
+  var launchContextEl = document.getElementById("ws-launch-context");
   var editor = document.getElementById("ws-editor");
   var metrics = document.getElementById("ws-metrics");
   var coach = document.getElementById("ws-coach");
@@ -401,6 +403,7 @@
   var planItems = [];
   var imagePromptItems = [];
   var currentImageUrl = "";
+  var wordQuestContext = null;
   var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition || null;
   var recognition = null;
   var isDictating = false;
@@ -1305,10 +1308,46 @@
     }
   }
 
+  function renderWordQuestContextBadge(context) {
+    if (!launchContextEl) return;
+    var focusLabel = String(context && context.focusLabel || "").trim();
+    var word = String(context && context.word || "").trim();
+    var tag = focusLabel || "WordQuest";
+    if (word) tag += " • " + word;
+    launchContextEl.textContent = "From WordQuest: " + tag;
+    launchContextEl.hidden = false;
+  }
+
+  function storeReturnSummaryForWordQuest() {
+    var text = String(editor.value || "").trim();
+    var words = getWordCount(text);
+    var sentences = splitSentences(text).length;
+    var planCount = planItems.length;
+    var bestLine = selectBestLineFromText(text);
+    var payload = {
+      at: Date.now(),
+      mode: currentMode,
+      gradeBand: currentGradeBand,
+      words: words,
+      sentences: sentences,
+      planItems: planCount,
+      bestLine: bestLine,
+      focus: wordQuestContext && wordQuestContext.focusLabel ? wordQuestContext.focusLabel : "",
+      word: wordQuestContext && wordQuestContext.word ? wordQuestContext.word : ""
+    };
+    try {
+      localStorage.setItem(RETURN_KEY, JSON.stringify(payload));
+    } catch (_error) {
+      // Ignore storage errors.
+    }
+  }
+
   function applyWordQuestContext() {
     var context = getWordQuestContextFromQuery();
     var hasContext = Boolean(context.gradeBand || context.focus || context.word || context.clue);
     if (!hasContext) return;
+    wordQuestContext = context;
+    renderWordQuestContextBadge(context);
 
     withMutedToasts(function () {
       if (context.gradeBand) setGradeBand(context.gradeBand);
@@ -2230,12 +2269,14 @@
     var current = normalizeTheme(document.documentElement.getAttribute("data-theme") || "default");
     var prefs = loadPrefs();
     localStorage.setItem(STUDIO_THEME_KEY, current);
+    storeReturnSummaryForWordQuest();
     if (shouldPersistTheme(prefs)) {
       prefs.theme = current;
       savePrefs(prefs);
     }
     var url = new URL("index.html", window.location.href);
     url.searchParams.set("theme", current);
+    url.searchParams.set("wq_studio_return", "1");
     window.location.href = url.toString();
   }
 
