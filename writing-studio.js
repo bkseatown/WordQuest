@@ -1275,6 +1275,72 @@
     setPresetPack(stored, { silent: true });
   }
 
+  function normalizeWordQuestGrade(rawGrade) {
+    var value = String(rawGrade || "").trim().toUpperCase();
+    if (value === "K-2") return "k2";
+    if (value === "G3-5" || value === "3-5") return "35";
+    if (value === "G6-8" || value === "6-8") return "68";
+    if (value === "G9-12" || value === "9-12") return "912";
+    return "";
+  }
+
+  function isWordQuestContentFocus(focusValue) {
+    var raw = String(focusValue || "").trim().toLowerCase();
+    if (!raw || raw === "all") return false;
+    return raw.indexOf("vocab-") === 0 || raw.indexOf("math") >= 0 || raw.indexOf("science") >= 0 || raw.indexOf("social") >= 0 || raw.indexOf("ela") >= 0;
+  }
+
+  function getWordQuestContextFromQuery() {
+    try {
+      var params = new URLSearchParams(window.location.search || "");
+      return {
+        gradeBand: normalizeWordQuestGrade(params.get("wq_grade")),
+        focus: String(params.get("wq_focus") || "").trim(),
+        focusLabel: String(params.get("wq_focus_label") || "").trim(),
+        word: String(params.get("wq_word") || "").trim(),
+        clue: String(params.get("wq_clue") || "").trim()
+      };
+    } catch (_error) {
+      return { gradeBand: "", focus: "", focusLabel: "", word: "", clue: "" };
+    }
+  }
+
+  function applyWordQuestContext() {
+    var context = getWordQuestContextFromQuery();
+    var hasContext = Boolean(context.gradeBand || context.focus || context.word || context.clue);
+    if (!hasContext) return;
+
+    withMutedToasts(function () {
+      if (context.gradeBand) setGradeBand(context.gradeBand);
+      if (isWordQuestContentFocus(context.focus)) setMode("paragraph");
+    });
+
+    var topic = context.focusLabel || (context.focus ? context.focus.toUpperCase() : "");
+    var detailA = context.word ? ("Use target word: " + context.word) : "";
+    var detailB = context.clue ? context.clue : "";
+
+    if (planTopicInput && topic) planTopicInput.value = topic;
+    if (planDetailInput && detailA) planDetailInput.value = detailA;
+
+    if (!planItems.length) {
+      if (topic && detailA) planItems.push({ topic: topic, detail: detailA });
+      if (topic && detailB) planItems.push({ topic: "Sentence clue", detail: detailB });
+      if (planItems.length) renderPlanItems();
+    }
+
+    if (context.word) {
+      var wordPrompt = currentMode === "paragraph"
+        ? "Use \"" + context.word + "\" in your claim and evidence."
+        : "Write one clear sentence that uses \"" + context.word + "\".";
+      setScaffoldCue(wordPrompt);
+    } else if (context.focusLabel) {
+      setScaffoldCue("Write about: " + context.focusLabel + ".");
+    }
+
+    updateMetricsAndCoach();
+    showToast("WordQuest context loaded");
+  }
+
   function normalizeCode(value, fallback) {
     var raw = String(value || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
     if (!raw) return fallback;
@@ -2273,4 +2339,5 @@
   setProfile("whole");
   setMode("sentence");
   loadPresetPack();
+  applyWordQuestContext();
 })();

@@ -4547,8 +4547,20 @@
   _el('writing-studio-btn')?.addEventListener('click', () => {
     const activeTheme = normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
     try { localStorage.setItem('ws_theme_v1', activeTheme); } catch {}
+    const state = WQGame.getState?.() || {};
+    const focusSelect = _el('setting-focus');
+    const focusValue = String(focusSelect?.value || prefs.focus || DEFAULT_PREFS.focus || 'all').trim();
+    const focusLabel = String(focusSelect?.selectedOptions?.[0]?.textContent || focusValue || 'General writing').trim();
+    const gradeValue = String(_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade || 'all').trim();
+    const targetWord = String(state?.word || '').trim().toUpperCase();
+    const clueSentence = String(state?.entry?.sentence || '').trim();
     const url = new URL('writing-studio.html', window.location.href);
     url.searchParams.set('theme', activeTheme);
+    url.searchParams.set('wq_focus', focusValue);
+    url.searchParams.set('wq_focus_label', focusLabel);
+    url.searchParams.set('wq_grade', gradeValue);
+    if (targetWord) url.searchParams.set('wq_word', targetWord);
+    if (clueSentence) url.searchParams.set('wq_clue', clueSentence);
     window.location.href = url.toString();
   });
   _el('home-logo-btn')?.addEventListener('click', () => {
