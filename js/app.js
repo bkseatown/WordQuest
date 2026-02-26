@@ -801,12 +801,22 @@
     return '';
   }
 
+  function resolveRuntimeChannel() {
+    const host = String(location.hostname || '').toLowerCase();
+    if (!host || host === 'localhost' || host === '127.0.0.1' || host === '::1') return 'LOCAL';
+    if (host === 'bkseatown.github.io') return 'LIVE';
+    if (host === 'cdn.jsdelivr.net' || host === 'htmlpreview.github.io') return 'PREVIEW';
+    return 'CUSTOM';
+  }
+
   function syncBuildBadge() {
     const badge = _el('settings-build-badge');
     if (!badge) return;
     const label = resolveBuildLabel();
-    badge.textContent = label ? `Build ${label}` : 'Build local';
-    badge.title = label ? `WordQuest build ${label}` : 'WordQuest local build';
+    const channel = resolveRuntimeChannel();
+    const buildLabel = label || 'local';
+    badge.textContent = `${channel} · Build ${buildLabel}`;
+    badge.title = `${channel} source: ${location.origin}${location.pathname} · build ${buildLabel}`;
   }
 
   function formatDiagnosticDate(ts) {
