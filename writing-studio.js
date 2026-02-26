@@ -5,6 +5,7 @@
   var PREF_KEY = "wq_v2_prefs";
   var STUDIO_THEME_KEY = "ws_theme_v1";
   var FRAMEWORK_KEY = "ws_framework_v1";
+  var AUDIENCE_KEY = "ws_audience_v1";
   var FALLBACK_ACCENT = "#7aa7ff";
   var ACADEMIC_WORDS = {
     k2: ["detail", "clear", "because", "first", "next", "then", "show", "explain"],
@@ -184,6 +185,8 @@
   };
 
   var body = document.body;
+  var subtitleEl = document.getElementById("ws-subtitle");
+  var welcomeEl = document.getElementById("ws-welcome");
   var editor = document.getElementById("ws-editor");
   var metrics = document.getElementById("ws-metrics");
   var coach = document.getElementById("ws-coach");
@@ -220,6 +223,7 @@
   var saveBtn = document.getElementById("ws-save");
   var clearBtn = document.getElementById("ws-clear");
   var modeButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-chip[data-mode]"));
+  var audienceButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-chip[data-audience]"));
   var profileButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-chip[data-profile]"));
   var modelBtn = document.getElementById("ws-model");
   var flowButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-step[data-step]"));
@@ -251,6 +255,7 @@
   var currentProfile = "whole";
   var currentStep = "plan";
   var currentFramework = "ccss";
+  var currentAudience = "student";
   var teacherModel = false;
   var sprintTotalSeconds = PROFILE_CONFIG.whole.sprintSeconds;
   var sprintRemaining = sprintTotalSeconds;
@@ -960,6 +965,51 @@
     if (scaffoldCueEl) scaffoldCueEl.textContent = text;
   }
 
+  function setAudience(audience, options) {
+    var normalized = audience === "teacher" || audience === "family" ? audience : "student";
+    currentAudience = normalized;
+    audienceButtons.forEach(function (btn) {
+      btn.classList.toggle("is-active", btn.getAttribute("data-audience") === normalized);
+    });
+
+    if (subtitleEl) {
+      if (normalized === "teacher") subtitleEl.textContent = "Lead high-impact writing moves with less prep load.";
+      else if (normalized === "family") subtitleEl.textContent = "Support writing at home with calm, clear next steps.";
+      else subtitleEl.textContent = "Build ideas with structure — not stress.";
+    }
+
+    if (welcomeEl) {
+      if (normalized === "teacher") welcomeEl.textContent = "Teacher view: model, coach, and conference with confidence.";
+      else if (normalized === "family") welcomeEl.textContent = "Family view: praise effort, then prompt one next move.";
+      else welcomeEl.textContent = "Student view: one small step at a time.";
+    }
+
+    if (normalized === "teacher") {
+      setScaffoldCue("Try: Glow first, then one clear Grow point.");
+    } else if (normalized === "family") {
+      setScaffoldCue("At home: celebrate one strength, then add one sentence together.");
+    } else {
+      setScaffoldCue("Use one tool, then write one line.");
+    }
+
+    try {
+      localStorage.setItem(AUDIENCE_KEY, normalized);
+    } catch (_error) {
+      // Ignore storage write errors.
+    }
+    if (!(options && options.silent)) showToast("Audience: " + (normalized === "teacher" ? "Teacher" : normalized === "family" ? "Family" : "Student"));
+  }
+
+  function loadAudience() {
+    var stored = "student";
+    try {
+      stored = localStorage.getItem(AUDIENCE_KEY) || "student";
+    } catch (_error) {
+      stored = "student";
+    }
+    setAudience(stored, { silent: true });
+  }
+
   function getMicroStepCue() {
     var map = {
       plan: currentMode === "paragraph" ? "Write only your claim first." : "Write only your topic sentence first.",
@@ -1442,6 +1492,11 @@
       setMode(btn.getAttribute("data-mode"));
     });
   });
+  audienceButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      setAudience(btn.getAttribute("data-audience"));
+    });
+  });
   profileButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
       setProfile(btn.getAttribute("data-profile"));
@@ -1490,6 +1545,7 @@
   renderOrganizerPreview();
   renderPlanItems();
   renderSprint();
+  loadAudience();
   loadFramework();
   loadDraft();
   setGradeBand("35");

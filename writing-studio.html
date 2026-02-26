@@ -18,13 +18,17 @@
         <div class="ws-dot"></div>
         <div>
           <div class="ws-title">Writing Studio</div>
-          <div class="ws-subtitle">Build ideas with structure — not stress.</div>
+          <div class="ws-subtitle" id="ws-subtitle">Build ideas with structure — not stress.</div>
+          <div class="ws-welcome" id="ws-welcome">Student view: one small step at a time.</div>
         </div>
       </div>
 
       <div class="ws-controls">
         <button class="ws-chip is-active" data-mode="sentence" type="button">Sentence</button>
         <button class="ws-chip" data-mode="paragraph" type="button">Paragraph</button>
+        <button class="ws-chip is-active" data-audience="student" type="button">Student</button>
+        <button class="ws-chip" data-audience="teacher" type="button">Teacher</button>
+        <button class="ws-chip" data-audience="family" type="button">Family</button>
         <select id="ws-grade-band" class="ws-plan-input" aria-label="Grade band">
           <option value="k2">K-2</option>
           <option value="35" selected>3-5</option>
