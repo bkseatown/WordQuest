@@ -144,6 +144,11 @@
   var conferenceStrengthEl = document.getElementById("ws-conference-strength");
   var conferenceTargetEl = document.getElementById("ws-conference-target");
   var conferencePromptEl = document.getElementById("ws-conference-prompt");
+  var rubric1El = document.getElementById("ws-rubric-1");
+  var rubric2El = document.getElementById("ws-rubric-2");
+  var rubric3El = document.getElementById("ws-rubric-3");
+  var rubricScoreEl = document.getElementById("ws-rubric-score");
+  var miniLessonEl = document.getElementById("ws-mini-lesson");
   var sprintTimeEl = document.getElementById("ws-sprint-time");
   var sprintStartBtn = document.getElementById("ws-sprint-start");
   var sprintResetBtn = document.getElementById("ws-sprint-reset");
@@ -667,6 +672,78 @@
     conferencePromptEl.textContent = prompt;
   }
 
+  function clampScore(value) {
+    return Math.max(0, Math.min(3, value));
+  }
+
+  function getBandThresholds() {
+    if (currentGradeBand === "k2") return { structWords: 6, structSentences: 1, detailWords: 10, languageTarget: 0 };
+    if (currentGradeBand === "35") return { structWords: 14, structSentences: 2, detailWords: 24, languageTarget: 1 };
+    if (currentGradeBand === "68") return { structWords: 20, structSentences: 3, detailWords: 34, languageTarget: 2 };
+    return { structWords: 28, structSentences: 4, detailWords: 46, languageTarget: 2 };
+  }
+
+  function getMiniLessonRecommendation(scores) {
+    var labels = ["structure", "detail", "language"];
+    var values = [scores.structure, scores.detail, scores.language];
+    var weakest = labels[0];
+    var min = values[0];
+    for (var i = 1; i < labels.length; i += 1) {
+      if (values[i] < min) {
+        min = values[i];
+        weakest = labels[i];
+      }
+    }
+    if (weakest === "structure") {
+      return currentGradeBand === "k2"
+        ? "Model oral rehearsal: say sentence, then write sentence."
+        : "Teach quick plan-to-draft: claim/topic first, then ordered supporting lines.";
+    }
+    if (weakest === "detail") {
+      return currentMode === "paragraph"
+        ? "Teach evidence + explanation: one proof line and one why-it-matters line."
+        : "Teach sentence expansion: add one who/what/why detail phrase.";
+    }
+    return currentGradeBand === "912"
+      ? "Teach precision pass: replace vague words and tighten academic register."
+      : "Teach word upgrade pass: replace one simple word with a stronger academic choice.";
+  }
+
+  function renderMasterySnapshot(text, words, sentenceCount) {
+    if (!rubric1El || !rubric2El || !rubric3El || !rubricScoreEl || !miniLessonEl) return;
+    var t = getBandThresholds();
+    var hasClaim = CLAIM_RE.test(text);
+    var hasEvidence = EVIDENCE_RE.test(text);
+    var hasConnector = CONJUNCTION_RE.test(text);
+    var academicCount = countAcademicWords(text);
+
+    var structure = 0;
+    if (sentenceCount >= t.structSentences || words >= t.structWords) structure = 1;
+    if (currentMode === "paragraph" ? hasClaim : sentenceCount >= Math.max(1, t.structSentences)) structure = 2;
+    if (currentMode === "paragraph" ? (hasClaim && sentenceCount >= t.structSentences) : (sentenceCount >= t.structSentences && words >= t.structWords)) structure = 3;
+
+    var detail = 0;
+    if (words >= Math.floor(t.detailWords * 0.6)) detail = 1;
+    if ((currentMode === "paragraph" && hasEvidence) || (currentMode === "sentence" && hasConnector)) detail = 2;
+    if (words >= t.detailWords && ((currentMode === "paragraph" && hasEvidence) || (currentMode === "sentence" && hasConnector))) detail = 3;
+
+    var language = 0;
+    if (academicCount >= Math.max(0, t.languageTarget - 1)) language = 1;
+    if (academicCount >= t.languageTarget) language = 2;
+    if (academicCount >= t.languageTarget + 1) language = 3;
+
+    structure = clampScore(structure);
+    detail = clampScore(detail);
+    language = clampScore(language);
+    var total = structure + detail + language;
+
+    rubric1El.textContent = structure + "/3";
+    rubric2El.textContent = detail + "/3";
+    rubric3El.textContent = language + "/3";
+    rubricScoreEl.textContent = total + "/9";
+    miniLessonEl.textContent = getMiniLessonRecommendation({ structure: structure, detail: detail, language: language });
+  }
+
   function formatSprint(seconds) {
     var safe = Math.max(0, seconds);
     var mins = String(Math.floor(safe / 60)).padStart(2, "0");
@@ -760,6 +837,7 @@
     renderCoachTips(text, words, sentences);
     renderGlowGrowGo(text, words, sentences);
     renderConferenceCopilot(text, words, sentences);
+    renderMasterySnapshot(text, words, sentences);
     renderPlanningMeter(text, words, sentences);
   }
 
