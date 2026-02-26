@@ -78,6 +78,7 @@
   // ─── 3. Preferences ────────────────────────────────
   const PREF_KEY = 'wq_v2_prefs';
   const PREF_MIGRATION_KEY = 'wq_v2_pref_defaults_20260222';
+  const PREF_UI_SKIN_RESET_MIGRATION_KEY = 'wq_v2_pref_ui_skin_default_20260226a';
   const PREF_MUSIC_AUTO_MIGRATION_KEY = 'wq_v2_pref_music_auto_20260222';
   const PREF_GUESSES_DEFAULT_MIGRATION_KEY = 'wq_v2_pref_guesses_default_20260224';
   const FIRST_RUN_SETUP_KEY = 'wq_v2_first_run_setup_v1';
@@ -190,7 +191,7 @@
     keyboardLayout: 'standard',
     chunkTabs: 'auto',
     atmosphere: 'minimal',
-    uiSkin: 'premium'
+    uiSkin: 'classic'
   });
   const SAFE_DEFAULT_GRADE_BAND = 'K-2';
   const ALLOWED_MASTERY_SORT_MODES = new Set([
@@ -367,6 +368,11 @@
       prefs.uiSkin = normalizedUiSkin;
       savePrefs(prefs);
     }
+  }
+  if (localStorage.getItem(PREF_UI_SKIN_RESET_MIGRATION_KEY) !== 'done') {
+    prefs.uiSkin = DEFAULT_PREFS.uiSkin;
+    savePrefs(prefs);
+    localStorage.setItem(PREF_UI_SKIN_RESET_MIGRATION_KEY, 'done');
   }
   if (localStorage.getItem(PREF_MUSIC_AUTO_MIGRATION_KEY) !== 'done') {
     const currentMusic = String(prefs.music || '').toLowerCase();
