@@ -17,6 +17,7 @@
   // ─── 2. Init UI ────────────────────────────────────
   WQUI.init();
 
+  const APP_SEMVER = '1.0.0';
   const SW_RUNTIME_VERSION = '20260225-v10';
   const SW_RUNTIME_URL = `./sw-runtime.js?v=${encodeURIComponent(SW_RUNTIME_VERSION)}`;
 
@@ -97,6 +98,8 @@
   const DIAGNOSTICS_LAST_RESET_KEY = 'wq_v2_diag_last_reset_v1';
   const PAGE_MODE_KEY = 'wq_v2_page_mode_v1';
   const LAST_NON_OFF_MUSIC_KEY = 'wq_v2_last_non_off_music_v1';
+  const FEATURE_FLAGS = window.WQFeatureFlags || {};
+  const WRITING_STUDIO_ENABLED = FEATURE_FLAGS.writingStudio !== false;
   const MISSION_LAB_ENABLED = true;
   const MIDGAME_BOOST_ENABLED = false;
   const REVIEW_QUEUE_MAX_ITEMS = 36;
@@ -192,7 +195,8 @@
     keyboardLayout: 'standard',
     chunkTabs: 'auto',
     atmosphere: 'minimal',
-    uiSkin: 'classic'
+    uiSkin: 'classic',
+    textSize: 'medium'
   });
   const SAFE_DEFAULT_GRADE_BAND = 'K-2';
   const ALLOWED_MASTERY_SORT_MODES = new Set([
@@ -265,6 +269,12 @@
   function normalizeUiSkin(mode) {
     const raw = String(mode || '').trim().toLowerCase();
     return ALLOWED_UI_SKINS.has(raw) ? raw : DEFAULT_PREFS.uiSkin;
+  }
+
+  function normalizeTextSize(mode) {
+    const raw = String(mode || '').trim().toLowerCase();
+    if (raw === 'small' || raw === 'large') return raw;
+    return 'medium';
   }
 
   function getKeyboardLayoutLabel(mode) {
@@ -359,6 +369,7 @@
     if (prefs.boostPopups === undefined) prefs.boostPopups = DEFAULT_PREFS.boostPopups;
     if (prefs.starterWords === undefined) prefs.starterWords = DEFAULT_PREFS.starterWords;
     if (prefs.uiSkin === undefined) prefs.uiSkin = DEFAULT_PREFS.uiSkin;
+    if (prefs.textSize === undefined) prefs.textSize = DEFAULT_PREFS.textSize;
     if (prefs.themeSave !== 'on') delete prefs.theme;
     savePrefs(prefs);
     localStorage.setItem(PREF_MIGRATION_KEY, 'done');
@@ -474,6 +485,10 @@
     prefs.keyStyle = DEFAULT_PREFS.keyStyle;
     savePrefs(prefs);
   }
+  if (!['small', 'medium', 'large'].includes(String(prefs.textSize || '').toLowerCase())) {
+    prefs.textSize = DEFAULT_PREFS.textSize;
+    savePrefs(prefs);
+  }
   if (!ALLOWED_MUSIC_MODES.has(String(prefs.music || '').toLowerCase())) {
     prefs.music = DEFAULT_PREFS.music;
     savePrefs(prefs);
@@ -487,6 +502,15 @@
       length: DEFAULT_PREFS.length
     });
     let changed = false;
+    // Keep launch predictable on hard refresh: always start in Classic 5-letter mode.
+    if (prefs.focus !== DEFAULT_PREFS.focus) {
+      prefs.focus = DEFAULT_PREFS.focus;
+      changed = true;
+    }
+    if (String(prefs.length || '').trim() !== DEFAULT_PREFS.length) {
+      prefs.length = DEFAULT_PREFS.length;
+      changed = true;
+    }
     Object.entries(startupDefaults).forEach(([key, value]) => {
       const current = prefs[key];
       if (current !== undefined && current !== null && String(current).trim() !== '') return;
@@ -695,6 +719,7 @@
   function getTelemetryContext() {
     const state = WQGame.getState?.() || {};
     const build = resolveBuildLabel() || 'local';
+    const appVersion = `v${APP_SEMVER}`;
     const focusValue = _el('setting-focus')?.value || prefs.focus || DEFAULT_PREFS.focus || 'all';
     const gradeBand = getEffectiveGameplayGradeBand(
       _el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade || 'all',
@@ -709,7 +734,7 @@
       ts_ms: Date.now(),
       session_id: TELEMETRY_SESSION_ID,
       device_id_local: getTelemetryDeviceId(),
-      app_version: build,
+      app_version: `${appVersion}+${build}`,
       page_mode: normalizePageMode(document.documentElement.getAttribute('data-page-mode') || loadStoredPageMode()),
       play_style: normalizePlayStyle(document.documentElement.getAttribute('data-play-style') || prefs.playStyle || DEFAULT_PREFS.playStyle),
       grade_band: gradeBand,
@@ -822,8 +847,25 @@
     const label = resolveBuildLabel();
     const channel = resolveRuntimeChannel();
     const buildLabel = label || 'local';
-    badge.textContent = `${channel} · Build ${buildLabel}`;
-    badge.title = `${channel} source: ${location.origin}${location.pathname} · build ${buildLabel}`;
+    const appVersion = `v${APP_SEMVER}`;
+    badge.textContent = `${channel} · ${appVersion} · Build ${buildLabel}`;
+    badge.title = `${channel} source: ${location.origin}${location.pathname} · ${appVersion} · build ${buildLabel}`;
+  }
+
+  function syncPersistentVersionChip() {
+    const channel = resolveRuntimeChannel();
+    const buildLabel = resolveBuildLabel() || 'local';
+    const appVersion = `v${APP_SEMVER}`;
+    let chip = _el('wq-version-chip');
+    if (!chip) {
+      chip = document.createElement('div');
+      chip.id = 'wq-version-chip';
+      chip.className = 'wq-version-chip';
+      chip.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(chip);
+    }
+    chip.textContent = `${channel} · ${appVersion} · ${buildLabel}`;
+    chip.title = `WordQuest ${appVersion} (${buildLabel})`;
   }
 
   function formatDiagnosticDate(ts) {
@@ -848,6 +890,7 @@
 
   async function collectRuntimeDiagnostics() {
     const build = resolveBuildLabel() || 'local';
+    const appVersion = `v${APP_SEMVER}`;
     const lastReset = readDiagnosticsLastReset();
     const activePrefs = [
       `focus:${_el('setting-focus')?.value || prefs.focus || DEFAULT_PREFS.focus}`,
@@ -889,6 +932,7 @@
 
     return {
       build,
+      appVersion,
       swRuntimeVersion,
       swRegistrations,
       cacheBuckets,
@@ -913,7 +957,7 @@
     const activePrefsEl = _el('diag-active-prefs');
     const lastResetEl = _el('diag-last-reset');
 
-    buildEl.textContent = `Build: ${snapshot.build}`;
+    buildEl.textContent = `Build: ${snapshot.build} (${snapshot.appVersion})`;
     if (swVersionEl) swVersionEl.textContent = `SW Runtime: ${snapshot.swRuntimeVersion || '--'}`;
     if (swRegistrationsEl) swRegistrationsEl.textContent = `SW Registrations: ${snapshot.swRegistrations}`;
     if (cacheBucketsEl) cacheBucketsEl.textContent = `Cache Buckets: ${snapshot.cacheBuckets}`;
@@ -937,6 +981,7 @@
     const snapshot = await collectRuntimeDiagnostics();
     const lines = [
       'WordQuest Diagnostics',
+      `App Version: ${snapshot.appVersion}`,
       `Build: ${snapshot.build}`,
       `SW Runtime: ${snapshot.swRuntimeVersion || '--'}`,
       `SW Registrations: ${snapshot.swRegistrations}`,
@@ -1439,6 +1484,15 @@
     }
   }
 
+  function readWritingStudioHiddenFlag() {
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      return params.get('ws_hidden') === '1';
+    } catch {
+      return false;
+    }
+  }
+
   function consumeWritingStudioReturnSummary() {
     if (!readWritingStudioReturnFlag()) return;
     let payload = null;
@@ -1459,11 +1513,8 @@
     const words = Math.max(0, Number(payload.words) || 0);
     const sentences = Math.max(0, Number(payload.sentences) || 0);
     const mode = String(payload.mode || '').toLowerCase() === 'paragraph' ? 'paragraph' : 'sentence';
-    const modeLabel = mode === 'paragraph' ? 'Paragraph' : 'Sentence';
     const planItems = Math.max(0, Number(payload.planItems) || 0);
     const focus = String(payload.focus || '').trim();
-    const topicPrefix = focus ? `${focus}: ` : '';
-    WQUI.showToast(`Studio return: ${topicPrefix}${sentences} sentence${sentences === 1 ? '' : 's'} • ${words} words • ${modeLabel} mode • ${planItems} plan idea${planItems === 1 ? '' : 's'}.`);
     emitTelemetry('studio_return', {
       studio_words: words,
       studio_sentences: sentences,
@@ -1471,6 +1522,18 @@
       studio_plan_items: planItems,
       studio_focus: focus || null
     });
+  }
+
+  function consumeWritingStudioHiddenNotice() {
+    if (!readWritingStudioHiddenFlag()) return;
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      params.delete('ws_hidden');
+      const query = params.toString();
+      const nextUrl = `${location.pathname}${query ? `?${query}` : ''}${location.hash || ''}`;
+      history.replaceState(null, '', nextUrl);
+    } catch {}
+    WQUI.showToast('Writing Studio is hidden in this shared build.');
   }
 
   function normalizeMusicMode(mode) {
@@ -1723,6 +1786,7 @@
     's-board-style': 'boardStyle',
     's-key-style': 'keyStyle',
     's-keyboard-layout': 'keyboardLayout',
+    's-text-size': 'textSize',
     's-chunk-tabs': 'chunkTabs',
     's-atmosphere': 'atmosphere',
     's-ui-skin': 'uiSkin',
@@ -1827,6 +1891,7 @@
     if (prefs.turnTimer !== selectedTurnTimer) setPref('turnTimer', selectedTurnTimer);
   }
   syncBuildBadge();
+  syncPersistentVersionChip();
   void runAutoCacheRepairForBuild();
   void runRemoteBuildConsistencyCheck();
 
@@ -1867,6 +1932,7 @@
   applyBoardStyle(prefs.boardStyle || DEFAULT_PREFS.boardStyle);
   applyKeyStyle(prefs.keyStyle || DEFAULT_PREFS.keyStyle);
   applyKeyboardLayout(prefs.keyboardLayout || DEFAULT_PREFS.keyboardLayout);
+  applyTextSize(prefs.textSize || DEFAULT_PREFS.textSize);
   applyAtmosphere(prefs.atmosphere || DEFAULT_PREFS.atmosphere);
   WQUI.setCaseMode(prefs.caseMode || DEFAULT_PREFS.caseMode);
   syncCaseToggleUI();
@@ -3183,7 +3249,7 @@
     const headerRight = document.querySelector('.header-right');
     if (!headerRight) return;
 
-    const iconIds = ['teacher-panel-btn', 'case-toggle-btn', 'keyboard-layout-toggle', 'mission-lab-nav-btn', 'settings-btn'];
+    const iconIds = ['theme-dock-toggle-btn', 'music-dock-toggle-btn', 'teacher-panel-btn', 'case-toggle-btn', 'keyboard-layout-toggle', 'mission-lab-nav-btn', 'settings-btn'];
     const quickIds = ['play-style-toggle', 'phonics-clue-open-btn', 'starter-word-open-btn', 'writing-studio-btn', 'new-game-btn'];
 
     let iconGroup = headerRight.querySelector('.header-icon-controls');
@@ -3213,6 +3279,22 @@
     if (iconGroup.nextElementSibling !== quickGroup) headerRight.insertBefore(quickGroup, iconGroup.nextElementSibling);
   }
 
+  function syncWritingStudioAvailability() {
+    const writingBtn = _el('writing-studio-btn');
+    if (!writingBtn) return;
+    if (WRITING_STUDIO_ENABLED) {
+      writingBtn.classList.remove('hidden');
+      writingBtn.removeAttribute('aria-hidden');
+      writingBtn.removeAttribute('tabindex');
+      writingBtn.removeAttribute('disabled');
+      return;
+    }
+    writingBtn.classList.add('hidden');
+    writingBtn.setAttribute('aria-hidden', 'true');
+    writingBtn.setAttribute('tabindex', '-1');
+    writingBtn.setAttribute('disabled', 'true');
+  }
+
   function syncHeaderStaticIcons() {
     const teacherBtn = _el('teacher-panel-btn');
     if (teacherBtn) {
@@ -3229,7 +3311,8 @@
       setHoverNoteForElement(settingsBtn, 'Open settings.');
     }
     const writingBtn = _el('writing-studio-btn');
-    setHoverNoteForElement(writingBtn, 'Open Writing Studio.');
+    if (WRITING_STUDIO_ENABLED) setHoverNoteForElement(writingBtn, 'Open Writing Studio.');
+    syncWritingStudioAvailability();
   }
 
   function applyKeyboardLayout(mode) {
@@ -3312,6 +3395,14 @@
     const normalized = allowed.has(mode) ? mode : DEFAULT_PREFS.atmosphere;
     document.documentElement.setAttribute('data-atmosphere', normalized);
     const select = _el('s-atmosphere');
+    if (select && select.value !== normalized) select.value = normalized;
+    return normalized;
+  }
+
+  function applyTextSize(mode) {
+    const normalized = normalizeTextSize(mode);
+    document.documentElement.setAttribute('data-text-size', normalized);
+    const select = _el('s-text-size');
     if (select && select.value !== normalized) select.value = normalized;
     return normalized;
   }
@@ -3699,6 +3790,7 @@
     setPref('chunkTabs', applyChunkTabsMode(DEFAULT_PREFS.chunkTabs));
     syncChunkTabsVisibility();
     setPref('atmosphere', applyAtmosphere(DEFAULT_PREFS.atmosphere));
+    setPref('textSize', applyTextSize(DEFAULT_PREFS.textSize));
     setPref('uiSkin', applyUiSkin(DEFAULT_PREFS.uiSkin, { persist: false }));
     setPref('motion', DEFAULT_PREFS.motion);
     setPref('feedback', DEFAULT_PREFS.feedback);
@@ -3715,6 +3807,7 @@
     _el('s-theme-save').value = DEFAULT_PREFS.themeSave;
     _el('s-ui-skin').value = DEFAULT_PREFS.uiSkin;
     _el('s-motion').value = DEFAULT_PREFS.motion;
+    _el('s-text-size').value = DEFAULT_PREFS.textSize;
     _el('s-feedback').value = DEFAULT_PREFS.feedback;
     _el('s-projector').value = DEFAULT_PREFS.projector;
     _el('s-case').value = DEFAULT_PREFS.caseMode;
@@ -3730,6 +3823,7 @@
     applyProjector(DEFAULT_PREFS.projector);
     applyUiSkin(DEFAULT_PREFS.uiSkin, { persist: false });
     applyMotion(DEFAULT_PREFS.motion);
+    applyTextSize(DEFAULT_PREFS.textSize);
     applyFeedback(DEFAULT_PREFS.feedback);
     WQUI.setCaseMode(DEFAULT_PREFS.caseMode);
     syncClassroomTurnRuntime({ resetTurn: true });
@@ -4491,6 +4585,19 @@
   }
 
   function syncHeaderControlsVisibility() {
+    const overlay = _el('modal-overlay');
+    if (overlay) {
+      const modals = [
+        _el('settings-panel'),
+        _el('teacher-panel'),
+        _el('end-modal'),
+        _el('challenge-modal'),
+        _el('modal-challenge-launch'),
+        _el('first-run-setup-modal')
+      ];
+      const anyOpen = modals.some((el) => el && !el.classList.contains('hidden'));
+      if (!anyOpen) overlay.classList.add('hidden');
+    }
     syncThemePreviewStripVisibility();
     updateFocusHint();
     updateFocusSummaryLabel();
@@ -4588,7 +4695,11 @@
   _el('mission-lab-nav-btn')?.addEventListener('click', () => {
     setPageMode(isMissionLabStandaloneMode() ? 'wordquest' : 'mission-lab');
   });
-  _el('writing-studio-btn')?.addEventListener('click', () => {
+  function openWritingStudioPage() {
+    if (!WRITING_STUDIO_ENABLED) {
+      WQUI.showToast('Writing Studio is hidden in this shared build.');
+      return;
+    }
     const activeTheme = normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
     try { localStorage.setItem('ws_theme_v1', activeTheme); } catch {}
     const state = WQGame.getState?.() || {};
@@ -4606,7 +4717,12 @@
     if (targetWord) url.searchParams.set('wq_word', targetWord);
     if (clueSentence) url.searchParams.set('wq_clue', clueSentence);
     window.location.href = url.toString();
-  });
+  }
+  if (WRITING_STUDIO_ENABLED) {
+    _el('writing-studio-btn')?.addEventListener('click', openWritingStudioPage);
+  } else {
+    syncWritingStudioAvailability();
+  }
   _el('home-logo-btn')?.addEventListener('click', () => {
     setPageMode('wordquest', { force: true });
     closeFocusSearchList();
@@ -4786,6 +4902,9 @@
   });
   _el('s-atmosphere')?.addEventListener('change', e => {
     setPref('atmosphere', applyAtmosphere(e.target.value));
+  });
+  _el('s-text-size')?.addEventListener('change', e => {
+    setPref('textSize', applyTextSize(e.target.value));
   });
   _el('s-projector')?.addEventListener('change', e => {
     applyProjector(e.target.value);
@@ -6906,6 +7025,21 @@
     return true;
   }
 
+  function enforceClassicFiveLetterDefault(options = {}) {
+    const focusValue = _el('setting-focus')?.value || prefs.focus || 'all';
+    const preset = parseFocusPreset(focusValue);
+    if (preset.kind !== 'classic') return false;
+    const lengthSelect = _el('s-length');
+    if (!lengthSelect) return false;
+    if (String(lengthSelect.value || '').trim() === '5') return false;
+    lengthSelect.value = '5';
+    setPref('length', '5');
+    if (options.toast) {
+      WQUI.showToast('Classic mode reset to 5-letter words.');
+    }
+    return true;
+  }
+
   function syncGradeFromFocus(focusValue, options = {}) {
     const preset = parseFocusPreset(focusValue);
     if (preset.kind !== 'subject') {
@@ -8372,6 +8506,7 @@
   }
   syncGradeFromFocus(_el('setting-focus')?.value || prefs.focus || 'all', { silent: true });
   enforceFocusSelectionForGrade(_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade, { toast: false });
+  enforceClassicFiveLetterDefault();
   applyAllGradeLengthDefault();
   updateFocusHint();
   updateFocusGradeNote();
@@ -15097,7 +15232,9 @@
   WQMusic.initFromPrefs(prefs);
   syncMusicForTheme();
   initQuestLoop();
+  enforceClassicFiveLetterDefault();
   newGame({ launchMissionLab: false });
   consumeWritingStudioReturnSummary();
+  consumeWritingStudioHiddenNotice();
 
 })();

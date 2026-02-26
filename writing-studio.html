@@ -9,16 +9,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style/themes.css?v=20260224v">
-  <link rel="stylesheet" href="./writing-studio.css">
+  <link rel="stylesheet" href="./writing-studio.css?v=20260226m">
 </head>
 <body class="cs-page-writing cs-hv2-theme-default">
+  <button id="ws-back-home" class="ws-back-home" type="button" aria-label="Back to WordQuest">Back to WordQuest</button>
   <div id="ws-bg">
     <header id="ws-topbar">
         <div class="ws-brand">
           <div class="ws-dot"></div>
           <div>
             <div class="ws-title">Writing Studio</div>
-            <div class="ws-subtitle" id="ws-subtitle">Guided writing for class, support, and home.</div>
+            <div class="ws-subtitle" id="ws-subtitle"></div>
             <div class="ws-welcome" id="ws-welcome">How it works: Launch -> Write -> Feedback.</div>
             <div class="ws-start-here" id="ws-start-here">
               <div class="ws-start-kicker">Today</div>
@@ -336,9 +337,9 @@
           </div>
           <div class="ws-plan-row ws-plan-row-organizer">
             <select id="ws-master-length" class="ws-plan-input" aria-label="Playlist length">
-              <option value="10">10 min lesson</option>
               <option value="15" selected>15 min lesson</option>
-              <option value="20">20 min lesson</option>
+              <option value="25">25 min lesson</option>
+              <option value="40">40 min lesson</option>
             </select>
             <button class="ws-secondary" id="ws-master-build-playlist" type="button">Build Playlist</button>
             <button class="ws-secondary" id="ws-master-copy-playlist" type="button">Copy Sub Script</button>
@@ -440,7 +441,8 @@
   </div>
 
   <script src="./js/theme-registry.js?v=20260223c"></script>
-  <script src="./writing-studio.js" defer></script>
+  <script src="./js/feature-flags.js?v=20260226a"></script>
+  <script src="./writing-studio.js?v=20260226p" defer></script>
 
   <div id="ws-showcase" class="ws-showcase" aria-hidden="true">
     <button class="ws-ghost ws-showcase-close" id="ws-showcase-close" type="button">Close Showcase</button>
@@ -471,41 +473,106 @@
     </div>
   </div>
 
-  <div id="ws-onboard" class="ws-showcase" aria-hidden="true">
-    <button class="ws-ghost ws-showcase-close" id="ws-onboard-skip" type="button">Skip</button>
-    <div class="ws-showcase-title">Quick Setup (90 sec)</div>
-    <div class="ws-showcase-sub">Pick your defaults and jump right in.</div>
-    <div class="ws-onboard-grid">
-      <label class="ws-onboard-field">
-        <span>Role</span>
-        <select id="ws-onboard-role" class="ws-plan-input">
-          <option value="teacher" selected>Teacher</option>
-          <option value="student">Student</option>
-          <option value="support">LS/EAL</option>
-          <option value="family">Family</option>
-        </select>
-      </label>
-      <label class="ws-onboard-field">
-        <span>Grade Band</span>
-        <select id="ws-onboard-grade" class="ws-plan-input">
-          <option value="k2">K-2</option>
-          <option value="35" selected>3-5</option>
-          <option value="68">6-8</option>
-          <option value="912">9-12</option>
-        </select>
-      </label>
-      <label class="ws-onboard-field">
-        <span>Default Lesson Length</span>
-        <select id="ws-onboard-length" class="ws-plan-input">
-          <option value="10">10 min</option>
-          <option value="15" selected>15 min</option>
-          <option value="20">20 min</option>
-        </select>
-      </label>
+  <div class="ws-scrim" id="wsGreetingScrim" hidden></div>
+
+  <section class="ws-greeting" id="wsGreeting" hidden aria-modal="true" role="dialog" aria-label="Writing Studio greeting">
+    <header class="ws-greeting-top">
+      <div class="ws-brand">
+        <span class="ws-dot"></span>
+        <div>
+          <div class="ws-title">Writing Studio</div>
+        </div>
+      </div>
+      <button class="ws-skip" id="wsGreetingSkip" type="button">Skip</button>
+    </header>
+
+    <div class="ws-hero">
+      <div class="ws-hero-left">
+        <div class="ws-kicker">QUICK SETUP • ~90 seconds</div>
+        <h1>Launch -> Model -> Coach</h1>
+        <p class="ws-hero-copy">
+          One prompt. Built-in scaffolds. Automatic data. Teachers see the lift immediately.
+        </p>
+
+        <div class="ws-demo" aria-label="Live demo: writing becomes coached writing">
+          <div class="ws-demo-row">
+            <div class="ws-demo-label">Student types</div>
+            <div class="ws-demo-bubble">
+              <span class="ws-demo-text" id="wsDemoText">The dog ran.</span>
+              <span class="ws-demo-caret" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <div class="ws-demo-row">
+            <div class="ws-demo-label">Studio coaches</div>
+            <div class="ws-demo-suggest">
+              <span class="ws-demo-chip" data-demo="0">Add detail</span>
+              <span class="ws-demo-chip" data-demo="1">Add because</span>
+              <span class="ws-demo-chip" data-demo="2">Upgrade word choice</span>
+            </div>
+          </div>
+
+          <div class="ws-demo-row ws-demo-outcome">
+            <div class="ws-demo-label">Result</div>
+            <div class="ws-demo-bubble ws-demo-result">
+              <span class="ws-demo-text" id="wsDemoResult">
+                The tired dog ran to the gate because it heard a loud crash.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ws-badges">
+          <span class="ws-badge">Whole Class</span>
+          <span class="ws-badge">Tier 2</span>
+          <span class="ws-badge">Tier 3</span>
+          <span class="ws-badge">EAL / ES</span>
+          <span class="ws-badge">MS/HS Support</span>
+        </div>
+
+        <div class="ws-impact">
+          <div class="ws-impact-item">
+            <div class="ws-impact-label">Teacher lift</div>
+            <div class="ws-impact-value">Auto scaffolds + instant grouping</div>
+          </div>
+          <div class="ws-impact-item">
+            <div class="ws-impact-label">Student success</div>
+            <div class="ws-impact-value">Frames -> fade -> independence</div>
+          </div>
+          <div class="ws-impact-item">
+            <div class="ws-impact-label">Progress</div>
+            <div class="ws-impact-value">Metrics captured, no extra grading</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-hero-right">
+        <div class="ws-form">
+          <label for="wsRole">Role</label>
+          <select id="wsRole">
+            <option value="teacher" selected>Teacher</option>
+            <option value="student">Student</option>
+          </select>
+
+          <label for="wsGrade">Grade Band</label>
+          <select id="wsGrade">
+            <option value="35" selected>3-5</option>
+            <option value="68">6-8</option>
+            <option value="912">9-12</option>
+          </select>
+
+          <label for="wsLength">Default Lesson Length</label>
+          <select id="wsLength">
+            <option value="15" selected>15 min</option>
+            <option value="25">25 min</option>
+            <option value="40">40 min</option>
+          </select>
+
+          <button class="ws-primary" id="wsStartStudio" type="button">Start Studio</button>
+          <button class="ws-ghost" id="wsStartIntervention" type="button">Start in Intervention Mode</button>
+        </div>
+      </div>
     </div>
-    <div class="ws-canvas-foot">
-      <button class="ws-primary" id="ws-onboard-start" type="button">Start Studio</button>
-    </div>
-  </div>
+  </section>
 </body>
 </html>

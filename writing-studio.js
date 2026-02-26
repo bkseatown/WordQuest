@@ -17,9 +17,19 @@
   var ENGAGE_KEY = "ws_engage_v1";
   var TOUR_KEY = "ws_tour_done_v1";
   var CORE_VIEW_KEY = "ws_core_view_v1";
-  var ONBOARD_KEY = "ws_onboard_v1";
+  var GREETING_KEY = "ws_greeting_dismissed_v3";
   var LAUNCH_DEFAULTS_KEY = "ws_launch_defaults_v1";
+  var APP_SEMVER = "1.0.0";
+  var FEATURE_FLAGS = window.WQFeatureFlags || {};
+  var WRITING_STUDIO_ENABLED = FEATURE_FLAGS.writingStudio !== false;
   var FALLBACK_ACCENT = "#7aa7ff";
+
+  if (!WRITING_STUDIO_ENABLED) {
+    var redirectUrl = new URL("index.html", window.location.href);
+    redirectUrl.searchParams.set("ws_hidden", "1");
+    window.location.replace(redirectUrl.toString());
+    return;
+  }
   var ACADEMIC_WORDS = {
     k2: ["detail", "clear", "because", "first", "next", "then", "show", "explain"],
     "35": ["analyze", "evidence", "infer", "structure", "contrast", "precise", "context", "impact", "support", "sequence"],
@@ -627,12 +637,14 @@
   var tourStartBtn = document.getElementById("ws-tour-start");
   var tourStepEl = document.getElementById("ws-tour-step");
   var tourTextEl = document.getElementById("ws-tour-text");
-  var onboardEl = document.getElementById("ws-onboard");
-  var onboardRoleSelect = document.getElementById("ws-onboard-role");
-  var onboardGradeSelect = document.getElementById("ws-onboard-grade");
-  var onboardLengthSelect = document.getElementById("ws-onboard-length");
-  var onboardStartBtn = document.getElementById("ws-onboard-start");
-  var onboardSkipBtn = document.getElementById("ws-onboard-skip");
+  var greetingScrimEl = document.getElementById("wsGreetingScrim");
+  var greetingEl = document.getElementById("wsGreeting");
+  var greetingRoleSelect = document.getElementById("wsRole");
+  var greetingGradeSelect = document.getElementById("wsGrade");
+  var greetingLengthSelect = document.getElementById("wsLength");
+  var greetingStartBtn = document.getElementById("wsStartStudio");
+  var greetingInterventionBtn = document.getElementById("wsStartIntervention");
+  var greetingSkipBtn = document.getElementById("wsGreetingSkip");
   var flowButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-step[data-step]"));
   var goalEl = document.getElementById("ws-goal");
   var nextStepBtn = document.getElementById("ws-next-step");
@@ -707,6 +719,7 @@
   var imagePreviewEl = document.getElementById("ws-image-preview");
   var checklistInputs = Array.prototype.slice.call(document.querySelectorAll(".ws-check input"));
   var backBtn = document.getElementById("ws-back");
+  var backHomeBtn = document.getElementById("ws-back-home");
   var setupToggleBtn = document.getElementById("ws-setup-toggle");
   var controlsPanelEl = document.getElementById("ws-controls-panel");
   var controlsMoreBtn = document.getElementById("ws-controls-more");
@@ -767,7 +780,8 @@
   var impactOpen = false;
   var tourOpen = false;
   var tourIndex = 0;
-  var onboardOpen = false;
+  var greetingOpen = false;
+  var greetingDemoRunId = 0;
   var coreView = true;
   var controlsAdvancedOpen = false;
   var launcherOptions = [];
@@ -2088,16 +2102,7 @@
   }
 
   function maybeStartTour() {
-    if (onboardOpen) return;
-    var seen = "1";
-    try {
-      seen = localStorage.getItem(TOUR_KEY) || "0";
-    } catch (_error) {
-      seen = "0";
-    }
-    if (seen === "1") return;
-    tourIndex = 0;
-    setTourOpen(true, { silent: true });
+    return;
   }
 
   function finishTour() {
@@ -2110,10 +2115,70 @@
     showToast("You are ready");
   }
 
-  function setOnboardingOpen(open) {
-    if (!onboardEl) return;
-    onboardOpen = !!open;
-    if (onboardOpen) {
+  function stopGreetingDemo() {
+    greetingDemoRunId += 1;
+  }
+
+  function initGreetingDemo() {
+    var reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    if (reduceMotion) return;
+
+    var textEl = document.getElementById("wsDemoText");
+    var resultEl = document.getElementById("wsDemoResult");
+    var chips = Array.prototype.slice.call(document.querySelectorAll(".ws-demo-chip"));
+    if (!textEl || !resultEl || !chips.length) return;
+
+    var base = "The dog ran.";
+    var improved = "The tired dog ran to the gate because it heard a loud crash.";
+    var runId = ++greetingDemoRunId;
+
+    function sleep(ms) {
+      return new Promise(function (resolve) { window.setTimeout(resolve, ms); });
+    }
+
+    async function typeInto(el, fullText) {
+      el.textContent = "";
+      for (var i = 0; i < fullText.length; i += 1) {
+        if (!greetingOpen || runId !== greetingDemoRunId) return;
+        el.textContent += fullText.charAt(i);
+        await sleep(14);
+      }
+    }
+
+    async function runOnce() {
+      chips.forEach(function (chip) { chip.classList.remove("is-on"); });
+      textEl.textContent = base;
+      resultEl.textContent = improved;
+
+      await sleep(450);
+      if (!greetingOpen || runId !== greetingDemoRunId) return;
+      chips[0].classList.add("is-on");
+      await sleep(500);
+      if (!greetingOpen || runId !== greetingDemoRunId) return;
+      chips[1].classList.add("is-on");
+      await sleep(500);
+      if (!greetingOpen || runId !== greetingDemoRunId) return;
+      chips[2].classList.add("is-on");
+      await sleep(650);
+      if (!greetingOpen || runId !== greetingDemoRunId) return;
+      await typeInto(resultEl, improved);
+      await sleep(2200);
+    }
+
+    async function loop() {
+      while (greetingOpen && runId === greetingDemoRunId) {
+        await runOnce();
+        await sleep(1400);
+      }
+    }
+
+    loop();
+  }
+
+  function setGreetingOpen(open) {
+    if (!greetingEl || !greetingScrimEl) return;
+    greetingOpen = !!open;
+    if (greetingOpen) {
       closeShowcase();
       setImpactOpen(false);
       setTourOpen(false, { silent: true });
@@ -2121,48 +2186,75 @@
         setSetupPanelOpen(false);
       }
     }
-    onboardEl.classList.toggle("is-open", onboardOpen);
-    onboardEl.setAttribute("aria-hidden", onboardOpen ? "false" : "true");
+    greetingEl.hidden = !greetingOpen;
+    greetingScrimEl.hidden = !greetingOpen;
+    greetingEl.setAttribute("aria-hidden", greetingOpen ? "false" : "true");
+    body.classList.toggle("cs-writing-greeting-open", greetingOpen);
+    if (greetingOpen) initGreetingDemo();
+    else stopGreetingDemo();
   }
 
-  function maybeStartOnboarding() {
+  function maybeStartGreeting() {
     var seen = "1";
     try {
-      seen = localStorage.getItem(ONBOARD_KEY) || "0";
+      seen = localStorage.getItem(GREETING_KEY) || "0";
     } catch (_error) {
       seen = "0";
     }
     if (seen === "1") return;
     var defaults = getLaunchDefaults();
-    if (onboardRoleSelect) onboardRoleSelect.value = defaults.role;
-    if (onboardGradeSelect) onboardGradeSelect.value = defaults.gradeBand;
-    if (onboardLengthSelect) onboardLengthSelect.value = String(defaults.lessonLength);
-    setOnboardingOpen(true);
+    if (greetingRoleSelect) greetingRoleSelect.value = defaults.role === "student" ? "student" : "teacher";
+    if (greetingGradeSelect) {
+      greetingGradeSelect.value = (defaults.gradeBand === "68" || defaults.gradeBand === "912") ? defaults.gradeBand : "35";
+    }
+    if (greetingLengthSelect) greetingLengthSelect.value = String(defaults.lessonLength);
+    setGreetingOpen(true);
   }
 
-  function finishOnboarding(saveChoice) {
-    if (saveChoice) {
-      var role = String(onboardRoleSelect && onboardRoleSelect.value || "teacher");
-      var gradeBand = String(onboardGradeSelect && onboardGradeSelect.value || "35");
-      var lessonLength = Number(onboardLengthSelect && onboardLengthSelect.value || 15);
-      var defaults = { role: role, gradeBand: gradeBand, lessonLength: lessonLength };
-      saveLaunchDefaults(defaults);
-      withMutedToasts(function () {
-        setAudience(defaults.role, { silent: true });
-        setGradeBand(defaults.gradeBand);
-        setProfile(defaults.role === "support" ? "small" : "whole");
-        setMode(defaults.role === "teacher" || defaults.role === "support" ? "paragraph" : "sentence");
-        setMasterLessonLength(defaults.lessonLength, { silent: true });
-        setCoreView(true, { silent: true });
-      });
-    }
+  function dismissGreeting() {
     try {
-      localStorage.setItem(ONBOARD_KEY, "1");
+      localStorage.setItem(GREETING_KEY, "1");
     } catch (_error) {
       // Ignore storage write errors.
     }
-    setOnboardingOpen(false);
-    if (saveChoice) showToast("Setup saved");
+    setGreetingOpen(false);
+  }
+
+  function startStudioFromGreeting() {
+    var role = String(greetingRoleSelect && greetingRoleSelect.value || "teacher");
+    var gradeBand = String(greetingGradeSelect && greetingGradeSelect.value || "35");
+    var lessonLength = Number(greetingLengthSelect && greetingLengthSelect.value || 15);
+    var defaults = { role: role, gradeBand: gradeBand, lessonLength: lessonLength };
+    saveLaunchDefaults(defaults);
+    withMutedToasts(function () {
+      setAudience(defaults.role, { silent: true });
+      setGradeBand(defaults.gradeBand);
+      setProfile("whole");
+      setMode(defaults.role === "teacher" ? "paragraph" : "sentence");
+      setMasterLessonLength(defaults.lessonLength, { silent: true });
+      setCoreView(true, { silent: true });
+    });
+    dismissGreeting();
+    runStartHere();
+    showToast("Studio ready");
+  }
+
+  function startInterventionFromGreeting() {
+    var gradeBand = String(greetingGradeSelect && greetingGradeSelect.value || "35");
+    var lessonLength = Number(greetingLengthSelect && greetingLengthSelect.value || 15);
+    var defaults = { role: "support", gradeBand: gradeBand, lessonLength: lessonLength };
+    saveLaunchDefaults(defaults);
+    withMutedToasts(function () {
+      setAudience("support", { silent: true });
+      setGradeBand(defaults.gradeBand);
+      setProfile("small");
+      setMode("sentence");
+      setMasterLessonLength(defaults.lessonLength, { silent: true });
+      setCoreView(true, { silent: true });
+    });
+    dismissGreeting();
+    runStartHere();
+    showToast("Intervention mode ready");
   }
 
   function applyTaskHandoffFromHash() {
@@ -3048,34 +3140,35 @@
 
   function getMasterLessonLength() {
     var minutes = Number(masterLengthSelect && masterLengthSelect.value || 15);
-    if (minutes !== 10 && minutes !== 15 && minutes !== 20) return 15;
+    if (minutes !== 15 && minutes !== 25 && minutes !== 40) return 15;
     return minutes;
   }
 
   function setMasterLessonLength(minutes, options) {
     var normalized = Number(minutes);
-    if (normalized !== 10 && normalized !== 15 && normalized !== 20) normalized = 15;
+    if (normalized !== 15 && normalized !== 25 && normalized !== 40) normalized = 15;
     if (masterLengthSelect) masterLengthSelect.value = String(normalized);
     buildMasterPlaylistPreview();
     if (!(options && options.silent)) showToast("Lesson length: " + normalized + " min");
   }
 
   function getMasterTimingBlocks(minutes) {
-    if (minutes === 10) {
+    if (minutes === 25) {
       return [
-        { label: "Warm-Up", mins: 2, move: "Run one quick Fix-It sentence." },
-        { label: "Model Move", mins: 3, move: "Teach one point + read one example aloud." },
-        { label: "Your Try", mins: 3, move: "Students write one line in mentor style." },
-        { label: "Share + Exit", mins: 2, move: "Call on 2 students and name one strength." }
+        { label: "Warm-Up", mins: 4, move: "Run one quick Fix-It sentence + oral rehearsal." },
+        { label: "Model Move", mins: 6, move: "Teach one point + read one example aloud." },
+        { label: "Guided Try", mins: 6, move: "Co-write one class line, then pairs draft." },
+        { label: "Independent Try", mins: 5, move: "Students write and revise one focused paragraph." },
+        { label: "Share + Exit", mins: 4, move: "Peer share + one clear next step." }
       ];
     }
-    if (minutes === 20) {
+    if (minutes === 40) {
       return [
-        { label: "Warm-Up", mins: 3, move: "Run one quick Fix-It sentence." },
-        { label: "Model Move", mins: 5, move: "Teach one point + read one example aloud." },
-        { label: "Guided Try", mins: 5, move: "Co-write one class line, then students write." },
-        { label: "Independent Try", mins: 4, move: "Students expand to 2-3 lines." },
-        { label: "Share + Exit", mins: 3, move: "Peer share + one clear next step." }
+        { label: "Warm-Up", mins: 5, move: "Run one quick Fix-It sentence + vocabulary preview." },
+        { label: "Model Move", mins: 8, move: "Teach one point + annotate one mentor example." },
+        { label: "Guided Try", mins: 10, move: "Co-write and scaffold a full class example." },
+        { label: "Independent Try", mins: 9, move: "Students draft, revise, and self-check using criteria." },
+        { label: "Share + Exit", mins: 8, move: "Conference, share, and set a next-goal." }
       ];
     }
     return [
@@ -3136,7 +3229,7 @@
       return {
         role: parsed.role === "teacher" || parsed.role === "student" || parsed.role === "support" || parsed.role === "family" ? parsed.role : "teacher",
         gradeBand: parsed.gradeBand === "k2" || parsed.gradeBand === "35" || parsed.gradeBand === "68" || parsed.gradeBand === "912" ? parsed.gradeBand : "35",
-        lessonLength: parsed.lessonLength === 10 || parsed.lessonLength === 15 || parsed.lessonLength === 20 ? parsed.lessonLength : 15
+        lessonLength: parsed.lessonLength === 15 || parsed.lessonLength === 25 || parsed.lessonLength === 40 ? parsed.lessonLength : 15
       };
     } catch (_error) {
       return { role: "teacher", gradeBand: "35", lessonLength: 15 };
@@ -3148,7 +3241,7 @@
     var payload = {
       role: defaults.role === "teacher" || defaults.role === "student" || defaults.role === "support" || defaults.role === "family" ? defaults.role : "teacher",
       gradeBand: defaults.gradeBand === "k2" || defaults.gradeBand === "35" || defaults.gradeBand === "68" || defaults.gradeBand === "912" ? defaults.gradeBand : "35",
-      lessonLength: defaults.lessonLength === 10 || defaults.lessonLength === 15 || defaults.lessonLength === 20 ? defaults.lessonLength : 15
+      lessonLength: defaults.lessonLength === 15 || defaults.lessonLength === 25 || defaults.lessonLength === 40 ? defaults.lessonLength : 15
     };
     try {
       localStorage.setItem(LAUNCH_DEFAULTS_KEY, JSON.stringify(payload));
@@ -3163,7 +3256,7 @@
       setAudience(defaults.role, { silent: true });
       setGradeBand(defaults.gradeBand);
       setProfile(defaults.role === "support" ? "small" : "whole");
-      setMode(defaults.role === "teacher" || defaults.role === "support" ? "paragraph" : "sentence");
+      setMode(defaults.role === "teacher" ? "paragraph" : "sentence");
       setMasterLessonLength(defaults.lessonLength, { silent: true });
       setCoreView(true, { silent: true });
     });
@@ -4426,6 +4519,41 @@
     showToast("Theme: " + next);
   }
 
+  function resolveStudioBuildLabel() {
+    var scripts = Array.prototype.slice.call(document.querySelectorAll("script[src]"));
+    var studioScript = scripts.find(function (script) {
+      return /(?:^|\/)writing-studio\.js(?:[?#]|$)/i.test(String(script.getAttribute("src") || ""));
+    });
+    var src = String(studioScript && studioScript.getAttribute("src") || "");
+    var match = src.match(/[?&]v=([^&#]+)/i);
+    if (match && match[1]) return decodeURIComponent(match[1]);
+    return "local";
+  }
+
+  function resolveStudioRuntimeChannel() {
+    var host = String(window.location.hostname || "").toLowerCase();
+    if (!host || host === "localhost" || host === "127.0.0.1" || host === "::1") return "LOCAL";
+    if (host === "bkseatown.github.io") return "LIVE";
+    if (host === "cdn.jsdelivr.net" || host === "htmlpreview.github.io") return "PREVIEW";
+    return "CUSTOM";
+  }
+
+  function syncStudioVersionChip() {
+    var chip = document.getElementById("ws-version-chip");
+    if (!chip) {
+      chip = document.createElement("div");
+      chip.id = "ws-version-chip";
+      chip.className = "ws-version-chip";
+      chip.setAttribute("aria-hidden", "true");
+      document.body.appendChild(chip);
+    }
+    var appVersion = "v" + APP_SEMVER;
+    var build = resolveStudioBuildLabel();
+    var channel = resolveStudioRuntimeChannel();
+    chip.textContent = channel + " · " + appVersion + " · " + build;
+    chip.title = "Writing Studio " + appVersion + " (" + build + ")";
+  }
+
   function setSetupPanelOpen(open) {
     if (!setupToggleBtn || !controlsPanelEl) return;
     controlsPanelEl.hidden = true;
@@ -4619,8 +4747,9 @@
   if (tourPrevBtn) tourPrevBtn.addEventListener("click", prevTourStep);
   if (tourNextBtn) tourNextBtn.addEventListener("click", nextTourStep);
   if (tourStartBtn) tourStartBtn.addEventListener("click", finishTour);
-  if (onboardStartBtn) onboardStartBtn.addEventListener("click", function () { finishOnboarding(true); });
-  if (onboardSkipBtn) onboardSkipBtn.addEventListener("click", function () { finishOnboarding(false); });
+  if (greetingStartBtn) greetingStartBtn.addEventListener("click", startStudioFromGreeting);
+  if (greetingInterventionBtn) greetingInterventionBtn.addEventListener("click", startInterventionFromGreeting);
+  if (greetingSkipBtn) greetingSkipBtn.addEventListener("click", dismissGreeting);
   if (familyCopyBtn) familyCopyBtn.addEventListener("click", copyFamilyPrompt);
   if (warmupInput) warmupInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
@@ -4647,6 +4776,7 @@
     input.addEventListener("change", updateMetricsAndCoach);
   });
   if (backBtn) backBtn.addEventListener("click", goBackToWordQuest);
+  if (backHomeBtn) backHomeBtn.addEventListener("click", goBackToWordQuest);
   if (setupToggleBtn) setupToggleBtn.addEventListener("click", toggleSetupPanel);
   if (controlsMoreBtn) controlsMoreBtn.addEventListener("click", function () {
     setControlsAdvancedOpen(!controlsAdvancedOpen);
@@ -4665,8 +4795,8 @@
       finishTour();
       return;
     }
-    if (event.key === "Escape" && onboardOpen) {
-      finishOnboarding(false);
+    if (event.key === "Escape" && greetingOpen) {
+      dismissGreeting();
       return;
     }
     if (event.key === "Escape" && setupToggleBtn && setupToggleBtn.getAttribute("aria-expanded") === "true") {
@@ -4692,12 +4822,13 @@
     if (tourOpen && tourEl && target === tourEl) {
       finishTour();
     }
-    if (onboardOpen && onboardEl && target === onboardEl) {
-      finishOnboarding(false);
+    if (greetingOpen && ((greetingScrimEl && target === greetingScrimEl) || (greetingEl && target === greetingEl))) {
+      dismissGreeting();
     }
   });
 
   applyTheme(resolveInitialTheme());
+  syncStudioVersionChip();
   buildLauncherOptions();
   renderOrganizerPreview();
   renderPlanItems();
@@ -4732,11 +4863,12 @@
   loadPresetPack();
   applyTaskHandoffFromHash();
   applyWordQuestContext();
-  maybeStartOnboarding();
-  maybeStartTour();
+  maybeStartGreeting();
+  setTourOpen(false, { silent: true });
   setSetupPanelOpen(false);
   setControlsAdvancedOpen(false);
-  if (stageEl) stageEl.hidden = true;
-  body.classList.remove("ws-started");
+  if (stageEl) stageEl.hidden = !body.classList.contains("ws-started");
+  if (!body.classList.contains("ws-started")) body.classList.remove("ws-started");
+  if (!greetingOpen) body.classList.remove("cs-writing-greeting-open");
   renderLaunchpadCopy();
 })();

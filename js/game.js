@@ -57,6 +57,14 @@ const WQGame = (() => {
     return next;
   }
 
+  function _getTeacherPool() {
+    const raw = Array.isArray(window.__WQ_TEACHER_POOL__) ? window.__WQ_TEACHER_POOL__ : [];
+    const normalized = raw
+      .map((word) => String(word || '').trim().toLowerCase())
+      .filter((word) => /^[a-z]{2,12}$/.test(word));
+    return Array.from(new Set(normalized));
+  }
+
   // ─── Core algorithm — ported verbatim from evaluate() ──────────────
   function _evaluate(guess, target) {
     const res  = Array(target.length).fill('absent');
@@ -114,29 +122,37 @@ const WQGame = (() => {
     const phonics    = opts.phonics  || 'all';
     const normalizedPhonics = String(phonics || '').trim().toLowerCase();
     const includeLowerBands = normalizedPhonics !== 'all' && !normalizedPhonics.startsWith('vocab-');
+    const teacherPool = _getTeacherPool();
     let effectiveLengthPref = lengthPref;
-    let pool = WQData.getPlayableWords({
-      gradeBand,
-      length: lengthPref,
-      phonics,
-      includeLowerBands
-    });
-    if (!pool.length && effectiveLengthPref !== 'any' && normalizedPhonics !== 'all') {
-      const relaxed = WQData.getPlayableWords({
+    let pool = [];
+    if (teacherPool.length) {
+      pool = teacherPool.slice();
+      effectiveLengthPref = 'teacher';
+    } else {
+      pool = WQData.getPlayableWords({
         gradeBand,
-        length: 'any',
+        length: lengthPref,
         phonics,
         includeLowerBands
       });
-      if (relaxed.length) {
-        pool = relaxed;
-        effectiveLengthPref = 'any';
+      if (!pool.length && effectiveLengthPref !== 'any' && normalizedPhonics !== 'all') {
+        const relaxed = WQData.getPlayableWords({
+          gradeBand,
+          length: 'any',
+          phonics,
+          includeLowerBands
+        });
+        if (relaxed.length) {
+          pool = relaxed;
+          effectiveLengthPref = 'any';
+        }
       }
     }
     const scopeGrade = includeLowerBands && gradeBand !== 'all'
       ? `${gradeBand}+down`
       : gradeBand;
-    const scope      = `${scopeGrade}:${effectiveLengthPref}:${phonics}`;
+    const scopePrefix = teacherPool.length ? 'teacher' : scopeGrade;
+    const scope      = `${scopePrefix}:${effectiveLengthPref}:${phonics}`;
     if (!pool.length) {
       const hasFilters = gradeBand !== 'all' || lengthPref !== 'any' || phonics !== 'all';
       if (hasFilters) {

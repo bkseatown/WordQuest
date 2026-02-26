@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/modes.css?v=20260223d">
   <link rel="stylesheet" href="style/themes.css?v=20260224v">
-  <link rel="stylesheet" href="style/components.css?v=20260224ag">
+  <link rel="stylesheet" href="style/components.css?v=20260226q">
   <link rel="stylesheet" href="style/components.deep-dive-plus.css">
   <link rel="stylesheet" href="style/world-themes.css?v=20260226a">
   <link rel="stylesheet" href="style/premium-theme.css?v=20260226a">
@@ -181,7 +181,8 @@
             </div>
             <div class="setting-row hidden" aria-hidden="true"><label>Hint Cues<select id="s-hint"><option value="off">Off</option><option value="on">On</option></select></label></div>
             <div class="setting-row hidden" aria-hidden="true"><label>Game Mode<select id="s-play-style"><option value="detective" selected>Classic Wordle (color + clue strategy)</option><option value="listening">Listening Challenge (hear + spell)</option></select></label></div>
-            <div class="setting-row hidden" aria-hidden="true"><label>Keyboard Layout<select id="s-keyboard-layout"><option value="standard" selected>QWERTY</option><option value="alphabet">Alphabet</option></select></label></div>
+            <div class="setting-row"><label>Keyboard Layout<select id="s-keyboard-layout"><option value="standard" selected>QWERTY</option><option value="alphabet">Alphabet</option></select></label></div>
+            <div class="setting-row"><label>Text Size<select id="s-text-size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></label></div>
             <div class="setting-row hidden" aria-hidden="true"><label>Keyboard Style<select id="s-key-style"><option value="bubble" selected>Puffy Rounded</option></select></label></div>
             <div class="setting-row setting-row-full setting-row-help hidden" aria-hidden="true">Listening mode gives direct Word + Meaning support. Detective mode keeps sentence-only clue hints.</div>
             <div class="setting-row setting-row-full quick-preset-row hidden">
@@ -664,6 +665,7 @@
           <textarea id="wq-teacher-words" class="wq-teacher-words" placeholder="cat&#10;dog&#10;blend"></textarea>
           <div class="wq-teacher-actions">
             <button id="wq-teacher-activate" class="wq-teacher-btn wq-teacher-btn-primary" type="button">Use This Word List</button>
+            <button id="wq-teacher-shuffle" class="wq-teacher-btn wq-teacher-btn-primary" type="button">Shuffle + Use</button>
             <button id="wq-teacher-clear" class="wq-teacher-btn wq-teacher-btn-muted" type="button">Clear</button>
           </div>
           <div id="wq-teacher-msg" class="wq-teacher-msg" aria-live="polite"></div>
@@ -1233,6 +1235,7 @@
   <script src="js/game.js?v=20260224h"></script>
   <script src="js/ui.js?v=20260224h"></script>
   <script src="js/theme-registry.js?v=20260223c"></script>
+  <script src="js/feature-flags.js?v=20260226a"></script>
   <script src="data/curriculum-taxonomy.js?v=20260225a"></script>
   <script src="data/assignment-schema.js?v=20260225a"></script>
   <script src="js/contracts/event-bus-contract.js?v=20260225d"></script>
@@ -1240,7 +1243,7 @@
   <script src="js/contracts/deep-dive-contract.js?v=20260225d"></script>
   <script src="js/features/teacher-assignments.js?v=20260225d"></script>
   <script src="js/features/deep-dive-core.js?v=20260225d"></script>
-  <script src="js/app.js?v=20260226m"></script>
+  <script src="js/app.js?v=20260226q"></script>
   <script src="js/deep-dive-plus.js?v=20260226m"></script>
   <script src="js/theme-nav.js?v=20260225d"></script>
 </body>

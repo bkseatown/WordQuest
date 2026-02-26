@@ -158,6 +158,17 @@
       .filter((word) => /^[A-Z]{2,12}$/.test(word));
   }
 
+  function shuffleWords(words) {
+    const next = Array.isArray(words) ? words.slice() : [];
+    for (let i = next.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = next[i];
+      next[i] = next[j];
+      next[j] = temp;
+    }
+    return next;
+  }
+
   function persistTeacherWords(words) {
     try {
       if (Array.isArray(words) && words.length) {
@@ -280,6 +291,15 @@
     window.dispatchEvent(new CustomEvent(TEACHER_PANEL_TOGGLE_EVENT, { detail: { open: false } }));
   }
 
+  function launchTeacherWordRound() {
+    const mode = String(document.documentElement.getAttribute('data-page-mode') || '').toLowerCase();
+    if (mode === 'mission-lab') {
+      byId('mission-lab-nav-btn')?.click();
+    }
+    closeTeacherPanel();
+    byId('new-game-btn')?.click();
+  }
+
   function bindTeacherPanel() {
     if (document.body.dataset.wqTeacherPanelBound === '1') return;
     byId('teacher-panel-btn')?.addEventListener('click', openTeacherPanel);
@@ -302,18 +322,35 @@
     const wordsInput = byId('wq-teacher-words');
     if (!wordsInput) return;
 
-    byId('wq-teacher-activate')?.addEventListener('click', () => {
+    function applyTeacherWords(options = {}) {
       const words = parseTeacherWords(wordsInput?.value || '');
       if (!words.length) {
         setTeacherMessage('No valid words found. Use letters only, 2-12 chars.', true);
         return;
       }
-      applyTeacherPool(words);
+      const finalWords = options.shuffle ? shuffleWords(words) : words;
+      applyTeacherPool(finalWords);
+      wordsInput.value = finalWords.join('\n');
+      launchTeacherWordRound();
+    }
+
+    byId('wq-teacher-activate')?.addEventListener('click', () => {
+      applyTeacherWords({ shuffle: false });
+    });
+
+    byId('wq-teacher-shuffle')?.addEventListener('click', () => {
+      applyTeacherWords({ shuffle: true });
     });
 
     byId('wq-teacher-clear')?.addEventListener('click', () => {
       if (wordsInput) wordsInput.value = '';
       applyTeacherPool([]);
+    });
+
+    wordsInput.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' || event.shiftKey) return;
+      event.preventDefault();
+      applyTeacherWords({ shuffle: false });
     });
 
     const restoredWords = loadTeacherWords();
