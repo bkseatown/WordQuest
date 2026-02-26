@@ -29,6 +29,13 @@
         <button class="ws-chip is-active" data-audience="student" type="button">Student</button>
         <button class="ws-chip" data-audience="teacher" type="button">Teacher</button>
         <button class="ws-chip" data-audience="family" type="button">Family</button>
+        <select id="ws-preset-pack" class="ws-plan-input" aria-label="Instruction preset pack">
+          <option value="custom" selected>Preset: Custom</option>
+          <option value="fishtank">Preset: Fish Tank</option>
+          <option value="stepup">Preset: Step Up</option>
+          <option value="eal">Preset: EAL Support</option>
+          <option value="ls">Preset: LS Intervention</option>
+        </select>
         <select id="ws-grade-band" class="ws-plan-input" aria-label="Grade band">
           <option value="k2">K-2</option>
           <option value="35" selected>3-5</option>
@@ -39,6 +46,7 @@
         <button class="ws-chip" data-profile="small" type="button">Small Group</button>
         <button class="ws-chip" data-profile="one" type="button">1:1</button>
         <button class="ws-chip is-active" id="ws-stepup-toggle" type="button" aria-pressed="true">Step Up Mode</button>
+        <button class="ws-chip" id="ws-showcase-toggle" type="button" aria-pressed="false">Showcase</button>
         <button class="ws-chip" id="ws-model" type="button" aria-pressed="false">Teacher Model: Off</button>
         <button class="ws-ghost" id="ws-back" type="button">Back to WordQuest</button>
         <button class="ws-ghost" id="ws-settings" type="button">Theme</button>
@@ -260,6 +268,14 @@
         </div>
 
         <div class="ws-rail-block">
+          <div class="ws-h2">Family 5-Minute Plan</div>
+          <div class="ws-tip"><strong>1.</strong> Ask your child to read one sentence aloud.</div>
+          <div class="ws-tip"><strong>2.</strong> Praise one strength (clarity, detail, or vocabulary).</div>
+          <div class="ws-tip"><strong>3.</strong> Help add one more sentence using a stem.</div>
+          <button class="ws-secondary" id="ws-family-copy" type="button">Copy Home Prompt</button>
+        </div>
+
+        <div class="ws-rail-block">
           <div class="ws-h2">Checklist</div>
           <label class="ws-check"><input type="checkbox"><span id="ws-check-1">Topic sentence is clear</span></label>
           <label class="ws-check"><input type="checkbox"><span id="ws-check-2">I added two details</span></label>
@@ -271,5 +287,12 @@
 
   <script src="./js/theme-registry.js?v=20260223c"></script>
   <script src="./writing-studio.js" defer></script>
+
+  <div id="ws-showcase" class="ws-showcase" aria-hidden="true">
+    <button class="ws-ghost ws-showcase-close" id="ws-showcase-close" type="button">Close Showcase</button>
+    <div class="ws-showcase-title">Author Showcase</div>
+    <div class="ws-showcase-sub">Best line from your draft</div>
+    <div class="ws-showcase-line" id="ws-showcase-line">Write something and pin your best line.</div>
+  </div>
 </body>
 </html>

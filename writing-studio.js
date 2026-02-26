@@ -10,6 +10,7 @@
   var STEPUP_CODES_KEY = "ws_stepup_codes_v1";
   var WARMUP_STATS_KEY = "ws_warmup_stats_v1";
   var WALL_KEY = "ws_publish_wall_v1";
+  var PRESET_KEY = "ws_preset_pack_v1";
   var FALLBACK_ACCENT = "#7aa7ff";
   var ACADEMIC_WORDS = {
     k2: ["detail", "clear", "because", "first", "next", "then", "show", "explain"],
@@ -205,6 +206,45 @@
       paragraph: "9-12 paragraph focus: thesis move -> integrated evidence -> analysis -> synthesis."
     }
   };
+  var PRESET_PACKS = {
+    custom: {},
+    fishtank: {
+      mode: "paragraph",
+      profile: "whole",
+      framework: "ccss",
+      audience: "teacher",
+      stepUp: false,
+      organizer: "cer",
+      cue: "Fish Tank flow: claim, text evidence, then explanation."
+    },
+    stepup: {
+      mode: "sentence",
+      profile: "small",
+      framework: "ccss",
+      audience: "teacher",
+      stepUp: true,
+      organizer: "sequence",
+      cue: "Step Up flow: topic, detail, explain, transition."
+    },
+    eal: {
+      mode: "sentence",
+      profile: "small",
+      framework: "cefr",
+      audience: "family",
+      stepUp: true,
+      organizer: "sequence",
+      cue: "EAL flow: oral rehearsal, sentence frame, then one expansion."
+    },
+    ls: {
+      mode: "sentence",
+      profile: "one",
+      framework: "ccss",
+      audience: "teacher",
+      stepUp: true,
+      organizer: "problem",
+      cue: "LS flow: one small step, immediate feedback, then repeat."
+    }
+  };
   var DEFAULT_MARK_CODES = { topic: "T", detail: "D", explain: "E", transition: "TR", vocab: "V" };
   var BROKEN_SENTENCES = {
     k2: [
@@ -288,6 +328,7 @@
   var pinLineBtn = document.getElementById("ws-pin-line");
   var wallClearBtn = document.getElementById("ws-wall-clear");
   var publishWallEl = document.getElementById("ws-publish-wall");
+  var familyCopyBtn = document.getElementById("ws-family-copy");
   var scaffoldNextBtn = document.getElementById("ws-scaffold-next");
   var scaffoldStemBtn = document.getElementById("ws-scaffold-stem");
   var scaffoldIdeaBtn = document.getElementById("ws-scaffold-idea");
@@ -301,7 +342,12 @@
   var clearBtn = document.getElementById("ws-clear");
   var modeButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-chip[data-mode]"));
   var audienceButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-chip[data-audience]"));
+  var presetSelect = document.getElementById("ws-preset-pack");
   var profileButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-chip[data-profile]"));
+  var showcaseToggleBtn = document.getElementById("ws-showcase-toggle");
+  var showcaseEl = document.getElementById("ws-showcase");
+  var showcaseCloseBtn = document.getElementById("ws-showcase-close");
+  var showcaseLineEl = document.getElementById("ws-showcase-line");
   var modelBtn = document.getElementById("ws-model");
   var flowButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-step[data-step]"));
   var goalEl = document.getElementById("ws-goal");
@@ -333,6 +379,7 @@
   var currentStep = "plan";
   var currentFramework = "ccss";
   var currentAudience = "student";
+  var currentPreset = "custom";
   var stepUpEnabled = true;
   var markCodes = { topic: "T", detail: "D", explain: "E", transition: "TR", vocab: "V" };
   var warmupIndex = 0;
@@ -344,6 +391,8 @@
   var warmupRoundTimer = null;
   var warmupClassMode = false;
   var publishWall = [];
+  var showcaseOpen = false;
+  var toastSuppressed = false;
   var teacherModel = false;
   var sprintTotalSeconds = PROFILE_CONFIG.whole.sprintSeconds;
   var sprintRemaining = sprintTotalSeconds;
@@ -1153,15 +1202,21 @@
     if (stepUpGradeTargetEl) stepUpGradeTargetEl.textContent = text;
   }
 
-  function toggleStepUpMode() {
-    stepUpEnabled = !stepUpEnabled;
+  function setStepUpEnabled(enabled, options) {
+    stepUpEnabled = Boolean(enabled);
     renderStepUpMode();
     try {
       localStorage.setItem(STEPUP_KEY, stepUpEnabled ? "on" : "off");
     } catch (_error) {
       // Ignore storage write errors.
     }
-    showToast(stepUpEnabled ? "Step Up Mode on" : "Step Up Mode off");
+    if (!(options && options.silent)) {
+      showToast(stepUpEnabled ? "Step Up Mode on" : "Step Up Mode off");
+    }
+  }
+
+  function toggleStepUpMode() {
+    setStepUpEnabled(!stepUpEnabled);
   }
 
   function loadStepUpMode() {
@@ -1171,8 +1226,53 @@
     } catch (_error) {
       stored = "on";
     }
-    stepUpEnabled = stored !== "off";
-    renderStepUpMode();
+    setStepUpEnabled(stored !== "off", { silent: true });
+  }
+
+  function withMutedToasts(fn) {
+    toastSuppressed = true;
+    try {
+      fn();
+    } finally {
+      toastSuppressed = false;
+    }
+  }
+
+  function setPresetPack(packId, options) {
+    var normalized = Object.prototype.hasOwnProperty.call(PRESET_PACKS, packId) ? packId : "custom";
+    var pack = PRESET_PACKS[normalized] || {};
+    currentPreset = normalized;
+    if (presetSelect) presetSelect.value = normalized;
+
+    withMutedToasts(function () {
+      if (pack.mode) setMode(pack.mode);
+      if (pack.profile) setProfile(pack.profile);
+      if (pack.framework) setFramework(pack.framework, { silent: true });
+      if (pack.audience) setAudience(pack.audience, { silent: true });
+      if (typeof pack.stepUp === "boolean") setStepUpEnabled(pack.stepUp, { silent: true });
+      if (pack.organizer && organizerTypeSelect) {
+        organizerTypeSelect.value = pack.organizer;
+        renderOrganizerPreview();
+      }
+    });
+
+    if (pack.cue) setScaffoldCue(pack.cue);
+    try {
+      localStorage.setItem(PRESET_KEY, normalized);
+    } catch (_error) {
+      // Ignore storage write errors.
+    }
+    if (!(options && options.silent)) showToast("Preset: " + (presetSelect && presetSelect.selectedOptions[0] ? presetSelect.selectedOptions[0].textContent.replace("Preset: ", "") : normalized));
+  }
+
+  function loadPresetPack() {
+    var stored = "custom";
+    try {
+      stored = localStorage.getItem(PRESET_KEY) || "custom";
+    } catch (_error) {
+      stored = "custom";
+    }
+    setPresetPack(stored, { silent: true });
   }
 
   function normalizeCode(value, fallback) {
@@ -1372,6 +1472,57 @@
     savePublishWall();
     renderPublishWall();
     showToast("Publishing wall cleared");
+  }
+
+  function openShowcase() {
+    if (!showcaseEl) return;
+    var line = selectBestLineFromText(editor.value || "");
+    if (!line && publishWall.length) line = publishWall[0].line;
+    if (!line) line = "Write a line, then open Showcase.";
+    if (showcaseLineEl) showcaseLineEl.textContent = line;
+    showcaseOpen = true;
+    showcaseEl.classList.add("is-open");
+    showcaseEl.setAttribute("aria-hidden", "false");
+    if (showcaseToggleBtn) {
+      showcaseToggleBtn.classList.add("is-active");
+      showcaseToggleBtn.setAttribute("aria-pressed", "true");
+    }
+    showToast("Showcase on");
+  }
+
+  function closeShowcase() {
+    if (!showcaseEl) return;
+    showcaseOpen = false;
+    showcaseEl.classList.remove("is-open");
+    showcaseEl.setAttribute("aria-hidden", "true");
+    if (showcaseToggleBtn) {
+      showcaseToggleBtn.classList.remove("is-active");
+      showcaseToggleBtn.setAttribute("aria-pressed", "false");
+    }
+  }
+
+  function toggleShowcase() {
+    if (showcaseOpen) {
+      closeShowcase();
+      showToast("Showcase off");
+      return;
+    }
+    openShowcase();
+  }
+
+  function copyFamilyPrompt() {
+    var line = selectBestLineFromText(editor.value || "") || "We are building our writing one clear sentence at a time.";
+    var goal = goalEl ? goalEl.textContent : "Add one clear sentence.";
+    var prompt = "Family 5-Minute Writing Prompt\n1) Ask your child to read this line: \"" + line + "\"\n2) Praise one strength you hear.\n3) Do one next move together: " + goal;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(prompt).then(function () {
+        showToast("Family prompt copied");
+      }).catch(function () {
+        showToast("Copy blocked by browser");
+      });
+      return;
+    }
+    showToast("Clipboard not available");
   }
 
   function renderWarmupArcade() {
@@ -1793,6 +1944,7 @@
   }
 
   function showToast(message) {
+    if (toastSuppressed) return;
     var toast = document.getElementById("ws-toast");
     if (!toast) {
       toast = document.createElement("div");
@@ -2047,6 +2199,7 @@
   if (planUseBtn) planUseBtn.addEventListener("click", usePlanInDraft);
   if (organizerTypeSelect) organizerTypeSelect.addEventListener("change", renderOrganizerPreview);
   if (organizerApplyBtn) organizerApplyBtn.addEventListener("click", applyOrganizerTemplate);
+  if (presetSelect) presetSelect.addEventListener("change", function () { setPresetPack(presetSelect.value); });
   if (gradeBandSelect) gradeBandSelect.addEventListener("change", function () { setGradeBand(gradeBandSelect.value); });
   if (frameworkSelect) frameworkSelect.addEventListener("change", function () { setFramework(frameworkSelect.value); });
   if (dictateBtn) dictateBtn.addEventListener("click", toggleDictation);
@@ -2075,6 +2228,9 @@
   if (warmupClassToggleBtn) warmupClassToggleBtn.addEventListener("click", toggleWarmupClassMode);
   if (pinLineBtn) pinLineBtn.addEventListener("click", pinBestLine);
   if (wallClearBtn) wallClearBtn.addEventListener("click", clearPublishWall);
+  if (showcaseToggleBtn) showcaseToggleBtn.addEventListener("click", toggleShowcase);
+  if (showcaseCloseBtn) showcaseCloseBtn.addEventListener("click", closeShowcase);
+  if (familyCopyBtn) familyCopyBtn.addEventListener("click", copyFamilyPrompt);
   if (warmupInput) warmupInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -2095,6 +2251,9 @@
   });
   if (backBtn) backBtn.addEventListener("click", goBackToWordQuest);
   settingsBtn.addEventListener("click", cycleTheme);
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && showcaseOpen) closeShowcase();
+  });
 
   applyTheme(resolveInitialTheme());
   renderOrganizerPreview();
@@ -2113,4 +2272,5 @@
   setGradeBand("35");
   setProfile("whole");
   setMode("sentence");
+  loadPresetPack();
 })();
