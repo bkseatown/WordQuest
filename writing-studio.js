@@ -197,6 +197,9 @@
   var glowEl = document.getElementById("ws-glow");
   var growEl = document.getElementById("ws-grow");
   var goEl = document.getElementById("ws-go");
+  var evidenceEl = document.getElementById("ws-evidence");
+  var revisionPatchEl = document.getElementById("ws-revision-patch");
+  var feedbackConfidenceEl = document.getElementById("ws-feedback-confidence");
   var conferenceStrengthEl = document.getElementById("ws-conference-strength");
   var conferenceTargetEl = document.getElementById("ws-conference-target");
   var conferencePromptEl = document.getElementById("ws-conference-prompt");
@@ -684,41 +687,15 @@
 
   function renderGlowGrowGo(text, words, sentenceCount) {
     if (!glowEl || !growEl || !goEl) return;
-    var stepTips = STEP_TIPS_BY_MODE[currentMode] || STEP_TIPS_BY_MODE.sentence;
-    var goals = GOALS_BY_MODE[currentMode] || GOALS_BY_MODE.sentence;
-    var hasConjunction = CONJUNCTION_RE.test(text);
-    var hasEvidence = EVIDENCE_RE.test(text);
-    var academicCount = countAcademicWords(text);
-
-    if (currentMode === "paragraph") {
-      glowEl.textContent = hasEvidence
-        ? "You included evidence in your paragraph."
-        : "Your claim frame is building.";
-      growEl.textContent = hasEvidence
-        ? "Add one sentence that explains why the evidence matters."
-        : "Add one evidence sentence from the text.";
-    } else {
-      glowEl.textContent = hasConjunction
-        ? "You connected ideas with transition words."
-        : "You have a clear start to your writing.";
-      growEl.textContent = hasConjunction
-        ? "Upgrade one verb for stronger detail."
-        : "Add because, so, or but to connect ideas.";
-    }
-
-    if (sentenceCount === 0 || words === 0) {
-      glowEl.textContent = "You are ready to write.";
-      growEl.textContent = "Start with one clear sentence.";
-    }
-    if (academicCount >= 2) {
-      glowEl.textContent = "Academic vocabulary is showing up clearly.";
-    }
-
-    var baseGo = goals[currentStep] || stepTips[currentStep] || goals.plan;
-    if (PROFILE_CONFIG[currentProfile].scaffold === "high") {
-      baseGo += " One step only: complete this before anything else.";
-    }
-    goEl.textContent = baseGo;
+    var feedback = buildLocalFeedback(text, words, sentenceCount);
+    glowEl.textContent = feedback.glow;
+    growEl.textContent = feedback.grow;
+    goEl.textContent = PROFILE_CONFIG[currentProfile].scaffold === "high"
+      ? feedback.go + " One step only: complete this before anything else."
+      : feedback.go;
+    if (evidenceEl) evidenceEl.textContent = feedback.evidence;
+    if (revisionPatchEl) revisionPatchEl.textContent = feedback.patch;
+    if (feedbackConfidenceEl) feedbackConfidenceEl.textContent = feedback.confidence;
   }
 
   function renderConferenceCopilot(text, words, sentenceCount) {
@@ -759,6 +736,114 @@
     if (currentGradeBand === "35") return { structWords: 14, structSentences: 2, detailWords: 24, languageTarget: 1 };
     if (currentGradeBand === "68") return { structWords: 20, structSentences: 3, detailWords: 34, languageTarget: 2 };
     return { structWords: 28, structSentences: 4, detailWords: 46, languageTarget: 2 };
+  }
+
+  function getDomainScores(text, words, sentenceCount) {
+    var t = getBandThresholds();
+    var hasClaim = CLAIM_RE.test(text);
+    var hasEvidence = EVIDENCE_RE.test(text);
+    var hasConnector = CONJUNCTION_RE.test(text);
+    var academicCount = countAcademicWords(text);
+
+    var structure = 0;
+    if (sentenceCount >= t.structSentences || words >= t.structWords) structure = 1;
+    if (currentMode === "paragraph" ? hasClaim : sentenceCount >= Math.max(1, t.structSentences)) structure = 2;
+    if (currentMode === "paragraph" ? (hasClaim && sentenceCount >= t.structSentences) : (sentenceCount >= t.structSentences && words >= t.structWords)) structure = 3;
+
+    var detail = 0;
+    if (words >= Math.floor(t.detailWords * 0.6)) detail = 1;
+    if ((currentMode === "paragraph" && hasEvidence) || (currentMode === "sentence" && hasConnector)) detail = 2;
+    if (words >= t.detailWords && ((currentMode === "paragraph" && hasEvidence) || (currentMode === "sentence" && hasConnector))) detail = 3;
+
+    var language = 0;
+    if (academicCount >= Math.max(0, t.languageTarget - 1)) language = 1;
+    if (academicCount >= t.languageTarget) language = 2;
+    if (academicCount >= t.languageTarget + 1) language = 3;
+
+    structure = clampScore(structure);
+    detail = clampScore(detail);
+    language = clampScore(language);
+
+    return {
+      structure: structure,
+      detail: detail,
+      language: language,
+      total: structure + detail + language
+    };
+  }
+
+  function getTextSentences(text) {
+    var matches = String(text || "").match(/[^.!?]+[.!?]?/g) || [];
+    return matches.map(function (part) { return part.trim(); }).filter(Boolean);
+  }
+
+  function pickEvidenceSpan(text) {
+    var sentences = getTextSentences(text);
+    if (!sentences.length) return "";
+    var best = sentences.find(function (s) { return EVIDENCE_RE.test(s); })
+      || sentences.find(function (s) { return CLAIM_RE.test(s); })
+      || sentences.find(function (s) { return CONJUNCTION_RE.test(s); })
+      || sentences[0];
+    return best.length > 150 ? best.slice(0, 147) + "..." : best;
+  }
+
+  function upgradeSentenceWords(sentence) {
+    var upgraded = String(sentence || "");
+    var map = [
+      { from: /\b(good|nice)\b/gi, to: "effective" },
+      { from: /\b(bad)\b/gi, to: "harmful" },
+      { from: /\b(big)\b/gi, to: "significant" },
+      { from: /\b(a lot)\b/gi, to: "substantially" },
+      { from: /\b(thing|stuff)\b/gi, to: "element" }
+    ];
+    map.forEach(function (pair) {
+      upgraded = upgraded.replace(pair.from, pair.to);
+    });
+    if (upgraded === sentence && currentMode === "paragraph" && !EVIDENCE_RE.test(upgraded)) {
+      upgraded = "According to the text, " + upgraded.replace(/^[a-z]/, function (m) { return m.toUpperCase(); });
+    }
+    if (upgraded === sentence && currentMode === "sentence" && !CONJUNCTION_RE.test(upgraded)) {
+      upgraded += " because ___";
+    }
+    return upgraded;
+  }
+
+  function buildLocalFeedback(text, words, sentenceCount) {
+    var scores = getDomainScores(text, words, sentenceCount);
+    var weak = getWeakestDomain(scores);
+    var evidenceSpan = pickEvidenceSpan(text);
+    var sentences = getTextSentences(text);
+    var before = sentences[0] || "";
+    var after = before ? upgradeSentenceWords(before) : "";
+    var confidence = "Low";
+    if (words >= 12 && sentenceCount >= 2) confidence = "Medium";
+    if (words >= 28 && sentenceCount >= 3 && evidenceSpan) confidence = "High";
+
+    var strength;
+    if (scores.language >= scores.structure && scores.language >= scores.detail) {
+      strength = scores.language >= 2 ? "Language precision is developing with academic terms present." : "Language base is present and ready for stronger word choice.";
+    } else if (scores.detail >= scores.structure) {
+      strength = scores.detail >= 2 ? "Detail support is visible and mostly connected to your point." : "Detail ideas are starting to appear.";
+    } else {
+      strength = scores.structure >= 2 ? "Structure is clear with a focused main idea." : "A core structure is starting to form.";
+    }
+
+    var nextMove = weak === "structure"
+      ? (currentMode === "paragraph" ? "Write one direct claim sentence, then stop." : "Write one clear topic sentence, then add one detail.")
+      : (weak === "detail"
+        ? (currentMode === "paragraph" ? "Add one evidence line and one why-it-matters line." : "Add one detail phrase that answers who/what/why.")
+        : "Replace one vague word with a precise academic word.");
+
+    return {
+      glow: strength,
+      grow: nextMove,
+      go: (GOALS_BY_MODE[currentMode] && GOALS_BY_MODE[currentMode][currentStep]) || "Take the next writing step.",
+      evidence: evidenceSpan || "No evidence span yet. Write 2+ sentences.",
+      patch: before && after
+        ? ("Before: \"" + before + "\" After: \"" + after + "\"")
+        : "Before: -- After: --",
+      confidence: confidence
+    };
   }
 
   function getMiniLessonRecommendation(scores) {
@@ -1075,31 +1160,11 @@
 
   function renderMasterySnapshot(text, words, sentenceCount) {
     if (!rubric1El || !rubric2El || !rubric3El || !rubricScoreEl || !miniLessonEl) return;
-    var t = getBandThresholds();
-    var hasClaim = CLAIM_RE.test(text);
-    var hasEvidence = EVIDENCE_RE.test(text);
-    var hasConnector = CONJUNCTION_RE.test(text);
-    var academicCount = countAcademicWords(text);
-
-    var structure = 0;
-    if (sentenceCount >= t.structSentences || words >= t.structWords) structure = 1;
-    if (currentMode === "paragraph" ? hasClaim : sentenceCount >= Math.max(1, t.structSentences)) structure = 2;
-    if (currentMode === "paragraph" ? (hasClaim && sentenceCount >= t.structSentences) : (sentenceCount >= t.structSentences && words >= t.structWords)) structure = 3;
-
-    var detail = 0;
-    if (words >= Math.floor(t.detailWords * 0.6)) detail = 1;
-    if ((currentMode === "paragraph" && hasEvidence) || (currentMode === "sentence" && hasConnector)) detail = 2;
-    if (words >= t.detailWords && ((currentMode === "paragraph" && hasEvidence) || (currentMode === "sentence" && hasConnector))) detail = 3;
-
-    var language = 0;
-    if (academicCount >= Math.max(0, t.languageTarget - 1)) language = 1;
-    if (academicCount >= t.languageTarget) language = 2;
-    if (academicCount >= t.languageTarget + 1) language = 3;
-
-    structure = clampScore(structure);
-    detail = clampScore(detail);
-    language = clampScore(language);
-    var total = structure + detail + language;
+    var scores = getDomainScores(text, words, sentenceCount);
+    var structure = scores.structure;
+    var detail = scores.detail;
+    var language = scores.language;
+    var total = scores.total;
 
     rubric1El.textContent = structure + "/3";
     rubric2El.textContent = detail + "/3";
