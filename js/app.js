@@ -2199,7 +2199,7 @@
     const focusButton = _el('focus-clue-btn');
     if (!button) return;
     const listening = mode === 'listening';
-    button.innerHTML = '<span class="quick-btn-label">Clue</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 3h6a2 2 0 0 1 2 2v2.5a1.5 1.5 0 1 0 0 3V13a2 2 0 0 1-2 2h-2.5a1.5 1.5 0 1 0-3 0H7a2 2 0 0 1-2-2v-2.5a1.5 1.5 0 1 0 0-3V5a2 2 0 0 1 2-2h2"></path></svg>';
+    button.innerHTML = '<span class="quick-btn-label">Clue</span><span class="quick-btn-emoji" aria-hidden="true">🧩</span>';
     setHoverNoteForElement(
       button,
       listening
@@ -2236,7 +2236,7 @@
     const button = _el('starter-word-open-btn');
     const focusButton = _el('focus-ideas-btn');
     if (!button) return;
-    button.innerHTML = '<span class="quick-btn-label">Need Ideas</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a6 6 0 0 0-3.8 10.6c.8.7 1.3 1.4 1.6 2.4h4.4c.3-1 .8-1.7 1.6-2.4A6 6 0 0 0 12 2z"></path></svg>';
+    button.innerHTML = '<span class="quick-btn-label">Need Ideas</span><span class="quick-btn-emoji" aria-hidden="true">💡</span>';
     const normalized = normalizeStarterWordMode(mode);
     const missionMode = isMissionLabStandaloneMode();
     const hidden = normalized === 'off' || missionMode;
@@ -3323,7 +3323,7 @@
   function syncHeaderStaticIcons() {
     const teacherBtn = _el('teacher-panel-btn');
     if (teacherBtn) {
-      teacherBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4 3 8l9 4 9-4-9-4Z"/><path d="M7 10.5V14c0 1.7 2.2 3 5 3s5-1.3 5-3v-3.5"/><path d="M20 9v4"/></svg>';
+      teacherBtn.innerHTML = '<span class="icon-emoji" aria-hidden="true">👩‍🏫</span>';
       setHoverNoteForElement(teacherBtn, 'Teacher Hub: class tools, reports, and weekly planning.');
     }
     const themeBtn = _el('theme-dock-toggle-btn');
@@ -3332,7 +3332,7 @@
     setHoverNoteForElement(musicBtn, 'Open music controls.');
     const settingsBtn = _el('settings-btn');
     if (settingsBtn) {
-      settingsBtn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+      settingsBtn.innerHTML = '<span class="icon-emoji" aria-hidden="true">⚙️</span>';
       setHoverNoteForElement(settingsBtn, 'Open settings.');
     }
     const writingBtn = _el('writing-studio-btn');
@@ -3383,7 +3383,7 @@
     const layout = normalizeKeyboardLayout(document.documentElement.getAttribute('data-keyboard-layout') || 'standard');
     const next = getNextKeyboardLayout(layout);
     const keyboardHint = `${getKeyboardLayoutLabel(layout)} keys ready. Tap to try ${getKeyboardLayoutLabel(next)}.`;
-    toggle.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="6" width="18" height="12" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 10h1M9 10h1M12 10h1M15 10h1M18 10h0M6 13h1M9 13h1M12 13h1M15 13h1M6 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+    toggle.innerHTML = '<span class="icon-emoji" aria-hidden="true">⌨️</span>';
     toggle.setAttribute('aria-pressed', layout === 'alphabet' ? 'true' : 'false');
     toggle.setAttribute('aria-label', keyboardHint);
     toggle.dataset.hint = keyboardHint;
