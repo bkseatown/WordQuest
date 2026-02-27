@@ -791,7 +791,9 @@
     keyPulseIndex: 0,
     hintUsed: false,
     overlaysClosed: false,
-    coachMounted: false
+    coachMounted: false,
+    lastCoachStepId: '',
+    handledGuessCounts: new Set()
   };
   const DEMO_OVERLAY_SELECTORS = Object.freeze([
     '#focus-inline-results:not(.hidden)',
@@ -954,7 +956,7 @@
 
   function stopDemoKeyPulse() {
     if (!demoState.keyPulseTimer) return;
-    clearInterval(demoState.keyPulseTimer);
+    clearTimeout(demoState.keyPulseTimer);
     demoState.keyPulseTimer = 0;
   }
 
@@ -1030,11 +1032,18 @@
     stopDemoKeyPulse();
     const letters = String(word || '').toLowerCase().replace(/[^a-z]/g, '').split('');
     if (!letters.length) return;
-    demoState.keyPulseIndex = 0;
-    demoState.keyPulseTimer = setInterval(() => {
+    // One pass only to avoid perpetual repaint loops while demo coach is visible.
+    const pulseOnce = () => {
       pulseDemoKey(letters[demoState.keyPulseIndex % letters.length]);
       demoState.keyPulseIndex += 1;
-    }, 360);
+      if (demoState.keyPulseIndex >= letters.length) {
+        stopDemoKeyPulse();
+      } else {
+        demoState.keyPulseTimer = demoSetTimeout(pulseOnce, 140);
+      }
+    };
+    demoState.keyPulseIndex = 0;
+    pulseOnce();
   }
 
   function applySuggestedDemoWord(word) {
@@ -1095,8 +1104,13 @@
     const hintBtn = _el('csCoachHint');
     const skipBtn = _el('csCoachSkip');
     if (!copyEl || !primaryBtn || !suggestBtn || !hintBtn || !skipBtn) return;
+    const nextStepId = String(config?.id || '').trim() || 'unknown';
+    if (demoState.lastCoachStepId === nextStepId && coach.classList.contains('cs-visible')) {
+      return;
+    }
+    demoState.lastCoachStepId = nextStepId;
     window.__CS_DEMO_RENDER_COUNT = (window.__CS_DEMO_RENDER_COUNT || 0) + 1;
-    console.log('[demo] coach render', window.__CS_DEMO_RENDER_COUNT, 'step', String(config?.id || 'unknown'));
+    console.log('[demo] coach render', window.__CS_DEMO_RENDER_COUNT, 'step', nextStepId);
 
     copyEl.textContent = String(config?.text || '').trim();
     primaryBtn.textContent = String(config?.primaryLabel || 'Got it').trim() || 'Got it';
@@ -1160,6 +1174,8 @@
     demoState.hintUsed = false;
     demoState.overlaysClosed = false;
     demoState.coachMounted = false;
+    demoState.lastCoachStepId = '';
+    demoState.handledGuessCounts = new Set();
     window.__CS_DEMO_RENDER_COUNT = 0;
     stopDemoCoachReadyLoop();
     demoClearTimers();
@@ -1225,6 +1241,8 @@
     const demoStateRuntime = getDemoState();
     if (!demoStateRuntime.active) return;
     demoState.guessCount = Math.max(0, Number(result.guesses?.length || 0));
+    if (demoState.handledGuessCounts.has(demoState.guessCount)) return;
+    demoState.handledGuessCounts.add(demoState.guessCount);
     updateDemoDiscovered(result);
     if (demoState.guessCount === 1) {
       demoStateRuntime.step = 2;
