@@ -905,6 +905,9 @@
   }
 
   function resolveBuildLabel() {
+    const metaBuild = document.querySelector('meta[name="wq-build"]')?.getAttribute('content');
+    const normalizedMetaBuild = String(metaBuild || '').trim();
+    if (normalizedMetaBuild) return normalizedMetaBuild;
     const appScript = Array.from(document.querySelectorAll('script[src]'))
       .find((script) => /(?:^|\/)js\/app\.js(?:[?#]|$)/i.test(script.getAttribute('src') || ''));
     const src = String(appScript?.getAttribute('src') || '');

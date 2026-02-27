@@ -14,7 +14,11 @@ function write(filePath, content) {
 
 function stampIndex(indexPath, buildId) {
   const original = read(indexPath);
-  const stamped = original.replace(/([?&]v=)[A-Za-z0-9._-]+/g, `$1${buildId}`);
+  let stamped = original.replace(/([?&]v=)[A-Za-z0-9._-]+/g, `$1${buildId}`);
+  stamped = stamped.replace(
+    /(<meta\s+name="wq-build"\s+content=")[^"]*(")/i,
+    `$1${buildId}$2`
+  );
   if (stamped !== original) write(indexPath, stamped);
 }
 
