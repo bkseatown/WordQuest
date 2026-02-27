@@ -2,7 +2,6 @@
   "use strict";
 
   var DEBOUNCE_MS = 400;
-  var TIMEOUT_MS = 4000;
   var RATE_LIMIT_MAX = 20;
   var RATE_LIMIT_WINDOW_MS = 60 * 1000;
 
@@ -24,6 +23,7 @@
   if (!window.__CS_ERROR_HANDLERS_BOUND) {
     window.__CS_ERROR_HANDLERS_BOUND = true;
     window.addEventListener("error", function (e) {
+      if (!window.CS_CONFIG || window.CS_CONFIG.environment !== "dev") return;
       try {
         console.warn("CS Error:", e && e.message ? e.message : "Unknown error");
       } catch (_err) {
@@ -31,6 +31,7 @@
       }
     });
     window.addEventListener("unhandledrejection", function (e) {
+      if (!window.CS_CONFIG || window.CS_CONFIG.environment !== "dev") return;
       try {
         console.warn("CS Promise Rejection:", e && e.reason ? e.reason : "Unknown rejection");
       } catch (_err) {
@@ -58,6 +59,12 @@
     } catch (_e) {
       // ignore
     }
+  }
+
+  function getTimeoutMs() {
+    var cfgTimeout = Number(window.CS_CONFIG && window.CS_CONFIG.requestTimeoutMs);
+    if (!Number.isNaN(cfgTimeout) && cfgTimeout >= 1000 && cfgTimeout <= 30000) return cfgTimeout;
+    return 4000;
   }
 
   function isDemoMode() {
@@ -167,7 +174,7 @@
 
     var timeoutId = window.setTimeout(function () {
       try { controller.abort(); } catch (_e) { /* ignore */ }
-    }, TIMEOUT_MS);
+    }, getTimeoutMs());
 
     try {
       var res = await fetch(url, {
@@ -195,7 +202,7 @@
 
     var timeoutId = window.setTimeout(function () {
       try { controller.abort(); } catch (_e) { /* ignore */ }
-    }, TIMEOUT_MS);
+    }, getTimeoutMs());
 
     try {
       var res = await fetch(url, {
