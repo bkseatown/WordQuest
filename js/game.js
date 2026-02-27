@@ -15,6 +15,7 @@ const WQGame = (() => {
   let maxGuesses     = 6;
   let wordLength     = 5;
   let lastStartError = null;
+  let disableProgress = false;
 
   // Shuffle bag — prevents same word repeating
   const BAG_KEY = 'wq_v2_shuffle_bag';
@@ -123,6 +124,8 @@ const WQGame = (() => {
     const normalizedPhonics = String(phonics || '').trim().toLowerCase();
     const includeLowerBands = normalizedPhonics !== 'all' && !normalizedPhonics.startsWith('vocab-');
     const teacherPool = _getTeacherPool();
+    const fixedWord = String(opts.fixedWord || '').trim().toLowerCase();
+    disableProgress = opts.disableProgress === true;
     let effectiveLengthPref = lengthPref;
     let pool = [];
     if (teacherPool.length) {
@@ -167,7 +170,9 @@ const WQGame = (() => {
       }
       console.warn('[WQGame] Empty unfiltered pool.');
     }
-    const word = _pickWord(pool, scope);
+    let word = fixedWord || '';
+    if (word && !/^[a-z]{2,12}$/.test(word)) word = '';
+    if (!word) word = _pickWord(pool, scope);
 
     if (!word) {
       console.error('[WQGame] Could not pick a word');
@@ -231,7 +236,7 @@ const WQGame = (() => {
 
     if (won || state.lost) {
       gameOver = true;
-      _saveProgress(currentWord, won, guesses.length);
+      if (!disableProgress) _saveProgress(currentWord, won, guesses.length);
     } else {
       currentGuess = '';
     }

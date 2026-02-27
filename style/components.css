@@ -6618,6 +6618,65 @@ html[data-layout-mode="compact"] .key.key-chunk {
   main { gap: 8px; }
   :root { --tile-size: 38px; --key-h: 40px; --key-min-w: 24px; --gap-key: 6px; }
 }
+
+.wq-demo-banner {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 230;
+  padding: 8px 14px;
+  border-radius: 0 0 12px 12px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 58%, transparent);
+  background: color-mix(in oklab, var(--brand) 32%, #fff5d6 68%);
+  color: color-mix(in oklab, var(--text) 80%, #1f2c38 20%);
+  font-size: 0.78rem;
+  font-weight: 860;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.wq-demo-end-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  background: rgba(7, 14, 24, 0.54);
+  backdrop-filter: blur(4px);
+}
+
+.wq-demo-end-overlay.hidden {
+  display: none !important;
+}
+
+.wq-demo-end-card {
+  width: min(420px, 96vw);
+  border-radius: 16px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 58%, transparent);
+  background: color-mix(in oklab, var(--modal-bg) 66%, #e2e8f0 34%);
+  box-shadow: var(--panel-shadow);
+  padding: 18px;
+  display: grid;
+  gap: 12px;
+  text-align: center;
+}
+
+.wq-demo-end-card h2 {
+  margin: 0;
+  font-size: 1.36rem;
+  font-weight: 900;
+  color: color-mix(in oklab, var(--text) 86%, #ffffff 14%);
+}
+
+.wq-demo-end-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 /* ── Motion (Fun/Calm) ───────────────────────────────── */
 @keyframes key-press-spring {
   0%   { transform: translateY(0) scale(1); }

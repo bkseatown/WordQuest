@@ -7,6 +7,67 @@
  */
 
 (async () => {
+  const DEMO_TARGET_WORD = 'blend';
+  function detectDemoMode() {
+    let fromQuery = false;
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      fromQuery = String(params.get('demo') || '').trim().toLowerCase() === 'true';
+    } catch {}
+    return fromQuery || window.WQ_DEMO === true;
+  }
+  const DEMO_MODE = detectDemoMode();
+  if (DEMO_MODE) {
+    window.WQ_DEMO = true;
+    document.documentElement.setAttribute('data-wq-demo', 'on');
+  }
+
+  function installDemoStorageGuard() {
+    if (!DEMO_MODE || window.__WQ_DEMO_STORAGE_GUARD__) return;
+    window.__WQ_DEMO_STORAGE_GUARD__ = true;
+    const noop = () => {};
+    try { localStorage.setItem = noop; } catch {}
+    try { localStorage.removeItem = noop; } catch {}
+    try { localStorage.clear = noop; } catch {}
+    try {
+      const storageProto = Object.getPrototypeOf(localStorage);
+      if (storageProto) {
+        storageProto.setItem = noop;
+        storageProto.removeItem = noop;
+        storageProto.clear = noop;
+      }
+    } catch {}
+  }
+
+  function installDemoFetchGuard() {
+    if (!DEMO_MODE || window.__WQ_DEMO_FETCH_GUARD__ || typeof window.fetch !== 'function') return;
+    window.__WQ_DEMO_FETCH_GUARD__ = true;
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = (input, init = {}) => {
+      const method = String(init?.method || 'GET').trim().toUpperCase() || 'GET';
+      let targetUrl = '';
+      try {
+        targetUrl = String(input?.url || input || '');
+      } catch {
+        targetUrl = '';
+      }
+      let isSameOrigin = true;
+      try {
+        const parsed = new URL(targetUrl, window.location.href);
+        isSameOrigin = parsed.origin === window.location.origin;
+      } catch {}
+      if (method !== 'GET' || !isSameOrigin) {
+        return Promise.resolve(new Response('{}', {
+          status: 200,
+          headers: { 'content-type': 'application/json' }
+        }));
+      }
+      return nativeFetch(input, init);
+    };
+  }
+
+  installDemoStorageGuard();
+  installDemoFetchGuard();
 
   // ─── 1. Load data ──────────────────────────────────
   const loadingEl = document.getElementById('loading-screen');
@@ -391,6 +452,7 @@
     try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}'); } catch { return {}; }
   }
   function savePrefs(p) {
+    if (DEMO_MODE) return;
     const normalized = p && typeof p === 'object' ? { ...p } : {};
     delete normalized.lessonPack;
     delete normalized.lessonTarget;
@@ -646,6 +708,78 @@
   let challengeSprintTimer = 0;
   let challengePacingTimer = 0;
   let challengeModalReturnFocusEl = null;
+  let demoRoundComplete = false;
+  let demoEndOverlayEl = null;
+
+  function createDemoBanner() {
+    if (!DEMO_MODE || document.getElementById('wq-demo-banner')) return;
+    const banner = document.createElement('div');
+    banner.id = 'wq-demo-banner';
+    banner.className = 'wq-demo-banner';
+    banner.textContent = 'Live Demo — Try One Round';
+    document.body.prepend(banner);
+  }
+
+  function setDemoControlsDisabled() {
+    if (!DEMO_MODE) return;
+    const targets = [
+      _el('setting-focus'),
+      _el('s-length'),
+      _el('s-guesses'),
+      _el('wq-teacher-words')
+    ];
+    targets.forEach((node) => {
+      if (!node) return;
+      node.setAttribute('disabled', 'true');
+      node.setAttribute('aria-disabled', 'true');
+      node.setAttribute('title', 'Disabled in Live Demo');
+    });
+    document.querySelectorAll('#challenge-modal input, #challenge-modal textarea').forEach((node) => {
+      node.setAttribute('disabled', 'true');
+      node.setAttribute('aria-disabled', 'true');
+      node.setAttribute('title', 'Disabled in Live Demo');
+    });
+  }
+
+  function removeDemoQueryParam(url) {
+    const next = new URL(url || window.location.href, window.location.href);
+    next.searchParams.delete('demo');
+    return next.toString();
+  }
+
+  function closeDemoEndOverlay() {
+    if (!demoEndOverlayEl) return;
+    demoEndOverlayEl.classList.add('hidden');
+  }
+
+  function showDemoEndOverlay() {
+    if (!DEMO_MODE) return;
+    if (!demoEndOverlayEl) {
+      const overlay = document.createElement('div');
+      overlay.id = 'wq-demo-end-overlay';
+      overlay.className = 'wq-demo-end-overlay hidden';
+      overlay.innerHTML =
+        '<div class=\"wq-demo-end-card\">' +
+          '<h2>That&rsquo;s Word Quest.</h2>' +
+          '<div class=\"wq-demo-end-actions\">' +
+            '<button type=\"button\" id=\"wq-demo-full-btn\" class=\"audio-btn\">Play Full Version</button>' +
+            '<button type=\"button\" id=\"wq-demo-retry-btn\" class=\"audio-btn\">Try Again</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      _el('wq-demo-full-btn')?.addEventListener('click', () => {
+        window.WQ_DEMO = false;
+        window.location.href = removeDemoQueryParam(window.location.href);
+      });
+      _el('wq-demo-retry-btn')?.addEventListener('click', () => {
+        demoRoundComplete = false;
+        closeDemoEndOverlay();
+        newGame({ forceDemoReplay: true, launchMissionLab: false });
+      });
+      demoEndOverlayEl = overlay;
+    }
+    demoEndOverlayEl.classList.remove('hidden');
+  }
 
   function readTelemetryEnabled() {
     try {
@@ -695,6 +829,7 @@
   }
 
   function resolveTelemetryEndpoint() {
+    if (DEMO_MODE) return '';
     let queryValue = '';
     try {
       const params = new URLSearchParams(window.location.search || '');
@@ -780,6 +915,7 @@
   }
 
   function initTelemetryUploader() {
+    if (DEMO_MODE) return;
     if (document.body.dataset.wqTelemetryUploaderBound === '1') return;
     document.body.dataset.wqTelemetryUploaderBound = '1';
     if (telemetryUploadIntervalId) clearInterval(telemetryUploadIntervalId);
@@ -826,6 +962,7 @@
   }
 
   function emitTelemetry(eventName, payload = {}) {
+    if (DEMO_MODE) return;
     if (!readTelemetryEnabled()) return;
     const name = String(eventName || '').trim().toLowerCase();
     if (!name) return;
@@ -12118,6 +12255,11 @@
   }
 
   function newGame(options = {}) {
+    if (DEMO_MODE && demoRoundComplete && !options.forceDemoReplay) {
+      showDemoEndOverlay();
+      return;
+    }
+    if (DEMO_MODE) closeDemoEndOverlay();
     emitTelemetry('wq_new_word_click', {
       source: options.launchMissionLab ? 'mission_lab_new' : 'wordquest_new'
     });
@@ -12168,7 +12310,9 @@
       ...s,
       gradeBand: effectiveGradeBand,
       focus,
-      phonics: focus
+      phonics: focus,
+      fixedWord: DEMO_MODE ? DEMO_TARGET_WORD : '',
+      disableProgress: DEMO_MODE
     });
     if (!result) {
       const startError = typeof WQGame.getLastStartError === 'function'
@@ -12330,8 +12474,10 @@
           });
           clearClassroomTurnTimer();
           updateClassroomTurnLine();
-          awardQuestProgress(result, roundMetrics);
-          trackRoundForReview(result, s.maxGuesses, roundMetrics);
+          if (!DEMO_MODE) {
+            awardQuestProgress(result, roundMetrics);
+            trackRoundForReview(result, s.maxGuesses, roundMetrics);
+          }
           resetRoundTracking();
           hideMidgameBoost();
           syncAssessmentLockRuntime();
@@ -12347,10 +12493,18 @@
           ));
           updateNextActionLine({ dueCount: dueCountNow });
           setTimeout(() => {
-            WQUI.showModal(result);
-            _el('new-game-btn')?.classList.add('pulse');
-            const settings = WQUI.getSettings();
-            if (result.won && settings.confetti){ launchConfetti(); launchStars(); }
+            if (DEMO_MODE) {
+              demoRoundComplete = true;
+              WQUI.hideModal();
+              closeRevealChallengeModal({ silent: true });
+              showDemoEndOverlay();
+              _el('new-game-btn')?.classList.remove('pulse');
+            } else {
+              WQUI.showModal(result);
+              _el('new-game-btn')?.classList.add('pulse');
+              const settings = WQUI.getSettings();
+              if (result.won && settings.confetti){ launchConfetti(); launchStars(); }
+            }
             if (normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback()) !== themeAtSubmit) {
               applyTheme(themeAtSubmit);
             }
@@ -15588,6 +15742,8 @@
   WQMusic.initFromPrefs(prefs);
   syncMusicForTheme();
   initQuestLoop();
+  createDemoBanner();
+  setDemoControlsDisabled();
   enforceClassicFiveLetterDefault();
   newGame({ launchMissionLab: false });
   consumeWritingStudioReturnSummary();
