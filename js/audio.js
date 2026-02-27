@@ -303,6 +303,39 @@ const WQAudio = (() => {
     return false;
   }
 
+  async function playCoachPhrase(input = {}, options = {}) {
+    const mode = _normalizeVoiceMode(_voiceMode || 'recorded');
+    if (mode === 'off') {
+      _stop();
+      return false;
+    }
+
+    const text = _normalizeSpeechText(input?.text || input?.phrase || '');
+    const clipPath = _normalizeAudioPath(input?.clip || input?.audio || input?.path || '');
+    const allowRecorded = mode !== 'device';
+    const allowFallbackTTS = true;
+
+    void _primeAudioManifest();
+
+    if (allowRecorded && clipPath) {
+      const known = _isKnownAudioPath(clipPath);
+      if (known !== false) {
+        try {
+          await _playFile(clipPath);
+          return true;
+        } catch {
+          // Fall through to speech fallback.
+        }
+      }
+    }
+
+    if (allowFallbackTTS && text) {
+      return !!(await _speak(text, 0.92, 1, { stopFirst: true }));
+    }
+
+    return false;
+  }
+
   // ─── Public API ─────────────────────────────────
   function playWord(entry)     { return _play(entry?.audio?.word,     entry?.word,        0.82); }
   function playDef(entry)      { return _play(entry?.audio?.def,      entry ? `${entry.word}. ${entry.definition}` : '', 0.9); }
@@ -352,7 +385,7 @@ const WQAudio = (() => {
     };
   }
 
-  return { playWord, playDef, playSentence, playFun, playMeaningBundle, stop, speakCue,
+  return { playWord, playDef, playSentence, playFun, playMeaningBundle, playCoachPhrase, stop, speakCue,
            setVoiceMode, getVoiceMode,
            getAvailableVoices, setVoiceByName, getCurrentVoiceName,
            primeAudioManifest: _primeAudioManifest,
