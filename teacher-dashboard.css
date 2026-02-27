@@ -13,58 +13,62 @@ body.cs-page-teacher {
 #td-root {
   width: min(1100px, 95vw);
   margin: 0 auto;
-  padding: 28px 14px 38px;
+  padding: 16px 14px;
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .td-header h1 {
   margin: 0;
   font-family: "Nunito", "Atkinson Hyperlegible", sans-serif;
-  font-size: clamp(28px, 3.2vw, 42px);
-  letter-spacing: 0.05em;
+  font-size: clamp(1.7rem, 2.4vw, 2.25rem);
+  letter-spacing: 0.01em;
+  line-height: 1.14;
 }
 
 .td-sub {
-  margin: 8px 0 0;
-  color: rgba(232,237,242,0.8);
-  font-size: 16px;
+  margin: 6px 0 0;
+  color: rgba(232,237,242,0.74);
+  font-size: 0.96rem;
+  line-height: 1.5;
 }
 
 .ss-card {
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(14px);
+  background: rgba(255,255,255,0.05);
   border-radius: 18px;
-  padding: 18px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.38), inset 0 0 0 1px rgba(255,255,255,0.08);
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 14px 26px rgba(0,0,0,0.22);
 }
 
 .ss-card h2 {
-  margin: 0 0 10px;
-  font-size: 20px;
+  margin: 0 0 8px;
+  font-size: 1.16rem;
+  line-height: 1.25;
+  font-weight: 620;
 }
 
 .td-subhead {
-  margin: 14px 0 8px;
-  font-size: 14px;
-  font-weight: 800;
-  color: rgba(232,237,242,0.9);
+  margin: 10px 0 6px;
+  font-size: 0.84rem;
+  font-weight: 620;
+  color: rgba(232,237,242,0.8);
 }
 
 .td-metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
-  gap: 24px;
+  gap: 12px;
 }
 
 .td-metric {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .metric-bar {
   height: 6px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.08);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -83,23 +87,23 @@ body.cs-page-teacher {
 
 .td-group {
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(12,23,34,0.45);
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(12,23,34,0.32);
   padding: 10px;
 }
 
 .td-group-recommendation {
   border-radius: 12px;
-  border: 1px solid rgba(127,182,255,0.35);
-  background: rgba(17,30,43,0.65);
+  border: 1px solid rgba(127,182,255,0.24);
+  background: rgba(17,30,43,0.48);
   padding: 10px;
-  font-size: 13px;
+  font-size: 0.82rem;
   line-height: 1.45;
 }
 
 .td-group-title {
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 0.86rem;
+  font-weight: 620;
   margin-bottom: 6px;
 }
 
@@ -110,10 +114,10 @@ body.cs-page-teacher {
 
 #td-heatmap-table td,
 #td-heatmap-table th {
-  padding: 8px;
+  padding: 7px 8px;
   text-align: center;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
-  font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.8rem;
 }
 
 .tier-1 { background: rgba(102,187,106,0.3); }
@@ -126,11 +130,11 @@ body.cs-page-teacher {
 
 #td-lesson-suggestion {
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(12,23,34,0.45);
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(12,23,34,0.34);
   padding: 12px;
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 0.94rem;
+  font-weight: 620;
   line-height: 1.45;
 }
 
@@ -151,7 +155,7 @@ body.cs-page-teacher {
   padding: 2px 8px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 620;
   border: 1px solid rgba(255,255,255,0.2);
   background: rgba(255,255,255,0.08);
 }
@@ -165,19 +169,25 @@ body.cs-page-teacher {
 }
 
 .td-tool-btn {
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(12,23,34,0.6);
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(12,23,34,0.48);
   color: #e8edf2;
   border-radius: 10px;
   padding: 8px 12px;
-  font-weight: 700;
+  font-weight: 620;
   cursor: pointer;
+  transition: transform 170ms ease, box-shadow 170ms ease;
+}
+
+.td-tool-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }
 
 .td-panel {
   margin-top: 10px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.035);
   border-radius: 12px;
   padding: 12px;
   display: grid;
@@ -186,8 +196,8 @@ body.cs-page-teacher {
 
 .td-heatmap > summary {
   cursor: pointer;
-  font-weight: 800;
-  margin-bottom: 10px;
+  font-weight: 620;
+  margin-bottom: 6px;
 }
 
 .hidden { display: none !important; }

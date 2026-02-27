@@ -19,16 +19,16 @@ body.cs-page-reading-lab {
   min-height: 100dvh;
   font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
   color: var(--rl-text);
-  background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.05), transparent 60%), var(--rl-bg);
+  background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.04), transparent 58%), var(--rl-bg);
 }
 
 .rl-root {
-  width: min(1200px, 95vw);
+  width: min(1180px, 95vw);
   margin: 0 auto;
   min-height: 100dvh;
-  padding: 18px 14px 20px;
+  padding: 16px 14px;
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 .rl-head {
@@ -48,7 +48,7 @@ body.cs-page-reading-lab {
 
 .rl-head p {
   margin: 8px 0 0;
-  color: var(--rl-muted);
+  color: color-mix(in oklab, var(--rl-muted) 88%, #ffffff 12%);
   font-size: var(--cs-body);
   line-height: 1.56;
 }
@@ -71,24 +71,24 @@ body.cs-page-reading-lab {
 .rl-layout {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
-  gap: 14px;
+  gap: 12px;
   align-items: start;
 }
 
 .rl-surface {
   border-radius: 16px;
-  padding: 14px;
+  padding: 13px;
 }
 
 .cs-stage.rl-surface {
-  background: linear-gradient(165deg, rgba(255,255,255,0.08), rgba(7,16,25,0.32));
-  border: 1px solid rgba(255,255,255,0.14);
-  box-shadow: 0 16px 30px rgba(4, 10, 18, 0.24);
+  background: var(--cs-stage-bg);
+  border: 1px solid color-mix(in oklab, var(--rl-border) 42%, transparent);
+  box-shadow: var(--cs-shadow-stage);
 }
 
 .cs-rail.rl-surface {
   background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.06);
   box-shadow: none;
 }
 
@@ -117,8 +117,8 @@ body.cs-page-reading-lab {
   margin-top: 10px;
   min-height: 290px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(12, 24, 37, 0.45);
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(12, 24, 37, 0.36);
   padding: 14px;
   font-size: clamp(1.02rem, 1.3vw, 1.2rem);
   line-height: 1.68;
@@ -163,16 +163,29 @@ body.cs-page-reading-lab {
 
 .rl-btn {
   border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(12,23,34,0.66);
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(12,23,34,0.56);
   color: var(--rl-text);
   padding: 8px 12px;
   font-weight: 600;
   cursor: pointer;
+  transition: transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease;
 }
 
 .rl-btn-primary {
-  background: linear-gradient(135deg, #3c5568, #2c3f50);
+  border-color: color-mix(in oklab, var(--cs-accent) 34%, rgba(255,255,255,0.2) 66%);
+  background: linear-gradient(135deg, #39526a, #2a3d50);
+  box-shadow: var(--cs-shadow-float);
+}
+
+.rl-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.28);
+}
+
+.rl-btn:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--cs-accent) 62%, #ffffff 38%);
+  outline-offset: 1px;
 }
 
 .rl-control-grid {
@@ -273,8 +286,8 @@ body.cs-page-reading-lab {
 .rl-panel {
   margin-top: 10px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.09);
-  background: rgba(12, 24, 37, 0.32);
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(12, 24, 37, 0.26);
   padding: 10px;
   display: grid;
   gap: 6px;
@@ -302,6 +315,34 @@ body.cs-page-reading-lab {
   margin-top: 10px;
   font-size: var(--cs-meta);
   color: var(--rl-muted);
+}
+
+.rl-next-move {
+  margin-top: 10px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--cs-accent) 30%, rgba(255,255,255,0.08) 70%);
+  background: color-mix(in oklab, var(--cs-accent) 12%, rgba(12,24,37,0.5) 88%);
+  padding: 9px 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.rl-next-move-title {
+  margin: 0;
+  font-size: var(--cs-meta);
+  line-height: 1.35;
+  color: color-mix(in oklab, var(--rl-muted) 90%, #ffffff 10%);
+}
+
+.rl-next-move-line {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  font-weight: 620;
+}
+
+.rl-next-move-btn {
+  justify-self: start;
 }
 
 .hidden { display: none !important; }

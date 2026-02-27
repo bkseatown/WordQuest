@@ -28,9 +28,9 @@ body.cs-page-surgery {
   width: min(1180px, 95vw);
   margin: 0 auto;
   min-height: 100dvh;
-  padding: 18px 14px 24px;
+  padding: 14px;
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
 .ss-header {
@@ -52,16 +52,16 @@ body.cs-page-surgery {
 .ss-workbench {
   display: grid;
   grid-template-columns: 1.45fr 1fr;
-  gap: 14px;
+  gap: 12px;
   align-items: start;
 }
 
 .ss-stage {
-  padding: 16px;
+  padding: 14px;
   border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(7, 16, 25, 0.34));
-  box-shadow: 0 18px 34px rgba(4, 10, 18, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--cs-stage-bg, linear-gradient(160deg, rgba(255,255,255,0.08), rgba(7,16,25,0.34)));
+  box-shadow: var(--cs-shadow-stage, 0 18px 34px rgba(4, 10, 18, 0.24));
 }
 
 .ss-stage-head h1 {
@@ -121,27 +121,35 @@ body.cs-page-surgery {
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   margin: 10px 0 12px;
 }
 
 .ss-action-btn {
-  background: linear-gradient(135deg, #3c5568, #2c3f50);
+  background: color-mix(in oklab, #2c3f50 84%, #e1edf9 16%);
   border-radius: 999px;
-  padding: 10px 16px;
+  padding: 8px 13px;
   color: #f1f5f9;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   transition: transform 170ms ease, background 170ms ease, box-shadow 170ms ease;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .ss-action-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
-  background: linear-gradient(135deg, #4e6f86, #3b566b);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
+  background: color-mix(in oklab, #3b566b 82%, #dbe8f7 18%);
 }
+
+.ss-action-btn[data-action="why"]::before { content: "∵"; }
+.ss-action-btn[data-action="detail"]::before { content: "⋯"; }
+.ss-action-btn[data-action="verb"]::before { content: "↗"; }
+.ss-action-btn[data-action="clause"]::before { content: "+"; }
 
 #ssTeacherToggle[aria-pressed="true"] {
   background: linear-gradient(135deg, #6b5c3f, #4a3f2d);
@@ -187,16 +195,16 @@ body.cs-page-surgery {
 }
 
 .ss-rail {
-  padding: 12px;
+  padding: 10px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(255, 255, 255, 0.04);
 }
 
 .ss-rail-block {
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  padding-top: 10px;
-  margin-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 8px;
+  margin-top: 8px;
 }
 
 .ss-rail-block:first-child {
@@ -226,10 +234,10 @@ body.cs-page-surgery {
 }
 
 #ssTraitsPanel {
-  margin-top: 8px;
+  margin-top: 6px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(12, 24, 37, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 24, 37, 0.34);
   padding: 8px;
 }
 
@@ -272,10 +280,10 @@ body.cs-page-surgery {
 
 .ss-breakdown {
   display: none;
-  margin-top: 10px;
+  margin-top: 8px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(18, 30, 43, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(18, 30, 43, 0.42);
   text-align: left;
   padding: 10px;
   font-size: var(--cs-meta);
@@ -295,10 +303,10 @@ body.teacher-mode .ss-breakdown {
 }
 
 .ss-timed {
-  margin-top: 10px;
+  margin-top: 8px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(12, 24, 37, 0.44);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 24, 37, 0.36);
   padding: 10px;
   display: grid;
   gap: 8px;

@@ -556,14 +556,25 @@
   function renderTeacherSummary(metrics) {
     var hard = topHardWords(5);
     var list = hard.length ? hard.map(function (row) { return row.word + " (" + row.misses + ")"; }).join(", ") : "None flagged";
+    var nextStep = recommendedNextStep(metrics);
     el.teacherSummary.innerHTML = [
       "<h3>Teacher Summary</h3>",
       "<div><strong>ORF WPM:</strong> " + Number(metrics.wpm || 0) + "</div>",
       "<div><strong>Accuracy:</strong> " + Number(metrics.accuracy || 0) + "%</div>",
       "<div><strong>Punctuation Respect:</strong> " + Number(metrics.punctScore || 0) + "%</div>",
       "<div><strong>Hard Words:</strong> " + esc(list) + "</div>",
-      "<div><strong>Recommended Next Step:</strong> " + esc(recommendedNextStep(metrics)) + "</div>"
+      "<section class=\"rl-next-move\" aria-label=\"Next instructional move\">",
+      "<p class=\"rl-next-move-title\">Next instructional move</p>",
+      "<p class=\"rl-next-move-line\">" + esc(nextStep) + "</p>",
+      "<button id=\"rl-next-move-btn\" class=\"rl-btn rl-next-move-btn\" type=\"button\">Send to Sentence Surgery</button>",
+      "</section>"
     ].join("");
+    var nextMoveBtn = document.getElementById("rl-next-move-btn");
+    if (nextMoveBtn) {
+      nextMoveBtn.addEventListener("click", function () {
+        if (el.sendSentence) el.sendSentence.click();
+      });
+    }
     el.teacherSummary.classList.remove("hidden");
   }
 
