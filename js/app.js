@@ -7133,22 +7133,22 @@
   function getFocusDisplayLabel(value, fallback = '') {
     const labels = getFocusDisplayLabel._labels || (getFocusDisplayLabel._labels = Object.freeze({
       all: 'Classic Word Puzzle (5x6)',
-      cvc: 'CVC Builders · short vowels',
-      digraph: 'Sound Buddies · sh, ch, th',
-      ccvc: 'Blend Launch · st, bl, tr',
-      cvcc: 'Blend Landing · mp, nd, st',
-      trigraph: 'Triple Sounds · tch, dge, igh',
-      cvce: 'Magic E · CVCe',
-      vowel_team: 'Vowel Teams · ai, ee, oa',
-      r_controlled: 'Bossy R · ar, or, er',
-      diphthong: 'Slide Sounds · oi, oy, ou',
-      floss: 'Floss Rule · -ff, -ll, -ss, -zz',
-      welded: 'Welded Sounds · -ang, -ing',
-      schwa: 'Schwa Switch',
-      prefix: 'Prefix Power · un-, re-',
-      suffix: 'Suffix Power · -ing, -ed',
-      compound: 'Word Joiners · compound words',
-      multisyllable: 'Syllable Stretch'
+      cvc: 'CVC (Short Vowels)',
+      digraph: 'Digraphs',
+      ccvc: 'Initial Blends (CCVC)',
+      cvcc: 'Final Blends (CVCC)',
+      trigraph: 'Trigraphs',
+      cvce: 'CVCe (Magic E)',
+      vowel_team: 'Vowel Teams',
+      r_controlled: 'R-Controlled Vowels',
+      diphthong: 'Diphthongs',
+      floss: 'FLOSS Rule',
+      welded: 'Welded Sounds',
+      schwa: 'Schwa',
+      prefix: 'Prefixes',
+      suffix: 'Suffixes',
+      compound: 'Compound Words',
+      multisyllable: 'Multisyllabic Words'
     }));
     return labels[value] || String(fallback || value || '').trim();
   }
@@ -7886,6 +7886,28 @@
       return count ? `${count} lessons` : 'Open lessons';
     }
     if (entry.kind === 'curriculum') return getCurriculumEntryMeta(entry);
+    const focusHints = Object.freeze({
+      cvc: '🗣 short vowel sounds • cat, map',
+      digraph: '🗣 two letters, one sound • ship, chat',
+      ccvc: '🗣 blend at the start • stop, plan',
+      cvcc: '🗣 blend at the end • lamp, sand',
+      trigraph: '🗣 three-letter chunk • catch, light',
+      cvce: '🗣 silent e changes the vowel • cap→cape',
+      vowel_team: '🗣 two vowels team up • rain, boat',
+      r_controlled: '🗣 vowel sound changes before r • car, fern',
+      diphthong: '🗣 mouth glides between sounds • coin, cloud',
+      floss: '🗣 double f/l/s/z after short vowel • bell, miss',
+      welded: '🗣 glued chunks • ring, bank',
+      schwa: '🗣 lazy vowel /uh/ • about, sofa',
+      prefix: '🧩 add to the beginning • re+do',
+      suffix: '🧩 add to the end • jump+ed',
+      compound: '🧩 two words join • sun+set',
+      multisyllable: '🗣 clap the parts • nap-kin, con-test'
+    });
+    if (entry.kind === 'focus') {
+      const preset = parseFocusPreset(entry.value);
+      if (preset.kind === 'phonics') return focusHints[preset.focus] || '';
+    }
     const preset = parseFocusPreset(entry.value);
     if (preset.kind === 'subject' && preset.gradeBand) return `Grade ${formatGradeBandLabel(preset.gradeBand)}`;
     return '';
@@ -8139,7 +8161,7 @@
     const guidance = !query
       ? focusCurriculumPackFilter
         ? ''
-        : '<div class="focus-search-empty focus-search-empty-hint">Choose a phonics skill, a grade-band subject, or a curriculum program to open all lessons.</div>'
+        : '<div class="focus-search-empty focus-search-empty-hint">Choose a phonics skill to see the sound pattern and example words, or choose a grade-band subject/curriculum program.</div>'
       : '';
     const sections = buildFocusSearchSections(visible, { query });
     const sectionMarkup = sections.map((section) => {

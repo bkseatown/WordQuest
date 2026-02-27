@@ -1397,11 +1397,11 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   background: transparent;
   color: color-mix(in oklab, var(--text) 90%, #ffffff 10%);
   font-family: var(--font);
-  font-size: 0.86rem;
-  font-weight: 700;
-  line-height: 1.18;
+  font-size: 1.03rem;
+  font-weight: 760;
+  line-height: 1.28;
   text-align: left;
-  padding: 7px 8px;
+  padding: 10px 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1413,7 +1413,7 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
   color: color-mix(in oklab, var(--text) 90%, #ffffff 10%);
 }
 
@@ -1451,9 +1451,9 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   border-radius: 999px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 72%, transparent);
   background: color-mix(in oklab, var(--panel-bg) 82%, transparent);
-  padding: 3px 9px;
-  font-size: 0.76rem;
-  font-weight: 800;
+  padding: 5px 10px;
+  font-size: 0.86rem;
+  font-weight: 760;
   color: color-mix(in oklab, var(--text) 82%, var(--text-muted) 18%);
   text-align: left;
 }
@@ -1486,7 +1486,7 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   padding: 7px 4px 4px;
   border-top: 1px dashed color-mix(in oklab, var(--panel-border) 72%, transparent);
   color: color-mix(in oklab, var(--text) 82%, var(--text-muted) 18%);
-  font-size: 0.8rem;
+  font-size: 0.98rem;
   font-weight: 840;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1497,16 +1497,16 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   margin-top: 1px;
   padding: 6px 6px 2px;
   color: color-mix(in oklab, var(--text) 78%, var(--text-muted) 22%);
-  font-size: 0.62rem;
+  font-size: 0.84rem;
   font-weight: 820;
 }
 
 .focus-search-empty {
   grid-column: 1 / -1;
-  font-size: 0.66rem;
-  font-weight: 760;
+  font-size: 0.92rem;
+  font-weight: 720;
   color: color-mix(in oklab, var(--text) 74%, var(--text-muted) 26%);
-  padding: 3px 3px 4px;
+  padding: 6px 6px 8px;
 }
 
 .focus-search-empty b {
