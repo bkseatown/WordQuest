@@ -75,7 +75,9 @@
     panel.style.font = "12px/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
     panel.style.display = "none";
 
-    document.body.appendChild(panel);
+    var mount = document.body || document.documentElement;
+    if (!mount) return null;
+    mount.appendChild(panel);
     return panel;
   }
 
@@ -112,6 +114,7 @@
 
   function showPanel() {
     var panel = buildPanel();
+    if (!panel) return;
     panel.style.display = "block";
     renderPanel();
   }
@@ -154,7 +157,10 @@
       }
     });
 
-    if (allowDiagByQuery()) showPanel();
+    if (allowDiagByQuery()) {
+      if (document.body) showPanel();
+      else document.addEventListener("DOMContentLoaded", showPanel, { once: true });
+    }
   }
 
   function smokeChecks() {
