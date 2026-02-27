@@ -40,25 +40,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
 
-      - name: Build static artifact
+      - name: Prepare Pages artifact
         run: |
-          mkdir -p dist
-          cp -R \
-            index.html \
-            writing-studio.html \
-            writing-studio.css \
-            writing-studio.js \
-            sentence-surgery.html \
-            sentence-surgery.css \
-            sentence-surgery.js \
-            favicon.ico \
-            sw.js \
-            sw-runtime.js \
-            style \
-            js \
-            data \
-            assets \
-            dist/
+          rm -rf dist
+          mkdir dist
+          rsync -av --exclude='.git' \
+                    --exclude='.github' \
+                    --exclude='node_modules' \
+                    --exclude='dist' \
+                    --exclude='*.log' \
+                    ./ dist/
           node scripts/stamp-build-version.js dist "${GITHUB_SHA::12}-${GITHUB_RUN_NUMBER}"
 
       - uses: actions/upload-pages-artifact@v3
