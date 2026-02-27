@@ -6053,6 +6053,20 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
   margin-top: 3px;
 }
 
+.modal-read-cue {
+  width: 100%;
+  margin: 2px 0 0;
+  padding: 7px 10px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 72%, #8db0d2 28%);
+  background: color-mix(in oklab, var(--panel-bg) 88%, #5f7f9e 12%);
+  color: #f3f8ff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+}
+
 #modal-more-details {
   width: 100%;
   border: 1px solid var(--panel-border);
