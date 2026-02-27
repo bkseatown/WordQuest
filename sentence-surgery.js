@@ -131,7 +131,7 @@
     var text = value;
     if (!value) {
       classes.push("placeholder");
-      text = "because";
+      text = "your reason";
     }
     if (state.blankCompletePulse.why1) classes.push("scaffold-complete");
     return '<span id="ss-why" class="' + classes.join(" ") + '" contenteditable="true" data-slot="why" data-blank-id="why1" aria-label="Fill in reason">' +
@@ -149,7 +149,7 @@
 
     if (state.hasWhy) {
       var clauseClass = pulseClause ? "clause clause-pulse" : "clause";
-      body += '<span class="' + clauseClass + '">' + whySlotSpan() + ' <span class="ss-token ss-suffix">' + trail + "</span></span><span class=\"ss-token ss-period\">.</span>";
+      body += '<span class="' + clauseClass + '"><span class="ss-token ss-cause-word">because </span>' + whySlotSpan() + ' <span class="ss-token ss-suffix">' + trail + "</span></span><span class=\"ss-token ss-period\">.</span>";
     } else {
       body += '<span class="ss-token ss-suffix">' + trail + ".</span>";
     }
@@ -359,7 +359,7 @@
     if (!slotEl) return;
     var next = sanitizeText(slotEl.textContent);
     if (!next) {
-      slotEl.textContent = "because";
+      slotEl.textContent = "your reason";
       slotEl.classList.add("placeholder");
       state.blankValues.why1 = "";
     }
@@ -573,8 +573,8 @@
     if (!blankId) return;
 
     if (blankId === "why1" && blankEl.classList.contains("placeholder")) {
-      var raw = sanitizeText(blankEl.textContent).replace(/^because\s*/i, "");
-      blankEl.textContent = raw;
+      var raw = sanitizeText(blankEl.textContent);
+      blankEl.textContent = raw === "your reason" ? "" : raw;
       blankEl.classList.remove("placeholder");
       setCaretToEnd(blankEl);
     }

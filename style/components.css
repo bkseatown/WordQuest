@@ -5093,9 +5093,9 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
   background:
     linear-gradient(
       145deg,
-      color-mix(in oklab, var(--panel-bg) 72%, #ffffff 28%) 0%,
-      color-mix(in oklab, var(--panel-bg) 84%, #d7dee8 16%) 58%,
-      color-mix(in oklab, var(--panel-bg) 80%, #cfd8e4 20%) 100%
+      color-mix(in oklab, var(--panel-bg) 34%, #3b4f65 66%) 0%,
+      color-mix(in oklab, var(--panel-bg) 28%, #354a60 72%) 58%,
+      color-mix(in oklab, var(--panel-bg) 30%, #31465b 70%) 100%
     );
   box-shadow:
     inset 0 0 0 1px color-mix(in oklab, var(--panel-border) 42%, transparent),
@@ -5705,7 +5705,7 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
   font-weight: 760;
   text-align: center;
   line-height: 1.5;
-  color: var(--text);
+  color: #f3f8ff;
 }
 
 .modal-syllables-wrap {
@@ -6109,7 +6109,7 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
   color: var(--text-muted);
   text-align: center;
 }
-#modal-def       { font-size: 0.95rem; text-align: center; line-height: 1.55; max-width: 340px; }
+#modal-def       { font-size: 0.95rem; text-align: center; line-height: 1.55; max-width: 340px; color: #ecf5ff; }
 #modal-sentence  { font-size: 0.87rem; text-align: center; color: var(--text-muted); font-style: italic; max-width: 340px; line-height: 1.5; }
 
 #modal-fun-wrap {
@@ -6126,15 +6126,15 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
   padding:       6px 12px;
   border:        1.5px solid var(--panel-border);
   border-radius: 99px;
-  background:    transparent;
+  background:    color-mix(in oklab, var(--panel-bg) 72%, #2f4256 28%);
   font-family:   var(--font);
   font-size:     0.78rem;
   font-weight:   600;
   cursor:        pointer;
-  color:         var(--text-muted);
+  color:         #e8f2ff;
   transition:    background 0.15s, border-color 0.15s, color 0.15s;
 }
-.audio-btn:hover { background: var(--key-hover); border-color: var(--brand); color: var(--text); }
+.audio-btn:hover { background: color-mix(in oklab, var(--panel-bg) 56%, #405873 44%); border-color: var(--brand); color: #ffffff; }
 
 #play-again-btn {
   width:         100%;
@@ -6189,6 +6189,8 @@ html[data-reveal-focus="on"] .modal-meaning-highlight {
 
 html[data-reveal-focus="on"] #modal-meaning-highlight-line {
   font-size: 1.03rem;
+  color: #f7fbff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.16);
 }
 
 html[data-reveal-focus="on"] #modal-more-details,

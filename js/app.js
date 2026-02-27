@@ -885,6 +885,19 @@
   }
 
   function createHomeDemoLaunchButton() {
+    let allowDemoChip = false;
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      allowDemoChip = params.get('democta') === '1';
+    } catch {
+      allowDemoChip = false;
+    }
+    if (!allowDemoChip) {
+      const stale = document.getElementById('wq-demo-launch-btn');
+      if (stale) stale.remove();
+      demoLaunchBtnEl = null;
+      return;
+    }
     if (DEMO_MODE || document.getElementById('wq-demo-launch-btn')) return;
     const button = document.createElement('button');
     button.id = 'wq-demo-launch-btn';
