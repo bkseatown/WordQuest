@@ -259,7 +259,7 @@ const WQAudio = (() => {
     const definition = _normalizeSpeechText(entry?.definition);
     const funText = includeFun ? _normalizeSpeechText(entry?.fun_add_on) : '';
     const readDefinition = _normalizeSpeechText(entry?.text_to_read_definition)
-      || _ensureTerminalPunctuation(entry?.word && definition ? `${entry.word} means ${definition}` : definition);
+      || _ensureTerminalPunctuation(entry?.word && definition ? `${entry.word}. ${definition}` : definition);
     const readFun = includeFun
       ? _normalizeSpeechText(entry?.text_to_read_fun) || funText
       : '';
@@ -305,7 +305,7 @@ const WQAudio = (() => {
 
   // ─── Public API ─────────────────────────────────
   function playWord(entry)     { return _play(entry?.audio?.word,     entry?.word,        0.82); }
-  function playDef(entry)      { return _play(entry?.audio?.def,      entry ? `${entry.word} means: ${entry.definition}` : '', 0.9); }
+  function playDef(entry)      { return _play(entry?.audio?.def,      entry ? `${entry.word}. ${entry.definition}` : '', 0.9); }
   function playSentence(entry) { return _play(entry?.audio?.sentence, entry?.sentence,    0.9);  }
   function playFun(entry)      { return _play(entry?.audio?.fun,      entry?.fun_add_on,  0.9);  }
   function stop()              { _stop(); }
