@@ -228,6 +228,7 @@
   const SW_RUNTIME_URL = `./sw-runtime.js?v=${encodeURIComponent(SW_RUNTIME_VERSION)}`;
 
   async function registerOfflineRuntime() {
+    if (DEMO_MODE) return;
     if (!('serviceWorker' in navigator)) return;
     if (!window.isSecureContext && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
       return;
@@ -1901,6 +1902,7 @@
   }
 
   async function runAutoCacheRepairForBuild() {
+    if (DEMO_MODE) return;
     const CACHE_REPAIR_BUILD_KEY = 'wq_v2_cache_repair_build_v1';
     const buildLabel = resolveBuildLabel();
     if (!buildLabel) return;
@@ -1927,6 +1929,7 @@
   }
 
   async function runRemoteBuildConsistencyCheck() {
+    if (DEMO_MODE) return;
     const BUILD_REMOTE_CHECK_KEY = 'wq_v2_build_remote_check_v1';
     const currentBuild = resolveBuildLabel();
     if (!currentBuild) return;
@@ -1972,6 +1975,7 @@
   }
 
   function installBuildConsistencyHeartbeat() {
+    if (DEMO_MODE) return;
     const HEARTBEAT_MS = 5 * 60 * 1000;
     setInterval(() => { void runRemoteBuildConsistencyCheck(); }, HEARTBEAT_MS);
     document.addEventListener('visibilitychange', () => {
