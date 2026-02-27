@@ -59,6 +59,22 @@
     return 2;
   }
 
+  function buildInstructionalLens(targetSkill) {
+    var tier = tierLevel === 3 ? 'tier3' : (tierLevel === 1 ? 'tier1' : 'tier2');
+    var params;
+    try { params = new URLSearchParams(window.location.search || ''); } catch (_e) { params = null; }
+    var languageProfile = params ? String(params.get('languageProfile') || 'general') : 'general';
+    var gradeBand = params ? String(params.get('gradeBand') || '6-8') : '6-8';
+    var skill = String(targetSkill || 'reasoning');
+    return {
+      studentTier: tier,
+      targetSkill: skill,
+      focus: [skill],
+      languageProfile: languageProfile,
+      gradeBand: gradeBand
+    };
+  }
+
   function getSlotEl(type) {
     return document.querySelector('.pb-slot[data-type="' + type + '"]');
   }
@@ -231,6 +247,7 @@
         ? window.CSAIService.generatePedagogyFeedback(state.values[key], (state.analysis[key] || {}).suggested_focus, {
           analysis: state.analysis[key],
           tierLevel: tierLevel,
+          instructionalLens: buildInstructionalLens((state.analysis[key] || {}).suggested_focus),
           coachEndpoint: window.PB_COACH_ENDPOINT || window.WS_COACH_ENDPOINT || '',
           channel: 'paragraph-builder-pedagogy-' + key
         })

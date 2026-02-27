@@ -90,6 +90,21 @@
     return "Reasoning";
   }
 
+  function buildInstructionalLens(targetSkill) {
+    var tier = tierLevel === 3 ? "tier3" : (tierLevel === 1 ? "tier1" : "tier2");
+    var params;
+    try { params = new URLSearchParams(window.location.search || ""); } catch (_e) { params = null; }
+    var languageProfile = params ? String(params.get("languageProfile") || "general") : "general";
+    var gradeBand = params ? String(params.get("gradeBand") || "6-8") : "6-8";
+    return {
+      studentTier: tier,
+      targetSkill: String(targetSkill || "reasoning"),
+      focus: [String(targetSkill || "reasoning")],
+      languageProfile: languageProfile,
+      gradeBand: gradeBand
+    };
+  }
+
   function computeSkillLevelBadge(ai, pedagogyFocus) {
     var p = window.CSProgressionEngine;
     if (!p || typeof p.computeSkillLevel !== "function") return "Level 1";
@@ -211,6 +226,7 @@
       ? aiService.generatePedagogyFeedback(sentenceText, ai.suggested_focus, {
         analysis: ai,
         tierLevel: tierLevel,
+        instructionalLens: buildInstructionalLens(ai.suggested_focus),
         coachEndpoint: COACH_ENDPOINT,
         channel: "sentence-surgery-pedagogy"
       })

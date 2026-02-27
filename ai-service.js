@@ -152,16 +152,57 @@
     return String(text || "").trim().split(/\s+/).filter(Boolean).slice(0, limit).join(" ");
   }
 
-  function fallbackPedagogy(sentence, focusArea, tierLevel, analysis) {
+  function normalizeInstructionalLens(options, focusArea, tierLevel, analysis) {
+    var opts = options || {};
     var engine = window.CSPedagogyEngine;
-    var tier = clampTierLevel(tierLevel);
-    var clean = normalizeSentence(sentence);
-    var focus = validPrimaryFocus(focusArea) || (analysis && validPrimaryFocus(analysis.suggested_focus)) || "reasoning";
-    if (engine && typeof engine.heuristicPedagogy === "function") {
-      return engine.heuristicPedagogy(clean, tier, analysis || heuristic(clean), focus);
+    var lensInput = opts.instructionalLens && typeof opts.instructionalLens === "object"
+      ? opts.instructionalLens
+      : {
+        studentTier: tierLevel,
+        targetSkill: focusArea || (analysis && analysis.suggested_focus) || "reasoning",
+        focus: Array.isArray(opts.focus) ? opts.focus : (focusArea ? [focusArea] : []),
+        languageProfile: opts.languageProfile || "general",
+        gradeBand: opts.gradeBand || "6-8"
+      };
+    if (engine && typeof engine.buildInstructionalLens === "function") {
+      return engine.buildInstructionalLens(lensInput, tierLevel, focusArea || (analysis && analysis.suggested_focus));
     }
+    return lensInput;
+  }
+
+  function fallbackPedagogy(sentence, focusArea, tierLevel, analysis, lens) {
+    var engine = window.CSPedagogyEngine;
+    var instructionalLens = normalizeInstructionalLens({ instructionalLens: lens }, focusArea, tierLevel, analysis);
+    var clean = normalizeSentence(sentence);
+    if (engine && typeof engine.heuristicStructuredFeedback === "function" && typeof engine.toLegacyPedagogy === "function") {
+      var structured = engine.heuristicStructuredFeedback(clean, instructionalLens, analysis || heuristic(clean));
+      var legacy = engine.toLegacyPedagogy(structured, instructionalLens, analysis || heuristic(clean));
+      return {
+        instructional_lens: instructionalLens,
+        tier_policy: engine.getTierPolicy ? engine.getTierPolicy(instructionalLens) : { tierLevel: clampTierLevel(tierLevel) },
+        structured_feedback: structured,
+        skills_detected: legacy.skills_detected,
+        primary_focus: legacy.primary_focus,
+        coach_prompt: legacy.coach_prompt,
+        suggested_stem: legacy.suggested_stem,
+        extension_option: legacy.extension_option
+      };
+    }
+    var tier = clampTierLevel(tierLevel);
+    var focus = validPrimaryFocus(focusArea) || (analysis && validPrimaryFocus(analysis.suggested_focus)) || "reasoning";
     var coach = fallbackCoach(focus);
     return {
+      instructional_lens: instructionalLens,
+      tier_policy: { tierLevel: tier },
+      structured_feedback: {
+        clarity_score: 1,
+        complexity_score: 1,
+        cohesion_score: 1,
+        reasoning_score: focus === "reasoning" ? 1 : 2,
+        specific_next_step: compactWords(coach, 18),
+        model_revision: tier === 3 ? "Because ___, ___." : "Add one precise revision.",
+        teacher_note: "Use one guided revision cycle aligned to target skill."
+      },
       skills_detected: {
         reasoning: !!(analysis && analysis.has_reasoning),
         detail_score: Number((analysis && analysis.detail_score) || 1),
@@ -176,10 +217,58 @@
     };
   }
 
-  function parsePedagogyShape(payload, sentence, focusArea, tierLevel, analysis) {
+  function parseStructuredFeedback(payload) {
     if (!payload || typeof payload !== "object") throw new Error("invalid_json");
-    if (!payload.skills_detected || typeof payload.skills_detected !== "object") throw new Error("schema_mismatch");
+    var shaped = {
+      clarity_score: Math.max(0, Math.min(4, Number(payload.clarity_score))),
+      complexity_score: Math.max(0, Math.min(4, Number(payload.complexity_score))),
+      cohesion_score: Math.max(0, Math.min(4, Number(payload.cohesion_score))),
+      reasoning_score: Math.max(0, Math.min(4, Number(payload.reasoning_score))),
+      specific_next_step: compactWords(String(payload.specific_next_step || ""), 30),
+      model_revision: compactWords(String(payload.model_revision || ""), 24),
+      teacher_note: compactWords(String(payload.teacher_note || ""), 30)
+    };
+    if (!shaped.specific_next_step || !shaped.model_revision || !shaped.teacher_note) {
+      throw new Error("schema_mismatch");
+    }
+    return shaped;
+  }
 
+  function parsePedagogyShape(payload, sentence, focusArea, tierLevel, analysis, lens) {
+    if (!payload || typeof payload !== "object") throw new Error("invalid_json");
+    var engine = window.CSPedagogyEngine;
+    var instructionalLens = normalizeInstructionalLens({ instructionalLens: lens }, focusArea, tierLevel, analysis);
+    var policy = engine && typeof engine.getTierPolicy === "function"
+      ? engine.getTierPolicy(instructionalLens)
+      : { tierLevel: clampTierLevel(tierLevel), stemAllowed: clampTierLevel(tierLevel) === 3, challengeAllowed: clampTierLevel(tierLevel) === 1 };
+
+    // Preferred new contract
+    if (payload.clarity_score !== undefined && payload.complexity_score !== undefined && payload.cohesion_score !== undefined && payload.reasoning_score !== undefined) {
+      var structured = parseStructuredFeedback(payload);
+      var legacy = engine && typeof engine.toLegacyPedagogy === "function"
+        ? engine.toLegacyPedagogy(structured, instructionalLens, analysis)
+        : null;
+      var fallbackPrimary = validPrimaryFocus(focusArea) || "reasoning";
+      return {
+        instructional_lens: instructionalLens,
+        tier_policy: policy,
+        structured_feedback: structured,
+        skills_detected: legacy ? legacy.skills_detected : {
+          reasoning: structured.reasoning_score >= 2,
+          detail_score: Math.round((structured.clarity_score / 4) * 5),
+          verb_strength: structured.complexity_score >= 3 ? "strong" : "adequate",
+          cohesion_score: Math.round((structured.cohesion_score / 4) * 5),
+          sentence_control_score: Math.round((structured.clarity_score / 4) * 5)
+        },
+        primary_focus: legacy ? legacy.primary_focus : fallbackPrimary,
+        coach_prompt: legacy ? legacy.coach_prompt : compactWords(structured.specific_next_step, 30),
+        suggested_stem: policy.stemAllowed ? (legacy ? legacy.suggested_stem : structured.model_revision) : null,
+        extension_option: policy.challengeAllowed ? (legacy ? legacy.extension_option : structured.teacher_note) : null
+      };
+    }
+
+    // Backward-compatible legacy contract from previous endpoint behavior.
+    if (!payload.skills_detected || typeof payload.skills_detected !== "object") throw new Error("schema_mismatch");
     var primary = validPrimaryFocus(payload.primary_focus);
     if (!primary) throw new Error("schema_mismatch");
 
@@ -190,7 +279,7 @@
       verbStrength = "adequate";
     }
 
-    var shaped = {
+    var legacyShaped = {
       skills_detected: {
         reasoning: !!skills.reasoning,
         detail_score: Math.max(0, Math.min(5, Number(skills.detail_score || 0))),
@@ -204,10 +293,30 @@
       extension_option: payload.extension_option == null ? null : String(payload.extension_option)
     };
 
-    if (!shaped.coach_prompt) throw new Error("schema_mismatch");
-    if (tier !== 3) shaped.suggested_stem = null;
-    if (tier !== 1) shaped.extension_option = null;
-    return shaped;
+    if (!legacyShaped.coach_prompt) throw new Error("schema_mismatch");
+    if (tier !== 3) legacyShaped.suggested_stem = null;
+    if (tier !== 1) legacyShaped.extension_option = null;
+    var structuredFromLegacy = engine && typeof engine.heuristicStructuredFeedback === "function"
+      ? engine.heuristicStructuredFeedback(sentence, instructionalLens, analysis)
+      : {
+        clarity_score: Math.max(0, Math.min(4, Math.round((legacyShaped.skills_detected.sentence_control_score || 0) / 5 * 4))),
+        complexity_score: Math.max(0, Math.min(4, legacyShaped.skills_detected.verb_strength === "strong" ? 3 : 2)),
+        cohesion_score: Math.max(0, Math.min(4, Math.round((legacyShaped.skills_detected.cohesion_score || 0) / 5 * 4))),
+        reasoning_score: legacyShaped.skills_detected.reasoning ? 3 : 1,
+        specific_next_step: legacyShaped.coach_prompt,
+        model_revision: legacyShaped.suggested_stem || "Add one targeted revision.",
+        teacher_note: legacyShaped.extension_option || "Continue targeted practice."
+      };
+    return {
+      instructional_lens: instructionalLens,
+      tier_policy: policy,
+      structured_feedback: structuredFromLegacy,
+      skills_detected: legacyShaped.skills_detected,
+      primary_focus: legacyShaped.primary_focus,
+      coach_prompt: legacyShaped.coach_prompt,
+      suggested_stem: legacyShaped.suggested_stem,
+      extension_option: legacyShaped.extension_option
+    };
   }
 
   function fallbackMiniLesson(input) {
@@ -436,35 +545,36 @@
     var clean = normalizeSentence(sentence);
     var focus = String(focusArea || "reasoning").toLowerCase();
     var tierLevel = clampTierLevel(opts.tierLevel);
-    if (!clean) return fallbackPedagogy(clean, focus, tierLevel, heuristic(clean));
+    var baseAnalysis = opts.analysis && typeof opts.analysis === "object"
+      ? opts.analysis
+      : heuristic(clean);
+    var lens = normalizeInstructionalLens(opts, focus, tierLevel, baseAnalysis);
+    if (!clean) return fallbackPedagogy(clean, focus, tierLevel, baseAnalysis, lens);
 
-    var hash = await hashSentence(clean + "::" + focus + "::t" + String(tierLevel));
+    var hash = await hashSentence(clean + "::" + focus + "::t" + String(tierLevel) + "::lens::" + JSON.stringify(lens));
     var cache = window.CSCacheEngine && window.CSCacheEngine.get ? window.CSCacheEngine.get(hash) : null;
     if (cache && cache.pedagogy) {
       usageBump("cache_hits");
       return cache.pedagogy;
     }
 
-    var baseAnalysis = opts.analysis && typeof opts.analysis === "object"
-      ? opts.analysis
-      : heuristic(clean);
     var coachEndpoint = opts.pedagogyEndpoint || opts.coachEndpoint || window.WS_COACH_ENDPOINT || window.PB_COACH_ENDPOINT || "";
     if (shouldSkipAI(coachEndpoint)) {
       usageBump("fallback_count");
-      return fallbackPedagogy(clean, focus, tierLevel, baseAnalysis);
+      return fallbackPedagogy(clean, focus, tierLevel, baseAnalysis, lens);
     }
 
     await runDebounce(hash);
 
     if (!claimRateLimitSlot()) {
       usageBump("rate_limited");
-      return fallbackPedagogy(clean, focus, tierLevel, baseAnalysis);
+      return fallbackPedagogy(clean, focus, tierLevel, baseAnalysis, lens);
     }
 
     var channel = String(opts.channel || "global-pedagogy");
     var engine = window.CSPedagogyEngine;
     var systemPrompt = engine && typeof engine.buildPedagogyPrompt === "function"
-      ? engine.buildPedagogyPrompt(clean, tierLevel)
+      ? engine.buildPedagogyPrompt(clean, lens)
       : "";
 
     try {
@@ -472,10 +582,11 @@
         sentence: clean,
         focus: focus,
         tier_level: tierLevel,
+        instructional_lens: lens,
         response_format: "json",
         system_prompt: systemPrompt
       }, channel);
-      var shaped = parsePedagogyShape(json, clean, focus, tierLevel, baseAnalysis);
+      var shaped = parsePedagogyShape(json, clean, focus, tierLevel, baseAnalysis, lens);
       if (window.CSCacheEngine && window.CSCacheEngine.set) {
         window.CSCacheEngine.set(hash, { pedagogy: shaped, coach: shaped.coach_prompt });
       }
@@ -485,7 +596,7 @@
     } catch (err) {
       usageBump("fallback_count");
       logDebug("generatePedagogyFeedback fallback", err && err.message ? err.message : err);
-      return fallbackPedagogy(clean, focus, tierLevel, baseAnalysis);
+      return fallbackPedagogy(clean, focus, tierLevel, baseAnalysis, lens);
     }
   }
 
