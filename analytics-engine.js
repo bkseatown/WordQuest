@@ -176,6 +176,34 @@
     return history;
   }
 
+  function appendReadingAttempt(studentId, attemptMetrics, timestamp) {
+    if (isDemoMode()) return readProgressHistory();
+    if (!studentId) return readProgressHistory();
+    if (window.CS_CONFIG && window.CS_CONFIG.enableAnalytics === false) return readProgressHistory();
+    var metrics = attemptMetrics && typeof attemptMetrics === "object" ? attemptMetrics : null;
+    if (!metrics) return readProgressHistory();
+
+    var history = readProgressHistory();
+    var key = String(studentId).trim();
+    if (!key) return history;
+    var rows = Array.isArray(history[key]) ? history[key] : [];
+    var next = {
+      timestamp: Math.max(0, Number(timestamp || Date.now())),
+      reading: {
+        wpm: Math.max(0, Number(metrics.wpm || 0)),
+        accuracy: Math.max(0, Math.min(100, Number(metrics.accuracy || 0))),
+        punctScore: Math.max(0, Math.min(100, Number(metrics.punctScore || 0))),
+        pacingVar: Math.max(0, Number(metrics.pacingVar || 0)),
+        hardWordsCount: Math.max(0, Math.floor(Number(metrics.hardWordsCount || 0)))
+      }
+    };
+    rows.push(next);
+    if (rows.length > 30) rows = rows.slice(rows.length - 30);
+    history[key] = rows;
+    writeProgressHistory(history);
+    return history;
+  }
+
   function updateSchoolAnalytics(classId, metrics) {
     if (isDemoMode()) return readSchoolAnalytics();
     if (!metrics || typeof metrics !== "object") return readSchoolAnalytics();
@@ -210,6 +238,7 @@
     PROGRESS_HISTORY_KEY: PROGRESS_HISTORY_KEY,
     readProgressHistory: readProgressHistory,
     writeProgressHistory: writeProgressHistory,
-    appendStudentProgress: appendStudentProgress
+    appendStudentProgress: appendStudentProgress,
+    appendReadingAttempt: appendReadingAttempt
   };
 })();

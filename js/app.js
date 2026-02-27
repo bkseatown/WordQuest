@@ -4280,7 +4280,7 @@
     if (!headerRight) return;
 
     const iconIds = ['theme-dock-toggle-btn', 'music-dock-toggle-btn', 'teacher-panel-btn', 'case-toggle-btn', 'keyboard-layout-toggle', 'mission-lab-nav-btn', 'settings-btn'];
-    const quickIds = ['play-style-toggle', 'phonics-clue-open-btn', 'starter-word-open-btn', 'writing-studio-btn', 'sentence-surgery-btn', 'new-game-btn'];
+    const quickIds = ['play-style-toggle', 'phonics-clue-open-btn', 'starter-word-open-btn', 'writing-studio-btn', 'sentence-surgery-btn', 'reading-lab-btn', 'new-game-btn'];
 
     let iconGroup = headerRight.querySelector('.header-icon-controls');
     if (!iconGroup) {
@@ -4344,6 +4344,8 @@
     if (WRITING_STUDIO_ENABLED) setHoverNoteForElement(writingBtn, 'Open Writing Studio.');
     const surgeryBtn = _el('sentence-surgery-btn');
     if (surgeryBtn) setHoverNoteForElement(surgeryBtn, 'Open Sentence Surgery.');
+    const readingBtn = _el('reading-lab-btn');
+    if (readingBtn) setHoverNoteForElement(readingBtn, 'Open Reading Lab.');
     syncWritingStudioAvailability();
   }
 
@@ -5772,6 +5774,25 @@
     window.location.href = url.toString();
   }
 
+  function openReadingLabPage() {
+    const activeTheme = normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
+    const state = WQGame.getState?.() || {};
+    const focusSelect = _el('setting-focus');
+    const focusValue = String(focusSelect?.value || prefs.focus || DEFAULT_PREFS.focus || 'all').trim();
+    const focusLabel = String(focusSelect?.selectedOptions?.[0]?.textContent || focusValue || 'Reading practice').trim();
+    const gradeValue = String(_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade || 'all').trim();
+    const targetWord = String(state?.word || '').trim().toUpperCase();
+    const clueSentence = String(state?.entry?.sentence || '').trim();
+    const url = new URL('reading-lab.html', window.location.href);
+    url.searchParams.set('theme', activeTheme);
+    url.searchParams.set('wq_focus', focusValue);
+    url.searchParams.set('wq_focus_label', focusLabel);
+    url.searchParams.set('wq_grade', gradeValue);
+    if (targetWord) url.searchParams.set('wq_word', targetWord);
+    if (clueSentence) url.searchParams.set('wq_clue', clueSentence);
+    window.location.href = url.toString();
+  }
+
   function openTeacherDashboardPage() {
     const url = new URL('teacher-dashboard.html', window.location.href);
     try {
@@ -5789,6 +5810,10 @@
     syncWritingStudioAvailability();
   }
   _el('sentence-surgery-btn')?.addEventListener('click', openSentenceSurgeryPage);
+  _el('reading-lab-btn')?.addEventListener('click', openReadingLabPage);
+  _el('teacher-open-writing-studio-btn')?.addEventListener('click', openWritingStudioPage);
+  _el('teacher-open-sentence-surgery-btn')?.addEventListener('click', openSentenceSurgeryPage);
+  _el('teacher-open-reading-lab-btn')?.addEventListener('click', openReadingLabPage);
   _el('teacher-dashboard-btn')?.addEventListener('click', openTeacherDashboardPage);
   _el('home-logo-btn')?.addEventListener('click', () => {
     setPageMode('wordquest', { force: true });

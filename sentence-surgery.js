@@ -78,6 +78,16 @@
     timerId: 0
   };
 
+  function seedSentenceFromQuery() {
+    try {
+      var params = new URLSearchParams(window.location.search || "");
+      var seed = sanitize(params.get("seed") || "");
+      return seed;
+    } catch (_e) {
+      return "";
+    }
+  }
+
   function sanitize(text) {
     return String(text || "").replace(/[\n\r]+/g, " ").replace(/\s+/g, " ").trim();
   }
@@ -419,6 +429,29 @@
     };
   }
 
+  function applySeedSentence(seedText) {
+    var clean = sanitize(seedText);
+    if (!clean) return;
+    var words = clean.replace(/[.!?]+$/g, "").split(/\s+/).filter(Boolean);
+    if (words.length < 3) return;
+    engine.state.model.subject = words[0];
+    engine.state.model.noun = words[1];
+    engine.state.model.verb = words[2];
+    engine.state.model.trail = words.slice(3).join(" ") || "in class";
+    engine.state.slots.reason.visible = false;
+    engine.state.slots.reason.value = "";
+    engine.state.slots.adjective.visible = false;
+    engine.state.slots.adjective.value = "";
+    engine.state.slots.clause.visible = false;
+    engine.state.slots.clause.value = "";
+    engine.state.slots.verb.visible = false;
+    engine.state.slots.verb.value = "";
+    engine.state.step = 0;
+    engine.state.appliedActions = new Set();
+    engine.state.activeSlotId = null;
+    setCoachText("Seed loaded from Reading Lab. Add one reasoning move.");
+  }
+
   function fillSlot(slotId, value) {
     engine.setSlotValue(slotId, value);
     render();
@@ -640,5 +673,7 @@
     updateTimedStatus("Timed mode idle.");
   }
 
+  var seededSentence = seedSentenceFromQuery();
+  if (seededSentence) applySeedSentence(seededSentence);
   render();
 })();
