@@ -211,6 +211,44 @@ body.teacher-mode .ss-breakdown { display: grid; gap: 4px; }
   flex-wrap: wrap;
 }
 
+.ss-timed {
+  margin-top: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--ss-border);
+  background: rgba(12, 24, 37, 0.52);
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.ss-timed-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.ss-timed-controls label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ss-muted);
+}
+
+.ss-timed-select {
+  background: rgba(16, 28, 40, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #edf5ff;
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-weight: 700;
+}
+
+.ss-timed-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: #dcecff;
+}
+
 .ss-verb-menu {
   position: absolute;
   top: calc(100% + 6px);

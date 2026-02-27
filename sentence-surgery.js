@@ -25,6 +25,10 @@
   var compareEl = document.getElementById("ssCompare");
   var compareBeforeEl = document.getElementById("ssCompareBefore");
   var compareAfterEl = document.getElementById("ssCompareAfter");
+  var timedPresetEl = document.getElementById("ssTimedPreset");
+  var timedStartBtn = document.getElementById("ssTimedStartBtn");
+  var timedStopBtn = document.getElementById("ssTimedStopBtn");
+  var timedStatusEl = document.getElementById("ssTimedStatus");
 
   if (!sentenceEl || !meterBarEl || !levelEl || !window.SentenceEngine || !(window.CSAIService || window.SSAIAnalysis) || !window.SSTeacherLens) return;
 
@@ -59,6 +63,17 @@
   var COACH_ENDPOINT = "";
   var demoLocked = false;
   var tierLevel = resolveTierLevel();
+  var latestAI = null;
+  var latestPedagogy = null;
+  var timedMode = {
+    active: false,
+    preset: "l1",
+    durationSec: 90,
+    endAt: 0,
+    rounds: 0,
+    score: 0,
+    timerId: 0
+  };
 
   function sanitize(text) {
     return String(text || "").replace(/[\n\r]+/g, " ").replace(/\s+/g, " ").trim();
@@ -129,6 +144,81 @@
     }
     coachEl.textContent = line;
     coachEl.classList.remove("hidden");
+  }
+
+  function timedPresetConfig(code) {
+    var preset = String(code || "l1").toLowerCase();
+    if (preset === "l3") return { code: "l3", label: "Level 3", durationSec: 60 };
+    if (preset === "l2") return { code: "l2", label: "Level 2", durationSec: 75 };
+    return { code: "l1", label: "Level 1", durationSec: 90 };
+  }
+
+  function secondsLeft() {
+    if (!timedMode.active) return 0;
+    return Math.max(0, Math.ceil((timedMode.endAt - Date.now()) / 1000));
+  }
+
+  function updateTimedStatus(extraText) {
+    if (!timedStatusEl) return;
+    if (!timedMode.active) {
+      timedStatusEl.textContent = extraText || "Timed mode idle.";
+      return;
+    }
+    var left = secondsLeft();
+    var line = "Timed " + String(timedMode.preset).toUpperCase() + " • Time " + left + "s • Score " + timedMode.score + " • Repairs " + timedMode.rounds;
+    if (extraText) line += " • " + extraText;
+    timedStatusEl.textContent = line;
+  }
+
+  function stopTimedMode(reason) {
+    timedMode.active = false;
+    timedMode.endAt = 0;
+    if (timedMode.timerId) {
+      window.clearInterval(timedMode.timerId);
+      timedMode.timerId = 0;
+    }
+    var summary = "Timed mode complete. Final score " + timedMode.score + " across " + timedMode.rounds + " repairs.";
+    updateTimedStatus(reason ? reason + " " + summary : summary);
+  }
+
+  function startTimedMode() {
+    var presetCfg = timedPresetConfig(timedPresetEl ? timedPresetEl.value : timedMode.preset);
+    timedMode.active = true;
+    timedMode.preset = presetCfg.code;
+    timedMode.durationSec = presetCfg.durationSec;
+    timedMode.endAt = Date.now() + (presetCfg.durationSec * 1000);
+    timedMode.rounds = 0;
+    timedMode.score = 0;
+    updateTimedStatus("Go.");
+    if (timedMode.timerId) window.clearInterval(timedMode.timerId);
+    timedMode.timerId = window.setInterval(function () {
+      if (!timedMode.active) return;
+      var left = secondsLeft();
+      if (left <= 0) {
+        stopTimedMode("Time.");
+        return;
+      }
+      updateTimedStatus();
+    }, 250);
+  }
+
+  function scoreTimedRound() {
+    var ai = latestAI || {};
+    var pedagogy = latestPedagogy || {};
+    var structured = pedagogy.structured_feedback || {};
+    var clarityBase = Number(structured.clarity_score || 0);
+    if (!clarityBase && /[.!?]$/.test(sanitize(engine.getSentenceText()))) clarityBase = 2;
+    var clarityGain = Math.max(0, Math.min(4, clarityBase));
+
+    var verbStrong = String(ai.verb_strength || "").toLowerCase() === "strong";
+    var hasReasoning = !!ai.has_reasoning;
+    var precisionBonus = (verbStrong ? 4 : 0) + (hasReasoning ? 4 : 0);
+    var timeBonus = Math.max(0, Math.min(12, Math.floor(secondsLeft() / 5)));
+    var roundScore = (clarityGain * 8) + precisionBonus + timeBonus;
+
+    timedMode.rounds += 1;
+    timedMode.score += roundScore;
+    updateTimedStatus("+" + roundScore + " round points");
   }
 
   function focusSlot(slotId, replaceAll) {
@@ -209,6 +299,7 @@
     if (token !== activeAnalysisToken) return;
     var lens = window.SSTeacherLens.derive(ai, sentenceText);
     var level = lens.level;
+    latestAI = ai;
 
     if (wordCountEl) wordCountEl.textContent = "Words: " + ai.word_count;
     if (typeEl) typeEl.textContent = "Type: " + ai.sentence_type;
@@ -235,6 +326,7 @@
     if (pedagogy && skillTagEl) {
       skillTagEl.textContent = "Skill: " + skillLabel(pedagogy.primary_focus) + " • " + computeSkillLevelBadge(ai, pedagogy.primary_focus);
     }
+    if (pedagogy) latestPedagogy = pedagogy;
     if (pedagogy && pedagogy.coach_prompt) {
       var coachText = pedagogy.coach_prompt;
       if (tierLevel === 3 && pedagogy.suggested_stem) {
@@ -322,6 +414,14 @@
       : window.SSAIAnalysis.analyzeSentenceHeuristic(snap.sentence));
     showCompare(before, snap.sentence);
     updateDashboard();
+    if (timedMode.active) {
+      scoreTimedRound();
+      if (secondsLeft() <= 0) {
+        stopTimedMode("Time.");
+      } else {
+        resetSentence();
+      }
+    }
   }
 
   function resetSentence() {
@@ -467,6 +567,19 @@
     });
   });
 
+  if (timedStartBtn) {
+    timedStartBtn.addEventListener("click", function () {
+      startTimedMode();
+    });
+  }
+
+  if (timedStopBtn) {
+    timedStopBtn.addEventListener("click", function () {
+      if (!timedMode.active) return;
+      stopTimedMode("Stopped.");
+    });
+  }
+
   var api = {
     setCoachText: setCoachText,
     applyAction: function (action) { engine.applyAction(action); render(); },
@@ -479,8 +592,14 @@
   };
 
   if (window.SSDemoMode && window.SSDemoMode.isDemoMode()) {
+    if (timedStartBtn) timedStartBtn.disabled = true;
+    if (timedStopBtn) timedStopBtn.disabled = true;
+    if (timedPresetEl) timedPresetEl.disabled = true;
+    updateTimedStatus("Timed mode unavailable in demo.");
     demo = window.SSDemoMode.create(api);
     demo.start();
+  } else {
+    updateTimedStatus("Timed mode idle.");
   }
 
   render();

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./sentence-surgery.css?v=20260227f">
+  <link rel="stylesheet" href="./sentence-surgery.css?v=20260227g">
 </head>
 <body class="cs-page-surgery writing-studio">
   <main class="ss-container" aria-label="Sentence Surgery practice">
@@ -62,6 +62,20 @@
         <button type="button" id="ssTryAnotherBtn" class="ss-action-btn">Try another</button>
         <button type="button" id="ssChaosToggleBtn" class="ss-action-btn">Fix the Chaos</button>
       </div>
+
+      <section class="ss-timed" aria-label="Timed mode">
+        <div class="ss-timed-controls">
+          <label for="ssTimedPreset">Timed Mode</label>
+          <select id="ssTimedPreset" class="ss-timed-select">
+            <option value="l1">Level 1 (90s)</option>
+            <option value="l2">Level 2 (75s)</option>
+            <option value="l3">Level 3 (60s)</option>
+          </select>
+          <button type="button" id="ssTimedStartBtn" class="ss-action-btn">Start Timed</button>
+          <button type="button" id="ssTimedStopBtn" class="ss-action-btn">Stop</button>
+        </div>
+        <div id="ssTimedStatus" class="ss-timed-status">Timed mode idle.</div>
+      </section>
     </section>
 
     <section id="ssChaosPanel" class="ss-chaos hidden" aria-label="Fix the Chaos game">
@@ -98,6 +112,6 @@
   <script src="./teacherLens.js?v=20260227a" defer></script>
   <script src="./fixChaosGame.js?v=20260227a" defer></script>
   <script src="./demoMode.js?v=20260227a" defer></script>
-  <script src="./sentence-surgery.js?v=20260227f" defer></script>
+  <script src="./sentence-surgery.js?v=20260227g" defer></script>
 </body>
 </html>
