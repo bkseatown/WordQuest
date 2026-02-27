@@ -351,6 +351,44 @@
     return shaped;
   }
 
+  function fallbackTeacherSummary(input) {
+    var src = input && typeof input === "object" ? input : {};
+    var snapshot = src.snapshot && typeof src.snapshot === "object" ? src.snapshot : {};
+    var reasoningPct = Math.round(Number(snapshot.reasoningPct || 0));
+    var strongPct = Math.round(Number(snapshot.strongPct || 0));
+    var cohesion = Number(snapshot.cohesionAvg || 0);
+    if (reasoningPct < 40) {
+      return {
+        summary: "Class shows weak causal reasoning across sentences.",
+        action: "Run a 15-minute Tier 2 small group: Sentence Surgery Timed Level 2 + Because/But/So expansion."
+      };
+    }
+    if (strongPct < 40) {
+      return {
+        summary: "Verb precision is below target despite basic sentence completion.",
+        action: "Run a 15-minute verb precision cycle with guided revision and one timed round."
+      };
+    }
+    if (cohesion < 2.2) {
+      return {
+        summary: "Sentence-to-sentence cohesion is inconsistent.",
+        action: "Run a 15-minute connector routine: Connect-It matching + one revised paragraph transfer."
+      };
+    }
+    return {
+      summary: "Class trend is stable with strongest performance in sentence control.",
+      action: "Assign Tier 1 extension: multi-clause precision and stylistic refinement."
+    };
+  }
+
+  function parseTeacherSummary(payload) {
+    if (!payload || typeof payload !== "object") throw new Error("invalid_json");
+    var summary = compactWords(String(payload.summary || ""), 30);
+    var action = compactWords(String(payload.action || ""), 30);
+    if (!summary || !action) throw new Error("schema_mismatch");
+    return { summary: summary, action: action };
+  }
+
   function sleep(ms) {
     return new Promise(function (resolve) { window.setTimeout(resolve, ms); });
   }
@@ -665,11 +703,35 @@
     }
   }
 
+  async function generateTeacherSummary(input) {
+    var req = input && typeof input === "object" ? input : {};
+    var endpoint = req.summaryEndpoint || req.coachEndpoint || window.WS_COACH_ENDPOINT || window.PB_COACH_ENDPOINT || "";
+    var channel = String(req.channel || "global-teacher-summary");
+    if (shouldSkipAI(endpoint)) return fallbackTeacherSummary(req);
+    if (!claimRateLimitSlot()) return fallbackTeacherSummary(req);
+
+    try {
+      var json = await fetchJsonWithTimeout(endpoint, {
+        response_format: "json",
+        mode: "teacher_summary",
+        class_snapshot: req.snapshot || {},
+        group_recommendations: req.recommendations || [],
+        system_prompt: "Return JSON only with keys summary and action. Keep both concise and intervention-focused."
+      }, channel);
+      usageBump("ai_calls");
+      return parseTeacherSummary(json);
+    } catch (_err) {
+      usageBump("fallback_count");
+      return fallbackTeacherSummary(req);
+    }
+  }
+
   window.CSAIService = {
     hashSentence: hashSentence,
     analyzeSentence: analyzeSentence,
     generatePedagogyFeedback: generatePedagogyFeedback,
     generateMiniLesson: generateMiniLesson,
+    generateTeacherSummary: generateTeacherSummary,
     generateMicroCoach: generateMicroCoach,
     heuristicAnalyze: heuristic,
     isDemoMode: isDemoMode,

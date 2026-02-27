@@ -14,6 +14,8 @@
   var groupsEl = document.getElementById("td-groups");
   var heatmapTable = document.getElementById("td-heatmap-table");
   var lessonEl = document.getElementById("td-lesson-suggestion");
+  var groupRecsEl = document.getElementById("td-group-recommendations");
+  var aiSummaryEl = document.getElementById("td-ai-summary");
   var reportBtn = document.getElementById("td-generate-report");
   var sessionBtn = document.getElementById("td-generate-session-plan");
   var miniLessonBtn = document.getElementById("td-generate-mini-lesson");
@@ -224,6 +226,62 @@
     ].join("");
   }
 
+  function recommendationForTier(tier, names) {
+    var list = Array.isArray(names) ? names : [];
+    if (tier === "Tier 3") {
+      return {
+        tier: tier,
+        dominantWeakness: "clarity",
+        students: list,
+        recommendation: "15 min: Sentence Surgery Timed Level 1 + modeled stem practice (one change at a time)."
+      };
+    }
+    if (tier === "Tier 2") {
+      return {
+        tier: tier,
+        dominantWeakness: "reasoning",
+        students: list,
+        recommendation: "15 min: Sentence Surgery Timed Level 2 + Because/But/So expansion set."
+      };
+    }
+    return {
+      tier: "Tier 1",
+      dominantWeakness: "complexity",
+      students: list,
+      recommendation: "15 min: Timed Level 3 extension with stylistic refinement challenge."
+    };
+  }
+
+  function buildTierRecommendations(stats) {
+    var tierGroups = { "Tier 3": [], "Tier 2": [], "Tier 1": [] };
+    stats.forEach(function (s) {
+      var tier = pickTier(s);
+      tierGroups[tier].push(s.name);
+    });
+    return [
+      recommendationForTier("Tier 3", tierGroups["Tier 3"]),
+      recommendationForTier("Tier 2", tierGroups["Tier 2"]),
+      recommendationForTier("Tier 1", tierGroups["Tier 1"])
+    ].filter(function (row) { return row.students.length > 0; });
+  }
+
+  function renderTierRecommendations(recommendations) {
+    if (!groupRecsEl) return;
+    if (!recommendations.length) {
+      groupRecsEl.innerHTML = "";
+      return;
+    }
+    groupRecsEl.innerHTML = recommendations.map(function (row) {
+      return [
+        '<div class="td-group-recommendation">',
+        "<strong>" + row.tier + " • " + row.dominantWeakness + "</strong>",
+        "<div>Students: " + row.students.join(", ") + "</div>",
+        "<div>Plan: " + row.recommendation + "</div>",
+        "</div>"
+      ].join("");
+    }).join("");
+  }
+
   function heatClass(value, high, low) {
     if (value >= high) return "heat-high";
     if (value <= low) return "heat-low";
@@ -273,6 +331,25 @@
       return;
     }
     lessonEl.textContent = "Challenge: multi-clause paragraph construction.";
+  }
+
+  async function renderTeacherSummary(snapshot, recommendations) {
+    if (!aiSummaryEl) return;
+    var svc = window.CSAIService;
+    var fallback = {
+      summary: "Decision support active with tier-aligned intervention grouping.",
+      action: "Use the 15-minute plan cards below each group."
+    };
+    var data = fallback;
+    if (svc && typeof svc.generateTeacherSummary === "function") {
+      data = await svc.generateTeacherSummary({
+        snapshot: snapshot,
+        recommendations: recommendations,
+        channel: "teacher-dashboard-summary"
+      });
+    }
+    aiSummaryEl.innerHTML = "<div><strong>Class Insight:</strong> " + data.summary + "</div><div><strong>Recommended Action:</strong> " + data.action + "</div>";
+    aiSummaryEl.classList.remove("hidden");
   }
 
   function animateFill(el, pct) {
@@ -384,6 +461,8 @@
     var data = loadData();
     var analytics = loadAnalytics();
     if (!data.length) {
+      if (groupRecsEl) groupRecsEl.innerHTML = "";
+      if (aiSummaryEl) aiSummaryEl.classList.add("hidden");
       if (analytics && Number(analytics.totalSentences || 0) > 0) {
         var reasoningPct = Math.round(Number(analytics.reasoningRate || 0) * 100);
         var detailPct = Math.round(Math.max(0, Math.min(100, Number(analytics.avgDetail || 0) * 20)));
@@ -428,8 +507,11 @@
     animateFill(cohesionFill, Math.round(snapshot.cohesionAvg * 20));
 
     renderGroups(stats);
+    var recommendations = buildTierRecommendations(stats);
+    renderTierRecommendations(recommendations);
     renderHeatmap(stats);
     renderLesson(snapshot);
+    void renderTeacherSummary(snapshot, recommendations);
     refreshSelectedLabel();
     attachStudentSelectionHandlers();
 
