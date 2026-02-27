@@ -4,7 +4,7 @@
   if (window.__HERO_ROTATOR_ACTIVE) return;
   window.__HERO_ROTATOR_ACTIVE = true;
 
-  var container = document.getElementById('hero-preview-container');
+  var container = document.getElementById('home-demo-preview');
   var ctaWordQuest = document.getElementById('cta-wordquest');
   var ctaTools = document.getElementById('cta-tools');
   if (!container) return;
@@ -47,10 +47,13 @@
   var paneParagraph = createPane('hero-pane-paragraph');
   var panes = [paneWordQuest, paneSentence, paneParagraph];
 
-  var wqPreview = null;
-  if (window.WordQuestPreview && typeof window.WordQuestPreview.create === 'function') {
-    wqPreview = window.WordQuestPreview.create(paneWordQuest);
+  function mountWordQuestPreview(target) {
+    if (!(target instanceof HTMLElement)) return null;
+    if (!window.WordQuestPreview || typeof window.WordQuestPreview.create !== 'function') return null;
+    return window.WordQuestPreview.create(target);
   }
+
+  var wqPreview = mountWordQuestPreview(paneWordQuest);
 
   paneSentence.innerHTML = [
     '<div class="hero-preview-title">Sentence Growth Engine</div>',
