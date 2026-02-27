@@ -26,7 +26,7 @@
   var compareBeforeEl = document.getElementById("ssCompareBefore");
   var compareAfterEl = document.getElementById("ssCompareAfter");
 
-  if (!sentenceEl || !meterBarEl || !levelEl || !window.SentenceEngine || !window.SSAIAnalysis || !window.SSTeacherLens) return;
+  if (!sentenceEl || !meterBarEl || !levelEl || !window.SentenceEngine || !(window.CSAIService || window.SSAIAnalysis) || !window.SSTeacherLens) return;
 
   var actionButtons = Array.prototype.slice.call(document.querySelectorAll("[data-action]"));
   var chaosActionButtons = Array.prototype.slice.call(document.querySelectorAll("[data-chaos-action]"));
@@ -53,6 +53,8 @@
   var sentenceLogs = [];
   var analyses = [];
   var activeAnalysisToken = 0;
+  var analyzeDebounceTimer = 0;
+  var analyzeIdleHandle = 0;
   var AI_ENDPOINT = "";
   var COACH_ENDPOINT = "";
   var demoLocked = false;
@@ -144,7 +146,10 @@
 
   async function analyzeAndRender(sentenceText) {
     var token = ++activeAnalysisToken;
-    var ai = await window.SSAIAnalysis.analyzeSentence(sentenceText, { endpoint: AI_ENDPOINT });
+    var aiService = window.CSAIService;
+    var ai = await (aiService && aiService.analyzeSentence
+      ? aiService.analyzeSentence(sentenceText, { endpoint: AI_ENDPOINT, channel: "sentence-surgery-analysis" })
+      : window.SSAIAnalysis.analyzeSentence(sentenceText, { endpoint: AI_ENDPOINT }));
     if (token !== activeAnalysisToken) return;
     var lens = window.SSTeacherLens.derive(ai, sentenceText);
     var level = lens.level;
@@ -161,9 +166,24 @@
     renderTraits(lens.metrics);
     levelEl.textContent = "Level " + level + " • Step " + engine.state.step + "/" + engine.state.maxActions;
 
-    var coach = await window.SSAIAnalysis.microCoach(sentenceText, ai.suggested_focus, { coachEndpoint: COACH_ENDPOINT });
+    var coach = await (aiService && aiService.generateMicroCoach
+      ? aiService.generateMicroCoach(sentenceText, ai.suggested_focus, { coachEndpoint: COACH_ENDPOINT, channel: "sentence-surgery-coach" })
+      : window.SSAIAnalysis.microCoach(sentenceText, ai.suggested_focus, { coachEndpoint: COACH_ENDPOINT }));
     if (token !== activeAnalysisToken) return;
     setCoachText(coach);
+  }
+
+  function queueAnalysis(sentenceText) {
+    window.clearTimeout(analyzeDebounceTimer);
+    analyzeDebounceTimer = window.setTimeout(function () {
+      var run = function () { void analyzeAndRender(sentenceText); };
+      if (typeof window.requestIdleCallback === "function") {
+        if (analyzeIdleHandle) window.cancelIdleCallback(analyzeIdleHandle);
+        analyzeIdleHandle = window.requestIdleCallback(run, { timeout: 800 });
+      } else {
+        run();
+      }
+    }, 400);
   }
 
   function render() {
@@ -182,7 +202,7 @@
     });
 
     var sentenceText = engine.getSentenceText();
-    void analyzeAndRender(sentenceText);
+    queueAnalysis(sentenceText);
     window.__SS_DEBUG = {
       snapshot: engine.getSnapshot(),
       sentenceCount: sentenceLogs.length,
@@ -213,7 +233,9 @@
     var before = sanitize(engine.state.model.subject + " " + engine.state.model.noun + " " + engine.state.model.verb + " " + engine.state.model.trail + ".");
     var snap = engine.finalizeSentence();
     sentenceLogs.push(snap.sentence);
-    analyses.push(window.SSAIAnalysis.analyzeSentenceHeuristic(snap.sentence));
+    analyses.push(window.CSAIService && window.CSAIService.heuristicAnalyze
+      ? window.CSAIService.heuristicAnalyze(snap.sentence)
+      : window.SSAIAnalysis.analyzeSentenceHeuristic(snap.sentence));
     showCompare(before, snap.sentence);
     updateDashboard();
   }
@@ -285,7 +307,9 @@
 
   function startChaosRound() {
     if (!chaosGame || !chaosSentenceEl) return;
-    var analysis = analyses.length ? analyses[analyses.length - 1] : window.SSAIAnalysis.analyzeSentenceHeuristic(engine.getSentenceText());
+    var analysis = analyses.length ? analyses[analyses.length - 1] : (window.CSAIService && window.CSAIService.heuristicAnalyze
+      ? window.CSAIService.heuristicAnalyze(engine.getSentenceText())
+      : window.SSAIAnalysis.analyzeSentenceHeuristic(engine.getSentenceText()));
     var round = chaosGame.nextRound(engine.getSentenceText(), analysis);
     chaosSentenceEl.textContent = round.sentence;
     if (chaosResultEl) chaosResultEl.textContent = "Level " + round.level + " • Error: " + round.type.replace(/_/g, " ");

@@ -20,6 +20,8 @@
     values: { topic: '', body1: '', body2: '', conclusion: '' },
     analysis: { topic: null, body1: null, body2: null, conclusion: null },
     debounceTimer: 0,
+    idleHandle: 0,
+    analysisRunToken: 0,
     coachDismissedFor: '',
     demoTimers: []
   };
@@ -60,51 +62,11 @@
     return sanitize(slotEl.textContent || '');
   }
 
-  function analyzeSentenceHeuristic(sentence){
-    var words = sanitize(sentence).split(/\s+/).filter(Boolean);
-    var lower = sanitize(sentence).toLowerCase();
-    var subordinators=["because","although","since","while","if","when","after","before"];
-    var strongVerbs=["sprinted","dashed","bolted","lunged","shattered","gripped"];
-    var hasReasoning=subordinators.some(function(w){ return lower.indexOf(w)>=0; });
-    var verbStrength=strongVerbs.some(function(v){ return lower.indexOf(v)>=0; })?"strong":"adequate";
-    var sentenceType="simple";
-    if(lower.indexOf(" and ")>=0||lower.indexOf(" but ")>=0) sentenceType="compound";
-    if(hasReasoning) sentenceType="complex";
-    return {
-      sentence_type:sentenceType,
-      has_reasoning:hasReasoning,
-      detail_score:words.length>10?3:words.length>7?2:1,
-      verb_strength:verbStrength,
-      word_count:words.length
-    };
-  }
-
-  async function analyzeWithAI(sentence) {
-    var endpoint = window.WS_AI_ENDPOINT || window.PB_AI_ENDPOINT || '';
-    if (!endpoint) return null;
-    try {
-      var response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: 'Analyze this sentence structurally:\n"' + sentence + '"\n\nReturn ONLY valid JSON:\n{\n  "sentence_type":"simple|compound|complex",\n  "has_reasoning":true/false,\n  "detail_score":0-5,\n  "verb_strength":"weak|adequate|strong",\n  "word_count":number\n}'
-        })
-      });
-      if (!response.ok) return null;
-      var data = await response.json();
-      if (!data || typeof data !== 'object') return null;
-      if (typeof data.word_count !== 'number') return null;
-      return data;
-    } catch (_err) {
-      return null;
-    }
-  }
-
   async function analyzeSentence(sentence) {
     var clean = sanitize(sentence);
-    if (!clean) return analyzeSentenceHeuristic('');
-    var aiResult = await analyzeWithAI(clean);
-    return aiResult || analyzeSentenceHeuristic(clean);
+    var svc = window.CSAIService;
+    if (!svc || typeof svc.analyzeSentence !== 'function') return window.SSAIAnalysis.analyzeSentenceHeuristic(clean);
+    return svc.analyzeSentence(clean, { endpoint: window.PB_AI_ENDPOINT || window.WS_AI_ENDPOINT || '', channel: 'paragraph-builder-analysis' });
   }
 
   function setMetricWidth(id, score) {
@@ -218,19 +180,41 @@
     updateDoneVisibility();
   }
 
-  async function runAnalysis() {
+  async function runAnalysis(token) {
     var keys = ['topic','body1','body2','conclusion'];
     for (var i = 0; i < keys.length; i += 1) {
       var key = keys[i];
-      state.analysis[key] = await analyzeSentence(state.values[key]);
+      if (token !== state.analysisRunToken) return;
+      state.analysis[key] = await (window.CSAIService && window.CSAIService.analyzeSentence
+        ? window.CSAIService.analyzeSentence(state.values[key], {
+          endpoint: window.PB_AI_ENDPOINT || window.WS_AI_ENDPOINT || '',
+          channel: 'paragraph-builder-' + key,
+          cohesion: computeCohesion(state.values)
+        })
+        : analyzeSentence(state.values[key]));
+      if (token !== state.analysisRunToken) return;
     }
     renderMetrics();
+  }
+
+  function queueIdleAnalysis() {
+    var token = ++state.analysisRunToken;
+    var run = function () {
+      if (token !== state.analysisRunToken) return;
+      void runAnalysis(token);
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      if (state.idleHandle) window.cancelIdleCallback(state.idleHandle);
+      state.idleHandle = window.requestIdleCallback(run, { timeout: 900 });
+    } else {
+      window.setTimeout(run, 0);
+    }
   }
 
   function queueAnalysis() {
     window.clearTimeout(state.debounceTimer);
     state.debounceTimer = window.setTimeout(function () {
-      void runAnalysis();
+      queueIdleAnalysis();
     }, 400);
   }
 

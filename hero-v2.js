@@ -1,6 +1,9 @@
 (function heroV2Runtime() {
   "use strict";
 
+  if (window.__HERO_ROTATOR_ACTIVE) return;
+  window.__HERO_ROTATOR_ACTIVE = true;
+
   var container = document.getElementById('hero-preview-container');
   var ctaWordQuest = document.getElementById('cta-wordquest');
   var ctaParagraph = document.getElementById('cta-paragraph');
@@ -9,6 +12,7 @@
   var ROTATE_MS = 10000;
   var FADE_MS = 250;
   var timers = [];
+  var rotateIntervalId = 0;
   var currentIndex = 0;
   var running = true;
   var prefersReducedMotion = false;
@@ -143,26 +147,30 @@
 
     if (currentIndex === 1) runSentencePreview();
     if (currentIndex === 2) runParagraphPreview();
-
-    setTimer(function () {
-      if (!running || document.hidden) return;
-      currentIndex = (currentIndex + 1) % panes.length;
-      setActivePane(currentIndex);
-      runActivePreview();
-    }, ROTATE_MS);
   }
 
   function pause() {
     running = false;
     clearTimers();
+    if (rotateIntervalId) {
+      window.clearInterval(rotateIntervalId);
+      rotateIntervalId = 0;
+    }
     if (wqPreview) wqPreview.stop();
   }
 
   function resume() {
-    if (!document.hidden) {
-      running = true;
-      setActivePane(currentIndex);
-      runActivePreview();
+    if (document.hidden) return;
+    running = true;
+    setActivePane(currentIndex);
+    runActivePreview();
+    if (!rotateIntervalId) {
+      rotateIntervalId = window.setInterval(function () {
+        if (!running || document.hidden) return;
+        currentIndex = (currentIndex + 1) % panes.length;
+        setActivePane(currentIndex);
+        runActivePreview();
+      }, ROTATE_MS);
     }
   }
 
@@ -183,6 +191,11 @@
     });
   }
 
+  window.addEventListener('beforeunload', function () {
+    pause();
+    window.__HERO_ROTATOR_ACTIVE = false;
+  });
+
   setActivePane(0);
-  runActivePreview();
+  resume();
 })();

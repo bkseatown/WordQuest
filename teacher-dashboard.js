@@ -35,6 +35,18 @@
     return parsed;
   }
 
+  function loadAnalytics() {
+    if (window.CSAnalyticsEngine && typeof window.CSAnalyticsEngine.read === 'function') {
+      return window.CSAnalyticsEngine.read();
+    }
+    try {
+      var parsed = JSON.parse(localStorage.getItem('cs_analytics') || 'null');
+      return parsed && typeof parsed === 'object' ? parsed : null;
+    } catch (_e) {
+      return null;
+    }
+  }
+
   function buildDemoData() {
     return [
       fakeStudent('Ava', 0.2, 1.7, 0.1, 1.2),
@@ -198,8 +210,24 @@
 
   function render() {
     var data = loadData();
+    var analytics = loadAnalytics();
     if (!data.length) {
-      groupsEl.innerHTML = '<div class="td-group">No student structural data found. Add <code>cs_student_data</code> to localStorage or open with <code>?demo=1</code>.</div>';
+      if (analytics && Number(analytics.totalSentences || 0) > 0) {
+        var reasoningPct = Math.round(Number(analytics.reasoningRate || 0) * 100);
+        var detailPct = Math.round(Math.max(0, Math.min(100, Number(analytics.avgDetail || 0) * 20)));
+        var cohesionPct = Math.round(Math.max(0, Math.min(100, Number(analytics.avgCohesion || 0) * 20)));
+        animateFill(complexFill, detailPct);
+        animateFill(reasoningFill, reasoningPct);
+        animateFill(verbsFill, detailPct);
+        animateFill(cohesionFill, cohesionPct);
+        groupsEl.innerHTML = '<div class="td-group">Displaying anonymized analytics snapshot from <code>cs_analytics</code> (' + Number(analytics.totalSentences || 0) + ' sentences).</div>';
+        heatmapTable.innerHTML = '';
+        if (reasoningPct < 40) lessonEl.textContent = 'Model subordinating conjunctions (because, although, since).';
+        else if (detailPct < 50) lessonEl.textContent = 'Mini-lesson on adding precise detail and evidence.';
+        else lessonEl.textContent = 'Challenge: multi-clause paragraph construction.';
+        return;
+      }
+      groupsEl.innerHTML = '<div class="td-group">No student structural data found. Add <code>cs_student_data</code> or let <code>cs_analytics</code> populate through student writing.</div>';
       heatmapTable.innerHTML = '';
       lessonEl.textContent = 'No recommendation yet.';
       animateFill(complexFill, 0);
