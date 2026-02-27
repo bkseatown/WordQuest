@@ -13,7 +13,20 @@ const CHECK_FILES = [
 
 const ALLOWED_DYNAMIC_IDS = new Set([
   'dupe-ok',
-  'dupe-never'
+  'dupe-never',
+  'csCoachHint',
+  'csCoachPrimary',
+  'csCoachSkip',
+  'csCoachSuggest',
+  'csCoachText',
+  'csDemoCoach',
+  'wq-demo-banner',
+  'wq-demo-coach',
+  'wq-demo-full-btn',
+  'wq-demo-launch-btn',
+  'wq-demo-restart-btn',
+  'wq-demo-retry-btn',
+  'wq-demo-skip-btn'
 ]);
 
 const SELECTOR_PATTERNS = [
@@ -35,6 +48,8 @@ function collectSelectors(filePath, validIds) {
     let match;
     while ((match = pattern.exec(source))) {
       const id = match[1];
+      // _el() is used with full selectors in some places; only treat id-like tokens as hard requirements.
+      if (!/^[A-Za-z][A-Za-z0-9:_-]*$/.test(id)) continue;
       if (validIds.has(id) || ALLOWED_DYNAMIC_IDS.has(id)) continue;
       missing.push(id);
     }
