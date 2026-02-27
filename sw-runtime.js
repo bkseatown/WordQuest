@@ -6,7 +6,7 @@
  * - Audio files: stale-while-revalidate runtime cache (bounded size)
  */
 
-const SW_VERSION = '20260226-v11';
+const SW_VERSION = '20260227-v12';
 const SHELL_CACHE = `wq-shell-${SW_VERSION}`;
 const DATA_CACHE = `wq-data-${SW_VERSION}`;
 const AUDIO_CACHE = `wq-audio-${SW_VERSION}`;
