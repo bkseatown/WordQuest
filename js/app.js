@@ -20,6 +20,23 @@
     return fromQuery || window.WQ_DEMO === true;
   }
   const DEMO_MODE = detectDemoMode();
+  const isDevModeEnabled = (() => {
+    const fallback = () => {
+      try {
+        const params = new URLSearchParams(window.location.search || '');
+        if (String(params.get('env') || '').toLowerCase() === 'dev') return true;
+      } catch {}
+      try {
+        return localStorage.getItem('cs_allow_dev') === '1';
+      } catch {
+        return false;
+      }
+    };
+    if (window.CSAppMode && typeof window.CSAppMode.isDevMode === 'function') {
+      return () => !!window.CSAppMode.isDevMode();
+    }
+    return fallback;
+  })();
   const DEMO_DEBUG_MODE = (() => {
     try {
       const params = new URLSearchParams(window.location.search || '');
@@ -540,6 +557,10 @@
   let autoPhysicalKeyboardSwitchApplied = false;
   let firstRunSetupPending = false;
   let pageMode = 'wordquest';
+  let homeMode = 'home';
+  let focusSupportUnlockAt = 0;
+  let focusSupportUnlockTimer = 0;
+  let focusSupportUnlockedByMiss = false;
 
   // One-time baseline migration so existing installs land on your intended defaults.
   if (localStorage.getItem(PREF_MIGRATION_KEY) !== 'done') {
@@ -799,7 +820,6 @@
   };
   const DEMO_OVERLAY_SELECTORS = Object.freeze([
     '#focus-inline-results:not(.hidden)',
-    '#settings-panel:not(.hidden)',
     '#teacher-panel:not(.hidden)',
     '#modal-overlay:not(.hidden)',
     '#challenge-modal:not(.hidden)',
@@ -1646,6 +1666,12 @@
   function syncBuildBadge() {
     const badge = _el('settings-build-badge');
     if (!badge) return;
+    if (!isDevModeEnabled()) {
+      badge.textContent = '';
+      badge.classList.add('hidden');
+      return;
+    }
+    badge.classList.remove('hidden');
     const label = resolveBuildLabel();
     const channel = resolveRuntimeChannel();
     const buildLabel = label || 'local';
@@ -1655,6 +1681,10 @@
   }
 
   function syncPersistentVersionChip() {
+    if (!isDevModeEnabled()) {
+      _el('wq-version-chip')?.classList.add('hidden');
+      return;
+    }
     const channel = resolveRuntimeChannel();
     const buildLabel = resolveBuildLabel() || 'local';
     const appVersion = `v${APP_SEMVER}`;
@@ -1668,6 +1698,16 @@
     }
     chip.textContent = `${channel} · ${appVersion} · ${buildLabel}`;
     chip.title = `WordQuest ${appVersion} (${buildLabel})`;
+    chip.classList.remove('hidden');
+  }
+
+  function applyDevOnlyVisibility() {
+    const isDev = isDevModeEnabled();
+    _el('settings-group-diagnostics')?.classList.toggle('hidden', !isDev);
+    _el('settings-group-diagnostics')?.setAttribute('aria-hidden', isDev ? 'false' : 'true');
+    if (!isDev) {
+      _el('diag-refresh-btn')?.closest('.setting-row')?.classList.add('hidden');
+    }
   }
 
   function formatDiagnosticDate(ts) {
@@ -2739,6 +2779,7 @@
   }
   syncBuildBadge();
   syncPersistentVersionChip();
+  applyDevOnlyVisibility();
   void runAutoCacheRepairForBuild();
   void runRemoteBuildConsistencyCheck();
   installBuildConsistencyHeartbeat();
@@ -3042,6 +3083,29 @@
     );
   }
 
+  function clearFocusSupportUnlockTimer() {
+    if (!focusSupportUnlockTimer) return;
+    clearTimeout(focusSupportUnlockTimer);
+    focusSupportUnlockTimer = 0;
+  }
+
+  function scheduleFocusSupportUnlock() {
+    clearFocusSupportUnlockTimer();
+    if (focusSupportUnlockedByMiss) return;
+    const waitMs = Math.max(0, focusSupportUnlockAt - Date.now());
+    focusSupportUnlockTimer = setTimeout(() => {
+      syncHeaderClueLauncherUI();
+      syncStarterWordLauncherUI();
+    }, waitMs + 40);
+  }
+
+  function areFocusSupportsUnlocked() {
+    if (focusSupportUnlockedByMiss) return true;
+    const state = WQGame.getState?.() || {};
+    if (!state.word || state.gameOver) return true;
+    return Date.now() >= focusSupportUnlockAt;
+  }
+
   function syncHeaderClueLauncherUI(mode = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle)) {
     const button = _el('phonics-clue-open-btn');
     const focusButton = _el('focus-clue-btn');
@@ -3059,7 +3123,8 @@
       : 'Open Clue Sprint for detective clue practice');
     button.classList.add('hidden');
     if (focusButton) {
-      focusButton.classList.toggle('hidden', isMissionLabStandaloneMode());
+      const shouldHide = isMissionLabStandaloneMode() || !areFocusSupportsUnlocked();
+      focusButton.classList.toggle('hidden', shouldHide);
       focusButton.setAttribute('aria-label', listening ? 'Open listening coach support' : 'Open clue support');
       setHoverNoteForElement(
         focusButton,
@@ -3087,7 +3152,7 @@
     button.innerHTML = '<span class="quick-btn-label">Need Ideas</span><span class="quick-btn-emoji" aria-hidden="true">💡</span>';
     const normalized = normalizeStarterWordMode(mode);
     const missionMode = isMissionLabStandaloneMode();
-    const hidden = normalized === 'off' || missionMode;
+    const hidden = normalized === 'off' || missionMode || !areFocusSupportsUnlocked();
     button.classList.add('hidden');
     if (focusButton) focusButton.classList.toggle('hidden', hidden);
     if (hidden) return;
@@ -4279,7 +4344,7 @@
     const headerRight = document.querySelector('.header-right');
     if (!headerRight) return;
 
-    const iconIds = ['theme-dock-toggle-btn', 'music-dock-toggle-btn', 'teacher-panel-btn', 'case-toggle-btn', 'keyboard-layout-toggle', 'mission-lab-nav-btn', 'settings-btn'];
+    const iconIds = ['theme-dock-toggle-btn', 'music-dock-toggle-btn', 'teacher-panel-btn', 'case-toggle-btn', 'keyboard-layout-toggle', 'mission-lab-nav-btn', 'settings-btn', 'play-tools-btn'];
     const quickIds = ['play-style-toggle', 'phonics-clue-open-btn', 'starter-word-open-btn', 'writing-studio-btn', 'sentence-surgery-btn', 'reading-lab-btn', 'new-game-btn'];
 
     let iconGroup = headerRight.querySelector('.header-icon-controls');
@@ -4340,6 +4405,8 @@
       settingsBtn.innerHTML = '<span class="icon-emoji" aria-hidden="true">⚙️</span>';
       setHoverNoteForElement(settingsBtn, 'Open settings.');
     }
+    const playToolsBtn = _el('play-tools-btn');
+    if (playToolsBtn) setHoverNoteForElement(playToolsBtn, 'Open activity tools.');
     const writingBtn = _el('writing-studio-btn');
     if (WRITING_STUDIO_ENABLED) setHoverNoteForElement(writingBtn, 'Open Writing Studio.');
     const surgeryBtn = _el('sentence-surgery-btn');
@@ -5218,7 +5285,8 @@
     if (!line) return;
     const state = WQGame.getState?.() || {};
     const activeRound = Boolean(state.word && !state.gameOver);
-    if (!isTeamModeEnabled() || !activeRound) {
+    const hasGuess = Array.isArray(state.guesses) && state.guesses.length > 0;
+    if (!isTeamModeEnabled() || !activeRound || !hasGuess) {
       line.textContent = '';
       line.classList.add('hidden');
       return;
@@ -5540,6 +5608,73 @@
     return normalizePageMode(pageMode) === 'mission-lab';
   }
 
+  function isTeacherRoleEnabled() {
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      const role = String(params.get('role') || localStorage.getItem('cs_role') || '').toLowerCase();
+      return role === 'teacher' || role === 'admin';
+    } catch {
+      return false;
+    }
+  }
+
+  function setHomeMode(mode, options = {}) {
+    const next = String(mode || '').toLowerCase() === 'play' ? 'play' : 'home';
+    homeMode = next;
+    document.documentElement.setAttribute('data-home-mode', next);
+    if (next === 'play') {
+      _el('home-tools-section')?.classList.add('hidden');
+      _el('play-tools-drawer')?.classList.add('hidden');
+      _el('play-tools-btn')?.setAttribute('aria-expanded', 'false');
+      if (options.scroll !== false) {
+        _el('main')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('play', '1');
+        window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+      } catch {}
+      return;
+    }
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('play');
+      window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+    } catch {}
+  }
+
+  function initializeHomeMode() {
+    if (DEMO_MODE) {
+      setHomeMode('play', { scroll: false });
+      return;
+    }
+    let forcePlay = false;
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      const playParam = String(params.get('play') || '').toLowerCase();
+      const fromParam = String(params.get('from') || '').toLowerCase();
+      forcePlay = playParam === '1' || playParam === 'true' || fromParam === 'home';
+    } catch {
+      forcePlay = false;
+    }
+    setHomeMode(forcePlay ? 'play' : 'home', { scroll: false });
+  }
+
+  function syncPlayToolsRoleVisibility() {
+    const teacherOnly = _el('play-drawer-teacher-dashboard');
+    if (!teacherOnly) return;
+    teacherOnly.classList.toggle('hidden', !isTeacherRoleEnabled());
+  }
+
+  function togglePlayToolsDrawer() {
+    const drawer = _el('play-tools-drawer');
+    const trigger = _el('play-tools-btn');
+    if (!drawer || homeMode !== 'play') return;
+    const open = drawer.classList.contains('hidden');
+    drawer.classList.toggle('hidden', !open);
+    trigger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
   function updatePageModeUrl(mode) {
     try {
       const normalized = normalizePageMode(mode);
@@ -5624,7 +5759,6 @@
     const overlay = _el('modal-overlay');
     if (overlay) {
       const modals = [
-        _el('settings-panel'),
         _el('teacher-panel'),
         _el('end-modal'),
         _el('challenge-modal'),
@@ -5666,6 +5800,8 @@
   pageMode = 'wordquest';
   persistPageMode('wordquest');
   updatePageModeUrl('wordquest');
+  initializeHomeMode();
+  syncPlayToolsRoleVisibility();
 
   setSettingsView('quick');
   syncPageModeUI();
@@ -5709,6 +5845,7 @@
     if (opening) {
       setSettingsView('quick');
       void renderDiagnosticsPanel();
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     syncHeaderControlsVisibility();
   });
@@ -5815,7 +5952,33 @@
   _el('teacher-open-sentence-surgery-btn')?.addEventListener('click', openSentenceSurgeryPage);
   _el('teacher-open-reading-lab-btn')?.addEventListener('click', openReadingLabPage);
   _el('teacher-dashboard-btn')?.addEventListener('click', openTeacherDashboardPage);
+  _el('play-tools-btn')?.addEventListener('click', togglePlayToolsDrawer);
+  _el('play-drawer-close')?.addEventListener('click', () => {
+    _el('play-tools-drawer')?.classList.add('hidden');
+    _el('play-tools-btn')?.setAttribute('aria-expanded', 'false');
+  });
+  _el('play-drawer-writing-studio')?.addEventListener('click', openWritingStudioPage);
+  _el('play-drawer-sentence-surgery')?.addEventListener('click', openSentenceSurgeryPage);
+  _el('play-drawer-reading-lab')?.addEventListener('click', openReadingLabPage);
+  _el('play-drawer-teacher-dashboard')?.addEventListener('click', openTeacherDashboardPage);
+  _el('home-open-writing-studio')?.addEventListener('click', openWritingStudioPage);
+  _el('home-open-sentence-surgery')?.addEventListener('click', openSentenceSurgeryPage);
+  _el('home-open-reading-lab')?.addEventListener('click', openReadingLabPage);
+  _el('home-open-teacher-dashboard')?.addEventListener('click', openTeacherDashboardPage);
+  _el('cta-wordquest')?.addEventListener('click', () => {
+    setHomeMode('play');
+    if (!WQGame.getState?.()?.word) {
+      newGame({ launchMissionLab: false });
+    }
+  });
+  _el('cta-tools')?.addEventListener('click', () => {
+    const section = _el('home-tools-section');
+    if (!section) return;
+    section.classList.remove('hidden');
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
   _el('home-logo-btn')?.addEventListener('click', () => {
+    setHomeMode('home', { scroll: false });
     setPageMode('wordquest', { force: true });
     closeFocusSearchList();
     closeQuickPopover('all');
@@ -5825,11 +5988,12 @@
     _el('end-modal')?.classList.add('hidden');
     _el('challenge-modal')?.classList.add('hidden');
     _el('modal-challenge-launch')?.classList.add('hidden');
+    _el('play-tools-drawer')?.classList.add('hidden');
+    _el('play-tools-btn')?.setAttribute('aria-expanded', 'false');
     syncHeaderControlsVisibility();
   });
-// Close settings when clicking outside
+// Global outside-click handlers for flyouts/toasts
   document.addEventListener('pointerdown', e => {
-    const panel = _el('settings-panel');
     const focusWrap = _el('focus-inline-wrap');
     const hintToggleBtn = _el('focus-hint-toggle');
     const hintCard = _el('hint-clue-card');
@@ -5848,6 +6012,8 @@
     }
     const themeDockBtn = _el('theme-dock-toggle-btn');
     const musicDockBtn = _el('music-dock-toggle-btn');
+    const playToolsBtn = _el('play-tools-btn');
+    const playToolsDrawer = _el('play-tools-drawer');
     const themePopover = _el('theme-preview-strip');
     const musicPopover = _el('quick-music-strip');
     const clickInsideQuickPopover =
@@ -5858,12 +6024,15 @@
     if (!clickInsideQuickPopover) {
       closeQuickPopover('all');
     }
-    if (!panel?.classList.contains('hidden') &&
-        !panel.contains(e.target) &&
-        e.target !== _el('settings-btn') &&
-        !_el('settings-btn')?.contains(e.target)) {
-      panel.classList.add('hidden');
-      syncHeaderControlsVisibility();
+    if (
+      playToolsDrawer &&
+      !playToolsDrawer.classList.contains('hidden') &&
+      !playToolsDrawer.contains(e.target) &&
+      e.target !== playToolsBtn &&
+      !playToolsBtn?.contains(e.target)
+    ) {
+      playToolsDrawer.classList.add('hidden');
+      playToolsBtn?.setAttribute('aria-expanded', 'false');
     }
     if (_dupeToastEl && !_dupeToastEl.contains(e.target)) removeDupeToast();
     if (_el('toast')?.classList.contains('visible')) _el('toast').classList.remove('visible', 'toast-informant');
@@ -12946,6 +13115,9 @@
     emitTelemetry('wq_new_word_click', {
       source: options.launchMissionLab ? 'mission_lab_new' : 'wordquest_new'
     });
+    focusSupportUnlockedByMiss = false;
+    focusSupportUnlockAt = Date.now() + 20000;
+    scheduleFocusSupportUnlock();
     hideInformantHintCard();
     hideStarterWordCard();
     closeRevealChallengeModal({ silent: true });
@@ -13017,6 +13189,8 @@
         WQUI.showToast('No words found — try Classic focus or adjust filters');
       }
       updateNextActionLine({ dueCount: countDueReviewWords(playableSet) });
+      syncHeaderClueLauncherUI();
+      syncStarterWordLauncherUI();
       syncClassroomTurnRuntime({ resetTurn: true });
       syncAssessmentLockRuntime();
       return;
@@ -13040,6 +13214,8 @@
     updateVoicePracticePanel(WQGame.getState());
     updateFocusHint();
     updateNextActionLine({ dueCount: countDueReviewWords(playableSet) });
+    syncHeaderClueLauncherUI();
+    syncStarterWordLauncherUI();
     scheduleStarterCoachHint();
     syncAssessmentLockRuntime();
     if (DEMO_MODE) runDemoCoachForStart();
@@ -13124,6 +13300,13 @@
         updateNextActionLine();
         if (!DEMO_MODE) positionDemoLaunchButton();
         return;
+      }
+
+      if (!result.won) {
+        focusSupportUnlockedByMiss = true;
+        clearFocusSupportUnlockTimer();
+        syncHeaderClueLauncherUI();
+        syncStarterWordLauncherUI();
       }
 
       const row = result.guesses.length - 1;

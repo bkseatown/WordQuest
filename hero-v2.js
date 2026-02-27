@@ -6,7 +6,7 @@
 
   var container = document.getElementById('hero-preview-container');
   var ctaWordQuest = document.getElementById('cta-wordquest');
-  var ctaParagraph = document.getElementById('cta-paragraph');
+  var ctaTools = document.getElementById('cta-tools');
   if (!container) return;
 
   var ROTATE_MS = 10000;
@@ -181,13 +181,16 @@
 
   if (ctaWordQuest) {
     ctaWordQuest.addEventListener('click', function () {
-      window.location.href = 'word-quest.html?demo=1';
+      window.location.href = 'word-quest.html?play=1';
     });
   }
 
-  if (ctaParagraph) {
-    ctaParagraph.addEventListener('click', function () {
-      window.location.href = 'paragraph-builder.html?demo=1';
+  if (ctaTools) {
+    ctaTools.addEventListener('click', function () {
+      var section = document.getElementById('home-tools-section');
+      if (!section) return;
+      section.classList.remove('hidden');
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
 

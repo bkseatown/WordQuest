@@ -30,6 +30,7 @@
   <header>
     <div class="header-main-row">
       <button id="home-logo-btn" class="logo logo-btn" type="button" aria-label="Go to WordQuest home" title="Go to WordQuest home">Word<span>Quest</span></button>
+      <div id="play-mode-label" class="play-mode-label" aria-live="polite">Word Quest</div>
       <div class="header-right">
         <div class="header-icon-controls">
           <button id="teacher-panel-btn" data-testid="teacher-panel-btn" class="icon-btn" type="button" aria-label="Teacher Hub" title="Teacher Hub">
@@ -58,6 +59,7 @@
           <button id="settings-btn" data-testid="settings-btn" class="icon-btn" title="Settings" aria-label="Settings">
             <span class="icon-emoji" aria-hidden="true">⚙️</span>
           </button>
+          <button id="play-tools-btn" class="icon-btn hidden" type="button" aria-haspopup="dialog" aria-controls="play-tools-drawer" aria-expanded="false" aria-label="Open tools">☰</button>
         </div>
         <div class="header-quick-controls">
           <button id="play-style-toggle" class="header-quick-btn" type="button" aria-pressed="false" title="Switch game mode">
@@ -126,10 +128,10 @@
       </p>
       <div class="hero-cta">
         <button id="cta-wordquest" class="primary-btn" type="button">
-          Try Live Word Quest (60 sec)
+          Start Word Quest
         </button>
-        <button id="cta-paragraph" class="secondary-btn" type="button">
-          Build a Paragraph
+        <button id="cta-tools" class="secondary-btn" type="button">
+          Explore Tools
         </button>
       </div>
       <div class="hero-proof">
@@ -140,6 +142,16 @@
     </div>
     <div class="hero-right">
       <div id="hero-preview-container" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="home-tools-section" class="home-tools-section hidden" aria-label="Explore tools">
+    <h2>Explore Tools</h2>
+    <div class="home-tools-grid">
+      <button id="home-open-writing-studio" class="header-quick-btn" type="button">Writing Studio</button>
+      <button id="home-open-sentence-surgery" class="header-quick-btn" type="button">Sentence Surgery</button>
+      <button id="home-open-reading-lab" class="header-quick-btn" type="button">Reading Lab</button>
+      <button id="home-open-teacher-dashboard" class="header-quick-btn" type="button">Teacher Dashboard</button>
     </div>
   </section>
 
@@ -204,6 +216,13 @@
       <span id="quick-music-label" class="theme-preview-music-label" aria-live="polite">Stopped</span>
     </div>
     <button id="quick-music-done" class="quick-popover-done" type="button" aria-label="Close music controls">Done</button>
+  </div>
+  <div id="play-tools-drawer" class="play-tools-drawer hidden" role="dialog" aria-label="WordQuest tools" aria-hidden="true">
+    <button id="play-drawer-writing-studio" class="quick-action-btn" type="button">Writing Studio</button>
+    <button id="play-drawer-sentence-surgery" class="quick-action-btn" type="button">Sentence Surgery</button>
+    <button id="play-drawer-reading-lab" class="quick-action-btn" type="button">Reading Lab</button>
+    <button id="play-drawer-teacher-dashboard" class="quick-action-btn hidden" type="button">Teacher Dashboard</button>
+    <button id="play-drawer-close" class="quick-action-btn" type="button">Close</button>
   </div>
   <div id="next-action-line" class="next-action-line hidden" aria-live="polite"></div>
   <div id="classroom-turn-line" class="classroom-turn-line hidden" aria-live="polite"></div>
@@ -1290,7 +1309,7 @@
     </div>
   </div>
 
-  <div id="wq-version-chip" class="wq-version-chip" aria-hidden="true"></div>
+  <div id="wq-version-chip" class="wq-version-chip hidden" aria-hidden="true"></div>
 
   <script src="data/words-inline.js"></script>
   <script src="data/engagement-boosts.js?v=20260222c"></script>

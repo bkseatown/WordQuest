@@ -215,6 +215,18 @@ header {
   min-height: 34px;
 }
 
+.play-mode-label {
+  grid-area: mode;
+  display: none;
+  justify-self: center;
+  align-self: center;
+  font-size: 0.74rem;
+  font-weight: 820;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--text) 74%, var(--text-muted) 26%);
+}
+
 .logo {
   grid-area: logo;
   font-family: var(--font-logo);
@@ -620,6 +632,88 @@ html[data-page-mode="wordquest"] #mission-lab-nav-btn {
   box-shadow: 0 4px 10px rgba(7, 16, 30, 0.07);
   overflow: visible;
   flex-shrink: 0;
+}
+
+.home-tools-section {
+  width: min(var(--main-max-width), calc(100vw - 20px));
+  margin: 4px auto 0;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 42%, transparent);
+  background: color-mix(in oklab, var(--panel-bg) 84%, transparent);
+}
+
+.home-tools-section h2 {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.home-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.play-tools-drawer {
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  right: 10px;
+  z-index: 35;
+  width: min(280px, calc(100vw - 20px));
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 58%, transparent);
+  background: color-mix(in oklab, var(--panel-bg) 92%, #ffffff 8%);
+  box-shadow: 0 10px 26px rgba(10, 20, 36, 0.28);
+  display: grid;
+  gap: 8px;
+}
+
+html[data-home-mode="home"] .header-right,
+html[data-home-mode="home"] .top-control-hub,
+html[data-home-mode="home"] .next-action-line,
+html[data-home-mode="home"] .classroom-turn-line,
+html[data-home-mode="home"] main {
+  display: none !important;
+}
+
+html[data-home-mode="home"] .hero-v2 {
+  min-height: min(78dvh, 620px);
+  padding-top: 56px;
+  padding-bottom: 40px;
+}
+
+html[data-home-mode="play"] #hero-v2,
+html[data-home-mode="play"] #home-tools-section {
+  display: none !important;
+}
+
+html[data-home-mode="play"] .header-main-row {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'logo mode icons';
+  align-items: center;
+}
+
+html[data-home-mode="play"] .play-mode-label {
+  display: inline-flex;
+}
+
+html[data-home-mode="play"] .header-quick-controls {
+  display: none !important;
+}
+
+html[data-home-mode="play"] .header-icon-controls > * {
+  display: none !important;
+}
+
+html[data-home-mode="play"] #play-tools-btn {
+  display: inline-flex !important;
+}
+
+html[data-home-mode="play"] #play-tools-btn.hidden {
+  display: inline-flex !important;
 }
 
 .focus-bar {
@@ -1396,13 +1490,14 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   font-size: 0.54rem;
 }
 
-/* ── Settings overlay ───────────────────────────────── */
+/* ── Settings panel ─────────────────────────────────── */
 .settings-panel {
-  position:      fixed;
-  top:           max(6px, calc(env(safe-area-inset-top) + 6px));
-  left:          50%;
-  transform:     translateX(-50%);
-  width:         min(568px, calc(100vw - 14px));
+  position:      relative;
+  top:           auto;
+  left:          auto;
+  transform:     none;
+  width:         min(1080px, calc(100vw - 24px));
+  margin:        8px auto 10px;
   background:    linear-gradient(
     180deg,
     color-mix(in oklab, var(--panel-bg) 80%, var(--page-bg) 20%) 0%,
@@ -1414,12 +1509,46 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
     0 26px 52px rgba(8, 18, 34, 0.28),
     0 10px 24px rgba(6, 14, 26, 0.18);
   backdrop-filter: blur(12px);
-  z-index:       40;
+  z-index:       8;
   animation:     slideDown 0.18s ease;
-  max-height:    calc(100dvh - 12px - env(safe-area-inset-bottom));
+  max-height:    clamp(360px, 74dvh, 860px);
   display:       flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+@media (max-width: 1080px) {
+  .settings-panel {
+    width: calc(100vw - 16px);
+    margin: 6px auto 9px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 720px) {
+  .settings-panel {
+    width: calc(100vw - 10px);
+    margin: 5px auto 8px;
+    border-radius: 15px;
+    max-height: none;
+  }
+
+  .settings-header {
+    padding: 9px 11px;
+  }
+
+  .settings-body {
+    padding: 7px;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 380px) {
+  .settings-panel {
+    width: calc(100vw - 6px);
+    margin: 4px auto 7px;
+    border-radius: 12px;
+  }
 }
 
 .settings-header {
@@ -6498,6 +6627,10 @@ html[data-layout-mode="compact"] .key.key-chunk {
   }
 
   .teacher-panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-tools-grid {
     grid-template-columns: 1fr;
   }
 
