@@ -1105,6 +1105,7 @@
     const skipBtn = _el('csCoachSkip');
     if (!copyEl || !primaryBtn || !suggestBtn || !hintBtn || !skipBtn) return;
     const nextStepId = String(config?.id || '').trim() || 'unknown';
+    const wasVisible = coach.classList.contains('cs-visible');
     if (demoState.lastCoachStepId === nextStepId && coach.classList.contains('cs-visible')) {
       return;
     }
@@ -1156,11 +1157,13 @@
     }
 
     const anchor = config?.anchor || _el('keyboard') || document.body;
-    const rect = (anchor && anchor.getBoundingClientRect) ? anchor.getBoundingClientRect() : { top: 84, left: 20, width: 300 };
-    coach.style.top = `${Math.max(72, rect.top - 90)}px`;
-    coach.style.left = `${Math.max(12, rect.left + (rect.width / 2) - 170)}px`;
-    coach.classList.remove('cs-hidden');
-    coach.classList.add('cs-visible');
+    if (!wasVisible) {
+      const rect = (anchor && anchor.getBoundingClientRect) ? anchor.getBoundingClientRect() : { top: 84, left: 20, width: 300 };
+      coach.style.top = `${Math.max(72, rect.top - 90)}px`;
+      coach.style.left = `${Math.max(12, rect.left + (rect.width / 2) - 170)}px`;
+      coach.classList.remove('cs-hidden');
+      coach.classList.add('cs-visible');
+    }
   }
 
   function resetDemoScriptState() {
