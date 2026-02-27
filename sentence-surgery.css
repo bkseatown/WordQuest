@@ -1,0 +1,120 @@
+:root {
+  --ss-bg-a: #101820;
+  --ss-bg-b: #1c2b3a;
+  --ss-text: rgba(247, 251, 255, 0.95);
+  --ss-muted: rgba(226, 235, 245, 0.72);
+  --ss-border: rgba(208, 221, 235, 0.26);
+  --ss-surface: rgba(23, 33, 44, 0.46);
+  --ss-accent: #7aa7ff;
+  --ss-accent-warm: #ffd079;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.cs-page-surgery {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    radial-gradient(820px 420px at 20% 18%, rgba(144, 170, 198, 0.12) 0%, rgba(0, 0, 0, 0) 65%),
+    linear-gradient(135deg, var(--ss-bg-a), var(--ss-bg-b));
+  color: var(--ss-text);
+  font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+}
+
+.ss-container {
+  width: min(860px, 94vw);
+  text-align: center;
+  padding: 38px 24px;
+}
+
+.ss-header {
+  margin: 0;
+  font-family: "Nunito", "Atkinson Hyperlegible", sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ss-muted);
+}
+
+.ss-sentence-wrapper {
+  margin: 34px 0 28px;
+}
+
+.ss-sentence {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0;
+  outline: none;
+  border-radius: 16px;
+  padding: 14px 18px;
+  background: var(--ss-surface);
+  border: 1px solid transparent;
+}
+
+.ss-sentence:focus {
+  border-color: var(--ss-border);
+  box-shadow: 0 0 0 3px rgba(122, 167, 255, 0.18);
+}
+
+.ss-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.ss-actions button {
+  border-radius: 999px;
+  padding: 11px 18px;
+  border: 1px solid var(--ss-border);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ss-text);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ss-actions button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.ss-meter {
+  width: min(520px, 90%);
+  height: 12px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ss-meter-bar {
+  height: 100%;
+  width: 10%;
+  background: linear-gradient(90deg, var(--ss-accent), var(--ss-accent-warm));
+  transition: width 220ms ease;
+}
+
+.ss-level {
+  margin-top: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ss-muted);
+}
+
+@media (max-width: 640px) {
+  .ss-container {
+    padding: 28px 16px;
+  }
+
+  .ss-actions button {
+    width: 100%;
+    max-width: 280px;
+  }
+}

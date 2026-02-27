@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sentence Surgery</title>
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./sentence-surgery.css?v=20260227a">
+</head>
+<body class="cs-page-surgery">
+  <main class="ss-container" aria-label="Sentence Surgery practice">
+    <h1 class="ss-header">Sentence Surgery</h1>
+
+    <section class="ss-sentence-wrapper" aria-label="Editable sentence">
+      <div contenteditable="true" id="ssSentence" class="ss-sentence" role="textbox" aria-multiline="false" aria-label="Edit your sentence">
+        The dog ran.
+      </div>
+    </section>
+
+    <section class="ss-actions" aria-label="Sentence actions">
+      <button type="button" data-action="why">Add Why</button>
+      <button type="button" data-action="detail">Add Detail</button>
+      <button type="button" data-action="verb">Upgrade Verb</button>
+    </section>
+
+    <section class="ss-meter" aria-label="Complexity meter">
+      <div class="ss-meter-bar" id="ssMeterBar"></div>
+    </section>
+
+    <div class="ss-level" id="ssLevel">Level 1</div>
+  </main>
+
+  <script src="./sentence-surgery.js?v=20260227a" defer></script>
+</body>
+</html>

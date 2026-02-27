@@ -3543,7 +3543,7 @@
     if (!headerRight) return;
 
     const iconIds = ['theme-dock-toggle-btn', 'music-dock-toggle-btn', 'teacher-panel-btn', 'case-toggle-btn', 'keyboard-layout-toggle', 'mission-lab-nav-btn', 'settings-btn'];
-    const quickIds = ['play-style-toggle', 'phonics-clue-open-btn', 'starter-word-open-btn', 'writing-studio-btn', 'new-game-btn'];
+    const quickIds = ['play-style-toggle', 'phonics-clue-open-btn', 'starter-word-open-btn', 'writing-studio-btn', 'sentence-surgery-btn', 'new-game-btn'];
 
     let iconGroup = headerRight.querySelector('.header-icon-controls');
     if (!iconGroup) {
@@ -3605,6 +3605,8 @@
     }
     const writingBtn = _el('writing-studio-btn');
     if (WRITING_STUDIO_ENABLED) setHoverNoteForElement(writingBtn, 'Open Writing Studio.');
+    const surgeryBtn = _el('sentence-surgery-btn');
+    if (surgeryBtn) setHoverNoteForElement(surgeryBtn, 'Open Sentence Surgery.');
     syncWritingStudioAvailability();
   }
 
@@ -5013,11 +5015,32 @@
     if (clueSentence) url.searchParams.set('wq_clue', clueSentence);
     window.location.href = url.toString();
   }
+
+  function openSentenceSurgeryPage() {
+    const activeTheme = normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
+    const state = WQGame.getState?.() || {};
+    const focusSelect = _el('setting-focus');
+    const focusValue = String(focusSelect?.value || prefs.focus || DEFAULT_PREFS.focus || 'all').trim();
+    const focusLabel = String(focusSelect?.selectedOptions?.[0]?.textContent || focusValue || 'Sentence practice').trim();
+    const gradeValue = String(_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade || 'all').trim();
+    const targetWord = String(state?.word || '').trim().toUpperCase();
+    const clueSentence = String(state?.entry?.sentence || '').trim();
+    const url = new URL('sentence-surgery.html', window.location.href);
+    url.searchParams.set('theme', activeTheme);
+    url.searchParams.set('wq_focus', focusValue);
+    url.searchParams.set('wq_focus_label', focusLabel);
+    url.searchParams.set('wq_grade', gradeValue);
+    if (targetWord) url.searchParams.set('wq_word', targetWord);
+    if (clueSentence) url.searchParams.set('wq_clue', clueSentence);
+    window.location.href = url.toString();
+  }
+
   if (WRITING_STUDIO_ENABLED) {
     _el('writing-studio-btn')?.addEventListener('click', openWritingStudioPage);
   } else {
     syncWritingStudioAvailability();
   }
+  _el('sentence-surgery-btn')?.addEventListener('click', openSentenceSurgeryPage);
   _el('home-logo-btn')?.addEventListener('click', () => {
     setPageMode('wordquest', { force: true });
     closeFocusSearchList();
