@@ -71,6 +71,7 @@ jobs:
           CANONICAL_URL: https://bkseatown.github.io/WordQuest/
         run: |
           set -euo pipefail
+          expected_build="${GITHUB_SHA::12}-${GITHUB_RUN_NUMBER}"
           markers=(
             'id="settings-build-badge"'
             'src="js/app.js?v='
@@ -110,6 +111,9 @@ jobs:
                   missing+=("${marker}")
                 fi
               done
+              if [[ "${html}" != *"name=\"wq-build\" content=\"${expected_build}\""* ]]; then
+                missing+=("meta[name=wq-build]=${expected_build}")
+              fi
               if [ "${http_code}" = "200" ] && [ "${#missing[@]}" -eq 0 ]; then
                 passed=1
                 details="All markers found on attempt ${attempt} (HTTP ${http_code}, ${bytes} bytes)."
@@ -129,6 +133,24 @@ jobs:
               else
                 warnings=$((warnings + 1))
                 echo "| ${target} | ⚠️ WARN | ${details} |" >> "${summary_file}"
+              fi
+            fi
+          done
+
+          for target_entry in "${targets[@]}"; do
+            target="${target_entry%%|*}"
+            requirement="${target_entry##*|}"
+            version_url="${target%/}/build-version.txt?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            version_value="$(curl -sS --max-time 20 "${version_url}" | tr -d '[:space:]' || true)"
+            if [ "${version_value}" = "${expected_build}" ]; then
+              echo "| ${version_url} | ✅ PASS | build-version.txt matches ${expected_build}. |" >> "${summary_file}"
+            else
+              if [ "${requirement}" = "required" ]; then
+                failures=$((failures + 1))
+                echo "| ${version_url} | ❌ FAIL | Expected ${expected_build}, got ${version_value:-<empty>}. |" >> "${summary_file}"
+              else
+                warnings=$((warnings + 1))
+                echo "| ${version_url} | ⚠️ WARN | Expected ${expected_build}, got ${version_value:-<empty>}. |" >> "${summary_file}"
               fi
             fi
           done

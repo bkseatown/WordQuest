@@ -16,20 +16,6 @@ const AUDIO_MAX_ENTRIES = 1800;
 const CORE_FILES = [
   './',
   './index.html',
-  './style/modes.css',
-  './style/themes.css',
-  './style/components.css',
-  './style/world-themes.css',
-  './data/words-inline.js',
-  './data/audio-manifest.json',
-  './data/music-catalog.json',
-  './js/data.js',
-  './js/audio.js',
-  './js/game.js',
-  './js/ui.js',
-  './js/theme-registry.js',
-  './js/theme-nav.js',
-  './js/app.js',
   './sw.js',
   './sw-runtime.js'
 ];
@@ -130,7 +116,8 @@ async function cacheFirst(request, primaryCache) {
   }
 }
 
-async function networkFirst(request, cacheName) {
+async function networkFirst(request, cacheName, options = {}) {
+  const ignoreSearchFallback = options.ignoreSearchFallback === true;
   const cache = await caches.open(cacheName);
   try {
     const network = await fetch(request);
@@ -139,7 +126,10 @@ async function networkFirst(request, cacheName) {
     }
     return network;
   } catch {
-    const hit = await cache.match(request);
+    let hit = await cache.match(request);
+    if (!hit && ignoreSearchFallback) {
+      hit = await cache.match(request, { ignoreSearch: true });
+    }
     if (hit) return hit;
     return new Response('Offline and no cached data available.', {
       status: 503,
@@ -195,7 +185,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (isShellCriticalRequest(url)) {
-    event.respondWith(networkFirst(request, SHELL_CACHE));
+    event.respondWith(networkFirst(request, SHELL_CACHE, { ignoreSearchFallback: true }));
     return;
   }
 
