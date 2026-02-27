@@ -129,11 +129,11 @@
     });
   }
 
-  function setCoachMessage(text) {
+  function setCoachMessage(key, text) {
     if (!state.coachRibbon || typeof state.coachRibbon.set !== "function") return;
     var line = sanitizeText(text);
     if (!line) return;
-    state.coachRibbon.set({ text: line });
+    state.coachRibbon.set({ key: sanitizeText(key), text: line });
   }
 
   function safeLoad(key, fallback) {
@@ -361,7 +361,7 @@
       mode: state.mode
     };
     setStatus("Attempt running.");
-    setCoachMessage("Aim for smooth phrasing; pause at punctuation.");
+    setCoachMessage("rl.during", "Aim for smooth phrasing; pause at punctuation.");
     syncAttemptVisibility("running");
 
     if (state.mode === "read_aloud" && !opts.skipAudio) {
@@ -384,7 +384,7 @@
     }
     var metrics = computeAndRenderMetrics();
     renderTeacherSummary(metrics);
-    setCoachMessage("Next move: " + recommendedNextStep(metrics));
+    setCoachMessage("rl.post", "Next move: " + recommendedNextStep(metrics));
     if (!state.isDemo && !opts.skipPersist) persistReadingAggregate(metrics);
     setStatus("Attempt complete.");
     syncAttemptVisibility("complete");
@@ -395,7 +395,7 @@
       state.mode = "silent";
       el.mode.value = "silent";
       setStatus("Mic not supported. Switched to silent mode.");
-      setCoachMessage("Continue in silent mode and keep punctuation-aware pacing.");
+      setCoachMessage("rl.during", "Continue in silent mode and keep punctuation-aware pacing.");
       return;
     }
     navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
@@ -424,7 +424,7 @@
       state.mode = "silent";
       el.mode.value = "silent";
       setStatus("Mic permission denied. Silent mode active.");
-      setCoachMessage("Continue in silent mode and keep punctuation-aware pacing.");
+      setCoachMessage("rl.during", "Continue in silent mode and keep punctuation-aware pacing.");
     });
   }
 
@@ -821,7 +821,7 @@
     }
 
     demoTimeout(function () { setStatus("Prosody cue: add pauses at punctuation."); }, 2200);
-    demoTimeout(function () { setCoachMessage("Aim for smooth phrasing; pause at punctuation."); }, 2200);
+    demoTimeout(function () { setCoachMessage("rl.during", "Aim for smooth phrasing; pause at punctuation."); }, 2200);
 
     for (i = 12; i < Math.min(26, wordIds.length); i += 1) {
       (function (tokenId, delay, mark) {
@@ -836,7 +836,7 @@
     demoTimeout(function () {
       stopAttempt({ skipPersist: true });
       setStatus("Demo complete: punctuation pauses improved, hard word practiced.");
-      setCoachMessage("Next move: re-read sentence 2 with comma pauses.");
+      setCoachMessage("rl.post", "Next move: re-read sentence 2 with comma pauses.");
     }, t + 600);
   }
 
@@ -860,7 +860,7 @@
     refreshPassage();
     setCurrentMark("correct");
     setStatus("Ready. Start an attempt.");
-    setCoachMessage("Start reading. We'll track accuracy + phrasing.");
+    setCoachMessage("rl.preAttempt", "Start reading. We'll track accuracy + phrasing.");
     if (state.isDemo) {
       el.replayDemo.classList.remove("hidden");
       runDemoScript();

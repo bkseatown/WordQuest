@@ -153,10 +153,10 @@
     return "Level " + String(Math.max(1, Math.min(3, Number(level || 0) + 1)));
   }
 
-  function setCoachText(text) {
+  function setCoachText(text, key) {
     var line = sanitize(text);
     if (coachRibbon && typeof coachRibbon.set === "function" && line) {
-      coachRibbon.set({ text: line });
+      coachRibbon.set({ text: line, key: sanitize(key || "") });
     }
     if (!coachEl) return;
     if (!line) {
@@ -168,9 +168,9 @@
     coachEl.textContent = line;
   }
 
-  function setStateCoachText(text) {
+  function setStateCoachText(text, key) {
     coachStateLockUntil = Date.now() + 1600;
-    setCoachText(text);
+    setCoachText(text, key);
   }
 
   function revealPostEditUi() {
@@ -178,7 +178,7 @@
     hasFirstEdit = true;
     postEditEls.forEach(function (node) { node.classList.remove("hidden"); });
     if (traitsPanelEl) traitsPanelEl.open = false;
-    setStateCoachText("Nice. Upgrade one word choice next.");
+    setStateCoachText("Nice. Upgrade one word choice next.", "ss.afterEdit");
   }
 
   function initCoachRibbon() {
@@ -540,7 +540,7 @@
   function applyAction(action) {
     if (demoLocked) return;
     if (action && action !== "teacher") revealPostEditUi();
-    if (action === "why") setStateCoachText("Write a short WHY phrase after because.");
+    if (action === "why") setStateCoachText("Write a short WHY phrase after because.", "ss.addWhy");
     if (action === "verb") {
       engine.applyAction(action);
       var sourceBtn = document.querySelector('[data-action="verb"]');
@@ -716,7 +716,7 @@
 
   var seededSentence = seedSentenceFromQuery();
   initCoachRibbon();
-  setStateCoachText("Make one change at a time.");
+    setStateCoachText("Make one change at a time.", "ss.initial");
   if (seededSentence) applySeedSentence(seededSentence);
   render();
 })();

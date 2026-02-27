@@ -156,19 +156,49 @@ body.cs-page-reading-lab {
   filter: brightness(1.05);
 }
 
+.cs-coach-voice-toggle {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: #d7e8fa;
+  font-size: 0.72rem;
+  font-weight: 620;
+  line-height: 1;
+  padding: 6px 9px;
+  cursor: pointer;
+  transition: filter 170ms ease, transform 170ms ease, border-color 170ms ease;
+}
+
+.cs-coach-voice-toggle:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.cs-coach-voice-toggle.is-on {
+  border-color: rgba(127,182,255,0.58);
+  background: rgba(127,182,255,0.18);
+  color: #eef6ff;
+}
+
 .cs-coach-ribbon .hidden {
   display: none !important;
 }
 
 .cs-coach-ribbon .cs-coach-text,
 .cs-coach-ribbon .cs-coach-chip,
-.cs-coach-ribbon .cs-coach-action {
+.cs-coach-ribbon .cs-coach-action,
+.cs-coach-ribbon .cs-coach-voice-toggle {
   transition: opacity 220ms ease, transform 220ms ease;
 }
 
 .cs-coach-ribbon.is-updating .cs-coach-text,
 .cs-coach-ribbon.is-updating .cs-coach-chip,
-.cs-coach-ribbon.is-updating .cs-coach-action {
+.cs-coach-ribbon.is-updating .cs-coach-action,
+.cs-coach-ribbon.is-updating .cs-coach-voice-toggle {
   opacity: 0.74;
   transform: translateY(-1px);
 }

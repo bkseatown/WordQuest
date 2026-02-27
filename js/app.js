@@ -5698,6 +5698,7 @@
           getMessageFn: () => {
             const toolsVisible = !_el('home-tools-section')?.classList.contains('hidden');
             return {
+              key: toolsVisible ? 'home.tools' : 'home.default',
               text: toolsVisible
                 ? 'Pick a tool; everything is scaffolded for Tier 2/3.'
                 : 'Try a 60-second round to see decoding + feedback.'
@@ -5711,7 +5712,10 @@
       if (mount) {
         wordQuestCoachRibbon = ribbonMod.initCoachRibbon({
           mountEl: mount,
-          getMessageFn: () => ({ text: 'Try SLATE first; watch the colors teach the rule.' })
+          getMessageFn: () => ({
+            key: 'wq.beforeFirstGuess',
+            text: 'Try SLATE first; watch the colors teach the rule.'
+          })
         });
       }
     }
@@ -5733,17 +5737,20 @@
     }
     if (DEMO_MODE) {
       mount.classList.remove('hidden');
-      wordQuestCoachRibbon.set({ text: 'Demo mode active-follow the guided coach prompts.' });
+      wordQuestCoachRibbon.set({
+        key: 'wq.beforeFirstGuess',
+        text: 'Demo mode active; follow the guided coach prompts.'
+      });
       return;
     }
     mount.classList.remove('hidden');
     const map = {
-      before_guess: 'Try SLATE first; watch the colors teach the rule.',
-      after_first_miss: 'Use the clue or change one letter.',
-      after_correct: 'Nice. Tap Next Word for another round.'
+      before_guess: { key: 'wq.beforeFirstGuess', text: 'Try SLATE first; watch the colors teach the rule.' },
+      after_first_miss: { key: 'wq.afterFirstMiss', text: 'Use the clue or change one letter.' },
+      after_correct: { key: 'wq.correct', text: 'Nice. Tap Next Word for another round.' }
     };
-    const text = map[wordQuestCoachKey] || map.before_guess;
-    wordQuestCoachRibbon.set({ text });
+    const next = map[wordQuestCoachKey] || map.before_guess;
+    wordQuestCoachRibbon.set(next);
   }
 
   function setHomePlayShellIsolation(isHome) {

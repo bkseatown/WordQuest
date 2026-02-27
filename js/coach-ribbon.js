@@ -7,17 +7,38 @@
 })(typeof window !== "undefined" ? window : this, function coachRibbonFactory() {
   "use strict";
 
-  var registry = {};
-  var activeId = "";
+  var COACH_VOICE_KEY = "cs_coach_voice_enabled";
+  var COACH_TTS_MANIFEST = "audio/tts/packs/ava-multi/coach/coach-tts.json";
+  var REPLAY_GUARD_MS = 5000;
 
   function sanitizeText(value) {
     return String(value || "").replace(/\s+/g, " ").trim();
   }
 
-  function resolveMessage(messageOrKey) {
+  function isDemoMode() {
+    try {
+      var params = new URLSearchParams(window.location.search || "");
+      return params.get("demo") === "1";
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function isDevMode() {
+    try {
+      var params = new URLSearchParams(window.location.search || "");
+      if (String(params.get("env") || "").toLowerCase() === "dev") return true;
+      return localStorage.getItem("cs_allow_dev") === "1";
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function resolveMessage(messageOrKey, messageRegistry) {
     if (!messageOrKey) return null;
-    if (typeof messageOrKey === "string" && registry[messageOrKey]) {
-      var fromKey = registry[messageOrKey];
+    if (typeof messageOrKey === "string") {
+      var fromKey = messageRegistry[messageOrKey];
+      if (!fromKey) return null;
       return {
         key: messageOrKey,
         text: sanitizeText(fromKey.text || ""),
@@ -38,9 +59,126 @@
     return null;
   }
 
+  function safeLoadVoicePref(isDemo) {
+    if (isDemo) return false;
+    try {
+      return localStorage.getItem(COACH_VOICE_KEY) === "true";
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function safeSaveVoicePref(enabled, isDemo) {
+    if (isDemo) return;
+    try {
+      localStorage.setItem(COACH_VOICE_KEY, enabled ? "true" : "false");
+    } catch (_e) {
+      // no-op
+    }
+  }
+
+  function ensureVoiceToggle(instance) {
+    if (instance.voiceToggleEl) return;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "cs-coach-voice-toggle";
+    btn.setAttribute("aria-label", "Coach voice (Ava)");
+    btn.setAttribute("title", "Coach voice (Ava)");
+    btn.setAttribute("aria-pressed", instance.state.voiceEnabled ? "true" : "false");
+    btn.innerHTML = '<span class="cs-coach-voice-icon" aria-hidden="true">🔊</span><span class="cs-coach-voice-label">Ava</span>';
+    instance.mountEl.appendChild(btn);
+    btn.addEventListener("click", function () {
+      instance.state.voiceEnabled = !instance.state.voiceEnabled;
+      safeSaveVoicePref(instance.state.voiceEnabled, instance.state.isDemo);
+      btn.setAttribute("aria-pressed", instance.state.voiceEnabled ? "true" : "false");
+      btn.classList.toggle("is-on", instance.state.voiceEnabled);
+      if (instance.state.voiceEnabled) {
+        playClipForKey(instance, "coach.enabled");
+      } else if (instance.state.audioEl) {
+        try {
+          instance.state.audioEl.pause();
+          instance.state.audioEl.currentTime = 0;
+        } catch (_e) {
+          // no-op
+        }
+      }
+    });
+    btn.classList.toggle("is-on", instance.state.voiceEnabled);
+    instance.voiceToggleEl = btn;
+  }
+
+  function getManifest(instance) {
+    if (instance.state.manifest) return Promise.resolve(instance.state.manifest);
+    if (instance.state.manifestPromise) return instance.state.manifestPromise;
+    instance.state.manifestPromise = fetch(COACH_TTS_MANIFEST, { cache: "no-store" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("coach manifest missing");
+        return res.json();
+      })
+      .then(function (json) {
+        instance.state.manifest = json && typeof json === "object" ? json : null;
+        return instance.state.manifest;
+      })
+      .catch(function (_err) {
+        if (isDevMode()) {
+          console.debug("[coach-ribbon] coach manifest load failed");
+        }
+        return null;
+      })
+      .finally(function () {
+        instance.state.manifestPromise = null;
+      });
+    return instance.state.manifestPromise;
+  }
+
+  function playClipForKey(instance, clipKey) {
+    var safeKey = sanitizeText(clipKey);
+    if (!safeKey || !instance.state.voiceEnabled) return;
+    var now = Date.now();
+    if (instance.state.lastPlayedKey === safeKey && (now - instance.state.lastPlayedAt) < REPLAY_GUARD_MS) return;
+
+    getManifest(instance).then(function (manifest) {
+      if (!manifest || !manifest.clips) return;
+      var src = sanitizeText(manifest.clips[safeKey] || "");
+      if (!src) return;
+
+      try {
+        if (!instance.state.audioEl) {
+          instance.state.audioEl = new Audio();
+          instance.state.audioEl.preload = "none";
+          instance.state.audioEl.volume = 0.9;
+          instance.state.audioEl.addEventListener("error", function () {
+            if (isDevMode()) {
+              console.debug("[coach-ribbon] coach clip play failed", instance.state.pendingClipKey || "unknown");
+            }
+          });
+        }
+        var audio = instance.state.audioEl;
+        audio.pause();
+        audio.currentTime = 0;
+        instance.state.pendingClipKey = safeKey;
+        audio.src = src;
+        var playPromise = audio.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(function () {
+            if (isDevMode()) {
+              console.debug("[coach-ribbon] coach clip play blocked", safeKey);
+            }
+          });
+        }
+        instance.state.lastPlayedKey = safeKey;
+        instance.state.lastPlayedAt = now;
+      } catch (_e) {
+        if (isDevMode()) {
+          console.debug("[coach-ribbon] coach clip playback error", safeKey);
+        }
+      }
+    });
+  }
+
   function applyMessage(instance, messageOrKey) {
     if (!instance || !instance.textEl) return;
-    var next = resolveMessage(messageOrKey);
+    var next = resolveMessage(messageOrKey, instance.messageRegistry);
     if (!next || !next.text) return;
 
     if (instance.state.lastText === next.text && instance.state.lastActionId === next.actionId) return;
@@ -70,6 +208,11 @@
         instance.actionEl.classList.add("hidden");
       }
     }
+
+    if (instance.state.voiceEnabled && next.key) {
+      playClipForKey(instance, next.key);
+    }
+
     window.setTimeout(function () {
       instance.mountEl.classList.remove("is-updating");
     }, 240);
@@ -78,7 +221,7 @@
   function setCoachMessage(key, payload) {
     var safeKey = sanitizeText(key);
     if (!safeKey || !payload || typeof payload !== "object") return;
-    registry[safeKey] = {
+    globalMessageRegistry[safeKey] = {
       text: sanitizeText(payload.text || ""),
       tone: sanitizeText(payload.tone || ""),
       actionLabel: sanitizeText(payload.actionLabel || ""),
@@ -87,11 +230,15 @@
   }
 
   function updateCoachRibbon(state) {
-    if (!activeId || !state) return;
-    var entry = registry[activeId];
-    if (!entry || typeof entry.getMessageFn !== "function") return;
-    applyMessage(entry.instance, entry.getMessageFn(state));
+    if (!Array.isArray(instances) || !state) return;
+    instances.forEach(function (entry) {
+      if (!entry || typeof entry.getMessageFn !== "function") return;
+      applyMessage(entry, entry.getMessageFn(state));
+    });
   }
+
+  var instances = [];
+  var globalMessageRegistry = {};
 
   function initCoachRibbon(options) {
     var opts = options || {};
@@ -111,10 +258,28 @@
       textEl: textEl,
       chipEl: chipEl instanceof HTMLElement ? chipEl : null,
       actionEl: actionEl instanceof HTMLElement ? actionEl : null,
+      voiceToggleEl: null,
       onActionFn: typeof opts.onActionFn === "function" ? opts.onActionFn : null,
       getMessageFn: typeof opts.getMessageFn === "function" ? opts.getMessageFn : null,
-      state: { lastText: "", lastActionId: "", activeKey: "" }
+      messageRegistry: globalMessageRegistry,
+      state: {
+        lastText: "",
+        lastActionId: "",
+        activeKey: "",
+        isDemo: isDemoMode(),
+        voiceEnabled: false,
+        manifest: null,
+        manifestPromise: null,
+        audioEl: null,
+        pendingClipKey: "",
+        lastPlayedKey: "",
+        lastPlayedAt: 0
+      }
     };
+
+    instance.state.voiceEnabled = safeLoadVoicePref(instance.state.isDemo);
+
+    ensureVoiceToggle(instance);
 
     if (instance.actionEl && instance.onActionFn) {
       instance.actionEl.addEventListener("click", function () {
@@ -124,19 +289,13 @@
       });
     }
 
-    var id = "ribbon-" + Date.now() + "-" + Math.floor(Math.random() * 9999);
-    registry[id] = {
-      instance: instance,
-      getMessageFn: instance.getMessageFn
-    };
-    activeId = id;
+    instances.push(instance);
 
     if (instance.getMessageFn) {
       applyMessage(instance, instance.getMessageFn({}));
     }
 
     return {
-      id: id,
       mountEl: mountEl,
       set: function setMessage(messageOrKey) {
         applyMessage(instance, messageOrKey);

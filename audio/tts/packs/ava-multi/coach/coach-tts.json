@@ -1,0 +1,20 @@
+{
+  "version": "2026-02-28-coach1",
+  "voice": "ava-multi",
+  "clips": {
+    "home.default": "audio/tts/packs/ava-multi/coach/home.default.mp3",
+    "home.tools": "audio/tts/packs/ava-multi/coach/home.tools.mp3",
+    "wq.beforeFirstGuess": "audio/tts/packs/ava-multi/coach/wq.beforeFirstGuess.mp3",
+    "wq.afterFirstMiss": "audio/tts/packs/ava-multi/coach/wq.afterFirstMiss.mp3",
+    "wq.correct": "audio/tts/packs/ava-multi/coach/wq.correct.mp3",
+    "rl.preAttempt": "audio/tts/packs/ava-multi/coach/rl.preAttempt.mp3",
+    "rl.during": "audio/tts/packs/ava-multi/coach/rl.during.mp3",
+    "rl.post": "audio/tts/packs/ava-multi/coach/rl.post.mp3",
+    "ss.initial": "audio/tts/packs/ava-multi/coach/ss.initial.mp3",
+    "ss.addWhy": "audio/tts/packs/ava-multi/coach/ss.addWhy.mp3",
+    "ss.afterEdit": "audio/tts/packs/ava-multi/coach/ss.afterEdit.mp3",
+    "td.default": "audio/tts/packs/ava-multi/coach/td.default.mp3",
+    "td.student": "audio/tts/packs/ava-multi/coach/td.student.mp3",
+    "coach.enabled": "audio/tts/packs/ava-multi/coach/coach.enabled.mp3"
+  }
+}

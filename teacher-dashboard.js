@@ -45,14 +45,14 @@
     state.coachRibbon = window.CSCoachRibbon.initCoachRibbon({
       mountEl: coachRibbonEl,
       getMessageFn: function () {
-        return { text: "Start with Group B; use the recommended next step." };
+        return { key: "td.default", text: "Start with Group B; use the recommended next step." };
       }
     });
   }
 
-  function setCoachMessage(text) {
+  function setCoachMessage(key, text) {
     if (!state.coachRibbon || typeof state.coachRibbon.set !== "function") return;
-    state.coachRibbon.set({ text: String(text || "").trim() });
+    state.coachRibbon.set({ key: String(key || "").trim(), text: String(text || "").trim() });
   }
 
   function renderStorageWarningIfNeeded() {
@@ -400,9 +400,12 @@
     if (!selectedEl) return;
     var row = getSelectedRow();
     selectedEl.textContent = row ? (row.name + " (" + pickTier(row) + ")") : "Select a student from heatmap details";
-    setCoachMessage(row
-      ? "Focus: 1 skill today. Try the suggested mini-lesson."
-      : "Start with Group B; use the recommended next step.");
+    setCoachMessage(
+      row ? "td.student" : "td.default",
+      row
+        ? "Focus: 1 skill today. Try the suggested mini-lesson."
+        : "Start with Group B; use the recommended next step."
+    );
     setStudentView(!!row);
   }
 

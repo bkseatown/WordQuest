@@ -216,6 +216,39 @@ html[data-text-size="large"] { --wq-text-size: 18px; }
   outline-offset: 2px;
 }
 
+.cs-coach-voice-toggle {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 36%, transparent);
+  background: color-mix(in oklab, var(--cs-surface-1) 86%, transparent);
+  color: var(--cs-text-1);
+  font-size: 0.72rem;
+  font-weight: 620;
+  line-height: 1;
+  padding: 6px 9px;
+  cursor: pointer;
+  transition: filter 170ms ease, transform 170ms ease, border-color 170ms ease;
+}
+
+.cs-coach-voice-toggle:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.cs-coach-voice-toggle.is-on {
+  border-color: color-mix(in oklab, var(--cs-accent) 58%, transparent);
+  background: color-mix(in oklab, var(--cs-accent) 17%, rgba(19, 33, 47, 0.9) 83%);
+  color: #eef6ff;
+}
+
+.cs-coach-voice-toggle:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--cs-accent) 62%, #ffffff 38%);
+  outline-offset: 2px;
+}
+
 .cs-coach-ribbon .hidden {
   display: none !important;
 }
@@ -1003,13 +1036,15 @@ html[data-motion="reduced"] #cta-wordquest {
 
   .cs-coach-ribbon .cs-coach-text,
   .cs-coach-ribbon .cs-coach-chip,
-  .cs-coach-ribbon .cs-coach-action {
+  .cs-coach-ribbon .cs-coach-action,
+  .cs-coach-ribbon .cs-coach-voice-toggle {
     transition: none;
   }
 
   .cs-coach-ribbon.is-updating .cs-coach-text,
   .cs-coach-ribbon.is-updating .cs-coach-chip,
-  .cs-coach-ribbon.is-updating .cs-coach-action {
+  .cs-coach-ribbon.is-updating .cs-coach-action,
+  .cs-coach-ribbon.is-updating .cs-coach-voice-toggle {
     opacity: 1;
     transform: none;
   }
@@ -3420,7 +3455,7 @@ html[data-page-mode="mission-lab"] .mission-lab-hub {
   z-index: 5;
   width: min(620px, calc(100vw - 26px));
   margin-bottom: 2px;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 html[data-home-mode="play"] #wq-coach-ribbon.hidden {
