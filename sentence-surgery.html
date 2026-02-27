@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./sentence-surgery.css?v=20260227a">
+  <link rel="stylesheet" href="./sentence-surgery.css?v=20260227b">
 </head>
 <body class="cs-page-surgery">
   <main class="ss-container" aria-label="Sentence Surgery practice">
@@ -24,6 +24,7 @@
       <button type="button" data-action="why">Add Why</button>
       <button type="button" data-action="detail">Add Detail</button>
       <button type="button" data-action="verb">Upgrade Verb</button>
+      <button type="button" id="ssTeacherToggle" class="ss-teacher-toggle" aria-pressed="false">Teacher Lens</button>
     </section>
 
     <section class="ss-meter" aria-label="Complexity meter">
@@ -31,8 +32,43 @@
     </section>
 
     <div class="ss-level" id="ssLevel">Level 1</div>
+
+    <section class="ss-traits" aria-label="Writing traits">
+      <div class="ss-trait">
+        <span>Clarity</span>
+        <div class="ss-trait-track"><div id="ssTraitClarity" class="ss-trait-fill"></div></div>
+        <span id="ssTraitClarityValue">0</span>
+      </div>
+      <div class="ss-trait">
+        <span>Detail</span>
+        <div class="ss-trait-track"><div id="ssTraitDetail" class="ss-trait-fill"></div></div>
+        <span id="ssTraitDetailValue">0</span>
+      </div>
+      <div class="ss-trait">
+        <span>Reasoning</span>
+        <div class="ss-trait-track"><div id="ssTraitReasoning" class="ss-trait-fill"></div></div>
+        <span id="ssTraitReasoningValue">0</span>
+      </div>
+      <div class="ss-trait">
+        <span>Control</span>
+        <div class="ss-trait-track"><div id="ssTraitControl" class="ss-trait-fill"></div></div>
+        <span id="ssTraitControlValue">0</span>
+      </div>
+    </section>
+
+    <aside class="ss-breakdown" id="ssBreakdown" aria-live="polite">
+      <div><strong>Skill Tag:</strong> <span id="ssSkillTag">Emerging sentence</span></div>
+      <div><strong>Suggested Grouping:</strong> <span id="ssGrouping">Core</span></div>
+      <div id="ssBreakdownBody">Word count, clause use, and verb strength update live.</div>
+    </aside>
+
+    <div class="ss-badge" id="ssBadge" role="status" aria-live="polite"></div>
+    <div class="ss-compare" id="ssCompare" aria-hidden="true">
+      <div class="before" id="ssCompareBefore"></div>
+      <div class="after" id="ssCompareAfter"></div>
+    </div>
   </main>
 
-  <script src="./sentence-surgery.js?v=20260227a" defer></script>
+  <script src="./sentence-surgery.js?v=20260227b" defer></script>
 </body>
 </html>
