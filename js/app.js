@@ -29,7 +29,7 @@
     }
   })();
   if (DEMO_MODE) {
-    if (window.__CS_DEMO_INIT_DONE) return;
+    // Mark demo initialization; do not early-return the app bootstrap.
     window.__CS_DEMO_INIT_DONE = true;
     window.WQ_DEMO = true;
     document.documentElement.setAttribute('data-wq-demo', 'on');
