@@ -789,6 +789,29 @@ html[data-home-mode="home"] main {
   display: none !important;
 }
 
+html[data-home-mode="home"] #play-tools-drawer,
+html[data-home-mode="home"] #theme-preview-strip,
+html[data-home-mode="home"] #quick-music-strip,
+html[data-home-mode="home"] #settings-panel,
+html[data-home-mode="home"] #teacher-panel,
+html[data-home-mode="home"] #toast,
+html[data-home-mode="home"] #modal-overlay,
+html[data-home-mode="home"] #challenge-modal,
+html[data-home-mode="home"] #phonics-clue-modal,
+html[data-home-mode="home"] #first-run-setup-modal,
+html[data-home-mode="home"] #voice-help-modal,
+html[data-home-mode="home"] #celebrate-layer,
+html[data-home-mode="home"] #confetti-canvas,
+html[data-home-mode="home"] #listening-mode-overlay,
+html[data-home-mode="home"] #hint-clue-card,
+html[data-home-mode="home"] #starter-word-card {
+  display: none !important;
+}
+
+html[data-home-mode="home"] body {
+  background: linear-gradient(150deg, #1f2a35 0%, #243848 45%, #1b2632 100%);
+}
+
 html[data-home-mode="home"] .hero-v2 {
   height: min(var(--home-hero-maxh), calc(100dvh - var(--play-header-h) - 10px));
   max-height: var(--home-hero-maxh);

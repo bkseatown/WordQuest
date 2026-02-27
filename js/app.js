@@ -5684,10 +5684,49 @@
     }
   }
 
+  function setHomePlayShellIsolation(isHome) {
+    const hidden = !!isHome;
+    const selectors = [
+      'header',
+      'main',
+      '.top-control-hub',
+      '#next-action-line',
+      '.classroom-turn-line',
+      '#play-tools-drawer',
+      '#theme-preview-strip',
+      '#quick-music-strip',
+      '#settings-panel',
+      '#teacher-panel',
+      '#toast',
+      '#modal-overlay',
+      '#challenge-modal',
+      '#phonics-clue-modal',
+      '#first-run-setup-modal',
+      '#voice-help-modal',
+      '#celebrate-layer',
+      '#confetti-canvas',
+      '#listening-mode-overlay',
+      '#hint-clue-card',
+      '#starter-word-card'
+    ];
+    selectors.forEach((selector) => {
+      const el = document.querySelector(selector);
+      if (!el) return;
+      if (hidden) {
+        el.setAttribute('aria-hidden', 'true');
+        try { el.setAttribute('inert', ''); } catch {}
+      } else {
+        el.removeAttribute('aria-hidden');
+        try { el.removeAttribute('inert'); } catch {}
+      }
+    });
+  }
+
   function setHomeMode(mode, options = {}) {
     const next = String(mode || '').toLowerCase() === 'play' ? 'play' : 'home';
     homeMode = next;
     document.documentElement.setAttribute('data-home-mode', next);
+    setHomePlayShellIsolation(next !== 'play');
     if (next === 'play') {
       _el('home-tools-section')?.classList.add('hidden');
       _el('play-tools-drawer')?.classList.add('hidden');
