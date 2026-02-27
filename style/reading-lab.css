@@ -5,6 +5,11 @@
   --rl-text: #e8edf2;
   --rl-muted: #a7b6c6;
   --rl-accent: #7fb6ff;
+  --cs-h1: clamp(1.9rem, 2.4vw, 2.6rem);
+  --cs-h2: clamp(1.3rem, 1.6vw, 1.6rem);
+  --cs-h3: clamp(1.05rem, 1.2vw, 1.2rem);
+  --cs-body: 0.98rem;
+  --cs-meta: 0.8rem;
 }
 
 * { box-sizing: border-box; }
@@ -20,9 +25,10 @@ body.cs-page-reading-lab {
 .rl-root {
   width: min(1200px, 95vw);
   margin: 0 auto;
-  padding: 24px 14px 34px;
+  min-height: 100dvh;
+  padding: 18px 14px 20px;
   display: grid;
-  gap: 12px;
+  gap: 16px;
 }
 
 .rl-head {
@@ -35,12 +41,25 @@ body.cs-page-reading-lab {
 .rl-head h1 {
   margin: 0;
   font-family: "Nunito", "Atkinson Hyperlegible", sans-serif;
-  letter-spacing: 0.05em;
+  font-size: var(--cs-h1);
+  line-height: 1.16;
+  letter-spacing: 0.01em;
 }
 
 .rl-head p {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   color: var(--rl-muted);
+  font-size: var(--cs-body);
+  line-height: 1.56;
+}
+
+.rl-meta-title {
+  margin: 0;
+  font-size: var(--cs-meta);
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--rl-muted) 88%, #ffffff 12%);
 }
 
 .rl-head-actions {
@@ -52,15 +71,25 @@ body.cs-page-reading-lab {
 .rl-layout {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
-  gap: 12px;
+  gap: 14px;
+  align-items: start;
 }
 
 .rl-surface {
-  background: var(--rl-card);
-  border: 1px solid var(--rl-border);
   border-radius: 16px;
   padding: 14px;
-  backdrop-filter: blur(12px);
+}
+
+.cs-stage.rl-surface {
+  background: linear-gradient(165deg, rgba(255,255,255,0.08), rgba(7,16,25,0.32));
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 16px 30px rgba(4, 10, 18, 0.24);
+}
+
+.cs-rail.rl-surface {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: none;
 }
 
 .rl-surface-head {
@@ -71,21 +100,28 @@ body.cs-page-reading-lab {
 }
 
 .rl-surface h2 { margin: 0; font-size: 20px; }
+.rl-surface h1 {
+  margin: 0;
+  font-size: var(--cs-h2);
+  line-height: 1.2;
+  font-weight: 650;
+}
 
 .rl-status {
-  font-size: 12px;
+  font-size: var(--cs-meta);
+  line-height: 1.4;
   color: var(--rl-muted);
 }
 
 .rl-passage {
   margin-top: 10px;
-  min-height: 240px;
+  min-height: 290px;
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.12);
   background: rgba(12, 24, 37, 0.45);
   padding: 14px;
-  font-size: 21px;
-  line-height: 1.7;
+  font-size: clamp(1.02rem, 1.3vw, 1.2rem);
+  line-height: 1.68;
   outline: none;
 }
 
@@ -141,14 +177,14 @@ body.cs-page-reading-lab {
 
 .rl-control-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   align-items: center;
 }
 
 .rl-control-grid label,
 .rl-control-grid select {
-  font-size: 13px;
+  font-size: var(--cs-meta);
 }
 
 .rl-control-grid select {
@@ -209,7 +245,7 @@ body.cs-page-reading-lab {
   border: 1px solid rgba(127,182,255,0.48);
   background: rgba(127,182,255,0.18);
   color: #ecf5ff;
-  font-size: 12px;
+  font-size: var(--cs-meta);
   font-weight: 800;
   padding: 4px 10px;
 }
@@ -237,8 +273,8 @@ body.cs-page-reading-lab {
 .rl-panel {
   margin-top: 10px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(12, 24, 37, 0.42);
+  border: 1px solid rgba(255,255,255,0.09);
+  background: rgba(12, 24, 37, 0.32);
   padding: 10px;
   display: grid;
   gap: 6px;
@@ -264,7 +300,7 @@ body.cs-page-reading-lab {
 
 .rl-privacy-note {
   margin-top: 10px;
-  font-size: 12px;
+  font-size: var(--cs-meta);
   color: var(--rl-muted);
 }
 
@@ -272,7 +308,8 @@ body.cs-page-reading-lab {
 
 @media (max-width: 900px) {
   .rl-layout { grid-template-columns: 1fr; }
-  .rl-passage { font-size: 19px; }
+  .rl-passage { font-size: 1rem; min-height: 220px; }
+  .rl-control-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (prefers-reduced-motion: reduce), html[data-motion="reduced"] {
