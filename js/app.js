@@ -6074,6 +6074,7 @@
   _el('home-open-sentence-surgery')?.addEventListener('click', openSentenceSurgeryPage);
   _el('home-open-reading-lab')?.addEventListener('click', openReadingLabPage);
   _el('home-open-teacher-dashboard')?.addEventListener('click', openTeacherDashboardPage);
+  _el('home-open-teacher-dashboard-report')?.addEventListener('click', openTeacherDashboardPage);
   _el('cta-wordquest')?.addEventListener('click', () => {
     setHomeMode('play');
     if (!WQGame.getState?.()?.word) {
