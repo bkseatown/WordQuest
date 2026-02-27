@@ -31,6 +31,9 @@
   var timedStatusEl = document.getElementById("ssTimedStatus");
 
   if (!sentenceEl || !meterBarEl || !levelEl || !window.SentenceEngine || !(window.CSAIService || window.SSAIAnalysis) || !window.SSTeacherLens) return;
+  if (window.CSPerformanceEngine && typeof window.CSPerformanceEngine.init === "function") {
+    window.CSPerformanceEngine.init("sentence-surgery", { budgetMs: 2500 });
+  }
 
   var actionButtons = Array.prototype.slice.call(document.querySelectorAll("[data-action]"));
   var chaosActionButtons = Array.prototype.slice.call(document.querySelectorAll("[data-chaos-action]"));
@@ -51,7 +54,7 @@
     verbOptions: ["sprinted", "dashed", "raced", "bolted", "hurried"]
   });
 
-  var chaosGame = window.SSFixChaos ? window.SSFixChaos.create() : null;
+  var chaosGame = null;
   var demo = null;
 
   var sentenceLogs = [];
@@ -267,6 +270,36 @@
     compareAfterEl.textContent = afterText;
     compareEl.classList.add("show");
     window.setTimeout(function () { compareEl.classList.remove("show"); }, 2000);
+  }
+
+  var scriptLoadCache = {};
+  function loadScriptOnce(src) {
+    var key = String(src || "");
+    if (!key) return Promise.resolve(false);
+    if (scriptLoadCache[key]) return scriptLoadCache[key];
+    if (document.querySelector('script[src="' + key + '"]')) {
+      scriptLoadCache[key] = Promise.resolve(true);
+      return scriptLoadCache[key];
+    }
+    scriptLoadCache[key] = new Promise(function (resolve) {
+      var script = document.createElement("script");
+      script.src = key;
+      script.async = true;
+      script.onload = function () { resolve(true); };
+      script.onerror = function () { resolve(false); };
+      document.head.appendChild(script);
+    });
+    return scriptLoadCache[key];
+  }
+
+  async function ensureChaosGame() {
+    if (chaosGame) return chaosGame;
+    if (!window.SSFixChaos) {
+      var loaded = await loadScriptOnce("./fixChaosGame.js?v=20260227a");
+      if (!loaded || !window.SSFixChaos) return null;
+    }
+    chaosGame = window.SSFixChaos.create();
+    return chaosGame;
   }
 
   function renderTraits(metrics) {
@@ -489,12 +522,14 @@
     render();
   }
 
-  function startChaosRound() {
-    if (!chaosGame || !chaosSentenceEl) return;
+  async function startChaosRound() {
+    if (!chaosSentenceEl) return;
+    var game = await ensureChaosGame();
+    if (!game) return;
     var analysis = analyses.length ? analyses[analyses.length - 1] : (window.CSAIService && window.CSAIService.heuristicAnalyze
       ? window.CSAIService.heuristicAnalyze(engine.getSentenceText())
       : window.SSAIAnalysis.analyzeSentenceHeuristic(engine.getSentenceText()));
-    var round = chaosGame.nextRound(engine.getSentenceText(), analysis);
+    var round = game.nextRound(engine.getSentenceText(), analysis);
     chaosSentenceEl.textContent = round.sentence;
     if (chaosResultEl) chaosResultEl.textContent = "Level " + round.level + " • Error: " + round.type.replace(/_/g, " ");
   }
@@ -554,16 +589,19 @@
   if (chaosToggleBtn && chaosPanelEl) {
     chaosToggleBtn.addEventListener("click", function () {
       chaosPanelEl.classList.toggle("hidden");
-      if (!chaosPanelEl.classList.contains("hidden")) startChaosRound();
+      if (!chaosPanelEl.classList.contains("hidden")) void startChaosRound();
     });
   }
 
   chaosActionButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
-      if (!chaosGame || !chaosResultEl) return;
-      var result = chaosGame.submit(btn.getAttribute("data-chaos-action"));
-      chaosResultEl.textContent = result.message;
-      window.setTimeout(startChaosRound, 700);
+      void (async function () {
+        var game = await ensureChaosGame();
+        if (!game || !chaosResultEl) return;
+        var result = game.submit(btn.getAttribute("data-chaos-action"));
+        chaosResultEl.textContent = result.message;
+        window.setTimeout(function () { void startChaosRound(); }, 700);
+      })();
     });
   });
 

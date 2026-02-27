@@ -26,6 +26,9 @@
   var miniLessonBody = document.getElementById("td-mini-lesson-content");
 
   if (!complexFill || !reasoningFill || !verbsFill || !cohesionFill || !groupsEl || !heatmapTable || !lessonEl) return;
+  if (window.CSPerformanceEngine && typeof window.CSPerformanceEngine.init === "function") {
+    window.CSPerformanceEngine.init("teacher-dashboard", { budgetMs: 2500 });
+  }
 
   var state = {
     rows: [],
@@ -543,5 +546,9 @@
     });
   }
 
-  render();
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(render, { timeout: 700 });
+  } else {
+    window.setTimeout(render, 0);
+  }
 })();

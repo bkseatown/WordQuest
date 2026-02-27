@@ -15,6 +15,9 @@
   var overlayHomeBtn = document.getElementById('pb-overlay-home');
 
   if (!slots.length || !metricsEl) return;
+  if (window.CSPerformanceEngine && typeof window.CSPerformanceEngine.init === "function") {
+    window.CSPerformanceEngine.init("paragraph-builder", { budgetMs: 2500 });
+  }
 
   var state = {
     values: { topic: '', body1: '', body2: '', conclusion: '' },
