@@ -81,6 +81,40 @@ html[data-text-size="large"] { --wq-text-size: 18px; }
   --focus-max-width: 560px;
   --main-max-width: 560px;
   --quest-max-width: 520px;
+  --cs-h1: clamp(1.9rem, 2.4vw, 2.6rem);
+  --cs-h2: clamp(1.3rem, 1.6vw, 1.6rem);
+  --cs-h3: clamp(1.05rem, 1.2vw, 1.2rem);
+  --cs-body: 0.98rem;
+  --cs-meta: 0.8rem;
+  --cs-space-1: 8px;
+  --cs-space-2: 12px;
+  --cs-space-3: 16px;
+  --cs-space-4: 24px;
+  --cs-space-5: 32px;
+}
+
+.cs-stage {
+  background: linear-gradient(
+    165deg,
+    color-mix(in oklab, var(--panel-bg) 88%, #ffffff 12%) 0%,
+    color-mix(in oklab, var(--panel-bg) 94%, #000000 6%) 100%
+  );
+  border-radius: 18px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 32%, transparent);
+  box-shadow: 0 14px 36px rgba(8, 18, 32, 0.2);
+}
+
+.cs-rail {
+  background: color-mix(in oklab, var(--panel-bg) 86%, transparent);
+  border-radius: 14px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 20%, transparent);
+  box-shadow: none;
+}
+
+.cs-panel {
+  border-top: 1px solid color-mix(in oklab, var(--panel-border) 24%, transparent);
+  padding-top: var(--cs-space-2);
+  margin-top: var(--cs-space-2);
 }
 
 body {
@@ -96,6 +130,46 @@ body {
   flex-direction: column;
   align-items:    center;
   transition:     background 0.3s, color 0.3s;
+}
+
+h1 {
+  font-size: var(--cs-h1);
+  line-height: 1.18;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+h2 {
+  font-size: var(--cs-h2);
+  line-height: 1.22;
+  font-weight: 650;
+}
+
+h3 {
+  font-size: var(--cs-h3);
+  line-height: 1.24;
+  font-weight: 620;
+}
+
+details > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+details > summary::after {
+  content: '' !important;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid color-mix(in oklab, var(--text-muted) 72%, var(--text) 28%);
+  border-bottom: 2px solid color-mix(in oklab, var(--text-muted) 72%, var(--text) 28%);
+  transform: rotate(45deg);
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+details[open] > summary::after {
+  transform: rotate(-135deg) translate(-1px, -1px);
 }
 
 /* ── Loading ─────────────────────────────────────────── */
@@ -652,8 +726,40 @@ html[data-page-mode="wordquest"] #mission-lab-nav-btn {
 
 .home-tools-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1.4fr 1fr 1fr;
   gap: 8px;
+}
+
+.home-tools-grid .header-quick-btn {
+  min-height: 44px;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-color: color-mix(in oklab, var(--panel-border) 40%, transparent);
+  background: color-mix(in oklab, var(--panel-bg) 86%, #ffffff 14%);
+  box-shadow: none;
+}
+
+.home-tools-grid .header-quick-btn:first-child {
+  grid-row: span 2;
+  min-height: 96px;
+}
+
+.home-tools-grid .header-quick-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 18px rgba(8, 18, 32, 0.16);
+}
+
+html[data-motion="reduced"] .home-tools-grid .header-quick-btn:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-tools-grid .header-quick-btn:hover {
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 .play-tools-drawer {
@@ -680,13 +786,17 @@ html[data-home-mode="home"] main {
 }
 
 html[data-home-mode="home"] .hero-v2 {
-  min-height: min(78dvh, 620px);
-  padding-top: 56px;
-  padding-bottom: 40px;
+  min-height: clamp(500px, calc(100dvh - 108px), 620px);
+  padding-top: clamp(28px, 5vh, 56px);
+  padding-bottom: clamp(20px, 4vh, 40px);
 }
 
 html[data-home-mode="play"] #hero-v2,
 html[data-home-mode="play"] #home-tools-section {
+  display: none !important;
+}
+
+html[data-home-mode="play"] .top-control-hub {
   display: none !important;
 }
 
@@ -2822,13 +2932,14 @@ main {
   flex-direction:  column;
   align-items:     center;
   justify-content: flex-start;
-  gap:             9px;
+  gap:             6px;
   flex:            1;
   width:           100%;
   max-width:       var(--main-max-width);
-  padding:         12px 12px calc(8px + env(safe-area-inset-bottom));
+  min-height:      calc(100dvh - 245px);
+  padding:         4px 12px calc(2px + env(safe-area-inset-bottom));
   overflow-x:      clip;
-  overflow-y:      auto;
+  overflow-y:      visible;
   scrollbar-gutter: auto;
 }
 
@@ -2982,10 +3093,12 @@ html[data-page-mode="mission-lab"] .mission-lab-hub {
   display:        flex;
   flex-direction: column;
   align-items:    center;
-  gap:            16px;
-  flex-shrink:    0;
+  gap:            12px;
+  flex:           1 1 auto;
+  width:          100%;
+  justify-content: center;
   position:       relative;
-  padding-top:    4px;
+  padding-top:    2px;
 }
 
 .play-support-row {
@@ -3793,9 +3906,10 @@ html[data-play-style="detective"] .gameplay-audio {
   width:          min(var(--keyboard-max-width, 540px), calc(100vw - 16px), calc(100% - 6px));
   max-width:      min(calc(100vw - 16px), calc(100% - 6px));
   flex-shrink:    0;
-  margin-top:     2px;
+  margin-top:     0;
   margin-bottom:  max(var(--keyboard-bottom-gap, 10px), env(safe-area-inset-bottom));
   padding-inline: 0;
+  min-height:     clamp(220px, 28vh, 320px);
 }
 
 .key-row {
@@ -4872,14 +4986,17 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
 }
 
 .voice-help-item > summary::after {
-  content: 'Open';
-  font-size: 0.7rem;
-  font-weight: 800;
-  color: color-mix(in oklab, var(--brand) 74%, var(--text) 26%);
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid color-mix(in oklab, var(--brand) 74%, var(--text) 26%);
+  border-bottom: 2px solid color-mix(in oklab, var(--brand) 74%, var(--text) 26%);
+  transform: rotate(45deg);
+  margin-right: 2px;
 }
 
 .voice-help-item[open] > summary::after {
-  content: 'Hide';
+  transform: rotate(-135deg) translate(-1px, -1px);
 }
 
 .voice-help-item-body {
@@ -6518,6 +6635,10 @@ html[data-layout-mode="compact"] .key.key-chunk {
 
   .mission-lab-nav-btn {
     min-width: 86px;
+  }
+
+  #keyboard {
+    min-height: clamp(200px, 30vh, 280px);
   }
 }
 
