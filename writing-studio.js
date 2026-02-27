@@ -612,6 +612,7 @@
   var saveBtn = document.getElementById("ws-save");
   var clearBtn = document.getElementById("ws-clear");
   var modeButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-chip[data-mode]"));
+  var paragraphBuilderBtn = document.getElementById("ws-paragraph-builder-btn");
   var modeToggleBtn = document.getElementById("ws-mode-toggle");
   var audienceButtons = Array.prototype.slice.call(document.querySelectorAll(".ws-chip[data-audience]"));
   var presetSelect = document.getElementById("ws-preset-pack");
@@ -842,6 +843,28 @@
     return source.filter(function (word) {
       return lower.indexOf(word) !== -1;
     }).length;
+  }
+
+  function getProsodyTip(text, sentenceCount) {
+    var clean = String(text || "").replace(/\s+/g, " ").trim();
+    if (!clean || sentenceCount === 0) return "";
+    var terminalCount = (clean.match(/[.!?](?=\s|$)/g) || []).length;
+    var commaCount = (clean.match(/,/g) || []).length;
+    var hasClauseMarker = /\b(because|although|when|if|while|so|but)\b/i.test(clean);
+    var longSentenceCount = splitSentences(clean).filter(function (part) {
+      return getWordCount(part) >= 14;
+    }).length;
+
+    if (terminalCount < sentenceCount) {
+      return "Prosody cue: add . ? or ! so readers hear where your voice stops.";
+    }
+    if (longSentenceCount > 0 && commaCount === 0) {
+      return "Prosody cue: add one comma where your voice naturally pauses.";
+    }
+    if (hasClauseMarker) {
+      return "Read aloud: pause before because/when/if, then finish with a clear stop.";
+    }
+    return "Read aloud: short pause at commas, full stop at periods.";
   }
 
   function evaluateStep(step, text, words, sentenceCount) {
@@ -1190,9 +1213,11 @@
     var academicCount = countAcademicWords(text);
     var hasEvidenceSignal = EVIDENCE_RE.test(text);
     var hasClaimSignal = CLAIM_RE.test(text);
+    var prosodyTip = getProsodyTip(text, sentenceCount);
     var stepTips = STEP_TIPS_BY_MODE[currentMode] || STEP_TIPS_BY_MODE.sentence;
 
     tips.push(stepTips[currentStep] || stepTips.plan);
+    if (prosodyTip) tips.push(prosodyTip);
     if ((teacherModel || PROFILE_CONFIG[currentProfile].scaffold === "high") && MODEL_STEMS[currentMode] && MODEL_STEMS[currentMode][currentStep]) {
       tips.push("Model aloud: " + MODEL_STEMS[currentMode][currentStep]);
     }
@@ -4639,11 +4664,19 @@
     window.location.href = url.toString();
   }
 
+  function openParagraphBuilder() {
+    var url = new URL("paragraph-builder.html", window.location.href);
+    var params = new URLSearchParams(window.location.search || "");
+    if (params.get("demo") === "1") url.searchParams.set("demo", "1");
+    window.location.href = url.toString();
+  }
+
   modeButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
       setMode(btn.getAttribute("data-mode"));
     });
   });
+  if (paragraphBuilderBtn) paragraphBuilderBtn.addEventListener("click", openParagraphBuilder);
   if (modeToggleBtn) modeToggleBtn.addEventListener("click", toggleModeQuick);
   audienceButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {

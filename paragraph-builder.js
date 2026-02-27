@@ -1,318 +1,316 @@
-(function paragraphBuilderInit() {
+(function paragraphBuilderV1() {
   "use strict";
 
-  var root = document.getElementById("pb-root");
-  var slots = Array.prototype.slice.call(document.querySelectorAll(".pb-slot"));
-  var coachEl = document.getElementById("pbCoach");
-  var coachTextEl = document.getElementById("pbCoachText");
-  var coachDismissBtn = document.getElementById("pbCoachDismiss");
-  var doneBtn = document.getElementById("pbDoneBtn");
-  var resetBtn = document.getElementById("pbResetBtn");
-  var homeBtn = document.getElementById("pbHomeBtn");
-  var compareOverlay = document.getElementById("pbCompare");
-  var beforeTextEl = document.getElementById("pbBeforeText");
-  var afterTextEl = document.getElementById("pbAfterText");
-  var afterMetricsEl = document.getElementById("pbAfterMetrics");
-  var compareResetBtn = document.getElementById("pbCompareReset");
-  var compareHomeBtn = document.getElementById("pbCompareHome");
-  var demoOverlay = document.getElementById("pbDemoSuccess");
-  var demoReplayBtn = document.getElementById("pbDemoReplay");
-  var demoHomeBtn = document.getElementById("pbDemoHome");
+  var slots = Array.prototype.slice.call(document.querySelectorAll('.pb-slot'));
+  var metricsEl = document.getElementById('pb-metrics');
+  var actionsEl = document.getElementById('pb-actions');
+  var doneBtn = document.getElementById('pb-done');
+  var coachEl = document.getElementById('pb-coach');
+  var coachTextEl = document.getElementById('pb-coach-text');
+  var coachCloseBtn = document.getElementById('pb-coach-close');
+  var overlayEl = document.getElementById('pb-overlay');
+  var overlayParagraphEl = document.getElementById('pb-overlay-paragraph');
+  var overlayMetricsEl = document.getElementById('pb-overlay-metrics');
+  var overlayRetryBtn = document.getElementById('pb-overlay-retry');
+  var overlayHomeBtn = document.getElementById('pb-overlay-home');
 
-  var progressFillEl = document.getElementById("pbProgressFill");
-  var progressLabelEl = document.getElementById("pbProgressLabel");
-  var topicFillEl = document.getElementById("pbTopicFill");
-  var topicScoreEl = document.getElementById("pbTopicScore");
-  var reasonFillEl = document.getElementById("pbReasonFill");
-  var reasonScoreEl = document.getElementById("pbReasonScore");
-  var cohesionFillEl = document.getElementById("pbCohesionFill");
-  var cohesionScoreEl = document.getElementById("pbCohesionScore");
-  var transitionFillEl = document.getElementById("pbTransitionFill");
-  var transitionScoreEl = document.getElementById("pbTransitionScore");
+  if (!slots.length || !metricsEl) return;
 
-  if (!root || !slots.length) return;
-
-  var SLOT_ORDER = ["topic", "body1", "body2", "conclusion"];
   var state = {
-    values: { topic: "", body1: "", body2: "", conclusion: "" },
-    analysis: {},
-    metrics: { topicClarity: 0, reasoningDepth: 0, cohesion: 0, transitionStrength: 0, progress: 0 },
-    coachDismissedFor: "",
+    values: { topic: '', body1: '', body2: '', conclusion: '' },
+    analysis: { topic: null, body1: null, body2: null, conclusion: null },
     debounceTimer: 0,
-    demo: isDemoMode(),
+    coachDismissedFor: '',
     demoTimers: []
   };
 
-  function isDemoMode() {
-    try {
-      var params = new URLSearchParams(window.location.search || "");
-      return params.get("demo") === "1" || params.get("demo") === "true" || params.get("mode") === "demo";
-    } catch (_e) {
-      return false;
-    }
+  var PLACEHOLDERS = {
+    topic: 'Enter a clear topic sentence.',
+    body1: 'Develop your idea.',
+    body2: 'Add reasoning or evidence.',
+    conclusion: 'Wrap up your idea.'
+  };
+
+  function slotType(slotEl) {
+    return String(slotEl && slotEl.getAttribute('data-type') || '').trim();
   }
 
   function sanitize(text) {
-    return String(text || "").replace(/[\n\r]+/g, " ").replace(/\s+/g, " ").trim();
-  }
-
-  function setCaretToEnd(el) {
-    if (!el) return;
-    var range = document.createRange();
-    range.selectNodeContents(el);
-    range.collapse(false);
-    var sel = window.getSelection && window.getSelection();
-    if (!sel) return;
-    sel.removeAllRanges();
-    sel.addRange(range);
+    return String(text || '').replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
   function getSlotEl(type) {
-    return root.querySelector('.pb-slot[data-type="' + type + '"]');
+    return document.querySelector('.pb-slot[data-type="' + type + '"]');
   }
 
-  function getCoachMessage(type, value, analysis) {
-    var words = (sanitize(value).match(/\b[\w'-]+\b/g) || []).length;
-    if (!words) {
-      if (type === "topic") return "Make your topic clear and specific.";
-      if (type === "body1") return "Add a reason clause with because or although.";
-      if (type === "body2") return "Add sensory detail or evidence.";
-      return "Summarize the idea and link back to topic.";
-    }
-
-    if (analysis && analysis.suggested_focus === "reasoning" && (type === "body1" || type === "body2")) {
-      return "Add one cause-effect phrase so your logic is clear.";
-    }
-    if (type === "conclusion" && words < 6) return "Wrap up with one complete sentence linked to your topic.";
-    if (type === "topic" && words < 5) return "Add a more specific topic sentence with a clear focus.";
-    return "Nice progress. Keep this sentence precise and connected.";
+  function setPlaceholder(slotEl, text) {
+    slotEl.textContent = text;
+    slotEl.dataset.empty = 'true';
+    slotEl.classList.add('placeholder');
   }
 
-  function showCoach(slotEl, text) {
-    if (!coachEl || !coachTextEl || !slotEl) return;
-    coachTextEl.textContent = sanitize(text);
-    coachEl.classList.remove("hidden");
-    var slotRect = slotEl.getBoundingClientRect();
-    var cardRect = slotEl.closest(".pb-card").getBoundingClientRect();
-    var top = (slotRect.bottom - cardRect.top) + 8;
-    var left = Math.min(cardRect.width - 340, Math.max(0, slotRect.left - cardRect.left));
-    coachEl.style.top = String(top) + "px";
-    coachEl.style.left = String(left) + "px";
+  function clearPlaceholder(slotEl) {
+    slotEl.textContent = '';
+    slotEl.dataset.empty = 'false';
+    slotEl.classList.remove('placeholder');
   }
 
-  function hideCoach() {
-    if (!coachEl) return;
-    coachEl.classList.add("hidden");
+  function readSlotValue(slotEl) {
+    if (!slotEl || slotEl.dataset.empty === 'true') return '';
+    return sanitize(slotEl.textContent || '');
   }
 
-  async function analyzeSlot(type, text) {
-    if (window.SSAIAnalysis && typeof window.SSAIAnalysis.analyzeSentence === "function") {
-      return window.SSAIAnalysis.analyzeSentence(text, {});
-    }
-    return heuristicAnalysis(text);
-  }
-
-  function heuristicAnalysis(text) {
-    var clean = sanitize(text);
-    var words = clean ? clean.split(/\s+/).filter(Boolean) : [];
-    var lower = clean.toLowerCase();
-    var hasReasoning = /\b(because|although|since|while|if|when|after|before)\b/.test(lower);
-    var strongVerb = /\b(sprinted|dashed|bolted|lunged|gripped|raced|hurried|shattered)\b/.test(lower);
-    var type = "simple";
-    if (/\b(and|but|so)\b/.test(lower)) type = "compound";
-    if (hasReasoning) type = "complex";
+  function analyzeSentenceHeuristic(sentence){
+    var words = sanitize(sentence).split(/\s+/).filter(Boolean);
+    var lower = sanitize(sentence).toLowerCase();
+    var subordinators=["because","although","since","while","if","when","after","before"];
+    var strongVerbs=["sprinted","dashed","bolted","lunged","shattered","gripped"];
+    var hasReasoning=subordinators.some(function(w){ return lower.indexOf(w)>=0; });
+    var verbStrength=strongVerbs.some(function(v){ return lower.indexOf(v)>=0; })?"strong":"adequate";
+    var sentenceType="simple";
+    if(lower.indexOf(" and ")>=0||lower.indexOf(" but ")>=0) sentenceType="compound";
+    if(hasReasoning) sentenceType="complex";
     return {
-      sentence_type: type,
-      has_reasoning: hasReasoning,
-      detail_score: words.length > 10 ? 3 : words.length > 7 ? 2 : words.length ? 1 : 0,
-      verb_strength: strongVerb ? "strong" : "adequate",
-      word_count: words.length,
-      suggested_focus: !hasReasoning ? "reasoning" : (strongVerb ? "clause_variety" : "verb_upgrade")
+      sentence_type:sentenceType,
+      has_reasoning:hasReasoning,
+      detail_score:words.length>10?3:words.length>7?2:1,
+      verb_strength:verbStrength,
+      word_count:words.length
     };
   }
 
-  function clamp(v, min, max) {
-    return Math.max(min, Math.min(max, v));
+  async function analyzeWithAI(sentence) {
+    var endpoint = window.WS_AI_ENDPOINT || window.PB_AI_ENDPOINT || '';
+    if (!endpoint) return null;
+    try {
+      var response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: 'Analyze this sentence structurally:\n"' + sentence + '"\n\nReturn ONLY valid JSON:\n{\n  "sentence_type":"simple|compound|complex",\n  "has_reasoning":true/false,\n  "detail_score":0-5,\n  "verb_strength":"weak|adequate|strong",\n  "word_count":number\n}'
+        })
+      });
+      if (!response.ok) return null;
+      var data = await response.json();
+      if (!data || typeof data !== 'object') return null;
+      if (typeof data.word_count !== 'number') return null;
+      return data;
+    } catch (_err) {
+      return null;
+    }
+  }
+
+  async function analyzeSentence(sentence) {
+    var clean = sanitize(sentence);
+    if (!clean) return analyzeSentenceHeuristic('');
+    var aiResult = await analyzeWithAI(clean);
+    return aiResult || analyzeSentenceHeuristic(clean);
+  }
+
+  function setMetricWidth(id, score) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var pct = Math.max(0, Math.min(100, Math.round(score * 20)));
+    el.style.width = String(pct) + '%';
   }
 
   function tokenize(text) {
     return sanitize(text).toLowerCase().split(/[^a-z0-9']+/).filter(Boolean);
   }
 
-  function computeCohesion(topic, body1, body2, conclusion) {
-    var topicTokens = tokenize(topic);
+  function computeCohesion(values) {
+    var topicTokens = tokenize(values.topic);
     if (!topicTokens.length) return 0;
-    var bodyTokens = tokenize(body1).concat(tokenize(body2)).concat(tokenize(conclusion));
-    if (!bodyTokens.length) return 0;
+    var b1 = tokenize(values.body1);
+    var b2 = tokenize(values.body2);
     var shared = 0;
-    topicTokens.forEach(function (t) {
-      if (bodyTokens.indexOf(t) >= 0) shared += 1;
+    topicTokens.forEach(function (word) {
+      if (b1.indexOf(word) >= 0 || b2.indexOf(word) >= 0) shared += 1;
     });
-    return clamp(Math.round((shared / topicTokens.length) * 5), 0, 5);
+    return Math.max(0, Math.min(5, Math.round((shared / topicTokens.length) * 5)));
   }
 
-  function computeTransitionStrength(body1, body2, conclusion) {
-    var joined = [body1, body2, conclusion].join(" ").toLowerCase();
-    var transitions = ["first", "next", "then", "also", "for example", "because", "however", "therefore", "finally", "in conclusion"];
-    var hits = transitions.reduce(function (count, term) {
-      return count + (joined.indexOf(term) >= 0 ? 1 : 0);
-    }, 0);
-    return clamp(hits, 0, 5);
+  function computeReasoning(analysis) {
+    var count = 0;
+    if (analysis.body1 && analysis.body1.has_reasoning) count += 1;
+    if (analysis.body2 && analysis.body2.has_reasoning) count += 1;
+    if (analysis.conclusion && analysis.conclusion.has_reasoning) count += 1;
+    return Math.max(0, Math.min(5, Math.round(count * 1.7)));
   }
 
-  function completenessScore(type, text, analysis) {
-    var words = (sanitize(text).match(/\b[\w'-]+\b/g) || []).length;
-    var minWords = type === "topic" ? 4 : type === "conclusion" ? 5 : 6;
-    var base = words >= minWords ? 3 : (words > 0 ? 1 : 0);
-    if (analysis && analysis.has_reasoning && (type === "body1" || type === "body2")) base += 1;
-    if (analysis && analysis.verb_strength === "strong") base += 1;
-    return clamp(base, 0, 5);
+  function computeDetail(analysis) {
+    var list = ['topic','body1','body2','conclusion'].map(function (key) {
+      return Number((analysis[key] && analysis[key].detail_score) || 0);
+    });
+    var avg = list.reduce(function (a,b){ return a+b; },0) / Math.max(1, list.length);
+    return Math.max(0, Math.min(5, Math.round(avg)));
+  }
+
+  function computeControl(analysis) {
+    var strongComplex = ['topic','body1','body2','conclusion'].some(function (key) {
+      var row = analysis[key] || {};
+      return row.sentence_type === 'complex' && row.verb_strength === 'strong';
+    });
+    var hasPeriod = ['topic','body1','body2','conclusion'].some(function (key) {
+      return /[.!?]$/.test(sanitize(state.values[key]));
+    });
+    var score = 1;
+    if (hasPeriod) score += 2;
+    if (strongComplex) score += 2;
+    return Math.max(0, Math.min(5, score));
+  }
+
+  function showCoach(text) {
+    if (!coachEl || !coachTextEl) return;
+    coachTextEl.innerText = text;
+    coachEl.classList.remove('hidden');
+  }
+
+  function hideCoach() {
+    if (!coachEl) return;
+    coachEl.classList.add('hidden');
+  }
+
+  function updateCoach() {
+    var topic = state.values.topic;
+    var bodyReasoning = (state.analysis.body1 && state.analysis.body1.has_reasoning)
+      || (state.analysis.body2 && state.analysis.body2.has_reasoning);
+    var detailLow = computeDetail(state.analysis) <= 2;
+
+    if (!topic) {
+      showCoach('Make your topic clear and specific.');
+      return;
+    }
+    if (!bodyReasoning) {
+      showCoach('Add a reason using because or although.');
+      return;
+    }
+    if (detailLow) {
+      showCoach('Help the reader see more detail.');
+      return;
+    }
+    if (!state.values.conclusion) {
+      showCoach('Wrap up by linking back to your topic.');
+      return;
+    }
+    hideCoach();
+  }
+
+  function updateDoneVisibility() {
+    var ready = ['topic','body1','body2','conclusion'].every(function (key) {
+      return sanitize(state.values[key]).length >= 6;
+    });
+    if (actionsEl) actionsEl.classList.toggle('hidden', !ready);
   }
 
   function renderMetrics() {
-    var m = state.metrics;
-    if (topicFillEl) topicFillEl.style.width = String(m.topicClarity * 20) + "%";
-    if (topicScoreEl) topicScoreEl.textContent = String(m.topicClarity);
-    if (reasonFillEl) reasonFillEl.style.width = String(m.reasoningDepth * 20) + "%";
-    if (reasonScoreEl) reasonScoreEl.textContent = String(m.reasoningDepth);
-    if (cohesionFillEl) cohesionFillEl.style.width = String(m.cohesion * 20) + "%";
-    if (cohesionScoreEl) cohesionScoreEl.textContent = String(m.cohesion);
-    if (transitionFillEl) transitionFillEl.style.width = String(m.transitionStrength * 20) + "%";
-    if (transitionScoreEl) transitionScoreEl.textContent = String(m.transitionStrength);
-    if (progressFillEl) progressFillEl.style.width = String(m.progress) + "%";
-    if (progressLabelEl) progressLabelEl.textContent = String(m.progress) + "%";
-    if (doneBtn) doneBtn.classList.toggle("hidden", m.progress < 70);
+    var cohesion = computeCohesion(state.values);
+    var reasoning = computeReasoning(state.analysis);
+    var detail = computeDetail(state.analysis);
+    var control = computeControl(state.analysis);
+
+    setMetricWidth('metric-cohesion', cohesion);
+    setMetricWidth('metric-reasoning', reasoning);
+    setMetricWidth('metric-detail', detail);
+    setMetricWidth('metric-control', control);
+
+    updateCoach();
+    updateDoneVisibility();
   }
 
-  function buildImprovedParagraph(values) {
-    var topic = sanitize(values.topic);
-    var body1 = sanitize(values.body1);
-    var body2 = sanitize(values.body2);
-    var conclusion = sanitize(values.conclusion);
-
-    if (body1 && !/\b(first|for example|because|also|next|then)\b/i.test(body1)) {
-      body1 = "For example, " + body1;
+  async function runAnalysis() {
+    var keys = ['topic','body1','body2','conclusion'];
+    for (var i = 0; i < keys.length; i += 1) {
+      var key = keys[i];
+      state.analysis[key] = await analyzeSentence(state.values[key]);
     }
-    if (body2 && !/\b(next|also|because|therefore|however|then)\b/i.test(body2)) {
-      body2 = "Next, " + body2;
-    }
-    if (conclusion && !/\b(finally|in conclusion|overall)\b/i.test(conclusion)) {
-      conclusion = "In conclusion, " + conclusion;
-    }
-
-    return [topic, body1, body2, conclusion]
-      .filter(Boolean)
-      .map(function (line) {
-        return /[.!?]$/.test(line) ? line : line + ".";
-      })
-      .join(" ");
-  }
-
-  async function updateAllMetrics() {
-    var analyses = {};
-    for (var i = 0; i < SLOT_ORDER.length; i += 1) {
-      var type = SLOT_ORDER[i];
-      analyses[type] = await analyzeSlot(type, state.values[type]);
-    }
-    state.analysis = analyses;
-
-    var topicClarity = completenessScore("topic", state.values.topic, analyses.topic);
-    var reasoningDepth = clamp(Math.round(((analyses.body1 && analyses.body1.has_reasoning ? 1 : 0)
-      + (analyses.body2 && analyses.body2.has_reasoning ? 1 : 0)
-      + (analyses.conclusion && analyses.conclusion.has_reasoning ? 1 : 0)) * 1.7), 0, 5);
-    var cohesion = computeCohesion(state.values.topic, state.values.body1, state.values.body2, state.values.conclusion);
-    var transitionStrength = computeTransitionStrength(state.values.body1, state.values.body2, state.values.conclusion);
-
-    var completeness = SLOT_ORDER.reduce(function (sum, type) {
-      return sum + completenessScore(type, state.values[type], analyses[type]);
-    }, 0);
-
-    state.metrics.topicClarity = topicClarity;
-    state.metrics.reasoningDepth = reasoningDepth;
-    state.metrics.cohesion = cohesion;
-    state.metrics.transitionStrength = transitionStrength;
-    state.metrics.progress = clamp(Math.round((completeness / 20) * 100), 0, 100);
-
     renderMetrics();
   }
 
-  function queueMetricsUpdate() {
+  function queueAnalysis() {
     window.clearTimeout(state.debounceTimer);
     state.debounceTimer = window.setTimeout(function () {
-      void updateAllMetrics();
-    }, 220);
+      void runAnalysis();
+    }, 400);
   }
 
-  function handleFocus(slotEl) {
-    if (!slotEl) return;
-    slots.forEach(function (el) { el.classList.remove("active"); });
-    slotEl.classList.add("active");
-    var type = slotEl.getAttribute("data-type") || "";
-    var msg = getCoachMessage(type, state.values[type], state.analysis[type]);
-    if (state.coachDismissedFor !== type) showCoach(slotEl, msg);
-  }
-
-  function handleInput(slotEl) {
-    var type = slotEl.getAttribute("data-type") || "";
-    if (!type) return;
-    state.values[type] = sanitize(slotEl.textContent || "");
-    queueMetricsUpdate();
-
-    if (!state.values[type]) {
-      slotEl.classList.add("pb-invalid");
-    } else {
-      slotEl.classList.remove("pb-invalid");
-    }
-  }
-
-  function handleBlur(slotEl) {
-    var type = slotEl.getAttribute("data-type") || "";
-    if (!type) return;
-    if (!sanitize(slotEl.textContent || "")) {
-      slotEl.textContent = "";
-      slotEl.classList.add("pb-invalid");
-    } else {
-      slotEl.classList.remove("pb-invalid");
-    }
-  }
-
-  function showCompare() {
-    if (!compareOverlay || !beforeTextEl || !afterTextEl || !afterMetricsEl) return;
-    var before = SLOT_ORDER.map(function (type) {
-      return sanitize(state.values[type]);
-    }).filter(Boolean).join(" | ");
-    var after = buildImprovedParagraph(state.values);
-    beforeTextEl.textContent = before || "(empty)";
-    afterTextEl.textContent = after;
-    afterMetricsEl.textContent = "Topic clarity " + state.metrics.topicClarity + "/5 • Reasoning " + state.metrics.reasoningDepth + "/5 • Cohesion " + state.metrics.cohesion + "/5 • Transition " + state.metrics.transitionStrength + "/5";
-    compareOverlay.classList.remove("hidden");
-  }
-
-  function resetAll() {
+  function collectValues() {
     slots.forEach(function (slotEl) {
-      slotEl.textContent = "";
-      slotEl.classList.remove("pb-invalid", "active");
+      var type = slotType(slotEl);
+      state.values[type] = readSlotValue(slotEl);
     });
-    state.values = { topic: "", body1: "", body2: "", conclusion: "" };
-    state.analysis = {};
-    state.metrics = { topicClarity: 0, reasoningDepth: 0, cohesion: 0, transitionStrength: 0, progress: 0 };
-    state.coachDismissedFor = "";
+  }
+
+  function handleSlotFocus(slotEl) {
+    slots.forEach(function (el) { el.classList.remove('active'); });
+    slotEl.classList.add('active');
+
+    if (slotEl.dataset.empty === 'true') {
+      clearPlaceholder(slotEl);
+    }
+    state.coachDismissedFor = '';
+  }
+
+  function handleSlotBlur(slotEl) {
+    var type = slotType(slotEl);
+    var value = sanitize(slotEl.textContent || '');
+    if (!value) {
+      setPlaceholder(slotEl, PLACEHOLDERS[type]);
+    }
+    collectValues();
+    queueAnalysis();
+  }
+
+  function handleSlotInput() {
+    collectValues();
+    queueAnalysis();
+  }
+
+  function setAllPlaceholders() {
+    slots.forEach(function (slotEl) {
+      var type = slotType(slotEl);
+      setPlaceholder(slotEl, PLACEHOLDERS[type] || 'Write here.');
+    });
+  }
+
+  function combinedParagraph() {
+    return ['topic','body1','body2','conclusion']
+      .map(function (key) { return sanitize(state.values[key]); })
+      .filter(Boolean)
+      .map(function (line) { return /[.!?]$/.test(line) ? line : line + '.'; })
+      .join(' ');
+  }
+
+  function metricSummaryText() {
+    var cohesion = Math.round((parseFloat((document.getElementById('metric-cohesion') || {}).style.width || '0') || 0));
+    var reasoning = Math.round((parseFloat((document.getElementById('metric-reasoning') || {}).style.width || '0') || 0));
+    var detail = Math.round((parseFloat((document.getElementById('metric-detail') || {}).style.width || '0') || 0));
+    var control = Math.round((parseFloat((document.getElementById('metric-control') || {}).style.width || '0') || 0));
+    return 'Metrics: Cohesion ' + cohesion + '%, Reasoning ' + reasoning + '%, Detail ' + detail + '%, Control ' + control + '%';
+  }
+
+  function showDoneOverlay() {
+    if (!overlayEl || !overlayParagraphEl || !overlayMetricsEl) return;
+    overlayParagraphEl.textContent = combinedParagraph() || '(No paragraph entered)';
+    overlayMetricsEl.textContent = metricSummaryText();
+    overlayEl.classList.remove('hidden');
+  }
+
+  function resetBuilder() {
+    state.values = { topic: '', body1: '', body2: '', conclusion: '' };
+    state.analysis = { topic: null, body1: null, body2: null, conclusion: null };
+    setAllPlaceholders();
     hideCoach();
-    renderMetrics();
-    compareOverlay && compareOverlay.classList.add("hidden");
-    demoOverlay && demoOverlay.classList.add("hidden");
+    if (actionsEl) actionsEl.classList.add('hidden');
+    setMetricWidth('metric-cohesion', 0);
+    setMetricWidth('metric-reasoning', 0);
+    setMetricWidth('metric-detail', 0);
+    setMetricWidth('metric-control', 0);
+    slots.forEach(function (el) { el.classList.remove('active'); });
   }
 
-  function openWritingStudioHome() {
-    window.location.href = "writing-studio.html";
-  }
-
-  function setSlotText(type, text) {
-    var slotEl = getSlotEl(type);
-    if (!slotEl) return;
-    slotEl.textContent = sanitize(text);
-    state.values[type] = sanitize(text);
-    handleInput(slotEl);
+  function goBackHome() {
+    window.location.href = 'writing-studio.html';
   }
 
   function demoSetTimeout(fn, ms) {
@@ -327,81 +325,78 @@
     }
   }
 
-  function runDemoSequence() {
-    if (!state.demo) return;
+  function showCoachForSlot(type, text) {
+    var slotEl = getSlotEl(type);
+    if (!slotEl) return;
+    slots.forEach(function (el) { el.classList.remove('active'); });
+    slotEl.classList.add('active');
+    showCoach(text);
+  }
+
+  function setSlotText(type, text) {
+    var slotEl = getSlotEl(type);
+    if (!slotEl) return;
+    slotEl.dataset.empty = 'false';
+    slotEl.classList.remove('placeholder');
+    slotEl.textContent = text;
+    state.values[type] = sanitize(text);
+  }
+
+  function runDemoMode() {
     clearDemoTimers();
-    resetAll();
+    resetBuilder();
 
-    setSlotText("topic", "Dogs help people");
-    setSlotText("body1", "They work as companions at hospitals");
-    setSlotText("body2", "They support people with disabilities");
-    setSlotText("conclusion", "Dogs make lives better.");
-    void updateAllMetrics();
+    setSlotText('topic', 'Dogs help people.');
+    setSlotText('body1', 'They work as companions in hospitals.');
+    setSlotText('body2', 'Because they comfort patients, recovery improves.');
+    setSlotText('conclusion', 'Dogs make a meaningful difference.');
+    collectValues();
+    void runAnalysis();
 
-    var seq = ["topic", "body1", "body2", "conclusion"];
-    seq.forEach(function (type, idx) {
-      demoSetTimeout(function () {
-        var slotEl = getSlotEl(type);
-        if (!slotEl) return;
-        handleFocus(slotEl);
-        var msg = getCoachMessage(type, state.values[type], state.analysis[type]);
-        showCoach(slotEl, msg);
-      }, 900 + (idx * 1600));
-    });
-
+    demoSetTimeout(function () { showCoachForSlot('topic', 'Make your topic clear and specific.'); }, 400);
+    demoSetTimeout(function () { showCoachForSlot('body1', 'Develop the idea with one clear support sentence.'); }, 1700);
+    demoSetTimeout(function () { showCoachForSlot('body2', 'Add reasoning with because to explain impact.'); }, 3000);
+    demoSetTimeout(function () { showCoachForSlot('conclusion', 'Wrap up by linking back to your topic.'); }, 4300);
     demoSetTimeout(function () {
       hideCoach();
-      demoOverlay && demoOverlay.classList.remove("hidden");
-    }, 7800);
+      showDoneOverlay();
+    }, 6000);
   }
 
   slots.forEach(function (slotEl) {
-    slotEl.addEventListener("focus", function () {
-      handleFocus(slotEl);
-    });
-    slotEl.addEventListener("input", function () {
-      handleInput(slotEl);
-    });
-    slotEl.addEventListener("blur", function () {
-      handleBlur(slotEl);
-    });
-    slotEl.addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
+    slotEl.addEventListener('focus', function () { handleSlotFocus(slotEl); });
+    slotEl.addEventListener('blur', function () { handleSlotBlur(slotEl); });
+    slotEl.addEventListener('input', handleSlotInput);
+    slotEl.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
         event.preventDefault();
-        var idx = SLOT_ORDER.indexOf(slotEl.getAttribute("data-type"));
-        var nextType = SLOT_ORDER[idx + 1];
-        if (nextType) {
-          var next = getSlotEl(nextType);
-          if (next) {
-            next.focus();
-            setCaretToEnd(next);
-          }
-        }
+        var idx = slots.indexOf(slotEl);
+        var next = slots[idx + 1];
+        if (next) next.focus();
       }
     });
   });
 
-  if (coachDismissBtn) {
-    coachDismissBtn.addEventListener("click", function () {
-      var active = document.activeElement && document.activeElement.classList && document.activeElement.classList.contains("pb-slot")
-        ? document.activeElement
-        : root.querySelector(".pb-slot.active");
-      if (active) state.coachDismissedFor = active.getAttribute("data-type") || "";
+  if (coachCloseBtn) {
+    coachCloseBtn.addEventListener('click', function () {
       hideCoach();
+      var active = document.querySelector('.pb-slot.active');
+      if (active) state.coachDismissedFor = slotType(active);
     });
   }
 
-  if (doneBtn) doneBtn.addEventListener("click", function () {
-    void updateAllMetrics().then(showCompare);
+  if (doneBtn) doneBtn.addEventListener('click', showDoneOverlay);
+  if (overlayRetryBtn) overlayRetryBtn.addEventListener('click', function () {
+    overlayEl.classList.add('hidden');
+    resetBuilder();
   });
-  if (resetBtn) resetBtn.addEventListener("click", resetAll);
-  if (homeBtn) homeBtn.addEventListener("click", openWritingStudioHome);
-  if (compareResetBtn) compareResetBtn.addEventListener("click", function () { compareOverlay.classList.add("hidden"); resetAll(); });
-  if (compareHomeBtn) compareHomeBtn.addEventListener("click", openWritingStudioHome);
-  if (demoReplayBtn) demoReplayBtn.addEventListener("click", runDemoSequence);
-  if (demoHomeBtn) demoHomeBtn.addEventListener("click", openWritingStudioHome);
+  if (overlayHomeBtn) overlayHomeBtn.addEventListener('click', goBackHome);
 
-  resetAll();
-  queueMetricsUpdate();
-  if (state.demo) runDemoSequence();
+  setAllPlaceholders();
+  queueAnalysis();
+
+  var params = new URLSearchParams(window.location.search || '');
+  if (params.get('demo') === '1') {
+    runDemoMode();
+  }
 })();

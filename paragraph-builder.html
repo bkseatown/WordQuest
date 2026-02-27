@@ -8,68 +8,63 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./paragraph-builder.css?v=20260227a">
+  <link rel="stylesheet" href="./paragraph-builder.css?v=20260227b">
 </head>
 <body class="writing-studio cs-page-paragraph">
-  <main id="pb-root" class="pb-root" aria-label="Paragraph Builder">
-    <h1 class="pb-header">Paragraph Builder</h1>
+  <div id="pb-root" class="writing-studio cs-page-paragraph">
+    <div class="pb-header">
+      <h1>Paragraph Builder</h1>
+      <p class="pb-sub">Build connected ideas step by step.</p>
+    </div>
 
-    <section class="pb-card" aria-label="Structured paragraph slots">
-      <div class="pb-slot" data-type="topic" contenteditable="true" role="textbox" aria-label="Topic sentence" data-placeholder="Enter topic sentence"></div>
-      <div class="pb-slot" data-type="body1" contenteditable="true" role="textbox" aria-label="Body sentence one" data-placeholder="Develop idea"></div>
-      <div class="pb-slot" data-type="body2" contenteditable="true" role="textbox" aria-label="Body sentence two" data-placeholder="Add reasoning or detail"></div>
-      <div class="pb-slot" data-type="conclusion" contenteditable="true" role="textbox" aria-label="Concluding sentence" data-placeholder="Wrap up"></div>
-      <div id="pbCoach" class="pb-coach hidden" aria-live="polite">
-        <span id="pbCoachText"></span>
-        <button type="button" id="pbCoachDismiss" class="pb-mini-btn">Got it</button>
+    <div class="pb-card ss-card">
+      <div class="pb-slot" data-type="topic" contenteditable="true" aria-label="Topic sentence"></div>
+      <div class="pb-slot" data-type="body1" contenteditable="true" aria-label="Body sentence 1"></div>
+      <div class="pb-slot" data-type="body2" contenteditable="true" aria-label="Body sentence 2"></div>
+      <div class="pb-slot" data-type="conclusion" contenteditable="true" aria-label="Conclusion sentence"></div>
+    </div>
+
+    <div id="pb-metrics" class="pb-metrics">
+      <div class="metric">
+        <label>Cohesion</label>
+        <div class="metric-bar"><div class="metric-fill" id="metric-cohesion"></div></div>
       </div>
-    </section>
-
-    <section id="pb-metrics" class="pb-metrics" aria-label="Paragraph metrics">
-      <div class="pb-progress-row">
-        <div class="pb-progress-track"><div id="pbProgressFill" class="pb-progress-fill"></div></div>
-        <span id="pbProgressLabel">0%</span>
+      <div class="metric">
+        <label>Reasoning</label>
+        <div class="metric-bar"><div class="metric-fill" id="metric-reasoning"></div></div>
       </div>
-      <div class="pb-metric-grid">
-        <div class="pb-metric"><span>Topic clarity</span><div class="pb-meter"><div id="pbTopicFill" class="pb-meter-fill"></div></div><b id="pbTopicScore">0</b></div>
-        <div class="pb-metric"><span>Reasoning depth</span><div class="pb-meter"><div id="pbReasonFill" class="pb-meter-fill"></div></div><b id="pbReasonScore">0</b></div>
-        <div class="pb-metric"><span>Cohesion</span><div class="pb-meter"><div id="pbCohesionFill" class="pb-meter-fill"></div></div><b id="pbCohesionScore">0</b></div>
-        <div class="pb-metric"><span>Transition strength</span><div class="pb-meter"><div id="pbTransitionFill" class="pb-meter-fill"></div></div><b id="pbTransitionScore">0</b></div>
+      <div class="metric">
+        <label>Detail</label>
+        <div class="metric-bar"><div class="metric-fill" id="metric-detail"></div></div>
       </div>
-    </section>
-
-    <section class="pb-actions" aria-label="Paragraph actions">
-      <button type="button" id="pbDoneBtn" class="pb-btn hidden">Done</button>
-      <button type="button" id="pbResetBtn" class="pb-btn">Try another paragraph</button>
-      <button type="button" id="pbHomeBtn" class="pb-btn">Go to Writing Studio home</button>
-    </section>
-
-    <div id="pbCompare" class="pb-compare hidden" aria-hidden="true">
-      <div class="pb-compare-card">
-        <h2>Paragraph Growth</h2>
-        <div class="pb-compare-line"><strong>Before:</strong> <span id="pbBeforeText"></span></div>
-        <div class="pb-compare-line"><strong>After:</strong> <span id="pbAfterText"></span></div>
-        <div class="pb-compare-line" id="pbAfterMetrics"></div>
-        <div class="pb-compare-actions">
-          <button type="button" id="pbCompareReset" class="pb-btn">Try another paragraph</button>
-          <button type="button" id="pbCompareHome" class="pb-btn">Go to Writing Studio home</button>
-        </div>
+      <div class="metric">
+        <label>Control</label>
+        <div class="metric-bar"><div class="metric-fill" id="metric-control"></div></div>
       </div>
     </div>
 
-    <div id="pbDemoSuccess" class="pb-demo-success hidden" aria-hidden="true">
-      <div class="pb-compare-card">
-        <h2>Demo complete</h2>
-        <p>Structured paragraph growth in one loop.</p>
-        <div class="pb-compare-actions">
-          <button type="button" id="pbDemoReplay" class="pb-btn">Replay demo</button>
-          <button type="button" id="pbDemoHome" class="pb-btn">Go to Writing Studio home</button>
-        </div>
+    <div id="pb-actions" class="pb-actions hidden">
+      <button id="pb-done" class="ss-action-btn">Done</button>
+    </div>
+
+    <div id="pb-coach" class="pb-coach hidden">
+      <div id="pb-coach-text"></div>
+      <button id="pb-coach-close">Got it</button>
+    </div>
+  </div>
+
+  <div id="pb-overlay" class="pb-overlay hidden" aria-hidden="true">
+    <div class="pb-overlay-card">
+      <h2>Paragraph Complete</h2>
+      <div class="pb-overlay-line"><strong>Combined paragraph:</strong> <span id="pb-overlay-paragraph"></span></div>
+      <div class="pb-overlay-line" id="pb-overlay-metrics"></div>
+      <div class="pb-overlay-actions">
+        <button id="pb-overlay-retry" class="ss-action-btn">Try another paragraph</button>
+        <button id="pb-overlay-home" class="ss-action-btn">Back to Writing Studio</button>
       </div>
     </div>
-  </main>
+  </div>
 
-  <script src="./aiAnalysis.js?v=20260227a" defer></script>
-  <script src="./paragraph-builder.js?v=20260227a" defer></script>
+  <script src="./paragraph-builder.js?v=20260227b" defer></script>
 </body>
 </html>
