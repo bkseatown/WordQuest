@@ -32,6 +32,11 @@
   max-width: 500px;
 }
 
+#home-coach-ribbon {
+  margin-top: 12px;
+  max-width: 500px;
+}
+
 .hero-cta {
   margin-top: 24px;
   display: flex;

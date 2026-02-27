@@ -41,7 +41,8 @@
     metricProsody: document.getElementById("rl-metric-prosody"),
     metricsPanel: document.getElementById("rl-metrics-panel"),
     liveChip: document.getElementById("rl-live-chip"),
-    markTools: document.getElementById("rl-mark-tools")
+    markTools: document.getElementById("rl-mark-tools"),
+    coachRibbon: document.getElementById("rl-coach-ribbon")
   };
 
   if (!el.passage || !el.start || !el.stop) return;
@@ -74,7 +75,8 @@
     spellEndsAt: 0,
     focusWords: [],
     isDemo: isDemoMode(),
-    demoTimers: []
+    demoTimers: [],
+    coachRibbon: null
   };
 
   function isDemoMode() {
@@ -112,6 +114,26 @@
 
   function setStatus(msg) {
     if (el.status) el.status.textContent = String(msg || "");
+  }
+
+  function initCoachRibbon() {
+    var mod = window.CSCoachRibbon;
+    if (!mod || typeof mod.initCoachRibbon !== "function" || !el.coachRibbon) return;
+    state.coachRibbon = mod.initCoachRibbon({
+      mountEl: el.coachRibbon,
+      getMessageFn: function () {
+        return {
+          text: "Start reading. We'll track accuracy + phrasing."
+        };
+      }
+    });
+  }
+
+  function setCoachMessage(text) {
+    if (!state.coachRibbon || typeof state.coachRibbon.set !== "function") return;
+    var line = sanitizeText(text);
+    if (!line) return;
+    state.coachRibbon.set({ text: line });
   }
 
   function safeLoad(key, fallback) {
@@ -212,7 +234,7 @@
     var difficulty = getWordDifficulty();
     var latest = latestMarkByWord();
     var html = tokens.map(function (token) {
-      if (token.type === "space") return '<span class="rl-token-space">' + token.raw.replace(/ /g, "&nbsp;") + "</span>";
+      if (token.type === "space") return '<span class="rl-token-space">' + esc(token.raw) + "</span>";
       if (token.type === "punct") {
         var punctCls = token.sentenceIndex === state.selectedSentenceIndex ? " rl-token-sentence-selected" : "";
         return '<span class="rl-token-punct' + punctCls + '" data-sentence-index="' + token.sentenceIndex + '">' + esc(token.raw) + "</span>";
@@ -339,6 +361,7 @@
       mode: state.mode
     };
     setStatus("Attempt running.");
+    setCoachMessage("Aim for smooth phrasing; pause at punctuation.");
     syncAttemptVisibility("running");
 
     if (state.mode === "read_aloud" && !opts.skipAudio) {
@@ -361,6 +384,7 @@
     }
     var metrics = computeAndRenderMetrics();
     renderTeacherSummary(metrics);
+    setCoachMessage("Next move: " + recommendedNextStep(metrics));
     if (!state.isDemo && !opts.skipPersist) persistReadingAggregate(metrics);
     setStatus("Attempt complete.");
     syncAttemptVisibility("complete");
@@ -371,6 +395,7 @@
       state.mode = "silent";
       el.mode.value = "silent";
       setStatus("Mic not supported. Switched to silent mode.");
+      setCoachMessage("Continue in silent mode and keep punctuation-aware pacing.");
       return;
     }
     navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
@@ -399,6 +424,7 @@
       state.mode = "silent";
       el.mode.value = "silent";
       setStatus("Mic permission denied. Silent mode active.");
+      setCoachMessage("Continue in silent mode and keep punctuation-aware pacing.");
     });
   }
 
@@ -795,6 +821,7 @@
     }
 
     demoTimeout(function () { setStatus("Prosody cue: add pauses at punctuation."); }, 2200);
+    demoTimeout(function () { setCoachMessage("Aim for smooth phrasing; pause at punctuation."); }, 2200);
 
     for (i = 12; i < Math.min(26, wordIds.length); i += 1) {
       (function (tokenId, delay, mark) {
@@ -809,6 +836,7 @@
     demoTimeout(function () {
       stopAttempt({ skipPersist: true });
       setStatus("Demo complete: punctuation pauses improved, hard word practiced.");
+      setCoachMessage("Next move: re-read sentence 2 with comma pauses.");
     }, t + 600);
   }
 
@@ -826,11 +854,13 @@
   }
 
   function init() {
+    initCoachRibbon();
     bindEvents();
     initFromQuery();
     refreshPassage();
     setCurrentMark("correct");
     setStatus("Ready. Start an attempt.");
+    setCoachMessage("Start reading. We'll track accuracy + phrasing.");
     if (state.isDemo) {
       el.replayDemo.classList.remove("hidden");
       runDemoScript();

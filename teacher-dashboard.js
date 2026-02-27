@@ -14,6 +14,7 @@
   var groupsEl = document.getElementById("td-groups");
   var heatmapTable = document.getElementById("td-heatmap-table");
   var lessonEl = document.getElementById("td-lesson-suggestion");
+  var coachRibbonEl = document.getElementById("td-coach-ribbon");
   var groupRecsEl = document.getElementById("td-group-recommendations");
   var aiSummaryEl = document.getElementById("td-ai-summary");
   var reportBtn = document.getElementById("td-generate-report");
@@ -34,8 +35,25 @@
 
   var state = {
     rows: [],
-    selectedStudentId: ""
+    selectedStudentId: "",
+    coachRibbon: null
   };
+
+  function initCoachRibbon() {
+    if (state.coachRibbon) return;
+    if (!coachRibbonEl || !window.CSCoachRibbon || typeof window.CSCoachRibbon.initCoachRibbon !== "function") return;
+    state.coachRibbon = window.CSCoachRibbon.initCoachRibbon({
+      mountEl: coachRibbonEl,
+      getMessageFn: function () {
+        return { text: "Start with Group B; use the recommended next step." };
+      }
+    });
+  }
+
+  function setCoachMessage(text) {
+    if (!state.coachRibbon || typeof state.coachRibbon.set !== "function") return;
+    state.coachRibbon.set({ text: String(text || "").trim() });
+  }
 
   function renderStorageWarningIfNeeded() {
     if (!schema || typeof schema.getMigrationStatus !== "function") return;
@@ -382,6 +400,9 @@
     if (!selectedEl) return;
     var row = getSelectedRow();
     selectedEl.textContent = row ? (row.name + " (" + pickTier(row) + ")") : "Select a student from heatmap details";
+    setCoachMessage(row
+      ? "Focus: 1 skill today. Try the suggested mini-lesson."
+      : "Start with Group B; use the recommended next step.");
     setStudentView(!!row);
   }
 
@@ -469,6 +490,7 @@
   }
 
   function render() {
+    initCoachRibbon();
     renderStorageWarningIfNeeded();
     var data = loadData();
     var analytics = loadAnalytics();

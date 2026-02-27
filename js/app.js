@@ -869,6 +869,9 @@
   let demoCoachEl = null;
   let demoCoachReadyTimer = 0;
   let demoDebugLabelEl = null;
+  let homeCoachRibbon = null;
+  let wordQuestCoachRibbon = null;
+  let wordQuestCoachKey = 'before_guess';
   const DEMO_COACH_READY_MAX_TRIES = 25;
   const DEMO_COACH_READY_DELAY_MS = 120;
   const demoState = {
@@ -5684,6 +5687,65 @@
     }
   }
 
+  function initCoachRibbons() {
+    const ribbonMod = window.CSCoachRibbon;
+    if (!ribbonMod || typeof ribbonMod.initCoachRibbon !== 'function') return;
+    if (!homeCoachRibbon) {
+      const mount = _el('home-coach-ribbon');
+      if (mount) {
+        homeCoachRibbon = ribbonMod.initCoachRibbon({
+          mountEl: mount,
+          getMessageFn: () => {
+            const toolsVisible = !_el('home-tools-section')?.classList.contains('hidden');
+            return {
+              text: toolsVisible
+                ? 'Pick a tool; everything is scaffolded for Tier 2/3.'
+                : 'Try a 60-second round to see decoding + feedback.'
+            };
+          }
+        });
+      }
+    }
+    if (!wordQuestCoachRibbon) {
+      const mount = _el('wq-coach-ribbon');
+      if (mount) {
+        wordQuestCoachRibbon = ribbonMod.initCoachRibbon({
+          mountEl: mount,
+          getMessageFn: () => ({ text: 'Try SLATE first; watch the colors teach the rule.' })
+        });
+      }
+    }
+  }
+
+  function updateHomeCoachRibbon() {
+    if (!homeCoachRibbon || typeof homeCoachRibbon.update !== 'function') return;
+    homeCoachRibbon.update({});
+  }
+
+  function setWordQuestCoachState(key) {
+    wordQuestCoachKey = String(key || '').trim() || 'before_guess';
+    if (!wordQuestCoachRibbon || typeof wordQuestCoachRibbon.set !== 'function') return;
+    const mount = _el('wq-coach-ribbon');
+    if (!(mount instanceof HTMLElement)) return;
+    if (homeMode !== 'play') {
+      mount.classList.add('hidden');
+      return;
+    }
+    if (DEMO_MODE) {
+      mount.classList.remove('hidden');
+      wordQuestCoachRibbon.set({ text: 'Demo mode active-follow the guided coach prompts.' });
+      return;
+    }
+    mount.classList.remove('hidden');
+    const map = {
+      before_guess: 'Try SLATE first; watch the colors teach the rule.',
+      after_first_miss: 'Use the clue or change one letter.',
+      after_correct: 'Nice. Tap Next Word for another round.'
+    };
+    const text = map[wordQuestCoachKey] || map.before_guess;
+    wordQuestCoachRibbon.set({ text });
+  }
+
   function setHomePlayShellIsolation(isHome) {
     const hidden = !!isHome;
     const selectors = [
@@ -5727,6 +5789,8 @@
     homeMode = next;
     document.documentElement.setAttribute('data-home-mode', next);
     setHomePlayShellIsolation(next !== 'play');
+    updateHomeCoachRibbon();
+    setWordQuestCoachState(wordQuestCoachKey);
     if (next === 'play') {
       _el('home-tools-section')?.classList.add('hidden');
       _el('play-tools-drawer')?.classList.add('hidden');
@@ -5907,7 +5971,10 @@
   pageMode = 'wordquest';
   persistPageMode('wordquest');
   updatePageModeUrl('wordquest');
+  initCoachRibbons();
   initializeHomeMode();
+  updateHomeCoachRibbon();
+  setWordQuestCoachState('before_guess');
   logOverflowDiagnostics('init');
   syncPlayToolsRoleVisibility();
 
@@ -6085,6 +6152,7 @@
     const section = _el('home-tools-section');
     if (!section) return;
     section.classList.remove('hidden');
+    updateHomeCoachRibbon();
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   _el('home-logo-btn')?.addEventListener('click', () => {
@@ -13226,6 +13294,7 @@
       closeDemoEndOverlay();
       if (options.forceDemoReplay) resetDemoScriptState();
     }
+    setWordQuestCoachState('before_guess');
     emitTelemetry('wq_new_word_click', {
       source: options.launchMissionLab ? 'mission_lab_new' : 'wordquest_new'
     });
@@ -13422,6 +13491,9 @@
         clearFocusSupportUnlockTimer();
         syncHeaderClueLauncherUI();
         syncStarterWordLauncherUI();
+        if (!result.lost && Number(result.guesses?.length || 0) === 1) {
+          setWordQuestCoachState('after_first_miss');
+        }
       }
 
       const row = result.guesses.length - 1;
@@ -13442,6 +13514,7 @@
           showMidgameBoost();
         }
         if (result.won || result.lost) {
+          if (result.won) setWordQuestCoachState('after_correct');
           const roundMetrics = buildRoundMetrics(result, s.maxGuesses);
           const guessesUsed = Math.max(1, Number(roundMetrics.guessesUsed) || 1);
           const zpdInBand = Boolean(

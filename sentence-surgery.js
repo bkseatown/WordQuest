@@ -4,6 +4,7 @@
   var sentenceEl = document.getElementById("ssSentence");
   var meterBarEl = document.getElementById("ssMeterBar");
   var levelEl = document.getElementById("ssLevel");
+  var coachRibbonEl = document.getElementById("ss-coach-ribbon");
   var coachEl = document.getElementById("ssCoachBubble");
   var teacherToggleBtn = document.getElementById("ssTeacherToggle");
   var verbMenuEl = document.getElementById("ssVerbMenu");
@@ -80,6 +81,8 @@
     timerId: 0
   };
   var hasFirstEdit = false;
+  var coachRibbon = null;
+  var coachStateLockUntil = 0;
 
   function seedSentenceFromQuery() {
     try {
@@ -151,15 +154,23 @@
   }
 
   function setCoachText(text) {
-    if (!coachEl) return;
     var line = sanitize(text);
+    if (coachRibbon && typeof coachRibbon.set === "function" && line) {
+      coachRibbon.set({ text: line });
+    }
+    if (!coachEl) return;
     if (!line) {
       coachEl.classList.add("hidden");
       coachEl.textContent = "";
       return;
     }
+    coachEl.classList.add("hidden");
     coachEl.textContent = line;
-    coachEl.classList.remove("hidden");
+  }
+
+  function setStateCoachText(text) {
+    coachStateLockUntil = Date.now() + 1600;
+    setCoachText(text);
   }
 
   function revealPostEditUi() {
@@ -167,9 +178,17 @@
     hasFirstEdit = true;
     postEditEls.forEach(function (node) { node.classList.remove("hidden"); });
     if (traitsPanelEl) traitsPanelEl.open = false;
-    if (!sanitize(coachEl && coachEl.textContent)) {
-      setCoachText("Next move: add one reasoning revision, then review trait scores.");
-    }
+    setStateCoachText("Nice. Upgrade one word choice next.");
+  }
+
+  function initCoachRibbon() {
+    if (!coachRibbonEl || !window.CSCoachRibbon || typeof window.CSCoachRibbon.initCoachRibbon !== "function") return;
+    coachRibbon = window.CSCoachRibbon.initCoachRibbon({
+      mountEl: coachRibbonEl,
+      getMessageFn: function () {
+        return { text: "Make one change at a time." };
+      }
+    });
   }
 
   function timedPresetConfig(code) {
@@ -383,7 +402,9 @@
       skillTagEl.textContent = "Skill: " + skillLabel(pedagogy.primary_focus) + " • " + computeSkillLevelBadge(ai, pedagogy.primary_focus);
     }
     if (pedagogy) latestPedagogy = pedagogy;
+    if (!hasFirstEdit) return;
     if (pedagogy && pedagogy.coach_prompt) {
+      if (Date.now() < coachStateLockUntil) return;
       var coachText = pedagogy.coach_prompt;
       if (tierLevel === 3 && pedagogy.suggested_stem) {
         coachText += " Stem: " + sanitize(pedagogy.suggested_stem);
@@ -402,6 +423,7 @@
         tierLevel: tierLevel
       }));
     if (token !== activeAnalysisToken) return;
+    if (Date.now() < coachStateLockUntil) return;
     setCoachText(coach);
   }
 
@@ -518,6 +540,7 @@
   function applyAction(action) {
     if (demoLocked) return;
     if (action && action !== "teacher") revealPostEditUi();
+    if (action === "why") setStateCoachText("Write a short WHY phrase after because.");
     if (action === "verb") {
       engine.applyAction(action);
       var sourceBtn = document.querySelector('[data-action="verb"]');
@@ -560,6 +583,7 @@
       return;
     }
     revealPostEditUi();
+    setStateCoachText("Nice. Upgrade one word choice next.");
     render();
   }
 
@@ -691,6 +715,8 @@
   }
 
   var seededSentence = seedSentenceFromQuery();
+  initCoachRibbon();
+  setStateCoachText("Make one change at a time.");
   if (seededSentence) applySeedSentence(seededSentence);
   render();
 })();

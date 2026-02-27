@@ -33,6 +33,11 @@
           <h1>Reading Lab</h1>
           <div id="rl-status" class="rl-status">Start reading. We’ll track accuracy + phrasing.</div>
         </div>
+        <div id="rl-coach-ribbon" class="cs-coach-ribbon" role="status" aria-live="polite">
+          <span class="cs-coach-chip hidden"></span>
+          <p class="cs-coach-text"></p>
+          <button class="cs-coach-action hidden" type="button"></button>
+        </div>
         <div id="rl-passage" class="rl-passage" tabindex="0" aria-label="Reading passage"></div>
         <div class="rl-passage-actions">
           <button id="rl-send-sentence" class="rl-btn" type="button">Send to Sentence Surgery</button>
@@ -123,6 +128,7 @@
   <script src="./analytics-engine.js?v=20260227a" defer></script>
   <script src="./performance-engine.js?v=20260227a" defer></script>
   <script src="./ai-service.js?v=20260227b" defer></script>
-  <script src="./js/reading-lab.js?v=20260227a" defer></script>
+  <script src="./js/coach-ribbon.js?v=20260228a" defer></script>
+  <script src="./js/reading-lab.js?v=20260228a" defer></script>
 </body>
 </html>

@@ -164,6 +164,75 @@ html[data-text-size="large"] { --wq-text-size: 18px; }
   box-shadow: var(--cs-shadow-float);
 }
 
+.cs-coach-ribbon {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--cs-space-2);
+  min-height: 42px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(12, 21, 31, 0.3));
+  border: 1px solid color-mix(in oklab, var(--panel-border) 16%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 16px rgba(6, 14, 22, 0.18);
+  color: var(--cs-text-0);
+}
+
+.cs-coach-text {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  font-weight: 620;
+  color: color-mix(in oklab, var(--cs-text-0) 88%, #ffffff 12%);
+}
+
+.cs-coach-chip {
+  justify-self: start;
+}
+
+.cs-coach-action {
+  justify-self: end;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--cs-accent) 46%, transparent);
+  background: color-mix(in oklab, var(--cs-accent) 20%, rgba(17, 30, 44, 0.8) 80%);
+  color: var(--cs-text-0);
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1;
+  padding: 7px 11px;
+  cursor: pointer;
+  transition: transform 180ms ease, filter 180ms ease, border-color 180ms ease;
+}
+
+.cs-coach-action:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  border-color: color-mix(in oklab, var(--cs-accent) 62%, transparent);
+}
+
+.cs-coach-action:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--cs-accent) 62%, #ffffff 38%);
+  outline-offset: 2px;
+}
+
+.cs-coach-ribbon .hidden {
+  display: none !important;
+}
+
+.cs-coach-ribbon .cs-coach-text,
+.cs-coach-ribbon .cs-coach-chip,
+.cs-coach-ribbon .cs-coach-action {
+  transition: opacity 230ms ease, transform 230ms ease;
+}
+
+.cs-coach-ribbon.is-updating .cs-coach-text,
+.cs-coach-ribbon.is-updating .cs-coach-chip,
+.cs-coach-ribbon.is-updating .cs-coach-action {
+  opacity: 0.72;
+  transform: translateY(-1px);
+}
+
 .cs-bento {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -930,6 +999,19 @@ html[data-motion="reduced"] #cta-wordquest {
   .cs-tile:hover {
     transform: none;
     box-shadow: none;
+  }
+
+  .cs-coach-ribbon .cs-coach-text,
+  .cs-coach-ribbon .cs-coach-chip,
+  .cs-coach-ribbon .cs-coach-action {
+    transition: none;
+  }
+
+  .cs-coach-ribbon.is-updating .cs-coach-text,
+  .cs-coach-ribbon.is-updating .cs-coach-chip,
+  .cs-coach-ribbon.is-updating .cs-coach-action {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -3328,6 +3410,21 @@ html[data-page-mode="mission-lab"] .mission-lab-hub {
   justify-content: center;
   position:       relative;
   padding-top:    2px;
+}
+
+#wq-coach-ribbon {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  width: min(620px, calc(100vw - 26px));
+  margin-bottom: 2px;
+  pointer-events: none;
+}
+
+html[data-home-mode="play"] #wq-coach-ribbon.hidden {
+  display: none !important;
 }
 
 .play-support-row {
