@@ -191,6 +191,65 @@
     return out;
   }
 
+  function normalizeSkillEvidenceRow(raw) {
+    var src = raw && typeof raw === "object" ? raw : {};
+    function normalizeSkill(skillRaw) {
+      var skill = skillRaw && typeof skillRaw === "object" ? skillRaw : {};
+      var series = Array.isArray(skill.series) ? skill.series.slice(-12).map(function (n) {
+        return Math.max(0, Math.min(100, Math.round(Number(n) || 0)));
+      }) : [];
+      var signals = Array.isArray(skill.signals) ? skill.signals.slice(0, 6).map(function (s) {
+        return safeString(s, "");
+      }).filter(Boolean) : [];
+      return {
+        score: Math.max(0, Math.min(100, Math.round(Number(skill.score || 0)))),
+        signals: signals,
+        series: series
+      };
+    }
+    return {
+      updatedAt: safeString(src.updatedAt, new Date().toISOString()),
+      decoding: normalizeSkill(src.decoding),
+      fluency: normalizeSkill(src.fluency),
+      sentence: normalizeSkill(src.sentence),
+      writing: normalizeSkill(src.writing)
+    };
+  }
+
+  function normalizeProgressHistory(raw) {
+    var src = raw && typeof raw === "object" ? raw : {};
+    var out = {};
+    Object.keys(src).forEach(function (key) {
+      if (key !== "skillEvidence" && key !== "wordQuestSignals") out[key] = src[key];
+    });
+    var signalRows = Array.isArray(src.wordQuestSignals) ? src.wordQuestSignals.slice(-250) : [];
+    out.wordQuestSignals = signalRows.map(function (row) {
+      var entry = row && typeof row === "object" ? row : {};
+      return {
+        t: Math.max(0, Math.floor(Number(entry.t || Date.now()))),
+        studentId: safeString(entry.studentId, ""),
+        guessCount: Math.max(0, Math.floor(Number(entry.guessCount || entry.guesses || 0))),
+        timeToFirstGuess: Math.max(0, Number(entry.timeToFirstGuess || entry.timeToFirstGuessSec || 0)),
+        vowelSwapRate: Number(clampNumber(entry.vowelSwapRate, 0, 1, 0)),
+        repeatedInvalidLetterPlacementCount: Math.max(0, Math.floor(Number(entry.repeatedInvalidLetterPlacementCount || 0))),
+        patternAdherence: Number(clampNumber(entry.patternAdherence || entry.updateRespect, 0, 1, 0)),
+        clueUtilization: Number(clampNumber(entry.clueUtilization, 0, 1, 0)),
+        nextStep: safeString(entry.nextStep, ""),
+        solved: toBool(entry.solved)
+      };
+    });
+
+    var evidence = src.skillEvidence && typeof src.skillEvidence === "object" ? src.skillEvidence : {};
+    var normalizedEvidence = {};
+    Object.keys(evidence).forEach(function (studentId) {
+      var sid = safeString(studentId, "");
+      if (!sid) return;
+      normalizedEvidence[sid] = normalizeSkillEvidenceRow(evidence[studentId]);
+    });
+    out.skillEvidence = normalizedEvidence;
+    return out;
+  }
+
   function migrateKey(key, fallback, normalizeFn, options) {
     var opts = options || {};
     var rawValue = null;
@@ -231,6 +290,7 @@
     migrateKey("cs_analytics", defaultAnalytics(), normalizeAnalyticsShape, { initializeMissing: true });
     migrateKey("cs_school_analytics", { classes: {}, lastUpdated: 0 }, normalizeSchoolAnalytics, { initializeMissing: true });
     migrateKey("cs_ai_cache", {}, normalizeAICache, { initializeMissing: true });
+    migrateKey("cs_progress_history", { wordQuestSignals: [], skillEvidence: {} }, normalizeProgressHistory, { initializeMissing: true });
 
     if (hasDevUnlock()) {
       migrateKey("cs_config_override", {}, function (raw) {

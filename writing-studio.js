@@ -4651,6 +4651,11 @@
   }
 
   function goBackToWordQuest() {
+    var params = new URLSearchParams(window.location.search || "");
+    if (params.get("from") === "teacher") {
+      window.location.href = "teacher-dashboard.html";
+      return;
+    }
     var current = normalizeTheme(document.documentElement.getAttribute("data-theme") || "default");
     var prefs = loadPrefs();
     localStorage.setItem(STUDIO_THEME_KEY, current);
@@ -4864,7 +4869,14 @@
     input.addEventListener("change", updateMetricsAndCoach);
   });
   if (backBtn) backBtn.addEventListener("click", goBackToWordQuest);
-  if (backHomeBtn) backHomeBtn.addEventListener("click", goBackToWordQuest);
+  if (backHomeBtn) {
+    try {
+      if (new URLSearchParams(window.location.search || "").get("from") === "teacher") {
+        backHomeBtn.textContent = "Back to Dashboard";
+      }
+    } catch (_e) {}
+    backHomeBtn.addEventListener("click", goBackToWordQuest);
+  }
   if (setupToggleBtn) setupToggleBtn.addEventListener("click", toggleSetupPanel);
   if (controlsMoreBtn) controlsMoreBtn.addEventListener("click", function () {
     setControlsAdvancedOpen(!controlsAdvancedOpen);

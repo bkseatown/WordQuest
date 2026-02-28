@@ -1,91 +1,55 @@
-(function teacherDashboardSearchFirst() {
+(function teacherDashboardWorkflow() {
   "use strict";
 
   var store = window.CSCaseloadStore;
   if (!store) return;
 
   var ROSTER_KEY = "cs_roster_v1";
+  var PROGRESS_KEY = "cs_progress_history";
+  var SKILLS = ["decoding", "fluency", "sentence", "writing"];
+
   var state = {
     roster: [],
     sessions: [],
+    evidence: {},
     selectedStudentId: "",
     activeTierTab: "tier2",
-    tourIndex: -1,
-    tourTimer: 0,
-    replayTimer: 0
+    activeSkillFilter: ""
   };
 
   var el = {
-    studentSearch: document.getElementById("td-student-search"),
-    studentOptions: document.getElementById("td-student-options"),
-    openStudents: document.getElementById("td-open-students"),
-    runProbe: document.getElementById("td-run-probe"),
-    run10: document.getElementById("td-run-10"),
-    studentRun: document.getElementById("td-student-run"),
-    importBtn: document.getElementById("td-import"),
-    importInput: document.getElementById("td-import-input"),
-    exportBtn: document.getElementById("td-export"),
-    status: document.getElementById("td-status"),
+    search: document.getElementById("td-student-search"),
+    options: document.getElementById("td-student-options"),
     groups: document.getElementById("td-groups"),
-    nextMove: document.getElementById("td-next-move"),
-    recentList: document.getElementById("td-recent-list"),
-    studentEmpty: document.getElementById("td-student-empty"),
-    studentView: document.getElementById("td-student-view"),
-    studentName: document.getElementById("td-student-name"),
-    need: document.getElementById("td-need"),
-    tier: document.getElementById("td-tier"),
-    confidence: document.getElementById("td-confidence"),
-    trend: document.getElementById("td-trend"),
-    studentNext: document.getElementById("td-student-next"),
+    todayCards: document.getElementById("td-today-cards"),
+    evidenceOverview: document.getElementById("td-evidence-overview"),
+    status: document.getElementById("td-status"),
+    openStudents: document.getElementById("td-open-students"),
     drawer: document.getElementById("td-students-drawer"),
     drawerList: document.getElementById("td-drawer-list"),
     closeStudents: document.getElementById("td-close-students"),
-    tierTabs: Array.from(document.querySelectorAll("[data-tier-tab]")),
-    startAdminDemo: document.getElementById("td-start-admin-demo"),
-    tourOverlay: document.getElementById("td-tour-overlay"),
-    tourHighlight: document.getElementById("td-tour-highlight"),
-    tourTitle: document.getElementById("td-tour-title"),
-    tourText: document.getElementById("td-tour-text"),
-    tourBack: document.getElementById("td-tour-back"),
-    tourNext: document.getElementById("td-tour-next"),
-    tourExit: document.getElementById("td-tour-exit"),
-    probeHud: document.getElementById("td-probe-hud"),
-    hudConstraint: document.getElementById("hud-constraint"),
-    hudVowel: document.getElementById("hud-vowel"),
-    hudRepeat: document.getElementById("hud-repeat"),
-    hudTime: document.getElementById("hud-time")
+    exportBtn: document.getElementById("td-export"),
+    settingsBtn: document.getElementById("td-settings"),
+    helpBtn: document.getElementById("td-help"),
+    tierTabs: Array.prototype.slice.call(document.querySelectorAll("[data-tier-tab]")),
+    quickLaunchButtons: Array.prototype.slice.call(document.querySelectorAll("[data-launch]")),
+    studentEmpty: document.getElementById("td-student-empty"),
+    studentView: document.getElementById("td-student-view"),
+    studentName: document.getElementById("td-student-name"),
+    tier: document.getElementById("td-tier"),
+    need: document.getElementById("td-need"),
+    confidence: document.getElementById("td-confidence"),
+    trend: document.getElementById("td-trend"),
+    sessionCount: document.getElementById("td-session-count"),
+    studentNext: document.getElementById("td-student-next"),
+    studentEvidence: document.getElementById("td-student-evidence"),
+    notes: document.getElementById("td-notes-text"),
+    nextCta: document.getElementById("td-next-cta"),
+    studentRun: document.getElementById("td-student-run")
   };
 
-  var TOUR_STEPS = [
-    {
-      selector: "#td-student-search",
-      title: "Roster + Search",
-      text: "Caseload ready. Two taps to student goals and today\'s move."
-    },
-    {
-      selector: "#td-student-view",
-      title: "Data -> Need -> Next Move",
-      text: "No data dump. Primary need, tier, confidence, and one next step."
-    },
-    {
-      selector: "#td-probe-hud",
-      title: "90-Second Probe",
-      text: "Live metrics capture strategy signals during gameplay."
-    },
-    {
-      selector: "#td-next-move",
-      title: "Mini-Lesson Plan",
-      text: "10-minute move with direct instruction and independent practice."
-    },
-    {
-      selector: "#td-export",
-      title: "Progress Reporting",
-      text: "Export clean progress evidence for family and admin updates."
-    }
-  ];
-
   function setStatus(message) {
-    el.status.textContent = String(message || "");
+    if (el.status) el.status.textContent = String(message || "");
   }
 
   function parseJSON(raw, fallback) {
@@ -98,27 +62,47 @@
     }
   }
 
-  function loadRoster() {
-    var roster = parseJSON(localStorage.getItem(ROSTER_KEY), []);
-    if (!Array.isArray(roster) || !roster.length) {
-      var seeded = store.seedDemoCaseload();
-      roster = (seeded.students || []).map(function (student, idx) {
-        return {
-          id: String(student.id || ("SAS7A-" + String(idx + 1).padStart(2, "0"))),
-          code: "SAS7A-" + String(idx + 1).padStart(2, "0"),
-          name: String(student.name || ("Student " + (idx + 1))),
-          tier: String(student.tier || "tier2"),
-          focusSkill: String(student.focusSkill || "strategy")
-        };
-      });
-      localStorage.setItem(ROSTER_KEY, JSON.stringify(roster));
+  function loadProgress() {
+    var obj = parseJSON(localStorage.getItem(PROGRESS_KEY), {});
+    if (!obj || typeof obj !== "object") obj = {};
+    obj.skillEvidence = obj.skillEvidence && typeof obj.skillEvidence === "object" ? obj.skillEvidence : {};
+    obj.wordQuestSignals = Array.isArray(obj.wordQuestSignals) ? obj.wordQuestSignals : [];
+    return obj;
+  }
+
+  function saveProgress(progress) {
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+    } catch (_e) {
+      // ignore storage full failures
     }
-    return roster;
+  }
+
+  function loadRoster() {
+    var seeded = store.loadCaseload && typeof store.loadCaseload === "function" ? store.loadCaseload() : null;
+    var seededStudents = seeded && Array.isArray(seeded.students) ? seeded.students : [];
+    var roster = parseJSON(localStorage.getItem(ROSTER_KEY), seededStudents);
+    if (!Array.isArray(roster)) roster = seededStudents;
+    if (!roster.length && typeof store.seedDemoCaseload === "function") {
+      var demo = store.seedDemoCaseload();
+      roster = Array.isArray(demo.students) ? demo.students : [];
+      try { localStorage.setItem(ROSTER_KEY, JSON.stringify(roster)); } catch (_e2) {}
+    }
+    return roster.map(function (student, idx) {
+      return {
+        id: String(student.id || ("SAS7A-" + String(idx + 1).padStart(2, "0"))),
+        code: String(student.code || student.id || ("SAS7A-" + String(idx + 1).padStart(2, "0"))),
+        name: String(student.name || ("Student " + (idx + 1))),
+        tier: normalizeTier(student.tier),
+        focusSkill: String(student.focusSkill || "decoding").toLowerCase(),
+        notes: String(student.notes || "")
+      };
+    });
   }
 
   function loadSessions() {
-    var rows = store.listSessions();
-    if (!Array.isArray(rows)) return [];
+    var rows = store.listSessions && typeof store.listSessions === "function" ? store.listSessions() : [];
+    if (!Array.isArray(rows)) rows = [];
     return rows.slice().sort(function (a, b) {
       return Date.parse(String(b.createdAt || b.endedAt || "")) - Date.parse(String(a.createdAt || a.endedAt || ""));
     });
@@ -126,347 +110,407 @@
 
   function normalizeTier(tier) {
     var v = String(tier || "").toLowerCase();
-    if (v === "tier3" || v === "tier-3") return "tier3";
-    if (v === "tier1" || v === "monitor") return "tier1";
+    if (v === "tier3" || v === "tier-3" || v === "3") return "tier3";
+    if (v === "tier1" || v === "tier-1" || v === "monitor" || v === "1") return "tier1";
     return "tier2";
   }
 
   function tierLabel(tier) {
-    var v = normalizeTier(tier);
-    if (v === "tier3") return "Tier 3";
-    if (v === "tier1") return "Tier 1";
+    var t = normalizeTier(tier);
+    if (t === "tier3") return "Tier 3";
+    if (t === "tier1") return "Tier 1";
     return "Tier 2";
   }
 
-  function findStudentByToken(token) {
-    var t = String(token || "").trim().toLowerCase();
-    if (!t) return null;
+  function ensureSkillEntry(skill) {
+    return {
+      score: 0,
+      signals: [],
+      series: [],
+      skill: skill
+    };
+  }
+
+  function studentEvidenceBase() {
+    var out = { updatedAt: new Date().toISOString() };
+    SKILLS.forEach(function (skill) { out[skill] = ensureSkillEntry(skill); });
+    return out;
+  }
+
+  function mapSessionSkill(row) {
+    var engine = String(row.engine || row.mode || "").toLowerCase();
+    var focus = String(row.focusSkill || "").toLowerCase();
+    if (engine.includes("wordquest") || focus.includes("decode") || focus.includes("vowel")) return "decoding";
+    if (engine.includes("reading") || focus.includes("fluency")) return "fluency";
+    if (engine.includes("sentence") || focus.includes("reason")) return "sentence";
+    if (engine.includes("writing") || focus.includes("writing")) return "writing";
+    return "decoding";
+  }
+
+  function upsertSignal(list, label) {
+    if (!label) return;
+    if (list.indexOf(label) === -1) list.push(label);
+    if (list.length > 4) list.shift();
+  }
+
+  function addSeriesValue(entry, value) {
+    var v = Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
+    entry.series.push(v);
+    if (entry.series.length > 12) entry.series = entry.series.slice(-12);
+    entry.score = entry.series.length
+      ? Math.round(entry.series.reduce(function (sum, n) { return sum + n; }, 0) / entry.series.length)
+      : 0;
+  }
+
+  function buildEvidenceMap() {
+    var progress = loadProgress();
+    var map = progress.skillEvidence && typeof progress.skillEvidence === "object" ? progress.skillEvidence : {};
+
+    state.roster.forEach(function (student) {
+      var sid = String(student.id);
+      if (!map[sid] || typeof map[sid] !== "object") map[sid] = studentEvidenceBase();
+      SKILLS.forEach(function (skill) {
+        if (!map[sid][skill] || typeof map[sid][skill] !== "object") map[sid][skill] = ensureSkillEntry(skill);
+        if (!Array.isArray(map[sid][skill].signals)) map[sid][skill].signals = [];
+        if (!Array.isArray(map[sid][skill].series)) map[sid][skill].series = [];
+      });
+    });
+
+    var byStudent = {};
+    state.sessions.forEach(function (row) {
+      var sid = String(row.studentId || "");
+      if (!sid) return;
+      if (!byStudent[sid]) byStudent[sid] = [];
+      byStudent[sid].push(row);
+    });
+
+    Object.keys(byStudent).forEach(function (sid) {
+      var ev = map[sid] || studentEvidenceBase();
+      var rows = byStudent[sid].slice(0, 24).reverse();
+      rows.forEach(function (row) {
+        var skill = mapSessionSkill(row);
+        var score = Math.round((Number(row.collectedSignals && row.collectedSignals.sessionScore || 0.65) * 100));
+        addSeriesValue(ev[skill], score);
+        if (score < 55) upsertSignal(ev[skill].signals, "Needs support");
+        else if (score > 78) upsertSignal(ev[skill].signals, "Stable trend");
+        else upsertSignal(ev[skill].signals, "Building consistency");
+      });
+      map[sid] = ev;
+    });
+
+    progress.wordQuestSignals.slice(-220).forEach(function (signal) {
+      var sid = String(signal.studentId || "");
+      if (!sid || !map[sid]) return;
+      var decoding = map[sid].decoding;
+      var adherence = Math.round(Math.max(0, Math.min(1, Number(signal.patternAdherence || signal.updateRespect || 0))) * 100);
+      addSeriesValue(decoding, adherence);
+      if (Number(signal.vowelSwapRate || 0) < 0.22) upsertSignal(decoding.signals, "Vowel mapping unstable");
+      if (Number(signal.repeatedInvalidLetterPlacementCount || 0) > 2) upsertSignal(decoding.signals, "Overwrites known constraints");
+      if (Number(signal.timeToFirstGuess || signal.timeToFirstGuessSec || 0) > 12) upsertSignal(decoding.signals, "Slow start");
+      if (adherence > 76) upsertSignal(decoding.signals, "Efficient refinement");
+    });
+
+    progress.skillEvidence = map;
+    saveProgress(progress);
+    return map;
+  }
+
+  function findStudent(query) {
+    var q = String(query || "").trim().toLowerCase();
+    if (!q) return null;
     return state.roster.find(function (student) {
-      return String(student.id || "").toLowerCase() === t ||
-        String(student.code || "").toLowerCase() === t ||
-        String(student.name || "").toLowerCase() === t;
+      return String(student.name || "").toLowerCase().includes(q) ||
+        String(student.id || "").toLowerCase().includes(q) ||
+        String(student.code || "").toLowerCase().includes(q) ||
+        String(student.focusSkill || "").toLowerCase().includes(q);
     }) || null;
   }
 
-  function studentSessions(student) {
+  function sessionsForStudent(student) {
     if (!student) return [];
-    return state.sessions.filter(function (row) {
-      return String(row.studentId || "") === String(student.id || "") ||
-        String(row.studentCode || "").toLowerCase() === String(student.code || "").toLowerCase();
-    });
-  }
-
-  function inferNeedFromSession(session, fallbackSkill) {
-    var moveTitle = String(session && session.nextMove && session.nextMove.title || "").toLowerCase();
-    if (moveTitle.includes("vowel")) return "Decoding / vowel contrast";
-    if (moveTitle.includes("fluency") || moveTitle.includes("orf")) return "Fluency";
-    if (moveTitle.includes("reason") || moveTitle.includes("sentence")) return "Sentence reasoning";
-    var skill = String(fallbackSkill || "strategy").toLowerCase();
-    if (skill === "decoding") return "Decoding / vowel contrast";
-    if (skill === "fluency") return "Fluency";
-    if (skill === "reasoning") return "Sentence reasoning";
-    return "Constraint Respect";
+    var sid = String(student.id);
+    return state.sessions.filter(function (row) { return String(row.studentId || "") === sid; });
   }
 
   function summarizeStudent(student) {
-    var rows = studentSessions(student);
+    var rows = sessionsForStudent(student);
     var latest = rows[0] || null;
-    var tier = latest ? normalizeTier(latest.tier) : normalizeTier(student.tier);
-    var confidence = latest
-      ? Math.round((Number(latest.collectedSignals && latest.collectedSignals.sessionScore || 0.72) * 100))
-      : (tier === "tier3" ? 58 : 72);
-    var need = inferNeedFromSession(latest, student.focusSkill);
-    var nextMove = latest && latest.teacherNote
-      ? latest.teacherNote
-      : "Run a 90-second Word Quest probe, then assign a 10-minute targeted move.";
-    var trend = rows.length >= 2 ? "up" : "steady";
+    var evidence = state.evidence[String(student.id)] || studentEvidenceBase();
+    var dominantSkill = SKILLS.slice().sort(function (a, b) {
+      return Number(evidence[a].score || 0) - Number(evidence[b].score || 0);
+    })[0];
+    var score = Number(evidence[dominantSkill].score || 65);
+    var nextAction = dominantSkill === "decoding"
+      ? "Run vowel sweep mini-lesson in Word Quest"
+      : dominantSkill === "fluency"
+        ? "Run 3-minute Reading Lab check"
+        : dominantSkill === "sentence"
+          ? "Launch Sentence Surgery reasoning prompt"
+          : "Launch Writing Studio structure pass";
+
     return {
-      student: student,
+      confidence: Math.max(40, Math.min(98, 100 - Math.round((100 - score) * 0.7))),
+      tier: normalizeTier(student.tier),
+      trend: rows.length >= 2 ? "Improving" : "Steady",
+      need: dominantSkill,
+      nextAction: nextAction,
+      sessionCount: rows.length,
       latest: latest,
-      confidence: confidence,
-      need: need,
-      tier: tier,
-      trend: trend,
-      nextMove: nextMove
+      evidence: evidence
     };
   }
 
-  function buildGroups() {
-    var tier = state.activeTierTab;
-    var scoped = state.roster.filter(function (student) {
-      var t = normalizeTier(student.tier);
-      if (tier === "tier1") return t === "tier1";
-      if (tier === "tier3") return t === "tier3";
-      return t === "tier2";
-    });
+  function launchRoute(name, studentId) {
+    var sid = encodeURIComponent(String(studentId || ""));
+    if (name === "wordquest") {
+      window.location.href = "index.html?mode=play&studentId=" + sid + "&from=teacher";
+      return;
+    }
+    if (name === "reading-lab") {
+      window.location.href = "reading-lab.html?studentId=" + sid + "&from=teacher";
+      return;
+    }
+    if (name === "sentence-surgery") {
+      window.location.href = "sentence-surgery.html?studentId=" + sid + "&from=teacher";
+      return;
+    }
+    window.location.href = "writing-studio.html?studentId=" + sid + "&from=teacher";
+  }
 
-    var groups = {
-      A: { label: "Group A", tier: "Tier 3", focus: "decoding / vowel contrast", students: [] },
-      B: { label: "Group B", tier: "Tier 2", focus: "sentence reasoning", students: [] },
-      C: { label: "Group C", tier: "Tier 1", focus: "fluency", students: [] }
-    };
-
-    scoped.forEach(function (student) {
-      var t = normalizeTier(student.tier);
-      if (t === "tier3") groups.A.students.push(student);
-      else if (String(student.focusSkill || "") === "fluency" || t === "tier1") groups.C.students.push(student);
-      else groups.B.students.push(student);
-    });
-
-    return [groups.A, groups.B, groups.C];
+  function buildSparkline(points, color) {
+    var arr = Array.isArray(points) ? points.slice(-12) : [];
+    if (!arr.length) arr = [56, 58, 60, 59, 62];
+    var max = Math.max.apply(Math, arr);
+    var min = Math.min.apply(Math, arr);
+    var span = Math.max(1, max - min);
+    var w = 220;
+    var h = 30;
+    var coords = arr.map(function (value, idx) {
+      var x = Math.round((idx / Math.max(1, arr.length - 1)) * w);
+      var y = Math.round(h - ((value - min) / span) * (h - 4) - 2);
+      return x + "," + y;
+    }).join(" ");
+    return '<svg class="td-sparkline" viewBox="0 0 220 30" preserveAspectRatio="none"><polyline points="' + coords + '" style="stroke:' + color + ';"></polyline></svg>';
   }
 
   function renderSearchOptions() {
-    el.studentOptions.innerHTML = "";
+    el.options.innerHTML = "";
     state.roster.forEach(function (student) {
       var opt = document.createElement("option");
       opt.value = student.code || student.id;
-      opt.label = student.name;
-      el.studentOptions.appendChild(opt);
+      opt.label = student.name + " (" + student.focusSkill + ")";
+      el.options.appendChild(opt);
     });
-  }
-
-  function renderGroups() {
-    var groups = buildGroups();
-    el.groups.innerHTML = groups.map(function (group) {
-      return [
-        '<article class="td-group-row" data-group="' + group.label.slice(-1) + '">',
-        '<div class="td-group-head"><span>' + group.label + ' · ' + group.tier + '</span><span>' + group.students.length + ' students</span></div>',
-        '<div class="td-group-need">Focus: ' + group.focus + '</div>',
-        '<button class="td-btn td-btn-primary" data-run-group="' + group.label.slice(-1) + '" type="button">Run 10-min session</button>',
-        '</article>'
-      ].join("");
-    }).join("");
-
-    el.groups.querySelectorAll("[data-run-group]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var groupId = btn.getAttribute("data-run-group") || "B";
-        window.location.href = "session-runner.html?mode=smallgroup&group=" + encodeURIComponent(groupId);
-      });
-    });
-  }
-
-  function renderRecent() {
-    var rows = state.sessions.slice(0, 5);
-    if (!rows.length) {
-      el.recentList.innerHTML = '<div class="td-recent-item">No sessions yet. Run a 90-second probe to start.</div>';
-      return;
-    }
-    el.recentList.innerHTML = rows.map(function (row) {
-      var ts = new Date(Date.parse(String(row.createdAt || row.endedAt || "")) || Date.now());
-      var stamp = ts.toLocaleDateString() + " " + ts.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      return '<article class="td-recent-item"><strong>' + (row.studentName || row.studentCode || row.studentId || "Student") + '</strong><br>' +
-        tierLabel(row.tier) + ' · ' + (row.focusSkill || row.engine || "strategy") + '<br><span>' + stamp + '</span></article>';
-    }).join("");
-  }
-
-  function renderStudent(student) {
-    if (!student) {
-      el.studentView.classList.add("hidden");
-      el.studentEmpty.classList.remove("hidden");
-      el.run10.disabled = true;
-      el.nextMove.textContent = "Search a student first to load the recommended move.";
-      return;
-    }
-
-    var summary = summarizeStudent(student);
-    state.selectedStudentId = student.id;
-
-    el.studentEmpty.classList.add("hidden");
-    el.studentView.classList.remove("hidden");
-    el.studentName.textContent = student.name + " (" + (student.code || student.id) + ")";
-    el.need.textContent = summary.need;
-    el.tier.textContent = tierLabel(summary.tier);
-    el.confidence.textContent = String(summary.confidence) + "%";
-    el.trend.textContent = summary.trend === "up" ? "Improving" : "Steady";
-    el.studentNext.textContent = summary.nextMove;
-    el.nextMove.textContent = "Today: " + summary.nextMove;
-    el.run10.disabled = false;
   }
 
   function renderDrawer() {
     el.drawerList.innerHTML = state.roster.map(function (student) {
-      return '<button class="td-drawer-student" data-student-id="' + student.id + '" type="button">' +
-        '<strong>' + student.name + '</strong><br><span>' + (student.code || student.id) + ' · ' + tierLabel(student.tier) + '</span></button>';
+      var s = summarizeStudent(student);
+      return '<button class="td-drawer-item" data-student-id="' + student.id + '" type="button">' +
+        '<strong>' + student.name + '</strong><br><span>' + (student.code || student.id) + ' · ' + tierLabel(student.tier) + ' · ' + s.need + '</span></button>';
     }).join("");
 
-    el.drawerList.querySelectorAll("[data-student-id]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var id = btn.getAttribute("data-student-id") || "";
+    Array.prototype.forEach.call(el.drawerList.querySelectorAll("[data-student-id]"), function (node) {
+      node.addEventListener("click", function () {
+        var id = node.getAttribute("data-student-id") || "";
         var student = state.roster.find(function (row) { return String(row.id) === id; }) || null;
         if (!student) return;
-        el.studentSearch.value = student.code || student.id;
-        renderStudent(student);
+        state.selectedStudentId = student.id;
+        renderSelectedStudent();
         el.drawer.classList.add("hidden");
       });
     });
   }
 
-  function mergeImportedPayload(payload) {
-    var parsed = payload;
-    if (typeof payload === "string") {
-      parsed = parseJSON(payload, null);
-    }
-    if (!parsed) return { added: 0 };
+  function buildTodayCards(student) {
+    var topStudent = student || state.roster[0] || null;
+    var summary = topStudent ? summarizeStudent(topStudent) : null;
+    var groupAction = state.activeTierTab === "tier3"
+      ? "Tier 3 decoding huddle"
+      : state.activeTierTab === "tier1"
+        ? "Tier 1 fluency reset"
+        : "Tier 2 sentence support";
 
-    var sessionRows = [];
-    if (Array.isArray(parsed)) sessionRows = parsed;
-    else if (Array.isArray(parsed.sessions)) sessionRows = parsed.sessions;
-    else if (parsed.sessionId) sessionRows = [parsed];
-
-    var added = 0;
-    sessionRows.forEach(function (row) {
-      if (!row || typeof row !== "object") return;
-      var studentId = String(row.studentId || row.studentCode || "");
-      store.recordSession(studentId, row);
-      added += 1;
-    });
-
-    if (Array.isArray(parsed.roster) && parsed.roster.length) {
-      localStorage.setItem(ROSTER_KEY, JSON.stringify(parsed.roster));
-    }
-
-    return { added: added };
+    return [
+      {
+        kicker: "Highest Need",
+        title: topStudent ? (topStudent.name + " · " + summary.nextAction) : "Select a student to seed next move",
+        meta: topStudent ? ("Confidence " + summary.confidence + "% · " + tierLabel(summary.tier)) : "Search caseload by name, id, or skill",
+        cta: topStudent ? "Launch" : "Find Student",
+        action: function () {
+          if (topStudent) launchRoute(mapNeedToRoute(summary.need), topStudent.id);
+          else el.search.focus();
+        }
+      },
+      {
+        kicker: "Group Suggestion",
+        title: groupAction,
+        meta: "Targeted 10-minute move for " + tierLabel(state.activeTierTab),
+        cta: "Start Group",
+        action: function () { window.location.href = "session-runner.html?mode=smallgroup&tier=" + encodeURIComponent(state.activeTierTab) + "&from=teacher"; }
+      },
+      {
+        kicker: "Quick Check",
+        title: "Run a 3-minute check",
+        meta: "Use Reading Lab or Sentence Surgery to gather fresh signals",
+        cta: "Run Check",
+        action: function () {
+          var id = topStudent ? topStudent.id : "";
+          launchRoute(state.activeSkillFilter === "sentence" ? "sentence-surgery" : "reading-lab", id);
+        }
+      }
+    ];
   }
 
-  function exportProgressCSV() {
-    var rows = state.sessions.slice();
-    var headers = ["studentId", "studentCode", "date", "activity", "primaryNeed", "tier", "confidence", "recommendedNextMove"];
-    var lines = [headers.join(",")];
-    rows.forEach(function (row) {
-      var need = inferNeedFromSession(row, row.focusSkill);
-      var confidence = Math.round((Number(row.collectedSignals && row.collectedSignals.sessionScore || 0.72) * 100));
-      var values = [
-        row.studentId || "",
-        row.studentCode || "",
-        row.createdAt || row.endedAt || "",
-        row.engine || row.mode || "wordquest",
-        need,
-        tierLabel(row.tier),
-        String(confidence) + "%",
-        row.teacherNote || (row.nextMove && row.nextMove.title) || "Run 10-minute move"
-      ].map(function (value) {
-        var s = String(value == null ? "" : value).replace(/"/g, '""');
-        return '"' + s + '"';
+  function mapNeedToRoute(need) {
+    if (need === "decoding") return "wordquest";
+    if (need === "fluency") return "reading-lab";
+    if (need === "sentence") return "sentence-surgery";
+    return "writing-studio";
+  }
+
+  function renderToday(student) {
+    var cards = buildTodayCards(student);
+    el.todayCards.innerHTML = cards.map(function (card, idx) {
+      return '<article class="td-action-card" data-card-index="' + idx + '">' +
+        '<div class="td-action-kicker">' + card.kicker + '</div>' +
+        '<div class="td-action-title">' + card.title + '</div>' +
+        '<div class="td-action-meta">' + card.meta + '</div>' +
+        '<button class="td-btn td-btn-primary ' + (idx === 0 ? "td-shimmer" : "") + '" type="button" data-card-action="' + idx + '">' + card.cta + '</button>' +
+      '</article>';
+    }).join("");
+
+    Array.prototype.forEach.call(el.todayCards.querySelectorAll("[data-card-action]"), function (node) {
+      node.addEventListener("click", function () {
+        var idx = Number(node.getAttribute("data-card-action") || 0);
+        var card = cards[idx];
+        if (card && typeof card.action === "function") card.action();
       });
-      lines.push(values.join(","));
     });
-    return new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
   }
 
-  function downloadBlob(blob, filename) {
-    if (!(blob instanceof Blob)) return;
+  function renderGroups() {
+    var scoped = state.roster.filter(function (student) {
+      return normalizeTier(student.tier) === state.activeTierTab;
+    });
+    if (!scoped.length) {
+      el.groups.innerHTML = '<div class="td-group-row"><div class="td-group-sub">No students in this tier yet.</div></div>';
+      return;
+    }
+    el.groups.innerHTML = scoped.map(function (student) {
+      var summary = summarizeStudent(student);
+      return '<article class="td-group-row" data-student-id="' + student.id + '">' +
+        '<div class="td-group-head"><span class="td-group-title">' + student.name + '</span><span>' + summary.confidence + '%</span></div>' +
+        '<div class="td-group-sub">Need: ' + summary.need + ' · Next: ' + summary.nextAction + '</div>' +
+      '</article>';
+    }).join("");
+
+    Array.prototype.forEach.call(el.groups.querySelectorAll("[data-student-id]"), function (node) {
+      node.addEventListener("click", function () {
+        state.selectedStudentId = node.getAttribute("data-student-id") || "";
+        renderSelectedStudent();
+      });
+    });
+  }
+
+  function aggregateSkill(skill) {
+    var points = [];
+    var chips = [];
+    state.roster.forEach(function (student) {
+      var ev = state.evidence[String(student.id)] || studentEvidenceBase();
+      var row = ev[skill] || ensureSkillEntry(skill);
+      points = points.concat(row.series || []);
+      (row.signals || []).forEach(function (label) { if (chips.indexOf(label) === -1) chips.push(label); });
+    });
+    points = points.slice(-12);
+    var score = points.length ? Math.round(points.reduce(function (sum, n) { return sum + n; }, 0) / points.length) : 0;
+    return { score: score, chips: chips.slice(0, 3), points: points };
+  }
+
+  function renderEvidenceOverview() {
+    var colorBySkill = {
+      decoding: "#5cd1ff",
+      fluency: "#6ee7b7",
+      sentence: "#f4c978",
+      writing: "#ff9cc2"
+    };
+    el.evidenceOverview.innerHTML = SKILLS.map(function (skill) {
+      var row = aggregateSkill(skill);
+      var chips = row.chips.length ? row.chips : ["No recent signal"];
+      return '<article class="td-skill-row ' + (state.activeSkillFilter === skill ? "is-active" : "") + '" data-skill="' + skill + '">' +
+        '<div class="td-skill-head"><div class="td-skill-name">' + skill.charAt(0).toUpperCase() + skill.slice(1) + '</div><div class="td-skill-score">' + row.score + '</div></div>' +
+        '<div class="td-chip-row">' + chips.map(function (chip) { return '<span class="td-chip">' + chip + '</span>'; }).join("") + '</div>' +
+        buildSparkline(row.points, colorBySkill[skill]) +
+      '</article>';
+    }).join("");
+
+    Array.prototype.forEach.call(el.evidenceOverview.querySelectorAll("[data-skill]"), function (node) {
+      node.addEventListener("click", function () {
+        var skill = node.getAttribute("data-skill") || "";
+        state.activeSkillFilter = state.activeSkillFilter === skill ? "" : skill;
+        renderToday(state.selectedStudentId ? state.roster.find(function (s) { return s.id === state.selectedStudentId; }) : null);
+        renderEvidenceOverview();
+      });
+    });
+  }
+
+  function renderSelectedStudent() {
+    var student = state.roster.find(function (row) { return row.id === state.selectedStudentId; }) || null;
+    if (!student) {
+      el.studentView.classList.add("hidden");
+      el.studentEmpty.classList.remove("hidden");
+      el.nextCta.onclick = null;
+      renderToday(null);
+      return;
+    }
+
+    var summary = summarizeStudent(student);
+    var ev = summary.evidence;
+    el.studentEmpty.classList.add("hidden");
+    el.studentView.classList.remove("hidden");
+    el.studentName.textContent = student.name + " (" + (student.code || student.id) + ")";
+    el.tier.textContent = tierLabel(summary.tier);
+    el.need.textContent = summary.need;
+    el.confidence.textContent = summary.confidence + "%";
+    el.trend.textContent = summary.trend;
+    el.sessionCount.textContent = String(summary.sessionCount);
+    el.studentNext.textContent = summary.nextAction;
+    el.notes.textContent = student.notes || "No notes yet.";
+
+    el.studentEvidence.innerHTML = SKILLS.map(function (skill) {
+      var row = ev[skill] || ensureSkillEntry(skill);
+      return '<div class="td-group-sub"><strong>' + skill + ':</strong> ' + row.score + ' · ' + (row.signals || []).slice(0, 2).join(" • ") + '</div>';
+    }).join("");
+
+    el.nextCta.onclick = function () { launchRoute(mapNeedToRoute(summary.need), student.id); };
+    el.studentRun.onclick = function () { launchRoute("reading-lab", student.id); };
+    renderToday(student);
+  }
+
+  function exportBundle() {
+    var payload = {
+      exportedAt: new Date().toISOString(),
+      roster: state.roster,
+      sessions: state.sessions.slice(0, 120),
+      skillEvidence: state.evidence
+    };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = filename;
+    a.download = "cornerstone-dashboard-evidence.json";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(a.href); }, 500);
-  }
-
-  function runProbeForSelected() {
-    var student = state.roster.find(function (row) { return row.id === state.selectedStudentId; }) || null;
-    if (student) {
-      window.location.href = "session-runner.html?mode=smallgroup&studentId=" + encodeURIComponent(student.id) + "&tier=" + encodeURIComponent(normalizeTier(student.tier));
-      return;
-    }
-    window.location.href = "session-runner.html?mode=smallgroup&group=B";
-  }
-
-  function applyTierTab(tab) {
-    state.activeTierTab = tab;
-    el.tierTabs.forEach(function (node) {
-      node.classList.toggle("is-active", node.getAttribute("data-tier-tab") === tab);
-    });
-    renderGroups();
-  }
-
-  function stopReplay() {
-    if (state.replayTimer) {
-      clearInterval(state.replayTimer);
-      state.replayTimer = 0;
-    }
-  }
-
-  function startProbeReplay() {
-    stopReplay();
-    el.probeHud.classList.remove("hidden");
-    var tick = 0;
-    state.replayTimer = setInterval(function () {
-      tick += 1;
-      var respect = Math.min(0.88, 0.34 + tick * 0.045);
-      var vowel = Math.min(5, 1 + Math.floor(tick / 2));
-      var repeat = Math.max(0.08, 0.42 - tick * 0.028);
-      var time = Math.max(620, 1900 - tick * 120);
-      el.hudConstraint.textContent = respect.toFixed(2);
-      el.hudVowel.textContent = String(vowel);
-      el.hudRepeat.textContent = repeat.toFixed(2);
-      el.hudTime.textContent = String(time);
-      if (tick >= 9) stopReplay();
-    }, 700);
-  }
-
-  function setTourHighlight(selector) {
-    var node = document.querySelector(selector);
-    if (!node) return;
-    var rect = node.getBoundingClientRect();
-    el.tourHighlight.style.left = Math.max(6, rect.left - 6) + "px";
-    el.tourHighlight.style.top = Math.max(6, rect.top - 6) + "px";
-    el.tourHighlight.style.width = Math.max(40, rect.width + 12) + "px";
-    el.tourHighlight.style.height = Math.max(36, rect.height + 12) + "px";
-  }
-
-  function runTourStep(index) {
-    if (index < 0 || index >= TOUR_STEPS.length) {
-      stopTour();
-      return;
-    }
-    state.tourIndex = index;
-    var step = TOUR_STEPS[index];
-    if (step.selector === "#td-student-view" && !state.selectedStudentId) {
-      var first = state.roster[0] || null;
-      if (first) renderStudent(first);
-    }
-    if (step.selector === "#td-probe-hud") startProbeReplay();
-    setTourHighlight(step.selector);
-    el.tourTitle.textContent = "Step " + (index + 1) + ": " + step.title;
-    el.tourText.textContent = step.text;
-    el.tourBack.disabled = index === 0;
-    el.tourNext.textContent = index === TOUR_STEPS.length - 1 ? "Finish" : "Next";
-
-    if (state.tourTimer) clearTimeout(state.tourTimer);
-    state.tourTimer = setTimeout(function () {
-      runTourStep(index + 1);
-    }, 8000);
-  }
-
-  function startTour() {
-    el.tourOverlay.classList.remove("hidden");
-    runTourStep(0);
-  }
-
-  function stopTour() {
-    if (state.tourTimer) clearTimeout(state.tourTimer);
-    state.tourTimer = 0;
-    stopReplay();
-    el.probeHud.classList.add("hidden");
-    el.tourOverlay.classList.add("hidden");
-    state.tourIndex = -1;
-    if (location.hash === "#admin-demo") {
-      history.replaceState(history.state, "", location.pathname + location.search);
-    }
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 400);
+    setStatus("Export complete.");
   }
 
   function bindEvents() {
-    el.studentSearch.addEventListener("change", function () {
-      var student = findStudentByToken(el.studentSearch.value);
-      if (!student) {
-        setStatus("Student not found.");
-        return;
-      }
-      renderStudent(student);
-      setStatus("Loaded " + student.name + ".");
+    el.search.addEventListener("input", function () {
+      var student = findStudent(el.search.value);
+      if (!student) return;
+      state.selectedStudentId = student.id;
+      renderSelectedStudent();
     });
 
     el.openStudents.addEventListener("click", function () {
@@ -477,77 +521,37 @@
       el.drawer.classList.add("hidden");
     });
 
-    el.runProbe.addEventListener("click", runProbeForSelected);
-    el.run10.addEventListener("click", runProbeForSelected);
-    el.studentRun.addEventListener("click", runProbeForSelected);
-
-    el.importBtn.addEventListener("click", function () {
-      el.importInput.value = "";
-      el.importInput.click();
-    });
-
-    el.importInput.addEventListener("change", function () {
-      var file = el.importInput.files && el.importInput.files[0];
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function () {
-        var result = mergeImportedPayload(String(reader.result || ""));
-        refresh();
-        setStatus("Imported " + result.added + " session(s).");
-      };
-      reader.readAsText(file);
-    });
-
-    el.exportBtn.addEventListener("click", function () {
-      downloadBlob(exportProgressCSV(), "cornerstone-progress.csv");
-      downloadBlob(store.exportCaseloadJSON(), "cornerstone-caseload.json");
-      setStatus("Exported CSV + JSON.");
-    });
+    el.exportBtn.addEventListener("click", exportBundle);
+    el.settingsBtn.addEventListener("click", function () { setStatus("Settings are managed from app preferences."); });
+    el.helpBtn.addEventListener("click", function () { setStatus("Tip: search student or click a skill row to focus today cards."); });
 
     el.tierTabs.forEach(function (node) {
       node.addEventListener("click", function () {
-        applyTierTab(node.getAttribute("data-tier-tab") || "tier2");
+        state.activeTierTab = node.getAttribute("data-tier-tab") || "tier2";
+        el.tierTabs.forEach(function (tab) { tab.classList.toggle("is-active", tab === node); });
+        renderGroups();
+        renderToday(state.selectedStudentId ? state.roster.find(function (s) { return s.id === state.selectedStudentId; }) : null);
       });
     });
 
-    el.startAdminDemo.addEventListener("click", function () {
-      location.hash = "admin-demo";
-      startTour();
-    });
-
-    el.tourBack.addEventListener("click", function () {
-      runTourStep(Math.max(0, state.tourIndex - 1));
-    });
-
-    el.tourNext.addEventListener("click", function () {
-      runTourStep(state.tourIndex + 1);
-    });
-
-    el.tourExit.addEventListener("click", stopTour);
-
-    window.addEventListener("resize", function () {
-      if (!el.tourOverlay.classList.contains("hidden") && state.tourIndex >= 0) {
-        setTourHighlight(TOUR_STEPS[state.tourIndex].selector);
-      }
+    el.quickLaunchButtons.forEach(function (node) {
+      node.addEventListener("click", function () {
+        launchRoute(node.getAttribute("data-launch") || "wordquest", state.selectedStudentId);
+      });
     });
   }
 
   function refresh() {
     state.roster = loadRoster();
     state.sessions = loadSessions();
+    state.evidence = buildEvidenceMap();
     renderSearchOptions();
     renderDrawer();
     renderGroups();
-    renderRecent();
-    if (state.selectedStudentId) {
-      var selected = state.roster.find(function (row) { return row.id === state.selectedStudentId; }) || null;
-      renderStudent(selected);
-    } else {
-      renderStudent(null);
-    }
+    renderEvidenceOverview();
+    renderSelectedStudent();
   }
 
   bindEvents();
   refresh();
-  if (location.hash === "#admin-demo") startTour();
 })();

@@ -34,6 +34,8 @@
     spellInput: document.getElementById("rl-spell-input"),
     spellCheck: document.getElementById("rl-spell-check"),
     teacherSummary: document.getElementById("rl-teacher-summary"),
+    shareResult: document.getElementById("rl-share-result-btn"),
+    shareBundle: document.getElementById("rl-share-bundle-btn"),
     metricWpm: document.getElementById("rl-metric-wpm"),
     metricAccuracy: document.getElementById("rl-metric-accuracy"),
     metricPacing: document.getElementById("rl-metric-pacing"),
@@ -74,6 +76,7 @@
     spellTimerId: 0,
     spellEndsAt: 0,
     focusWords: [],
+    latestSessionId: "",
     isDemo: isDemoMode(),
     demoTimers: [],
     coachRibbon: null
@@ -134,6 +137,15 @@
     var line = sanitizeText(text);
     if (!line) return;
     state.coachRibbon.set({ key: sanitizeText(key), text: line });
+  }
+
+  function emitAva(context) {
+    if (typeof window.CSEmitAva !== "function") return;
+    try {
+      void window.CSEmitAva(context || {});
+    } catch (_e) {
+      // no-op
+    }
   }
 
   function safeLoad(key, fallback) {
@@ -354,6 +366,9 @@
     state.tier = Number(el.tier.value || 2) === 3 ? 3 : 2;
     state.audioBlob = null;
     state.audioChunks = [];
+    state.latestSessionId = "";
+    if (el.shareResult) el.shareResult.classList.add("hidden");
+    if (el.shareBundle) el.shareBundle.classList.add("hidden");
     state.attempt = {
       startedAt: Date.now(),
       tokenEvents: [],
@@ -385,6 +400,47 @@
     var metrics = computeAndRenderMetrics();
     renderTeacherSummary(metrics);
     setCoachMessage("rl.post", "Next move: " + recommendedNextStep(metrics));
+    emitAva({
+      module: "reading_lab",
+      event: "paragraph_complete",
+      tier: state.tier,
+      accuracyPct: metrics.accuracy,
+      punctuationScore: metrics.punctScore,
+      pacingVar: metrics.pacingVar,
+      paragraphComplete: true
+    });
+    if (metrics.accuracy < 85) {
+      emitAva({
+        module: "reading_lab",
+        event: "low_accuracy",
+        tier: state.tier,
+        accuracyPct: metrics.accuracy,
+        punctuationScore: metrics.punctScore,
+        pacingVar: metrics.pacingVar
+      });
+    }
+    if (metrics.punctScore < 60) {
+      emitAva({
+        module: "reading_lab",
+        event: "punctuation_miss",
+        tier: state.tier,
+        accuracyPct: metrics.accuracy,
+        punctuationScore: metrics.punctScore,
+        pacingVar: metrics.pacingVar
+      });
+    }
+    if (metrics.pacingVar >= 420) {
+      emitAva({
+        module: "reading_lab",
+        event: "pacing_drop",
+        tier: state.tier,
+        accuracyPct: metrics.accuracy,
+        punctuationScore: metrics.punctScore,
+        pacingVar: metrics.pacingVar,
+        pacingDrop: true,
+        repeatedPausePattern: true
+      });
+    }
     if (!state.isDemo && !opts.skipPersist) persistReadingAggregate(metrics);
     setStatus("Attempt complete.");
     syncAttemptVisibility("complete");
@@ -569,6 +625,138 @@
         hardWordsCount: topHardWords(5).length
       }, Date.now());
     }
+    publishReadingLabSignal(studentId, metrics);
+    persistCornerstoneSession(studentId, metrics);
+  }
+
+  function toBand(value, strongMin, devMin) {
+    var n = Number(value || 0);
+    if (n >= strongMin) return "Strong";
+    if (n >= devMin) return "Developing";
+    return "Emerging";
+  }
+
+  function buildReadingLabSignal(metrics) {
+    var accuracyPct = Math.max(0, Math.min(100, Number(metrics && metrics.accuracy || 0)));
+    var punctPct = Math.max(0, Math.min(100, Number(metrics && metrics.punctScore || 0)));
+    var selfCorrectionRate = Math.max(0, Math.min(1, Number(metrics && metrics.selfCorrectionRate || 0)));
+    var paceVar = Math.max(0, Number(metrics && metrics.pacingVar || 0));
+    var prosodyStability = Math.max(0, Math.min(1, 1 - Math.min(1, paceVar / 500)));
+    var orfBand = accuracyPct >= 95 && Number(metrics && metrics.wpm || 0) >= 110
+      ? "Strong"
+      : (accuracyPct >= 88 ? "Developing" : "Emerging");
+    var punctuationRespectBand = toBand(punctPct, 80, 60);
+    var nextStep = recommendedNextStep(metrics);
+    return {
+      accuracy: accuracyPct,
+      punctuationRespect: punctPct,
+      selfCorrectionRate: selfCorrectionRate,
+      prosodyStability: prosodyStability,
+      orfBand: orfBand,
+      punctuationRespectBand: punctuationRespectBand,
+      nextStep: nextStep,
+      intensity: (accuracyPct < 85 && punctPct < 60) ? "tier3" : "tier2"
+    };
+  }
+
+  function publishReadingLabSignal(studentId, metrics) {
+    if (state.isDemo || !metrics) return;
+    var signal = buildReadingLabSignal(metrics);
+    if (window.CSCornerstoneEngine && typeof window.CSCornerstoneEngine.appendSignal === "function") {
+      window.CSCornerstoneEngine.appendSignal(signal, {
+        module: "readinglab",
+        studentId: String(studentId || "").trim()
+      });
+    }
+  }
+
+  function persistCornerstoneSession(studentId, metrics) {
+    if (state.isDemo || !metrics || !window.CSCornerstoneSignals || !window.CSCornerstoneStore) return;
+    var signal = buildReadingLabSignal(metrics);
+    var tier = signal.intensity === "tier3" ? "tier3" : "tier2";
+    var studentCode = typeof window.CSCornerstoneStore.getStudentCode === "function"
+      ? window.CSCornerstoneStore.getStudentCode()
+      : null;
+    var session = window.CSCornerstoneSignals.normalizeSignal({
+      engine: "readinglab",
+      studentCode: studentCode,
+      durationMs: Math.max(0, Number(state.attempt && state.attempt.completedAt || 0) - Number(state.attempt && state.attempt.startedAt || 0)),
+      metrics: {
+        accuracy: Number(metrics.accuracy || 0),
+        punctuationRespect: Number(metrics.punctScore || 0),
+        selfCorrectionRate: Number(metrics.selfCorrectionRate || 0),
+        orfBand: signal.orfBand,
+        hardWordsCount: topHardWords(5).length
+      },
+      derived: {
+        punctuationRespectBand: signal.punctuationRespectBand,
+        prosodyStabilityBand: toBand(signal.prosodyStability * 100, 75, 55),
+        selfCorrectionBand: toBand(signal.selfCorrectionRate * 100, 40, 20)
+      },
+      tier: tier,
+      nextMove: {
+        title: String(signal.nextStep || "Run a punctuation-aware re-read and one fluency pass."),
+        steps: [
+          "Model one sentence with punctuation pauses.",
+          "Run one timed re-read with immediate feedback."
+        ],
+        estMinutes: 10
+      },
+      privacy: { containsText: false, containsAudio: false }
+    });
+    var saved = window.CSCornerstoneStore.appendSession(session);
+    state.latestSessionId = saved && saved.sessionId ? String(saved.sessionId) : "";
+    if (el.shareResult) el.shareResult.classList.toggle("hidden", !state.latestSessionId);
+    if (el.shareBundle) el.shareBundle.classList.toggle("hidden", !state.latestSessionId);
+  }
+
+  async function shareLatestSession() {
+    if (!state.latestSessionId || !window.CSCornerstoneStore) return;
+    var rows = window.CSCornerstoneStore.listSessions({});
+    var row = rows.find(function (session) { return String(session && session.sessionId || "") === state.latestSessionId; });
+    if (!row) return;
+    var filename = "cornerstone-session-" + state.latestSessionId + ".json";
+    var json = JSON.stringify(row, null, 2);
+    var blob = new Blob([json], { type: "application/json" });
+    var file = typeof File !== "undefined" ? new File([blob], filename, { type: "application/json" }) : null;
+    try {
+      if (navigator.share) {
+        var payload = file ? { files: [file], title: "Cornerstone Session", text: "Cornerstone MTSS session export" } : { title: "Cornerstone Session", text: json };
+        await navigator.share(payload);
+        setStatus("Session shared.");
+        return;
+      }
+    } catch (_e) {
+      // fallback to download
+    }
+    if (typeof window.CSCornerstoneStore.downloadBlob === "function") {
+      window.CSCornerstoneStore.downloadBlob(blob, filename);
+      setStatus("Session file downloaded.");
+    }
+  }
+
+  async function shareSessionBundle() {
+    if (!window.CSCornerstoneStore) return;
+    var studentCode = typeof window.CSCornerstoneStore.getStudentCode === "function"
+      ? window.CSCornerstoneStore.getStudentCode()
+      : null;
+    var blob = window.CSCornerstoneStore.exportSessions({ studentCode: studentCode || undefined });
+    var suffix = studentCode ? String(studentCode).toLowerCase() : "device";
+    var filename = "cornerstone-sessions-" + suffix + ".json";
+    var file = typeof File !== "undefined" ? new File([blob], filename, { type: "application/json" }) : null;
+    try {
+      if (navigator.share && file) {
+        await navigator.share({ files: [file], title: "Cornerstone Sessions", text: "Cornerstone MTSS session bundle" });
+        setStatus("Session bundle shared.");
+        return;
+      }
+    } catch (_e) {
+      // fallback
+    }
+    if (typeof window.CSCornerstoneStore.downloadBlob === "function") {
+      window.CSCornerstoneStore.downloadBlob(blob, filename);
+      setStatus("Session bundle downloaded.");
+    }
   }
 
   function recommendedNextStep(metrics) {
@@ -580,6 +768,7 @@
   }
 
   function renderTeacherSummary(metrics) {
+    var signal = buildReadingLabSignal(metrics);
     var hard = topHardWords(5);
     var list = hard.length ? hard.map(function (row) { return row.word + " (" + row.misses + ")"; }).join(", ") : "None flagged";
     var nextStep = recommendedNextStep(metrics);
@@ -588,6 +777,7 @@
       "<div><strong>ORF WPM:</strong> " + Number(metrics.wpm || 0) + "</div>",
       "<div><strong>Accuracy:</strong> " + Number(metrics.accuracy || 0) + "%</div>",
       "<div><strong>Punctuation Respect:</strong> " + Number(metrics.punctScore || 0) + "%</div>",
+      "<div><strong>Fluency Signal:</strong> " + (signal.intensity === "tier3" ? "Tier 3" : "Tier 2") + " • ORF " + signal.orfBand + " • Punctuation " + signal.punctuationRespectBand + "</div>",
       "<div><strong>Hard Words:</strong> " + esc(list) + "</div>",
       "<section class=\"rl-next-move\" aria-label=\"Next instructional move\">",
       "<p class=\"rl-next-move-title\">Next instructional move</p>",
@@ -756,7 +946,18 @@
     el.tier.addEventListener("change", function () { state.tier = Number(el.tier.value || 2) === 3 ? 3 : 2; updateComprehensionPrompt(); });
     el.sendSentence.addEventListener("click", sendSentenceToSurgery);
     el.nextPassage.addEventListener("click", function () { state.passageIndex = (state.passageIndex + 1) % PASSAGES.length; refreshPassage(); });
-    el.backHome.addEventListener("click", function () { window.location.href = "index.html"; });
+    el.backHome.addEventListener("click", function () {
+      var params = new URLSearchParams(window.location.search || "");
+      if (params.get("from") === "teacher") {
+        window.location.href = "teacher-dashboard.html";
+        return;
+      }
+      window.location.href = "index.html";
+    });
+    try {
+      var fromTeacher = new URLSearchParams(window.location.search || "").get("from") === "teacher";
+      if (fromTeacher) el.backHome.textContent = "Back to Dashboard";
+    } catch (_e) {}
 
     Array.prototype.forEach.call(document.querySelectorAll(".rl-mark-btn"), function (btn) {
       btn.addEventListener("click", function () { setCurrentMark(String(btn.getAttribute("data-mark") || "correct")); });
@@ -783,6 +984,12 @@
       el.replayDemo.addEventListener("click", function () {
         runDemoScript();
       });
+    }
+    if (el.shareResult) {
+      el.shareResult.addEventListener("click", function () { void shareLatestSession(); });
+    }
+    if (el.shareBundle) {
+      el.shareBundle.addEventListener("click", function () { void shareSessionBundle(); });
     }
   }
 
@@ -860,6 +1067,8 @@
     refreshPassage();
     setCurrentMark("correct");
     setStatus("Ready. Start an attempt.");
+    if (el.shareResult) el.shareResult.classList.add("hidden");
+    if (el.shareBundle) el.shareBundle.classList.add("hidden");
     setCoachMessage("rl.preAttempt", "Start reading. We'll track accuracy + phrasing.");
     if (state.isDemo) {
       el.replayDemo.classList.remove("hidden");

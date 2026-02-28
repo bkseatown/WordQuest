@@ -10,6 +10,8 @@
   var verbMenuEl = document.getElementById("ssVerbMenu");
   var doneBtn = document.getElementById("ssDoneBtn");
   var tryAnotherBtn = document.getElementById("ssTryAnotherBtn");
+  var shareResultBtn = document.getElementById("ssShareResultBtn");
+  var shareBundleBtn = document.getElementById("ssShareBundleBtn");
   var chaosToggleBtn = document.getElementById("ssChaosToggleBtn");
   var chaosPanelEl = document.getElementById("ssChaosPanel");
   var chaosSentenceEl = document.getElementById("ssChaosSentence");
@@ -83,6 +85,29 @@
   var hasFirstEdit = false;
   var coachRibbon = null;
   var coachStateLockUntil = 0;
+  var backspaceBurstCount = 0;
+  var backspaceBurstWindowStartedAt = 0;
+  var editCount = 0;
+  var sessionStartedAt = Date.now();
+  var latestSessionId = "";
+
+  (function ensureBackAffordance() {
+    var params;
+    try { params = new URLSearchParams(window.location.search || ""); } catch (_e) { params = null; }
+    if (!params || params.get("from") !== "teacher") return;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "ss-action-btn";
+    btn.textContent = "Back to Dashboard";
+    btn.style.position = "fixed";
+    btn.style.top = "10px";
+    btn.style.left = "10px";
+    btn.style.zIndex = "40";
+    btn.addEventListener("click", function () {
+      window.location.href = "teacher-dashboard.html";
+    });
+    document.body.appendChild(btn);
+  })();
 
   function seedSentenceFromQuery() {
     try {
@@ -171,6 +196,15 @@
   function setStateCoachText(text, key) {
     coachStateLockUntil = Date.now() + 1600;
     setCoachText(text, key);
+  }
+
+  function emitAva(context) {
+    if (typeof window.CSEmitAva !== "function") return;
+    try {
+      void window.CSEmitAva(context || {});
+    } catch (_e) {
+      // no-op
+    }
   }
 
   function revealPostEditUi() {
@@ -515,6 +549,14 @@
     analyses.push(window.CSAIService && window.CSAIService.heuristicAnalyze
       ? window.CSAIService.heuristicAnalyze(snap.sentence)
       : window.SSAIAnalysis.analyzeSentenceHeuristic(snap.sentence));
+    emitAva({
+      module: "sentence_surgery",
+      event: "paragraph_complete",
+      tier: tierLevel,
+      paragraphComplete: true,
+      hasReasoning: /\b(because|although|since)\b/i.test(String(snap.sentence || ""))
+    });
+    persistCornerstoneWritingSession();
     showCompare(before, snap.sentence);
     updateDashboard();
     if (timedMode.active) {
@@ -529,7 +571,116 @@
 
   function resetSentence() {
     engine.nextSentence();
+    editCount = 0;
+    latestSessionId = "";
+    sessionStartedAt = Date.now();
+    if (shareResultBtn) shareResultBtn.classList.add("hidden");
+    if (shareBundleBtn) shareBundleBtn.classList.add("hidden");
     render();
+  }
+
+  function deriveBandFromScore(score) {
+    var n = Math.max(0, Math.min(100, Number(score || 0)));
+    if (n >= 75) return "Strong";
+    if (n >= 55) return "Developing";
+    return "Emerging";
+  }
+
+  function persistCornerstoneWritingSession() {
+    if (!window.CSCornerstoneSignals || !window.CSCornerstoneStore) return;
+    if (editCount < 2 && !hasFirstEdit) return;
+    var ai = latestAI || {};
+    var structured = latestPedagogy && latestPedagogy.structured_feedback ? latestPedagogy.structured_feedback : {};
+    var reasoningAdded = !!ai.has_reasoning || /\b(because|although|since)\b/i.test(String(engine.getSentenceText() || ""));
+    var clarityScore = Number(structured.clarity_score || 0) * 25;
+    var controlScore = Math.max(0, 100 - Math.min(80, editCount * 8));
+    var clarityBand = deriveBandFromScore(clarityScore);
+    var controlBand = deriveBandFromScore(controlScore);
+    var tier = (clarityBand === "Emerging" || controlBand === "Emerging") ? "tier3" : "tier2";
+    var studentCode = typeof window.CSCornerstoneStore.getStudentCode === "function"
+      ? window.CSCornerstoneStore.getStudentCode()
+      : null;
+    var session = window.CSCornerstoneSignals.normalizeSignal({
+      engine: "writing",
+      studentCode: studentCode,
+      durationMs: Math.max(0, Date.now() - Number(sessionStartedAt || Date.now())),
+      metrics: {
+        editsCount: Math.max(0, Number(editCount || 0)),
+        reasoningAdded: !!reasoningAdded,
+        controlBand: controlBand,
+        clarityBand: clarityBand
+      },
+      derived: {
+        controlBand: controlBand,
+        clarityBand: clarityBand,
+        reasoningCompletion: reasoningAdded ? "Complete" : "Missing"
+      },
+      tier: tier,
+      nextMove: {
+        title: reasoningAdded
+          ? "Add one precision upgrade and one transition."
+          : "Model one because/although sentence, then independent rewrite.",
+        steps: [
+          "Teacher model one sentence-level revision.",
+          "Student completes one independent revision."
+        ],
+        estMinutes: 10
+      },
+      privacy: { containsText: false, containsAudio: false }
+    });
+    var saved = window.CSCornerstoneStore.appendSession(session);
+    latestSessionId = saved && saved.sessionId ? String(saved.sessionId) : "";
+    if (shareResultBtn) shareResultBtn.classList.toggle("hidden", !latestSessionId);
+    if (shareBundleBtn) shareBundleBtn.classList.toggle("hidden", !latestSessionId);
+  }
+
+  async function shareLatestSession() {
+    if (!latestSessionId || !window.CSCornerstoneStore) return;
+    var rows = window.CSCornerstoneStore.listSessions({});
+    var row = rows.find(function (session) { return String(session && session.sessionId || "") === latestSessionId; });
+    if (!row) return;
+    var filename = "cornerstone-session-" + latestSessionId + ".json";
+    var json = JSON.stringify(row, null, 2);
+    var blob = new Blob([json], { type: "application/json" });
+    var file = typeof File !== "undefined" ? new File([blob], filename, { type: "application/json" }) : null;
+    try {
+      if (navigator.share) {
+        var payload = file ? { files: [file], title: "Cornerstone Session", text: "Cornerstone MTSS session export" } : { title: "Cornerstone Session", text: json };
+        await navigator.share(payload);
+        setCoachText("Session shared.");
+        return;
+      }
+    } catch (_e) {
+      // fallback
+    }
+    if (typeof window.CSCornerstoneStore.downloadBlob === "function") {
+      window.CSCornerstoneStore.downloadBlob(blob, filename);
+      setCoachText("Session file downloaded.");
+    }
+  }
+
+  async function shareSessionBundle() {
+    if (!window.CSCornerstoneStore) return;
+    var studentCode = typeof window.CSCornerstoneStore.getStudentCode === "function"
+      ? window.CSCornerstoneStore.getStudentCode()
+      : null;
+    var blob = window.CSCornerstoneStore.exportSessions({ studentCode: studentCode || undefined });
+    var suffix = studentCode ? String(studentCode).toLowerCase() : "device";
+    var filename = "cornerstone-sessions-" + suffix + ".json";
+    var file = typeof File !== "undefined" ? new File([blob], filename, { type: "application/json" }) : null;
+    try {
+      if (navigator.share && file) {
+        await navigator.share({ files: [file], title: "Cornerstone Sessions", text: "Cornerstone MTSS session bundle" });
+        setCoachText("Session bundle shared.");
+        return;
+      }
+    } catch (_e) {
+      // fallback
+    }
+    if (typeof window.CSCornerstoneStore.downloadBlob === "function") {
+      window.CSCornerstoneStore.downloadBlob(blob, filename);
+      setCoachText("Session bundle downloaded.");
+    }
   }
 
   function setDemoActive(on) {
@@ -540,7 +691,15 @@
   function applyAction(action) {
     if (demoLocked) return;
     if (action && action !== "teacher") revealPostEditUi();
-    if (action === "why") setStateCoachText("Write a short WHY phrase after because.", "ss.addWhy");
+    if (action === "why") {
+      setStateCoachText("Write a short WHY phrase after because.", "ss.addWhy");
+      emitAva({
+        module: "sentence_surgery",
+        event: "first_reason_added",
+        tier: tierLevel,
+        firstReasonAdded: true
+      });
+    }
     if (action === "verb") {
       engine.applyAction(action);
       var sourceBtn = document.querySelector('[data-action="verb"]');
@@ -558,6 +717,24 @@
     if (!target) return;
     var slotId = String(target.getAttribute("data-slot-id") || "").trim();
     if (!slotId) return;
+    if (event.inputType === "deleteContentBackward") {
+      var now = Date.now();
+      if (!backspaceBurstWindowStartedAt || (now - backspaceBurstWindowStartedAt) > 3000) {
+        backspaceBurstWindowStartedAt = now;
+        backspaceBurstCount = 0;
+      }
+      backspaceBurstCount += 1;
+      if (backspaceBurstCount >= 4) {
+        emitAva({
+          module: "sentence_surgery",
+          event: "repeated_backspace",
+          tier: tierLevel,
+          backspaceBurst: backspaceBurstCount
+        });
+        backspaceBurstCount = 0;
+        backspaceBurstWindowStartedAt = now;
+      }
+    }
 
     var placeholder = target.classList.contains("placeholder") ? target.textContent : "";
     if (placeholder && event.inputType && (event.inputType === "insertText" || event.inputType === "insertCompositionText")) {
@@ -575,6 +752,7 @@
     if (!target) return;
     var slotId = String(target.getAttribute("data-slot-id") || "").trim();
     if (!slotId) return;
+    editCount += 1;
     engine.setSlotValue(slotId, target.textContent || "");
     if (!sanitize(engine.state.slots[slotId].value)) {
       target.classList.add("placeholder");
@@ -584,6 +762,17 @@
     }
     revealPostEditUi();
     setStateCoachText("Nice. Upgrade one word choice next.");
+    var reasonValue = sanitize((engine.state && engine.state.slots && engine.state.slots.reason && engine.state.slots.reason.value) || "");
+    if (editCount >= 2 && !reasonValue) {
+      emitAva({
+        module: "sentence_surgery",
+        event: "reasoning_missing",
+        tier: tierLevel,
+        edited: true,
+        hasReasoning: false,
+        reasoningMissing: true
+      });
+    }
     render();
   }
 
@@ -659,6 +848,12 @@
 
   if (doneBtn) doneBtn.addEventListener("click", finishSentence);
   if (tryAnotherBtn) tryAnotherBtn.addEventListener("click", resetSentence);
+  if (shareResultBtn) {
+    shareResultBtn.addEventListener("click", function () { void shareLatestSession(); });
+  }
+  if (shareBundleBtn) {
+    shareBundleBtn.addEventListener("click", function () { void shareSessionBundle(); });
+  }
 
   if (chaosToggleBtn && chaosPanelEl) {
     chaosToggleBtn.addEventListener("click", function () {
@@ -718,5 +913,7 @@
   initCoachRibbon();
     setStateCoachText("Make one change at a time.", "ss.initial");
   if (seededSentence) applySeedSentence(seededSentence);
+  if (shareResultBtn) shareResultBtn.classList.add("hidden");
+  if (shareBundleBtn) shareBundleBtn.classList.add("hidden");
   render();
 })();

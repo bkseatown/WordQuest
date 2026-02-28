@@ -8,109 +8,110 @@
   <script src="./config.js"></script>
   <script src="./build-stamp.js?v=20260228d"></script>
   <link rel="icon" href="./favicon.ico" sizes="any">
-  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260228d">
+  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260228f">
 </head>
 <body class="teacher-dashboard">
   <main class="td-shell" id="td-shell">
     <header class="td-top td-surface">
       <div class="td-brand">
         <h1>Cornerstone MTSS</h1>
-        <p>Teacher command center · Tier 1/2/3 actions</p>
+        <p>Teacher Dashboard</p>
       </div>
       <div class="td-search-wrap">
-        <input id="td-student-search" list="td-student-options" placeholder="Search student (ex: SAS7A-03 or Ava)">
+        <input id="td-student-search" list="td-student-options" placeholder="Search student, id, or skill tag" autocomplete="off">
         <datalist id="td-student-options"></datalist>
-        <button id="td-open-students" class="td-btn td-btn-ghost" type="button">Students</button>
-        <button id="td-run-probe" class="td-btn td-btn-primary" type="button">Run 90-second Probe</button>
-        <button id="td-import" class="td-btn td-btn-ghost" type="button">Import Sessions</button>
-        <input id="td-import-input" type="file" accept=".json,application/json" hidden>
-        <button id="td-export" class="td-btn td-btn-ghost" type="button">Export Progress</button>
       </div>
-      <div class="td-tier-tabs" role="tablist" aria-label="Tier filter">
-        <button data-tier-tab="tier1" class="td-tier-tab" type="button">Tier 1</button>
-        <button data-tier-tab="tier2" class="td-tier-tab is-active" type="button">Tier 2</button>
-        <button data-tier-tab="tier3" class="td-tier-tab" type="button">Tier 3</button>
+      <div class="td-top-icons">
+        <button id="td-settings" class="td-icon-btn" type="button" aria-label="Settings" title="Settings">S</button>
+        <button id="td-export" class="td-icon-btn" type="button" aria-label="Export" title="Export">E</button>
+        <button id="td-help" class="td-icon-btn" type="button" aria-label="Help" title="Help">?</button>
       </div>
-      <p id="td-status" class="td-status" aria-live="polite"></p>
     </header>
 
     <section class="td-main">
-      <section class="td-stage td-surface">
-        <div class="td-stage-head">
-          <h2>Groups for Today</h2>
-          <button id="td-start-admin-demo" class="td-btn td-btn-ghost" type="button">Admin Demo</button>
+      <section class="td-zone td-zone-today td-surface" aria-label="Today panel">
+        <div class="td-zone-head">
+          <h2>Today</h2>
+          <div class="td-tier-tabs" role="tablist" aria-label="Tier filter">
+            <button data-tier-tab="tier1" class="td-tier-tab" type="button">Tier 1</button>
+            <button data-tier-tab="tier2" class="td-tier-tab is-active" type="button">Tier 2</button>
+            <button data-tier-tab="tier3" class="td-tier-tab" type="button">Tier 3</button>
+          </div>
         </div>
-        <div id="td-groups" class="td-groups"></div>
 
-        <article class="td-today td-panel">
-          <h3>Today's Move</h3>
-          <p id="td-next-move">Search a student first to load the recommended move.</p>
-          <button id="td-run-10" class="td-btn td-btn-primary" type="button" disabled>Run 10-min session</button>
-        </article>
+        <div id="td-today-cards" class="td-today-cards"></div>
 
-        <article class="td-recent td-panel">
-          <h3>Recent Sessions</h3>
-          <div id="td-recent-list" class="td-scroll"></div>
-        </article>
+        <details class="td-details">
+          <summary>Caseload Snapshot</summary>
+          <div class="td-details-body">
+            <div id="td-groups" class="td-groups"></div>
+          </div>
+        </details>
       </section>
 
-      <aside class="td-rail td-surface">
-        <h2>Student Snapshot</h2>
-        <div id="td-student-empty" class="td-empty">Search and select a student to view signals, confidence, and next step.</div>
-        <div id="td-student-view" class="hidden">
-          <p class="td-student-name" id="td-student-name">-</p>
+      <section class="td-zone td-zone-evidence td-surface" aria-label="Caseload Evidence Overview">
+        <div class="td-zone-head">
+          <h2>Caseload Evidence Overview</h2>
+          <button id="td-open-students" class="td-btn td-btn-ghost" type="button">Caseload</button>
+        </div>
+        <div id="td-evidence-overview" class="td-evidence-overview"></div>
+      </section>
+
+      <aside class="td-zone td-zone-rail td-surface" aria-label="Selected student">
+        <div class="td-zone-head">
+          <h2>Selected Student</h2>
+          <div class="td-quick-launch" aria-label="Quick launch">
+            <button class="td-quick" data-launch="wordquest" type="button">WQ</button>
+            <button class="td-quick" data-launch="reading-lab" type="button">RL</button>
+            <button class="td-quick" data-launch="sentence-surgery" type="button">SS</button>
+            <button class="td-quick" data-launch="writing-studio" type="button">WS</button>
+          </div>
+        </div>
+
+        <div id="td-student-empty" class="td-empty">Select a student from search or caseload to open snapshot and next move.</div>
+        <div id="td-student-view" class="td-student-view hidden">
+          <div class="td-student-head">
+            <p class="td-student-name" id="td-student-name">-</p>
+            <span class="td-tier-chip" id="td-tier">Tier 2</span>
+          </div>
           <div class="td-kpis">
             <div><span>Primary Need</span><strong id="td-need">-</strong></div>
-            <div><span>Tier</span><strong id="td-tier">-</strong></div>
             <div><span>Confidence</span><strong id="td-confidence">-</strong></div>
             <div><span>Trend</span><strong id="td-trend">-</strong></div>
+            <div><span>Session Count</span><strong id="td-session-count">-</strong></div>
           </div>
           <p id="td-student-next" class="td-student-next">-</p>
-          <button id="td-student-run" class="td-btn td-btn-primary" type="button">Run session for student</button>
+          <button id="td-next-cta" class="td-btn td-btn-primary td-next-cta" type="button">Launch Next Best Move</button>
+
+          <details class="td-details">
+            <summary>View evidence</summary>
+            <div class="td-details-body" id="td-student-evidence"></div>
+          </details>
+
+          <details class="td-details">
+            <summary>Notes/Goals</summary>
+            <div class="td-details-body">
+              <p id="td-notes-text" class="td-note-line">No notes yet.</p>
+              <button id="td-student-run" class="td-btn td-btn-ghost" type="button">Run 3-minute check</button>
+            </div>
+          </details>
         </div>
 
-        <div id="td-probe-hud" class="td-probe-hud hidden" aria-live="polite">
-          <div class="hud-head">Live probe capture</div>
-          <div class="hud-row"><span>Constraint Respect</span><strong id="hud-constraint">0.00</strong></div>
-          <div class="hud-row"><span>Vowel Variety</span><strong id="hud-vowel">0</strong></div>
-          <div class="hud-row"><span>Repeat Error Rate</span><strong id="hud-repeat">0.00</strong></div>
-          <div class="hud-row"><span>Decision Time (ms)</span><strong id="hud-time">0</strong></div>
-        </div>
+        <p id="td-status" class="td-status" aria-live="polite"></p>
       </aside>
     </section>
-
-    <details class="td-details">
-      <summary>Details</summary>
-      <div class="td-details-body td-surface">
-        <h3>Advanced</h3>
-        <p>Import roster/sessions, review raw metrics, and export reports.</p>
-      </div>
-    </details>
   </main>
 
   <aside id="td-students-drawer" class="td-drawer hidden" aria-label="Students drawer">
     <div class="td-drawer-head">
-      <h3>Students</h3>
+      <h3>Caseload</h3>
       <button id="td-close-students" class="td-btn td-btn-ghost" type="button">Close</button>
     </div>
     <div id="td-drawer-list" class="td-drawer-list"></div>
   </aside>
 
-  <div id="td-tour-overlay" class="td-tour hidden" role="dialog" aria-modal="true" aria-label="Admin demo tour">
-    <div id="td-tour-highlight" class="td-tour-highlight"></div>
-    <div id="td-tour-card" class="td-tour-card">
-      <h4 id="td-tour-title">Admin Demo</h4>
-      <p id="td-tour-text"></p>
-      <div class="td-tour-actions">
-        <button id="td-tour-back" class="td-btn td-btn-ghost" type="button">Back</button>
-        <button id="td-tour-next" class="td-btn td-btn-primary" type="button">Next</button>
-        <button id="td-tour-exit" class="td-btn td-btn-ghost" type="button">Exit</button>
-      </div>
-    </div>
-  </div>
-
+  <script src="./storage-schema.js?v=20260228a" defer></script>
   <script src="./js/caseload-store.js?v=20260228a" defer></script>
-  <script src="./js/session-engine.js?v=20260228a" defer></script>
-  <script src="./teacher-dashboard.js?v=20260228e" defer></script>
+  <script src="./teacher-dashboard.js?v=20260228f" defer></script>
 </body>
 </html>
