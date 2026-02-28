@@ -325,8 +325,50 @@
   WQUI.init();
 
   const APP_SEMVER = '1.0.0';
-  const SW_RUNTIME_VERSION = '20260225-v10';
+  const SW_RUNTIME_VERSION = '20260228-v11';
   const SW_RUNTIME_URL = `./sw-runtime.js?v=${encodeURIComponent(SW_RUNTIME_VERSION)}`;
+  let swUpdateToastEl = null;
+
+  function showSwUpdateToast(onUpdateNow) {
+    if (swUpdateToastEl) return;
+    const toast = document.createElement('div');
+    toast.className = 'cs-sw-update-toast';
+    toast.innerHTML = '<span>Update available.</span><button type="button">Update now</button>';
+    Object.assign(toast.style, {
+      position: 'fixed',
+      right: '12px',
+      bottom: '12px',
+      zIndex: '9999',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '8px',
+      padding: '10px 12px',
+      borderRadius: '12px',
+      background: 'rgba(12,18,30,0.9)',
+      border: '1px solid rgba(255,255,255,0.16)',
+      color: 'rgba(255,255,255,0.92)',
+      boxShadow: '0 10px 24px rgba(0,0,0,0.32)'
+    });
+    const btn = toast.querySelector('button');
+    if (btn) {
+      Object.assign(btn.style, {
+        borderRadius: '999px',
+        border: '1px solid rgba(160,220,255,0.4)',
+        background: 'rgba(90,170,255,0.25)',
+        color: 'rgba(245,250,255,0.95)',
+        fontWeight: '700',
+        padding: '5px 10px',
+        cursor: 'pointer'
+      });
+      btn.addEventListener('click', () => {
+        try { onUpdateNow?.(); } catch {}
+        toast.remove();
+        swUpdateToastEl = null;
+      });
+    }
+    document.body.appendChild(toast);
+    swUpdateToastEl = toast;
+  }
 
   async function registerOfflineRuntime() {
     if (DEMO_MODE) return;
@@ -370,12 +412,12 @@
         if (!installing) return;
         installing.addEventListener('statechange', () => {
           if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-            installing.postMessage({ type: 'WQ_SKIP_WAITING' });
+            showSwUpdateToast(() => installing.postMessage({ type: 'WQ_SKIP_WAITING' }));
           }
         });
       });
       if (registration.waiting) {
-        registration.waiting.postMessage({ type: 'WQ_SKIP_WAITING' });
+        showSwUpdateToast(() => registration.waiting?.postMessage({ type: 'WQ_SKIP_WAITING' }));
       }
       registration.update().catch(() => {});
     } catch (error) {
@@ -1011,6 +1053,28 @@
     demoToastLastMessageAt = now;
   }
 
+  function setDemoToastTextLiteral(line, options = {}) {
+    if (!(demoToastTextEl instanceof HTMLElement)) return;
+    const nextLine = String(line || '').trim();
+    if (!nextLine) return;
+    const force = !!(options && options.force);
+    const now = Date.now();
+    const elapsed = now - demoToastLastMessageAt;
+    const needsDelay = !force && demoToastLastMessageAt > 0 && elapsed < DEMO_TOAST_MIN_DWELL_MS;
+    if (needsDelay) {
+      demoToastPendingKey = '';
+      if (demoToastMessageTimer) return;
+      demoToastMessageTimer = window.setTimeout(() => {
+        demoToastMessageTimer = 0;
+        setDemoToastTextLiteral(nextLine, { force: true });
+      }, Math.max(120, DEMO_TOAST_MIN_DWELL_MS - elapsed));
+      return;
+    }
+    if (demoToastMessageTimer) clearDemoToastMessageTimer();
+    demoToastTextEl.textContent = nextLine;
+    demoToastLastMessageAt = now;
+  }
+
   function collapseDemoToast() {
     demoToastCollapsed = true;
     demoToastEl?.classList.add('hidden');
@@ -1357,7 +1421,8 @@
     if (nextStepId === 'after_guess_1' || nextStepId === 'after_guess_2') stateKey = 'afterFirstGuess';
     else if (nextStepId === 'hint') stateKey = 'idle20s';
     else if (nextStepId === 'completed') stateKey = 'completed';
-    setDemoToastText(stateKey);
+    if (config?.overrideLine) setDemoToastTextLiteral(String(config.overrideLine), { force: true });
+    else setDemoToastText(stateKey);
     if (!demoToastAutoCollapsedByPlay || stateKey === 'completed') showDemoToast(stateKey === 'completed');
 
     const suggestedWord = String(config?.suggestedWord || '').trim().toLowerCase();
@@ -1419,7 +1484,7 @@
           anchor: keyboard,
           text: 'Try SLATE first. Colors will teach the rule instantly.',
           primaryLabel: 'Got it',
-          suggestedWord: demoState.suggestions[0]
+          suggestedWord: getConstraintSafeCoachSuggestion(WQGame.getState?.() || {}) || demoState.suggestions[0]
         });
         return;
       }
@@ -1458,22 +1523,30 @@
     updateDemoDiscovered(result);
     if (demoState.guessCount === 1) {
       demoStateRuntime.step = 2;
+      const safeSuggestion = getConstraintSafeCoachSuggestion(WQGame.getState?.() || {}) || demoState.suggestions[1];
       showDemoCoach({
         id: 'after_guess_1',
         anchor: _el('game-board'),
-        text: 'Grey = not in word, yellow = wrong spot, green = right spot. Next try PLAIN.',
-        suggestedWord: demoState.suggestions[1]
+        text: 'Grey = not in word, yellow = wrong spot, green = right spot.',
+        suggestedWord: safeSuggestion,
+        overrideLine: safeSuggestion
+          ? `Use clues and try ${safeSuggestion.toUpperCase()} next.`
+          : 'No perfect suggestion yet. Try a new vowel and keep confirmed letters.'
       });
       return;
     }
     if (demoState.guessCount === 2) {
       demoStateRuntime.step = 3;
       const coreFound = demoState.discoveredCore.has('P') && demoState.discoveredCore.has('L') && demoState.discoveredCore.has('A');
+      const safeSuggestion = getConstraintSafeCoachSuggestion(WQGame.getState?.() || {}) || demoState.suggestions[2];
       showDemoCoach({
         id: 'after_guess_2',
         anchor: _el('game-board'),
-        text: 'Now finish with PLANT. You are one guess from the win.',
-        suggestedWord: demoState.suggestions[2],
+        text: 'Refine one variable from the clue pattern.',
+        suggestedWord: safeSuggestion,
+        overrideLine: safeSuggestion
+          ? `Refine with ${safeSuggestion.toUpperCase()} next.`
+          : 'No perfect suggestion yet. Try a new vowel and keep confirmed letters.',
         showHint: !coreFound
       });
     }
@@ -4356,6 +4429,97 @@
     return ranked.slice(0, Math.max(3, Math.min(12, Number(limit) || 9)));
   }
 
+  function buildCoachConstraints(guesses, marks, wordLength) {
+    const L = Math.max(1, Number(wordLength || 5));
+    const fixedPos = Array(L).fill('');
+    const forbiddenPos = Array.from({ length: L }, () => new Set());
+    const mustInclude = {};
+    const cannotInclude = new Set();
+    const everGood = new Set();
+
+    for (let gi = 0; gi < guesses.length; gi += 1) {
+      const guess = normalizeReviewWord(guesses[gi] || '');
+      const rowMarks = Array.isArray(marks[gi]) ? marks[gi] : [];
+      if (!guess || guess.length !== L) continue;
+      const positiveCounts = {};
+      for (let i = 0; i < L; i += 1) {
+        const ch = guess[i];
+        const m = rowMarks[i];
+        if (m === 'correct') {
+          fixedPos[i] = ch;
+          everGood.add(ch);
+          positiveCounts[ch] = (positiveCounts[ch] || 0) + 1;
+        } else if (m === 'present') {
+          forbiddenPos[i].add(ch);
+          everGood.add(ch);
+          positiveCounts[ch] = (positiveCounts[ch] || 0) + 1;
+        }
+      }
+      Object.entries(positiveCounts).forEach(([ch, count]) => {
+        mustInclude[ch] = Math.max(Number(mustInclude[ch] || 0), Number(count || 0));
+      });
+    }
+
+    for (let gi = 0; gi < guesses.length; gi += 1) {
+      const guess = normalizeReviewWord(guesses[gi] || '');
+      const rowMarks = Array.isArray(marks[gi]) ? marks[gi] : [];
+      if (!guess || guess.length !== L) continue;
+      for (let i = 0; i < L; i += 1) {
+        const ch = guess[i];
+        if (rowMarks[i] === 'absent' && !everGood.has(ch)) cannotInclude.add(ch);
+      }
+    }
+
+    return { fixedPos, forbiddenPos, mustInclude, cannotInclude, length: L };
+  }
+
+  function candidateMatchesCoachConstraints(word, constraints) {
+    const normalized = normalizeReviewWord(word);
+    if (!normalized || normalized.length !== constraints.length) return false;
+    const counts = {};
+    for (let i = 0; i < normalized.length; i += 1) {
+      const ch = normalized[i];
+      if (constraints.fixedPos[i] && constraints.fixedPos[i] !== ch) return false;
+      if (constraints.forbiddenPos[i] && constraints.forbiddenPos[i].has(ch)) return false;
+      counts[ch] = (counts[ch] || 0) + 1;
+    }
+    for (const ch of constraints.cannotInclude) {
+      if (normalized.includes(ch)) return false;
+    }
+    for (const [ch, minCount] of Object.entries(constraints.mustInclude || {})) {
+      if ((counts[ch] || 0) < minCount) return false;
+    }
+    return true;
+  }
+
+  function getConstraintSafeCoachSuggestion(state) {
+    if (!state || !state.word || state.gameOver) return '';
+    const guesses = Array.isArray(state.guesses) ? state.guesses.slice() : [];
+    const target = normalizeReviewWord(state.word || '');
+    if (!target || !guesses.length) return '';
+    const marks = guesses.map((guess) => evaluateGuessPattern(normalizeReviewWord(guess), target));
+    const constraints = buildCoachConstraints(guesses, marks, state.wordLength || 5);
+    const pool = pickStarterWordsForRound(state, 24);
+    const tried = new Set(guesses.join('').toLowerCase().split(''));
+    let best = '';
+    let bestScore = -Infinity;
+    for (const row of pool) {
+      const word = normalizeReviewWord(row);
+      if (!candidateMatchesCoachConstraints(word, constraints)) continue;
+      const uniq = new Set(word.split(''));
+      let score = 0;
+      uniq.forEach((ch) => {
+        if (!tried.has(ch)) score += 3;
+        if ('aeiou'.includes(ch)) score += 0.5;
+      });
+      if (score > bestScore) {
+        best = word;
+        bestScore = score;
+      }
+    }
+    return best;
+  }
+
   function renderStarterWordList(words) {
     const list = _el('starter-word-list');
     if (!list) return;
@@ -5968,6 +6132,10 @@
     el.textContent = String(label || 'Cornerstone MTSS');
   }
 
+  function setActivityLabel(label) {
+    csSetHeaderTitleCenter(String(label || 'Cornerstone MTSS'));
+  }
+
   function csComputeHeaderTitleCenter() {
     const path = String(location.pathname || '').toLowerCase();
     if (path.endsWith('/reading-lab.html')) return 'Reading Lab';
@@ -6041,13 +6209,14 @@
   function setHomeMode(mode, options = {}) {
     const next = String(mode || '').toLowerCase() === 'play' ? 'play' : 'home';
     homeMode = next;
+    document.body?.classList.toggle('home-locked', next === 'home');
     applyHomePlayVisibility(next);
     setHomePlayShellIsolation(next !== 'play');
     updateHomeCoachRibbon();
     setWordQuestCoachState(wordQuestCoachKey);
     if (next === 'play') {
       document.documentElement.setAttribute('data-home-mode', 'play');
-      csSyncHeaderTitleCenter();
+      setActivityLabel('Word Quest');
       startAvaWordQuestIdleWatcher();
       _el('home-tools-section')?.classList.add('hidden');
       _el('play-tools-drawer')?.classList.add('hidden');
@@ -6064,7 +6233,7 @@
       return;
     }
     document.documentElement.setAttribute('data-home-mode', 'home');
-    csSyncHeaderTitleCenter();
+    setActivityLabel('Cornerstone MTSS');
     stopAvaWordQuestIdleWatcher('home mode');
     _el('home-tools-section')?.classList.remove('hidden');
     assertHomeNoScrollDev();
@@ -6095,6 +6264,47 @@
     setHomeMode(forcePlay ? 'play' : 'home', { scroll: false });
     csSyncHeaderTitleCenter();
   }
+
+  function routeTo(route) {
+    const normalized = String(route || 'home').toLowerCase().replace(/^#/, '') || 'home';
+    if (location.hash === `#${normalized}`) {
+      applyHashRoute();
+      return;
+    }
+    location.hash = `#${normalized}`;
+  }
+
+  function applyHashRoute() {
+    const route = String(location.hash || '#').replace(/^#/, '').toLowerCase();
+    if (!route || route === 'home') {
+      setHomeMode('home', { scroll: false });
+      return;
+    }
+    if (route === 'wordquest') {
+      setHomeMode('play', { scroll: false });
+      if (!WQGame.getState?.()?.word) newGame({ launchMissionLab: false });
+      return;
+    }
+    if (route === 'reading') {
+      setActivityLabel('Reading Lab');
+      openReadingLabPage();
+      return;
+    }
+    if (route === 'writing') {
+      setActivityLabel('Writing Studio');
+      openWritingStudioPage();
+      return;
+    }
+    if (route === 'dashboard' || route === 'admin-demo') {
+      setActivityLabel('Teacher Dashboard');
+      const url = new URL('teacher-dashboard.html', window.location.href);
+      if (route === 'admin-demo') url.hash = '#admin-demo';
+      window.location.href = url.toString();
+      return;
+    }
+    routeTo('home');
+  }
+  window.CSRoute = Object.assign(window.CSRoute || {}, { routeTo });
 
   function syncPlayToolsRoleVisibility() {
     const teacherOnly = _el('play-drawer-teacher-dashboard');
@@ -6238,6 +6448,7 @@
   updatePageModeUrl('wordquest');
   initCoachRibbons();
   initializeHomeMode();
+  applyHashRoute();
   csSyncHeaderTitleCenter();
   updateHomeCoachRibbon();
   setWordQuestCoachState('before_guess');
@@ -6428,7 +6639,7 @@
   _el('teacher-open-writing-studio-btn')?.addEventListener('click', openWritingStudioPage);
   _el('teacher-open-sentence-surgery-btn')?.addEventListener('click', openSentenceSurgeryPage);
   _el('teacher-open-reading-lab-btn')?.addEventListener('click', openReadingLabPage);
-  _el('teacher-dashboard-btn')?.addEventListener('click', openTeacherDashboardPage);
+  _el('teacher-dashboard-btn')?.addEventListener('click', () => routeTo('dashboard'));
   _el('play-tools-btn')?.addEventListener('click', togglePlayToolsDrawer);
   _el('play-drawer-close')?.addEventListener('click', () => {
     _el('play-tools-drawer')?.classList.add('hidden');
@@ -6438,14 +6649,9 @@
   _el('play-drawer-sentence-surgery')?.addEventListener('click', openSentenceSurgeryPage);
   _el('play-drawer-reading-lab')?.addEventListener('click', openReadingLabPage);
   _el('play-drawer-teacher-dashboard')?.addEventListener('click', openTeacherDashboardPage);
-  _el('home-open-writing-studio')?.addEventListener('click', openWritingStudioPage);
-  _el('home-open-wordquest')?.addEventListener('click', () => {
-    setHomeMode('play');
-    if (!WQGame.getState?.()?.word) {
-      newGame({ launchMissionLab: false });
-    }
-  });
-  _el('home-open-reading-lab')?.addEventListener('click', openReadingLabPage);
+  _el('home-open-writing-studio')?.addEventListener('click', () => routeTo('writing'));
+  _el('home-open-wordquest')?.addEventListener('click', () => routeTo('wordquest'));
+  _el('home-open-reading-lab')?.addEventListener('click', () => routeTo('reading'));
   _el('home-open-numeracy')?.addEventListener('click', openNumeracyLabPage);
   _el('wq-share-result-btn')?.addEventListener('click', async () => {
     if (!_latestSavedSessionId) return;
@@ -6454,17 +6660,10 @@
   _el('wq-share-bundle-btn')?.addEventListener('click', async () => {
     await shareWordQuestBundle();
   });
-  _el('cta-wordquest')?.addEventListener('click', () => {
-    setHomeMode('play');
-    if (!WQGame.getState?.()?.word) {
-      newGame({ launchMissionLab: false });
-    }
-  });
-  _el('cta-tools')?.addEventListener('click', () => {
-    openTeacherDashboardPage();
-  });
+  _el('cta-wordquest')?.addEventListener('click', () => routeTo('wordquest'));
+  _el('cta-tools')?.addEventListener('click', () => routeTo('dashboard'));
   _el('home-logo-btn')?.addEventListener('click', () => {
-    setHomeMode('home', { scroll: false });
+    routeTo('home');
     setPageMode('wordquest', { force: true });
     closeFocusSearchList();
     closeQuickPopover('all');
@@ -6478,6 +6677,7 @@
     _el('play-tools-btn')?.setAttribute('aria-expanded', 'false');
     syncHeaderControlsVisibility();
   });
+  window.addEventListener('hashchange', applyHashRoute);
   initStudentCodeControls();
 // Global outside-click handlers for flyouts/toasts
   document.addEventListener('pointerdown', e => {

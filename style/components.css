@@ -7450,17 +7450,17 @@ html[data-layout-mode="compact"] .key.key-chunk {
 
 .cs-demo-toast {
   position: fixed;
-  top: 12px;
-  right: 12px;
+  top: calc(env(safe-area-inset-top, 0px) + 14px);
+  right: 14px;
   z-index: 234;
-  width: min(460px, calc(100vw - 24px));
+  width: min(420px, calc(100vw - 28px));
   min-height: 50px;
   display: grid;
   gap: 6px;
   padding: 9px 11px 8px;
-  border-radius: 12px;
+  border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(12, 18, 28, 0.84);
+  background: rgba(14, 22, 34, 0.78);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
@@ -7495,7 +7495,7 @@ html[data-layout-mode="compact"] .key.key-chunk {
 
 .cs-demo-toast__text {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 700;
   line-height: 1.25;
   white-space: normal;

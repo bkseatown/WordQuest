@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="wq-build" content="dev-local">
+  <base href="./">
   <script src="build-stamp.js?v=20260228d"></script>
   <title>Cornerstone MTSS</title>
   <link rel="icon" href="./favicon.ico" sizes="any">
@@ -12,6 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/components.css?v=20260228h">
   <link rel="stylesheet" href="hero-v2.css?v=20260227b">
+  <link rel="stylesheet" href="style/home-lock.css?v=20260228a">
   <style>
     html, body {
       height: 100%;
@@ -136,7 +138,7 @@
     }
   </style>
 </head>
-<body>
+<body class="home-locked">
   <div id="cs-home-root">
     <header class="home-header">
       <div>Cornerstone MTSS</div>
@@ -173,23 +175,48 @@
 
   <script src="word-quest-preview.js?v=20260228d"></script>
   <script>
-    (function hardwireHomeCtaRoutes() {
-      var ctaWordQuest = document.getElementById('cta-wordquest');
-      if (ctaWordQuest) {
-        ctaWordQuest.addEventListener('click', function (event) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          window.location.href = 'word-quest.html?demo=1&play=1';
-        }, { capture: true });
+    (function homeHashRouter() {
+      function routeTo(route) {
+        var next = String(route || 'home').toLowerCase();
+        if (location.hash !== '#' + next) location.hash = '#' + next;
+        applyRoute();
       }
-      var ctaTools = document.getElementById('cta-tools');
-      if (ctaTools) {
-        ctaTools.addEventListener('click', function (event) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          window.location.href = 'teacher-dashboard.html';
-        }, { capture: true });
+
+      function applyRoute() {
+        var route = String(location.hash || '#home').replace(/^#/, '').toLowerCase();
+        if (route === 'home' || !route) return;
+        if (route === 'wordquest') {
+          window.location.href = 'word-quest.html?play=1#wordquest';
+          return;
+        }
+        if (route === 'reading') {
+          window.location.href = 'reading-lab.html';
+          return;
+        }
+        if (route === 'writing') {
+          window.location.href = 'writing-studio.html';
+          return;
+        }
+        if (route === 'dashboard' || route === 'admin-demo') {
+          window.location.href = route === 'admin-demo' ? 'teacher-dashboard.html#admin-demo' : 'teacher-dashboard.html';
+          return;
+        }
       }
+
+      document.getElementById('cta-wordquest')?.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        routeTo('wordquest');
+      }, { capture: true });
+      document.getElementById('cta-tools')?.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        routeTo('dashboard');
+      }, { capture: true });
+
+      window.addEventListener('hashchange', applyRoute);
+      applyRoute();
+      window.CSRoute = Object.assign(window.CSRoute || {}, { routeTo: routeTo });
     })();
   </script>
   <script src="hero-v2.js?v=20260228d"></script>

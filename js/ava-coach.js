@@ -87,6 +87,22 @@
     return String(value || "").replace(/\s+/g, " ").trim();
   }
 
+  function assetUrl(rel) {
+    try {
+      var baseEl = typeof document !== "undefined" ? document.querySelector("base") : null;
+      var base = baseEl && baseEl.href ? baseEl.href : (typeof location !== "undefined" ? location.href : "");
+      return new URL(String(rel || ""), base).toString();
+    } catch (_e) {
+      return String(rel || "");
+    }
+  }
+
+  function fetchOptionalJSON(relUrl) {
+    return fetch(assetUrl(relUrl), { cache: "no-store" })
+      .then(function (res) { return res && res.ok ? res.json() : null; })
+      .catch(function () { return null; });
+  }
+
   function normalizeKey(value) {
     return sanitizeText(value).toLowerCase();
   }
@@ -209,7 +225,7 @@
     state.loadPromise = PHRASE_URLS.reduce(function (chain, url) {
       return chain.then(function (loaded) {
         if (loaded) return loaded;
-        return fetch(url, { cache: "no-store" })
+        return fetch(assetUrl(url), { cache: "no-store" })
           .then(function (res) { return res.ok ? res.json() : null; })
           .then(function (json) {
             if (!json || typeof json !== "object") return null;
@@ -235,8 +251,7 @@
   function loadPersona() {
     if (state.persona) return Promise.resolve(state.persona);
     if (state.personaPromise) return state.personaPromise;
-    state.personaPromise = fetch(PERSONA_URL, { cache: "no-store" })
-      .then(function (res) { return res.ok ? res.json() : null; })
+    state.personaPromise = fetchOptionalJSON(PERSONA_URL)
       .then(function (json) {
         state.persona = json && typeof json === "object" ? json : {};
         state.assetHealth.personaOk = !!json;
@@ -259,8 +274,7 @@
 
   function loadEventMatrix() {
     if (state.matrixPromise) return state.matrixPromise;
-    state.matrixPromise = fetch(EVENT_MATRIX_URL, { cache: "no-store" })
-      .then(function (res) { return res.ok ? res.json() : null; })
+    state.matrixPromise = fetchOptionalJSON(EVENT_MATRIX_URL)
       .then(function (json) {
         if (json && window.AvaIntensity && typeof window.AvaIntensity.setEventMatrix === "function") {
           window.AvaIntensity.setEventMatrix(json);
@@ -286,8 +300,7 @@
     if (state.manifest) return Promise.resolve(state.manifest);
     if (state.manifestPromise) return state.manifestPromise;
 
-    state.manifestPromise = fetch(LOCAL_MANIFEST_URL, { cache: "no-store" })
-      .then(function (res) { return res.ok ? res.json() : null; })
+    state.manifestPromise = fetchOptionalJSON(LOCAL_MANIFEST_URL)
       .then(function (json) {
         var byText = Object.create(null);
         if (json && Array.isArray(json.files)) {

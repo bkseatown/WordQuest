@@ -1,0 +1,42 @@
+:root {
+  --header-h: 84px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body.home-locked {
+  overflow: hidden !important;
+}
+
+body.home-locked header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+body.home-locked #hero-v2 {
+  height: calc(100vh - var(--header-h) - var(--safe-top));
+  min-height: calc(100vh - var(--header-h) - var(--safe-top));
+  overflow: hidden;
+}
+
+body.home-locked .top-control-hub,
+body.home-locked #board-shell,
+body.home-locked #keyboard-shell,
+body.home-locked #game-shell,
+body.home-locked #footer,
+body.home-locked .build-stamp,
+body.home-locked .wq-bottom-actions {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --header-h: 72px;
+  }
+}
