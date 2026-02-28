@@ -1,0 +1,892 @@
+word,raw_grade_band,reason
+abrupt,G4-6,unknown_band
+adaptation,G4-6,unknown_band
+admission,G4-6,unknown_band
+aesthetics,Branch of philosophy on beauty,invalid_format
+affective,Relating to moods/emotions,invalid_format
+affiliation,Official connection to a group,invalid_format
+aggression,Hostile or violent behavior,invalid_format
+agricultural,Relating to farming,invalid_format
+agriculture,Science or practice of farming,invalid_format
+algorithm,Set of rules for a process,invalid_format
+alignment,Arrangement in a straight line,invalid_format
+alleviate,To make suffering less severe,invalid_format
+alliance,G4-6,unknown_band
+amplitude,The maximum extent of a vibration,invalid_format
+analgesic,A drug that relieves pain,invalid_format
+analogy,Comparison between two things,invalid_format
+antimicrobial,Agent that kills microorganisms,invalid_format
+anxiety,Feeling of worry or unease,invalid_format
+apathy,Lack of interest or concern,invalid_format
+apoptosis,Programmed cell death,invalid_format
+apparatus,Complex structure or equipment,invalid_format
+apprehend,To arrest; to understand,invalid_format
+apprenticeship,Learning a trade from a master,invalid_format
+archaeology,G4-6,unknown_band
+archetype,A typical example of a thing,invalid_format
+architecture,The art of designing buildings,invalid_format
+articulation,Clear expression or jointing,invalid_format
+artifact,G4-6,unknown_band
+artillery,Large-caliber guns/cannons,invalid_format
+assemble,To fit together the parts of,invalid_format
+assimilate,To absorb or integrate into a whole,invalid_format
+astronomy,The study of stars and outer space,invalid_format
+atom,G4-6,unknown_band
+attachment,Emotional bond or a digital file,invalid_format
+attitude,A way of thinking or feeling,invalid_format
+attraction,G4-6,unknown_band
+attractive,G4-6,unknown_band
+attribute,Quality; to assign a cause,invalid_format
+attribution,Assigning a cause to a behavior,invalid_format
+audit,Official inspection of accounts,invalid_format
+auditory,Relating to the sense of hearing,invalid_format
+authority,G4-6,unknown_band
+authorize,To give official permission,invalid_format
+availability,Quality of being ready for use,invalid_format
+aviation,The flying or operating of aircraft,invalid_format
+backfire,To have an opposite effect to intended,invalid_format
+ballot,G4-6,unknown_band
+bandwidth,Data capacity or mental energy,invalid_format
+barrier,Obstacle that prevents movement,invalid_format
+barter,G4-6,unknown_band
+behavioral,Relating to the way one acts,invalid_format
+beneficiary,Person who derives advantage,invalid_format
+biodegradable,Capable of being decomposed,invalid_format
+biomass,Total mass of organisms in an area,invalid_format
+blueprint,A design plan or detailed program,invalid_format
+boycott,G4-6,unknown_band
+calcium,Chemical element ($Ca$) for bones,invalid_format
+calculator,Device for mathematical tasks,invalid_format
+caliber,Quality of someone's character/work,invalid_format
+calibration,Precise adjustment of an instrument,invalid_format
+campaign,G4-6,unknown_band
+carbonic,Relating to carbon or its compounds,invalid_format
+catalyst,Substance that speeds a reaction,invalid_format
+catastrophic,Involving a sudden great disaster,invalid_format
+causal,Relating to cause and effect,invalid_format
+ceremony,Formal religious or public occasion,invalid_format
+certificate,Official document attesting a fact,invalid_format
+certify,To attest or confirm officially,invalid_format
+chaos,Complete disorder and confusion,invalid_format
+characteristic,Feature typical of a person/thing,invalid_format
+characterize,To describe the qualities of,invalid_format
+chlorophyll,G4-6,unknown_band
+chronic,Persisting for a long time,invalid_format
+circulation,G4-6,unknown_band
+circulatory,G4-6,unknown_band
+circumstance,Fact or condition of an event,invalid_format
+citizenship,G4-6,unknown_band
+civilization,G4-6,unknown_band
+colonial,G4-6,unknown_band
+commission,A group tasked with a job; a fee,invalid_format
+commit,G4-6,unknown_band
+committee,A group chosen for a specific task,invalid_format
+communicate,To share information or ideas,invalid_format
+communication,The exchange of information,invalid_format
+compassion,Sympathetic pity and concern,invalid_format
+compensate,To make up for something,invalid_format
+compensation,Something given to make up for loss,invalid_format
+competence,The ability to do something well,invalid_format
+competent,Having the necessary skill,invalid_format
+competition,G4-6,unknown_band
+competitive,Relating to or involving competition,invalid_format
+compile,To produce by assembling info,invalid_format
+complement,To add to in a way that improves,invalid_format
+complexity,The state of being intricate,invalid_format
+component,A part or element of a larger whole,invalid_format
+compose,To write or create,invalid_format
+composite,Made up of several parts,invalid_format
+composition,The way a whole is made up,invalid_format
+compromise,G4-6,unknown_band
+compute,To calculate or reckon,invalid_format
+conceptual,Based on mental concepts,invalid_format
+concession,Thing that is granted or yielded,invalid_format
+concise,Giving info clearly and briefly,invalid_format
+condensation,G4-6,unknown_band
+condense,G4-6,unknown_band
+conductor,G4-6,unknown_band
+conference,G4-6,unknown_band
+connotation,The 'feeling' or 'vibe' of a word,invalid_format
+conscience,An inner feeling of right or wrong,invalid_format
+conscious,Aware of and responding to surroundings,invalid_format
+consent,G4-6,unknown_band
+consequence,A result or effect of an action,invalid_format
+conservation,G4-6,unknown_band
+conservative,Holding to traditional values,invalid_format
+consolidate,To combine into a single whole,invalid_format
+consolidation,The act of combining things,invalid_format
+constitution,G4-6,unknown_band
+constraint,A limitation or restriction,invalid_format
+consultant,A person who provides expert advice,invalid_format
+consultative,Intended to give professional advice,invalid_format
+consume,"To eat, use up, or buy",invalid_format
+consumer,G4-6,unknown_band
+consumption,The using up of a resource,invalid_format
+contaminate,G4-6,unknown_band
+contingent,Dependent on certain conditions,invalid_format
+continuity,Consistent existence over time,invalid_format
+controversy,Prolonged public disagreement,invalid_format
+convention,G4-6,unknown_band
+conventional,Following standard or usual ways,invalid_format
+cooperate,To work together for a goal,invalid_format
+cooperation,The act of working together,invalid_format
+coordinate,To bring into a common action,invalid_format
+coordination,Ability to move/work effectively,invalid_format
+core,The central or most important part,invalid_format
+correlate,To have a mutual connection,invalid_format
+corrosion,Damage caused by chemical reaction,invalid_format
+counsel,Advice or a legal representative,invalid_format
+counseling,Professional guidance for problems,invalid_format
+counterpart,A person/thing holding a same position,invalid_format
+courage,Bravery in the face of fear,invalid_format
+credential,A qualification or achievement,invalid_format
+credibility,Quality of being trusted,invalid_format
+criminology,The scientific study of crime,invalid_format
+crisis,A time of intense difficulty/danger,invalid_format
+critical,Expressing disapproval; essential,invalid_format
+critique,A detailed assessment,invalid_format
+curiosity,A strong desire to know or learn,invalid_format
+currency,G4-6,unknown_band
+curriculum,The subjects comprising a course,invalid_format
+customs,Traditional practices; border duty,invalid_format
+cyclone,System of winds rotating inwards,invalid_format
+database,Structured set of data in a computer,invalid_format
+debate,A formal discussion on a topic,invalid_format
+debt,Something owed (usually money),invalid_format
+decipher,To succeed in understanding a code,invalid_format
+decomposer,G4-6,unknown_band
+decouple,To separate two linked things,invalid_format
+default,Failure to fulfill an obligation; preset,invalid_format
+deficit,Amount by which something is too small,invalid_format
+deflation,Reduction of prices or air volume,invalid_format
+delegate,To entrust a task to another,invalid_format
+delegation,A group of representatives,invalid_format
+deliberate,Done on purpose; to consider carefully,invalid_format
+deliberation,Long and careful consideration,invalid_format
+delineate,To describe or portray precisely,invalid_format
+democracy,G4-6,unknown_band
+democratic,Relating to democracy,invalid_format
+demonstration,A show of how something works,invalid_format
+dependence,The state of relying on something,invalid_format
+depict,To represent by a drawing or words,invalid_format
+derivative,Something based on another source,invalid_format
+derive,To obtain something from a source,invalid_format
+descriptive,G4-6,unknown_band
+designate,To officially assign a name or status,invalid_format
+designation,The act of choosing or naming,invalid_format
+desktop,Top of a desk; computer interface,invalid_format
+detect,To discover or identify something,invalid_format
+deteriorate,To become progressively worse,invalid_format
+determinant,A factor that decides an outcome,invalid_format
+determination,Firmness of purpose; calculation,invalid_format
+develop,To grow or cause to grow,invalid_format
+development,The process of growing or changing,invalid_format
+device,A thing made for a specific purpose,invalid_format
+devotion,"Love, loyalty, or enthusiasm",invalid_format
+dialect,A particular form of a language,invalid_format
+dictate,G4-6,unknown_band
+dictation,G4-6,unknown_band
+differentiate,To recognize what makes things different,invalid_format
+differentiation,The process of becoming distinct,invalid_format
+diffuse,To spread over a wide area,invalid_format
+digit,Any of the numerals 0-9; a finger,invalid_format
+digital,Using signals as 0s and 1s,invalid_format
+dilemma,A choice between two difficult options,invalid_format
+dimension,"A measurable extent (length, width)",invalid_format
+diminish,To make or become less,invalid_format
+diplomatic,Relating to diplomacy; tactful,invalid_format
+disaster,A sudden accident or great misfortune,invalid_format
+discipline,Training to obey rules; field of study,invalid_format
+disclose,To make secret information known,invalid_format
+discriminate,To recognize a difference; be unfair,invalid_format
+discrimination,Unjust treatment of different groups,invalid_format
+dismiss,G4-6,unknown_band
+distinct,Clearly different or separate,invalid_format
+distinction,A difference or contrast,invalid_format
+distraction,G4-6,unknown_band
+distribute,To give shares of something,invalid_format
+diversify,To enlarge the range of things,invalid_format
+diversity,G4-6,unknown_band
+document,An official paper; to record,invalid_format
+documentation,Material that provides official info,invalid_format
+domain,An area of territory or knowledge,invalid_format
+domestic,G4-6,unknown_band
+dominance,Power and influence over others,invalid_format
+dominate,To have a commanding influence on,invalid_format
+drainage,The process of water flowing away,invalid_format
+dynamic,Constant change or activity,invalid_format
+dynasty,G4-6,unknown_band
+ecology,The study of living things and environment,invalid_format
+economic,Relating to money and resources,invalid_format
+edit,To prepare material by correcting,invalid_format
+editorial,An article giving an opinion,invalid_format
+educate,To give intellectual instruction,invalid_format
+elaborate,To add detail; very complex,invalid_format
+elaboration,The addition of more detail,invalid_format
+electoral,Relating to elections or voting,invalid_format
+electronics,G4-6,unknown_band
+element,A fundamental part of a whole,invalid_format
+elevate,To lift up or raise higher,invalid_format
+eligible,Meeting the requirements to participate,invalid_format
+eliminate,G4-6,unknown_band
+embark,To begin a journey or project,invalid_format
+empathy,Ability to feel what others feel,invalid_format
+enable,To make something possible,invalid_format
+enact,To make into a law; to perform,invalid_format
+encounter,To meet unexpectedly,invalid_format
+encourage,To give support or confidence,invalid_format
+encryption,Converting info into a secret code,invalid_format
+enforce,To make sure a law is followed,invalid_format
+enforcement,The act of compelling observance,invalid_format
+engage,To participate or become involved,invalid_format
+engineer,A person who builds/designs,invalid_format
+engineering,The use of science to build/design,invalid_format
+enhance,To intensify or improve the quality,invalid_format
+enhancement,An improvement or increase,invalid_format
+enlighten,To give greater knowledge,invalid_format
+enroll,To officially join a group or school,invalid_format
+enrollment,The number of people signed up,invalid_format
+ensure,To make certain something happens,invalid_format
+enterprise,A project or a business,invalid_format
+entropy,Lack of order or predictability,invalid_format
+environmental,Relating to the natural world,invalid_format
+epidemic,Widespread occurrence of a disease,invalid_format
+equation,Statement that two things are equal,invalid_format
+equitable,Fair and impartial,invalid_format
+equivalence,State of being equal in value,invalid_format
+eruption,G4-6,unknown_band
+evaluate,G4-6,unknown_band
+evaporate,G4-6,unknown_band
+evidence,Facts indicating if a belief is true,invalid_format
+evolve,To develop gradually,invalid_format
+exaggerate,To represent as better or worse,invalid_format
+exceed,To be greater than; go beyond,invalid_format
+exceptional,Unusually good; outstanding,invalid_format
+execute,To carry out a plan; run a program,invalid_format
+execution,Carrying out of a plan; performance,invalid_format
+exemplify,To be a typical example of,invalid_format
+exhaust,Waste gases; to tire out,invalid_format
+exhibition,G4-6,unknown_band
+existence,The state of being real,invalid_format
+exotic,Originating in a distant country,invalid_format
+expand,To become larger or more extensive,invalid_format
+expedition,G4-6,unknown_band
+expenditure,An amount of money spent,invalid_format
+experiment,A scientific procedure to test,invalid_format
+experimental,Based on untried ideas,invalid_format
+expertise,Expert skill or knowledge,invalid_format
+explicit,Stated clearly and in detail,invalid_format
+export,G4-6,unknown_band
+expose,To make something visible,invalid_format
+expression,A look on a face; a math phrase,invalid_format
+extend,To make longer or wider,invalid_format
+extension,A part that is added to enlarge,invalid_format
+extinct,No longer in existence,invalid_format
+extinction,G4-6,unknown_band
+extraordinary,Very unusual or remarkable,invalid_format
+facility,A place or building for a purpose,invalid_format
+factor,A circumstance or number that contributes,invalid_format
+feasibility,The state or degree of being possible,invalid_format
+feasible,Possible to do easily or conveniently,invalid_format
+federal,G4-6,unknown_band
+feedback,Information about a person's performance,invalid_format
+fiction,Literature describing imaginary events,invalid_format
+fidelity,Faithfulness; accuracy of a copy,invalid_format
+finance,Management of large amounts of money,invalid_format
+financial,Relating to finance or money,invalid_format
+finite,Having limits or bounds,invalid_format
+flexibility,Ability to bend or adapt easily,invalid_format
+fluorine,Chemical element ($F$),invalid_format
+force,A push or pull upon an object,invalid_format
+forecast,A prediction of future events,invalid_format
+forensic,Relating to scientific crime investigation,invalid_format
+formal,Following rules or convention,invalid_format
+formation,The action of forming or state of being,invalid_format
+foundation,The base that supports something,invalid_format
+fracture,G4-6,unknown_band
+framework,A supporting structure or set of ideas,invalid_format
+friction,G4-6,unknown_band
+functional,Designed to be practical and useful,invalid_format
+fungus,Organisms like mushrooms or mold,invalid_format
+galaxy,System of millions or billions of stars,invalid_format
+generalize,To form a general conclusion,invalid_format
+generation,All people born at about the same time,invalid_format
+generator,G4-6,unknown_band
+genetic,Relating to genes or heredity,invalid_format
+geology,G4-6,unknown_band
+geometric,Relating to geometry (lines/angles),invalid_format
+glacier,G4-6,unknown_band
+govern,To conduct the policy and affairs,invalid_format
+gradual,Taking place in stages over time,invalid_format
+graduate,To finish a course; a person who did,invalid_format
+graduation,The ceremony of receiving a degree,invalid_format
+harbor,A place on the coast for ships,invalid_format
+hardship,Severe suffering or difficulty,invalid_format
+harmony,Agreement or concord; musical blend,invalid_format
+herbivore,G4-6,unknown_band
+heritage,G4-6,unknown_band
+hierarchy,A system of ranking groups,invalid_format
+historic,Famous or important in history,invalid_format
+historical,Relating to the past,invalid_format
+humanity,The human race; being kind,invalid_format
+humidity,G4-6,unknown_band
+hybrid,A thing made by combining two elements,invalid_format
+hypothesis,G4-6,unknown_band
+hypothetical,Based on a suggested idea or theory,invalid_format
+identity,G4-6,unknown_band
+illegal,Contrary to or forbidden by law,invalid_format
+illustrate,To explain using pictures or examples,invalid_format
+illustration,A picture or diagram; an example,invalid_format
+immigration,G4-6,unknown_band
+immune,G4-6,unknown_band
+impartial,Treating all rivals equally; fair,invalid_format
+implement,To put a decision or plan into effect,invalid_format
+implementation,The process of putting a plan into action,invalid_format
+import,G4-6,unknown_band
+improve,To make or become better,invalid_format
+improvement,The act of making something better,invalid_format
+inclusion,The action of including or being included,invalid_format
+increasingly,More and more,invalid_format
+indicate,G4-6,unknown_band
+industrial,Relating to factories and manufacturing,invalid_format
+industry,Economic activity with raw materials,invalid_format
+infection,G4-6,unknown_band
+inference,A conclusion based on evidence,invalid_format
+influence,The power to change or affect,invalid_format
+inherit,To receive from one's ancestors,invalid_format
+inheritance,Thing that is inherited,invalid_format
+inquiry,An act of asking for information,invalid_format
+insect,Small animal with six legs,invalid_format
+insert,To put or fix into something else,invalid_format
+inspect,G4-6,unknown_band
+inspector,G4-6,unknown_band
+inspiration,Process of being mentally stimulated,invalid_format
+inspire,G4-6,unknown_band
+institute,An organization for a purpose; to start,invalid_format
+institutional,Relating to an institution,invalid_format
+instruct,To teach or give orders,invalid_format
+instrument,Tool for precision work or music,invalid_format
+instrumentation,Measuring instruments as a group,invalid_format
+insulation,Material used to stop heat or sound,invalid_format
+insulator,G4-6,unknown_band
+integrate,To combine things into a whole,invalid_format
+integrity,Being honest and having strong morals,invalid_format
+intellectual,Relating to the intellect or brain,invalid_format
+intelligence,Ability to acquire and apply knowledge,invalid_format
+intense,"Of extreme force, degree, or strength",invalid_format
+intensity,The measurable amount of energy,invalid_format
+interact,G4-6,unknown_band
+interaction,G4-6,unknown_band
+interfere,To prevent a process from continuing,invalid_format
+internal,Situated on the inside,invalid_format
+international,Existing between different nations,invalid_format
+interpretation,Action of explaining the meaning,invalid_format
+interval,A space between two things; time,invalid_format
+intervene,To come between so as to prevent,invalid_format
+intrinsic,Belonging naturally; essential,invalid_format
+introduce,To bring something into use; present,invalid_format
+introduction,The first part of something,invalid_format
+inventory,A complete list of items or stock,invalid_format
+invertebrate,G4-6,unknown_band
+investigate,To carry out a formal inquiry,invalid_format
+investigation,The process of investigating,invalid_format
+investigator,A person who investigates,invalid_format
+investment,Putting money/time for profit,invalid_format
+invisible,Unable to be seen,invalid_format
+involvement,The fact of being included,invalid_format
+ionic,Relating to chemical ions,invalid_format
+isolate,To set or keep apart from others,invalid_format
+isolation,The state of being alone or apart,invalid_format
+justification,The action of showing to be right,invalid_format
+justify,To show or prove to be right,invalid_format
+juvenile,Relating to young people; immature,invalid_format
+kinetic,Relating to or resulting from motion,invalid_format
+laboratory,Room for scientific experiments,invalid_format
+language,Method of human communication,invalid_format
+latitude,Distance north or south of the equator,invalid_format
+legitimate,Conforming to the law or rules,invalid_format
+leisure,Free time for enjoyment,invalid_format
+liberty,G4-6,unknown_band
+likelihood,The probability of something happening,invalid_format
+linear,Arranged in or extending along a line,invalid_format
+literacy,The ability to read and write,invalid_format
+literature,Written works of high quality,invalid_format
+litigation,The process of taking legal action,invalid_format
+locate,To find the exact place or position,invalid_format
+logarithm,Power to which a base must be raised,invalid_format
+logical,Of or according to the rules of logic,invalid_format
+longitude,Distance east or west of the prime meridian,invalid_format
+luminous,Giving off light; bright or shining,invalid_format
+magnetism,G4-6,unknown_band
+magnitude,The great size or extent of something,invalid_format
+maintenance,The work of keeping something in repair,invalid_format
+manipulation,Skillful handling or unfair control,invalid_format
+manufacturing,Making goods on a large scale,invalid_format
+marginal,Minor; relating to an edge or margin,invalid_format
+marine,Relating to or found in the sea,invalid_format
+marketing,Promoting and selling products,invalid_format
+material,The matter from which a thing is made,invalid_format
+maturity,Fully grown or developed state,invalid_format
+maximum,The greatest amount or level possible,invalid_format
+mechanism,A system of parts working together,invalid_format
+media,G4-6,unknown_band
+medical,Relating to the science of medicine,invalid_format
+medication,Substance used for medical treatment,invalid_format
+memorandum,A written message or business note,invalid_format
+mental,Relating to the mind,invalid_format
+mentor,An experienced and trusted adviser,invalid_format
+mentorship,The guidance provided by a mentor,invalid_format
+method,A particular form of procedure,invalid_format
+methodology,A system of methods used in a study,invalid_format
+metric,Relating to the decimal system,invalid_format
+migrate,To move from one region to another,invalid_format
+migration,G4-6,unknown_band
+mineral,Solid inorganic substance in nature,invalid_format
+minimize,To reduce to the smallest amount,invalid_format
+minimum,The smallest amount possible,invalid_format
+mitigate,To make less severe or painful,invalid_format
+mitigation,The action of reducing severity,invalid_format
+mobile,Able to move or be moved freely,invalid_format
+modeling,Creating a representation of a thing,invalid_format
+moderate,Average in amount; to make less,invalid_format
+moderation,Avoidance of extremes,invalid_format
+modern,Relating to the present or recent times,invalid_format
+modify,To make partial changes to,invalid_format
+molecule,G4-6,unknown_band
+monarchy,G4-6,unknown_band
+moral,Concerned with right and wrong,invalid_format
+mortality,"Death, especially on a large scale",invalid_format
+motivation,The reason one has for acting,invalid_format
+multiplier,Quantity by which another is multiplied,invalid_format
+municipal,Relating to a city or town,invalid_format
+narrative,A spoken or written account of events,invalid_format
+nation,A large body of people in one territory,invalid_format
+native,Originating in a particular place,invalid_format
+negotiate,To try to reach an agreement,invalid_format
+network,A group of interconnected things,invalid_format
+nonrenewable,Not able to be replaced by nature,invalid_format
+normalize,To bring to a standard or 'normal' state,invalid_format
+numeracy,Ability to understand numbers,invalid_format
+nutrient,G4-6,unknown_band
+objective,Not influenced by feelings; a goal,invalid_format
+obstacle,A thing that blocks one's way,invalid_format
+obtain,"To get, acquire, or secure",invalid_format
+occupational,Relating to a job or profession,invalid_format
+offense,A breach of law; the attacking team,invalid_format
+operate,To control the functioning of,invalid_format
+operation,An organized activity; math process,invalid_format
+operational,In or ready for use,invalid_format
+opinion,A view or judgment not based on fact,invalid_format
+oppose,To disagree with or resist,invalid_format
+optional,Left to one's choice; not required,invalid_format
+orbit,The curved path of a celestial object,invalid_format
+organism,G4-6,unknown_band
+organization,An organized body of people; order,invalid_format
+organize,To arrange into a structured whole,invalid_format
+orientation,Position or direction; an intro,invalid_format
+origin,The point or place where something begins,invalid_format
+outbreak,Sudden start of something unwelcome,invalid_format
+outdoor,Happening in the open air,invalid_format
+outline,A general description or plan,invalid_format
+output,The amount of something produced,invalid_format
+overall,Taking everything into account,invalid_format
+overload,To give too much of something,invalid_format
+overturn,To reverse or cancel a decision,invalid_format
+oxide,Compound containing oxygen,invalid_format
+oxygen,Gas essential for life ($O$),invalid_format
+parallel,Side by side and having the same distance,invalid_format
+parameter,A limit or boundary; a variable,invalid_format
+parasite,G4-6,unknown_band
+participate,To take part in an action,invalid_format
+participation,The act of taking part,invalid_format
+particle,A minute portion of matter,invalid_format
+particulate,Relating to separate particles,invalid_format
+partnership,Association of two or more people,invalid_format
+patience,Ability to wait without getting upset,invalid_format
+pattern,A repeated decorative design or sequence,invalid_format
+percentile,A measure used in statistics,invalid_format
+perception,"Ability to see, hear, or become aware",invalid_format
+perform,"To carry out, accomplish, or act",invalid_format
+performance,An act of staging or carrying out,invalid_format
+periodic,Appearing or occurring at intervals,invalid_format
+permission,G4-6,unknown_band
+perspective,A particular attitude or point of view,invalid_format
+persuade,To convince someone to do or believe,invalid_format
+persuasion,The act of persuading,invalid_format
+petition,G4-6,unknown_band
+philosophy,The study of the nature of knowledge,invalid_format
+photosynthesis,G4-6,unknown_band
+physics,The study of matter and energy,invalid_format
+pipeline,A long pipe for oil/gas; a sequence,invalid_format
+planetary,Relating to planets,invalid_format
+policy,A course of action or set of rules,invalid_format
+politics,Activities involving government/power,invalid_format
+pollutant,A substance that pollutes,invalid_format
+pollution,Presence of harmful substances,invalid_format
+population,All the inhabitants of a place,invalid_format
+portable,G4-6,unknown_band
+portfolio,A collection of work or investments,invalid_format
+position,A place where someone or something is,invalid_format
+possibility,A thing that may happen or be the case,invalid_format
+potential,G4-6,unknown_band
+poverty,State of being extremely poor,invalid_format
+practice,Repeated exercise to improve skill,invalid_format
+precede,To come before something in time,invalid_format
+preceding,Coming before in time or order,invalid_format
+precipitation,Water falling from the sky,invalid_format
+precision,The quality of being exact,invalid_format
+predict,To say what will happen in the future,invalid_format
+prediction,A thing predicted; a forecast,invalid_format
+preference,A greater liking for one thing over another,invalid_format
+prejudice,G4-6,unknown_band
+preserve,To maintain in its original state,invalid_format
+pressure,G4-6,unknown_band
+prevent,To keep something from happening,invalid_format
+prevention,The act of stopping something,invalid_format
+primary,Of chief importance; first,invalid_format
+principle,A fundamental truth or law,invalid_format
+prioritize,To treat something as more important,invalid_format
+priority,Thing regarded as more important,invalid_format
+privacy,State of being free from observation,invalid_format
+probability,The extent to which something is likely,invalid_format
+probable,Likely to happen or be true,invalid_format
+procedure,An established way of doing something,invalid_format
+process,Series of actions to achieve a result,invalid_format
+processing,Systematic series of operations,invalid_format
+proclaim,To announce officially or publicly,invalid_format
+procurement,Action of obtaining equipment,invalid_format
+productivity,The effectiveness of productive effort,invalid_format
+proficiency,A high degree of skill,invalid_format
+program,Planned series of events; code,invalid_format
+progression,A movement toward a destination,invalid_format
+prohibit,To formally forbid something,invalid_format
+projection,An estimate of a future situation,invalid_format
+proportion,A part or share in relation to a whole,invalid_format
+proposal,A plan or suggestion,invalid_format
+prosecution,Legal proceedings against someone,invalid_format
+protein,G4-6,unknown_band
+prototype,A first or preliminary model,invalid_format
+provide,To make available for use; supply,invalid_format
+provider,A person or thing that provides,invalid_format
+provision,Providing something; a legal clause,invalid_format
+psychology,The study of the human mind,invalid_format
+public,Relating to the people as a whole,invalid_format
+publication,A book or journal issued for public sale,invalid_format
+publish,To prepare and issue for sale/view,invalid_format
+pulse,The rhythmic throbbing of arteries,invalid_format
+qualitative,Relating to quality rather than quantity,invalid_format
+quantitative,Relating to the amount or number,invalid_format
+quarter,One of four equal parts,invalid_format
+quartile,Each of four equal groups in a sample,invalid_format
+questionnaire,A set of questions for a survey,invalid_format
+radical,Relating to the root; extreme,invalid_format
+radius,Distance from center to edge of circle,invalid_format
+random,Made or done without method,invalid_format
+rationale,A set of reasons or a logical basis,invalid_format
+react,To act in response to something,invalid_format
+reactant,Substance that changes during a reaction,invalid_format
+reaction,A response to a stimulus or chemical,invalid_format
+reactive,Tending to react to a stimulus,invalid_format
+reader,A person who reads; a book for practice,invalid_format
+reasoning,The action of thinking logically,invalid_format
+rebuild,To build something again,invalid_format
+recall,To bring back from memory; to order back,invalid_format
+recipient,A person who receives something,invalid_format
+recognize,To identify from having seen before,invalid_format
+recommendation,A suggestion for a best course of action,invalid_format
+reconcile,To restore friendly relations; make consistent,invalid_format
+reconciliation,The restoration of friendly relations,invalid_format
+record,A permanent account; to set down in writing,invalid_format
+recovery,A return to a normal state of health,invalid_format
+recruit,To enroll someone in a group,invalid_format
+recruitment,The action of finding new people for a group,invalid_format
+reference,A source of information; to mention,invalid_format
+refine,To remove impurities; improve,invalid_format
+reform,G4-6,unknown_band
+reformulate,To express in a different way or recreate,invalid_format
+refund,A repayment of a sum of money,invalid_format
+regime,"A government, especially an authoritarian one",invalid_format
+region,"An area or division, especially part of a country",invalid_format
+regulate,To control or maintain the rate/speed,invalid_format
+regulation,A rule or directive made by authority,invalid_format
+regulatory,Serving or intended to regulate,invalid_format
+rehabilitate,To restore to health or normal life,invalid_format
+reinforce,To strengthen or support,invalid_format
+reinforcement,The action of strengthening; extra people,invalid_format
+relate,To show or make a connection,invalid_format
+relation,The way in which two things are connected,invalid_format
+relationship,The way in which two or more people are connected,invalid_format
+relative,Considered in relation to something else; a family member,invalid_format
+release,To allow to move or escape; to issue,invalid_format
+relevant,Closely connected or appropriate,invalid_format
+reliability,The quality of being trustworthy,invalid_format
+reliable,Consistently good in quality or performance,invalid_format
+remedy,A medicine or treatment for a disease or injury,invalid_format
+remote,Situated far from the main centers,invalid_format
+renewable,Capable of being renewed,invalid_format
+repair,To restore something damaged,invalid_format
+repetition,The action of repeating something,invalid_format
+reported,G4-6,unknown_band
+reporter,G4-6,unknown_band
+represent,To act or speak for someone else,invalid_format
+representation,The action of speaking or acting on behalf,invalid_format
+reproduce,To produce again; to have offspring,invalid_format
+reproduction,G4-6,unknown_band
+republic,Power held by people and elected reps,invalid_format
+reputation,Beliefs or opinions held about someone,invalid_format
+research,Systematic investigation into a subject,invalid_format
+resident,A person who lives in a place,invalid_format
+resilience,Capacity to recover quickly,invalid_format
+resistant,Offering resistance; not affected by,invalid_format
+resource,A stock or supply of useful things,invalid_format
+respiratory,G4-6,unknown_band
+respond,To say or do something in reply,invalid_format
+response,A reaction to something,invalid_format
+restore,To bring back to a former condition,invalid_format
+restraint,A measure or condition that keeps control,invalid_format
+restrict,To put a limit on; keep under control,invalid_format
+restriction,A limiting condition or measure,invalid_format
+result,An outcome or consequence,invalid_format
+resume,A summary of one's education/work,invalid_format
+retirement,Leaving one's job and ceasing to work,invalid_format
+reversible,Able to be turned the other way,invalid_format
+rhetoric,The art of persuasive speaking/writing,invalid_format
+rigorous,Extremely thorough or demanding,invalid_format
+safeguard,To protect from harm or damage,invalid_format
+sample,A small part intended to show the whole,invalid_format
+satellite,G4-6,unknown_band
+scenario,A predicted sequence of events,invalid_format
+schedule,A plan for carrying out a process,invalid_format
+schematic,A diagram or plan of a system,invalid_format
+section,A distinct part or portion of something,invalid_format
+sedimentary,G4-6,unknown_band
+selection,The action of choosing something,invalid_format
+sequence,A particular order in which things follow,invalid_format
+series,A set of related things following each other,invalid_format
+session,A period devoted to a particular activity,invalid_format
+shortage,A state where something cannot be found,invalid_format
+signal,G4-6,unknown_band
+signature,A person's name written by themselves,invalid_format
+significant,Great or important; worthy of attention,invalid_format
+signify,To be a symbol or sign of,invalid_format
+similar,Resembling without being identical,invalid_format
+similarity,The state of being similar,invalid_format
+simulation,The imitation of a situation or process,invalid_format
+simultaneous,Occurring or operating at the same time,invalid_format
+slope,A surface of which one end is higher,invalid_format
+software,Programs used by a computer,invalid_format
+solar,Relating to or determined by the sun,invalid_format
+solution,A means of solving a problem; a mixture,invalid_format
+solve,To find an answer to a problem,invalid_format
+solvent,Liquid in which a solute is dissolved,invalid_format
+source,A place or person where info comes from,invalid_format
+species,A group of living organisms,invalid_format
+specific,Clearly defined or identified,invalid_format
+spectacular,G4-6,unknown_band
+stability,The state of being firm or steady,invalid_format
+standard,A level of quality or a common rule,invalid_format
+standardize,To make things follow the same rule,invalid_format
+static,Lacking in movement or change,invalid_format
+statistics,The science of collecting and analyzing data,invalid_format
+status,The relative social or professional position,invalid_format
+stimulate,To encourage interest or activity,invalid_format
+stimulus,A thing that evokes a specific reaction,invalid_format
+stochastic,Having a random probability distribution,invalid_format
+strategy,A plan of action designed to achieve a goal,invalid_format
+structure,The arrangement of parts in a complex thing,invalid_format
+subjective,Based on or influenced by personal feelings,invalid_format
+submit,G4-6,unknown_band
+subordinate,Lower in rank or position,invalid_format
+subscription,G4-6,unknown_band
+subsequent,Coming after something in time,invalid_format
+subsidy,Sum of money granted by the state,invalid_format
+substantial,"Of considerable importance, size, or worth",invalid_format
+substitute,A person or thing acting in place of another,invalid_format
+substrate,A surface on which an organism lives,invalid_format
+subtle,So delicate or precise as to be difficult to describe,invalid_format
+sufficient,Enough; adequate,invalid_format
+sulfate,A salt or ester of sulfuric acid,invalid_format
+summary,A brief statement of the main points,invalid_format
+summit,The highest point of a hill or mountain; a meeting,invalid_format
+supervise,To observe and direct the execution of a task,invalid_format
+supportive,G4-6,unknown_band
+survey,A general view or examination of something,invalid_format
+sustainable,Able to be maintained at a certain level,invalid_format
+sustenance,Food and drink as a source of strength,invalid_format
+symbol,A thing that represents or stands for something,invalid_format
+symbolic,Serving as a symbol,invalid_format
+symmetry,Quality of being made of exactly similar parts,invalid_format
+synthesis,Combining ideas into a whole,invalid_format
+synthetic,Made by chemical synthesis; not natural,invalid_format
+system,A set of things working together,invalid_format
+systematic,Done or acting according to a fixed plan,invalid_format
+tactical,Relating to small-scale actions in a plan,invalid_format
+tangent,A straight line touching a curve; a side-track,invalid_format
+technical,Relating to a particular subject or craft,invalid_format
+technique,A way of carrying out a particular task,invalid_format
+technology,Application of scientific knowledge,invalid_format
+tectonic,Relating to the structure of the earth's crust,invalid_format
+template,A preset format for a document,invalid_format
+tension,The state of being stretched tight,invalid_format
+terminal,Predicted to lead to death; a computer end,invalid_format
+terminate,To bring to an end,invalid_format
+terminology,The body of terms used in a subject,invalid_format
+territory,An area of land under jurisdiction,invalid_format
+textile,A type of cloth or woven fabric,invalid_format
+theoretical,Based on or calculated through theory,invalid_format
+theory,A system of ideas intended to explain something,invalid_format
+thermal,Relating to heat,invalid_format
+thesis,A statement or theory to be maintained,invalid_format
+tolerance,Ability to endure something; a margin of error,invalid_format
+topic,A matter dealt with in a text,invalid_format
+toxicity,The quality of being poisonous or harmful,invalid_format
+tradition,A long-established custom or belief,invalid_format
+transaction,An instance of buying or selling,invalid_format
+transcript,A written or printed version of material,invalid_format
+transfer,To move from one place to another,invalid_format
+transformation,A thorough or dramatic change,invalid_format
+transition,The process of changing from one state to another,invalid_format
+translation,The process of changing text to another language,invalid_format
+transparent,Allowing light to pass through; easy to see through,invalid_format
+transport,G4-6,unknown_band
+transportation,G4-6,unknown_band
+transverse,Situated or extending across something,invalid_format
+trend,A general direction in which something is developing,invalid_format
+trigger,A cause of a particular action or process,invalid_format
+ultimate,Being or happening at the end of a process,invalid_format
+ultrasound,Sound waves with frequencies higher than human hearing,invalid_format
+unavailable,Not able to be used or obtained,invalid_format
+unconscious,Not awake and aware of one's surroundings,invalid_format
+underestimate,To estimate something to be smaller or less important,invalid_format
+undergo,To experience or be subjected to,invalid_format
+underlie,To be the cause or basis of something,invalid_format
+undertake,To commit oneself to and begin,invalid_format
+unify,To make or become united or whole,invalid_format
+unique,Being the only one of its kind,invalid_format
+unit,An individual thing or person; a measurement,invalid_format
+update,To make something more modern or current,invalid_format
+utility,The state of being useful or profitable,invalid_format
+utilize,To make practical and effective use of,invalid_format
+vaccine,G4-6,unknown_band
+valid,Having a sound basis in logic or fact,invalid_format
+validate,To check or prove the accuracy of,invalid_format
+validity,The quality of being logically or factually sound,invalid_format
+variability,Lack of consistency or fixed pattern,invalid_format
+variable,Not consistent or having a fixed pattern,invalid_format
+variation,A change or difference in condition,invalid_format
+variety,The quality or state of being different,invalid_format
+vary,"To differ in size, amount, or degree",invalid_format
+vast,Of very great extent or quantity,invalid_format
+vehicle,A thing used for transporting people or goods,invalid_format
+velocity,The speed of something in a given direction,invalid_format
+vendor,A person or company offering something for sale,invalid_format
+verdict,G4-6,unknown_band
+verify,To make sure that something is true,invalid_format
+version,A particular form of something,invalid_format
+vertebrate,G4-6,unknown_band
+vertical,At right angles to a horizontal plane,invalid_format
+vessel,A ship or large boat; a hollow container,invalid_format
+via,By way of; through,invalid_format
+vibrant,Full of energy and enthusiasm,invalid_format
+vibrate,To move continuously and rapidly to and fro,invalid_format
+violation,An act of disregarding a law or agreement,invalid_format
+virtual,Almost or nearly as described; simulated,invalid_format
+virtually,Nearly; almost,invalid_format
+virus,G4-6,unknown_band
+visible,Able to be seen,invalid_format
+vision,The faculty or state of being able to see,invalid_format
+visual,Relating to seeing or sight,invalid_format
+volume,The amount of space an object occupies; loudness,invalid_format
+wavelength,Distance between successive crests of a wave,invalid_format
+whereas,In contrast or comparison with the fact that,invalid_format
+whereby,By which,invalid_format
+wholly,Entirely; fully,invalid_format
+widespread,Found or distributed over a large area,invalid_format
+width,The measurement or extent of something from side to side,invalid_format
+wildlife,Animals that live independently of people,invalid_format
+withdraw,To remove or take away,invalid_format
+withdrawal,The action of withdrawing something,invalid_format
+witness,A person who sees an event; to see,invalid_format
+yield,To produce or provide; to give way,invalid_format
+zone,An area or stretch of land having a particular characteristic,invalid_format
+correspond,G4-6,unknown_band
+deactivate,G4-6,unknown_band
+enrich,G4-6,unknown_band
+bill of rights,G4-6,unknown_band
+conquest,G4-6,unknown_band
+coronation,G4-6,unknown_band
+councilor,G4-6,unknown_band
+declaration,G4-6,unknown_band
+famine,G4-6,unknown_band
+frontier,G4-6,unknown_band
+injustice,G4-6,unknown_band
+nomad,G4-6,unknown_band
+occupation,G4-6,unknown_band
+patriotism,G4-6,unknown_band
+refugee,G4-6,unknown_band
+revolt,G4-6,unknown_band
+arc,G4-6,unknown_band
+collision,G4-6,unknown_band
+detector,G4-6,unknown_band
+drag,G4-6,unknown_band
+electromagnet,G4-6,unknown_band
+focusing,G4-6,unknown_band
+ignition,G4-6,unknown_band
+kilowatt,G4-6,unknown_band
+mechanical,G4-6,unknown_band
+algae,G4-6,unknown_band
+artery,G4-6,unknown_band
+biome,G4-6,unknown_band
+cell membrane,G4-6,unknown_band
+cell wall,G4-6,unknown_band
+contagious,G4-6,unknown_band
+dehydration,G4-6,unknown_band
+endangered,G4-6,unknown_band
+erosion,G4-6,unknown_band
+exoskeleton,G4-6,unknown_band
+food web,G4-6,unknown_band
+fossilize,G4-6,unknown_band
+germination,G4-6,unknown_band
+host,G4-6,unknown_band
+kidney,G4-6,unknown_band
+larva,G4-6,unknown_band
+limestone,G4-6,unknown_band
+liver,G4-6,unknown_band
+microorganism,G4-6,unknown_band
+pollination,G4-6,unknown_band
+pollinator,G4-6,unknown_band
+producer,G4-6,unknown_band
+spore,G4-6,unknown_band
+vaccinate,G4-6,unknown_band
+weathering,G4-6,unknown_band
+wetland,G4-6,unknown_band
+abundance,G4-6,unknown_band
+academy,G4-6,unknown_band
+census,G4-6,unknown_band
+civil war,G4-6,unknown_band
+civilian,G4-6,unknown_band
+cultural,G4-6,unknown_band
+dictator,G4-6,unknown_band
+economy,G4-6,unknown_band
+equality,G4-6,unknown_band
+ethnic,G4-6,unknown_band
+nationality,G4-6,unknown_band
+parliament,G4-6,unknown_band
+prosperity,G4-6,unknown_band
+rebellion,G4-6,unknown_band
+dedicate,G4-6,unknown_band
+dedication,G4-6,unknown_band
+interactive,G4-6,unknown_band
+scripted,G4-6,unknown_band
+description,G4-6,unknown_band
+impress,G4-6,unknown_band
+sensible,G4-6,unknown_band
+sensor,G4-6,unknown_band
+photographic,G4-6,unknown_band
+kilometer,G4-6,unknown_band
+expire,G4-6,unknown_band
+motionless,G4-6,unknown_band
+capable,G4-6,unknown_band
+commotion,G4-6,unknown_band
+locomotive,G4-6,unknown_band
+missile,G4-6,unknown_band

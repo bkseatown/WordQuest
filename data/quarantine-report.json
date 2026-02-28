@@ -1,0 +1,4462 @@
+{
+  "generatedAt": "2026-02-28T07:10:43.927Z",
+  "source": "data/words-inline.js",
+  "count": 891,
+  "items": [
+    {
+      "word": "abrupt",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "adaptation",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "admission",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "aesthetics",
+      "raw_grade_band": "Branch of philosophy on beauty",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "affective",
+      "raw_grade_band": "Relating to moods/emotions",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "affiliation",
+      "raw_grade_band": "Official connection to a group",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "aggression",
+      "raw_grade_band": "Hostile or violent behavior",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "agricultural",
+      "raw_grade_band": "Relating to farming",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "agriculture",
+      "raw_grade_band": "Science or practice of farming",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "algorithm",
+      "raw_grade_band": "Set of rules for a process",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "alignment",
+      "raw_grade_band": "Arrangement in a straight line",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "alleviate",
+      "raw_grade_band": "To make suffering less severe",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "alliance",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "amplitude",
+      "raw_grade_band": "The maximum extent of a vibration",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "analgesic",
+      "raw_grade_band": "A drug that relieves pain",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "analogy",
+      "raw_grade_band": "Comparison between two things",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "antimicrobial",
+      "raw_grade_band": "Agent that kills microorganisms",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "anxiety",
+      "raw_grade_band": "Feeling of worry or unease",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "apathy",
+      "raw_grade_band": "Lack of interest or concern",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "apoptosis",
+      "raw_grade_band": "Programmed cell death",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "apparatus",
+      "raw_grade_band": "Complex structure or equipment",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "apprehend",
+      "raw_grade_band": "To arrest; to understand",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "apprenticeship",
+      "raw_grade_band": "Learning a trade from a master",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "archaeology",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "archetype",
+      "raw_grade_band": "A typical example of a thing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "architecture",
+      "raw_grade_band": "The art of designing buildings",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "articulation",
+      "raw_grade_band": "Clear expression or jointing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "artifact",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "artillery",
+      "raw_grade_band": "Large-caliber guns/cannons",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "assemble",
+      "raw_grade_band": "To fit together the parts of",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "assimilate",
+      "raw_grade_band": "To absorb or integrate into a whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "astronomy",
+      "raw_grade_band": "The study of stars and outer space",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "atom",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "attachment",
+      "raw_grade_band": "Emotional bond or a digital file",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "attitude",
+      "raw_grade_band": "A way of thinking or feeling",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "attraction",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "attractive",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "attribute",
+      "raw_grade_band": "Quality; to assign a cause",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "attribution",
+      "raw_grade_band": "Assigning a cause to a behavior",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "audit",
+      "raw_grade_band": "Official inspection of accounts",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "auditory",
+      "raw_grade_band": "Relating to the sense of hearing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "authority",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "authorize",
+      "raw_grade_band": "To give official permission",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "availability",
+      "raw_grade_band": "Quality of being ready for use",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "aviation",
+      "raw_grade_band": "The flying or operating of aircraft",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "backfire",
+      "raw_grade_band": "To have an opposite effect to intended",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "ballot",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "bandwidth",
+      "raw_grade_band": "Data capacity or mental energy",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "barrier",
+      "raw_grade_band": "Obstacle that prevents movement",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "barter",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "behavioral",
+      "raw_grade_band": "Relating to the way one acts",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "beneficiary",
+      "raw_grade_band": "Person who derives advantage",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "biodegradable",
+      "raw_grade_band": "Capable of being decomposed",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "biomass",
+      "raw_grade_band": "Total mass of organisms in an area",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "blueprint",
+      "raw_grade_band": "A design plan or detailed program",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "boycott",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "calcium",
+      "raw_grade_band": "Chemical element ($Ca$) for bones",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "calculator",
+      "raw_grade_band": "Device for mathematical tasks",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "caliber",
+      "raw_grade_band": "Quality of someone's character/work",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "calibration",
+      "raw_grade_band": "Precise adjustment of an instrument",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "campaign",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "carbonic",
+      "raw_grade_band": "Relating to carbon or its compounds",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "catalyst",
+      "raw_grade_band": "Substance that speeds a reaction",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "catastrophic",
+      "raw_grade_band": "Involving a sudden great disaster",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "causal",
+      "raw_grade_band": "Relating to cause and effect",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "ceremony",
+      "raw_grade_band": "Formal religious or public occasion",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "certificate",
+      "raw_grade_band": "Official document attesting a fact",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "certify",
+      "raw_grade_band": "To attest or confirm officially",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "chaos",
+      "raw_grade_band": "Complete disorder and confusion",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "characteristic",
+      "raw_grade_band": "Feature typical of a person/thing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "characterize",
+      "raw_grade_band": "To describe the qualities of",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "chlorophyll",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "chronic",
+      "raw_grade_band": "Persisting for a long time",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "circulation",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "circulatory",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "circumstance",
+      "raw_grade_band": "Fact or condition of an event",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "citizenship",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "civilization",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "colonial",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "commission",
+      "raw_grade_band": "A group tasked with a job; a fee",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "commit",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "committee",
+      "raw_grade_band": "A group chosen for a specific task",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "communicate",
+      "raw_grade_band": "To share information or ideas",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "communication",
+      "raw_grade_band": "The exchange of information",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "compassion",
+      "raw_grade_band": "Sympathetic pity and concern",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "compensate",
+      "raw_grade_band": "To make up for something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "compensation",
+      "raw_grade_band": "Something given to make up for loss",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "competence",
+      "raw_grade_band": "The ability to do something well",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "competent",
+      "raw_grade_band": "Having the necessary skill",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "competition",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "competitive",
+      "raw_grade_band": "Relating to or involving competition",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "compile",
+      "raw_grade_band": "To produce by assembling info",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "complement",
+      "raw_grade_band": "To add to in a way that improves",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "complexity",
+      "raw_grade_band": "The state of being intricate",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "component",
+      "raw_grade_band": "A part or element of a larger whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "compose",
+      "raw_grade_band": "To write or create",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "composite",
+      "raw_grade_band": "Made up of several parts",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "composition",
+      "raw_grade_band": "The way a whole is made up",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "compromise",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "compute",
+      "raw_grade_band": "To calculate or reckon",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "conceptual",
+      "raw_grade_band": "Based on mental concepts",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "concession",
+      "raw_grade_band": "Thing that is granted or yielded",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "concise",
+      "raw_grade_band": "Giving info clearly and briefly",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "condensation",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "condense",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "conductor",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "conference",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "connotation",
+      "raw_grade_band": "The 'feeling' or 'vibe' of a word",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "conscience",
+      "raw_grade_band": "An inner feeling of right or wrong",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "conscious",
+      "raw_grade_band": "Aware of and responding to surroundings",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "consent",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "consequence",
+      "raw_grade_band": "A result or effect of an action",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "conservation",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "conservative",
+      "raw_grade_band": "Holding to traditional values",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "consolidate",
+      "raw_grade_band": "To combine into a single whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "consolidation",
+      "raw_grade_band": "The act of combining things",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "constitution",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "constraint",
+      "raw_grade_band": "A limitation or restriction",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "consultant",
+      "raw_grade_band": "A person who provides expert advice",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "consultative",
+      "raw_grade_band": "Intended to give professional advice",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "consume",
+      "raw_grade_band": "To eat, use up, or buy",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "consumer",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "consumption",
+      "raw_grade_band": "The using up of a resource",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "contaminate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "contingent",
+      "raw_grade_band": "Dependent on certain conditions",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "continuity",
+      "raw_grade_band": "Consistent existence over time",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "controversy",
+      "raw_grade_band": "Prolonged public disagreement",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "convention",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "conventional",
+      "raw_grade_band": "Following standard or usual ways",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "cooperate",
+      "raw_grade_band": "To work together for a goal",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "cooperation",
+      "raw_grade_band": "The act of working together",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "coordinate",
+      "raw_grade_band": "To bring into a common action",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "coordination",
+      "raw_grade_band": "Ability to move/work effectively",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "core",
+      "raw_grade_band": "The central or most important part",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "correlate",
+      "raw_grade_band": "To have a mutual connection",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "corrosion",
+      "raw_grade_band": "Damage caused by chemical reaction",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "counsel",
+      "raw_grade_band": "Advice or a legal representative",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "counseling",
+      "raw_grade_band": "Professional guidance for problems",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "counterpart",
+      "raw_grade_band": "A person/thing holding a same position",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "courage",
+      "raw_grade_band": "Bravery in the face of fear",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "credential",
+      "raw_grade_band": "A qualification or achievement",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "credibility",
+      "raw_grade_band": "Quality of being trusted",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "criminology",
+      "raw_grade_band": "The scientific study of crime",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "crisis",
+      "raw_grade_band": "A time of intense difficulty/danger",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "critical",
+      "raw_grade_band": "Expressing disapproval; essential",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "critique",
+      "raw_grade_band": "A detailed assessment",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "curiosity",
+      "raw_grade_band": "A strong desire to know or learn",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "currency",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "curriculum",
+      "raw_grade_band": "The subjects comprising a course",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "customs",
+      "raw_grade_band": "Traditional practices; border duty",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "cyclone",
+      "raw_grade_band": "System of winds rotating inwards",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "database",
+      "raw_grade_band": "Structured set of data in a computer",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "debate",
+      "raw_grade_band": "A formal discussion on a topic",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "debt",
+      "raw_grade_band": "Something owed (usually money)",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "decipher",
+      "raw_grade_band": "To succeed in understanding a code",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "decomposer",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "decouple",
+      "raw_grade_band": "To separate two linked things",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "default",
+      "raw_grade_band": "Failure to fulfill an obligation; preset",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "deficit",
+      "raw_grade_band": "Amount by which something is too small",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "deflation",
+      "raw_grade_band": "Reduction of prices or air volume",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "delegate",
+      "raw_grade_band": "To entrust a task to another",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "delegation",
+      "raw_grade_band": "A group of representatives",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "deliberate",
+      "raw_grade_band": "Done on purpose; to consider carefully",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "deliberation",
+      "raw_grade_band": "Long and careful consideration",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "delineate",
+      "raw_grade_band": "To describe or portray precisely",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "democracy",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "democratic",
+      "raw_grade_band": "Relating to democracy",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "demonstration",
+      "raw_grade_band": "A show of how something works",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "dependence",
+      "raw_grade_band": "The state of relying on something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "depict",
+      "raw_grade_band": "To represent by a drawing or words",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "derivative",
+      "raw_grade_band": "Something based on another source",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "derive",
+      "raw_grade_band": "To obtain something from a source",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "descriptive",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "designate",
+      "raw_grade_band": "To officially assign a name or status",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "designation",
+      "raw_grade_band": "The act of choosing or naming",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "desktop",
+      "raw_grade_band": "Top of a desk; computer interface",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "detect",
+      "raw_grade_band": "To discover or identify something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "deteriorate",
+      "raw_grade_band": "To become progressively worse",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "determinant",
+      "raw_grade_band": "A factor that decides an outcome",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "determination",
+      "raw_grade_band": "Firmness of purpose; calculation",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "develop",
+      "raw_grade_band": "To grow or cause to grow",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "development",
+      "raw_grade_band": "The process of growing or changing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "device",
+      "raw_grade_band": "A thing made for a specific purpose",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "devotion",
+      "raw_grade_band": "Love, loyalty, or enthusiasm",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "dialect",
+      "raw_grade_band": "A particular form of a language",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "dictate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "dictation",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "differentiate",
+      "raw_grade_band": "To recognize what makes things different",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "differentiation",
+      "raw_grade_band": "The process of becoming distinct",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "diffuse",
+      "raw_grade_band": "To spread over a wide area",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "digit",
+      "raw_grade_band": "Any of the numerals 0-9; a finger",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "digital",
+      "raw_grade_band": "Using signals as 0s and 1s",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "dilemma",
+      "raw_grade_band": "A choice between two difficult options",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "dimension",
+      "raw_grade_band": "A measurable extent (length, width)",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "diminish",
+      "raw_grade_band": "To make or become less",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "diplomatic",
+      "raw_grade_band": "Relating to diplomacy; tactful",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "disaster",
+      "raw_grade_band": "A sudden accident or great misfortune",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "discipline",
+      "raw_grade_band": "Training to obey rules; field of study",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "disclose",
+      "raw_grade_band": "To make secret information known",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "discriminate",
+      "raw_grade_band": "To recognize a difference; be unfair",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "discrimination",
+      "raw_grade_band": "Unjust treatment of different groups",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "dismiss",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "distinct",
+      "raw_grade_band": "Clearly different or separate",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "distinction",
+      "raw_grade_band": "A difference or contrast",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "distraction",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "distribute",
+      "raw_grade_band": "To give shares of something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "diversify",
+      "raw_grade_band": "To enlarge the range of things",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "diversity",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "document",
+      "raw_grade_band": "An official paper; to record",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "documentation",
+      "raw_grade_band": "Material that provides official info",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "domain",
+      "raw_grade_band": "An area of territory or knowledge",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "domestic",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "dominance",
+      "raw_grade_band": "Power and influence over others",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "dominate",
+      "raw_grade_band": "To have a commanding influence on",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "drainage",
+      "raw_grade_band": "The process of water flowing away",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "dynamic",
+      "raw_grade_band": "Constant change or activity",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "dynasty",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "ecology",
+      "raw_grade_band": "The study of living things and environment",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "economic",
+      "raw_grade_band": "Relating to money and resources",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "edit",
+      "raw_grade_band": "To prepare material by correcting",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "editorial",
+      "raw_grade_band": "An article giving an opinion",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "educate",
+      "raw_grade_band": "To give intellectual instruction",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "elaborate",
+      "raw_grade_band": "To add detail; very complex",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "elaboration",
+      "raw_grade_band": "The addition of more detail",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "electoral",
+      "raw_grade_band": "Relating to elections or voting",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "electronics",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "element",
+      "raw_grade_band": "A fundamental part of a whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "elevate",
+      "raw_grade_band": "To lift up or raise higher",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "eligible",
+      "raw_grade_band": "Meeting the requirements to participate",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "eliminate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "embark",
+      "raw_grade_band": "To begin a journey or project",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "empathy",
+      "raw_grade_band": "Ability to feel what others feel",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "enable",
+      "raw_grade_band": "To make something possible",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "enact",
+      "raw_grade_band": "To make into a law; to perform",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "encounter",
+      "raw_grade_band": "To meet unexpectedly",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "encourage",
+      "raw_grade_band": "To give support or confidence",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "encryption",
+      "raw_grade_band": "Converting info into a secret code",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "enforce",
+      "raw_grade_band": "To make sure a law is followed",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "enforcement",
+      "raw_grade_band": "The act of compelling observance",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "engage",
+      "raw_grade_band": "To participate or become involved",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "engineer",
+      "raw_grade_band": "A person who builds/designs",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "engineering",
+      "raw_grade_band": "The use of science to build/design",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "enhance",
+      "raw_grade_band": "To intensify or improve the quality",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "enhancement",
+      "raw_grade_band": "An improvement or increase",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "enlighten",
+      "raw_grade_band": "To give greater knowledge",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "enroll",
+      "raw_grade_band": "To officially join a group or school",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "enrollment",
+      "raw_grade_band": "The number of people signed up",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "ensure",
+      "raw_grade_band": "To make certain something happens",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "enterprise",
+      "raw_grade_band": "A project or a business",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "entropy",
+      "raw_grade_band": "Lack of order or predictability",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "environmental",
+      "raw_grade_band": "Relating to the natural world",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "epidemic",
+      "raw_grade_band": "Widespread occurrence of a disease",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "equation",
+      "raw_grade_band": "Statement that two things are equal",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "equitable",
+      "raw_grade_band": "Fair and impartial",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "equivalence",
+      "raw_grade_band": "State of being equal in value",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "eruption",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "evaluate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "evaporate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "evidence",
+      "raw_grade_band": "Facts indicating if a belief is true",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "evolve",
+      "raw_grade_band": "To develop gradually",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "exaggerate",
+      "raw_grade_band": "To represent as better or worse",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "exceed",
+      "raw_grade_band": "To be greater than; go beyond",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "exceptional",
+      "raw_grade_band": "Unusually good; outstanding",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "execute",
+      "raw_grade_band": "To carry out a plan; run a program",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "execution",
+      "raw_grade_band": "Carrying out of a plan; performance",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "exemplify",
+      "raw_grade_band": "To be a typical example of",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "exhaust",
+      "raw_grade_band": "Waste gases; to tire out",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "exhibition",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "existence",
+      "raw_grade_band": "The state of being real",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "exotic",
+      "raw_grade_band": "Originating in a distant country",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "expand",
+      "raw_grade_band": "To become larger or more extensive",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "expedition",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "expenditure",
+      "raw_grade_band": "An amount of money spent",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "experiment",
+      "raw_grade_band": "A scientific procedure to test",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "experimental",
+      "raw_grade_band": "Based on untried ideas",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "expertise",
+      "raw_grade_band": "Expert skill or knowledge",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "explicit",
+      "raw_grade_band": "Stated clearly and in detail",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "export",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "expose",
+      "raw_grade_band": "To make something visible",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "expression",
+      "raw_grade_band": "A look on a face; a math phrase",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "extend",
+      "raw_grade_band": "To make longer or wider",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "extension",
+      "raw_grade_band": "A part that is added to enlarge",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "extinct",
+      "raw_grade_band": "No longer in existence",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "extinction",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "extraordinary",
+      "raw_grade_band": "Very unusual or remarkable",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "facility",
+      "raw_grade_band": "A place or building for a purpose",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "factor",
+      "raw_grade_band": "A circumstance or number that contributes",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "feasibility",
+      "raw_grade_band": "The state or degree of being possible",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "feasible",
+      "raw_grade_band": "Possible to do easily or conveniently",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "federal",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "feedback",
+      "raw_grade_band": "Information about a person's performance",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "fiction",
+      "raw_grade_band": "Literature describing imaginary events",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "fidelity",
+      "raw_grade_band": "Faithfulness; accuracy of a copy",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "finance",
+      "raw_grade_band": "Management of large amounts of money",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "financial",
+      "raw_grade_band": "Relating to finance or money",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "finite",
+      "raw_grade_band": "Having limits or bounds",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "flexibility",
+      "raw_grade_band": "Ability to bend or adapt easily",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "fluorine",
+      "raw_grade_band": "Chemical element ($F$)",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "force",
+      "raw_grade_band": "A push or pull upon an object",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "forecast",
+      "raw_grade_band": "A prediction of future events",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "forensic",
+      "raw_grade_band": "Relating to scientific crime investigation",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "formal",
+      "raw_grade_band": "Following rules or convention",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "formation",
+      "raw_grade_band": "The action of forming or state of being",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "foundation",
+      "raw_grade_band": "The base that supports something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "fracture",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "framework",
+      "raw_grade_band": "A supporting structure or set of ideas",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "friction",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "functional",
+      "raw_grade_band": "Designed to be practical and useful",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "fungus",
+      "raw_grade_band": "Organisms like mushrooms or mold",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "galaxy",
+      "raw_grade_band": "System of millions or billions of stars",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "generalize",
+      "raw_grade_band": "To form a general conclusion",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "generation",
+      "raw_grade_band": "All people born at about the same time",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "generator",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "genetic",
+      "raw_grade_band": "Relating to genes or heredity",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "geology",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "geometric",
+      "raw_grade_band": "Relating to geometry (lines/angles)",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "glacier",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "govern",
+      "raw_grade_band": "To conduct the policy and affairs",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "gradual",
+      "raw_grade_band": "Taking place in stages over time",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "graduate",
+      "raw_grade_band": "To finish a course; a person who did",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "graduation",
+      "raw_grade_band": "The ceremony of receiving a degree",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "harbor",
+      "raw_grade_band": "A place on the coast for ships",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "hardship",
+      "raw_grade_band": "Severe suffering or difficulty",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "harmony",
+      "raw_grade_band": "Agreement or concord; musical blend",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "herbivore",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "heritage",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "hierarchy",
+      "raw_grade_band": "A system of ranking groups",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "historic",
+      "raw_grade_band": "Famous or important in history",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "historical",
+      "raw_grade_band": "Relating to the past",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "humanity",
+      "raw_grade_band": "The human race; being kind",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "humidity",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "hybrid",
+      "raw_grade_band": "A thing made by combining two elements",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "hypothesis",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "hypothetical",
+      "raw_grade_band": "Based on a suggested idea or theory",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "identity",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "illegal",
+      "raw_grade_band": "Contrary to or forbidden by law",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "illustrate",
+      "raw_grade_band": "To explain using pictures or examples",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "illustration",
+      "raw_grade_band": "A picture or diagram; an example",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "immigration",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "immune",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "impartial",
+      "raw_grade_band": "Treating all rivals equally; fair",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "implement",
+      "raw_grade_band": "To put a decision or plan into effect",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "implementation",
+      "raw_grade_band": "The process of putting a plan into action",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "import",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "improve",
+      "raw_grade_band": "To make or become better",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "improvement",
+      "raw_grade_band": "The act of making something better",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "inclusion",
+      "raw_grade_band": "The action of including or being included",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "increasingly",
+      "raw_grade_band": "More and more",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "indicate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "industrial",
+      "raw_grade_band": "Relating to factories and manufacturing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "industry",
+      "raw_grade_band": "Economic activity with raw materials",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "infection",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "inference",
+      "raw_grade_band": "A conclusion based on evidence",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "influence",
+      "raw_grade_band": "The power to change or affect",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "inherit",
+      "raw_grade_band": "To receive from one's ancestors",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "inheritance",
+      "raw_grade_band": "Thing that is inherited",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "inquiry",
+      "raw_grade_band": "An act of asking for information",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "insect",
+      "raw_grade_band": "Small animal with six legs",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "insert",
+      "raw_grade_band": "To put or fix into something else",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "inspect",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "inspector",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "inspiration",
+      "raw_grade_band": "Process of being mentally stimulated",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "inspire",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "institute",
+      "raw_grade_band": "An organization for a purpose; to start",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "institutional",
+      "raw_grade_band": "Relating to an institution",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "instruct",
+      "raw_grade_band": "To teach or give orders",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "instrument",
+      "raw_grade_band": "Tool for precision work or music",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "instrumentation",
+      "raw_grade_band": "Measuring instruments as a group",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "insulation",
+      "raw_grade_band": "Material used to stop heat or sound",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "insulator",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "integrate",
+      "raw_grade_band": "To combine things into a whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "integrity",
+      "raw_grade_band": "Being honest and having strong morals",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "intellectual",
+      "raw_grade_band": "Relating to the intellect or brain",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "intelligence",
+      "raw_grade_band": "Ability to acquire and apply knowledge",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "intense",
+      "raw_grade_band": "Of extreme force, degree, or strength",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "intensity",
+      "raw_grade_band": "The measurable amount of energy",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "interact",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "interaction",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "interfere",
+      "raw_grade_band": "To prevent a process from continuing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "internal",
+      "raw_grade_band": "Situated on the inside",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "international",
+      "raw_grade_band": "Existing between different nations",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "interpretation",
+      "raw_grade_band": "Action of explaining the meaning",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "interval",
+      "raw_grade_band": "A space between two things; time",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "intervene",
+      "raw_grade_band": "To come between so as to prevent",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "intrinsic",
+      "raw_grade_band": "Belonging naturally; essential",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "introduce",
+      "raw_grade_band": "To bring something into use; present",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "introduction",
+      "raw_grade_band": "The first part of something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "inventory",
+      "raw_grade_band": "A complete list of items or stock",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "invertebrate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "investigate",
+      "raw_grade_band": "To carry out a formal inquiry",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "investigation",
+      "raw_grade_band": "The process of investigating",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "investigator",
+      "raw_grade_band": "A person who investigates",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "investment",
+      "raw_grade_band": "Putting money/time for profit",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "invisible",
+      "raw_grade_band": "Unable to be seen",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "involvement",
+      "raw_grade_band": "The fact of being included",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "ionic",
+      "raw_grade_band": "Relating to chemical ions",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "isolate",
+      "raw_grade_band": "To set or keep apart from others",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "isolation",
+      "raw_grade_band": "The state of being alone or apart",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "justification",
+      "raw_grade_band": "The action of showing to be right",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "justify",
+      "raw_grade_band": "To show or prove to be right",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "juvenile",
+      "raw_grade_band": "Relating to young people; immature",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "kinetic",
+      "raw_grade_band": "Relating to or resulting from motion",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "laboratory",
+      "raw_grade_band": "Room for scientific experiments",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "language",
+      "raw_grade_band": "Method of human communication",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "latitude",
+      "raw_grade_band": "Distance north or south of the equator",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "legitimate",
+      "raw_grade_band": "Conforming to the law or rules",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "leisure",
+      "raw_grade_band": "Free time for enjoyment",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "liberty",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "likelihood",
+      "raw_grade_band": "The probability of something happening",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "linear",
+      "raw_grade_band": "Arranged in or extending along a line",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "literacy",
+      "raw_grade_band": "The ability to read and write",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "literature",
+      "raw_grade_band": "Written works of high quality",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "litigation",
+      "raw_grade_band": "The process of taking legal action",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "locate",
+      "raw_grade_band": "To find the exact place or position",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "logarithm",
+      "raw_grade_band": "Power to which a base must be raised",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "logical",
+      "raw_grade_band": "Of or according to the rules of logic",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "longitude",
+      "raw_grade_band": "Distance east or west of the prime meridian",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "luminous",
+      "raw_grade_band": "Giving off light; bright or shining",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "magnetism",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "magnitude",
+      "raw_grade_band": "The great size or extent of something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "maintenance",
+      "raw_grade_band": "The work of keeping something in repair",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "manipulation",
+      "raw_grade_band": "Skillful handling or unfair control",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "manufacturing",
+      "raw_grade_band": "Making goods on a large scale",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "marginal",
+      "raw_grade_band": "Minor; relating to an edge or margin",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "marine",
+      "raw_grade_band": "Relating to or found in the sea",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "marketing",
+      "raw_grade_band": "Promoting and selling products",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "material",
+      "raw_grade_band": "The matter from which a thing is made",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "maturity",
+      "raw_grade_band": "Fully grown or developed state",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "maximum",
+      "raw_grade_band": "The greatest amount or level possible",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "mechanism",
+      "raw_grade_band": "A system of parts working together",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "media",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "medical",
+      "raw_grade_band": "Relating to the science of medicine",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "medication",
+      "raw_grade_band": "Substance used for medical treatment",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "memorandum",
+      "raw_grade_band": "A written message or business note",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "mental",
+      "raw_grade_band": "Relating to the mind",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "mentor",
+      "raw_grade_band": "An experienced and trusted adviser",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "mentorship",
+      "raw_grade_band": "The guidance provided by a mentor",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "method",
+      "raw_grade_band": "A particular form of procedure",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "methodology",
+      "raw_grade_band": "A system of methods used in a study",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "metric",
+      "raw_grade_band": "Relating to the decimal system",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "migrate",
+      "raw_grade_band": "To move from one region to another",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "migration",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "mineral",
+      "raw_grade_band": "Solid inorganic substance in nature",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "minimize",
+      "raw_grade_band": "To reduce to the smallest amount",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "minimum",
+      "raw_grade_band": "The smallest amount possible",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "mitigate",
+      "raw_grade_band": "To make less severe or painful",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "mitigation",
+      "raw_grade_band": "The action of reducing severity",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "mobile",
+      "raw_grade_band": "Able to move or be moved freely",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "modeling",
+      "raw_grade_band": "Creating a representation of a thing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "moderate",
+      "raw_grade_band": "Average in amount; to make less",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "moderation",
+      "raw_grade_band": "Avoidance of extremes",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "modern",
+      "raw_grade_band": "Relating to the present or recent times",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "modify",
+      "raw_grade_band": "To make partial changes to",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "molecule",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "monarchy",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "moral",
+      "raw_grade_band": "Concerned with right and wrong",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "mortality",
+      "raw_grade_band": "Death, especially on a large scale",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "motivation",
+      "raw_grade_band": "The reason one has for acting",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "multiplier",
+      "raw_grade_band": "Quantity by which another is multiplied",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "municipal",
+      "raw_grade_band": "Relating to a city or town",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "narrative",
+      "raw_grade_band": "A spoken or written account of events",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "nation",
+      "raw_grade_band": "A large body of people in one territory",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "native",
+      "raw_grade_band": "Originating in a particular place",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "negotiate",
+      "raw_grade_band": "To try to reach an agreement",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "network",
+      "raw_grade_band": "A group of interconnected things",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "nonrenewable",
+      "raw_grade_band": "Not able to be replaced by nature",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "normalize",
+      "raw_grade_band": "To bring to a standard or 'normal' state",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "numeracy",
+      "raw_grade_band": "Ability to understand numbers",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "nutrient",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "objective",
+      "raw_grade_band": "Not influenced by feelings; a goal",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "obstacle",
+      "raw_grade_band": "A thing that blocks one's way",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "obtain",
+      "raw_grade_band": "To get, acquire, or secure",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "occupational",
+      "raw_grade_band": "Relating to a job or profession",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "offense",
+      "raw_grade_band": "A breach of law; the attacking team",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "operate",
+      "raw_grade_band": "To control the functioning of",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "operation",
+      "raw_grade_band": "An organized activity; math process",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "operational",
+      "raw_grade_band": "In or ready for use",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "opinion",
+      "raw_grade_band": "A view or judgment not based on fact",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "oppose",
+      "raw_grade_band": "To disagree with or resist",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "optional",
+      "raw_grade_band": "Left to one's choice; not required",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "orbit",
+      "raw_grade_band": "The curved path of a celestial object",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "organism",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "organization",
+      "raw_grade_band": "An organized body of people; order",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "organize",
+      "raw_grade_band": "To arrange into a structured whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "orientation",
+      "raw_grade_band": "Position or direction; an intro",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "origin",
+      "raw_grade_band": "The point or place where something begins",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "outbreak",
+      "raw_grade_band": "Sudden start of something unwelcome",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "outdoor",
+      "raw_grade_band": "Happening in the open air",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "outline",
+      "raw_grade_band": "A general description or plan",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "output",
+      "raw_grade_band": "The amount of something produced",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "overall",
+      "raw_grade_band": "Taking everything into account",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "overload",
+      "raw_grade_band": "To give too much of something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "overturn",
+      "raw_grade_band": "To reverse or cancel a decision",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "oxide",
+      "raw_grade_band": "Compound containing oxygen",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "oxygen",
+      "raw_grade_band": "Gas essential for life ($O$)",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "parallel",
+      "raw_grade_band": "Side by side and having the same distance",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "parameter",
+      "raw_grade_band": "A limit or boundary; a variable",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "parasite",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "participate",
+      "raw_grade_band": "To take part in an action",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "participation",
+      "raw_grade_band": "The act of taking part",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "particle",
+      "raw_grade_band": "A minute portion of matter",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "particulate",
+      "raw_grade_band": "Relating to separate particles",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "partnership",
+      "raw_grade_band": "Association of two or more people",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "patience",
+      "raw_grade_band": "Ability to wait without getting upset",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "pattern",
+      "raw_grade_band": "A repeated decorative design or sequence",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "percentile",
+      "raw_grade_band": "A measure used in statistics",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "perception",
+      "raw_grade_band": "Ability to see, hear, or become aware",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "perform",
+      "raw_grade_band": "To carry out, accomplish, or act",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "performance",
+      "raw_grade_band": "An act of staging or carrying out",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "periodic",
+      "raw_grade_band": "Appearing or occurring at intervals",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "permission",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "perspective",
+      "raw_grade_band": "A particular attitude or point of view",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "persuade",
+      "raw_grade_band": "To convince someone to do or believe",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "persuasion",
+      "raw_grade_band": "The act of persuading",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "petition",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "philosophy",
+      "raw_grade_band": "The study of the nature of knowledge",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "photosynthesis",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "physics",
+      "raw_grade_band": "The study of matter and energy",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "pipeline",
+      "raw_grade_band": "A long pipe for oil/gas; a sequence",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "planetary",
+      "raw_grade_band": "Relating to planets",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "policy",
+      "raw_grade_band": "A course of action or set of rules",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "politics",
+      "raw_grade_band": "Activities involving government/power",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "pollutant",
+      "raw_grade_band": "A substance that pollutes",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "pollution",
+      "raw_grade_band": "Presence of harmful substances",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "population",
+      "raw_grade_band": "All the inhabitants of a place",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "portable",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "portfolio",
+      "raw_grade_band": "A collection of work or investments",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "position",
+      "raw_grade_band": "A place where someone or something is",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "possibility",
+      "raw_grade_band": "A thing that may happen or be the case",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "potential",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "poverty",
+      "raw_grade_band": "State of being extremely poor",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "practice",
+      "raw_grade_band": "Repeated exercise to improve skill",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "precede",
+      "raw_grade_band": "To come before something in time",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "preceding",
+      "raw_grade_band": "Coming before in time or order",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "precipitation",
+      "raw_grade_band": "Water falling from the sky",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "precision",
+      "raw_grade_band": "The quality of being exact",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "predict",
+      "raw_grade_band": "To say what will happen in the future",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "prediction",
+      "raw_grade_band": "A thing predicted; a forecast",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "preference",
+      "raw_grade_band": "A greater liking for one thing over another",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "prejudice",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "preserve",
+      "raw_grade_band": "To maintain in its original state",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "pressure",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "prevent",
+      "raw_grade_band": "To keep something from happening",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "prevention",
+      "raw_grade_band": "The act of stopping something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "primary",
+      "raw_grade_band": "Of chief importance; first",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "principle",
+      "raw_grade_band": "A fundamental truth or law",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "prioritize",
+      "raw_grade_band": "To treat something as more important",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "priority",
+      "raw_grade_band": "Thing regarded as more important",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "privacy",
+      "raw_grade_band": "State of being free from observation",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "probability",
+      "raw_grade_band": "The extent to which something is likely",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "probable",
+      "raw_grade_band": "Likely to happen or be true",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "procedure",
+      "raw_grade_band": "An established way of doing something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "process",
+      "raw_grade_band": "Series of actions to achieve a result",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "processing",
+      "raw_grade_band": "Systematic series of operations",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "proclaim",
+      "raw_grade_band": "To announce officially or publicly",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "procurement",
+      "raw_grade_band": "Action of obtaining equipment",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "productivity",
+      "raw_grade_band": "The effectiveness of productive effort",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "proficiency",
+      "raw_grade_band": "A high degree of skill",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "program",
+      "raw_grade_band": "Planned series of events; code",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "progression",
+      "raw_grade_band": "A movement toward a destination",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "prohibit",
+      "raw_grade_band": "To formally forbid something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "projection",
+      "raw_grade_band": "An estimate of a future situation",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "proportion",
+      "raw_grade_band": "A part or share in relation to a whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "proposal",
+      "raw_grade_band": "A plan or suggestion",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "prosecution",
+      "raw_grade_band": "Legal proceedings against someone",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "protein",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "prototype",
+      "raw_grade_band": "A first or preliminary model",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "provide",
+      "raw_grade_band": "To make available for use; supply",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "provider",
+      "raw_grade_band": "A person or thing that provides",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "provision",
+      "raw_grade_band": "Providing something; a legal clause",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "psychology",
+      "raw_grade_band": "The study of the human mind",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "public",
+      "raw_grade_band": "Relating to the people as a whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "publication",
+      "raw_grade_band": "A book or journal issued for public sale",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "publish",
+      "raw_grade_band": "To prepare and issue for sale/view",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "pulse",
+      "raw_grade_band": "The rhythmic throbbing of arteries",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "qualitative",
+      "raw_grade_band": "Relating to quality rather than quantity",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "quantitative",
+      "raw_grade_band": "Relating to the amount or number",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "quarter",
+      "raw_grade_band": "One of four equal parts",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "quartile",
+      "raw_grade_band": "Each of four equal groups in a sample",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "questionnaire",
+      "raw_grade_band": "A set of questions for a survey",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "radical",
+      "raw_grade_band": "Relating to the root; extreme",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "radius",
+      "raw_grade_band": "Distance from center to edge of circle",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "random",
+      "raw_grade_band": "Made or done without method",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "rationale",
+      "raw_grade_band": "A set of reasons or a logical basis",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "react",
+      "raw_grade_band": "To act in response to something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reactant",
+      "raw_grade_band": "Substance that changes during a reaction",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reaction",
+      "raw_grade_band": "A response to a stimulus or chemical",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reactive",
+      "raw_grade_band": "Tending to react to a stimulus",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reader",
+      "raw_grade_band": "A person who reads; a book for practice",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reasoning",
+      "raw_grade_band": "The action of thinking logically",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "rebuild",
+      "raw_grade_band": "To build something again",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "recall",
+      "raw_grade_band": "To bring back from memory; to order back",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "recipient",
+      "raw_grade_band": "A person who receives something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "recognize",
+      "raw_grade_band": "To identify from having seen before",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "recommendation",
+      "raw_grade_band": "A suggestion for a best course of action",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reconcile",
+      "raw_grade_band": "To restore friendly relations; make consistent",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reconciliation",
+      "raw_grade_band": "The restoration of friendly relations",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "record",
+      "raw_grade_band": "A permanent account; to set down in writing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "recovery",
+      "raw_grade_band": "A return to a normal state of health",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "recruit",
+      "raw_grade_band": "To enroll someone in a group",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "recruitment",
+      "raw_grade_band": "The action of finding new people for a group",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reference",
+      "raw_grade_band": "A source of information; to mention",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "refine",
+      "raw_grade_band": "To remove impurities; improve",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reform",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "reformulate",
+      "raw_grade_band": "To express in a different way or recreate",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "refund",
+      "raw_grade_band": "A repayment of a sum of money",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "regime",
+      "raw_grade_band": "A government, especially an authoritarian one",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "region",
+      "raw_grade_band": "An area or division, especially part of a country",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "regulate",
+      "raw_grade_band": "To control or maintain the rate/speed",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "regulation",
+      "raw_grade_band": "A rule or directive made by authority",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "regulatory",
+      "raw_grade_band": "Serving or intended to regulate",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "rehabilitate",
+      "raw_grade_band": "To restore to health or normal life",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reinforce",
+      "raw_grade_band": "To strengthen or support",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reinforcement",
+      "raw_grade_band": "The action of strengthening; extra people",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "relate",
+      "raw_grade_band": "To show or make a connection",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "relation",
+      "raw_grade_band": "The way in which two things are connected",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "relationship",
+      "raw_grade_band": "The way in which two or more people are connected",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "relative",
+      "raw_grade_band": "Considered in relation to something else; a family member",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "release",
+      "raw_grade_band": "To allow to move or escape; to issue",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "relevant",
+      "raw_grade_band": "Closely connected or appropriate",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reliability",
+      "raw_grade_band": "The quality of being trustworthy",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reliable",
+      "raw_grade_band": "Consistently good in quality or performance",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "remedy",
+      "raw_grade_band": "A medicine or treatment for a disease or injury",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "remote",
+      "raw_grade_band": "Situated far from the main centers",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "renewable",
+      "raw_grade_band": "Capable of being renewed",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "repair",
+      "raw_grade_band": "To restore something damaged",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "repetition",
+      "raw_grade_band": "The action of repeating something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reported",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "reporter",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "represent",
+      "raw_grade_band": "To act or speak for someone else",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "representation",
+      "raw_grade_band": "The action of speaking or acting on behalf",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reproduce",
+      "raw_grade_band": "To produce again; to have offspring",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reproduction",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "republic",
+      "raw_grade_band": "Power held by people and elected reps",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reputation",
+      "raw_grade_band": "Beliefs or opinions held about someone",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "research",
+      "raw_grade_band": "Systematic investigation into a subject",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "resident",
+      "raw_grade_band": "A person who lives in a place",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "resilience",
+      "raw_grade_band": "Capacity to recover quickly",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "resistant",
+      "raw_grade_band": "Offering resistance; not affected by",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "resource",
+      "raw_grade_band": "A stock or supply of useful things",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "respiratory",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "respond",
+      "raw_grade_band": "To say or do something in reply",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "response",
+      "raw_grade_band": "A reaction to something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "restore",
+      "raw_grade_band": "To bring back to a former condition",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "restraint",
+      "raw_grade_band": "A measure or condition that keeps control",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "restrict",
+      "raw_grade_band": "To put a limit on; keep under control",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "restriction",
+      "raw_grade_band": "A limiting condition or measure",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "result",
+      "raw_grade_band": "An outcome or consequence",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "resume",
+      "raw_grade_band": "A summary of one's education/work",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "retirement",
+      "raw_grade_band": "Leaving one's job and ceasing to work",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "reversible",
+      "raw_grade_band": "Able to be turned the other way",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "rhetoric",
+      "raw_grade_band": "The art of persuasive speaking/writing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "rigorous",
+      "raw_grade_band": "Extremely thorough or demanding",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "safeguard",
+      "raw_grade_band": "To protect from harm or damage",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "sample",
+      "raw_grade_band": "A small part intended to show the whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "satellite",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "scenario",
+      "raw_grade_band": "A predicted sequence of events",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "schedule",
+      "raw_grade_band": "A plan for carrying out a process",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "schematic",
+      "raw_grade_band": "A diagram or plan of a system",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "section",
+      "raw_grade_band": "A distinct part or portion of something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "sedimentary",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "selection",
+      "raw_grade_band": "The action of choosing something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "sequence",
+      "raw_grade_band": "A particular order in which things follow",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "series",
+      "raw_grade_band": "A set of related things following each other",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "session",
+      "raw_grade_band": "A period devoted to a particular activity",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "shortage",
+      "raw_grade_band": "A state where something cannot be found",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "signal",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "signature",
+      "raw_grade_band": "A person's name written by themselves",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "significant",
+      "raw_grade_band": "Great or important; worthy of attention",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "signify",
+      "raw_grade_band": "To be a symbol or sign of",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "similar",
+      "raw_grade_band": "Resembling without being identical",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "similarity",
+      "raw_grade_band": "The state of being similar",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "simulation",
+      "raw_grade_band": "The imitation of a situation or process",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "simultaneous",
+      "raw_grade_band": "Occurring or operating at the same time",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "slope",
+      "raw_grade_band": "A surface of which one end is higher",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "software",
+      "raw_grade_band": "Programs used by a computer",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "solar",
+      "raw_grade_band": "Relating to or determined by the sun",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "solution",
+      "raw_grade_band": "A means of solving a problem; a mixture",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "solve",
+      "raw_grade_band": "To find an answer to a problem",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "solvent",
+      "raw_grade_band": "Liquid in which a solute is dissolved",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "source",
+      "raw_grade_band": "A place or person where info comes from",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "species",
+      "raw_grade_band": "A group of living organisms",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "specific",
+      "raw_grade_band": "Clearly defined or identified",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "spectacular",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "stability",
+      "raw_grade_band": "The state of being firm or steady",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "standard",
+      "raw_grade_band": "A level of quality or a common rule",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "standardize",
+      "raw_grade_band": "To make things follow the same rule",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "static",
+      "raw_grade_band": "Lacking in movement or change",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "statistics",
+      "raw_grade_band": "The science of collecting and analyzing data",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "status",
+      "raw_grade_band": "The relative social or professional position",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "stimulate",
+      "raw_grade_band": "To encourage interest or activity",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "stimulus",
+      "raw_grade_band": "A thing that evokes a specific reaction",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "stochastic",
+      "raw_grade_band": "Having a random probability distribution",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "strategy",
+      "raw_grade_band": "A plan of action designed to achieve a goal",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "structure",
+      "raw_grade_band": "The arrangement of parts in a complex thing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "subjective",
+      "raw_grade_band": "Based on or influenced by personal feelings",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "submit",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "subordinate",
+      "raw_grade_band": "Lower in rank or position",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "subscription",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "subsequent",
+      "raw_grade_band": "Coming after something in time",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "subsidy",
+      "raw_grade_band": "Sum of money granted by the state",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "substantial",
+      "raw_grade_band": "Of considerable importance, size, or worth",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "substitute",
+      "raw_grade_band": "A person or thing acting in place of another",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "substrate",
+      "raw_grade_band": "A surface on which an organism lives",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "subtle",
+      "raw_grade_band": "So delicate or precise as to be difficult to describe",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "sufficient",
+      "raw_grade_band": "Enough; adequate",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "sulfate",
+      "raw_grade_band": "A salt or ester of sulfuric acid",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "summary",
+      "raw_grade_band": "A brief statement of the main points",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "summit",
+      "raw_grade_band": "The highest point of a hill or mountain; a meeting",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "supervise",
+      "raw_grade_band": "To observe and direct the execution of a task",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "supportive",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "survey",
+      "raw_grade_band": "A general view or examination of something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "sustainable",
+      "raw_grade_band": "Able to be maintained at a certain level",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "sustenance",
+      "raw_grade_band": "Food and drink as a source of strength",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "symbol",
+      "raw_grade_band": "A thing that represents or stands for something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "symbolic",
+      "raw_grade_band": "Serving as a symbol",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "symmetry",
+      "raw_grade_band": "Quality of being made of exactly similar parts",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "synthesis",
+      "raw_grade_band": "Combining ideas into a whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "synthetic",
+      "raw_grade_band": "Made by chemical synthesis; not natural",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "system",
+      "raw_grade_band": "A set of things working together",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "systematic",
+      "raw_grade_band": "Done or acting according to a fixed plan",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "tactical",
+      "raw_grade_band": "Relating to small-scale actions in a plan",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "tangent",
+      "raw_grade_band": "A straight line touching a curve; a side-track",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "technical",
+      "raw_grade_band": "Relating to a particular subject or craft",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "technique",
+      "raw_grade_band": "A way of carrying out a particular task",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "technology",
+      "raw_grade_band": "Application of scientific knowledge",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "tectonic",
+      "raw_grade_band": "Relating to the structure of the earth's crust",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "template",
+      "raw_grade_band": "A preset format for a document",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "tension",
+      "raw_grade_band": "The state of being stretched tight",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "terminal",
+      "raw_grade_band": "Predicted to lead to death; a computer end",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "terminate",
+      "raw_grade_band": "To bring to an end",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "terminology",
+      "raw_grade_band": "The body of terms used in a subject",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "territory",
+      "raw_grade_band": "An area of land under jurisdiction",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "textile",
+      "raw_grade_band": "A type of cloth or woven fabric",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "theoretical",
+      "raw_grade_band": "Based on or calculated through theory",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "theory",
+      "raw_grade_band": "A system of ideas intended to explain something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "thermal",
+      "raw_grade_band": "Relating to heat",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "thesis",
+      "raw_grade_band": "A statement or theory to be maintained",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "tolerance",
+      "raw_grade_band": "Ability to endure something; a margin of error",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "topic",
+      "raw_grade_band": "A matter dealt with in a text",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "toxicity",
+      "raw_grade_band": "The quality of being poisonous or harmful",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "tradition",
+      "raw_grade_band": "A long-established custom or belief",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "transaction",
+      "raw_grade_band": "An instance of buying or selling",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "transcript",
+      "raw_grade_band": "A written or printed version of material",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "transfer",
+      "raw_grade_band": "To move from one place to another",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "transformation",
+      "raw_grade_band": "A thorough or dramatic change",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "transition",
+      "raw_grade_band": "The process of changing from one state to another",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "translation",
+      "raw_grade_band": "The process of changing text to another language",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "transparent",
+      "raw_grade_band": "Allowing light to pass through; easy to see through",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "transport",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "transportation",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "transverse",
+      "raw_grade_band": "Situated or extending across something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "trend",
+      "raw_grade_band": "A general direction in which something is developing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "trigger",
+      "raw_grade_band": "A cause of a particular action or process",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "ultimate",
+      "raw_grade_band": "Being or happening at the end of a process",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "ultrasound",
+      "raw_grade_band": "Sound waves with frequencies higher than human hearing",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "unavailable",
+      "raw_grade_band": "Not able to be used or obtained",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "unconscious",
+      "raw_grade_band": "Not awake and aware of one's surroundings",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "underestimate",
+      "raw_grade_band": "To estimate something to be smaller or less important",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "undergo",
+      "raw_grade_band": "To experience or be subjected to",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "underlie",
+      "raw_grade_band": "To be the cause or basis of something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "undertake",
+      "raw_grade_band": "To commit oneself to and begin",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "unify",
+      "raw_grade_band": "To make or become united or whole",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "unique",
+      "raw_grade_band": "Being the only one of its kind",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "unit",
+      "raw_grade_band": "An individual thing or person; a measurement",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "update",
+      "raw_grade_band": "To make something more modern or current",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "utility",
+      "raw_grade_band": "The state of being useful or profitable",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "utilize",
+      "raw_grade_band": "To make practical and effective use of",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "vaccine",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "valid",
+      "raw_grade_band": "Having a sound basis in logic or fact",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "validate",
+      "raw_grade_band": "To check or prove the accuracy of",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "validity",
+      "raw_grade_band": "The quality of being logically or factually sound",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "variability",
+      "raw_grade_band": "Lack of consistency or fixed pattern",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "variable",
+      "raw_grade_band": "Not consistent or having a fixed pattern",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "variation",
+      "raw_grade_band": "A change or difference in condition",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "variety",
+      "raw_grade_band": "The quality or state of being different",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "vary",
+      "raw_grade_band": "To differ in size, amount, or degree",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "vast",
+      "raw_grade_band": "Of very great extent or quantity",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "vehicle",
+      "raw_grade_band": "A thing used for transporting people or goods",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "velocity",
+      "raw_grade_band": "The speed of something in a given direction",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "vendor",
+      "raw_grade_band": "A person or company offering something for sale",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "verdict",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "verify",
+      "raw_grade_band": "To make sure that something is true",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "version",
+      "raw_grade_band": "A particular form of something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "vertebrate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "vertical",
+      "raw_grade_band": "At right angles to a horizontal plane",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "vessel",
+      "raw_grade_band": "A ship or large boat; a hollow container",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "via",
+      "raw_grade_band": "By way of; through",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "vibrant",
+      "raw_grade_band": "Full of energy and enthusiasm",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "vibrate",
+      "raw_grade_band": "To move continuously and rapidly to and fro",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "violation",
+      "raw_grade_band": "An act of disregarding a law or agreement",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "virtual",
+      "raw_grade_band": "Almost or nearly as described; simulated",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "virtually",
+      "raw_grade_band": "Nearly; almost",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "virus",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "visible",
+      "raw_grade_band": "Able to be seen",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "vision",
+      "raw_grade_band": "The faculty or state of being able to see",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "visual",
+      "raw_grade_band": "Relating to seeing or sight",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "volume",
+      "raw_grade_band": "The amount of space an object occupies; loudness",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "wavelength",
+      "raw_grade_band": "Distance between successive crests of a wave",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "whereas",
+      "raw_grade_band": "In contrast or comparison with the fact that",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "whereby",
+      "raw_grade_band": "By which",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "wholly",
+      "raw_grade_band": "Entirely; fully",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "widespread",
+      "raw_grade_band": "Found or distributed over a large area",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "width",
+      "raw_grade_band": "The measurement or extent of something from side to side",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "wildlife",
+      "raw_grade_band": "Animals that live independently of people",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "withdraw",
+      "raw_grade_band": "To remove or take away",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "withdrawal",
+      "raw_grade_band": "The action of withdrawing something",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "witness",
+      "raw_grade_band": "A person who sees an event; to see",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "yield",
+      "raw_grade_band": "To produce or provide; to give way",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "zone",
+      "raw_grade_band": "An area or stretch of land having a particular characteristic",
+      "reason": "invalid_format"
+    },
+    {
+      "word": "correspond",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "deactivate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "enrich",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "bill of rights",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "conquest",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "coronation",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "councilor",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "declaration",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "famine",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "frontier",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "injustice",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "nomad",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "occupation",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "patriotism",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "refugee",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "revolt",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "arc",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "collision",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "detector",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "drag",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "electromagnet",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "focusing",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "ignition",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "kilowatt",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "mechanical",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "algae",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "artery",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "biome",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "cell membrane",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "cell wall",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "contagious",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "dehydration",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "endangered",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "erosion",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "exoskeleton",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "food web",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "fossilize",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "germination",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "host",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "kidney",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "larva",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "limestone",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "liver",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "microorganism",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "pollination",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "pollinator",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "producer",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "spore",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "vaccinate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "weathering",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "wetland",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "abundance",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "academy",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "census",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "civil war",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "civilian",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "cultural",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "dictator",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "economy",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "equality",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "ethnic",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "nationality",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "parliament",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "prosperity",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "rebellion",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "dedicate",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "dedication",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "interactive",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "scripted",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "description",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "impress",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "sensible",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "sensor",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "photographic",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "kilometer",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "expire",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "motionless",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "capable",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "commotion",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "locomotive",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    },
+    {
+      "word": "missile",
+      "raw_grade_band": "G4-6",
+      "reason": "unknown_band"
+    }
+  ]
+}
