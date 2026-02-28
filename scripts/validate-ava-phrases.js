@@ -14,7 +14,7 @@ const phrases = Array.isArray(data.phrases) ? data.phrases : [];
 
 const labelPatterns = [
   /\bWQ\b/i,
-  /(Before First Guess|First Miss|Idle)/i,
+  /(Before First Guess|First Miss|Second Miss|Idle)/i,
   /wordquest\./i,
   /^\s*[\w ]{3,30}:\s+/
 ];
@@ -29,6 +29,16 @@ phrases.forEach((p) => {
   if (labelPatterns.some((re) => re.test(t))) {
     failures.push({ id: p.id, reason: 'label-like', text: t });
   }
+});
+
+// Global uniqueness
+const seen = new Set();
+phrases.forEach((p) => {
+  const key = String(p.text || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  if (seen.has(key)) {
+    failures.push({ id: p.id, reason: 'duplicate-text', text: p.text });
+  }
+  seen.add(key);
 });
 
 console.log(`Checked ${phrases.length} phrases from ${filePath}`);

@@ -4,15 +4,16 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const { buildSsml } = require('./ssml');
 
 const root = path.resolve(__dirname, '..');
-const defaultCorpus = path.join(root, 'data/ava-phrases-v2.json');
+const defaultCorpus = path.join(root, 'data/ava-phrases-v2r3.json');
 const phrasesPathArg = process.argv.includes('--phrases') ? process.argv[process.argv.indexOf('--phrases') + 1] : '';
 const corpusPath = phrasesPathArg
   ? (path.isAbsolute(phrasesPathArg) ? phrasesPathArg : path.join(process.cwd(), phrasesPathArg))
   : defaultCorpus;
-let audioRoot = path.join(root, 'audio/ava/v2');
+let audioRoot = path.join(root, 'audio/ava/current');
 let manifestPath = path.join(audioRoot, 'manifest.json');
 
 const AZURE_KEY = process.env.AZURE_SPEECH_KEY || process.env.AZURE_SPEECH_SECRET || '';
@@ -59,6 +60,16 @@ if (printCount <= 0 && (!AZURE_KEY || !(AZURE_REGION || AZURE_ENDPOINT))) {
 
 const corpus = JSON.parse(fs.readFileSync(corpusPath, 'utf8'));
 const phrases = Array.isArray(corpus.phrases) ? corpus.phrases : [];
+let manifestCache = { version: '2.0', voice: voiceName, outputFormat: OUTPUT_FORMAT, phrases: {} };
+try {
+  if (fs.existsSync(manifestPath)) {
+    const existing = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    if (existing && typeof existing === 'object') manifestCache = existing;
+    if (!manifestCache.phrases) manifestCache.phrases = {};
+  }
+} catch (_e) {
+  manifestCache = { version: '2.0', voice: voiceName, outputFormat: OUTPUT_FORMAT, phrases: {} };
+}
 
 function slugPath(phrase) {
   const domain = String(phrase.domain || 'misc').toLowerCase();
@@ -94,6 +105,18 @@ function isIdLike(text) {
     /\\bwq\\b/.test(t) ||
     /\\.\\d{2}\\b/.test(t) ||
     /^\\s*[\\w ]{3,30}:\\s+/.test(t);
+}
+
+function normalizedText(preview) {
+  return String(preview || '').toLowerCase().replace(/\\s+/g, ' ').trim();
+}
+
+function textHash(preview) {
+  return crypto.createHash('sha256').update(normalizedText(preview) + voiceName + OUTPUT_FORMAT).digest('hex');
+}
+
+function md5(buffer) {
+  return crypto.createHash('md5').update(buffer).digest('hex');
 }
 
 function ensureDir(filePath) {
@@ -222,7 +245,9 @@ async function processPhrase(phrase) {
     throw new Error(`refusing-to-speak-idlike text; id=${phrase.id} text=${resolved.preview}`);
   }
   const outPath = slugPath(phrase);
-  if (resume && fs.existsSync(outPath) && fs.statSync(outPath).size > 1024) {
+  const entry = manifestCache.phrases && manifestCache.phrases[phrase.id];
+  const currentHash = textHash(resolved.preview);
+  if (resume && fs.existsSync(outPath) && fs.statSync(outPath).size > 1024 && entry && entry.textHash === currentHash) {
     return { status: 'skipped', outPath };
   }
   ensureDir(outPath);
@@ -233,6 +258,16 @@ async function processPhrase(phrase) {
     fs.unlinkSync(outPath);
     throw new Error(`tts-too-small id=${phrase.id} size=${size}`);
   }
+  const fileMd5 = md5(buffer);
+  manifestCache.phrases[phrase.id] = {
+    id: phrase.id,
+    domain: phrase.domain,
+    event: phrase.event,
+    file: path.relative(root, outPath).replace(/\\\\/g, '/'),
+    size,
+    md5: fileMd5,
+    textHash: currentHash
+  };
   return { status: 'generated', outPath };
 }
 
@@ -278,20 +313,12 @@ async function run() {
   const workers = Array.from({ length: concurrency }, () => worker());
   await Promise.all(workers);
 
-  const manifest = {
-    version: '2.0',
-    voice: voiceName,
-    outputFormat: OUTPUT_FORMAT,
-    generated: new Date().toISOString(),
-    files: phrases.map((p) => {
-      const full = slugPath(p);
-      const rel = path.relative(root, full).replace(/\\/g, '/');
-      const exists = fs.existsSync(full) && fs.statSync(full).size > 1024;
-      return { id: p.id, domain: p.domain, event: p.event, file: rel, exists };
-    })
-  };
+  manifestCache.version = '2.0';
+  manifestCache.voice = voiceName;
+  manifestCache.outputFormat = OUTPUT_FORMAT;
+  manifestCache.generated = new Date().toISOString();
   ensureDir(manifestPath);
-  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
+  fs.writeFileSync(manifestPath, JSON.stringify(manifestCache, null, 2) + '\n');
 
   console.log(`Done. generated=${generated}, skipped=${skipped}, failed=${failed}`);
   if (errors.length) {
