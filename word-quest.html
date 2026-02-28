@@ -1,16 +1,1400 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="default" data-case="lower" data-projector="on" data-motion="fun" data-board-style="card" data-key-style="bubble" data-keyboard-layout="standard" data-atmosphere="minimal" data-reveal-focus="on" data-world-themes="0" data-ui-skin="classic" data-home-mode="home">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="wq-build" content="dev-local">
   <title>Word Quest</title>
+  <script src="config.js"></script>
+  <script src="storage-schema.js"></script>
+  <script src="build-stamp.js"></script>
+  <script src="diagnostics.js"></script>
   <script>
-    (function () {
-      var query = window.location.search || '';
-      var hash = window.location.hash || '';
-      window.location.replace('index.html' + query + hash);
+    (function ensureGameplayRoute() {
+      try {
+        var url = new URL(window.location.href);
+        var hasPlay = String(url.searchParams.get('play') || '').trim().toLowerCase();
+        var demoParam = String(url.searchParams.get('demo') || '').trim().toLowerCase();
+        var autoDemoParam = String(url.searchParams.get('autodemo') || '').trim().toLowerCase();
+        var needsDemoCleanup = (demoParam === '1' || demoParam === 'true') && !(autoDemoParam === '1' || autoDemoParam === 'true');
+        var needsPlay = !(hasPlay === '1' || hasPlay === 'true');
+        if (!needsPlay && !needsDemoCleanup) return;
+        url.searchParams.set('play', '1');
+        if (needsDemoCleanup) {
+          url.searchParams.delete('demo');
+          if (String(url.searchParams.get('mode') || '').trim().toLowerCase() === 'demo') {
+            url.searchParams.delete('mode');
+          }
+        }
+        window.location.replace(url.toString());
+      } catch (_e) {
+        // no-op
+      }
     })();
   </script>
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Atkinson Hyperlegible: distinct I/l/1, designed for low-vision readers -->
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style/modes.css?v=20260223d">
+  <link rel="stylesheet" href="style/themes.css?v=20260224v">
+  <link rel="stylesheet" href="style/components.css?v=20260227e">
+  <link rel="stylesheet" href="style/components.deep-dive-plus.css">
+  <link rel="stylesheet" href="style/world-themes.css?v=20260226a">
+  <link rel="stylesheet" href="style/premium-theme.css?v=20260226a">
+  <link rel="stylesheet" href="hero-v2.css?v=20260227b">
 </head>
-<body></body>
+<body>
+
+  <div id="loading-screen" data-testid="loading-screen"><div class="spinner"></div><span>Loading…</span></div>
+
+  <!-- ── Header ───────────────────────────────────── -->
+  <header>
+    <div class="header-main-row">
+      <button id="home-logo-btn" class="logo logo-btn" type="button" aria-label="Go to Cornerstone MTSS home" title="Go to Cornerstone MTSS home">Cornerstone<span>MTSS</span></button>
+      <div id="play-mode-label" class="play-mode-label" aria-live="polite">Cornerstone MTSS</div>
+      <div class="header-right">
+        <div class="header-icon-controls">
+          <button id="teacher-panel-btn" data-testid="teacher-panel-btn" class="icon-btn" type="button" aria-label="Teacher Hub" title="Teacher Hub">
+            <span class="icon-emoji" aria-hidden="true">👩‍🏫</span>
+          </button>
+          <button id="case-toggle-btn" class="icon-btn micro-toggle-btn" type="button" aria-pressed="false" aria-label="Toggle letter case">
+            Aa
+          </button>
+          <button id="keyboard-layout-toggle" class="icon-btn micro-toggle-btn" type="button" aria-pressed="false" aria-label="Cycle keyboard layout">
+            <span class="icon-emoji" aria-hidden="true">⌨️</span>
+          </button>
+          <button id="theme-dock-toggle-btn" class="icon-btn quick-dock-toggle-btn" type="button" aria-haspopup="dialog" aria-controls="theme-preview-strip" aria-expanded="false" aria-label="Open theme controls" title="Theme controls">
+            🎨
+          </button>
+          <button id="music-dock-toggle-btn" class="icon-btn quick-dock-toggle-btn" type="button" aria-haspopup="dialog" aria-controls="quick-music-strip" aria-expanded="false" aria-label="Open music controls" title="Music controls">
+            ♪
+          </button>
+          <button id="mission-lab-nav-btn" class="icon-btn quick-dock-toggle-btn hidden" type="button" aria-pressed="false" aria-label="Open more activities" title="More activities">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <rect x="3.5" y="3.5" width="7" height="7" rx="1.4"></rect>
+              <rect x="13.5" y="3.5" width="7" height="7" rx="1.4"></rect>
+              <rect x="3.5" y="13.5" width="7" height="7" rx="1.4"></rect>
+              <rect x="13.5" y="13.5" width="7" height="7" rx="1.4"></rect>
+            </svg>
+          </button>
+          <button id="settings-btn" data-testid="settings-btn" class="icon-btn" title="Settings" aria-label="Settings">
+            <span class="icon-emoji" aria-hidden="true">⚙️</span>
+          </button>
+          <button id="play-tools-btn" class="icon-btn hidden" type="button" aria-haspopup="dialog" aria-controls="play-tools-drawer" aria-expanded="false" aria-label="Open tools">☰</button>
+        </div>
+        <div class="header-quick-controls">
+          <button id="play-style-toggle" class="header-quick-btn" type="button" aria-pressed="false" title="Switch game mode">
+            Mode: Classic
+          </button>
+          <button id="phonics-clue-open-btn" class="header-quick-btn hidden" type="button" title="Open clue card" aria-label="Open Clue Sprint for detective clue practice">
+            <span class="quick-btn-label">Clue</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M9 3h6a2 2 0 0 1 2 2v2.5a1.5 1.5 0 1 0 0 3V13a2 2 0 0 1-2 2h-2.5a1.5 1.5 0 1 0-3 0H7a2 2 0 0 1-2-2v-2.5a1.5 1.5 0 1 0 0-3V5a2 2 0 0 1 2-2h2"></path>
+            </svg>
+          </button>
+          <button id="starter-word-open-btn" class="header-quick-btn hidden" type="button" title="Show starter word ideas" aria-label="Show try these words list">
+            <span class="quick-btn-label">Need Ideas</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M9 18h6"></path>
+              <path d="M10 22h4"></path>
+              <path d="M12 2a6 6 0 0 0-3.8 10.6c.8.7 1.3 1.4 1.6 2.4h4.4c.3-1 .8-1.7 1.6-2.4A6 6 0 0 0 12 2z"></path>
+            </svg>
+          </button>
+          <button id="writing-studio-btn" class="header-quick-btn hidden" type="button" title="Open Writing Studio" aria-label="Open Writing Studio">
+            <span class="quick-btn-label">Writing</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+            </svg>
+          </button>
+          <button id="sentence-surgery-btn" class="header-quick-btn" type="button" title="Open Sentence Surgery" aria-label="Open Sentence Surgery">
+            <span class="quick-btn-label">Sentence</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 7h16"></path>
+              <path d="M4 12h12"></path>
+              <path d="M4 17h9"></path>
+              <path d="M17.5 15.5 20 18l-2.5 2.5"></path>
+            </svg>
+          </button>
+          <button id="reading-lab-btn" class="header-quick-btn" type="button" title="Open Reading Lab" aria-label="Open Reading Lab">
+            <span class="quick-btn-label">Reading</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 19V6a2 2 0 0 1 2-2h6v17H6a2 2 0 0 1-2-2z"></path>
+              <path d="M20 19V6a2 2 0 0 0-2-2h-6v17h6a2 2 0 0 0 2-2z"></path>
+            </svg>
+          </button>
+          <button id="teacher-dashboard-btn" class="header-quick-btn" type="button" title="Open Teacher Dashboard" aria-label="Open Teacher Dashboard">
+            <span class="quick-btn-label">Dashboard</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 19h16"></path>
+              <path d="M6 16V9"></path>
+              <path d="M12 16V5"></path>
+              <path d="M18 16v-3"></path>
+            </svg>
+          </button>
+          <button id="new-game-btn" data-testid="new-game-btn" data-no-hover-note="true">Next Word</button>
+          <!-- Legacy regression sentinel: <button id="new-game-btn">Next Word</button> -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="hero-v2" class="hero-v2" aria-label="Cornerstone MTSS home">
+    <div class="hero-left">
+      <h1 class="hero-title">
+        Cornerstone MTSS
+      </h1>
+      <p class="hero-sub">
+        A Tier 2/3 Intervention Engine for Literacy Growth
+      </p>
+      <div id="home-coach-ribbon" class="cs-coach-ribbon" role="status" aria-live="polite">
+        <span class="cs-coach-chip hidden"></span>
+        <p class="cs-coach-text"></p>
+        <button class="cs-coach-action hidden" type="button"></button>
+      </div>
+      <div class="hero-cta">
+        <button id="cta-wordquest" class="primary-btn" type="button">
+          Open Literacy
+        </button>
+        <button id="cta-tools" class="secondary-btn" type="button">
+          Open Teacher Dashboard
+        </button>
+      </div>
+      <div class="cornerstone-student-code">
+        <button id="home-set-code-toggle" class="home-set-code-toggle" type="button">Set Code</button>
+        <div id="home-student-code-row" class="home-student-code-row hidden" aria-label="Student code">
+          <input id="home-student-code-input" type="text" maxlength="16" placeholder="SAS7A-03" autocomplete="off" spellcheck="false">
+          <button id="home-student-code-save" type="button">Save</button>
+        </div>
+      </div>
+      <section id="home-tools-section" class="home-tools-section" aria-label="Cornerstone pathways">
+        <h2>Choose Engine</h2>
+        <div class="home-tools-bento cs-bento cornerstone-choice-grid">
+          <article class="home-tools-tile cs-tile cs-tile-hero is-large cornerstone-primary-card" aria-label="Literacy">
+            <div class="home-tools-tile-head">
+              <span class="home-tools-tile-icon" aria-hidden="true">🧠</span>
+              <h3 class="home-tools-tile-title">LITERACY</h3>
+            </div>
+            <p class="home-tools-tile-copy">Instant access probes with diagnostic signals and clear next instructional move.</p>
+            <div class="cornerstone-module-links">
+              <button id="home-open-wordquest" class="home-tools-tile-btn" type="button">Word Quest - Strategy Probe</button>
+              <button id="home-open-reading-lab" class="home-tools-tile-btn" type="button">Reading Lab - Fluency & Accuracy</button>
+              <button id="home-open-writing-studio" class="home-tools-tile-btn" type="button">Writing Studio - Sentence & Reasoning</button>
+            </div>
+          </article>
+          <article class="home-tools-tile cs-tile cs-tile-hero is-large cornerstone-primary-card" aria-label="Numeracy">
+            <div class="home-tools-tile-head">
+              <span class="home-tools-tile-icon" aria-hidden="true">➗</span>
+              <h3 class="home-tools-tile-title">NUMERACY</h3>
+            </div>
+            <p class="home-tools-tile-copy">Numeracy Lab - Conceptual Reasoning (Bridges / Figureoutable Math).</p>
+            <button id="home-open-numeracy" class="home-tools-tile-btn" type="button">Open Numeracy Lab</button>
+          </article>
+        </div>
+      </section>
+    </div>
+    <div class="hero-right">
+      <div id="hero-preview-container" aria-live="polite">
+        <div id="home-demo-preview" class="home-demo-preview" aria-label="Word Quest preview" role="img"></div>
+      </div>
+      <div id="home-demo-coach" class="home-demo-coach" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ── Focus bar ────────────────────────────────── -->
+  <div class="top-control-hub" role="region" aria-label="Quest and curriculum controls">
+    <div class="focus-bar">
+      <div id="focus-inline-wrap" class="focus-inline-wrap">
+        <div class="focus-inline-actions" role="group" aria-label="Quick supports">
+          <button id="focus-clue-btn" class="focus-action-btn" type="button" aria-label="Open clue support">
+            <span class="focus-action-emoji" aria-hidden="true">🧩</span>
+          </button>
+          <button id="focus-ideas-btn" class="focus-action-btn" type="button" aria-label="Show starter word ideas">
+            <span class="focus-action-emoji" aria-hidden="true">💡</span>
+          </button>
+        </div>
+        <input id="focus-inline-search" class="focus-inline-search" type="search" aria-label="Quest finder" aria-controls="focus-inline-results" aria-expanded="false" aria-autocomplete="list" spellcheck="false" autocomplete="off" placeholder="Select your quest">
+        <!-- Legacy regression sentinel: placeholder="Select your quest or track" -->
+        <div id="focus-inline-results" class="focus-inline-results hidden" role="listbox" aria-label="Quest finder results"></div>
+      </div>
+      <span id="grade-target-inline" class="grade-target-inline" aria-live="polite">Grade: All (K-2 safe)</span>
+      <select id="setting-focus" class="focus-source" aria-hidden="true" tabindex="-1" hidden>
+      <option value="all">— Classic (Wordle 5x6) —</option>
+      <optgroup label="SoR Phonics">
+        <option value="cvc">CVC · Short Vowels</option>
+        <option value="digraph">Digraphs · sh, ch, th</option>
+        <option value="ccvc">Initial Blends · st, bl, tr</option>
+        <option value="cvcc">Final Blends · mp, nd, st</option>
+        <option value="trigraph">Trigraphs · tch, dge, igh</option>
+        <option value="cvce">Magic E · CVCe</option>
+        <option value="vowel_team">Vowel Teams · ai, ee, oa</option>
+        <option value="r_controlled">R-Controlled · ar, or, er</option>
+        <option value="diphthong">Diphthongs · oi, oy, ou</option>
+        <option value="floss">FLOSS Rule · ff, ll, ss</option>
+        <option value="welded">Welded Sounds · -ang, -ing</option>
+        <option value="schwa">Schwa</option>
+        <option value="prefix">Prefixes · un-, re-, pre-</option>
+        <option value="suffix">Suffixes · -ing, -ed, -er</option>
+        <option value="compound">Compound Words</option>
+        <option value="multisyllable">Multisyllabic Words</option>
+      </optgroup>
+      <optgroup label="Math"><option value="vocab-math-k2">Math K–2</option><option value="vocab-math-35">Math 3–5</option><option value="vocab-math-68">Math 6–8</option><option value="vocab-math-912">Math 9–12</option></optgroup>
+      <optgroup label="Science"><option value="vocab-science-k2">Science K–2</option><option value="vocab-science-35">Science 3–5</option><option value="vocab-science-68">Science 6–8</option><option value="vocab-science-912">Science 9–12</option></optgroup>
+      <optgroup label="Social Studies"><option value="vocab-social-k2">Social Studies K–2</option><option value="vocab-social-35">Social Studies 3–5</option><option value="vocab-social-68">Social Studies 6–8</option><option value="vocab-social-912">Social Studies 9–12</option></optgroup>
+      <optgroup label="ELA"><option value="vocab-ela-k2">ELA K–2</option><option value="vocab-ela-35">ELA 3–5</option><option value="vocab-ela-68">ELA 6–8</option><option value="vocab-ela-912">ELA 9–12</option></optgroup>
+      </select>
+    </div>
+  </div>
+  <div id="theme-preview-strip" class="quick-popover theme-preview-strip quick-media-dock hidden" role="dialog" aria-label="Theme controls" aria-hidden="true">
+    <div id="theme-preview-slot" class="theme-preview-slot quick-theme-cluster" aria-label="Theme selector"></div>
+    <button id="theme-preview-done" class="quick-popover-done" type="button" aria-label="Close theme controls">Done</button>
+  </div>
+  <div id="quick-music-strip" class="quick-popover quick-music-popover hidden" role="dialog" aria-label="Music controls" aria-hidden="true">
+    <div class="quick-music-cluster" role="group" aria-label="Music controls">
+      <button id="quick-music-prev" class="theme-preview-music quick-music-step" type="button" aria-label="Previous music vibe" title="Previous vibe">⏮</button>
+      <button id="quick-music-toggle" class="theme-preview-music theme-preview-music-icon" type="button" aria-pressed="false" aria-label="Play music" title="Play music">▶</button>
+      <button id="quick-music-next" class="theme-preview-music quick-music-step" type="button" aria-label="Next music vibe" title="Next vibe">⏭</button>
+      <button id="quick-music-shuffle" class="theme-preview-music quick-music-step" type="button" aria-label="Shuffle music vibe" title="Shuffle vibe">🔀</button>
+      <label class="quick-music-vol-wrap" for="quick-music-vol" title="Music volume">
+        <span class="quick-music-vol-icon" aria-hidden="true">♪</span>
+        <input id="quick-music-vol" class="quick-music-vol" type="range" min="0" max="1" step="0.05" value="0.50" aria-label="Music volume">
+      </label>
+      <span id="quick-music-label" class="theme-preview-music-label" aria-live="polite">Stopped</span>
+    </div>
+    <button id="quick-music-done" class="quick-popover-done" type="button" aria-label="Close music controls">Done</button>
+  </div>
+  <div id="play-tools-drawer" class="play-tools-drawer hidden" role="dialog" aria-label="WordQuest tools" aria-hidden="true">
+    <button id="play-drawer-writing-studio" class="quick-action-btn" type="button">Writing Studio</button>
+    <button id="play-drawer-sentence-surgery" class="quick-action-btn" type="button">Sentence Surgery</button>
+    <button id="play-drawer-reading-lab" class="quick-action-btn" type="button">Reading Lab</button>
+    <button id="play-drawer-teacher-dashboard" class="quick-action-btn hidden" type="button">Teacher Dashboard</button>
+    <button id="play-drawer-close" class="quick-action-btn" type="button">Close</button>
+  </div>
+  <div id="next-action-line" class="next-action-line hidden" aria-live="polite"></div>
+  <div id="classroom-turn-line" class="classroom-turn-line hidden" aria-live="polite"></div>
+
+  <!-- ── Settings overlay ─────────────────────────── -->
+  <div id="settings-panel" class="settings-panel hidden">
+    <div class="settings-header">
+      <div class="settings-title-wrap">
+        <span>Settings</span>
+        <span id="settings-build-badge" class="settings-build-badge" aria-live="polite"></span>
+      </div>
+      <button id="settings-close" data-testid="settings-close" class="close-btn" aria-label="Close settings">✕</button>
+    </div>
+    <div class="settings-body">
+      <div class="settings-view-switch" role="tablist" aria-label="Settings view">
+        <button id="settings-tab-quick" class="settings-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="settings-quick" data-settings-tab="quick">Essentials</button>
+        <button id="settings-tab-advanced" class="settings-tab hidden" type="button" role="tab" aria-selected="false" aria-controls="settings-advanced" data-settings-tab="advanced">Advanced</button>
+      </div>
+
+      <section id="settings-quick" class="settings-section is-active" role="tabpanel" aria-labelledby="settings-tab-quick" data-settings-section="quick">
+        <details id="settings-group-core" class="settings-group" open>
+          <summary>Gameplay</summary>
+          <div class="settings-group-grid">
+            <div class="setting-row setting-row-internal hidden" aria-hidden="true"><label>Grade Band<select id="s-grade"><option value="all">All grades (K-2 safe)</option><option value="K-2">K–2</option><option value="G3-5">Grades 3–5</option><option value="G6-8">Grades 6–8</option><option value="G9-12">Grades 9–12</option></select></label></div>
+            <div class="setting-row"><label>Word Length<select id="s-length"><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="any">Any</option></select></label></div>
+            <div class="setting-row"><label>Max Guesses<select id="s-guesses"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option></select></label></div>
+            <div class="setting-row"><label>Try These Words<select id="s-starter-words"><option value="off">Off</option><option value="on_demand">On demand</option><option value="after_2">Auto after 2 guesses</option><option value="after_3" selected>Auto after 3 guesses</option></select></label></div>
+            <div class="setting-row setting-row-full">
+              <button id="s-force-update-now-top" class="quick-action-btn quick-action-btn-warning" type="button">Force Update Now</button>
+            </div>
+            <div class="setting-row hidden" aria-hidden="true"><label>Hint Cues<select id="s-hint"><option value="off">Off</option><option value="on">On</option></select></label></div>
+            <div class="setting-row hidden" aria-hidden="true"><label>Game Mode<select id="s-play-style"><option value="detective" selected>Guess &amp; Check Mode (color + clue strategy)</option><option value="listening">Hear &amp; Spell Mode (hear + spell)</option></select></label></div>
+            <div class="setting-row"><label>Keyboard Layout<select id="s-keyboard-layout"><option value="standard" selected>QWERTY</option><option value="alphabet">Alphabet</option></select></label></div>
+            <div class="setting-row"><label>Text Size<select id="s-text-size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></label></div>
+            <div class="setting-row hidden" aria-hidden="true"><label>Keyboard Style<select id="s-key-style"><option value="bubble" selected>Puffy Rounded</option></select></label></div>
+            <div class="setting-row setting-row-full setting-row-help hidden" aria-hidden="true">Hear &amp; Spell Mode gives direct Word + Meaning support. Guess &amp; Check Mode keeps sentence-only clue hints.</div>
+            <div class="setting-row setting-row-full quick-preset-row hidden">
+              <label class="setting-checkbox-label">
+                <input id="s-confidence-coaching" type="checkbox" checked>
+                Confidence Coaching (recommended)
+              </label>
+              <div class="setting-checkbox-help">Adds low-pressure first-round guidance and starter prompts to reduce freeze-ups.</div>
+            </div>
+            <details id="settings-lesson-pack" class="setting-row setting-row-full settings-subgroup hidden" aria-hidden="true">
+              <summary>Curriculum Lesson Packs (optional)</summary>
+              <div class="settings-subgroup-body">
+                <div class="lesson-pack-grid">
+                  <label>Program
+                    <select id="s-lesson-pack">
+                      <option value="custom" selected>Manual (no pack)</option>
+                      <option value="wilson">Wilson Reading System</option>
+                      <option value="fundations">Fundations</option>
+                      <option value="lexiawida">Lexia English (WIDA)</option>
+                      <option value="justwords">Just Words</option>
+                      <option value="ufli">UFLI</option>
+                    </select>
+                  </label>
+                  <label>Lesson Target
+                    <select id="s-lesson-target">
+                      <option value="custom" selected>Manual</option>
+                    </select>
+                  </label>
+                </div>
+                <div id="lesson-pack-note" class="setting-checkbox-help lesson-pack-note">Manual mode keeps Quest, Grade Band, and Word Length under your control.</div>
+                <div id="lesson-pack-pacing" class="setting-checkbox-help lesson-pack-pacing">District pacing: choose a program and lesson target to view suggested week range.</div>
+                <div class="lesson-pack-week-row">
+                  <div id="lesson-pack-week" class="setting-checkbox-help lesson-pack-week">School week recommendation: set a program to view guidance.</div>
+                  <button id="lesson-pack-apply-week-btn" class="quick-action-btn lesson-pack-week-btn" type="button" disabled>Apply Week Target</button>
+                </div>
+              </div>
+            </details>
+            <div id="focus-grade-note" class="setting-row setting-row-full setting-row-help hidden" aria-hidden="true">Classic uses Grade Band + Word Length. Subject Focus presets both domain and grade.</div>
+          </div>
+        </details>
+
+        <details id="settings-group-theme-quick" class="settings-group hidden" aria-hidden="true">
+          <summary>Theme and Visual</summary>
+          <div class="settings-group-grid">
+            <div class="setting-row setting-row-full setting-theme-current-row">
+              <div class="setting-row-heading">Current Theme</div>
+              <div id="settings-theme-name" class="settings-theme-name">Loading...</div>
+            </div>
+            <div class="setting-row setting-row-full setting-row-help">Use the Theme arrows on the main page to preview quickly. This panel keeps advanced visual controls.</div>
+            <div class="setting-row setting-row-full setting-row-internal hidden" aria-hidden="true"><label>Theme<select id="s-theme"><option value="">Loading themes...</option></select></label></div>
+            <div class="setting-row"><label>Remember Theme<select id="s-theme-save"><option value="off" selected>Off (reset on refresh)</option><option value="on">On (save this theme)</option></select></label></div>
+            <div class="setting-row"><label>Board Style<select id="s-board-style"><option value="clean">Clean</option><option value="card" selected>Card</option><option value="patterned">Patterned</option><option value="soundcard">Sound Card (SoR)</option></select></label></div>
+            <div class="setting-row"><label>Atmosphere<select id="s-atmosphere"><option value="minimal" selected>Minimal</option><option value="glow">Glow</option><option value="spark">Spark</option></select></label></div>
+            <div class="setting-row"><label>Win Confetti<select id="s-confetti"><option value="on">On</option><option value="off">Off</option></select></label></div>
+            <div class="setting-row"><label>Engagement Popups<select id="s-boost-popups"><option value="on">On</option><option value="off" selected>Off</option></select></label></div>
+          </div>
+        </details>
+
+        <details id="settings-group-audio" class="settings-group hidden" aria-hidden="true">
+          <summary>Audio and Voice</summary>
+          <div class="settings-group-grid">
+            <div class="setting-row"><label>Music<select id="s-music"><option value="off" selected>Off</option><option value="auto">Auto (match theme)</option><option value="deepfocus">Deep Focus</option><option value="classicalbeats">Classical Beats</option><option value="nerdcore">Nerdcore Instrumental</option><option value="focus">Focus Flow</option><option value="chill">Chill</option><option value="lofi">Lo‑fi</option><option value="coffee">Coffeehouse</option><option value="fantasy">Fantasy</option><option value="scifi">Sci‑fi</option><option value="upbeat">Upbeat</option><option value="arcade">8‑bit Arcade</option><option value="sports">Sports Hype</option><option value="stealth">Space Mystery</option><option value="team">Team Game Hype</option></select></label></div>
+            <div class="setting-row"><label>Voice Practice
+              <select id="s-voice-task">
+                <option value="optional" selected>Optional</option>
+                <option value="required">Required before next word</option>
+                <option value="off">Off</option>
+              </select>
+            </label></div>
+            <div id="s-music-active" class="setting-row setting-row-full setting-row-help">Music is off.</div>
+            <div class="setting-row setting-row-full"><label>Music Volume<input id="s-music-vol" type="range" min="0" max="1" step="0.05" value="0.50"></label></div>
+            <div class="setting-row setting-row-full"><label>Upload MP3s (device only)<input id="s-music-upload" type="file" accept="audio/mpeg,audio/*" multiple></label></div>
+            <div id="s-music-upload-msg" class="setting-row setting-row-full setting-row-help">No local MP3 files loaded yet.</div>
+            <div class="setting-row setting-row-full"><button id="s-music-clear-local" class="quick-action-btn" type="button">Clear Local MP3s</button></div>
+            <div class="setting-row setting-row-full"><label>Audio Voice<select id="s-voice"><option value="recorded">Recorded only (recommended)</option><option value="auto">Recorded → device fallback</option><option value="device">Device voice only (beta)</option><option value="off">Off (no read-aloud)</option></select></label></div>
+            <div class="setting-row setting-row-full small-help"><button id="voice-help-btn" class="link-btn" type="button">How to improve device voice</button></div>
+          </div>
+        </details>
+
+        <details id="settings-group-classroom" class="settings-group hidden" aria-hidden="true">
+          <summary>Classroom</summary>
+          <div class="settings-group-grid">
+            <div class="setting-row">
+              <label>Team Turns
+                <select id="s-team-mode">
+                  <option value="off" selected>Off</option>
+                  <option value="on">On</option>
+                </select>
+              </label>
+            </div>
+            <div class="setting-row">
+              <label>Teams
+                <select id="s-team-count">
+                  <option value="2" selected>2 teams</option>
+                  <option value="3">3 teams</option>
+                  <option value="4">4 teams</option>
+                </select>
+              </label>
+            </div>
+            <div class="setting-row setting-row-full">
+              <label>Turn Timer
+                <select id="s-turn-timer">
+                  <option value="off" selected>Off</option>
+                  <option value="30">30 seconds</option>
+                  <option value="45">45 seconds</option>
+                  <option value="60">60 seconds</option>
+                </select>
+              </label>
+              <div class="setting-checkbox-help">Each team gets one guess turn. If timer is on, the turn passes automatically when time runs out.</div>
+            </div>
+            <div class="setting-row setting-row-full quick-preset-row">
+              <div class="setting-row-heading">Teacher Presets</div>
+              <div class="quick-preset-actions" role="group" aria-label="Teacher presets">
+                <button class="quick-action-btn" id="preset-guided" data-teacher-preset="guided" type="button">Guided</button>
+                <button class="quick-action-btn" id="preset-independent" data-teacher-preset="independent" type="button">Independent</button>
+                <button class="quick-action-btn" id="preset-assessment" data-teacher-preset="assessment" type="button">Assessment</button>
+                <button class="quick-action-btn" id="preset-k2-phonics" data-teacher-preset="k2-phonics" type="button">K-2 Phonics Group</button>
+                <button class="quick-action-btn" id="preset-35-vocab" data-teacher-preset="35-vocab" type="button">3-5 Vocab Block</button>
+                <button class="quick-action-btn" id="preset-intervention" data-teacher-preset="intervention" type="button">Intervention Sprint</button>
+              </div>
+              <div class="setting-checkbox-help">One tap applies grouped classroom defaults for hinting, voice, and engagement settings.</div>
+            </div>
+            <div class="setting-row setting-row-full quick-preset-row">
+              <label class="setting-checkbox-label">
+                <input id="s-assessment-lock" type="checkbox">
+                Assessment Lock (freeze settings mid-round)
+              </label>
+              <div class="setting-checkbox-help">When on, settings/focus changes are blocked during an active round and non-essential prompts are muted.</div>
+            </div>
+            <div id="teacher-session-panel" class="setting-row setting-row-full teacher-session-panel" role="status" aria-live="polite">
+              <div class="setting-row-heading">Teacher Session Summary</div>
+              <div class="teacher-report-controls" role="group" aria-label="Mastery report controls">
+                <label class="setting-checkbox-label teacher-report-compact-toggle">
+                  <input id="s-report-compact" type="checkbox">
+                  Compact Report Mode
+                </label>
+                <label>Sort by
+                  <select id="s-mastery-sort">
+                    <option value="attempts_desc" selected>Attempts (high to low)</option>
+                    <option value="accuracy_desc">Accuracy (high to low)</option>
+                    <option value="hint_rate_desc">Hint rate (high to low)</option>
+                    <option value="voice_desc">Voice attempts (high to low)</option>
+                    <option value="top_error">Top error pattern</option>
+                  </select>
+                </label>
+                <label>Filter
+                  <select id="s-mastery-filter">
+                    <option value="all" selected>All skills</option>
+                    <option value="needs_support">Needs support</option>
+                    <option value="high_hints">High hint rate</option>
+                    <option value="vowel_pattern">Top error: vowel pattern</option>
+                    <option value="blend_position">Top error: blend position</option>
+                    <option value="morpheme_ending">Top error: morpheme ending</option>
+                    <option value="context_strategy">Top error: clue strategy</option>
+                  </select>
+                </label>
+              </div>
+              <div id="session-mastery-filter-note" class="setting-checkbox-help teacher-report-filter-note">Showing all skills.</div>
+              <div class="teacher-session-adoption-row">
+                <div class="setting-row-heading">Adoption Health</div>
+                <div class="teacher-session-metrics teacher-session-adoption-overall">
+                  <span id="session-adoption-overall" class="teacher-session-chip">Overall: --</span>
+                </div>
+                <div class="teacher-session-metrics teacher-session-adoption-metrics">
+                  <span id="session-adoption-clarity" class="teacher-session-chip">Clarity: --</span>
+                  <span id="session-adoption-zpd" class="teacher-session-chip">ZPD Fit: --</span>
+                  <span id="session-adoption-setup" class="teacher-session-chip">Setup Speed: --</span>
+                  <span id="session-adoption-fidelity" class="teacher-session-chip">Lesson Fidelity: --</span>
+                  <span id="session-adoption-deepdive" class="teacher-session-chip">Deep Dive Completion: --</span>
+                  <span id="session-adoption-reliability" class="teacher-session-chip">Reliability: --</span>
+                </div>
+                <div id="session-adoption-note" class="setting-checkbox-help">Scores update from local session/probe telemetry in this browser.</div>
+              </div>
+              <div class="teacher-session-adoption-row">
+                <div class="setting-row-heading">Telemetry Dashboards</div>
+                <div class="teacher-session-metrics teacher-session-adoption-overall">
+                  <span id="telemetry-dashboard-adoption" class="teacher-session-chip">Adoption: --</span>
+                </div>
+                <div class="teacher-session-metrics teacher-session-adoption-metrics">
+                  <span id="telemetry-dashboard-learning" class="teacher-session-chip">Learning: --</span>
+                  <span id="telemetry-dashboard-reliability" class="teacher-session-chip">Reliability: --</span>
+                </div>
+                <div id="telemetry-dashboard-note" class="setting-checkbox-help">Built from local funnel telemetry in this browser.</div>
+              </div>
+              <div class="teacher-session-roster-row">
+                <label>Student Roster
+                  <select id="s-roster-student">
+                    <option value="">No student selected</option>
+                  </select>
+                </label>
+                <label>Add Student
+                  <input id="s-roster-name" class="settings-text-input" type="text" maxlength="30" placeholder="Student name">
+                </label>
+                <div class="teacher-session-roster-actions" role="group" aria-label="Roster actions">
+                  <button id="session-roster-add-btn" class="quick-action-btn teacher-session-btn" type="button">Add</button>
+                  <button id="session-roster-remove-btn" class="quick-action-btn teacher-session-btn" type="button">Remove</button>
+                  <button id="session-roster-clear-btn" class="quick-action-btn teacher-session-btn" type="button">Clear</button>
+                </div>
+              </div>
+              <div class="teacher-session-playlist-row">
+                <label>Assignment Playlist
+                  <select id="s-playlist-select">
+                    <option value="">No playlist selected</option>
+                  </select>
+                </label>
+                <label>Playlist Name
+                  <input id="s-playlist-name" class="settings-text-input" type="text" maxlength="40" placeholder="Group A CVC Set">
+                </label>
+                <div class="teacher-session-playlist-actions" role="group" aria-label="Playlist actions">
+                  <button id="session-playlist-save-btn" class="quick-action-btn teacher-session-btn" type="button">Save Current Target</button>
+                  <button id="session-playlist-assign-btn" class="quick-action-btn teacher-session-btn" type="button">Assign to Active Student</button>
+                  <button id="session-playlist-apply-btn" class="quick-action-btn teacher-session-btn" type="button">Apply Assigned Playlist</button>
+                  <button id="session-playlist-delete-btn" class="quick-action-btn teacher-session-btn" type="button">Delete Playlist</button>
+                </div>
+              </div>
+              <div class="teacher-session-metrics teacher-playlist-metrics">
+                <span id="session-playlist-summary" class="teacher-session-chip">Playlist: --</span>
+                <span id="session-playlist-assigned" class="teacher-session-chip">Assignment: --</span>
+              </div>
+              <div class="teacher-session-goal-row">
+                <label>Goal Accuracy %
+                  <input id="s-goal-accuracy" class="settings-text-input" type="number" min="50" max="100" step="1" placeholder="80">
+                </label>
+                <label>Goal Avg Guesses
+                  <input id="s-goal-guesses" class="settings-text-input" type="number" min="1" max="8" step="0.1" placeholder="4.0">
+                </label>
+                <div class="teacher-session-goal-actions" role="group" aria-label="Student goal actions">
+                  <button id="session-goal-save-btn" class="quick-action-btn teacher-session-btn" type="button">Save Goal</button>
+                  <button id="session-goal-clear-btn" class="quick-action-btn teacher-session-btn" type="button">Clear Goal</button>
+                </div>
+              </div>
+              <div class="teacher-session-metrics teacher-goal-metrics">
+                <span id="session-goal-status" class="teacher-session-chip">Goal: --</span>
+                <span id="session-goal-progress" class="teacher-session-chip">Goal Progress: --</span>
+              </div>
+              <div class="teacher-session-metrics">
+                <span id="session-rounds" class="teacher-session-chip">Rounds: 0</span>
+                <span id="session-win-rate" class="teacher-session-chip">Win Rate: --</span>
+                <span id="session-hint-rounds" class="teacher-session-chip">Hint Rounds: 0</span>
+                <span id="session-voice-attempts" class="teacher-session-chip">Voice Attempts: 0</span>
+                <span id="session-active-student" class="teacher-session-chip">Student: Class</span>
+              </div>
+              <div class="teacher-session-metrics teacher-mastery-metrics">
+                <span id="session-top-skill" class="teacher-session-chip">Top Skill: --</span>
+                <span id="session-mastery-rate" class="teacher-session-chip">Mastery: --</span>
+                <span id="session-avg-guesses" class="teacher-session-chip">Avg Guesses: --</span>
+                <span id="session-avg-time" class="teacher-session-chip">Avg Time: --</span>
+                <span id="session-top-error" class="teacher-session-chip">Top Error: --</span>
+                <span id="session-next-step" class="teacher-session-chip">Next Step: --</span>
+              </div>
+              <div class="teacher-session-metrics teacher-mission-metrics">
+                <span id="session-mission-count" class="teacher-session-chip">Deep Dive Rounds: 0</span>
+                <span id="session-mission-score" class="teacher-session-chip">Deep Dive Avg Score: --</span>
+                <span id="session-mission-complete" class="teacher-session-chip">Deep Dive Completion: --</span>
+                <span id="session-mission-level" class="teacher-session-chip">Deep Dive Top Level: --</span>
+              </div>
+              <div class="teacher-session-mini-lesson-row">
+                <div class="setting-row-heading">Quick Mini-Lesson Launcher</div>
+                <div class="teacher-mini-lesson-actions" role="group" aria-label="Quick mini lesson launcher">
+                  <button id="session-mini-lesson-top-btn" class="quick-action-btn teacher-session-btn" type="button">Use Top Error</button>
+                  <button id="session-mini-lesson-vowel-btn" class="quick-action-btn teacher-session-btn" type="button">Vowel Pattern</button>
+                  <button id="session-mini-lesson-blend-btn" class="quick-action-btn teacher-session-btn" type="button">Blend Position</button>
+                  <button id="session-mini-lesson-morpheme-btn" class="quick-action-btn teacher-session-btn" type="button">Morpheme Ending</button>
+                  <button id="session-mini-lesson-context-btn" class="quick-action-btn teacher-session-btn" type="button">Clue Strategy</button>
+                </div>
+                <div id="session-mini-lesson-copy" class="setting-checkbox-help teacher-mini-lesson-copy">Select a mini-lesson to load a 5-minute reteach routine.</div>
+                <button id="session-mini-lesson-copy-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Mini-Lesson Plan</button>
+              </div>
+              <div class="teacher-session-mastery-table-row">
+                <div class="setting-row-heading">Mastery by Skill</div>
+                <div class="teacher-mastery-table-wrap" role="region" aria-label="Mastery by skill table">
+                  <table class="teacher-mastery-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Skill</th>
+                        <th scope="col">Accuracy</th>
+                        <th scope="col">Attempts</th>
+                        <th scope="col">Hints</th>
+                        <th scope="col">Voice</th>
+                        <th scope="col">Avg Guess</th>
+                        <th scope="col">Avg Time</th>
+                        <th scope="col">Top Error</th>
+                      </tr>
+                    </thead>
+                    <tbody id="session-mastery-table-body">
+                      <tr>
+                        <td colspan="8">No skill rounds yet.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="teacher-session-probe-row">
+                <div class="setting-row-heading">Weekly Progress Probe</div>
+                <div class="teacher-session-probe-controls">
+                  <label>Probe Length
+                    <select id="s-probe-rounds">
+                      <option value="3" selected>3 rounds (quick)</option>
+                      <option value="5">5 rounds (standard)</option>
+                      <option value="8">8 rounds (deep)</option>
+                    </select>
+                  </label>
+                  <button id="session-probe-start-btn" class="quick-action-btn teacher-session-btn" data-nonexport="true" type="button">Start Probe</button>
+                  <button id="session-probe-stop-btn" class="quick-action-btn teacher-session-btn" data-nonexport="true" type="button">Stop Probe</button>
+                  <button id="session-probe-copy-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Probe</button>
+                  <button id="session-probe-copy-csv-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Probe CSV</button>
+                </div>
+                <div class="teacher-session-metrics">
+                  <span id="probe-status" class="teacher-session-chip">Probe: Inactive</span>
+                  <span id="probe-accuracy" class="teacher-session-chip">Accuracy: --</span>
+                  <span id="probe-avg-guesses" class="teacher-session-chip">Avg Guesses: --</span>
+                  <span id="probe-avg-time" class="teacher-session-chip">Avg Time: --</span>
+                  <span id="probe-hint-rate" class="teacher-session-chip">Hint Rate: --</span>
+                </div>
+                <div class="teacher-session-metrics teacher-session-probe-trend">
+                  <span id="probe-trend-label" class="teacher-session-chip">Trend: --</span>
+                  <span id="probe-trend-accuracy" class="teacher-session-chip">Accuracy Δ: --</span>
+                  <span id="probe-trend-guesses" class="teacher-session-chip">Avg Guesses Δ: --</span>
+                  <span id="probe-trend-time" class="teacher-session-chip">Avg Time Δ: --</span>
+                </div>
+                <div class="teacher-session-metrics teacher-session-support-metrics">
+                  <span id="probe-recency-chip" class="teacher-session-chip">Probe Recency: --</span>
+                  <span id="session-risk-chip" class="teacher-session-chip">Support Flag: --</span>
+                </div>
+              </div>
+              <div class="teacher-session-actions">
+                <button id="session-copy-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Summary</button>
+                <button id="session-copy-mastery-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Mastery</button>
+                <button id="session-copy-mastery-csv-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Mastery CSV</button>
+                <button id="session-copy-mission-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Deep Dive</button>
+                <button id="session-copy-mission-csv-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Deep Dive CSV</button>
+                <button id="session-copy-mtss-note-btn" class="quick-action-btn teacher-session-btn" type="button">Copy MTSS/IEP Note</button>
+                <button id="session-copy-family-handout-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Family Handout</button>
+                <button id="session-download-family-handout-btn" class="quick-action-btn teacher-session-btn" type="button">Download Family Handout</button>
+                <button id="session-download-csv-bundle-btn" class="quick-action-btn teacher-session-btn" type="button">Download CSV Bundle</button>
+                <button id="session-download-class-rollup-btn" class="quick-action-btn teacher-session-btn" type="button">Download Class Rollup CSV</button>
+                <button id="session-copy-outcomes-btn" class="quick-action-btn teacher-session-btn" type="button">Copy Session Outcomes</button>
+                <button id="session-copy-probe-export-btn" class="quick-action-btn teacher-session-btn teacher-export-only-btn" type="button">Copy Probe</button>
+                <button id="session-copy-probe-csv-export-btn" class="quick-action-btn teacher-session-btn teacher-export-only-btn" type="button">Copy Probe CSV</button>
+                <button id="session-reset-btn" data-testid="session-reset-btn" class="quick-action-btn teacher-session-btn" data-nonexport="true" type="button">Reset Session</button>
+                <button id="session-rerun-onboarding-btn" class="quick-action-btn teacher-session-btn" data-nonexport="true" type="button">Re-run Setup</button>
+              </div>
+              <div class="setting-checkbox-help">Tracks this browser session only.</div>
+            </div>
+            <div class="setting-row setting-row-full setting-row-help teacher-lens-note">
+              Student view stays kid-friendly. Teacher lens: WordQuest builds decoding + language comprehension (SoR) into higher-order thinking (Remember, Understand, Apply, Analyze, Evaluate, Create).
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section id="settings-advanced" class="settings-section" role="tabpanel" aria-labelledby="settings-tab-advanced" data-settings-section="advanced" hidden>
+        <details id="settings-group-theme" class="settings-group">
+          <summary>Power and Keyboard</summary>
+          <div id="settings-advanced-tools" class="settings-group-grid settings-grid">
+            <div class="setting-row"><label>Projector Mode<select id="s-projector"><option value="on" selected>On · high contrast</option></select></label></div>
+            <div class="setting-row"><label>Visual Skin<select id="s-ui-skin"><option value="premium">Premium</option><option value="classic" selected>Classic</option></select></label></div>
+            <div class="setting-row"><label>Letter Case<select id="s-case"><option value="lower">lowercase</option><option value="upper">UPPERCASE</option></select></label></div>
+            <div class="setting-row"><label>Duplicate Alert<select id="s-dupe"><option value="on">On</option><option value="off">Off</option></select></label></div>
+            <div class="setting-row"><label>Feedback Colors<select id="s-feedback"><option value="themed" selected>Themed (matches theme)</option></select></label></div>
+            <div class="setting-row"><label>Motion<select id="s-motion"><option value="fun">Fun</option><option value="calm">Calm</option><option value="reduced">Reduced</option></select></label></div>
+            <div class="setting-row"><label>Sound Tabs<select id="s-chunk-tabs"><option value="auto" selected>Auto (focus only)</option><option value="on">Always on</option><option value="off">Off</option></select></label></div>
+            <div class="setting-row setting-row-full quick-preset-row">
+              <label class="setting-checkbox-label">
+                <input id="s-wilson-mode" type="checkbox">
+                Wilson Sound Card Mode
+              </label>
+              <div class="setting-checkbox-help">Uses A–Z sound cards with quick chunks. Turn off for standard QWERTY keyboard + simple board.</div>
+            </div>
+          </div>
+        </details>
+
+        <details id="settings-group-reveal" class="settings-group">
+          <summary>Reveal and Assessment</summary>
+          <div class="settings-group-grid settings-grid">
+            <div class="setting-row"><label>Reveal Focus Mode<select id="s-reveal-focus"><option value="on" selected>On (word + meaning first)</option><option value="off">Off (full detail layout)</option></select></label></div>
+            <div class="setting-row"><label>Reveal Pacing<select id="s-reveal-pacing"><option value="guided" selected>Guided</option><option value="quick">Quick</option><option value="slow">Slow</option></select></label></div>
+            <div class="setting-row"><label>Auto Next Word<select id="s-reveal-auto-next"><option value="off" selected>Off (manual)</option><option value="3">3 seconds</option><option value="5">5 seconds</option><option value="8">8 seconds</option></select></label></div>
+            <div class="setting-row setting-row-full">
+              <label class="setting-checkbox-label">
+                <input id="s-meaning-fun-link" type="checkbox" checked>
+                Include extended definition add-on
+              </label>
+              <div class="setting-checkbox-help">Default on. Turn off for simple definition only.</div>
+            </div>
+            <div class="setting-row setting-row-full">
+              <label class="setting-checkbox-label">
+                <input id="s-sor-notation" type="checkbox" checked>
+                Show SoR notation on reveal
+              </label>
+            </div>
+          </div>
+        </details>
+        <div class="settings-inline-note">
+          Visual and cache repair runs automatically after updates. Use maintenance actions only if a tab is stuck on an older build.
+        </div>
+        <details id="settings-group-diagnostics" class="settings-group">
+          <summary>Diagnostics</summary>
+          <div class="settings-group-grid settings-grid">
+            <div class="setting-row setting-row-full teacher-session-metrics">
+              <span id="diag-build" class="teacher-session-chip">Build: --</span>
+              <span id="diag-sw-version" class="teacher-session-chip">SW Runtime: --</span>
+              <span id="diag-sw-registrations" class="teacher-session-chip">SW Registrations: --</span>
+              <span id="diag-cache-buckets" class="teacher-session-chip">Cache Buckets: --</span>
+              <span id="diag-telemetry" class="teacher-session-chip">Telemetry Sink: --</span>
+            </div>
+            <div class="setting-row setting-row-full teacher-session-metrics">
+              <span id="diag-active-prefs" class="teacher-session-chip">Active Prefs: --</span>
+              <span id="diag-last-reset" class="teacher-session-chip">Last Reset: --</span>
+            </div>
+            <div class="setting-row setting-row-full">
+              <button id="diag-refresh-btn" class="quick-action-btn" type="button">Refresh Diagnostics</button>
+              <button id="diag-copy-btn" class="quick-action-btn" type="button">Copy Diagnostics</button>
+              <button id="diag-copy-review-link-btn" class="quick-action-btn" type="button">Copy Share Link</button>
+            </div>
+          </div>
+        </details>
+        <div class="settings-inline-actions settings-maintenance-row">
+          <button id="s-reset-look-cache" class="quick-action-btn" type="button">Reset Appearance</button>
+          <button id="s-force-update-now" class="quick-action-btn quick-action-btn-warning" type="button">Force Update Now</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ── Teacher hub ──────────────────────────────── -->
+  <div id="teacher-panel" class="teacher-panel hidden" role="dialog" aria-modal="true" aria-label="Teacher Hub">
+    <div class="teacher-panel-card">
+      <div class="teacher-panel-head">
+        <strong>Teacher Hub</strong>
+        <button id="teacher-panel-close" data-testid="teacher-panel-close" class="close-btn" aria-label="Close teacher hub">✕</button>
+      </div>
+      <div class="teacher-panel-body">
+        <div class="teacher-panel-grid">
+          <label>Grade Band
+            <select id="teacher-grade-band">
+              <option value="all" selected>All grades (K-2 safe)</option>
+              <option value="K-2">K–2</option>
+              <option value="G3-5">Grades 3–5</option>
+              <option value="G6-8">Grades 6–8</option>
+              <option value="G9-12">Grades 9–12</option>
+            </select>
+          </label>
+          <label>Team Turns
+            <select id="teacher-team-mode">
+              <option value="off" selected>Off</option>
+              <option value="on">On</option>
+            </select>
+          </label>
+          <label>Teams
+            <select id="teacher-team-count">
+              <option value="2" selected>2 teams</option>
+              <option value="3">3 teams</option>
+              <option value="4">4 teams</option>
+            </select>
+          </label>
+          <label>Turn Timer
+            <select id="teacher-turn-timer">
+              <option value="off" selected>Off</option>
+              <option value="30">30 seconds</option>
+              <option value="45">45 seconds</option>
+              <option value="60">60 seconds</option>
+            </select>
+          </label>
+          <label>Voice Practice
+            <select id="teacher-voice-task">
+              <option value="optional" selected>Optional</option>
+              <option value="required">Required before next word</option>
+              <option value="off">Off</option>
+            </select>
+          </label>
+        </div>
+        <p class="teacher-panel-note">Set grade band first, then pick a quest track. Classroom controls stay here so settings can stay simple.</p>
+        <div class="teacher-hub-actions">
+          <button id="teacher-open-writing-studio-btn" class="quick-action-btn teacher-session-btn" type="button">Open Writing Studio</button>
+          <button id="teacher-open-sentence-surgery-btn" class="quick-action-btn teacher-session-btn" type="button">Open Sentence Surgery</button>
+          <button id="teacher-open-reading-lab-btn" class="quick-action-btn teacher-session-btn" type="button">Open Reading Lab</button>
+        </div>
+
+        <section id="wq-teacher-tools" class="wq-teacher-tools">
+          <div class="wq-teacher-heading-row">
+            <strong class="wq-teacher-heading">Teacher Word List</strong>
+            <span id="wq-teacher-status" class="wq-teacher-status hidden" aria-hidden="true">ACTIVE</span>
+          </div>
+          <p class="wq-teacher-help">Drop in your own list (letters only, 2-12 chars). One word per line or comma-separated.</p>
+          <textarea id="wq-teacher-words" class="wq-teacher-words" placeholder="cat&#10;dog&#10;blend"></textarea>
+          <div class="wq-teacher-actions">
+            <button id="wq-teacher-activate" class="wq-teacher-btn wq-teacher-btn-primary" type="button">Use This Word List</button>
+            <button id="wq-teacher-shuffle" class="wq-teacher-btn wq-teacher-btn-primary" type="button">Shuffle + Use</button>
+            <button id="wq-teacher-clear" class="wq-teacher-btn wq-teacher-btn-muted" type="button">Clear</button>
+          </div>
+          <div id="wq-teacher-msg" class="wq-teacher-msg" aria-live="polite"></div>
+        </section>
+
+        <section id="wq-group-builder" class="wq-teacher-tools">
+          <div class="wq-teacher-heading-row">
+            <strong class="wq-teacher-heading">Group Builder (Tier 2)</strong>
+          </div>
+          <p class="wq-teacher-help">Create flexible groups, add/remove the active student, and assign the current curriculum target to the selected group.</p>
+          <div class="teacher-hub-grid-2">
+            <label>Group
+              <select id="s-group-select">
+                <option value="">No group selected</option>
+              </select>
+            </label>
+            <label>Tier
+              <select id="s-group-tier">
+                <option value="tier2" selected>Tier 2</option>
+                <option value="tier1">Tier 1</option>
+                <option value="tier3">Tier 3</option>
+              </select>
+            </label>
+          </div>
+          <label>Group Name
+            <input id="s-group-name" class="settings-text-input" type="text" placeholder="Vowel Team Group">
+          </label>
+          <div class="teacher-hub-actions">
+            <button id="session-group-new-btn" class="quick-action-btn teacher-session-btn" type="button">New</button>
+            <button id="session-group-save-btn" class="quick-action-btn teacher-session-btn" type="button">Save</button>
+            <button id="session-group-delete-btn" class="quick-action-btn teacher-session-btn" type="button">Delete</button>
+          </div>
+          <div class="teacher-hub-actions">
+            <button id="session-group-add-active-btn" class="quick-action-btn teacher-session-btn" type="button">Add Active Student</button>
+            <button id="session-group-remove-active-btn" class="quick-action-btn teacher-session-btn" type="button">Remove Active Student</button>
+            <button id="session-group-assign-target-btn" data-testid="session-group-assign-target-btn" class="quick-action-btn teacher-session-btn" type="button">Assign Current Target</button>
+          </div>
+          <div class="teacher-session-metrics">
+            <span id="session-group-summary" class="teacher-session-chip">Group: --</span>
+            <span id="session-group-students" class="teacher-session-chip">Students: --</span>
+            <span id="session-group-target" class="teacher-session-chip">Target: --</span>
+          </div>
+        </section>
+
+        <section id="wq-student-lock" class="wq-teacher-tools">
+          <div class="wq-teacher-heading-row">
+            <strong class="wq-teacher-heading">Student Target Lock (Tier 3)</strong>
+          </div>
+          <p class="wq-teacher-help">Lock the active student to a specific curriculum target for focused intervention.</p>
+          <label class="setting-checkbox-label">
+            <input id="s-lock-enabled" type="checkbox">
+            Enable lock for active student
+          </label>
+          <div class="teacher-hub-grid-2">
+            <label>Program
+              <select id="s-lock-pack">
+                <option value="custom">Manual (no pack)</option>
+              </select>
+            </label>
+            <label>Lesson Target
+              <select id="s-lock-target">
+                <option value="custom">Manual</option>
+              </select>
+            </label>
+          </div>
+          <label>Lock Duration
+            <select id="s-lock-duration">
+              <option value="1w" selected>1 week</option>
+              <option value="2w">2 weeks</option>
+              <option value="4w">4 weeks</option>
+              <option value="never">No expiration</option>
+            </select>
+          </label>
+          <div class="teacher-hub-actions">
+            <button id="session-lock-save-btn" class="quick-action-btn teacher-session-btn" type="button">Save Lock</button>
+            <button id="session-lock-apply-btn" class="quick-action-btn teacher-session-btn" type="button">Apply Now</button>
+            <button id="session-lock-clear-btn" class="quick-action-btn teacher-session-btn" type="button">Clear Lock</button>
+          </div>
+          <div class="teacher-session-metrics">
+            <span id="session-lock-status" class="teacher-session-chip">Lock: --</span>
+            <span id="session-lock-target" class="teacher-session-chip">Target: --</span>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main game area ───────────────────────────── -->
+  <main id="main">
+    <section id="mission-lab-hub" class="mission-lab-hub hidden" aria-label="Deep Dive standalone activity">
+      <div class="mission-lab-hub-head">
+        <div class="mission-lab-hub-title-wrap">
+          <strong>Deep Dive Quest</strong>
+          <span class="mission-lab-hub-steps">3-step mission: Listen, Explain, Apply</span>
+          <span id="mission-lab-hub-meta" class="mission-lab-hub-meta">Standalone Deep Dive uses your current quest focus and grade-safe word pool.</span>
+        </div>
+        <button id="mission-lab-start-btn" class="quick-action-btn mission-lab-start-btn" type="button">Start Deep Dive</button>
+      </div>
+      <details id="mission-lab-customize" class="mission-lab-customize">
+        <summary>Customize word + level</summary>
+        <div class="mission-lab-customize-grid">
+          <label>Word
+            <select id="mission-lab-word-select">
+              <option value="" selected>Auto-pick from current filters</option>
+            </select>
+          </label>
+          <label>Thinking Level
+            <select id="mission-lab-level-select">
+              <option value="auto" selected>Auto</option>
+              <option value="remember">Remember</option>
+              <option value="understand">Understand</option>
+              <option value="apply">Apply</option>
+              <option value="analyze">Analyze</option>
+              <option value="evaluate">Evaluate</option>
+              <option value="create">Create</option>
+            </select>
+          </label>
+        </div>
+      </details>
+      <div id="mission-lab-hub-note" class="mission-lab-hub-note">Tip: keep focus + grade aligned to your current lesson target, then launch a three-step Deep Dive.</div>
+    </section>
+
+    <section id="quest-loop" class="quest-loop hidden" aria-label="Quest progress">
+      <div class="quest-loop-top">
+        <span id="quest-tier-chip" class="quest-chip">Tier: Rookie</span>
+        <span id="quest-xp" class="quest-stat">0 XP</span>
+        <span id="quest-streak" class="quest-stat">Streak: 0 days</span>
+      </div>
+      <div id="quest-progress" class="quest-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="quest-progress-fill" class="quest-progress-fill"></div>
+      </div>
+      <div id="quest-track" class="quest-track" aria-hidden="true">
+        <span class="quest-node" data-tier="rookie">Rookie</span>
+        <span class="quest-node" data-tier="allstar">All-Star</span>
+        <span class="quest-node" data-tier="legend">Legend</span>
+      </div>
+      <div id="quest-next" class="quest-next">Next reward: reach All-Star tier.</div>
+    </section>
+
+    <!-- Board plate + grid -->
+    <div class="board-zone">
+      <div id="wq-coach-ribbon" class="cs-coach-ribbon hidden" role="status" aria-live="polite">
+        <span class="cs-coach-chip hidden"></span>
+        <p class="cs-coach-text"></p>
+        <button class="cs-coach-action hidden" type="button"></button>
+      </div>
+      <div class="board-plate">
+        <div id="game-board"></div>
+      </div>
+
+      <div class="play-support-row">
+        <div id="play-style-banner" class="play-style-banner hidden" role="status" aria-live="polite"></div>
+        <!-- Hear Word remains visible during gameplay -->
+        <div class="gameplay-audio">
+          <button id="focus-hint-toggle" class="audio-ghost-btn focus-hint-toggle" type="button" aria-pressed="false" title="Reveal a mystery clue">
+            Clue
+          </button>
+          <button class="audio-ghost-btn" id="g-hear-word">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+            <span id="g-hear-word-label">Hear Word</span>
+          </button>
+          <button class="audio-ghost-btn hidden" id="g-hear-def">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+            <span id="g-hear-def-label">Listen to Definition</span>
+          </button>
+        </div>
+      </div>
+      <div id="midgame-boost" class="midgame-boost hidden" role="status" aria-live="polite"></div>
+    </div>
+
+    <!-- Keyboard -->
+    <div id="keyboard"></div>
+
+  </main>
+
+  <div id="toast" role="alert" aria-live="polite"></div>
+  <div id="listening-mode-overlay" class="listening-mode-overlay hidden" role="dialog" aria-modal="true" aria-label="Hear and Spell mode helper">
+    <div id="listening-mode-card" class="listening-mode-card">
+      <div class="listening-mode-head">
+        <div class="listening-mode-title">Hear &amp; Spell Mode</div>
+        <button id="listening-mode-close" class="listening-mode-close" type="button" aria-label="Close Hear and Spell mode helper">✕</button>
+      </div>
+      <p class="listening-mode-copy">In Hear &amp; Spell Mode, hear the word, hear what it means, then spell what you hear.</p>
+      <p class="listening-mode-copy">Tap outside this card or press close when you are ready to begin.</p>
+    </div>
+  </div>
+  <div id="hint-clue-card" class="hint-clue-card hidden" role="dialog" aria-label="Phonics clue">
+    <div class="hint-clue-head">
+      <div id="hint-clue-title" class="hint-clue-title">Sound Clue</div>
+      <button id="hint-clue-close-icon" class="hint-clue-close-icon" type="button" aria-label="Close clue">✕</button>
+    </div>
+    <div id="hint-clue-message" class="hint-clue-message"></div>
+    <div id="hint-clue-examples" class="hint-clue-examples"></div>
+    <div class="hint-clue-actions">
+      <button id="hint-clue-sentence-btn" class="audio-btn hint-clue-btn" type="button">Hear Sentence</button>
+      <button id="hint-clue-close-btn" class="audio-btn hint-clue-btn hint-clue-btn-muted" type="button">Close</button>
+    </div>
+  </div>
+  <div id="starter-word-card" class="starter-word-card hidden" role="dialog" aria-label="Try these words">
+    <div class="starter-word-head">
+      <div id="starter-word-title" class="starter-word-title">Try a Starter Word</div>
+      <button id="starter-word-close-icon" class="starter-word-close-icon" type="button" aria-label="Close word ideas">✕</button>
+    </div>
+    <div id="starter-word-message" class="starter-word-message">Pick one to test your next guess.</div>
+    <div id="starter-word-list" class="starter-word-list" role="list"></div>
+    <div class="starter-word-actions">
+      <button id="starter-word-refresh-btn" class="audio-btn starter-word-btn" type="button">New Ideas</button>
+      <button id="starter-word-close-btn" class="audio-btn starter-word-btn starter-word-btn-muted" type="button">Close</button>
+    </div>
+  </div>
+  <div id="celebrate-layer" class="celebrate-layer" aria-hidden="true"></div>
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- ── End modal ────────────────────────────────── -->
+  <div id="modal-overlay" class="hidden">
+    <div id="end-modal" class="hidden" role="dialog" aria-modal="true">
+      <div id="modal-result"></div>
+      <div id="modal-word"></div>
+      <div id="modal-meaning-highlight" class="modal-meaning-highlight hidden" aria-live="polite">
+        <p id="modal-meaning-highlight-line"></p>
+      </div>
+      <p id="modal-read-cue" class="modal-read-cue hidden" aria-live="polite"></p>
+      <div id="modal-challenge-launch" class="modal-challenge-launch hidden" aria-live="polite">
+        <div class="modal-challenge-launch-copy">
+          <span class="modal-challenge-launch-title">Deep Dive Quest (Optional)</span>
+          <span id="modal-challenge-launch-meta" class="modal-challenge-launch-meta"></span>
+          <span id="modal-challenge-launch-helper" class="modal-challenge-launch-helper">Optional after each solved word. Complete 3 quick steps.</span>
+        </div>
+        <button id="modal-open-challenge" class="audio-btn modal-open-challenge-btn" type="button">Start Deep Dive</button>
+      </div>
+      <div class="modal-syllables-wrap">
+        <div id="modal-syllables"></div>
+        <div id="modal-sor" class="hidden"></div>
+      </div>
+      <div class="audio-row audio-row-core">
+        <button class="audio-btn" id="hear-word-btn">🔊 Word</button>
+        <button class="audio-btn" id="hear-def-btn">📖 Meaning</button>
+      </div>
+      <details id="modal-practice-details" class="modal-practice-details">
+        <summary>
+          <span>🎤 Say It Back</span>
+          <span class="modal-practice-summary-actions">
+            <button id="modal-practice-status" class="modal-practice-status modal-practice-status-btn" type="button" aria-label="Toggle voice practice requirement">Optional</button>
+            <button id="voice-quick-record-btn" class="audio-btn voice-quick-record-btn" type="button">Record</button>
+          </span>
+        </summary>
+        <div id="modal-voice-practice" class="modal-voice-practice">
+          <div class="voice-practice-head">
+            <strong>Practice Pronunciation</strong>
+            <span id="voice-practice-target"></span>
+          </div>
+          <div id="voice-karaoke-guide" class="voice-karaoke-guide" role="group" aria-label="Read-along guide">
+            <div id="voice-karaoke-word" class="voice-karaoke-word" aria-live="polite"></div>
+            <div id="voice-karaoke-hint" class="voice-karaoke-hint">Tap Guide Me for pacing, then record your best try.</div>
+          </div>
+          <div class="voice-practice-actions">
+            <button class="audio-btn" id="voice-guide-btn" type="button">Guide Me</button>
+            <button class="audio-btn" id="voice-record-btn" type="button">Start Recording (3s countdown)</button>
+            <button class="audio-btn" id="voice-play-btn" type="button" disabled>Play My Voice</button>
+            <button class="audio-btn" id="voice-save-btn" type="button" disabled>Save Clip</button>
+          </div>
+          <div id="voice-practice-feedback" class="voice-practice-feedback" aria-live="polite">Tap Record for a 3-second countdown, then say the word clearly.</div>
+          <div id="voice-history-strip" class="voice-history-strip">
+            <div class="voice-history-head">
+              <span>Recent clips</span>
+              <span id="voice-history-trend" class="voice-history-trend">Trend: —</span>
+            </div>
+            <div id="voice-history-items" class="voice-history-items">
+              <span class="voice-history-empty">No clips yet.</span>
+            </div>
+          </div>
+        </div>
+      </details>
+      <div class="modal-meta-row hidden" aria-hidden="true">
+        <div id="modal-guesses"></div>
+        <div id="modal-badge"></div>
+      </div>
+      <details id="modal-more-details" class="modal-more-details hidden" aria-hidden="true">
+        <summary>More details</summary>
+        <div class="modal-more-body">
+          <p id="modal-def" class="hidden" aria-hidden="true"></p>
+          <p id="modal-sentence"></p>
+          <div id="modal-fun-wrap" class="hidden" aria-hidden="true"><p id="modal-fun"></p></div>
+          <div class="audio-row">
+            <button class="audio-btn" id="hear-sentence-btn">💬 Sentence</button>
+          </div>
+        </div>
+      </details>
+      <div id="modal-auto-next-banner" class="modal-auto-next-banner hidden" aria-live="polite">
+        <span id="modal-auto-next-countdown">Next word in 5s</span>
+        <button id="modal-auto-next-cancel" class="audio-btn modal-auto-next-cancel" type="button">Cancel</button>
+      </div>
+      <button id="play-again-btn">Play Again →</button>
+      <button id="wq-share-result-btn" class="hidden" type="button">Share Result</button>
+      <button id="wq-share-bundle-btn" class="hidden" type="button">Share Session Bundle</button>
+    </div>
+  </div>
+
+  <!-- ── Deep Dive modal ──────────────────────────── -->
+  <div id="challenge-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Deep Dive Quest">
+    <div class="modal-card challenge-modal-card">
+      <div class="modal-head challenge-modal-head">
+        <div class="challenge-modal-title-wrap">
+          <strong>Deep Dive Quest</strong>
+          <span id="challenge-level-chip" class="challenge-level-chip">Apply</span>
+        </div>
+        <button id="challenge-modal-close" class="close-btn" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body challenge-modal-body">
+        <div class="challenge-meta-row" aria-live="polite">
+          <span id="challenge-word-chip" class="challenge-meta-chip">Word: —</span>
+          <span id="challenge-topic-chip" class="challenge-meta-chip">Quest focus: —</span>
+          <span id="challenge-grade-chip" class="challenge-meta-chip">Grade: —</span>
+          <span id="challenge-role-chip" class="challenge-meta-chip">Word type: —</span>
+        </div>
+        <p id="challenge-instruction" class="challenge-instruction">One step at a time. Finish all 3 steps.</p>
+        <div id="challenge-quickstart" class="challenge-quickstart hidden" aria-live="polite">
+          <div id="challenge-quickstart-copy" class="challenge-quickstart-copy">Quick start: finish Sound, Meaning, and Context in order.</div>
+          <button id="challenge-quickstart-dismiss" class="challenge-starter-btn" type="button">Got it</button>
+        </div>
+        <div id="challenge-station-progress" class="challenge-station-progress" role="tablist" aria-label="Deep Dive steps">
+          <button class="challenge-station-pill is-active" type="button" data-challenge-station="listen" role="tab" aria-selected="true">1. Sound</button>
+          <button class="challenge-station-pill" type="button" data-challenge-station="analyze" role="tab" aria-selected="false">2. Meaning</button>
+          <button class="challenge-station-pill" type="button" data-challenge-station="create" role="tab" aria-selected="false">3. Context</button>
+        </div>
+        <div class="challenge-mission-grid">
+          <section class="challenge-mission is-active" data-challenge-task="listen" role="tabpanel" aria-hidden="false">
+            <h3 id="challenge-listen-title">1. Sound</h3>
+            <p id="challenge-listen-prompt" class="challenge-mission-copy"></p>
+            <div id="challenge-pattern-options" class="challenge-choice-grid" role="group" aria-label="Pattern choices"></div>
+            <p id="challenge-listen-helper" class="challenge-mission-helper"></p>
+            <div class="challenge-mini-actions">
+              <button id="challenge-hear-word" class="audio-btn" type="button">🔊 Hear Word</button>
+              <button id="challenge-open-practice" class="audio-btn" type="button">🎤 Say It Back</button>
+            </div>
+            <div id="challenge-status-listen" class="challenge-task-status">Pending</div>
+          </section>
+          <section class="challenge-mission" data-challenge-task="analyze" role="tabpanel" aria-hidden="true">
+            <h3 id="challenge-analyze-title">2. Meaning</h3>
+            <p id="challenge-analyze-prompt" class="challenge-mission-copy"></p>
+            <div id="challenge-meaning-options" class="challenge-choice-grid challenge-choice-grid-meaning" role="group" aria-label="Meaning choices"></div>
+            <p id="challenge-analyze-helper" class="challenge-mission-helper"></p>
+            <div class="challenge-mini-actions">
+              <button id="challenge-hear-sentence" class="audio-btn" type="button">💬 Hear Sentence</button>
+            </div>
+            <div id="challenge-status-analyze" class="challenge-task-status">Pending</div>
+          </section>
+          <section class="challenge-mission" data-challenge-task="create" role="tabpanel" aria-hidden="true">
+            <h3 id="challenge-create-title">3. Context</h3>
+            <p id="challenge-create-prompt" class="challenge-mission-copy"></p>
+            <div id="challenge-syntax-options" class="challenge-choice-grid challenge-choice-grid-syntax" role="group" aria-label="Sentence choices"></div>
+            <p id="challenge-create-helper" class="challenge-mission-helper"></p>
+            <div id="challenge-status-create" class="challenge-task-status">Pending</div>
+          </section>
+        </div>
+        <div class="challenge-progress-wrap" aria-live="polite">
+          <div id="challenge-progress-label" class="challenge-progress-label">0 / 3 steps complete</div>
+          <div class="challenge-progress-track"><div id="challenge-progress-fill" class="challenge-progress-fill"></div></div>
+        </div>
+        <div class="challenge-score-wrap" aria-live="polite">
+          <div id="challenge-score-label" class="challenge-score-label">Deep Dive score: --</div>
+          <div id="challenge-score-detail" class="challenge-score-detail">Accuracy -- · Meaning -- · Syntax --</div>
+        </div>
+        <div class="challenge-actions">
+          <button id="challenge-next-station" class="audio-btn" type="button" disabled>Next Step</button>
+          <button id="challenge-save-reflection" class="audio-btn" type="button">Save Deep Dive</button>
+          <button id="challenge-finish-btn" class="audio-btn" type="button" disabled>Finish</button>
+        </div>
+        <div id="challenge-live-feedback" class="challenge-live-feedback" aria-live="polite"></div>
+        <p id="challenge-teacher-lens" class="challenge-teacher-lens"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Phonics Clue Sprint modal ───────────────── -->
+  <div id="phonics-clue-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Phonics Clue Sprint">
+    <div class="modal-card phonics-clue-modal-card">
+      <div class="modal-head phonics-clue-modal-head">
+        <div class="phonics-clue-title-wrap">
+          <strong>Phonics Clue Sprint</strong>
+          <span id="phonics-clue-context-chip" class="challenge-level-chip">Solo</span>
+        </div>
+        <button id="phonics-clue-close" class="close-btn" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body phonics-clue-modal-body">
+        <div class="phonics-clue-config-grid">
+          <label>Deck
+            <select id="phonics-clue-deck-select">
+              <option value="taboo_phonics_k_1_starter_30">K-1 Starter (30 cards)</option>
+              <option value="taboo_phonics_g2_3_starter_30" selected>G2-3 Starter (30 cards)</option>
+              <option value="taboo_phonics_g4_5_starter_30">G4-5 Starter (30 cards)</option>
+            </select>
+          </label>
+          <label>Context
+            <select id="phonics-clue-context-select">
+              <option value="solo" selected>Solo on device</option>
+              <option value="intervention">1:1 intervention</option>
+              <option value="small_group">Small group</option>
+            </select>
+          </label>
+          <label>Turn timer
+            <select id="phonics-clue-timer-select">
+              <option value="off">Off</option>
+              <option value="45">45s</option>
+              <option value="60" selected>60s</option>
+              <option value="75">75s</option>
+              <option value="90">90s</option>
+            </select>
+          </label>
+          <label>Bonus prompt
+            <select id="phonics-clue-bonus-select">
+              <option value="spell" selected>Spell it</option>
+              <option value="segment">Segment it</option>
+              <option value="sentence">Use it in a sentence</option>
+              <option value="meaning">Say the meaning</option>
+            </select>
+          </label>
+        </div>
+        <div class="challenge-meta-row" aria-live="polite">
+          <span id="phonics-clue-card-chip" class="challenge-meta-chip">Card: --</span>
+          <span id="phonics-clue-score-chip" class="challenge-meta-chip">Guess points: 0</span>
+          <span id="phonics-clue-bonus-chip" class="challenge-meta-chip">Bonus points: 0</span>
+          <span id="phonics-clue-timer-chip" class="challenge-meta-chip">Timer: --</span>
+        </div>
+        <section class="phonics-clue-card">
+          <div class="phonics-clue-card-head">
+            <span class="phonics-clue-label">Target</span>
+            <button id="phonics-clue-hide-btn" class="challenge-starter-btn" type="button" aria-pressed="false">Hide Target</button>
+          </div>
+          <p id="phonics-clue-target-word" class="phonics-clue-target-word">Start a round to reveal the first card.</p>
+          <p id="phonics-clue-marked-word" class="phonics-clue-marked-word">Marked: —</p>
+          <div>
+            <span class="phonics-clue-label">Do not say:</span>
+            <ul id="phonics-clue-taboo-list" class="phonics-clue-taboo-list">
+              <li>—</li>
+              <li>—</li>
+              <li>—</li>
+            </ul>
+          </div>
+          <details id="phonics-clue-support-details" class="phonics-clue-support-details">
+            <summary>Definition and example</summary>
+            <p id="phonics-clue-definition">Definition: —</p>
+            <p id="phonics-clue-example">Example: —</p>
+          </details>
+          <p id="phonics-clue-bonus-prompt" class="phonics-clue-bonus-prompt">Bonus prompt: spell the target word.</p>
+        </section>
+        <div class="challenge-actions">
+          <button id="phonics-clue-start-btn" class="audio-btn" type="button">Start Deck</button>
+          <button id="phonics-clue-guess-btn" class="audio-btn" type="button" disabled>Correct Guess +1</button>
+          <button id="phonics-clue-bonus-btn" class="audio-btn" type="button" disabled>Bonus +1</button>
+          <button id="phonics-clue-next-btn" class="audio-btn" type="button" disabled>Next Card</button>
+          <button id="phonics-clue-skip-btn" class="audio-btn" type="button" disabled>Skip</button>
+        </div>
+        <p id="phonics-clue-context-note" class="challenge-teacher-lens">Solo mode: read clues out loud to yourself, guess, then bank one bonus action before moving on.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── First run setup modal ───────────────────── -->
+  <div id="first-run-setup-modal" data-testid="first-run-setup-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="How to play WordQuest">
+    <div class="modal-card first-run-setup-card">
+      <div class="modal-head">
+        <strong>How to Play</strong>
+        <button id="first-run-skip-btn" data-testid="first-run-skip-btn" class="quick-action-btn first-run-skip-btn" type="button" aria-label="Close tutorial">Got it</button>
+      </div>
+      <div class="modal-body">
+        <p class="first-run-lead">Pick a grade and game style, then solve the word in 6 tries.</p>
+        <label class="first-run-grade-row" for="first-run-grade-band">
+          <span>Choose grade band</span>
+          <select id="first-run-grade-band">
+            <option value="all">All grades (K-2 safe)</option>
+            <option value="K-2">K–2</option>
+            <option value="G3-5">Grades 3–5</option>
+            <option value="G6-8">Grades 6–8</option>
+            <option value="G9-12">Grades 9–12</option>
+          </select>
+          <span class="first-run-grade-note">You can change this anytime in Teacher Hub.</span>
+        </label>
+        <div class="first-run-mode-row" role="group" aria-label="Choose game style">
+          <button id="first-run-mode-detective" class="first-run-mode-btn" type="button" data-play-style-choice="detective" aria-pressed="false">🔎 Guess &amp; Check</button>
+          <button id="first-run-mode-listening" class="first-run-mode-btn" type="button" data-play-style-choice="listening" aria-pressed="false">🎧 Hear &amp; Spell</button>
+        </div>
+        <p id="first-run-mode-help" class="first-run-mode-help">Guess &amp; Check: use color clues. Hear &amp; Spell: hear the word and spell it.</p>
+        <div class="first-run-wordle-legend" aria-label="Tile color legend">
+          <div class="first-run-wordle-item">
+            <div class="first-run-wordle-row" aria-hidden="true">
+              <span class="first-run-wordle-tile is-correct">W</span>
+              <span class="first-run-wordle-tile">E</span>
+              <span class="first-run-wordle-tile">A</span>
+              <span class="first-run-wordle-tile">R</span>
+              <span class="first-run-wordle-tile">Y</span>
+            </div>
+            <span><b>Green</b>: right letter, right spot.</span>
+          </div>
+          <div class="first-run-wordle-item">
+            <div class="first-run-wordle-row" aria-hidden="true">
+              <span class="first-run-wordle-tile">P</span>
+              <span class="first-run-wordle-tile">I</span>
+              <span class="first-run-wordle-tile is-present">L</span>
+              <span class="first-run-wordle-tile">O</span>
+              <span class="first-run-wordle-tile">T</span>
+            </div>
+            <span><b>Yellow</b>: right letter, wrong spot.</span>
+          </div>
+          <div class="first-run-wordle-item">
+            <div class="first-run-wordle-row" aria-hidden="true">
+              <span class="first-run-wordle-tile">V</span>
+              <span class="first-run-wordle-tile">A</span>
+              <span class="first-run-wordle-tile">G</span>
+              <span class="first-run-wordle-tile is-absent">U</span>
+              <span class="first-run-wordle-tile">E</span>
+            </div>
+            <span><b>Gray</b>: this letter is not in the word.</span>
+          </div>
+        </div>
+        <p class="setting-checkbox-help first-run-help">Tip: tap <b>Clue</b> for help anytime.</p>
+        <label class="first-run-hide-row">
+          <input id="first-run-hide-again" type="checkbox" checked>
+          <span>Don’t show this welcome card again</span>
+        </label>
+        <button id="first-run-start-btn" data-testid="first-run-start-btn" class="quick-action-btn first-run-start-btn" type="button">Start Quest</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- ── Voice help modal ─────────────────────────── -->
+  <div id="voice-help-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Improve device voice">
+    <div class="modal-card">
+      <div class="modal-head">
+        <strong>Improve device voice quality</strong>
+        <button id="voice-help-close" class="close-btn" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body voice-help-body">
+        <p class="voice-help-intro"><b>Best quality:</b> use recorded WordQuest audio when available.</p>
+        <p class="voice-help-intro">Choose your device to open steps:</p>
+        <div class="voice-help-list" role="list">
+          <details class="voice-help-item" role="listitem">
+            <summary>iPhone / iPad</summary>
+            <div class="voice-help-item-body">
+              <p>Settings → Accessibility → Spoken Content → Voices → English (United States) → Ava (Enhanced).</p>
+              <p><a href="https://support.apple.com/111798" target="_blank" rel="noopener noreferrer">Quick guide</a> · <a href="https://support.apple.com/guide/ipad/ipad9a247097/ipados" target="_blank" rel="noopener noreferrer">Apple iPad guide</a></p>
+            </div>
+          </details>
+          <details class="voice-help-item" role="listitem">
+            <summary>macOS</summary>
+            <div class="voice-help-item-body">
+              <p>System Settings → Accessibility → Spoken Content → System Voice → Manage Voices → English (United States) → Ava (Enhanced).</p>
+              <p><a href="https://support.apple.com/guide/mac-help/mchlp2290/mac" target="_blank" rel="noopener noreferrer">Apple Mac guide</a></p>
+            </div>
+          </details>
+          <details class="voice-help-item" role="listitem">
+            <summary>Android (Samsung)</summary>
+            <div class="voice-help-item-body">
+              <p>Settings → Accessibility (or General management) → Text-to-speech → install/download high-quality voices.</p>
+            </div>
+          </details>
+          <details class="voice-help-item" role="listitem">
+            <summary>Chrome Browser</summary>
+            <div class="voice-help-item-body">
+              <p>Device voices vary by OS. Try switching to a different downloaded voice in your system settings.</p>
+            </div>
+          </details>
+        </div>
+        <p class="voice-help-footnote">WordQuest will <b>never auto-switch</b> to device voice unless you choose a fallback mode.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="wq-version-chip" class="wq-version-chip hidden" aria-hidden="true"></div>
+
+  <script src="data/words-inline.js"></script>
+  <script src="data/engagement-boosts.js?v=20260222c"></script>
+  <script src="js/data.js?v=20260224b"></script>
+  <script src="js/audio.js?v=20260228c"></script>
+  <script src="js/game.js?v=20260224h"></script>
+  <script src="js/ui.js?v=20260224h"></script>
+  <script src="js/theme-registry.js?v=20260223c"></script>
+  <script src="js/feature-flags.js?v=20260226a"></script>
+  <script src="data/curriculum-taxonomy.js?v=20260225a"></script>
+  <script src="data/assignment-schema.js?v=20260225a"></script>
+  <script src="js/contracts/event-bus-contract.js?v=20260225d"></script>
+  <script src="js/contracts/teacher-assignments-contract.js?v=20260225d"></script>
+  <script src="js/contracts/deep-dive-contract.js?v=20260225d"></script>
+  <script src="js/features/teacher-assignments.js?v=20260225d"></script>
+  <script src="js/features/deep-dive-core.js?v=20260225d"></script>
+  <script src="cache-engine.js?v=20260227a"></script>
+  <script src="analytics-engine.js?v=20260227a"></script>
+  <script src="js/cornerstone-signals.js?v=20260228a"></script>
+  <script src="js/cornerstone-store.js?v=20260228a"></script>
+  <script src="js/cornerstone-engine.js?v=20260228a"></script>
+  <script src="js/wq-diagnostics.js?v=20260228a"></script>
+  <script src="ai-service.js?v=20260227a"></script>
+  <script src="js/ava-intensity.js?v=20260228a"></script>
+  <script src="js/ava-coach.js?v=20260228d"></script>
+  <script src="js/coach-ribbon.js?v=20260228b"></script>
+  <script src="word-quest-preview.js?v=20260228c"></script>
+  <script src="hero-v2.js?v=20260228c"></script>
+  <script src="js/app.js?v=20260228b"></script>
+  <script src="js/deep-dive-plus.js?v=20260226m"></script>
+  <script src="js/theme-nav.js?v=20260225d"></script>
+</body>
 </html>
