@@ -22,6 +22,7 @@
   var FEATURE_FLAGS = window.WQFeatureFlags || {};
   var WRITING_STUDIO_ENABLED = FEATURE_FLAGS.writingStudio !== false;
   var FALLBACK_ACCENT = "#7aa7ff";
+  var sessionStartTime = Date.now();
 
   if (!WRITING_STUDIO_ENABLED) {
     var redirectUrl = new URL("index.html", window.location.href);
@@ -4369,6 +4370,22 @@
       stage.classList.add("ws-saved");
       window.setTimeout(function () { stage.classList.remove("ws-saved"); }, 420);
     }
+    try {
+      if (window.CSEvidence && typeof window.CSEvidence.appendSession === "function") {
+        var params = new URLSearchParams(window.location.search || "");
+        var studentId = String(params.get("student") || params.get("studentId") || "").trim() || "demo-student";
+        var text = String(editor.value || "");
+        var sentenceCount = splitSentences(text).length;
+        var hasReasoning = /\b(because|although|therefore|since)\b/i.test(text);
+        var paragraphCount = text.split(/\n{2,}/).map(function (block) { return block.trim(); }).filter(Boolean).length;
+        window.CSEvidence.appendSession(studentId, "writing_studio", {
+          paragraphs: Math.max(1, paragraphCount || 0),
+          revisionCount: Math.max(0, Number(roiState && roiState.artifacts || 0)),
+          voiceFlatFlag: !hasReasoning,
+          timeOnTaskSec: Math.max(0, Math.round((Date.now() - sessionStartTime) / 1000))
+        });
+      }
+    } catch (_e) {}
     showToast("Draft saved");
   }
 

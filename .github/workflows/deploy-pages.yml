@@ -57,9 +57,14 @@ jobs:
           test -f dist/index.html || { echo "Missing dist/index.html"; exit 1; }
           test -f dist/js/app.js || { echo "Missing dist/js/app.js"; exit 1; }
           test -f dist/js/evidence-store.js || { echo "Missing dist/js/evidence-store.js"; exit 1; }
+          test -f dist/js/ava-intensity.js || { echo "Missing dist/js/ava-intensity.js"; exit 1; }
+          test -f dist/js/wq-diagnostics.js || { echo "Missing dist/js/wq-diagnostics.js"; exit 1; }
           test -f dist/sw-runtime.js || { echo "Missing dist/sw-runtime.js"; exit 1; }
           test -f dist/version.json || { echo "Missing dist/version.json"; exit 1; }
           test -f dist/build-version.txt || { echo "Missing dist/build-version.txt"; exit 1; }
+          test -f dist/data/ava-persona.json || { echo "Missing dist/data/ava-persona.json"; exit 1; }
+          test -f dist/data/ava-event-matrix.json || { echo "Missing dist/data/ava-event-matrix.json"; exit 1; }
+          test -f dist/audio/ava/current/manifest.json || { echo "Missing dist/audio/ava/current/manifest.json"; exit 1; }
           while IFS= read -r asset; do
             clean_asset="$(echo "${asset}" | sed 's#^\./##')"
             test -f "dist/${clean_asset}" || { echo "Missing referenced asset dist/${clean_asset}"; exit 1; }

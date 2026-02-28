@@ -632,6 +632,15 @@
     latestSessionId = saved && saved.sessionId ? String(saved.sessionId) : "";
     if (shareResultBtn) shareResultBtn.classList.toggle("hidden", !latestSessionId);
     if (shareBundleBtn) shareBundleBtn.classList.toggle("hidden", !latestSessionId);
+    if (window.CSEvidence && typeof window.CSEvidence.appendSession === "function") {
+      window.CSEvidence.appendSession(studentCode || "demo-student", "sentence_surgery", {
+        reasoningAdded: !!reasoningAdded,
+        runOnFlag: /run-on/i.test(String(signalSet.grammar || "")),
+        fragmentFlag: /fragment/i.test(String(signalSet.grammar || "")),
+        editsCount: Math.max(0, Number(editCount || 0)),
+        timeOnTaskSec: Math.max(0, Math.round((Date.now() - sessionStartedAt) / 1000))
+      });
+    }
   }
 
   async function shareLatestSession() {

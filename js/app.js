@@ -13871,7 +13871,7 @@
   function getActiveSignalStudentId() {
     try {
       const params = new URLSearchParams(window.location.search || '');
-      const fromQuery = String(params.get('studentId') || '').trim();
+      const fromQuery = String(params.get('student') || params.get('studentId') || '').trim();
       if (fromQuery) return fromQuery;
     } catch {}
     try {
@@ -14074,18 +14074,16 @@
       const repeatedInvalidLetterPlacementCount = Math.max(0, Math.round((1 - patternAdherence) * guessCount));
       const vowelSwapCount = Math.max(0, Number(signals.uniqueVowels || 0));
       const clueUseScore = payloadMeta.helpUsed ? 0.8 : 0.25;
-      if (window.CSEvidence && typeof window.CSEvidence.appendSignal === 'function') {
-        window.CSEvidence.appendSignal(studentId, 'wordquest', {
-          guessesCount: guessCount,
-          timeToFirstGuess: timeToFirstGuess,
-          avgGuessLatency: Number(signals.guessesPerMin || 0) > 0 ? Number((60 / Number(signals.guessesPerMin || 1)).toFixed(2)) : 0,
-          constraintHonorRate: Number(patternAdherence.toFixed(3)),
-          vowelSwapCount: vowelSwapCount,
-          repeatedLetterErrors: repeatedInvalidLetterPlacementCount,
-          clueUseScore: Number(clueUseScore.toFixed(3)),
-          patternAdherence: Number(patternAdherence.toFixed(3)),
-          statusLabel: patternAdherence > 0.76 ? 'Efficient refinement' : (timeToFirstGuess > 12 ? 'Slow start' : 'Vowel mapping unstable')
-        }, { sparkKey: 'constraintHonorRate' });
+      if (window.CSEvidence && typeof window.CSEvidence.appendSession === 'function') {
+        window.CSEvidence.appendSession(studentId, 'wordquest', {
+          totalGuesses: guessCount,
+          solveSuccess: !!signals.solved,
+          timeToFirstCorrectLetter: timeToFirstGuess,
+          vowelConfusionProxy: Number((1 - Math.min(1, Number(signals.vowelRatio || 0))).toFixed(3)),
+          wrongSlotRepeat: repeatedInvalidLetterPlacementCount,
+          newInfoPerGuess: Number(patternAdherence.toFixed(3)),
+          streaks: Number(signals.streak || 0)
+        });
       }
     } catch {}
 

@@ -612,7 +612,7 @@
     var studentId = "student-local";
     try {
       var params = new URLSearchParams(window.location.search || "");
-      studentId = String(params.get("studentId") || studentId).trim() || studentId;
+      studentId = String(params.get("student") || params.get("studentId") || studentId).trim() || studentId;
     } catch (_e) {
       studentId = "student-local";
     }
@@ -662,8 +662,8 @@
   function publishReadingLabSignal(studentId, metrics) {
     if (state.isDemo || !metrics) return;
     var signal = buildReadingLabSignal(metrics);
-    if (window.CSCornerstoneEngine && typeof window.CSCornerstoneEngine.appendSignal === "function") {
-      window.CSCornerstoneEngine.appendSignal(signal, {
+    if (window.CSCornerstoneEngine && typeof window.CSCornerstoneEngine.appendSession === "function") {
+      window.CSCornerstoneEngine.appendSession(signal, {
         module: "readinglab",
         studentId: String(studentId || "").trim()
       });
@@ -708,6 +708,16 @@
     state.latestSessionId = saved && saved.sessionId ? String(saved.sessionId) : "";
     if (el.shareResult) el.shareResult.classList.toggle("hidden", !state.latestSessionId);
     if (el.shareBundle) el.shareBundle.classList.toggle("hidden", !state.latestSessionId);
+    if (window.CSEvidence && typeof window.CSEvidence.appendSession === "function") {
+      window.CSEvidence.appendSession(studentId || "demo-student", "reading_lab", {
+        accuracy: Math.max(0, Math.min(100, Number(metrics.accuracy || 0))),
+        wpmProxy: Math.max(0, Number(metrics.wpm || 0)),
+        selfCorrects: Math.max(0, Math.round((metrics.selfCorrectionRate || 0) * 10)),
+        punct: Math.max(0, Math.min(100, Number(metrics.punctScore || 0))),
+        prosodyFlatFlag: Number(signal.prosodyStability || 0) < 0.45,
+        hardWordsTop3: topHardWords(3)
+      });
+    }
   }
 
   async function shareLatestSession() {

@@ -5,6 +5,7 @@ const { test, expect } = require('@playwright/test');
 const VIEWPORTS = [
   { width: 1440, height: 900 },
   { width: 1024, height: 768 },
+  { width: 834, height: 1112 },
   { width: 390, height: 844 }
 ];
 
