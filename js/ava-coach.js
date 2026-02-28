@@ -84,6 +84,28 @@
     return "2";
   }
 
+  function isCoachVoiceEnabled() {
+    try {
+      return localStorage.getItem("cs_coach_voice_enabled") === "true";
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function isWordQuestInPlay() {
+    try {
+      if (document.documentElement.getAttribute("data-home-mode") !== "play") return false;
+      if (document.querySelector("#modal-overlay:not(.hidden), #challenge-modal:not(.hidden), #first-run-setup-modal:not(.hidden), #voice-help-modal:not(.hidden), #listening-mode-overlay:not(.hidden)")) {
+        return false;
+      }
+      if (!window.WQGame || typeof window.WQGame.getState !== "function") return false;
+      var stateNow = window.WQGame.getState();
+      return !!(stateNow && stateNow.word && !stateNow.gameOver);
+    } catch (_e) {
+      return false;
+    }
+  }
+
   function normalizeLength(value, fallbackText) {
     var key = normalizeKey(value);
     if (key === "micro" || key === "short" || key === "medium") return key;
@@ -504,6 +526,8 @@
     var selected = getAdaptive(arg1, arg2, arg3);
     var text = sanitizeText(selected && selected.text);
     if (!text) return "";
+    var isIdlePrompt = normalizeKey(selected && selected.event) === "idle_20s";
+    var allowBrowserTtsFallback = !isIdlePrompt;
 
     var manifest = await loadManifest();
     var fromManifest = manifest && manifest.byText ? manifest.byText[normalizeKey(text)] : "";
@@ -514,7 +538,8 @@
       try {
         spoke = await window.WQAudio.playCoachPhrase({ text: text, clip: localClip }, {
           source: "ava-coach-adaptive",
-          demo: !!(arg1 && arg1.demo)
+          demo: !!(arg1 && arg1.demo),
+          allowFallbackTTS: allowBrowserTtsFallback
         });
       } catch (_e) {
         spoke = false;
@@ -522,7 +547,7 @@
     }
 
     if (!spoke) spoke = await synthesizeAzureLive(text);
-    if (!spoke) await speakWithSpeechSynthesis(text);
+    if (!spoke && allowBrowserTtsFallback) await speakWithSpeechSynthesis(text);
 
     state.lastSpokenAt = Date.now();
 
@@ -545,6 +570,13 @@
     var event = window.AvaIntensity && typeof window.AvaIntensity.resolveEvent === "function"
       ? window.AvaIntensity.resolveEvent(ctx)
       : normalizeKey(ctx.event || "");
+
+    var moduleName = normalizeKey(ctx.module || "wordquest") || "wordquest";
+    if (event === "idle_20s") {
+      if (moduleName !== "wordquest" || !isWordQuestInPlay() || !isCoachVoiceEnabled()) {
+        return { skipped: true, reason: "idle-not-in-active-wordquest", event: event };
+      }
+    }
 
     var priority = window.AvaIntensity && typeof window.AvaIntensity.getEventPriority === "function"
       ? window.AvaIntensity.getEventPriority(ctx.module, event)

@@ -313,7 +313,7 @@ const WQAudio = (() => {
     const text = _normalizeSpeechText(input?.text || input?.phrase || '');
     const clipPath = _normalizeAudioPath(input?.clip || input?.audio || input?.path || '');
     const allowRecorded = mode !== 'device';
-    const allowFallbackTTS = true;
+    const allowFallbackTTS = options.allowFallbackTTS !== false;
 
     void _primeAudioManifest();
 
