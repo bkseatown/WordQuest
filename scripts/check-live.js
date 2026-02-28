@@ -8,6 +8,9 @@ const TARGETS = [
   "https://bkseatown.github.io/WordQuest/index.html",
   "https://bkseatown.github.io/WordQuest/version.json"
 ];
+const EXPECTED_SHA = process.argv.find((arg) => arg.startsWith("--expected-sha="))
+  ? process.argv.find((arg) => arg.startsWith("--expected-sha=")).split("=")[1]
+  : "";
 
 function requestWithRedirects(url, maxRedirects = 6) {
   return new Promise((resolve, reject) => {
@@ -44,6 +47,7 @@ function preview(text, max = 200) {
 
 async function main() {
   let hasFailure = false;
+  let versionPayload = null;
   for (const url of TARGETS) {
     try {
       const result = await requestWithRedirects(url);
@@ -56,11 +60,24 @@ async function main() {
       console.log(`Body(200): ${bodyPreview}`);
       console.log("---");
       if (result.status < 200 || result.status >= 300) hasFailure = true;
+      if (url.endsWith("/version.json")) {
+        try { versionPayload = JSON.parse(result.body); } catch (_err) {}
+      }
     } catch (error) {
       hasFailure = true;
       console.error(`URL: ${url}`);
       console.error(`Error: ${error && error.message ? error.message : String(error)}`);
       console.error("---");
+    }
+  }
+  if (EXPECTED_SHA) {
+    const shortExpected = String(EXPECTED_SHA).slice(0, 12);
+    const liveSha = String((versionPayload && (versionPayload.sha || versionPayload.cacheBuster || versionPayload.v)) || "");
+    if (!liveSha.includes(shortExpected)) {
+      console.error(`Version mismatch: expected sha ${shortExpected}, got ${liveSha || "<empty>"}`);
+      hasFailure = true;
+    } else {
+      console.log(`Version match: ${liveSha}`);
     }
   }
   process.exit(hasFailure ? 1 : 0);

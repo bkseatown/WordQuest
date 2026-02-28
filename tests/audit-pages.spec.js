@@ -12,13 +12,14 @@ const VIEWPORTS = [
 const PAGES = [
   { slug: 'index', url: './' },
   { slug: 'play', url: './?play=1' },
+  { slug: 'word-quest', url: 'word-quest.html' },
   { slug: 'reading-lab', url: 'reading-lab.html' },
   { slug: 'sentence-surgery', url: 'sentence-surgery.html' },
   { slug: 'teacher-dashboard', url: 'teacher-dashboard.html' }
 ];
 
 const OUT_DIR = path.resolve('.artifacts', 'ui-audit', 'screenshots');
-const NO_SCROLL_SLUGS = new Set(['index', 'play', 'teacher-dashboard']);
+const NO_SCROLL_SLUGS = new Set(['index', 'play', 'word-quest', 'teacher-dashboard']);
 
 test.use({ serviceWorkers: 'block' });
 
@@ -26,6 +27,7 @@ function expectedMarker(pageSlug) {
   if (pageSlug === 'teacher-dashboard') return '#td-shell';
   if (pageSlug === 'reading-lab') return '#rl-root';
   if (pageSlug === 'sentence-surgery') return '.ss-container';
+  if (pageSlug === 'word-quest') return 'body';
   if (pageSlug === 'play' || pageSlug === 'index') return 'body';
   return 'body';
 }

@@ -45,6 +45,9 @@ function main() {
   const explicitBuildId = String(process.argv[3] || '').trim();
   const fallbackBuildId = `${String(process.env.GITHUB_SHA || 'local').slice(0, 12)}-${String(process.env.GITHUB_RUN_NUMBER || Date.now())}`;
   const buildId = (explicitBuildId || fallbackBuildId).replace(/[^A-Za-z0-9._-]/g, '').slice(0, 48) || 'local';
+  const rawSha = String(process.env.GITHUB_SHA || buildId).slice(0, 40);
+  const shortSha = rawSha.slice(0, 12);
+  const builtAt = new Date().toISOString();
 
   const indexPath = path.join(distDir, 'index.html');
   const appPath = path.join(distDir, 'js', 'app.js');
@@ -59,6 +62,10 @@ function main() {
   stampIndex(indexPath, buildId);
   stampApp(appPath, buildId);
   stampSwRuntime(swRuntimePath, buildId);
+  write(
+    path.join(distDir, 'version.json'),
+    `${JSON.stringify({ sha: rawSha, builtAt, cacheBuster: shortSha, v: buildId }, null, 2)}\n`
+  );
   write(path.join(distDir, 'build-version.txt'), `${buildId}\n`);
   console.log(`Stamped build version: ${buildId}`);
 }

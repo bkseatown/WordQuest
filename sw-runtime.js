@@ -6,7 +6,7 @@
  * - Audio files: stale-while-revalidate runtime cache (bounded size)
  */
 
-const SW_VERSION = '20260227-v12';
+const SW_VERSION = '20260301-v1';
 const SHELL_CACHE = `wq-shell-${SW_VERSION}`;
 const DATA_CACHE = `wq-data-${SW_VERSION}`;
 const AUDIO_CACHE = `wq-audio-${SW_VERSION}`;
@@ -19,6 +19,46 @@ const CORE_FILES = [
   './sw.js',
   './sw-runtime.js'
 ];
+const VERSION_URL = new URL('./version.json', self.registration.scope).toString();
+const VERSION_META_CACHE = 'wq-version-meta';
+let runtimeCacheSuffix = SW_VERSION;
+
+async function readVersionPayload() {
+  try {
+    const response = await fetch(VERSION_URL, { cache: 'no-store' });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+function computeVersionSuffix(payload) {
+  const raw = String((payload && (payload.cacheBuster || payload.sha || payload.v)) || '').trim();
+  return raw ? raw.slice(0, 16) : SW_VERSION;
+}
+
+async function persistVersionSuffix(nextSuffix) {
+  const cache = await caches.open(VERSION_META_CACHE);
+  await cache.put(
+    'wq-version-suffix',
+    new Response(JSON.stringify({ suffix: nextSuffix }), {
+      headers: { 'Content-Type': 'application/json; charset=utf-8' }
+    })
+  );
+}
+
+async function getStoredSuffix() {
+  try {
+    const cache = await caches.open(VERSION_META_CACHE);
+    const response = await cache.match('wq-version-suffix');
+    if (!response) return '';
+    const json = await response.json();
+    return String(json && json.suffix || '').trim();
+  } catch {
+    return '';
+  }
+}
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
@@ -31,6 +71,10 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
+    const versionPayload = await readVersionPayload();
+    const nextSuffix = computeVersionSuffix(versionPayload);
+    const prevSuffix = await getStoredSuffix();
+    runtimeCacheSuffix = nextSuffix;
     const expected = new Set([SHELL_CACHE, DATA_CACHE, AUDIO_CACHE, DYNAMIC_CACHE]);
     const names = await caches.keys();
     await Promise.all(
@@ -38,6 +82,21 @@ self.addEventListener('activate', (event) => {
         .filter((name) => name.startsWith('wq-') && !expected.has(name))
         .map((name) => caches.delete(name))
     );
+
+    if (prevSuffix && prevSuffix !== nextSuffix) {
+      const allNames = await caches.keys();
+      await Promise.all(
+        allNames
+          .filter((name) => name.startsWith('wq-') && name !== VERSION_META_CACHE)
+        .map((name) => caches.delete(name))
+      );
+    }
+
+    await persistVersionSuffix(nextSuffix);
+    const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+    clients.forEach((client) => {
+      client.postMessage({ type: 'WQ_RUNTIME_UPDATING', version: runtimeCacheSuffix });
+    });
     await self.clients.claim();
   })());
 });
