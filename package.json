@@ -28,6 +28,11 @@
     "telemetry:dashboards:check": "node scripts/check-telemetry-dashboard-contract.js",
     "dom:hooks:check": "node scripts/check-dead-dom-hooks.js",
     "visual:check": "node scripts/check-visual-baseline.js",
+    "audit:ui": "playwright test tests/audit-pages.spec.js --reporter=line",
+    "check:live": "node scripts/check-live.js",
+    "audit:design": "node scripts/design-audit.js",
+    "ava:pack:fill": "node scripts/fill-ava-pack.js",
+    "ava:pack:check": "node scripts/check-no-zero-mp3.js",
     "health:check": "node scripts/health-check.js",
     "telemetry:roi:report": "node scripts/build-weekly-roi-report.js",
     "offline:check": "node scripts/check-offline-contract.js",
@@ -36,5 +41,9 @@
     "scope:view": "node scripts/check-change-scope.js",
     "scope:check": "node scripts/check-change-scope.js",
     "scope:strict": "node scripts/check-change-scope.js --strict"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "playwright": "^1.58.2"
   }
 }
