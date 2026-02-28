@@ -5,3 +5,19 @@ test-results/
 .artifacts/
 playwright-report/
 audio/ava/tmp/
+
+# local artifacts
+node_modules/
+test-results/
+playwright-report/
+.artifacts/
+.DS_Store
+
+# audio generation outputs (keep tracked only when intentionally committing packs)
+audio/ava/**/tmp/
+audio/**/.cache/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
