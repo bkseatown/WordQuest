@@ -1,0 +1,857 @@
+{
+  "version": "2.0",
+  "categories": {
+    "wordquest": {
+      "before_first_guess": [
+        "WQ Before First Guess: stay steady; apply one clear step",
+        "WQ Before First Guess: take a breath, then one simple action",
+        "WQ Before First Guess: execute one precise swap based on clues",
+        "WQ Before First Guess: steady tone; adjust a single slot",
+        "WQ Before First Guess: follow pattern rule; shift the mismatch",
+        "WQ Before First Guess: focus on feedback, then move once",
+        "WQ Before First Guess: hold the plan; shift one letter",
+        "WQ Before First Guess: short pause; restart with controlled move"
+      ],
+      "first_miss": [
+        "WQ First Miss: stay steady; apply one clear step",
+        "WQ First Miss: take a breath, then one simple action",
+        "WQ First Miss: execute one precise swap based on clues",
+        "WQ First Miss: steady tone; adjust a single slot",
+        "WQ First Miss: follow pattern rule; shift the mismatch",
+        "WQ First Miss: focus on feedback, then move once",
+        "WQ First Miss: hold the plan; shift one letter",
+        "WQ First Miss: short pause; restart with controlled move"
+      ],
+      "second_miss": [
+        "WQ Second Miss: stay steady; apply one clear step",
+        "WQ Second Miss: take a breath, then one simple action",
+        "WQ Second Miss: execute one precise swap based on clues",
+        "WQ Second Miss: steady tone; adjust a single slot",
+        "WQ Second Miss: follow pattern rule; shift the mismatch",
+        "WQ Second Miss: focus on feedback, then move once",
+        "WQ Second Miss: hold the plan; shift one letter",
+        "WQ Second Miss: short pause; restart with controlled move"
+      ],
+      "rapid_wrong_streak": [
+        "WQ Rapid Wrong Streak: pause, breathe, reset pace before acting",
+        "WQ Rapid Wrong Streak: stop briefly; release tension, then continue",
+        "WQ Rapid Wrong Streak: reduce rush; make one careful change",
+        "WQ Rapid Wrong Streak: slow, deliberate step improves accuracy",
+        "WQ Rapid Wrong Streak: name the target pattern, act once",
+        "WQ Rapid Wrong Streak: choose the highest-info letter and place it",
+        "WQ Rapid Wrong Streak: calm focus; test one position",
+        "WQ Rapid Wrong Streak: short pause; restart with controlled move"
+      ],
+      "near_solve": [
+        "WQ Near Solve: stay steady; apply one clear step",
+        "WQ Near Solve: take a breath, then one simple action",
+        "WQ Near Solve: execute one precise swap based on clues",
+        "WQ Near Solve: steady tone; adjust a single slot",
+        "WQ Near Solve: follow pattern rule; shift the mismatch",
+        "WQ Near Solve: focus on feedback, then move once",
+        "WQ Near Solve: hold the plan; shift one letter",
+        "WQ Near Solve: short pause; restart with controlled move"
+      ],
+      "streak_three_correct": [
+        "WQ Streak Three Correct: stretch: justify your choice and add one detail",
+        "WQ Streak Three Correct: use board evidence and make one change",
+        "WQ Streak Three Correct: execute one precise swap based on clues",
+        "WQ Streak Three Correct: steady tone; adjust a single slot",
+        "WQ Streak Three Correct: push cognitive load; defend the next change",
+        "WQ Streak Three Correct: focus on feedback, then move once",
+        "WQ Streak Three Correct: resolve the conflict slot immediately",
+        "WQ Streak Three Correct: light pause, then change one piece"
+      ],
+      "idle_20s": [
+        "WQ Idle 20s: pause, breathe, reset pace before acting",
+        "WQ Idle 20s: stop briefly; release tension, then continue",
+        "WQ Idle 20s: reduce rush; make one careful change",
+        "WQ Idle 20s: slow, deliberate step improves accuracy",
+        "WQ Idle 20s: name the target pattern, act once",
+        "WQ Idle 20s: choose the highest-info letter and place it",
+        "WQ Idle 20s: calm focus; test one position",
+        "WQ Idle 20s: short pause; restart with controlled move"
+      ],
+      "hint_opened": [
+        "WQ Hint Opened: stay steady; apply one clear step",
+        "WQ Hint Opened: take a breath, then one simple action",
+        "WQ Hint Opened: execute one precise swap based on clues",
+        "WQ Hint Opened: steady tone; adjust a single slot",
+        "WQ Hint Opened: follow pattern rule; shift the mismatch",
+        "WQ Hint Opened: focus on feedback, then move once",
+        "WQ Hint Opened: hold the plan; shift one letter",
+        "WQ Hint Opened: short pause; restart with controlled move"
+      ],
+      "starter_word_used": [
+        "WQ Starter Word Used: stay steady; apply one clear step",
+        "WQ Starter Word Used: take a breath, then one simple action",
+        "WQ Starter Word Used: execute one precise swap based on clues",
+        "WQ Starter Word Used: steady tone; adjust a single slot",
+        "WQ Starter Word Used: follow pattern rule; shift the mismatch",
+        "WQ Starter Word Used: focus on feedback, then move once",
+        "WQ Starter Word Used: hold the plan; shift one letter",
+        "WQ Starter Word Used: short pause; restart with controlled move"
+      ],
+      "backspace_burst": [
+        "WQ Backspace Burst: pause, breathe, reset pace before acting",
+        "WQ Backspace Burst: stop briefly; release tension, then continue",
+        "WQ Backspace Burst: reduce rush; make one careful change",
+        "WQ Backspace Burst: slow, deliberate step improves accuracy",
+        "WQ Backspace Burst: name the target pattern, act once",
+        "WQ Backspace Burst: choose the highest-info letter and place it",
+        "WQ Backspace Burst: calm focus; test one position",
+        "WQ Backspace Burst: short pause; restart with controlled move"
+      ],
+      "pacing_drop": [
+        "WQ Pacing Drop: stay steady; apply one clear step",
+        "WQ Pacing Drop: take a breath, then one simple action",
+        "WQ Pacing Drop: execute one precise swap based on clues",
+        "WQ Pacing Drop: steady tone; adjust a single slot",
+        "WQ Pacing Drop: follow pattern rule; shift the mismatch",
+        "WQ Pacing Drop: focus on feedback, then move once",
+        "WQ Pacing Drop: hold the plan; shift one letter",
+        "WQ Pacing Drop: short pause; restart with controlled move"
+      ],
+      "confidence_low": [
+        "WQ Confidence Low: stay steady; apply one clear step",
+        "WQ Confidence Low: take a breath, then one simple action",
+        "WQ Confidence Low: execute one precise swap based on clues",
+        "WQ Confidence Low: steady tone; adjust a single slot",
+        "WQ Confidence Low: follow pattern rule; shift the mismatch",
+        "WQ Confidence Low: focus on feedback, then move once",
+        "WQ Confidence Low: hold the plan; shift one letter",
+        "WQ Confidence Low: short pause; restart with controlled move"
+      ],
+      "voice_support_used": [
+        "WQ Voice Support Used: stay steady; apply one clear step",
+        "WQ Voice Support Used: take a breath, then one simple action",
+        "WQ Voice Support Used: execute one precise swap based on clues",
+        "WQ Voice Support Used: steady tone; adjust a single slot",
+        "WQ Voice Support Used: follow pattern rule; shift the mismatch",
+        "WQ Voice Support Used: focus on feedback, then move once",
+        "WQ Voice Support Used: hold the plan; shift one letter",
+        "WQ Voice Support Used: short pause; restart with controlled move"
+      ],
+      "end_round_reflect": [
+        "WQ End Round Reflect: stay steady; apply one clear step",
+        "WQ End Round Reflect: take a breath, then one simple action",
+        "WQ End Round Reflect: execute one precise swap based on clues",
+        "WQ End Round Reflect: steady tone; adjust a single slot",
+        "WQ End Round Reflect: follow pattern rule; shift the mismatch",
+        "WQ End Round Reflect: focus on feedback, then move once",
+        "WQ End Round Reflect: hold the plan; shift one letter",
+        "WQ End Round Reflect: short pause; restart with controlled move"
+      ]
+    },
+    "reading_lab": {
+      "start_read": [
+        "RL Start Read: stay steady; apply one clear step",
+        "RL Start Read: take a breath, then one simple action",
+        "RL Start Read: execute one precise swap based on clues",
+        "RL Start Read: steady tone; adjust a single slot",
+        "RL Start Read: follow pattern rule; shift the mismatch",
+        "RL Start Read: focus on feedback, then move once",
+        "RL Start Read: hold the plan; shift one letter",
+        "RL Start Read: short pause; restart with controlled move"
+      ],
+      "low_accuracy": [
+        "RL Low Accuracy: stay steady; apply one clear step",
+        "RL Low Accuracy: take a breath, then one simple action",
+        "RL Low Accuracy: execute one precise swap based on clues",
+        "RL Low Accuracy: steady tone; adjust a single slot",
+        "RL Low Accuracy: follow pattern rule; shift the mismatch",
+        "RL Low Accuracy: focus on feedback, then move once",
+        "RL Low Accuracy: hold the plan; shift one letter",
+        "RL Low Accuracy: short pause; restart with controlled move"
+      ],
+      "punctuation_drop": [
+        "RL Punctuation Drop: stay steady; apply one clear step",
+        "RL Punctuation Drop: take a breath, then one simple action",
+        "RL Punctuation Drop: execute one precise swap based on clues",
+        "RL Punctuation Drop: steady tone; adjust a single slot",
+        "RL Punctuation Drop: follow pattern rule; shift the mismatch",
+        "RL Punctuation Drop: focus on feedback, then move once",
+        "RL Punctuation Drop: hold the plan; shift one letter",
+        "RL Punctuation Drop: short pause; restart with controlled move"
+      ],
+      "prosody_flat": [
+        "RL Prosody Flat: stay steady; apply one clear step",
+        "RL Prosody Flat: take a breath, then one simple action",
+        "RL Prosody Flat: execute one precise swap based on clues",
+        "RL Prosody Flat: steady tone; adjust a single slot",
+        "RL Prosody Flat: follow pattern rule; shift the mismatch",
+        "RL Prosody Flat: focus on feedback, then move once",
+        "RL Prosody Flat: hold the plan; shift one letter",
+        "RL Prosody Flat: short pause; restart with controlled move"
+      ],
+      "hard_word_repeat": [
+        "RL Hard Word Repeat: stay steady; apply one clear step",
+        "RL Hard Word Repeat: take a breath, then one simple action",
+        "RL Hard Word Repeat: execute one precise swap based on clues",
+        "RL Hard Word Repeat: steady tone; adjust a single slot",
+        "RL Hard Word Repeat: follow pattern rule; shift the mismatch",
+        "RL Hard Word Repeat: focus on feedback, then move once",
+        "RL Hard Word Repeat: hold the plan; shift one letter",
+        "RL Hard Word Repeat: short pause; restart with controlled move"
+      ],
+      "self_correction": [
+        "RL Self Correction: stay steady; apply one clear step",
+        "RL Self Correction: take a breath, then one simple action",
+        "RL Self Correction: execute one precise swap based on clues",
+        "RL Self Correction: steady tone; adjust a single slot",
+        "RL Self Correction: follow pattern rule; shift the mismatch",
+        "RL Self Correction: focus on feedback, then move once",
+        "RL Self Correction: hold the plan; shift one letter",
+        "RL Self Correction: short pause; restart with controlled move"
+      ],
+      "pacing_variance_high": [
+        "RL Pacing Variance High: stay steady; apply one clear step",
+        "RL Pacing Variance High: take a breath, then one simple action",
+        "RL Pacing Variance High: execute one precise swap based on clues",
+        "RL Pacing Variance High: steady tone; adjust a single slot",
+        "RL Pacing Variance High: follow pattern rule; shift the mismatch",
+        "RL Pacing Variance High: focus on feedback, then move once",
+        "RL Pacing Variance High: hold the plan; shift one letter",
+        "RL Pacing Variance High: short pause; restart with controlled move"
+      ],
+      "pause_pattern_repeated": [
+        "RL Pause Pattern Repeated: stay steady; apply one clear step",
+        "RL Pause Pattern Repeated: take a breath, then one simple action",
+        "RL Pause Pattern Repeated: execute one precise swap based on clues",
+        "RL Pause Pattern Repeated: steady tone; adjust a single slot",
+        "RL Pause Pattern Repeated: follow pattern rule; shift the mismatch",
+        "RL Pause Pattern Repeated: focus on feedback, then move once",
+        "RL Pause Pattern Repeated: hold the plan; shift one letter",
+        "RL Pause Pattern Repeated: short pause; restart with controlled move"
+      ],
+      "segment_complete": [
+        "RL Segment Complete: stay steady; apply one clear step",
+        "RL Segment Complete: take a breath, then one simple action",
+        "RL Segment Complete: execute one precise swap based on clues",
+        "RL Segment Complete: steady tone; adjust a single slot",
+        "RL Segment Complete: follow pattern rule; shift the mismatch",
+        "RL Segment Complete: focus on feedback, then move once",
+        "RL Segment Complete: hold the plan; shift one letter",
+        "RL Segment Complete: short pause; restart with controlled move"
+      ],
+      "idle_20s": [
+        "RL Idle 20s: pause, breathe, reset pace before acting",
+        "RL Idle 20s: stop briefly; release tension, then continue",
+        "RL Idle 20s: reduce rush; make one careful change",
+        "RL Idle 20s: slow, deliberate step improves accuracy",
+        "RL Idle 20s: name the target pattern, act once",
+        "RL Idle 20s: choose the highest-info letter and place it",
+        "RL Idle 20s: calm focus; test one position",
+        "RL Idle 20s: short pause; restart with controlled move"
+      ],
+      "teacher_summary_needed": [
+        "RL Teacher Summary Needed: stay steady; apply one clear step",
+        "RL Teacher Summary Needed: take a breath, then one simple action",
+        "RL Teacher Summary Needed: execute one precise swap based on clues",
+        "RL Teacher Summary Needed: steady tone; adjust a single slot",
+        "RL Teacher Summary Needed: follow pattern rule; shift the mismatch",
+        "RL Teacher Summary Needed: focus on feedback, then move once",
+        "RL Teacher Summary Needed: hold the plan; shift one letter",
+        "RL Teacher Summary Needed: short pause; restart with controlled move"
+      ],
+      "fluency_growth": [
+        "RL Fluency Growth: stretch: justify your choice and add one detail",
+        "RL Fluency Growth: use board evidence and make one change",
+        "RL Fluency Growth: execute one precise swap based on clues",
+        "RL Fluency Growth: steady tone; adjust a single slot",
+        "RL Fluency Growth: push cognitive load; defend the next change",
+        "RL Fluency Growth: focus on feedback, then move once",
+        "RL Fluency Growth: resolve the conflict slot immediately",
+        "RL Fluency Growth: light pause, then change one piece"
+      ],
+      "accuracy_recovery": [
+        "RL Accuracy Recovery: stay steady; apply one clear step",
+        "RL Accuracy Recovery: take a breath, then one simple action",
+        "RL Accuracy Recovery: execute one precise swap based on clues",
+        "RL Accuracy Recovery: steady tone; adjust a single slot",
+        "RL Accuracy Recovery: follow pattern rule; shift the mismatch",
+        "RL Accuracy Recovery: focus on feedback, then move once",
+        "RL Accuracy Recovery: hold the plan; shift one letter",
+        "RL Accuracy Recovery: short pause; restart with controlled move"
+      ],
+      "transition_to_reasoning": [
+        "RL Transition To Reasoning: stay steady; apply one clear step",
+        "RL Transition To Reasoning: take a breath, then one simple action",
+        "RL Transition To Reasoning: execute one precise swap based on clues",
+        "RL Transition To Reasoning: steady tone; adjust a single slot",
+        "RL Transition To Reasoning: follow pattern rule; shift the mismatch",
+        "RL Transition To Reasoning: focus on feedback, then move once",
+        "RL Transition To Reasoning: hold the plan; shift one letter",
+        "RL Transition To Reasoning: short pause; restart with controlled move"
+      ]
+    },
+    "sentence_surgery": {
+      "first_reason_added": [
+        "SS First Reason Added: stay steady; apply one clear step",
+        "SS First Reason Added: take a breath, then one simple action",
+        "SS First Reason Added: execute one precise swap based on clues",
+        "SS First Reason Added: steady tone; adjust a single slot",
+        "SS First Reason Added: follow pattern rule; shift the mismatch",
+        "SS First Reason Added: focus on feedback, then move once",
+        "SS First Reason Added: hold the plan; shift one letter",
+        "SS First Reason Added: short pause; restart with controlled move"
+      ],
+      "reasoning_missing": [
+        "SS Reasoning Missing: stay steady; apply one clear step",
+        "SS Reasoning Missing: take a breath, then one simple action",
+        "SS Reasoning Missing: execute one precise swap based on clues",
+        "SS Reasoning Missing: steady tone; adjust a single slot",
+        "SS Reasoning Missing: follow pattern rule; shift the mismatch",
+        "SS Reasoning Missing: focus on feedback, then move once",
+        "SS Reasoning Missing: hold the plan; shift one letter",
+        "SS Reasoning Missing: short pause; restart with controlled move"
+      ],
+      "backspace_burst": [
+        "SS Backspace Burst: pause, breathe, reset pace before acting",
+        "SS Backspace Burst: stop briefly; release tension, then continue",
+        "SS Backspace Burst: reduce rush; make one careful change",
+        "SS Backspace Burst: slow, deliberate step improves accuracy",
+        "SS Backspace Burst: name the target pattern, act once",
+        "SS Backspace Burst: choose the highest-info letter and place it",
+        "SS Backspace Burst: calm focus; test one position",
+        "SS Backspace Burst: short pause; restart with controlled move"
+      ],
+      "weak_verb_detected": [
+        "SS Weak Verb Detected: stay steady; apply one clear step",
+        "SS Weak Verb Detected: take a breath, then one simple action",
+        "SS Weak Verb Detected: execute one precise swap based on clues",
+        "SS Weak Verb Detected: steady tone; adjust a single slot",
+        "SS Weak Verb Detected: follow pattern rule; shift the mismatch",
+        "SS Weak Verb Detected: focus on feedback, then move once",
+        "SS Weak Verb Detected: hold the plan; shift one letter",
+        "SS Weak Verb Detected: short pause; restart with controlled move"
+      ],
+      "fragment_detected": [
+        "SS Fragment Detected: stay steady; apply one clear step",
+        "SS Fragment Detected: take a breath, then one simple action",
+        "SS Fragment Detected: execute one precise swap based on clues",
+        "SS Fragment Detected: steady tone; adjust a single slot",
+        "SS Fragment Detected: follow pattern rule; shift the mismatch",
+        "SS Fragment Detected: focus on feedback, then move once",
+        "SS Fragment Detected: hold the plan; shift one letter",
+        "SS Fragment Detected: short pause; restart with controlled move"
+      ],
+      "run_on_detected": [
+        "SS Run On Detected: stay steady; apply one clear step",
+        "SS Run On Detected: take a breath, then one simple action",
+        "SS Run On Detected: execute one precise swap based on clues",
+        "SS Run On Detected: steady tone; adjust a single slot",
+        "SS Run On Detected: follow pattern rule; shift the mismatch",
+        "SS Run On Detected: focus on feedback, then move once",
+        "SS Run On Detected: hold the plan; shift one letter",
+        "SS Run On Detected: short pause; restart with controlled move"
+      ],
+      "clarity_gain": [
+        "SS Clarity Gain: stay steady; apply one clear step",
+        "SS Clarity Gain: take a breath, then one simple action",
+        "SS Clarity Gain: execute one precise swap based on clues",
+        "SS Clarity Gain: steady tone; adjust a single slot",
+        "SS Clarity Gain: follow pattern rule; shift the mismatch",
+        "SS Clarity Gain: focus on feedback, then move once",
+        "SS Clarity Gain: hold the plan; shift one letter",
+        "SS Clarity Gain: short pause; restart with controlled move"
+      ],
+      "detail_missing": [
+        "SS Detail Missing: stay steady; apply one clear step",
+        "SS Detail Missing: take a breath, then one simple action",
+        "SS Detail Missing: execute one precise swap based on clues",
+        "SS Detail Missing: steady tone; adjust a single slot",
+        "SS Detail Missing: follow pattern rule; shift the mismatch",
+        "SS Detail Missing: focus on feedback, then move once",
+        "SS Detail Missing: hold the plan; shift one letter",
+        "SS Detail Missing: short pause; restart with controlled move"
+      ],
+      "control_drop": [
+        "SS Control Drop: stay steady; apply one clear step",
+        "SS Control Drop: take a breath, then one simple action",
+        "SS Control Drop: execute one precise swap based on clues",
+        "SS Control Drop: steady tone; adjust a single slot",
+        "SS Control Drop: follow pattern rule; shift the mismatch",
+        "SS Control Drop: focus on feedback, then move once",
+        "SS Control Drop: hold the plan; shift one letter",
+        "SS Control Drop: short pause; restart with controlled move"
+      ],
+      "idle_20s": [
+        "SS Idle 20s: pause, breathe, reset pace before acting",
+        "SS Idle 20s: stop briefly; release tension, then continue",
+        "SS Idle 20s: reduce rush; make one careful change",
+        "SS Idle 20s: slow, deliberate step improves accuracy",
+        "SS Idle 20s: name the target pattern, act once",
+        "SS Idle 20s: choose the highest-info letter and place it",
+        "SS Idle 20s: calm focus; test one position",
+        "SS Idle 20s: short pause; restart with controlled move"
+      ],
+      "peer_review": [
+        "SS Peer Review: stay steady; apply one clear step",
+        "SS Peer Review: take a breath, then one simple action",
+        "SS Peer Review: execute one precise swap based on clues",
+        "SS Peer Review: steady tone; adjust a single slot",
+        "SS Peer Review: follow pattern rule; shift the mismatch",
+        "SS Peer Review: focus on feedback, then move once",
+        "SS Peer Review: hold the plan; shift one letter",
+        "SS Peer Review: short pause; restart with controlled move"
+      ],
+      "draft_complete": [
+        "SS Draft Complete: stay steady; apply one clear step",
+        "SS Draft Complete: take a breath, then one simple action",
+        "SS Draft Complete: execute one precise swap based on clues",
+        "SS Draft Complete: steady tone; adjust a single slot",
+        "SS Draft Complete: follow pattern rule; shift the mismatch",
+        "SS Draft Complete: focus on feedback, then move once",
+        "SS Draft Complete: hold the plan; shift one letter",
+        "SS Draft Complete: short pause; restart with controlled move"
+      ],
+      "revision_stall": [
+        "SS Revision Stall: stay steady; apply one clear step",
+        "SS Revision Stall: take a breath, then one simple action",
+        "SS Revision Stall: execute one precise swap based on clues",
+        "SS Revision Stall: steady tone; adjust a single slot",
+        "SS Revision Stall: follow pattern rule; shift the mismatch",
+        "SS Revision Stall: focus on feedback, then move once",
+        "SS Revision Stall: hold the plan; shift one letter",
+        "SS Revision Stall: short pause; restart with controlled move"
+      ],
+      "complexity_step_up": [
+        "SS Complexity Step Up: stretch: justify your choice and add one detail",
+        "SS Complexity Step Up: use board evidence and make one change",
+        "SS Complexity Step Up: execute one precise swap based on clues",
+        "SS Complexity Step Up: steady tone; adjust a single slot",
+        "SS Complexity Step Up: push cognitive load; defend the next change",
+        "SS Complexity Step Up: focus on feedback, then move once",
+        "SS Complexity Step Up: resolve the conflict slot immediately",
+        "SS Complexity Step Up: light pause, then change one piece"
+      ]
+    },
+    "writing_studio": {
+      "paragraph_start": [
+        "WS Paragraph Start: stay steady; apply one clear step",
+        "WS Paragraph Start: take a breath, then one simple action",
+        "WS Paragraph Start: execute one precise swap based on clues",
+        "WS Paragraph Start: steady tone; adjust a single slot",
+        "WS Paragraph Start: follow pattern rule; shift the mismatch",
+        "WS Paragraph Start: focus on feedback, then move once",
+        "WS Paragraph Start: hold the plan; shift one letter",
+        "WS Paragraph Start: short pause; restart with controlled move"
+      ],
+      "outline_missing": [
+        "WS Outline Missing: stay steady; apply one clear step",
+        "WS Outline Missing: take a breath, then one simple action",
+        "WS Outline Missing: execute one precise swap based on clues",
+        "WS Outline Missing: steady tone; adjust a single slot",
+        "WS Outline Missing: follow pattern rule; shift the mismatch",
+        "WS Outline Missing: focus on feedback, then move once",
+        "WS Outline Missing: hold the plan; shift one letter",
+        "WS Outline Missing: short pause; restart with controlled move"
+      ],
+      "plan_set": [
+        "WS Plan Set: stay steady; apply one clear step",
+        "WS Plan Set: take a breath, then one simple action",
+        "WS Plan Set: execute one precise swap based on clues",
+        "WS Plan Set: steady tone; adjust a single slot",
+        "WS Plan Set: follow pattern rule; shift the mismatch",
+        "WS Plan Set: focus on feedback, then move once",
+        "WS Plan Set: hold the plan; shift one letter",
+        "WS Plan Set: short pause; restart with controlled move"
+      ],
+      "evidence_thin": [
+        "WS Evidence Thin: stay steady; apply one clear step",
+        "WS Evidence Thin: take a breath, then one simple action",
+        "WS Evidence Thin: execute one precise swap based on clues",
+        "WS Evidence Thin: steady tone; adjust a single slot",
+        "WS Evidence Thin: follow pattern rule; shift the mismatch",
+        "WS Evidence Thin: focus on feedback, then move once",
+        "WS Evidence Thin: hold the plan; shift one letter",
+        "WS Evidence Thin: short pause; restart with controlled move"
+      ],
+      "claim_unclear": [
+        "WS Claim Unclear: stay steady; apply one clear step",
+        "WS Claim Unclear: take a breath, then one simple action",
+        "WS Claim Unclear: execute one precise swap based on clues",
+        "WS Claim Unclear: steady tone; adjust a single slot",
+        "WS Claim Unclear: follow pattern rule; shift the mismatch",
+        "WS Claim Unclear: focus on feedback, then move once",
+        "WS Claim Unclear: hold the plan; shift one letter",
+        "WS Claim Unclear: short pause; restart with controlled move"
+      ],
+      "conclusion_missing": [
+        "WS Conclusion Missing: stay steady; apply one clear step",
+        "WS Conclusion Missing: take a breath, then one simple action",
+        "WS Conclusion Missing: execute one precise swap based on clues",
+        "WS Conclusion Missing: steady tone; adjust a single slot",
+        "WS Conclusion Missing: follow pattern rule; shift the mismatch",
+        "WS Conclusion Missing: focus on feedback, then move once",
+        "WS Conclusion Missing: hold the plan; shift one letter",
+        "WS Conclusion Missing: short pause; restart with controlled move"
+      ],
+      "revision_stall": [
+        "WS Revision Stall: stay steady; apply one clear step",
+        "WS Revision Stall: take a breath, then one simple action",
+        "WS Revision Stall: execute one precise swap based on clues",
+        "WS Revision Stall: steady tone; adjust a single slot",
+        "WS Revision Stall: follow pattern rule; shift the mismatch",
+        "WS Revision Stall: focus on feedback, then move once",
+        "WS Revision Stall: hold the plan; shift one letter",
+        "WS Revision Stall: short pause; restart with controlled move"
+      ],
+      "backspace_burst": [
+        "WS Backspace Burst: pause, breathe, reset pace before acting",
+        "WS Backspace Burst: stop briefly; release tension, then continue",
+        "WS Backspace Burst: reduce rush; make one careful change",
+        "WS Backspace Burst: slow, deliberate step improves accuracy",
+        "WS Backspace Burst: name the target pattern, act once",
+        "WS Backspace Burst: choose the highest-info letter and place it",
+        "WS Backspace Burst: calm focus; test one position",
+        "WS Backspace Burst: short pause; restart with controlled move"
+      ],
+      "idle_20s": [
+        "WS Idle 20s: pause, breathe, reset pace before acting",
+        "WS Idle 20s: stop briefly; release tension, then continue",
+        "WS Idle 20s: reduce rush; make one careful change",
+        "WS Idle 20s: slow, deliberate step improves accuracy",
+        "WS Idle 20s: name the target pattern, act once",
+        "WS Idle 20s: choose the highest-info letter and place it",
+        "WS Idle 20s: calm focus; test one position",
+        "WS Idle 20s: short pause; restart with controlled move"
+      ],
+      "focus_shift": [
+        "WS Focus Shift: stay steady; apply one clear step",
+        "WS Focus Shift: take a breath, then one simple action",
+        "WS Focus Shift: execute one precise swap based on clues",
+        "WS Focus Shift: steady tone; adjust a single slot",
+        "WS Focus Shift: follow pattern rule; shift the mismatch",
+        "WS Focus Shift: focus on feedback, then move once",
+        "WS Focus Shift: hold the plan; shift one letter",
+        "WS Focus Shift: short pause; restart with controlled move"
+      ],
+      "voice_flat": [
+        "WS Voice Flat: stay steady; apply one clear step",
+        "WS Voice Flat: take a breath, then one simple action",
+        "WS Voice Flat: execute one precise swap based on clues",
+        "WS Voice Flat: steady tone; adjust a single slot",
+        "WS Voice Flat: follow pattern rule; shift the mismatch",
+        "WS Voice Flat: focus on feedback, then move once",
+        "WS Voice Flat: hold the plan; shift one letter",
+        "WS Voice Flat: short pause; restart with controlled move"
+      ],
+      "teacher_review": [
+        "WS Teacher Review: stay steady; apply one clear step",
+        "WS Teacher Review: take a breath, then one simple action",
+        "WS Teacher Review: execute one precise swap based on clues",
+        "WS Teacher Review: steady tone; adjust a single slot",
+        "WS Teacher Review: follow pattern rule; shift the mismatch",
+        "WS Teacher Review: focus on feedback, then move once",
+        "WS Teacher Review: hold the plan; shift one letter",
+        "WS Teacher Review: short pause; restart with controlled move"
+      ],
+      "idea_stuck": [
+        "WS Idea Stuck: stay steady; apply one clear step",
+        "WS Idea Stuck: take a breath, then one simple action",
+        "WS Idea Stuck: execute one precise swap based on clues",
+        "WS Idea Stuck: steady tone; adjust a single slot",
+        "WS Idea Stuck: follow pattern rule; shift the mismatch",
+        "WS Idea Stuck: focus on feedback, then move once",
+        "WS Idea Stuck: hold the plan; shift one letter",
+        "WS Idea Stuck: short pause; restart with controlled move"
+      ],
+      "sentence_flow_issue": [
+        "WS Sentence Flow Issue: stay steady; apply one clear step",
+        "WS Sentence Flow Issue: take a breath, then one simple action",
+        "WS Sentence Flow Issue: execute one precise swap based on clues",
+        "WS Sentence Flow Issue: steady tone; adjust a single slot",
+        "WS Sentence Flow Issue: follow pattern rule; shift the mismatch",
+        "WS Sentence Flow Issue: focus on feedback, then move once",
+        "WS Sentence Flow Issue: hold the plan; shift one letter",
+        "WS Sentence Flow Issue: short pause; restart with controlled move"
+      ]
+    },
+    "teacher_dashboard": {
+      "low_group_accuracy": [
+        "TD Low Group Accuracy: stay steady; apply one clear step",
+        "TD Low Group Accuracy: take a breath, then one simple action",
+        "TD Low Group Accuracy: execute one precise swap based on clues",
+        "TD Low Group Accuracy: steady tone; adjust a single slot",
+        "TD Low Group Accuracy: follow pattern rule; shift the mismatch",
+        "TD Low Group Accuracy: focus on feedback, then move once",
+        "TD Low Group Accuracy: hold the plan; shift one letter",
+        "TD Low Group Accuracy: short pause; restart with controlled move"
+      ],
+      "pacing_drop": [
+        "TD Pacing Drop: stay steady; apply one clear step",
+        "TD Pacing Drop: take a breath, then one simple action",
+        "TD Pacing Drop: execute one precise swap based on clues",
+        "TD Pacing Drop: steady tone; adjust a single slot",
+        "TD Pacing Drop: follow pattern rule; shift the mismatch",
+        "TD Pacing Drop: focus on feedback, then move once",
+        "TD Pacing Drop: hold the plan; shift one letter",
+        "TD Pacing Drop: short pause; restart with controlled move"
+      ],
+      "reteach_recommended": [
+        "TD Reteach Recommended: stay steady; apply one clear step",
+        "TD Reteach Recommended: take a breath, then one simple action",
+        "TD Reteach Recommended: execute one precise swap based on clues",
+        "TD Reteach Recommended: steady tone; adjust a single slot",
+        "TD Reteach Recommended: follow pattern rule; shift the mismatch",
+        "TD Reteach Recommended: focus on feedback, then move once",
+        "TD Reteach Recommended: hold the plan; shift one letter",
+        "TD Reteach Recommended: short pause; restart with controlled move"
+      ],
+      "growth_spike": [
+        "TD Growth Spike: stretch: justify your choice and add one detail",
+        "TD Growth Spike: use board evidence and make one change",
+        "TD Growth Spike: execute one precise swap based on clues",
+        "TD Growth Spike: steady tone; adjust a single slot",
+        "TD Growth Spike: push cognitive load; defend the next change",
+        "TD Growth Spike: focus on feedback, then move once",
+        "TD Growth Spike: resolve the conflict slot immediately",
+        "TD Growth Spike: light pause, then change one piece"
+      ],
+      "progress_review_ready": [
+        "TD Progress Review Ready: stay steady; apply one clear step",
+        "TD Progress Review Ready: take a breath, then one simple action",
+        "TD Progress Review Ready: execute one precise swap based on clues",
+        "TD Progress Review Ready: steady tone; adjust a single slot",
+        "TD Progress Review Ready: follow pattern rule; shift the mismatch",
+        "TD Progress Review Ready: focus on feedback, then move once",
+        "TD Progress Review Ready: hold the plan; shift one letter",
+        "TD Progress Review Ready: short pause; restart with controlled move"
+      ],
+      "small_group_ready": [
+        "TD Small Group Ready: stay steady; apply one clear step",
+        "TD Small Group Ready: take a breath, then one simple action",
+        "TD Small Group Ready: execute one precise swap based on clues",
+        "TD Small Group Ready: steady tone; adjust a single slot",
+        "TD Small Group Ready: follow pattern rule; shift the mismatch",
+        "TD Small Group Ready: focus on feedback, then move once",
+        "TD Small Group Ready: hold the plan; shift one letter",
+        "TD Small Group Ready: short pause; restart with controlled move"
+      ],
+      "data_conflict": [
+        "TD Data Conflict: stay steady; apply one clear step",
+        "TD Data Conflict: take a breath, then one simple action",
+        "TD Data Conflict: execute one precise swap based on clues",
+        "TD Data Conflict: steady tone; adjust a single slot",
+        "TD Data Conflict: follow pattern rule; shift the mismatch",
+        "TD Data Conflict: focus on feedback, then move once",
+        "TD Data Conflict: hold the plan; shift one letter",
+        "TD Data Conflict: short pause; restart with controlled move"
+      ],
+      "attendance_gap": [
+        "TD Attendance Gap: stay steady; apply one clear step",
+        "TD Attendance Gap: take a breath, then one simple action",
+        "TD Attendance Gap: execute one precise swap based on clues",
+        "TD Attendance Gap: steady tone; adjust a single slot",
+        "TD Attendance Gap: follow pattern rule; shift the mismatch",
+        "TD Attendance Gap: focus on feedback, then move once",
+        "TD Attendance Gap: hold the plan; shift one letter",
+        "TD Attendance Gap: short pause; restart with controlled move"
+      ],
+      "engagement_low": [
+        "TD Engagement Low: stay steady; apply one clear step",
+        "TD Engagement Low: take a breath, then one simple action",
+        "TD Engagement Low: execute one precise swap based on clues",
+        "TD Engagement Low: steady tone; adjust a single slot",
+        "TD Engagement Low: follow pattern rule; shift the mismatch",
+        "TD Engagement Low: focus on feedback, then move once",
+        "TD Engagement Low: hold the plan; shift one letter",
+        "TD Engagement Low: short pause; restart with controlled move"
+      ],
+      "assessment_window": [
+        "TD Assessment Window: stay steady; apply one clear step",
+        "TD Assessment Window: take a breath, then one simple action",
+        "TD Assessment Window: execute one precise swap based on clues",
+        "TD Assessment Window: steady tone; adjust a single slot",
+        "TD Assessment Window: follow pattern rule; shift the mismatch",
+        "TD Assessment Window: focus on feedback, then move once",
+        "TD Assessment Window: hold the plan; shift one letter",
+        "TD Assessment Window: short pause; restart with controlled move"
+      ],
+      "behavior_spike": [
+        "TD Behavior Spike: stay steady; apply one clear step",
+        "TD Behavior Spike: take a breath, then one simple action",
+        "TD Behavior Spike: execute one precise swap based on clues",
+        "TD Behavior Spike: steady tone; adjust a single slot",
+        "TD Behavior Spike: follow pattern rule; shift the mismatch",
+        "TD Behavior Spike: focus on feedback, then move once",
+        "TD Behavior Spike: hold the plan; shift one letter",
+        "TD Behavior Spike: short pause; restart with controlled move"
+      ],
+      "curriculum_alignment": [
+        "TD Curriculum Alignment: stay steady; apply one clear step",
+        "TD Curriculum Alignment: take a breath, then one simple action",
+        "TD Curriculum Alignment: execute one precise swap based on clues",
+        "TD Curriculum Alignment: steady tone; adjust a single slot",
+        "TD Curriculum Alignment: follow pattern rule; shift the mismatch",
+        "TD Curriculum Alignment: focus on feedback, then move once",
+        "TD Curriculum Alignment: hold the plan; shift one letter",
+        "TD Curriculum Alignment: short pause; restart with controlled move"
+      ],
+      "report_due": [
+        "TD Report Due: stay steady; apply one clear step",
+        "TD Report Due: take a breath, then one simple action",
+        "TD Report Due: execute one precise swap based on clues",
+        "TD Report Due: steady tone; adjust a single slot",
+        "TD Report Due: follow pattern rule; shift the mismatch",
+        "TD Report Due: focus on feedback, then move once",
+        "TD Report Due: hold the plan; shift one letter",
+        "TD Report Due: short pause; restart with controlled move"
+      ],
+      "idle_20s": [
+        "TD Idle 20s: pause, breathe, reset pace before acting",
+        "TD Idle 20s: stop briefly; release tension, then continue",
+        "TD Idle 20s: reduce rush; make one careful change",
+        "TD Idle 20s: slow, deliberate step improves accuracy",
+        "TD Idle 20s: name the target pattern, act once",
+        "TD Idle 20s: choose the highest-info letter and place it",
+        "TD Idle 20s: calm focus; test one position",
+        "TD Idle 20s: short pause; restart with controlled move"
+      ]
+    },
+    "numeracy": {
+      "first_miss": [
+        "NUM First Miss: stay steady; apply one clear step",
+        "NUM First Miss: take a breath, then one simple action",
+        "NUM First Miss: execute one precise swap based on clues",
+        "NUM First Miss: steady tone; adjust a single slot",
+        "NUM First Miss: follow pattern rule; shift the mismatch",
+        "NUM First Miss: focus on feedback, then move once",
+        "NUM First Miss: hold the plan; shift one letter",
+        "NUM First Miss: short pause; restart with controlled move"
+      ],
+      "second_miss": [
+        "NUM Second Miss: stay steady; apply one clear step",
+        "NUM Second Miss: take a breath, then one simple action",
+        "NUM Second Miss: execute one precise swap based on clues",
+        "NUM Second Miss: steady tone; adjust a single slot",
+        "NUM Second Miss: follow pattern rule; shift the mismatch",
+        "NUM Second Miss: focus on feedback, then move once",
+        "NUM Second Miss: hold the plan; shift one letter",
+        "NUM Second Miss: short pause; restart with controlled move"
+      ],
+      "rapid_wrong_streak": [
+        "NUM Rapid Wrong Streak: pause, breathe, reset pace before acting",
+        "NUM Rapid Wrong Streak: stop briefly; release tension, then continue",
+        "NUM Rapid Wrong Streak: reduce rush; make one careful change",
+        "NUM Rapid Wrong Streak: slow, deliberate step improves accuracy",
+        "NUM Rapid Wrong Streak: name the target pattern, act once",
+        "NUM Rapid Wrong Streak: choose the highest-info letter and place it",
+        "NUM Rapid Wrong Streak: calm focus; test one position",
+        "NUM Rapid Wrong Streak: short pause; restart with controlled move"
+      ],
+      "near_solve": [
+        "NUM Near Solve: stay steady; apply one clear step",
+        "NUM Near Solve: take a breath, then one simple action",
+        "NUM Near Solve: execute one precise swap based on clues",
+        "NUM Near Solve: steady tone; adjust a single slot",
+        "NUM Near Solve: follow pattern rule; shift the mismatch",
+        "NUM Near Solve: focus on feedback, then move once",
+        "NUM Near Solve: hold the plan; shift one letter",
+        "NUM Near Solve: short pause; restart with controlled move"
+      ],
+      "streak_three_correct": [
+        "NUM Streak Three Correct: stretch: justify your choice and add one detail",
+        "NUM Streak Three Correct: use board evidence and make one change",
+        "NUM Streak Three Correct: execute one precise swap based on clues",
+        "NUM Streak Three Correct: steady tone; adjust a single slot",
+        "NUM Streak Three Correct: push cognitive load; defend the next change",
+        "NUM Streak Three Correct: focus on feedback, then move once",
+        "NUM Streak Three Correct: resolve the conflict slot immediately",
+        "NUM Streak Three Correct: light pause, then change one piece"
+      ],
+      "idle_20s": [
+        "NUM Idle 20s: pause, breathe, reset pace before acting",
+        "NUM Idle 20s: stop briefly; release tension, then continue",
+        "NUM Idle 20s: reduce rush; make one careful change",
+        "NUM Idle 20s: slow, deliberate step improves accuracy",
+        "NUM Idle 20s: name the target pattern, act once",
+        "NUM Idle 20s: choose the highest-info letter and place it",
+        "NUM Idle 20s: calm focus; test one position",
+        "NUM Idle 20s: short pause; restart with controlled move"
+      ],
+      "hint_opened": [
+        "NUM Hint Opened: stay steady; apply one clear step",
+        "NUM Hint Opened: take a breath, then one simple action",
+        "NUM Hint Opened: execute one precise swap based on clues",
+        "NUM Hint Opened: steady tone; adjust a single slot",
+        "NUM Hint Opened: follow pattern rule; shift the mismatch",
+        "NUM Hint Opened: focus on feedback, then move once",
+        "NUM Hint Opened: hold the plan; shift one letter",
+        "NUM Hint Opened: short pause; restart with controlled move"
+      ],
+      "strategy_switch": [
+        "NUM Strategy Switch: stay steady; apply one clear step",
+        "NUM Strategy Switch: take a breath, then one simple action",
+        "NUM Strategy Switch: execute one precise swap based on clues",
+        "NUM Strategy Switch: steady tone; adjust a single slot",
+        "NUM Strategy Switch: follow pattern rule; shift the mismatch",
+        "NUM Strategy Switch: focus on feedback, then move once",
+        "NUM Strategy Switch: hold the plan; shift one letter",
+        "NUM Strategy Switch: short pause; restart with controlled move"
+      ],
+      "worked_example": [
+        "NUM Worked Example: stay steady; apply one clear step",
+        "NUM Worked Example: take a breath, then one simple action",
+        "NUM Worked Example: execute one precise swap based on clues",
+        "NUM Worked Example: steady tone; adjust a single slot",
+        "NUM Worked Example: follow pattern rule; shift the mismatch",
+        "NUM Worked Example: focus on feedback, then move once",
+        "NUM Worked Example: hold the plan; shift one letter",
+        "NUM Worked Example: short pause; restart with controlled move"
+      ],
+      "error_pattern_seen": [
+        "NUM Error Pattern Seen: stay steady; apply one clear step",
+        "NUM Error Pattern Seen: take a breath, then one simple action",
+        "NUM Error Pattern Seen: execute one precise swap based on clues",
+        "NUM Error Pattern Seen: steady tone; adjust a single slot",
+        "NUM Error Pattern Seen: follow pattern rule; shift the mismatch",
+        "NUM Error Pattern Seen: focus on feedback, then move once",
+        "NUM Error Pattern Seen: hold the plan; shift one letter",
+        "NUM Error Pattern Seen: short pause; restart with controlled move"
+      ],
+      "fluency_stall": [
+        "NUM Fluency Stall: stay steady; apply one clear step",
+        "NUM Fluency Stall: take a breath, then one simple action",
+        "NUM Fluency Stall: execute one precise swap based on clues",
+        "NUM Fluency Stall: steady tone; adjust a single slot",
+        "NUM Fluency Stall: follow pattern rule; shift the mismatch",
+        "NUM Fluency Stall: focus on feedback, then move once",
+        "NUM Fluency Stall: hold the plan; shift one letter",
+        "NUM Fluency Stall: short pause; restart with controlled move"
+      ],
+      "confidence_low": [
+        "NUM Confidence Low: stay steady; apply one clear step",
+        "NUM Confidence Low: take a breath, then one simple action",
+        "NUM Confidence Low: execute one precise swap based on clues",
+        "NUM Confidence Low: steady tone; adjust a single slot",
+        "NUM Confidence Low: follow pattern rule; shift the mismatch",
+        "NUM Confidence Low: focus on feedback, then move once",
+        "NUM Confidence Low: hold the plan; shift one letter",
+        "NUM Confidence Low: short pause; restart with controlled move"
+      ],
+      "timer_expired": [
+        "NUM Timer Expired: pause, breathe, reset pace before acting",
+        "NUM Timer Expired: stop briefly; release tension, then continue",
+        "NUM Timer Expired: reduce rush; make one careful change",
+        "NUM Timer Expired: slow, deliberate step improves accuracy",
+        "NUM Timer Expired: name the target pattern, act once",
+        "NUM Timer Expired: choose the highest-info letter and place it",
+        "NUM Timer Expired: calm focus; test one position",
+        "NUM Timer Expired: short pause; restart with controlled move"
+      ],
+      "success_streak": [
+        "NUM Success Streak: stretch: justify your choice and add one detail",
+        "NUM Success Streak: use board evidence and make one change",
+        "NUM Success Streak: execute one precise swap based on clues",
+        "NUM Success Streak: steady tone; adjust a single slot",
+        "NUM Success Streak: push cognitive load; defend the next change",
+        "NUM Success Streak: focus on feedback, then move once",
+        "NUM Success Streak: resolve the conflict slot immediately",
+        "NUM Success Streak: light pause, then change one piece"
+      ]
+    }
+  }
+}

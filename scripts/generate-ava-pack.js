@@ -168,8 +168,17 @@ async function synthesizeAzureMp3(text) {
   if (!response.ok) {
     throw new Error(`Azure TTS failed: ${response.status}`);
   }
+  const contentType = String(response.headers.get("content-type") || "");
+  if (!contentType.toLowerCase().startsWith("audio")) {
+    const body = await response.text();
+    throw new Error(`Azure TTS non-audio response: ${response.status} ${contentType} ${body.slice(0, 200)}`);
+  }
   const arrayBuffer = await response.arrayBuffer();
-  return Buffer.from(arrayBuffer);
+  const buffer = Buffer.from(arrayBuffer);
+  if (buffer.length <= 1024) {
+    throw new Error(`Azure TTS returned small payload (${buffer.length} bytes)`);
+  }
+  return buffer;
 }
 
 async function withRetry(fn, retries) {
@@ -218,7 +227,14 @@ async function processQueue(entries) {
         return await synthesizeAzureMp3(entry.text);
       }, MAX_RETRIES);
       ensureDir(path.dirname(entry.absFile));
-      fs.writeFileSync(entry.absFile, mp3);
+      const tmp = `${entry.absFile}.tmp-${process.pid}`;
+      fs.writeFileSync(tmp, mp3);
+      const size = fs.statSync(tmp).size;
+      if (size <= 1024) {
+        fs.unlinkSync(tmp);
+        throw new Error(`Generated file too small (${size} bytes)`);
+      }
+      fs.renameSync(tmp, entry.absFile);
       success += 1;
       processed += 1;
       if (processed % 10 === 0) {

@@ -10068,6 +10068,7350 @@
       "audience": [
         "student"
       ]
+    },
+    {
+      "id": "wordquest.before_first_guess.09",
+      "text": "Try a starter that tests vowels and common consonants.",
+      "domain": "wordquest",
+      "event": "before_first_guess",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.before_first_guess.10",
+      "text": "Consider opening with one balanced word to map letters.",
+      "domain": "wordquest",
+      "event": "before_first_guess",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.before_first_guess.11",
+      "text": "Steady move beginning with coverage before chasing specifics.",
+      "domain": "wordquest",
+      "event": "before_first_guess",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.before_first_guess.12",
+      "text": "Quick adjust a starter that tests vowels and common consonants.",
+      "domain": "wordquest",
+      "event": "before_first_guess",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.before_first_guess.13",
+      "text": "Next step opening with one balanced word to map letters.",
+      "domain": "wordquest",
+      "event": "before_first_guess",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.before_first_guess.14",
+      "text": "Small tweak beginning with coverage before chasing specifics.",
+      "domain": "wordquest",
+      "event": "before_first_guess",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.first_miss.09",
+      "text": "Try swap a single letter using the color feedback.",
+      "domain": "wordquest",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.first_miss.10",
+      "text": "Consider keep the base word and move one doubtful consonant.",
+      "domain": "wordquest",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.first_miss.11",
+      "text": "Steady move change one spot informed by the first hint.",
+      "domain": "wordquest",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.first_miss.12",
+      "text": "Quick adjust swap a single letter using the color feedback.",
+      "domain": "wordquest",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.first_miss.13",
+      "text": "Next step keep the base word and move one doubtful consonant.",
+      "domain": "wordquest",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.first_miss.14",
+      "text": "Small tweak change one spot informed by the first hint.",
+      "domain": "wordquest",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.second_miss.09",
+      "text": "Try pivot one new vowel and keep the proven slots.",
+      "domain": "wordquest",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.second_miss.10",
+      "text": "Consider rotate a consonant that stayed gray twice.",
+      "domain": "wordquest",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.second_miss.11",
+      "text": "Steady move reuse the greens and shift a fresh letter in.",
+      "domain": "wordquest",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.second_miss.12",
+      "text": "Quick adjust pivot one new vowel and keep the proven slots.",
+      "domain": "wordquest",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.second_miss.13",
+      "text": "Next step rotate a consonant that stayed gray twice.",
+      "domain": "wordquest",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.second_miss.14",
+      "text": "Small tweak reuse the greens and shift a fresh letter in.",
+      "domain": "wordquest",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.09",
+      "text": "Try pause and choose one evidence-based swap.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.10",
+      "text": "Consider slow down; reuse greens and change only one slot.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.11",
+      "text": "Steady move reset with a calm guess built from what is green.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.12",
+      "text": "Quick adjust pause and choose one evidence-based swap.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.13",
+      "text": "Next step slow down; reuse greens and change only one slot.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.14",
+      "text": "Small tweak reset with a calm guess built from what is green.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.09",
+      "text": "Try lock the greens and test the final open position.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.10",
+      "text": "Consider nudge the last open letter with your best clue.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.11",
+      "text": "Steady move keep the frame; try the remaining likely letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.12",
+      "text": "Quick adjust lock the greens and test the final open position.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.13",
+      "text": "Next step nudge the last open letter with your best clue.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.14",
+      "text": "Small tweak keep the frame; try the remaining likely letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.09",
+      "text": "Try add a stretch word that checks a new pattern.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.10",
+      "text": "Consider push for variety\u2014try a word with a fresh vowel.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.11",
+      "text": "Steady move use momentum to probe a tougher letter mix.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.12",
+      "text": "Quick adjust add a stretch word that checks a new pattern.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.13",
+      "text": "Next step push for variety\u2014try a word with a fresh vowel.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.14",
+      "text": "Small tweak use momentum to probe a tougher letter mix.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.09",
+      "text": "Try enter one letter you feel sure about.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.10",
+      "text": "Consider try a calm guess that covers a new consonant.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.11",
+      "text": "Steady move place a vowel you trust and see the feedback.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.12",
+      "text": "Quick adjust enter one letter you feel sure about.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.13",
+      "text": "Next step try a calm guess that covers a new consonant.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.14",
+      "text": "Small tweak place a vowel you trust and see the feedback.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.hint_opened.09",
+      "text": "Try apply the hint to one slot right away.",
+      "domain": "wordquest",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.hint_opened.10",
+      "text": "Consider fold the hint into your next steady guess.",
+      "domain": "wordquest",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.hint_opened.11",
+      "text": "Steady move use the hint to replace your weakest letter.",
+      "domain": "wordquest",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.hint_opened.12",
+      "text": "Quick adjust apply the hint to one slot right away.",
+      "domain": "wordquest",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.hint_opened.13",
+      "text": "Next step fold the hint into your next steady guess.",
+      "domain": "wordquest",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.hint_opened.14",
+      "text": "Small tweak use the hint to replace your weakest letter.",
+      "domain": "wordquest",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.starter_word_used.09",
+      "text": "Try follow the starter with a clue-based refinement.",
+      "domain": "wordquest",
+      "event": "starter_word_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.starter_word_used.10",
+      "text": "Consider build on the starter by swapping one gray letter.",
+      "domain": "wordquest",
+      "event": "starter_word_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.starter_word_used.11",
+      "text": "Steady move use the starter\u2019s feedback to target the vowels.",
+      "domain": "wordquest",
+      "event": "starter_word_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.starter_word_used.12",
+      "text": "Quick adjust follow the starter with a clue-based refinement.",
+      "domain": "wordquest",
+      "event": "starter_word_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.starter_word_used.13",
+      "text": "Next step build on the starter by swapping one gray letter.",
+      "domain": "wordquest",
+      "event": "starter_word_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.starter_word_used.14",
+      "text": "Small tweak use the starter\u2019s feedback to target the vowels.",
+      "domain": "wordquest",
+      "event": "starter_word_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.backspace_burst.09",
+      "text": "Try pick one version and test it instead of deleting.",
+      "domain": "wordquest",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.backspace_burst.10",
+      "text": "Consider commit to a single change and submit calmly.",
+      "domain": "wordquest",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.backspace_burst.11",
+      "text": "Steady move stop clearing; adjust one letter and check.",
+      "domain": "wordquest",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.backspace_burst.12",
+      "text": "Quick adjust pick one version and test it instead of deleting.",
+      "domain": "wordquest",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.backspace_burst.13",
+      "text": "Next step commit to a single change and submit calmly.",
+      "domain": "wordquest",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.backspace_burst.14",
+      "text": "Small tweak stop clearing; adjust one letter and check.",
+      "domain": "wordquest",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.pacing_drop.09",
+      "text": "Try keep a steady rhythm\u2014one informed guess at a time.",
+      "domain": "wordquest",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.pacing_drop.10",
+      "text": "Consider shorten the pause; adjust a single letter and go.",
+      "domain": "wordquest",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.pacing_drop.11",
+      "text": "Steady move lighten the load\u2014reuse greens and try a calm swap.",
+      "domain": "wordquest",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.pacing_drop.12",
+      "text": "Quick adjust keep a steady rhythm\u2014one informed guess at a time.",
+      "domain": "wordquest",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.pacing_drop.13",
+      "text": "Next step shorten the pause; adjust a single letter and go.",
+      "domain": "wordquest",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.pacing_drop.14",
+      "text": "Small tweak lighten the load\u2014reuse greens and try a calm swap.",
+      "domain": "wordquest",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.confidence_low.09",
+      "text": "Try trust your read\u2014enter a measured guess now.",
+      "domain": "wordquest",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.confidence_low.10",
+      "text": "Consider choose one likely letter and move forward.",
+      "domain": "wordquest",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.confidence_low.11",
+      "text": "Steady move keep it simple; one thoughtful guess beats none.",
+      "domain": "wordquest",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.confidence_low.12",
+      "text": "Quick adjust trust your read\u2014enter a measured guess now.",
+      "domain": "wordquest",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.confidence_low.13",
+      "text": "Next step choose one likely letter and move forward.",
+      "domain": "wordquest",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.confidence_low.14",
+      "text": "Small tweak keep it simple; one thoughtful guess beats none.",
+      "domain": "wordquest",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.voice_support_used.09",
+      "text": "Try mirror the audio cue in your next guess.",
+      "domain": "wordquest",
+      "event": "voice_support_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.voice_support_used.10",
+      "text": "Consider combine the spoken hint with one letter change.",
+      "domain": "wordquest",
+      "event": "voice_support_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.voice_support_used.11",
+      "text": "Steady move take the voiced clue and place it deliberately.",
+      "domain": "wordquest",
+      "event": "voice_support_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.voice_support_used.12",
+      "text": "Quick adjust mirror the audio cue in your next guess.",
+      "domain": "wordquest",
+      "event": "voice_support_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.voice_support_used.13",
+      "text": "Next step combine the spoken hint with one letter change.",
+      "domain": "wordquest",
+      "event": "voice_support_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.voice_support_used.14",
+      "text": "Small tweak take the voiced clue and place it deliberately.",
+      "domain": "wordquest",
+      "event": "voice_support_used",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.end_round_reflect.09",
+      "text": "Try note what worked and carry it to the next round.",
+      "domain": "wordquest",
+      "event": "end_round_reflect",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.end_round_reflect.10",
+      "text": "Consider keep the pattern you learned ready for the restart.",
+      "domain": "wordquest",
+      "event": "end_round_reflect",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.end_round_reflect.11",
+      "text": "Steady move save the strongest opener from this round.",
+      "domain": "wordquest",
+      "event": "end_round_reflect",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.end_round_reflect.12",
+      "text": "Quick adjust note what worked and carry it to the next round.",
+      "domain": "wordquest",
+      "event": "end_round_reflect",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.end_round_reflect.13",
+      "text": "Next step keep the pattern you learned ready for the restart.",
+      "domain": "wordquest",
+      "event": "end_round_reflect",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "wordquest.end_round_reflect.14",
+      "text": "Small tweak save the strongest opener from this round.",
+      "domain": "wordquest",
+      "event": "end_round_reflect",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.start_read.09",
+      "text": "Try steady your pace and begin with clear enunciation.",
+      "domain": "reading_lab",
+      "event": "start_read",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.start_read.10",
+      "text": "Consider breathe once, then start with a comfortable tempo.",
+      "domain": "reading_lab",
+      "event": "start_read",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.start_read.11",
+      "text": "Steady move open with a line you can read smoothly.",
+      "domain": "reading_lab",
+      "event": "start_read",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.start_read.12",
+      "text": "Quick adjust steady your pace and begin with clear enunciation.",
+      "domain": "reading_lab",
+      "event": "start_read",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.start_read.13",
+      "text": "Next step breathe once, then start with a comfortable tempo.",
+      "domain": "reading_lab",
+      "event": "start_read",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.start_read.14",
+      "text": "Small tweak open with a line you can read smoothly.",
+      "domain": "reading_lab",
+      "event": "start_read",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.09",
+      "text": "Try slow slightly and track each ending sound.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.10",
+      "text": "Consider aim for cleaner endings before increasing speed.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.11",
+      "text": "Steady move focus on one tricky pattern and land it cleanly.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.12",
+      "text": "Quick adjust slow slightly and track each ending sound.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.13",
+      "text": "Next step aim for cleaner endings before increasing speed.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.14",
+      "text": "Small tweak focus on one tricky pattern and land it cleanly.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_drop.09",
+      "text": "Try lift your voice at commas and full stops.",
+      "domain": "reading_lab",
+      "event": "punctuation_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_drop.10",
+      "text": "Consider pause briefly at punctuation to reset clarity.",
+      "domain": "reading_lab",
+      "event": "punctuation_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_drop.11",
+      "text": "Steady move honor each period; give listeners a beat to follow.",
+      "domain": "reading_lab",
+      "event": "punctuation_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_drop.12",
+      "text": "Quick adjust lift your voice at commas and full stops.",
+      "domain": "reading_lab",
+      "event": "punctuation_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_drop.13",
+      "text": "Next step pause briefly at punctuation to reset clarity.",
+      "domain": "reading_lab",
+      "event": "punctuation_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_drop.14",
+      "text": "Small tweak honor each period; give listeners a beat to follow.",
+      "domain": "reading_lab",
+      "event": "punctuation_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.prosody_flat.09",
+      "text": "Try add small pitch changes on key words.",
+      "domain": "reading_lab",
+      "event": "prosody_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.prosody_flat.10",
+      "text": "Consider let important words rise slightly to guide meaning.",
+      "domain": "reading_lab",
+      "event": "prosody_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.prosody_flat.11",
+      "text": "Steady move vary tone a bit to show question versus statement.",
+      "domain": "reading_lab",
+      "event": "prosody_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.prosody_flat.12",
+      "text": "Quick adjust add small pitch changes on key words.",
+      "domain": "reading_lab",
+      "event": "prosody_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.prosody_flat.13",
+      "text": "Next step let important words rise slightly to guide meaning.",
+      "domain": "reading_lab",
+      "event": "prosody_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.prosody_flat.14",
+      "text": "Small tweak vary tone a bit to show question versus statement.",
+      "domain": "reading_lab",
+      "event": "prosody_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.hard_word_repeat.09",
+      "text": "Try break the word into chunks, then re-read once.",
+      "domain": "reading_lab",
+      "event": "hard_word_repeat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.hard_word_repeat.10",
+      "text": "Consider scan the syllables, then say them together slowly.",
+      "domain": "reading_lab",
+      "event": "hard_word_repeat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.hard_word_repeat.11",
+      "text": "Steady move trace the tough word with your finger, then try again.",
+      "domain": "reading_lab",
+      "event": "hard_word_repeat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.hard_word_repeat.12",
+      "text": "Quick adjust break the word into chunks, then re-read once.",
+      "domain": "reading_lab",
+      "event": "hard_word_repeat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.hard_word_repeat.13",
+      "text": "Next step scan the syllables, then say them together slowly.",
+      "domain": "reading_lab",
+      "event": "hard_word_repeat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.hard_word_repeat.14",
+      "text": "Small tweak trace the tough word with your finger, then try again.",
+      "domain": "reading_lab",
+      "event": "hard_word_repeat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.self_correction.09",
+      "text": "Try nice catch\u2014read it again with the fix applied.",
+      "domain": "reading_lab",
+      "event": "self_correction",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.self_correction.10",
+      "text": "Consider keep that self-check and move to the next sentence.",
+      "domain": "reading_lab",
+      "event": "self_correction",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.self_correction.11",
+      "text": "Steady move apply the correction and flow forward confidently.",
+      "domain": "reading_lab",
+      "event": "self_correction",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.self_correction.12",
+      "text": "Quick adjust nice catch\u2014read it again with the fix applied.",
+      "domain": "reading_lab",
+      "event": "self_correction",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.self_correction.13",
+      "text": "Next step keep that self-check and move to the next sentence.",
+      "domain": "reading_lab",
+      "event": "self_correction",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.self_correction.14",
+      "text": "Small tweak apply the correction and flow forward confidently.",
+      "domain": "reading_lab",
+      "event": "self_correction",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_variance_high.09",
+      "text": "Try keep a middle tempo; avoid sudden bursts.",
+      "domain": "reading_lab",
+      "event": "pacing_variance_high",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_variance_high.10",
+      "text": "Consider level out the speed\u2014steady beats help accuracy.",
+      "domain": "reading_lab",
+      "event": "pacing_variance_high",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_variance_high.11",
+      "text": "Steady move even your pace so listeners can follow every line.",
+      "domain": "reading_lab",
+      "event": "pacing_variance_high",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_variance_high.12",
+      "text": "Quick adjust keep a middle tempo; avoid sudden bursts.",
+      "domain": "reading_lab",
+      "event": "pacing_variance_high",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_variance_high.13",
+      "text": "Next step level out the speed\u2014steady beats help accuracy.",
+      "domain": "reading_lab",
+      "event": "pacing_variance_high",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_variance_high.14",
+      "text": "Small tweak even your pace so listeners can follow every line.",
+      "domain": "reading_lab",
+      "event": "pacing_variance_high",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pause_pattern_repeated.09",
+      "text": "Try smooth the repeated pause by shortening the gap.",
+      "domain": "reading_lab",
+      "event": "pause_pattern_repeated",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pause_pattern_repeated.10",
+      "text": "Consider bridge the pause with a quiet breath, then continue.",
+      "domain": "reading_lab",
+      "event": "pause_pattern_repeated",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pause_pattern_repeated.11",
+      "text": "Steady move link the phrases with a lighter pause in between.",
+      "domain": "reading_lab",
+      "event": "pause_pattern_repeated",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pause_pattern_repeated.12",
+      "text": "Quick adjust smooth the repeated pause by shortening the gap.",
+      "domain": "reading_lab",
+      "event": "pause_pattern_repeated",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pause_pattern_repeated.13",
+      "text": "Next step bridge the pause with a quiet breath, then continue.",
+      "domain": "reading_lab",
+      "event": "pause_pattern_repeated",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.pause_pattern_repeated.14",
+      "text": "Small tweak link the phrases with a lighter pause in between.",
+      "domain": "reading_lab",
+      "event": "pause_pattern_repeated",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.segment_complete.09",
+      "text": "Try note one improvement, then continue to the next bit.",
+      "domain": "reading_lab",
+      "event": "segment_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.segment_complete.10",
+      "text": "Consider carry the smooth pace you found into the next segment.",
+      "domain": "reading_lab",
+      "event": "segment_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.segment_complete.11",
+      "text": "Steady move acknowledge the finish and roll into the next line.",
+      "domain": "reading_lab",
+      "event": "segment_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.segment_complete.12",
+      "text": "Quick adjust note one improvement, then continue to the next bit.",
+      "domain": "reading_lab",
+      "event": "segment_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.segment_complete.13",
+      "text": "Next step carry the smooth pace you found into the next segment.",
+      "domain": "reading_lab",
+      "event": "segment_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.segment_complete.14",
+      "text": "Small tweak acknowledge the finish and roll into the next line.",
+      "domain": "reading_lab",
+      "event": "segment_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.09",
+      "text": "Try restart with one sentence you know well.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.10",
+      "text": "Consider choose the next line and read it once through.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.11",
+      "text": "Steady move pick up from the last period and ease forward.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.12",
+      "text": "Quick adjust restart with one sentence you know well.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.13",
+      "text": "Next step choose the next line and read it once through.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.14",
+      "text": "Small tweak pick up from the last period and ease forward.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.teacher_summary_needed.09",
+      "text": "Try capture one strength and one need for your notes.",
+      "domain": "reading_lab",
+      "event": "teacher_summary_needed",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.teacher_summary_needed.10",
+      "text": "Consider log a quick note on pacing and accuracy trends.",
+      "domain": "reading_lab",
+      "event": "teacher_summary_needed",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.teacher_summary_needed.11",
+      "text": "Steady move mark the toughest line and the clearest one today.",
+      "domain": "reading_lab",
+      "event": "teacher_summary_needed",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.teacher_summary_needed.12",
+      "text": "Quick adjust capture one strength and one need for your notes.",
+      "domain": "reading_lab",
+      "event": "teacher_summary_needed",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.teacher_summary_needed.13",
+      "text": "Next step log a quick note on pacing and accuracy trends.",
+      "domain": "reading_lab",
+      "event": "teacher_summary_needed",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.teacher_summary_needed.14",
+      "text": "Small tweak mark the toughest line and the clearest one today.",
+      "domain": "reading_lab",
+      "event": "teacher_summary_needed",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.fluency_growth.09",
+      "text": "Try add a slight lift in phrasing to keep fluency rising.",
+      "domain": "reading_lab",
+      "event": "fluency_growth",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.fluency_growth.10",
+      "text": "Consider sustain this smooth pace; it\u2019s landing well.",
+      "domain": "reading_lab",
+      "event": "fluency_growth",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.fluency_growth.11",
+      "text": "Steady move carry the fluent tone into the next passage.",
+      "domain": "reading_lab",
+      "event": "fluency_growth",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.fluency_growth.12",
+      "text": "Quick adjust add a slight lift in phrasing to keep fluency rising.",
+      "domain": "reading_lab",
+      "event": "fluency_growth",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.fluency_growth.13",
+      "text": "Next step sustain this smooth pace; it\u2019s landing well.",
+      "domain": "reading_lab",
+      "event": "fluency_growth",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.fluency_growth.14",
+      "text": "Small tweak carry the fluent tone into the next passage.",
+      "domain": "reading_lab",
+      "event": "fluency_growth",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.accuracy_recovery.09",
+      "text": "Try hold this cleaner pattern for the next few lines.",
+      "domain": "reading_lab",
+      "event": "accuracy_recovery",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.accuracy_recovery.10",
+      "text": "Consider maintain the improved accuracy as you continue.",
+      "domain": "reading_lab",
+      "event": "accuracy_recovery",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.accuracy_recovery.11",
+      "text": "Steady move lock in this rhythm; it\u2019s working.",
+      "domain": "reading_lab",
+      "event": "accuracy_recovery",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.accuracy_recovery.12",
+      "text": "Quick adjust hold this cleaner pattern for the next few lines.",
+      "domain": "reading_lab",
+      "event": "accuracy_recovery",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.accuracy_recovery.13",
+      "text": "Next step maintain the improved accuracy as you continue.",
+      "domain": "reading_lab",
+      "event": "accuracy_recovery",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.accuracy_recovery.14",
+      "text": "Small tweak lock in this rhythm; it\u2019s working.",
+      "domain": "reading_lab",
+      "event": "accuracy_recovery",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.transition_to_reasoning.09",
+      "text": "Try shift to meaning\u2014ask what the author implies here.",
+      "domain": "reading_lab",
+      "event": "transition_to_reasoning",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.transition_to_reasoning.10",
+      "text": "Consider move from decoding to why the line matters.",
+      "domain": "reading_lab",
+      "event": "transition_to_reasoning",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.transition_to_reasoning.11",
+      "text": "Steady move connect the sentence to the main idea now.",
+      "domain": "reading_lab",
+      "event": "transition_to_reasoning",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.transition_to_reasoning.12",
+      "text": "Quick adjust shift to meaning\u2014ask what the author implies here.",
+      "domain": "reading_lab",
+      "event": "transition_to_reasoning",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.transition_to_reasoning.13",
+      "text": "Next step move from decoding to why the line matters.",
+      "domain": "reading_lab",
+      "event": "transition_to_reasoning",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "reading_lab.transition_to_reasoning.14",
+      "text": "Small tweak connect the sentence to the main idea now.",
+      "domain": "reading_lab",
+      "event": "transition_to_reasoning",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.09",
+      "text": "Try link it with a clear because to anchor the claim.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.10",
+      "text": "Consider tie the reason to evidence in the next line.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.11",
+      "text": "Steady move keep the reason concise and specific to the claim.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.12",
+      "text": "Quick adjust link it with a clear because to anchor the claim.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.13",
+      "text": "Next step tie the reason to evidence in the next line.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.14",
+      "text": "Small tweak keep the reason concise and specific to the claim.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.09",
+      "text": "Try add one because that explains the choice.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.10",
+      "text": "Consider state why the evidence supports the claim.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.11",
+      "text": "Steady move bridge the quote to the point with a short reason.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.12",
+      "text": "Quick adjust add one because that explains the choice.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.13",
+      "text": "Next step state why the evidence supports the claim.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.14",
+      "text": "Small tweak bridge the quote to the point with a short reason.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.backspace_burst.09",
+      "text": "Try pick one version and refine it instead of clearing.",
+      "domain": "sentence_surgery",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.backspace_burst.10",
+      "text": "Consider keep the sentence and adjust a single phrase.",
+      "domain": "sentence_surgery",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.backspace_burst.11",
+      "text": "Steady move edit one clause, not the whole line.",
+      "domain": "sentence_surgery",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.backspace_burst.12",
+      "text": "Quick adjust pick one version and refine it instead of clearing.",
+      "domain": "sentence_surgery",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.backspace_burst.13",
+      "text": "Next step keep the sentence and adjust a single phrase.",
+      "domain": "sentence_surgery",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.backspace_burst.14",
+      "text": "Small tweak edit one clause, not the whole line.",
+      "domain": "sentence_surgery",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.weak_verb_detected.09",
+      "text": "Try swap the weak verb for one vivid action.",
+      "domain": "sentence_surgery",
+      "event": "weak_verb_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.weak_verb_detected.10",
+      "text": "Consider choose a verb that shows, not tells.",
+      "domain": "sentence_surgery",
+      "event": "weak_verb_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.weak_verb_detected.11",
+      "text": "Steady move replace the filler verb with a precise choice.",
+      "domain": "sentence_surgery",
+      "event": "weak_verb_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.weak_verb_detected.12",
+      "text": "Quick adjust swap the weak verb for one vivid action.",
+      "domain": "sentence_surgery",
+      "event": "weak_verb_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.weak_verb_detected.13",
+      "text": "Next step choose a verb that shows, not tells.",
+      "domain": "sentence_surgery",
+      "event": "weak_verb_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.weak_verb_detected.14",
+      "text": "Small tweak replace the filler verb with a precise choice.",
+      "domain": "sentence_surgery",
+      "event": "weak_verb_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.fragment_detected.09",
+      "text": "Try add a subject and verb to complete the thought.",
+      "domain": "sentence_surgery",
+      "event": "fragment_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.fragment_detected.10",
+      "text": "Consider attach the fragment to the previous sentence cleanly.",
+      "domain": "sentence_surgery",
+      "event": "fragment_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.fragment_detected.11",
+      "text": "Steady move turn the fragment into a full sentence with a verb.",
+      "domain": "sentence_surgery",
+      "event": "fragment_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.fragment_detected.12",
+      "text": "Quick adjust add a subject and verb to complete the thought.",
+      "domain": "sentence_surgery",
+      "event": "fragment_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.fragment_detected.13",
+      "text": "Next step attach the fragment to the previous sentence cleanly.",
+      "domain": "sentence_surgery",
+      "event": "fragment_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.fragment_detected.14",
+      "text": "Small tweak turn the fragment into a full sentence with a verb.",
+      "domain": "sentence_surgery",
+      "event": "fragment_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.run_on_detected.09",
+      "text": "Try split the idea into two sentences for clarity.",
+      "domain": "sentence_surgery",
+      "event": "run_on_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.run_on_detected.10",
+      "text": "Consider insert a period or semicolon to control the flow.",
+      "domain": "sentence_surgery",
+      "event": "run_on_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.run_on_detected.11",
+      "text": "Steady move break the run-on and keep one idea per sentence.",
+      "domain": "sentence_surgery",
+      "event": "run_on_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.run_on_detected.12",
+      "text": "Quick adjust split the idea into two sentences for clarity.",
+      "domain": "sentence_surgery",
+      "event": "run_on_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.run_on_detected.13",
+      "text": "Next step insert a period or semicolon to control the flow.",
+      "domain": "sentence_surgery",
+      "event": "run_on_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.run_on_detected.14",
+      "text": "Small tweak break the run-on and keep one idea per sentence.",
+      "domain": "sentence_surgery",
+      "event": "run_on_detected",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.clarity_gain.09",
+      "text": "Try highlight the clearer clause and mirror it next time.",
+      "domain": "sentence_surgery",
+      "event": "clarity_gain",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.clarity_gain.10",
+      "text": "Consider keep the tightened structure across the paragraph.",
+      "domain": "sentence_surgery",
+      "event": "clarity_gain",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.clarity_gain.11",
+      "text": "Steady move lock in this cleaner wording as your default.",
+      "domain": "sentence_surgery",
+      "event": "clarity_gain",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.clarity_gain.12",
+      "text": "Quick adjust highlight the clearer clause and mirror it next time.",
+      "domain": "sentence_surgery",
+      "event": "clarity_gain",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.clarity_gain.13",
+      "text": "Next step keep the tightened structure across the paragraph.",
+      "domain": "sentence_surgery",
+      "event": "clarity_gain",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.clarity_gain.14",
+      "text": "Small tweak lock in this cleaner wording as your default.",
+      "domain": "sentence_surgery",
+      "event": "clarity_gain",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.detail_missing.09",
+      "text": "Try add one concrete detail to ground the point.",
+      "domain": "sentence_surgery",
+      "event": "detail_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.detail_missing.10",
+      "text": "Consider name a specific example to support the line.",
+      "domain": "sentence_surgery",
+      "event": "detail_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.detail_missing.11",
+      "text": "Steady move drop in a precise fact to make it solid.",
+      "domain": "sentence_surgery",
+      "event": "detail_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.detail_missing.12",
+      "text": "Quick adjust add one concrete detail to ground the point.",
+      "domain": "sentence_surgery",
+      "event": "detail_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.detail_missing.13",
+      "text": "Next step name a specific example to support the line.",
+      "domain": "sentence_surgery",
+      "event": "detail_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.detail_missing.14",
+      "text": "Small tweak drop in a precise fact to make it solid.",
+      "domain": "sentence_surgery",
+      "event": "detail_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.control_drop.09",
+      "text": "Try shorten the sentence to regain control.",
+      "domain": "sentence_surgery",
+      "event": "control_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.control_drop.10",
+      "text": "Consider remove one extra clause to steady the flow.",
+      "domain": "sentence_surgery",
+      "event": "control_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.control_drop.11",
+      "text": "Steady move simplify the wording before adding anything new.",
+      "domain": "sentence_surgery",
+      "event": "control_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.control_drop.12",
+      "text": "Quick adjust shorten the sentence to regain control.",
+      "domain": "sentence_surgery",
+      "event": "control_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.control_drop.13",
+      "text": "Next step remove one extra clause to steady the flow.",
+      "domain": "sentence_surgery",
+      "event": "control_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.control_drop.14",
+      "text": "Small tweak simplify the wording before adding anything new.",
+      "domain": "sentence_surgery",
+      "event": "control_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.peer_review.09",
+      "text": "Try ask for one clarity check from a peer.",
+      "domain": "sentence_surgery",
+      "event": "peer_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.peer_review.10",
+      "text": "Consider request a note on your strongest sentence.",
+      "domain": "sentence_surgery",
+      "event": "peer_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.peer_review.11",
+      "text": "Steady move invite feedback on where the reasoning lands.",
+      "domain": "sentence_surgery",
+      "event": "peer_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.peer_review.12",
+      "text": "Quick adjust ask for one clarity check from a peer.",
+      "domain": "sentence_surgery",
+      "event": "peer_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.peer_review.13",
+      "text": "Next step request a note on your strongest sentence.",
+      "domain": "sentence_surgery",
+      "event": "peer_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.peer_review.14",
+      "text": "Small tweak invite feedback on where the reasoning lands.",
+      "domain": "sentence_surgery",
+      "event": "peer_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.draft_complete.09",
+      "text": "Try do a quick read for flow, then save.",
+      "domain": "sentence_surgery",
+      "event": "draft_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.draft_complete.10",
+      "text": "Consider note one fix for the next pass, then pause.",
+      "domain": "sentence_surgery",
+      "event": "draft_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.draft_complete.11",
+      "text": "Steady move mark spots to revisit, then take a short break.",
+      "domain": "sentence_surgery",
+      "event": "draft_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.draft_complete.12",
+      "text": "Quick adjust do a quick read for flow, then save.",
+      "domain": "sentence_surgery",
+      "event": "draft_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.draft_complete.13",
+      "text": "Next step note one fix for the next pass, then pause.",
+      "domain": "sentence_surgery",
+      "event": "draft_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.draft_complete.14",
+      "text": "Small tweak mark spots to revisit, then take a short break.",
+      "domain": "sentence_surgery",
+      "event": "draft_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.revision_stall.09",
+      "text": "Try choose one sentence and improve just that.",
+      "domain": "sentence_surgery",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.revision_stall.10",
+      "text": "Consider set a tiny goal; tighten one line now.",
+      "domain": "sentence_surgery",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.revision_stall.11",
+      "text": "Steady move pick one weak verb and replace it first.",
+      "domain": "sentence_surgery",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.revision_stall.12",
+      "text": "Quick adjust choose one sentence and improve just that.",
+      "domain": "sentence_surgery",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.revision_stall.13",
+      "text": "Next step set a tiny goal; tighten one line now.",
+      "domain": "sentence_surgery",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.revision_stall.14",
+      "text": "Small tweak pick one weak verb and replace it first.",
+      "domain": "sentence_surgery",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.complexity_step_up.09",
+      "text": "Try add a contrastor like although to deepen meaning.",
+      "domain": "sentence_surgery",
+      "event": "complexity_step_up",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.complexity_step_up.10",
+      "text": "Consider weave in a dependent clause to show relationship.",
+      "domain": "sentence_surgery",
+      "event": "complexity_step_up",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.complexity_step_up.11",
+      "text": "Steady move link ideas with because or while for nuance.",
+      "domain": "sentence_surgery",
+      "event": "complexity_step_up",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.complexity_step_up.12",
+      "text": "Quick adjust add a contrastor like although to deepen meaning.",
+      "domain": "sentence_surgery",
+      "event": "complexity_step_up",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.complexity_step_up.13",
+      "text": "Next step weave in a dependent clause to show relationship.",
+      "domain": "sentence_surgery",
+      "event": "complexity_step_up",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "sentence_surgery.complexity_step_up.14",
+      "text": "Small tweak link ideas with because or while for nuance.",
+      "domain": "sentence_surgery",
+      "event": "complexity_step_up",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_start.09",
+      "text": "Try set a clear topic line before adding detail.",
+      "domain": "writing_studio",
+      "event": "paragraph_start",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_start.10",
+      "text": "Consider open with the main point in one sentence.",
+      "domain": "writing_studio",
+      "event": "paragraph_start",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_start.11",
+      "text": "Steady move state the focus so readers know what follows.",
+      "domain": "writing_studio",
+      "event": "paragraph_start",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_start.12",
+      "text": "Quick adjust set a clear topic line before adding detail.",
+      "domain": "writing_studio",
+      "event": "paragraph_start",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_start.13",
+      "text": "Next step open with the main point in one sentence.",
+      "domain": "writing_studio",
+      "event": "paragraph_start",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_start.14",
+      "text": "Small tweak state the focus so readers know what follows.",
+      "domain": "writing_studio",
+      "event": "paragraph_start",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.outline_missing.09",
+      "text": "Try jot three bullets before drafting the next paragraph.",
+      "domain": "writing_studio",
+      "event": "outline_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.outline_missing.10",
+      "text": "Consider sketch the flow; claim, evidence, wrap.",
+      "domain": "writing_studio",
+      "event": "outline_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.outline_missing.11",
+      "text": "Steady move map the next section in brief before writing.",
+      "domain": "writing_studio",
+      "event": "outline_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.outline_missing.12",
+      "text": "Quick adjust jot three bullets before drafting the next paragraph.",
+      "domain": "writing_studio",
+      "event": "outline_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.outline_missing.13",
+      "text": "Next step sketch the flow; claim, evidence, wrap.",
+      "domain": "writing_studio",
+      "event": "outline_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.outline_missing.14",
+      "text": "Small tweak map the next section in brief before writing.",
+      "domain": "writing_studio",
+      "event": "outline_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.plan_set.09",
+      "text": "Try follow your plan; claim, evidence, link.",
+      "domain": "writing_studio",
+      "event": "plan_set",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.plan_set.10",
+      "text": "Consider stick to the outline you set\u2014next step only.",
+      "domain": "writing_studio",
+      "event": "plan_set",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.plan_set.11",
+      "text": "Steady move use the plan to choose the next sentence.",
+      "domain": "writing_studio",
+      "event": "plan_set",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.plan_set.12",
+      "text": "Quick adjust follow your plan; claim, evidence, link.",
+      "domain": "writing_studio",
+      "event": "plan_set",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.plan_set.13",
+      "text": "Next step stick to the outline you set\u2014next step only.",
+      "domain": "writing_studio",
+      "event": "plan_set",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.plan_set.14",
+      "text": "Small tweak use the plan to choose the next sentence.",
+      "domain": "writing_studio",
+      "event": "plan_set",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.09",
+      "text": "Try add one concrete fact to support the claim.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.10",
+      "text": "Consider bring in a quoted piece that fits the point.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.11",
+      "text": "Steady move insert a specific example to strengthen it.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.12",
+      "text": "Quick adjust add one concrete fact to support the claim.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.13",
+      "text": "Next step bring in a quoted piece that fits the point.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.14",
+      "text": "Small tweak insert a specific example to strengthen it.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.claim_unclear.09",
+      "text": "Try rewrite the claim in one sharp sentence.",
+      "domain": "writing_studio",
+      "event": "claim_unclear",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.claim_unclear.10",
+      "text": "Consider state the claim plainly before adding support.",
+      "domain": "writing_studio",
+      "event": "claim_unclear",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.claim_unclear.11",
+      "text": "Steady move clarify the claim with a precise subject and verb.",
+      "domain": "writing_studio",
+      "event": "claim_unclear",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.claim_unclear.12",
+      "text": "Quick adjust rewrite the claim in one sharp sentence.",
+      "domain": "writing_studio",
+      "event": "claim_unclear",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.claim_unclear.13",
+      "text": "Next step state the claim plainly before adding support.",
+      "domain": "writing_studio",
+      "event": "claim_unclear",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.claim_unclear.14",
+      "text": "Small tweak clarify the claim with a precise subject and verb.",
+      "domain": "writing_studio",
+      "event": "claim_unclear",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.conclusion_missing.09",
+      "text": "Try write one line that answers \u201cso what?\u201d",
+      "domain": "writing_studio",
+      "event": "conclusion_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.conclusion_missing.10",
+      "text": "Consider close the paragraph by restating the key point.",
+      "domain": "writing_studio",
+      "event": "conclusion_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.conclusion_missing.11",
+      "text": "Steady move wrap with a short line that ties back to the claim.",
+      "domain": "writing_studio",
+      "event": "conclusion_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.conclusion_missing.12",
+      "text": "Quick adjust write one line that answers \u201cso what?\u201d",
+      "domain": "writing_studio",
+      "event": "conclusion_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.conclusion_missing.13",
+      "text": "Next step close the paragraph by restating the key point.",
+      "domain": "writing_studio",
+      "event": "conclusion_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.conclusion_missing.14",
+      "text": "Small tweak wrap with a short line that ties back to the claim.",
+      "domain": "writing_studio",
+      "event": "conclusion_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.09",
+      "text": "Try pick the weakest line and improve just that.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.10",
+      "text": "Consider set a two-minute fix window on one paragraph.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.11",
+      "text": "Steady move make one pass for verbs, then stop.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.12",
+      "text": "Quick adjust pick the weakest line and improve just that.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.13",
+      "text": "Next step set a two-minute fix window on one paragraph.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.14",
+      "text": "Small tweak make one pass for verbs, then stop.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.backspace_burst.09",
+      "text": "Try keep the sentence; adjust one phrase instead.",
+      "domain": "writing_studio",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.backspace_burst.10",
+      "text": "Consider edit lightly\u2014swap a word rather than clearing.",
+      "domain": "writing_studio",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.backspace_burst.11",
+      "text": "Steady move choose one fix, then move forward.",
+      "domain": "writing_studio",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.backspace_burst.12",
+      "text": "Quick adjust keep the sentence; adjust one phrase instead.",
+      "domain": "writing_studio",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.backspace_burst.13",
+      "text": "Next step edit lightly\u2014swap a word rather than clearing.",
+      "domain": "writing_studio",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.backspace_burst.14",
+      "text": "Small tweak choose one fix, then move forward.",
+      "domain": "writing_studio",
+      "event": "backspace_burst",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.09",
+      "text": "Try draft a short line now to keep momentum.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.10",
+      "text": "Consider type one clear sentence to restart.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.11",
+      "text": "Steady move resume with a simple statement of your next point.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.12",
+      "text": "Quick adjust draft a short line now to keep momentum.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.13",
+      "text": "Next step type one clear sentence to restart.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.14",
+      "text": "Small tweak resume with a simple statement of your next point.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.focus_shift.09",
+      "text": "Try delete the off-track line and return to the claim.",
+      "domain": "writing_studio",
+      "event": "focus_shift",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.focus_shift.10",
+      "text": "Consider realign the paragraph to the opening idea.",
+      "domain": "writing_studio",
+      "event": "focus_shift",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.focus_shift.11",
+      "text": "Steady move trim the tangent and center the main thread.",
+      "domain": "writing_studio",
+      "event": "focus_shift",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.focus_shift.12",
+      "text": "Quick adjust delete the off-track line and return to the claim.",
+      "domain": "writing_studio",
+      "event": "focus_shift",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.focus_shift.13",
+      "text": "Next step realign the paragraph to the opening idea.",
+      "domain": "writing_studio",
+      "event": "focus_shift",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.focus_shift.14",
+      "text": "Small tweak trim the tangent and center the main thread.",
+      "domain": "writing_studio",
+      "event": "focus_shift",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.voice_flat.09",
+      "text": "Try swap one neutral verb for a vivid choice.",
+      "domain": "writing_studio",
+      "event": "voice_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.voice_flat.10",
+      "text": "Consider add a sensory detail to lift the tone.",
+      "domain": "writing_studio",
+      "event": "voice_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.voice_flat.11",
+      "text": "Steady move choose a stronger adjective to add color.",
+      "domain": "writing_studio",
+      "event": "voice_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.voice_flat.12",
+      "text": "Quick adjust swap one neutral verb for a vivid choice.",
+      "domain": "writing_studio",
+      "event": "voice_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.voice_flat.13",
+      "text": "Next step add a sensory detail to lift the tone.",
+      "domain": "writing_studio",
+      "event": "voice_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.voice_flat.14",
+      "text": "Small tweak choose a stronger adjective to add color.",
+      "domain": "writing_studio",
+      "event": "voice_flat",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.teacher_review.09",
+      "text": "Try flag one question for your teacher in comments.",
+      "domain": "writing_studio",
+      "event": "teacher_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.teacher_review.10",
+      "text": "Consider note where you want feedback before submitting.",
+      "domain": "writing_studio",
+      "event": "teacher_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.teacher_review.11",
+      "text": "Steady move mark the paragraph that needs a second look.",
+      "domain": "writing_studio",
+      "event": "teacher_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.teacher_review.12",
+      "text": "Quick adjust flag one question for your teacher in comments.",
+      "domain": "writing_studio",
+      "event": "teacher_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.teacher_review.13",
+      "text": "Next step note where you want feedback before submitting.",
+      "domain": "writing_studio",
+      "event": "teacher_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.teacher_review.14",
+      "text": "Small tweak mark the paragraph that needs a second look.",
+      "domain": "writing_studio",
+      "event": "teacher_review",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idea_stuck.09",
+      "text": "Try free-write one sentence to move forward.",
+      "domain": "writing_studio",
+      "event": "idea_stuck",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idea_stuck.10",
+      "text": "Consider switch to a simple sentence to regain motion.",
+      "domain": "writing_studio",
+      "event": "idea_stuck",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idea_stuck.11",
+      "text": "Steady move write a quick placeholder and keep drafting.",
+      "domain": "writing_studio",
+      "event": "idea_stuck",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idea_stuck.12",
+      "text": "Quick adjust free-write one sentence to move forward.",
+      "domain": "writing_studio",
+      "event": "idea_stuck",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idea_stuck.13",
+      "text": "Next step switch to a simple sentence to regain motion.",
+      "domain": "writing_studio",
+      "event": "idea_stuck",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.idea_stuck.14",
+      "text": "Small tweak write a quick placeholder and keep drafting.",
+      "domain": "writing_studio",
+      "event": "idea_stuck",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.sentence_flow_issue.09",
+      "text": "Try combine the choppy lines with a connector.",
+      "domain": "writing_studio",
+      "event": "sentence_flow_issue",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.sentence_flow_issue.10",
+      "text": "Consider vary sentence length to smooth the read.",
+      "domain": "writing_studio",
+      "event": "sentence_flow_issue",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.sentence_flow_issue.11",
+      "text": "Steady move link two short sentences to improve flow.",
+      "domain": "writing_studio",
+      "event": "sentence_flow_issue",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.sentence_flow_issue.12",
+      "text": "Quick adjust combine the choppy lines with a connector.",
+      "domain": "writing_studio",
+      "event": "sentence_flow_issue",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.sentence_flow_issue.13",
+      "text": "Next step vary sentence length to smooth the read.",
+      "domain": "writing_studio",
+      "event": "sentence_flow_issue",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "writing_studio.sentence_flow_issue.14",
+      "text": "Small tweak link two short sentences to improve flow.",
+      "domain": "writing_studio",
+      "event": "sentence_flow_issue",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.09",
+      "text": "Try select one misconception to address in small group.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.10",
+      "text": "Consider group students by need for a quick reteach.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.11",
+      "text": "Steady move design one targeted prompt for the next lesson.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.12",
+      "text": "Quick adjust select one misconception to address in small group.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.13",
+      "text": "Next step group students by need for a quick reteach.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.14",
+      "text": "Small tweak design one targeted prompt for the next lesson.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.pacing_drop.09",
+      "text": "Try trim one activity to regain schedule flow.",
+      "domain": "teacher_dashboard",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.pacing_drop.10",
+      "text": "Consider shift a task to homework to protect core time.",
+      "domain": "teacher_dashboard",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.pacing_drop.11",
+      "text": "Steady move compress transitions to recover minutes.",
+      "domain": "teacher_dashboard",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.pacing_drop.12",
+      "text": "Quick adjust trim one activity to regain schedule flow.",
+      "domain": "teacher_dashboard",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.pacing_drop.13",
+      "text": "Next step shift a task to homework to protect core time.",
+      "domain": "teacher_dashboard",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.pacing_drop.14",
+      "text": "Small tweak compress transitions to recover minutes.",
+      "domain": "teacher_dashboard",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.09",
+      "text": "Try plan a mini-lesson targeting the main error.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.10",
+      "text": "Consider choose two examples for a quick reteach.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.11",
+      "text": "Steady move set up a small-group slot to address it.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.12",
+      "text": "Quick adjust plan a mini-lesson targeting the main error.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.13",
+      "text": "Next step choose two examples for a quick reteach.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.14",
+      "text": "Small tweak set up a small-group slot to address it.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.growth_spike.09",
+      "text": "Try capture what worked and replicate it next unit.",
+      "domain": "teacher_dashboard",
+      "event": "growth_spike",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.growth_spike.10",
+      "text": "Consider note which routine lifted scores this week.",
+      "domain": "teacher_dashboard",
+      "event": "growth_spike",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.growth_spike.11",
+      "text": "Steady move share the successful move with your team.",
+      "domain": "teacher_dashboard",
+      "event": "growth_spike",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.growth_spike.12",
+      "text": "Quick adjust capture what worked and replicate it next unit.",
+      "domain": "teacher_dashboard",
+      "event": "growth_spike",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.growth_spike.13",
+      "text": "Next step note which routine lifted scores this week.",
+      "domain": "teacher_dashboard",
+      "event": "growth_spike",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.growth_spike.14",
+      "text": "Small tweak share the successful move with your team.",
+      "domain": "teacher_dashboard",
+      "event": "growth_spike",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.09",
+      "text": "Try prepare two highlights and one next step.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.10",
+      "text": "Consider gather a sample to illustrate the growth.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.11",
+      "text": "Steady move draft a concise summary for the meeting.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.12",
+      "text": "Quick adjust prepare two highlights and one next step.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.13",
+      "text": "Next step gather a sample to illustrate the growth.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.14",
+      "text": "Small tweak draft a concise summary for the meeting.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.small_group_ready.09",
+      "text": "Try pull the group with similar needs first.",
+      "domain": "teacher_dashboard",
+      "event": "small_group_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.small_group_ready.10",
+      "text": "Consider prep one task that fits their current level.",
+      "domain": "teacher_dashboard",
+      "event": "small_group_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.small_group_ready.11",
+      "text": "Steady move decide a clear goal for the group today.",
+      "domain": "teacher_dashboard",
+      "event": "small_group_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.small_group_ready.12",
+      "text": "Quick adjust pull the group with similar needs first.",
+      "domain": "teacher_dashboard",
+      "event": "small_group_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.small_group_ready.13",
+      "text": "Next step prep one task that fits their current level.",
+      "domain": "teacher_dashboard",
+      "event": "small_group_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.small_group_ready.14",
+      "text": "Small tweak decide a clear goal for the group today.",
+      "domain": "teacher_dashboard",
+      "event": "small_group_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.data_conflict.09",
+      "text": "Try cross-check the mismatch against last week\u2019s data.",
+      "domain": "teacher_dashboard",
+      "event": "data_conflict",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.data_conflict.10",
+      "text": "Consider verify the roster and rerun the report.",
+      "domain": "teacher_dashboard",
+      "event": "data_conflict",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.data_conflict.11",
+      "text": "Steady move flag the conflict and note steps to resolve.",
+      "domain": "teacher_dashboard",
+      "event": "data_conflict",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.data_conflict.12",
+      "text": "Quick adjust cross-check the mismatch against last week\u2019s data.",
+      "domain": "teacher_dashboard",
+      "event": "data_conflict",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.data_conflict.13",
+      "text": "Next step verify the roster and rerun the report.",
+      "domain": "teacher_dashboard",
+      "event": "data_conflict",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.data_conflict.14",
+      "text": "Small tweak flag the conflict and note steps to resolve.",
+      "domain": "teacher_dashboard",
+      "event": "data_conflict",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.attendance_gap.09",
+      "text": "Try note who missed key lessons and queue a reteach.",
+      "domain": "teacher_dashboard",
+      "event": "attendance_gap",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.attendance_gap.10",
+      "text": "Consider flag absent students for tomorrow\u2019s warmup.",
+      "domain": "teacher_dashboard",
+      "event": "attendance_gap",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.attendance_gap.11",
+      "text": "Steady move prepare a short catch-up task for returners.",
+      "domain": "teacher_dashboard",
+      "event": "attendance_gap",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.attendance_gap.12",
+      "text": "Quick adjust note who missed key lessons and queue a reteach.",
+      "domain": "teacher_dashboard",
+      "event": "attendance_gap",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.attendance_gap.13",
+      "text": "Next step flag absent students for tomorrow\u2019s warmup.",
+      "domain": "teacher_dashboard",
+      "event": "attendance_gap",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.attendance_gap.14",
+      "text": "Small tweak prepare a short catch-up task for returners.",
+      "domain": "teacher_dashboard",
+      "event": "attendance_gap",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.engagement_low.09",
+      "text": "Try identify one student to re-engage this block.",
+      "domain": "teacher_dashboard",
+      "event": "engagement_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.engagement_low.10",
+      "text": "Consider prep a quick prompt to pull quiet students in.",
+      "domain": "teacher_dashboard",
+      "event": "engagement_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.engagement_low.11",
+      "text": "Steady move plan a check-in with the most disengaged group.",
+      "domain": "teacher_dashboard",
+      "event": "engagement_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.engagement_low.12",
+      "text": "Quick adjust identify one student to re-engage this block.",
+      "domain": "teacher_dashboard",
+      "event": "engagement_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.engagement_low.13",
+      "text": "Next step prep a quick prompt to pull quiet students in.",
+      "domain": "teacher_dashboard",
+      "event": "engagement_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.engagement_low.14",
+      "text": "Small tweak plan a check-in with the most disengaged group.",
+      "domain": "teacher_dashboard",
+      "event": "engagement_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.assessment_window.09",
+      "text": "Try schedule makeups for anyone absent this window.",
+      "domain": "teacher_dashboard",
+      "event": "assessment_window",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.assessment_window.10",
+      "text": "Consider confirm materials and timing for the next session.",
+      "domain": "teacher_dashboard",
+      "event": "assessment_window",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.assessment_window.11",
+      "text": "Steady move plan a calm start so students enter ready.",
+      "domain": "teacher_dashboard",
+      "event": "assessment_window",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.assessment_window.12",
+      "text": "Quick adjust schedule makeups for anyone absent this window.",
+      "domain": "teacher_dashboard",
+      "event": "assessment_window",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.assessment_window.13",
+      "text": "Next step confirm materials and timing for the next session.",
+      "domain": "teacher_dashboard",
+      "event": "assessment_window",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.assessment_window.14",
+      "text": "Small tweak plan a calm start so students enter ready.",
+      "domain": "teacher_dashboard",
+      "event": "assessment_window",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.behavior_spike.09",
+      "text": "Try log the incident and set a brief follow-up.",
+      "domain": "teacher_dashboard",
+      "event": "behavior_spike",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.behavior_spike.10",
+      "text": "Consider pair a cool-down activity with clear expectations.",
+      "domain": "teacher_dashboard",
+      "event": "behavior_spike",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.behavior_spike.11",
+      "text": "Steady move plan a quick reset routine for the next session.",
+      "domain": "teacher_dashboard",
+      "event": "behavior_spike",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.behavior_spike.12",
+      "text": "Quick adjust log the incident and set a brief follow-up.",
+      "domain": "teacher_dashboard",
+      "event": "behavior_spike",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.behavior_spike.13",
+      "text": "Next step pair a cool-down activity with clear expectations.",
+      "domain": "teacher_dashboard",
+      "event": "behavior_spike",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.behavior_spike.14",
+      "text": "Small tweak plan a quick reset routine for the next session.",
+      "domain": "teacher_dashboard",
+      "event": "behavior_spike",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.curriculum_alignment.09",
+      "text": "Try map tomorrow\u2019s task to the target standard.",
+      "domain": "teacher_dashboard",
+      "event": "curriculum_alignment",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.curriculum_alignment.10",
+      "text": "Consider swap one activity to better match the standard.",
+      "domain": "teacher_dashboard",
+      "event": "curriculum_alignment",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.curriculum_alignment.11",
+      "text": "Steady move align the exit ticket to the focus skill.",
+      "domain": "teacher_dashboard",
+      "event": "curriculum_alignment",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.curriculum_alignment.12",
+      "text": "Quick adjust map tomorrow\u2019s task to the target standard.",
+      "domain": "teacher_dashboard",
+      "event": "curriculum_alignment",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.curriculum_alignment.13",
+      "text": "Next step swap one activity to better match the standard.",
+      "domain": "teacher_dashboard",
+      "event": "curriculum_alignment",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.curriculum_alignment.14",
+      "text": "Small tweak align the exit ticket to the focus skill.",
+      "domain": "teacher_dashboard",
+      "event": "curriculum_alignment",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.report_due.09",
+      "text": "Try allocate ten minutes to finish the report today.",
+      "domain": "teacher_dashboard",
+      "event": "report_due",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.report_due.10",
+      "text": "Consider fill in the data section first, then narrative.",
+      "domain": "teacher_dashboard",
+      "event": "report_due",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.report_due.11",
+      "text": "Steady move block a short window to finalize and submit.",
+      "domain": "teacher_dashboard",
+      "event": "report_due",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.report_due.12",
+      "text": "Quick adjust allocate ten minutes to finish the report today.",
+      "domain": "teacher_dashboard",
+      "event": "report_due",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.report_due.13",
+      "text": "Next step fill in the data section first, then narrative.",
+      "domain": "teacher_dashboard",
+      "event": "report_due",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.report_due.14",
+      "text": "Small tweak block a short window to finalize and submit.",
+      "domain": "teacher_dashboard",
+      "event": "report_due",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.09",
+      "text": "Try scan dashboards and note one quick action.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.10",
+      "text": "Consider use the pause to queue tomorrow\u2019s groups.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.11",
+      "text": "Steady move check alerts and clear one item now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.12",
+      "text": "Quick adjust scan dashboards and note one quick action.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.13",
+      "text": "Next step use the pause to queue tomorrow\u2019s groups.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.14",
+      "text": "Small tweak check alerts and clear one item now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.first_miss.09",
+      "text": "Try re-check units, then adjust one step.",
+      "domain": "numeracy",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.first_miss.10",
+      "text": "Consider find the slip and retry with a smaller change.",
+      "domain": "numeracy",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.first_miss.11",
+      "text": "Steady move keep the structure; fix the likely error spot.",
+      "domain": "numeracy",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.first_miss.12",
+      "text": "Quick adjust re-check units, then adjust one step.",
+      "domain": "numeracy",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.first_miss.13",
+      "text": "Next step find the slip and retry with a smaller change.",
+      "domain": "numeracy",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.first_miss.14",
+      "text": "Small tweak keep the structure; fix the likely error spot.",
+      "domain": "numeracy",
+      "event": "first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.second_miss.09",
+      "text": "Try swap the strategy\u2014try a model or diagram.",
+      "domain": "numeracy",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.second_miss.10",
+      "text": "Consider change one step based on where results drifted.",
+      "domain": "numeracy",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.second_miss.11",
+      "text": "Steady move pause and check operation signs before retrying.",
+      "domain": "numeracy",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.second_miss.12",
+      "text": "Quick adjust swap the strategy\u2014try a model or diagram.",
+      "domain": "numeracy",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.second_miss.13",
+      "text": "Next step change one step based on where results drifted.",
+      "domain": "numeracy",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.second_miss.14",
+      "text": "Small tweak pause and check operation signs before retrying.",
+      "domain": "numeracy",
+      "event": "second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.09",
+      "text": "Try slow down; verify each operation before moving.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.10",
+      "text": "Consider reset with a worked example beside you.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.11",
+      "text": "Steady move check place value carefully before the next try.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.12",
+      "text": "Quick adjust slow down; verify each operation before moving.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.13",
+      "text": "Next step reset with a worked example beside you.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.14",
+      "text": "Small tweak check place value carefully before the next try.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.09",
+      "text": "Try tighten the last step; verify units and sign.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.10",
+      "text": "Consider recompute the final operation with fresh numbers.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.11",
+      "text": "Steady move keep the setup; adjust the final calculation.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.12",
+      "text": "Quick adjust tighten the last step; verify units and sign.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.13",
+      "text": "Next step recompute the final operation with fresh numbers.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.14",
+      "text": "Small tweak keep the setup; adjust the final calculation.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.09",
+      "text": "Try try a stretch problem one level up.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.10",
+      "text": "Consider add a challenge with larger numbers.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.11",
+      "text": "Steady move apply the same method to a tougher example.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.12",
+      "text": "Quick adjust try a stretch problem one level up.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.13",
+      "text": "Next step add a challenge with larger numbers.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.14",
+      "text": "Small tweak apply the same method to a tougher example.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.09",
+      "text": "Try solve one sub-step to restart momentum.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.10",
+      "text": "Consider write the next line even if tentative.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.11",
+      "text": "Steady move pick a small calculation to get moving.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.12",
+      "text": "Quick adjust solve one sub-step to restart momentum.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.13",
+      "text": "Next step write the next line even if tentative.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.14",
+      "text": "Small tweak pick a small calculation to get moving.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.hint_opened.09",
+      "text": "Try apply the hint to the next calculation step.",
+      "domain": "numeracy",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.hint_opened.10",
+      "text": "Consider use the hint to replace the shaky part.",
+      "domain": "numeracy",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.hint_opened.11",
+      "text": "Steady move follow the hint and check the result once.",
+      "domain": "numeracy",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.hint_opened.12",
+      "text": "Quick adjust apply the hint to the next calculation step.",
+      "domain": "numeracy",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.hint_opened.13",
+      "text": "Next step use the hint to replace the shaky part.",
+      "domain": "numeracy",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.hint_opened.14",
+      "text": "Small tweak follow the hint and check the result once.",
+      "domain": "numeracy",
+      "event": "hint_opened",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.strategy_switch.09",
+      "text": "Try change to a visual model for clarity.",
+      "domain": "numeracy",
+      "event": "strategy_switch",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.strategy_switch.10",
+      "text": "Consider try factoring instead of expanding this time.",
+      "domain": "numeracy",
+      "event": "strategy_switch",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.strategy_switch.11",
+      "text": "Steady move switch to a table to track values cleanly.",
+      "domain": "numeracy",
+      "event": "strategy_switch",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.strategy_switch.12",
+      "text": "Quick adjust change to a visual model for clarity.",
+      "domain": "numeracy",
+      "event": "strategy_switch",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.strategy_switch.13",
+      "text": "Next step try factoring instead of expanding this time.",
+      "domain": "numeracy",
+      "event": "strategy_switch",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.strategy_switch.14",
+      "text": "Small tweak switch to a table to track values cleanly.",
+      "domain": "numeracy",
+      "event": "strategy_switch",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.worked_example.09",
+      "text": "Try mirror the example once, then try alone.",
+      "domain": "numeracy",
+      "event": "worked_example",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.worked_example.10",
+      "text": "Consider copy the structure, then replace with your numbers.",
+      "domain": "numeracy",
+      "event": "worked_example",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.worked_example.11",
+      "text": "Steady move study the example, then cover it and solve again.",
+      "domain": "numeracy",
+      "event": "worked_example",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.worked_example.12",
+      "text": "Quick adjust mirror the example once, then try alone.",
+      "domain": "numeracy",
+      "event": "worked_example",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.worked_example.13",
+      "text": "Next step copy the structure, then replace with your numbers.",
+      "domain": "numeracy",
+      "event": "worked_example",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.worked_example.14",
+      "text": "Small tweak study the example, then cover it and solve again.",
+      "domain": "numeracy",
+      "event": "worked_example",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.error_pattern_seen.09",
+      "text": "Try check if the same mistake repeats each line.",
+      "domain": "numeracy",
+      "event": "error_pattern_seen",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.error_pattern_seen.10",
+      "text": "Consider mark the pattern and correct it in the next try.",
+      "domain": "numeracy",
+      "event": "error_pattern_seen",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.error_pattern_seen.11",
+      "text": "Steady move adjust the step where the repeated error appears.",
+      "domain": "numeracy",
+      "event": "error_pattern_seen",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.error_pattern_seen.12",
+      "text": "Quick adjust check if the same mistake repeats each line.",
+      "domain": "numeracy",
+      "event": "error_pattern_seen",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.error_pattern_seen.13",
+      "text": "Next step mark the pattern and correct it in the next try.",
+      "domain": "numeracy",
+      "event": "error_pattern_seen",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.error_pattern_seen.14",
+      "text": "Small tweak adjust the step where the repeated error appears.",
+      "domain": "numeracy",
+      "event": "error_pattern_seen",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.confidence_low.09",
+      "text": "Try work a simpler case to confirm the process.",
+      "domain": "numeracy",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.confidence_low.10",
+      "text": "Consider state each step aloud to steady your pace.",
+      "domain": "numeracy",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.confidence_low.11",
+      "text": "Steady move choose the clearest strategy and stick to it.",
+      "domain": "numeracy",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.confidence_low.12",
+      "text": "Quick adjust work a simpler case to confirm the process.",
+      "domain": "numeracy",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.confidence_low.13",
+      "text": "Next step state each step aloud to steady your pace.",
+      "domain": "numeracy",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.confidence_low.14",
+      "text": "Small tweak choose the clearest strategy and stick to it.",
+      "domain": "numeracy",
+      "event": "confidence_low",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.timer_expired.09",
+      "text": "Try note where you paused and resume from there.",
+      "domain": "numeracy",
+      "event": "timer_expired",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.timer_expired.10",
+      "text": "Consider start with the last correct line when time resumes.",
+      "domain": "numeracy",
+      "event": "timer_expired",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.timer_expired.11",
+      "text": "Steady move mark the stuck step for help, then continue.",
+      "domain": "numeracy",
+      "event": "timer_expired",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.timer_expired.12",
+      "text": "Quick adjust note where you paused and resume from there.",
+      "domain": "numeracy",
+      "event": "timer_expired",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.timer_expired.13",
+      "text": "Next step start with the last correct line when time resumes.",
+      "domain": "numeracy",
+      "event": "timer_expired",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.timer_expired.14",
+      "text": "Small tweak mark the stuck step for help, then continue.",
+      "domain": "numeracy",
+      "event": "timer_expired",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.success_streak.09",
+      "text": "Try bank the success by writing the steps plainly.",
+      "domain": "numeracy",
+      "event": "success_streak",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.success_streak.10",
+      "text": "Consider explain the method in one sentence to reinforce.",
+      "domain": "numeracy",
+      "event": "success_streak",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.success_streak.11",
+      "text": "Steady move use this streak to attempt a mixed-number case.",
+      "domain": "numeracy",
+      "event": "success_streak",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.success_streak.12",
+      "text": "Quick adjust bank the success by writing the steps plainly.",
+      "domain": "numeracy",
+      "event": "success_streak",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.success_streak.13",
+      "text": "Next step explain the method in one sentence to reinforce.",
+      "domain": "numeracy",
+      "event": "success_streak",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
+    },
+    {
+      "id": "numeracy.success_streak.14",
+      "text": "Small tweak use this streak to attempt a mixed-number case.",
+      "domain": "numeracy",
+      "event": "success_streak",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student"
+      ]
     }
   ]
 }

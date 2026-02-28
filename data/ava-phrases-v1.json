@@ -1,515 +1,5652 @@
 {
-  "version": "1.0",
-  "categories": {
-    "wordquest": {
-      "encouragement": [
-        "Steady thinking gets results.",
-        "You are narrowing the pattern well.",
-        "Keep the pace, keep the logic.",
-        "Nice control under pressure.",
-        "You recovered quickly there.",
-        "That adjustment was smart.",
-        "Your pattern tracking is improving.",
-        "Strong focus on letter positions.",
-        "You stayed patient and precise.",
-        "Good restraint before your next guess.",
-        "That was a clean correction.",
-        "Your second guess added clarity.",
-        "You are reading feedback accurately.",
-        "Progress is visible this round.",
-        "That choice sharpened your options.",
-        "You kept useful letters alive.",
-        "Your approach looks more efficient.",
-        "You are building consistent habits.",
-        "Stay calm, finish the pattern.",
-        "You are close, keep refining.",
-        "Your letter logic is getting sharper now.",
-        "You are reading feedback with more control.",
-        "That guess improved your evidence quickly.",
-        "You kept the process disciplined there.",
-        "Steady choices are moving you forward.",
-        "You protected strong clues this round.",
-        "That was a thoughtful pattern check.",
-        "You adapted quickly after new feedback.",
-        "Your sequencing is more strategic now.",
-        "Calm decisions are paying off today."
+  "version": "2.0",
+  "format": "event_lane_phrases",
+  "phrases": [
+    {
+      "id": "wordquest.after_first_miss.01",
+      "text": "First miss recorded. Keep the process steady and specific. Use one letter-position check before the next try.",
+      "domain": "wordquest",
+      "event": "after_first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
       ],
-      "gentle_redirect": [
-        "Pause and recheck letter placement.",
-        "Slow down and scan each tile.",
-        "Try fewer repeats in this guess.",
-        "Revisit the yellow letter first.",
-        "Check ending sounds before typing.",
-        "Look at what gray letters ruled out.",
-        "Use one fresh consonant now.",
-        "Test a new vowel position.",
-        "Keep confirmed greens in place.",
-        "Avoid guessing from habit only.",
-        "Compare this guess to the last.",
-        "Shift one letter, not all five.",
-        "Read the board before you type.",
-        "You can tighten this with one swap.",
-        "Anchor the known pattern first.",
-        "Try a cleaner second-position test.",
-        "Return to the strongest clue.",
-        "Check if the ending is fixed.",
-        "One careful change will help.",
-        "Use evidence, not speed here.",
-        "Try a cleaner vowel test in guess two.",
-        "Pause before typing and scan constraints.",
-        "Keep one anchor letter while testing.",
-        "Check if this letter belongs at all.",
-        "Try a less familiar but informative word.",
-        "Avoid reusing weak letters right now.",
-        "Verify the second position before ending.",
-        "Shift the yellow letter to a new slot.",
-        "Test a fresh ending pattern now.",
-        "Use the board evidence line by line."
-      ],
-      "strategy_prompt": [
-        "Start with broad vowel coverage.",
-        "Test one new consonant cluster.",
-        "Try a high-value opening word.",
-        "Lock greens, then test unknowns.",
-        "Use guess two for fresh letters.",
-        "Probe the middle vowel first.",
-        "Check common endings next.",
-        "Try a contrasting vowel pattern.",
-        "Map likely positions before typing.",
-        "Prioritize letters seen twice.",
-        "Use the yellow letter deliberately.",
-        "Balance risk with information.",
-        "Try one strategic elimination guess.",
-        "Move from broad to precise.",
-        "Test start and end together.",
-        "Use a word that teaches you more.",
-        "Verify the tricky consonant now.",
-        "Keep pattern logic in front.",
-        "Choose the guess with maximum evidence.",
-        "Build your next guess from constraints.",
-        "Open with letters that maximize information.",
-        "Try a word with mixed vowel placement.",
-        "Use your third guess to confirm structure.",
-        "Check for repeated letters after clue two.",
-        "Test position three with a new vowel.",
-        "Use elimination to protect future guesses.",
-        "Choose a word that narrows two slots.",
-        "Probe common blends in the final position.",
-        "Keep solved letters fixed each round.",
-        "Use one guess to test only unknowns.",
-        "Challenge one assumption with this attempt.",
-        "Try a low-risk information-rich guess.",
-        "Resolve uncertainty before chasing speed.",
-        "Balance confirmation and exploration this turn.",
-        "Use consonant variety to widen feedback.",
-        "Test internal vowels before ending changes.",
-        "Build around your strongest yellow clue.",
-        "Compare likely patterns before submitting now.",
-        "Use constraint logic, then choose quickly.",
-        "Aim for maximum clue value now."
-      ],
-      "celebration_small": [
-        "Nice solve path. right now",
-        "Clean round. right now",
-        "That was sharp. right now",
-        "Strong closeout. right now",
-        "Good finish. right now",
-        "Solid precision. right now",
-        "Great control. right now",
-        "Smart sequence. right now",
-        "Well executed. right now",
-        "You locked it in.",
-        "Pattern solved cleanly. right now",
-        "Accurate and calm. right now",
-        "That was efficient. right now",
-        "You read the board well.",
-        "Strong decision timing. right now",
-        "Clear strategic win. right now",
-        "That was tidy work.",
-        "Quick and thoughtful. right now",
-        "Nice evidence-based solve. right now",
-        "You closed with confidence."
-      ],
-      "celebration_big": [
-        "Excellent solve with high precision.",
-        "Elite round. Your strategy held throughout.",
-        "Outstanding control from start to finish.",
-        "That was a high-quality solve.",
-        "Brilliant pattern read and execution.",
-        "You solved with speed and reasoning.",
-        "Top-tier decision making this round.",
-        "Excellent composure under uncertainty.",
-        "You converted clues into a perfect close.",
-        "That was a model strategic round.",
-        "Powerful solve. Keep this process.",
-        "You made every guess teach something.",
-        "Exceptional round discipline and accuracy.",
-        "That finish showed real mastery.",
-        "You solved with impressive clarity."
+      "audience": [
+        "student",
+        "teacher"
       ]
     },
-    "reading_lab": {
-      "start_prompt": [
-        "Start when ready. Keep your pace steady.",
-        "Read naturally, then mark each word.",
-        "Begin with calm voice control.",
-        "Track punctuation as you read.",
-        "Start smooth, accuracy first.",
-        "Read for meaning, then precision.",
-        "Keep your eyes one phrase ahead.",
-        "Begin with clear phrasing.",
-        "Settle in. Read one sentence at a time.",
-        "Start now. Listen to your pauses.",
-        "Open strong with controlled pacing.",
-        "Begin, and honor each punctuation mark.",
-        "Read with intention, not speed.",
-        "Take a breath and begin.",
-        "Start with sentence boundaries in mind.",
-        "Read cleanly through the line.",
-        "Begin with accuracy as your anchor.",
-        "Start and keep phrase groups intact.",
-        "Read aloud with clear stops.",
-        "Begin. We will track smooth phrasing."
+    {
+      "id": "wordquest.after_first_miss.02",
+      "text": "First miss recorded. Use one clear check before moving. Use one letter-position check before the next try.",
+      "domain": "wordquest",
+      "event": "after_first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
       ],
-      "accuracy_feedback": [
-        "Accuracy is climbing. Keep this pace.",
-        "You corrected quickly. Nice control.",
-        "Strong accuracy on that sentence.",
-        "Most words were secure there.",
-        "Good self-correction timing. right now",
-        "You kept decoding stable.",
-        "Accuracy held under longer lines.",
-        "That pass was cleaner.",
-        "You protected meaning while reading.",
-        "Fewer misses this round.",
-        "Your word tracking improved.",
-        "You recovered from errors efficiently.",
-        "Accuracy stayed consistent. right now",
-        "That line showed stronger control.",
-        "You handled hard words better.",
-        "Solid recognition on core words.",
-        "Your corrections were purposeful.",
-        "Accuracy improved after the comma.",
-        "You are reading with more stability.",
-        "That attempt was more precise.",
-        "Word recognition stayed stable across the passage.",
-        "You held accuracy through a harder sentence.",
-        "That correction protected meaning immediately.",
-        "Accuracy improved after your pacing reset.",
-        "You tracked each token more carefully."
-      ],
-      "prosody_prompt": [
-        "Lift your tone at the question.",
-        "Let your voice drop at the period.",
-        "Group words into meaningful phrases.",
-        "Try one smoother phrasing pass.",
-        "Add expression where emphasis shifts.",
-        "Use a slight rise before contrast words.",
-        "Keep rhythm steady across clauses.",
-        "Read commas as light pauses.",
-        "Shape your tone to sentence type.",
-        "Emphasize the key idea word.",
-        "Use phrasing, not word-by-word reading.",
-        "Try clearer contrast in your voice.",
-        "Give dialogue a natural contour.",
-        "Pause briefly before the dash.",
-        "Keep clause boundaries audible.",
-        "Stress content words, soften function words.",
-        "Smooth out the middle phrase.",
-        "Try a cleaner ending cadence.",
-        "Mark the turning point with tone.",
-        "Read this line with intention.",
-        "Use a slight pause before the quote.",
-        "Read this sentence in two clear phrases.",
-        "Let the final clause resolve smoothly.",
-        "Increase emphasis on the key verb.",
-        "Shape intonation around the contrast word."
-      ],
-      "punctuation_prompt": [
-        "Comma: brief pause, then continue.",
-        "Period: full stop and reset.",
-        "Question mark: lift at the end.",
-        "Exclamation: stronger final tone.",
-        "Semicolon: longer than comma, shorter than period.",
-        "Colon: pause, then explain.",
-        "Parentheses: soften and move through.",
-        "Dash: pause, then pivot.",
-        "Quotation marks: shift voice cleanly.",
-        "Ellipsis: hold then release.",
-        "Treat each period as closure.",
-        "Respect commas to keep meaning clear.",
-        "Pause where punctuation signals structure.",
-        "Use punctuation to guide pacing.",
-        "Let marks control your breathing.",
-        "Track punctuation before speed.",
-        "Punctuation creates your phrasing map.",
-        "Read signs, not just words.",
-        "Honor punctuation for clarity.",
-        "Use marks to shape expression."
-      ],
-      "retry_prompt": [
-        "Try one more pass with slower pacing.",
-        "Re-read sentence two for cleaner pauses.",
-        "Run it again, accuracy first.",
-        "Try again with stronger punctuation respect.",
-        "One more attempt, smoother phrasing.",
-        "Repeat and keep eyes ahead.",
-        "Re-read with fewer rushed words.",
-        "Try a calmer second pass.",
-        "Run it again and mark corrections.",
-        "Retry with clear phrase groups.",
-        "Take another pass on hard words.",
-        "Try again, sentence by sentence.",
-        "Re-read and protect meaning.",
-        "One more read with better cadence.",
-        "Retry and anchor your pauses.",
-        "Go again with controlled starts.",
-        "Second pass: cleaner transitions.",
-        "Repeat and tighten accuracy.",
-        "Try another read with intention.",
-        "One more run to lock it in."
+      "audience": [
+        "student",
+        "teacher"
       ]
     },
-    "sentence_surgery": {
-      "focus_prompt": [
-        "Make one strong change first.",
-        "Focus on the target skill only.",
-        "Revise this sentence with purpose.",
-        "Start with the clearest fix.",
-        "Choose one move and complete it.",
-        "Keep your revision narrow and precise.",
-        "Focus on sentence control now.",
-        "One edit can raise clarity fast.",
-        "Pick the highest-impact change.",
-        "Anchor meaning before style.",
-        "Start with structure, then details.",
-        "Keep the sentence complete.",
-        "Select one revision goal.",
-        "Work the sentence in small steps.",
-        "Focus on what readers need.",
-        "Tighten one weak point first.",
-        "Start where confusion appears.",
-        "One targeted revision at a time.",
-        "Build clarity through a single change.",
-        "Choose control over complexity."
+    {
+      "id": "wordquest.after_first_miss.03",
+      "text": "First miss recorded. Hold the pattern and verify one detail. Use one letter-position check before the next try.",
+      "domain": "wordquest",
+      "event": "after_first_miss",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
       ],
-      "reasoning_prompt": [
-        "Add why with because.",
-        "Show cause, not just action.",
-        "Use although to show contrast.",
-        "Add a reason clause now.",
-        "Explain what led to this.",
-        "Link event and reason clearly.",
-        "Use since for causal logic.",
-        "Show evidence behind the claim.",
-        "Build a cause-and-effect sentence.",
-        "Clarify why this happened.",
-        "Add the reasoning step readers need.",
-        "State the cause in one clause.",
-        "Use if to frame condition.",
-        "Connect claim to supporting reason.",
-        "Make the logic explicit.",
-        "Name the reason, then outcome.",
-        "Strengthen causal connection here.",
-        "Add a because phrase after verb.",
-        "Show both event and explanation.",
-        "Give the reader the why.",
-        "Add a reason that directly supports the claim.",
-        "Use because to connect action and motive.",
-        "Name the condition that changes the outcome.",
-        "Clarify the logic with one dependent clause.",
-        "State why this result follows naturally."
-      ],
-      "clarity_prompt": [
-        "Trim extra words for clarity.",
-        "Replace vague words with exact language.",
-        "Make the subject and verb obvious.",
-        "Split overloaded ideas into clean clauses.",
-        "Use simpler structure here.",
-        "Check pronoun references for clarity.",
-        "Keep one main idea per sentence.",
-        "Move key detail earlier.",
-        "Reduce ambiguity in this phrase.",
-        "Clarify who did what.",
-        "Fix the sentence boundary.",
-        "Use direct wording, not filler.",
-        "Rewrite this clause for precision.",
-        "Keep the meaning easy to track.",
-        "Shorten and sharpen this line.",
-        "Clarify sequence with transitions.",
-        "Remove confusing side details.",
-        "Check punctuation for readability.",
-        "Make your point easier to follow.",
-        "Tighten wording without losing meaning."
-      ],
-      "detail_prompt": [
-        "Add one concrete detail.",
-        "Name the specific place or time.",
-        "Swap general words for specifics.",
-        "Add sensory information here.",
-        "Include an exact action detail.",
-        "Use one precise noun.",
-        "Add context that grounds the sentence.",
-        "Show what it looked like.",
-        "Add measurable detail if possible.",
-        "Specify who or what exactly.",
-        "Include one descriptive phrase.",
-        "Name the tool, object, or setting.",
-        "Add a detail that proves your point.",
-        "Replace broad language with evidence.",
-        "Add one fact readers can picture.",
-        "Make the detail do real work.",
-        "Include a concrete outcome.",
-        "Add detail tied to the verb.",
-        "State one observable feature.",
-        "Ground the sentence in specifics."
-      ],
-      "celebration": [
-        "That revision improved control.",
-        "Strong sentence upgrade. right now",
-        "You clarified the idea well.",
-        "Reasoning is stronger now.",
-        "Great precision in that edit.",
-        "The sentence reads cleaner now.",
-        "That detail made it concrete.",
-        "You tightened structure effectively.",
-        "Excellent one-step improvement. right now",
-        "That clause now carries meaning.",
-        "The logic is clearer now.",
-        "You made a high-value change.",
-        "Sentence control improved immediately.",
-        "That revision raised coherence.",
-        "You turned vague into specific."
+      "audience": [
+        "student",
+        "teacher"
       ]
     },
-    "teacher_mode": {
-      "summary_intro": [
-        "Today's pattern is clear.",
-        "Here is the instructional snapshot.",
-        "Class trends are stabilizing.",
-        "This summary highlights actionable data.",
-        "Current results show a focused need.",
-        "The cohort profile is ready.",
-        "Recent performance suggests one priority.",
-        "This report isolates the leverage point.",
-        "The data story is concise today.",
-        "A clear intervention target emerged."
+    {
+      "id": "wordquest.after_first_miss.04",
+      "text": "First miss recorded. Use the target routine immediately. Use one letter-position check before the next try.",
+      "domain": "wordquest",
+      "event": "after_first_miss",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
       ],
-      "intervention_suggestion": [
-        "Form a short reasoning group today.",
-        "Start with punctuation-sensitive rereads.",
-        "Prioritize decoding support below ninety-two percent.",
-        "Use sentence stems for Tier 3.",
-        "Run guided revision for Tier 2.",
-        "Pair prosody coaching with comprehension prompts.",
-        "Target hard-word practice before fluency timing.",
-        "Launch a fifteen-minute small-group cycle.",
-        "Use one deficit skill per session.",
-        "Group by dominant weakness, not level."
-      ],
-      "growth_notice": [
-        "Reasoning moved up one level.",
-        "Accuracy trend is improving steadily.",
-        "Pacing is stabilizing across attempts.",
-        "Cohesion remains stable this cycle.",
-        "Detail scores rose this week.",
-        "Students self-corrected more frequently.",
-        "Prosody cues are appearing more often.",
-        "Error recovery is faster now.",
-        "Sentence control improved across groups.",
-        "Decoding misses dropped in recent sessions."
+      "audience": [
+        "student",
+        "teacher"
       ]
     },
-    "numeracy": {
-      "strategy_prompt": [
-        "Explain your strategy before solving.",
-        "Name the operation and why.",
-        "Decompose the number intentionally.",
-        "Use place value language clearly.",
-        "Show each step with purpose.",
-        "Compare two possible strategies.",
-        "Choose the most efficient method.",
-        "State what you notice first.",
-        "Use estimation to check reasonableness.",
-        "Represent the problem two ways.",
-        "Connect numbers to the context.",
-        "Say how you know it works.",
-        "Track units through each step.",
-        "Use a model, then explain.",
-        "Check for pattern structure."
+    {
+      "id": "wordquest.after_first_miss.05",
+      "text": "First miss recorded. Reset with one direct correction. Use one letter-position check before the next try.",
+      "domain": "wordquest",
+      "event": "after_first_miss",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
       ],
-      "error_reframe": [
-        "This error shows useful thinking.",
-        "Mistakes reveal the next step.",
-        "Pause and test your assumption.",
-        "Check where the strategy shifted.",
-        "Your setup was close; refine it.",
-        "Rework one step, not everything.",
-        "Find the first mismatch point.",
-        "Use the model to verify.",
-        "Try the same strategy more cleanly.",
-        "Reframe the problem statement first.",
-        "You are near the solution path.",
-        "Let's debug the calculation calmly.",
-        "Compare your result to an estimate.",
-        "Look for a place-value slip.",
-        "Return to units and labels."
-      ],
-      "concept_boost": [
-        "Think in groups, not isolated digits.",
-        "Place value drives this problem.",
-        "Equivalent forms can simplify the work.",
-        "Track magnitude before computing.",
-        "Numbers can be decomposed flexibly.",
-        "Use structure to reduce load.",
-        "Operations tell a story here.",
-        "Look for conserved quantity.",
-        "Represent first, compute second.",
-        "Patterns can predict the result.",
-        "Estimate to anchor your answer.",
-        "Connect part-whole relationships. right now",
-        "Reason with units throughout.",
-        "Check inverse operation as proof.",
-        "Use benchmark numbers strategically."
+      "audience": [
+        "student",
+        "teacher"
       ]
     },
-    "executive_function": {
-      "planning_prompt": [
-        "Set your first step now.",
-        "Name the goal before starting.",
-        "Break the task into three parts.",
-        "Choose one priority for this block.",
-        "Plan, then begin. right now",
-        "Write the order of actions.",
-        "Estimate your time for each step.",
-        "Start with the highest-impact move.",
-        "Use a checklist to stay aligned.",
-        "Define success for this task."
+    {
+      "id": "wordquest.after_first_miss.06",
+      "text": "First miss recorded. Focus on one line at a time. Use one letter-position check before the next try.",
+      "domain": "wordquest",
+      "event": "after_first_miss",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
       ],
-      "organization_prompt": [
-        "Group related ideas together.",
-        "Label each section clearly.",
-        "Sort materials before task launch.",
-        "Keep one workspace per task.",
-        "Use headings to structure thinking.",
-        "Archive finished items immediately.",
-        "Put reference items in one place.",
-        "Use consistent naming for files.",
-        "Separate draft from final version.",
-        "Keep your tools within reach."
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_first_miss.07",
+      "text": "First miss recorded. You can recover with one calm step. Use one letter-position check before the next try.",
+      "domain": "wordquest",
+      "event": "after_first_miss",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
       ],
-      "self_regulation_prompt": [
-        "Pause and reset your breathing.",
-        "Check your pace, then continue.",
-        "Notice frustration, choose next step.",
-        "Use one calm restart routine.",
-        "Stay with the current task.",
-        "Take ten seconds to refocus.",
-        "Name what is hard right now.",
-        "Reduce speed to regain control.",
-        "Use a short break strategically.",
-        "Return to your plan calmly."
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_first_miss.08",
+      "text": "First miss recorded. Slow down. Use one letter-position check before the next try.",
+      "domain": "wordquest",
+      "event": "after_first_miss",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_first_miss.09",
+      "text": "First miss recorded. Transfer this move to a new example. Use one letter-position check before the next try.",
+      "domain": "wordquest",
+      "event": "after_first_miss",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_first_miss.10",
+      "text": "First miss recorded. Increase precision and defend your answer. Use one letter-position check before the next try.",
+      "domain": "wordquest",
+      "event": "after_first_miss",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_second_miss.01",
+      "text": "Second miss recorded. Use one clear check before moving. Switch one tested pattern and submit one precise try.",
+      "domain": "wordquest",
+      "event": "after_second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_second_miss.02",
+      "text": "Second miss recorded. Hold the pattern and verify one detail. Switch one tested pattern and submit one precise try.",
+      "domain": "wordquest",
+      "event": "after_second_miss",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_second_miss.03",
+      "text": "Second miss recorded. Stay with evidence, not speed. Switch one tested pattern and submit one precise try.",
+      "domain": "wordquest",
+      "event": "after_second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_second_miss.04",
+      "text": "Second miss recorded. Reset with one direct correction. Switch one tested pattern and submit one precise try.",
+      "domain": "wordquest",
+      "event": "after_second_miss",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_second_miss.05",
+      "text": "Second miss recorded. Follow the checklist in sequence. Switch one tested pattern and submit one precise try.",
+      "domain": "wordquest",
+      "event": "after_second_miss",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_second_miss.06",
+      "text": "Second miss recorded. You can recover with one calm step. Switch one tested pattern and submit one precise try.",
+      "domain": "wordquest",
+      "event": "after_second_miss",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_second_miss.07",
+      "text": "Second miss recorded. Keep it simple and continue. Switch one tested pattern and submit one precise try.",
+      "domain": "wordquest",
+      "event": "after_second_miss",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_second_miss.08",
+      "text": "Second miss recorded. Reset your pace. Switch one tested pattern and submit one precise try.",
+      "domain": "wordquest",
+      "event": "after_second_miss",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_second_miss.09",
+      "text": "Second miss recorded. One step only. Switch one tested pattern and submit one precise try.",
+      "domain": "wordquest",
+      "event": "after_second_miss",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.after_second_miss.10",
+      "text": "Second miss recorded. Extend with one advanced check. Switch one tested pattern and submit one precise try.",
+      "domain": "wordquest",
+      "event": "after_second_miss",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.01",
+      "text": "Wrong streak is moving too fast. Hold the pattern and verify one detail. Pause, breathe, and restart with one controlled step.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.02",
+      "text": "Wrong streak is moving too fast. Stay with evidence, not speed. Pause, breathe, and restart with one controlled step.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.03",
+      "text": "Wrong streak is moving too fast. One careful move is enough right now. Pause, breathe, and restart with one controlled step.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.04",
+      "text": "Wrong streak is moving too fast. Follow the checklist in sequence. Pause, breathe, and restart with one controlled step.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.05",
+      "text": "Wrong streak is moving too fast. Do this next in order. Pause, breathe, and restart with one controlled step.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.06",
+      "text": "Wrong streak is moving too fast. Keep it simple and continue. Pause, breathe, and restart with one controlled step.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.07",
+      "text": "Wrong streak is moving too fast. Slow pace is fine when accuracy rises. Pause, breathe, and restart with one controlled step.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.08",
+      "text": "Wrong streak is moving too fast. One step only. Pause, breathe, and restart with one controlled step.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.09",
+      "text": "Wrong streak is moving too fast. Extend with one advanced check. Pause, breathe, and restart with one controlled step.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.rapid_wrong_streak.10",
+      "text": "Wrong streak is moving too fast. Raise complexity with control. Pause, breathe, and restart with one controlled step.",
+      "domain": "wordquest",
+      "event": "rapid_wrong_streak",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.01",
+      "text": "You are close to the solve. Stay with evidence, not speed. Keep the pattern and test one high-value letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.02",
+      "text": "You are close to the solve. One careful move is enough right now. Keep the pattern and test one high-value letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.03",
+      "text": "You are close to the solve. Name the next step before acting. Keep the pattern and test one high-value letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.04",
+      "text": "You are close to the solve. Do this next in order. Keep the pattern and test one high-value letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.05",
+      "text": "You are close to the solve. Apply one explicit rule now. Keep the pattern and test one high-value letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.06",
+      "text": "You are close to the solve. Slow pace is fine when accuracy rises. Keep the pattern and test one high-value letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.07",
+      "text": "You are close to the solve. Take a breath and restart small. Keep the pattern and test one high-value letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.08",
+      "text": "You are close to the solve. Breathe, then continue. Keep the pattern and test one high-value letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.09",
+      "text": "You are close to the solve. Calm first. Keep the pattern and test one high-value letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.near_solve.10",
+      "text": "You are close to the solve. Add one justification for your choice. Keep the pattern and test one high-value letter.",
+      "domain": "wordquest",
+      "event": "near_solve",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.01",
+      "text": "Accuracy streak is stable. One careful move is enough right now. Stretch with a harder pattern and justify your choice.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.02",
+      "text": "Accuracy streak is stable. Name the next step before acting. Stretch with a harder pattern and justify your choice.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.03",
+      "text": "Accuracy streak is stable. Keep the process steady and specific. Stretch with a harder pattern and justify your choice.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.04",
+      "text": "Accuracy streak is stable. Apply one explicit rule now. Stretch with a harder pattern and justify your choice.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.05",
+      "text": "Accuracy streak is stable. Complete this step before the next. Stretch with a harder pattern and justify your choice.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.06",
+      "text": "Accuracy streak is stable. Take a breath and restart small. Stretch with a harder pattern and justify your choice.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.07",
+      "text": "Accuracy streak is stable. Use a short reset, then continue. Stretch with a harder pattern and justify your choice.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.08",
+      "text": "Accuracy streak is stable. Calm first. Stretch with a harder pattern and justify your choice.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.09",
+      "text": "Accuracy streak is stable. Add one justification for your choice. Stretch with a harder pattern and justify your choice.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.streak_three_correct.10",
+      "text": "Accuracy streak is stable. Try a harder pattern and explain it. Stretch with a harder pattern and justify your choice.",
+      "domain": "wordquest",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.01",
+      "text": "Work paused for twenty seconds. Name the next step before acting. Re-enter with one small step now.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.02",
+      "text": "Work paused for twenty seconds. Keep the process steady and specific. Re-enter with one small step now.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.03",
+      "text": "Work paused for twenty seconds. Use one clear check before moving. Re-enter with one small step now.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.04",
+      "text": "Work paused for twenty seconds. Complete this step before the next. Re-enter with one small step now.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.05",
+      "text": "Work paused for twenty seconds. Use the target routine immediately. Re-enter with one small step now.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.06",
+      "text": "Work paused for twenty seconds. Use a short reset, then continue. Re-enter with one small step now.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.07",
+      "text": "Work paused for twenty seconds. Focus on one line at a time. Re-enter with one small step now.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.08",
+      "text": "Work paused for twenty seconds. Pause now. Re-enter with one small step now.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.09",
+      "text": "Work paused for twenty seconds. Slow down. Re-enter with one small step now.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "wordquest.idle_20s.10",
+      "text": "Work paused for twenty seconds. Transfer this move to a new example. Re-enter with one small step now.",
+      "domain": "wordquest",
+      "event": "idle_20s",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.01",
+      "text": "Current accuracy is below target. Keep the process steady and specific. Slow down and mark each word as you read.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.02",
+      "text": "Current accuracy is below target. Use one clear check before moving. Slow down and mark each word as you read.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.03",
+      "text": "Current accuracy is below target. Hold the pattern and verify one detail. Slow down and mark each word as you read.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.04",
+      "text": "Current accuracy is below target. Use the target routine immediately. Slow down and mark each word as you read.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.05",
+      "text": "Current accuracy is below target. Reset with one direct correction. Slow down and mark each word as you read.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.06",
+      "text": "Current accuracy is below target. Focus on one line at a time. Slow down and mark each word as you read.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.07",
+      "text": "Current accuracy is below target. You can recover with one calm step. Slow down and mark each word as you read.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.08",
+      "text": "Current accuracy is below target. Slow down. Slow down and mark each word as you read.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.09",
+      "text": "Current accuracy is below target. Transfer this move to a new example. Slow down and mark each word as you read.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.low_accuracy.10",
+      "text": "Current accuracy is below target. Increase precision and defend your answer. Slow down and mark each word as you read.",
+      "domain": "reading_lab",
+      "event": "low_accuracy",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_miss.01",
+      "text": "Punctuation cues were missed. Use one clear check before moving. Track commas and sentence endings out loud.",
+      "domain": "reading_lab",
+      "event": "punctuation_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_miss.02",
+      "text": "Punctuation cues were missed. Hold the pattern and verify one detail. Track commas and sentence endings out loud.",
+      "domain": "reading_lab",
+      "event": "punctuation_miss",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_miss.03",
+      "text": "Punctuation cues were missed. Stay with evidence, not speed. Track commas and sentence endings out loud.",
+      "domain": "reading_lab",
+      "event": "punctuation_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_miss.04",
+      "text": "Punctuation cues were missed. Reset with one direct correction. Track commas and sentence endings out loud.",
+      "domain": "reading_lab",
+      "event": "punctuation_miss",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_miss.05",
+      "text": "Punctuation cues were missed. Follow the checklist in sequence. Track commas and sentence endings out loud.",
+      "domain": "reading_lab",
+      "event": "punctuation_miss",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_miss.06",
+      "text": "Punctuation cues were missed. You can recover with one calm step. Track commas and sentence endings out loud.",
+      "domain": "reading_lab",
+      "event": "punctuation_miss",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_miss.07",
+      "text": "Punctuation cues were missed. Keep it simple and continue. Track commas and sentence endings out loud.",
+      "domain": "reading_lab",
+      "event": "punctuation_miss",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_miss.08",
+      "text": "Punctuation cues were missed. Reset your pace. Track commas and sentence endings out loud.",
+      "domain": "reading_lab",
+      "event": "punctuation_miss",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_miss.09",
+      "text": "Punctuation cues were missed. One step only. Track commas and sentence endings out loud.",
+      "domain": "reading_lab",
+      "event": "punctuation_miss",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.punctuation_miss.10",
+      "text": "Punctuation cues were missed. Extend with one advanced check. Track commas and sentence endings out loud.",
+      "domain": "reading_lab",
+      "event": "punctuation_miss",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_drop.01",
+      "text": "Pacing consistency is dropping. Hold the pattern and verify one detail. Match speed across phrases before continuing.",
+      "domain": "reading_lab",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_drop.02",
+      "text": "Pacing consistency is dropping. Stay with evidence, not speed. Match speed across phrases before continuing.",
+      "domain": "reading_lab",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_drop.03",
+      "text": "Pacing consistency is dropping. One careful move is enough right now. Match speed across phrases before continuing.",
+      "domain": "reading_lab",
+      "event": "pacing_drop",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_drop.04",
+      "text": "Pacing consistency is dropping. Follow the checklist in sequence. Match speed across phrases before continuing.",
+      "domain": "reading_lab",
+      "event": "pacing_drop",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_drop.05",
+      "text": "Pacing consistency is dropping. Do this next in order. Match speed across phrases before continuing.",
+      "domain": "reading_lab",
+      "event": "pacing_drop",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_drop.06",
+      "text": "Pacing consistency is dropping. Keep it simple and continue. Match speed across phrases before continuing.",
+      "domain": "reading_lab",
+      "event": "pacing_drop",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_drop.07",
+      "text": "Pacing consistency is dropping. Slow pace is fine when accuracy rises. Match speed across phrases before continuing.",
+      "domain": "reading_lab",
+      "event": "pacing_drop",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_drop.08",
+      "text": "Pacing consistency is dropping. One step only. Match speed across phrases before continuing.",
+      "domain": "reading_lab",
+      "event": "pacing_drop",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_drop.09",
+      "text": "Pacing consistency is dropping. Extend with one advanced check. Match speed across phrases before continuing.",
+      "domain": "reading_lab",
+      "event": "pacing_drop",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.pacing_drop.10",
+      "text": "Pacing consistency is dropping. Raise complexity with control. Match speed across phrases before continuing.",
+      "domain": "reading_lab",
+      "event": "pacing_drop",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.repeated_pause_pattern.01",
+      "text": "Pause pattern is repeating. Stay with evidence, not speed. Use one steady pause length per sentence.",
+      "domain": "reading_lab",
+      "event": "repeated_pause_pattern",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.repeated_pause_pattern.02",
+      "text": "Pause pattern is repeating. One careful move is enough right now. Use one steady pause length per sentence.",
+      "domain": "reading_lab",
+      "event": "repeated_pause_pattern",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.repeated_pause_pattern.03",
+      "text": "Pause pattern is repeating. Name the next step before acting. Use one steady pause length per sentence.",
+      "domain": "reading_lab",
+      "event": "repeated_pause_pattern",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.repeated_pause_pattern.04",
+      "text": "Pause pattern is repeating. Do this next in order. Use one steady pause length per sentence.",
+      "domain": "reading_lab",
+      "event": "repeated_pause_pattern",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.repeated_pause_pattern.05",
+      "text": "Pause pattern is repeating. Apply one explicit rule now. Use one steady pause length per sentence.",
+      "domain": "reading_lab",
+      "event": "repeated_pause_pattern",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.repeated_pause_pattern.06",
+      "text": "Pause pattern is repeating. Slow pace is fine when accuracy rises. Use one steady pause length per sentence.",
+      "domain": "reading_lab",
+      "event": "repeated_pause_pattern",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.repeated_pause_pattern.07",
+      "text": "Pause pattern is repeating. Take a breath and restart small. Use one steady pause length per sentence.",
+      "domain": "reading_lab",
+      "event": "repeated_pause_pattern",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.repeated_pause_pattern.08",
+      "text": "Pause pattern is repeating. Breathe, then continue. Use one steady pause length per sentence.",
+      "domain": "reading_lab",
+      "event": "repeated_pause_pattern",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.repeated_pause_pattern.09",
+      "text": "Pause pattern is repeating. Calm first. Use one steady pause length per sentence.",
+      "domain": "reading_lab",
+      "event": "repeated_pause_pattern",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.repeated_pause_pattern.10",
+      "text": "Pause pattern is repeating. Add one justification for your choice. Use one steady pause length per sentence.",
+      "domain": "reading_lab",
+      "event": "repeated_pause_pattern",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.paragraph_complete.01",
+      "text": "Paragraph checkpoint reached. One careful move is enough right now. Name one strength and one next move.",
+      "domain": "reading_lab",
+      "event": "paragraph_complete",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.paragraph_complete.02",
+      "text": "Paragraph checkpoint reached. Name the next step before acting. Name one strength and one next move.",
+      "domain": "reading_lab",
+      "event": "paragraph_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.paragraph_complete.03",
+      "text": "Paragraph checkpoint reached. Keep the process steady and specific. Name one strength and one next move.",
+      "domain": "reading_lab",
+      "event": "paragraph_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.paragraph_complete.04",
+      "text": "Paragraph checkpoint reached. Apply one explicit rule now. Name one strength and one next move.",
+      "domain": "reading_lab",
+      "event": "paragraph_complete",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.paragraph_complete.05",
+      "text": "Paragraph checkpoint reached. Complete this step before the next. Name one strength and one next move.",
+      "domain": "reading_lab",
+      "event": "paragraph_complete",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.paragraph_complete.06",
+      "text": "Paragraph checkpoint reached. Take a breath and restart small. Name one strength and one next move.",
+      "domain": "reading_lab",
+      "event": "paragraph_complete",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.paragraph_complete.07",
+      "text": "Paragraph checkpoint reached. Use a short reset, then continue. Name one strength and one next move.",
+      "domain": "reading_lab",
+      "event": "paragraph_complete",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.paragraph_complete.08",
+      "text": "Paragraph checkpoint reached. Calm first. Name one strength and one next move.",
+      "domain": "reading_lab",
+      "event": "paragraph_complete",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.paragraph_complete.09",
+      "text": "Paragraph checkpoint reached. Add one justification for your choice. Name one strength and one next move.",
+      "domain": "reading_lab",
+      "event": "paragraph_complete",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.paragraph_complete.10",
+      "text": "Paragraph checkpoint reached. Try a harder pattern and explain it. Name one strength and one next move.",
+      "domain": "reading_lab",
+      "event": "paragraph_complete",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.01",
+      "text": "Work paused for twenty seconds. Name the next step before acting. Re-enter with one small step now.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.02",
+      "text": "Work paused for twenty seconds. Keep the process steady and specific. Re-enter with one small step now.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.03",
+      "text": "Work paused for twenty seconds. Use one clear check before moving. Re-enter with one small step now.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.04",
+      "text": "Work paused for twenty seconds. Complete this step before the next. Re-enter with one small step now.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.05",
+      "text": "Work paused for twenty seconds. Use the target routine immediately. Re-enter with one small step now.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.06",
+      "text": "Work paused for twenty seconds. Use a short reset, then continue. Re-enter with one small step now.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.07",
+      "text": "Work paused for twenty seconds. Focus on one line at a time. Re-enter with one small step now.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.08",
+      "text": "Work paused for twenty seconds. Pause now. Re-enter with one small step now.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.09",
+      "text": "Work paused for twenty seconds. Slow down. Re-enter with one small step now.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "reading_lab.idle_20s.10",
+      "text": "Work paused for twenty seconds. Transfer this move to a new example. Re-enter with one small step now.",
+      "domain": "reading_lab",
+      "event": "idle_20s",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.01",
+      "text": "First reasoning phrase added. Keep the process steady and specific. Extend the reason with one text detail.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.02",
+      "text": "First reasoning phrase added. Use one clear check before moving. Extend the reason with one text detail.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.03",
+      "text": "First reasoning phrase added. Hold the pattern and verify one detail. Extend the reason with one text detail.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.04",
+      "text": "First reasoning phrase added. Use the target routine immediately. Extend the reason with one text detail.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.05",
+      "text": "First reasoning phrase added. Reset with one direct correction. Extend the reason with one text detail.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.06",
+      "text": "First reasoning phrase added. Focus on one line at a time. Extend the reason with one text detail.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.07",
+      "text": "First reasoning phrase added. You can recover with one calm step. Extend the reason with one text detail.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.08",
+      "text": "First reasoning phrase added. Slow down. Extend the reason with one text detail.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.09",
+      "text": "First reasoning phrase added. Transfer this move to a new example. Extend the reason with one text detail.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.first_reason_added.10",
+      "text": "First reasoning phrase added. Increase precision and defend your answer. Extend the reason with one text detail.",
+      "domain": "sentence_surgery",
+      "event": "first_reason_added",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.01",
+      "text": "Reasoning line is still missing. Use one clear check before moving. Add because or although to state why.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.02",
+      "text": "Reasoning line is still missing. Hold the pattern and verify one detail. Add because or although to state why.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.03",
+      "text": "Reasoning line is still missing. Stay with evidence, not speed. Add because or although to state why.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.04",
+      "text": "Reasoning line is still missing. Reset with one direct correction. Add because or although to state why.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.05",
+      "text": "Reasoning line is still missing. Follow the checklist in sequence. Add because or although to state why.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.06",
+      "text": "Reasoning line is still missing. You can recover with one calm step. Add because or although to state why.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.07",
+      "text": "Reasoning line is still missing. Keep it simple and continue. Add because or although to state why.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.08",
+      "text": "Reasoning line is still missing. Reset your pace. Add because or although to state why.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.09",
+      "text": "Reasoning line is still missing. One step only. Add because or although to state why.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.reasoning_missing.10",
+      "text": "Reasoning line is still missing. Extend with one advanced check. Add because or although to state why.",
+      "domain": "sentence_surgery",
+      "event": "reasoning_missing",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.repeated_backspace.01",
+      "text": "Backspace burst detected. Hold the pattern and verify one detail. Stop deleting and draft one short line first.",
+      "domain": "sentence_surgery",
+      "event": "repeated_backspace",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.repeated_backspace.02",
+      "text": "Backspace burst detected. Stay with evidence, not speed. Stop deleting and draft one short line first.",
+      "domain": "sentence_surgery",
+      "event": "repeated_backspace",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.repeated_backspace.03",
+      "text": "Backspace burst detected. One careful move is enough right now. Stop deleting and draft one short line first.",
+      "domain": "sentence_surgery",
+      "event": "repeated_backspace",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.repeated_backspace.04",
+      "text": "Backspace burst detected. Follow the checklist in sequence. Stop deleting and draft one short line first.",
+      "domain": "sentence_surgery",
+      "event": "repeated_backspace",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.repeated_backspace.05",
+      "text": "Backspace burst detected. Do this next in order. Stop deleting and draft one short line first.",
+      "domain": "sentence_surgery",
+      "event": "repeated_backspace",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.repeated_backspace.06",
+      "text": "Backspace burst detected. Keep it simple and continue. Stop deleting and draft one short line first.",
+      "domain": "sentence_surgery",
+      "event": "repeated_backspace",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.repeated_backspace.07",
+      "text": "Backspace burst detected. Slow pace is fine when accuracy rises. Stop deleting and draft one short line first.",
+      "domain": "sentence_surgery",
+      "event": "repeated_backspace",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.repeated_backspace.08",
+      "text": "Backspace burst detected. One step only. Stop deleting and draft one short line first.",
+      "domain": "sentence_surgery",
+      "event": "repeated_backspace",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.repeated_backspace.09",
+      "text": "Backspace burst detected. Extend with one advanced check. Stop deleting and draft one short line first.",
+      "domain": "sentence_surgery",
+      "event": "repeated_backspace",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.repeated_backspace.10",
+      "text": "Backspace burst detected. Raise complexity with control. Stop deleting and draft one short line first.",
+      "domain": "sentence_surgery",
+      "event": "repeated_backspace",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.paragraph_complete.01",
+      "text": "Paragraph checkpoint reached. Stay with evidence, not speed. Name one strength and one next move.",
+      "domain": "sentence_surgery",
+      "event": "paragraph_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.paragraph_complete.02",
+      "text": "Paragraph checkpoint reached. One careful move is enough right now. Name one strength and one next move.",
+      "domain": "sentence_surgery",
+      "event": "paragraph_complete",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.paragraph_complete.03",
+      "text": "Paragraph checkpoint reached. Name the next step before acting. Name one strength and one next move.",
+      "domain": "sentence_surgery",
+      "event": "paragraph_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.paragraph_complete.04",
+      "text": "Paragraph checkpoint reached. Do this next in order. Name one strength and one next move.",
+      "domain": "sentence_surgery",
+      "event": "paragraph_complete",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.paragraph_complete.05",
+      "text": "Paragraph checkpoint reached. Apply one explicit rule now. Name one strength and one next move.",
+      "domain": "sentence_surgery",
+      "event": "paragraph_complete",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.paragraph_complete.06",
+      "text": "Paragraph checkpoint reached. Slow pace is fine when accuracy rises. Name one strength and one next move.",
+      "domain": "sentence_surgery",
+      "event": "paragraph_complete",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.paragraph_complete.07",
+      "text": "Paragraph checkpoint reached. Take a breath and restart small. Name one strength and one next move.",
+      "domain": "sentence_surgery",
+      "event": "paragraph_complete",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.paragraph_complete.08",
+      "text": "Paragraph checkpoint reached. Breathe, then continue. Name one strength and one next move.",
+      "domain": "sentence_surgery",
+      "event": "paragraph_complete",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.paragraph_complete.09",
+      "text": "Paragraph checkpoint reached. Calm first. Name one strength and one next move.",
+      "domain": "sentence_surgery",
+      "event": "paragraph_complete",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.paragraph_complete.10",
+      "text": "Paragraph checkpoint reached. Add one justification for your choice. Name one strength and one next move.",
+      "domain": "sentence_surgery",
+      "event": "paragraph_complete",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.streak_three_correct.01",
+      "text": "Accuracy streak is stable. One careful move is enough right now. Stretch with a harder pattern and justify your choice.",
+      "domain": "sentence_surgery",
+      "event": "streak_three_correct",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.streak_three_correct.02",
+      "text": "Accuracy streak is stable. Name the next step before acting. Stretch with a harder pattern and justify your choice.",
+      "domain": "sentence_surgery",
+      "event": "streak_three_correct",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.streak_three_correct.03",
+      "text": "Accuracy streak is stable. Keep the process steady and specific. Stretch with a harder pattern and justify your choice.",
+      "domain": "sentence_surgery",
+      "event": "streak_three_correct",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.streak_three_correct.04",
+      "text": "Accuracy streak is stable. Apply one explicit rule now. Stretch with a harder pattern and justify your choice.",
+      "domain": "sentence_surgery",
+      "event": "streak_three_correct",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.streak_three_correct.05",
+      "text": "Accuracy streak is stable. Complete this step before the next. Stretch with a harder pattern and justify your choice.",
+      "domain": "sentence_surgery",
+      "event": "streak_three_correct",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.streak_three_correct.06",
+      "text": "Accuracy streak is stable. Take a breath and restart small. Stretch with a harder pattern and justify your choice.",
+      "domain": "sentence_surgery",
+      "event": "streak_three_correct",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.streak_three_correct.07",
+      "text": "Accuracy streak is stable. Use a short reset, then continue. Stretch with a harder pattern and justify your choice.",
+      "domain": "sentence_surgery",
+      "event": "streak_three_correct",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.streak_three_correct.08",
+      "text": "Accuracy streak is stable. Calm first. Stretch with a harder pattern and justify your choice.",
+      "domain": "sentence_surgery",
+      "event": "streak_three_correct",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.streak_three_correct.09",
+      "text": "Accuracy streak is stable. Add one justification for your choice. Stretch with a harder pattern and justify your choice.",
+      "domain": "sentence_surgery",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.streak_three_correct.10",
+      "text": "Accuracy streak is stable. Try a harder pattern and explain it. Stretch with a harder pattern and justify your choice.",
+      "domain": "sentence_surgery",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.idle_20s.01",
+      "text": "Work paused for twenty seconds. Name the next step before acting. Re-enter with one small step now.",
+      "domain": "sentence_surgery",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.idle_20s.02",
+      "text": "Work paused for twenty seconds. Keep the process steady and specific. Re-enter with one small step now.",
+      "domain": "sentence_surgery",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.idle_20s.03",
+      "text": "Work paused for twenty seconds. Use one clear check before moving. Re-enter with one small step now.",
+      "domain": "sentence_surgery",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.idle_20s.04",
+      "text": "Work paused for twenty seconds. Complete this step before the next. Re-enter with one small step now.",
+      "domain": "sentence_surgery",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.idle_20s.05",
+      "text": "Work paused for twenty seconds. Use the target routine immediately. Re-enter with one small step now.",
+      "domain": "sentence_surgery",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.idle_20s.06",
+      "text": "Work paused for twenty seconds. Use a short reset, then continue. Re-enter with one small step now.",
+      "domain": "sentence_surgery",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.idle_20s.07",
+      "text": "Work paused for twenty seconds. Focus on one line at a time. Re-enter with one small step now.",
+      "domain": "sentence_surgery",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.idle_20s.08",
+      "text": "Work paused for twenty seconds. Pause now. Re-enter with one small step now.",
+      "domain": "sentence_surgery",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.idle_20s.09",
+      "text": "Work paused for twenty seconds. Slow down. Re-enter with one small step now.",
+      "domain": "sentence_surgery",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "sentence_surgery.idle_20s.10",
+      "text": "Work paused for twenty seconds. Transfer this move to a new example. Re-enter with one small step now.",
+      "domain": "sentence_surgery",
+      "event": "idle_20s",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.planning_missing.01",
+      "text": "Plan step is missing. Keep the process steady and specific. Write a plan line before drafting.",
+      "domain": "writing_studio",
+      "event": "planning_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.planning_missing.02",
+      "text": "Plan step is missing. Use one clear check before moving. Write a plan line before drafting.",
+      "domain": "writing_studio",
+      "event": "planning_missing",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.planning_missing.03",
+      "text": "Plan step is missing. Hold the pattern and verify one detail. Write a plan line before drafting.",
+      "domain": "writing_studio",
+      "event": "planning_missing",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.planning_missing.04",
+      "text": "Plan step is missing. Use the target routine immediately. Write a plan line before drafting.",
+      "domain": "writing_studio",
+      "event": "planning_missing",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.planning_missing.05",
+      "text": "Plan step is missing. Reset with one direct correction. Write a plan line before drafting.",
+      "domain": "writing_studio",
+      "event": "planning_missing",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.planning_missing.06",
+      "text": "Plan step is missing. Focus on one line at a time. Write a plan line before drafting.",
+      "domain": "writing_studio",
+      "event": "planning_missing",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.planning_missing.07",
+      "text": "Plan step is missing. You can recover with one calm step. Write a plan line before drafting.",
+      "domain": "writing_studio",
+      "event": "planning_missing",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.planning_missing.08",
+      "text": "Plan step is missing. Slow down. Write a plan line before drafting.",
+      "domain": "writing_studio",
+      "event": "planning_missing",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.planning_missing.09",
+      "text": "Plan step is missing. Transfer this move to a new example. Write a plan line before drafting.",
+      "domain": "writing_studio",
+      "event": "planning_missing",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.planning_missing.10",
+      "text": "Plan step is missing. Increase precision and defend your answer. Write a plan line before drafting.",
+      "domain": "writing_studio",
+      "event": "planning_missing",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.01",
+      "text": "Evidence support is too thin. Use one clear check before moving. Add one quoted or paraphrased detail.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.02",
+      "text": "Evidence support is too thin. Hold the pattern and verify one detail. Add one quoted or paraphrased detail.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.03",
+      "text": "Evidence support is too thin. Stay with evidence, not speed. Add one quoted or paraphrased detail.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.04",
+      "text": "Evidence support is too thin. Reset with one direct correction. Add one quoted or paraphrased detail.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.05",
+      "text": "Evidence support is too thin. Follow the checklist in sequence. Add one quoted or paraphrased detail.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.06",
+      "text": "Evidence support is too thin. You can recover with one calm step. Add one quoted or paraphrased detail.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.07",
+      "text": "Evidence support is too thin. Keep it simple and continue. Add one quoted or paraphrased detail.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.08",
+      "text": "Evidence support is too thin. Reset your pace. Add one quoted or paraphrased detail.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.09",
+      "text": "Evidence support is too thin. One step only. Add one quoted or paraphrased detail.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.evidence_thin.10",
+      "text": "Evidence support is too thin. Extend with one advanced check. Add one quoted or paraphrased detail.",
+      "domain": "writing_studio",
+      "event": "evidence_thin",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.01",
+      "text": "Revision progress has stalled. Hold the pattern and verify one detail. Revise one sentence for clarity first.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.02",
+      "text": "Revision progress has stalled. Stay with evidence, not speed. Revise one sentence for clarity first.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.03",
+      "text": "Revision progress has stalled. One careful move is enough right now. Revise one sentence for clarity first.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.04",
+      "text": "Revision progress has stalled. Follow the checklist in sequence. Revise one sentence for clarity first.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.05",
+      "text": "Revision progress has stalled. Do this next in order. Revise one sentence for clarity first.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.06",
+      "text": "Revision progress has stalled. Keep it simple and continue. Revise one sentence for clarity first.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.07",
+      "text": "Revision progress has stalled. Slow pace is fine when accuracy rises. Revise one sentence for clarity first.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.08",
+      "text": "Revision progress has stalled. One step only. Revise one sentence for clarity first.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.09",
+      "text": "Revision progress has stalled. Extend with one advanced check. Revise one sentence for clarity first.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.revision_stall.10",
+      "text": "Revision progress has stalled. Raise complexity with control. Revise one sentence for clarity first.",
+      "domain": "writing_studio",
+      "event": "revision_stall",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.rapid_delete_streak.01",
+      "text": "Delete streak indicates overload. Stay with evidence, not speed. Pause and keep only one clear revision goal.",
+      "domain": "writing_studio",
+      "event": "rapid_delete_streak",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.rapid_delete_streak.02",
+      "text": "Delete streak indicates overload. One careful move is enough right now. Pause and keep only one clear revision goal.",
+      "domain": "writing_studio",
+      "event": "rapid_delete_streak",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.rapid_delete_streak.03",
+      "text": "Delete streak indicates overload. Name the next step before acting. Pause and keep only one clear revision goal.",
+      "domain": "writing_studio",
+      "event": "rapid_delete_streak",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.rapid_delete_streak.04",
+      "text": "Delete streak indicates overload. Do this next in order. Pause and keep only one clear revision goal.",
+      "domain": "writing_studio",
+      "event": "rapid_delete_streak",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.rapid_delete_streak.05",
+      "text": "Delete streak indicates overload. Apply one explicit rule now. Pause and keep only one clear revision goal.",
+      "domain": "writing_studio",
+      "event": "rapid_delete_streak",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.rapid_delete_streak.06",
+      "text": "Delete streak indicates overload. Slow pace is fine when accuracy rises. Pause and keep only one clear revision goal.",
+      "domain": "writing_studio",
+      "event": "rapid_delete_streak",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.rapid_delete_streak.07",
+      "text": "Delete streak indicates overload. Take a breath and restart small. Pause and keep only one clear revision goal.",
+      "domain": "writing_studio",
+      "event": "rapid_delete_streak",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.rapid_delete_streak.08",
+      "text": "Delete streak indicates overload. Breathe, then continue. Pause and keep only one clear revision goal.",
+      "domain": "writing_studio",
+      "event": "rapid_delete_streak",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.rapid_delete_streak.09",
+      "text": "Delete streak indicates overload. Calm first. Pause and keep only one clear revision goal.",
+      "domain": "writing_studio",
+      "event": "rapid_delete_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.rapid_delete_streak.10",
+      "text": "Delete streak indicates overload. Add one justification for your choice. Pause and keep only one clear revision goal.",
+      "domain": "writing_studio",
+      "event": "rapid_delete_streak",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_complete.01",
+      "text": "Paragraph checkpoint reached. One careful move is enough right now. Name one strength and one next move.",
+      "domain": "writing_studio",
+      "event": "paragraph_complete",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_complete.02",
+      "text": "Paragraph checkpoint reached. Name the next step before acting. Name one strength and one next move.",
+      "domain": "writing_studio",
+      "event": "paragraph_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_complete.03",
+      "text": "Paragraph checkpoint reached. Keep the process steady and specific. Name one strength and one next move.",
+      "domain": "writing_studio",
+      "event": "paragraph_complete",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_complete.04",
+      "text": "Paragraph checkpoint reached. Apply one explicit rule now. Name one strength and one next move.",
+      "domain": "writing_studio",
+      "event": "paragraph_complete",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_complete.05",
+      "text": "Paragraph checkpoint reached. Complete this step before the next. Name one strength and one next move.",
+      "domain": "writing_studio",
+      "event": "paragraph_complete",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_complete.06",
+      "text": "Paragraph checkpoint reached. Take a breath and restart small. Name one strength and one next move.",
+      "domain": "writing_studio",
+      "event": "paragraph_complete",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_complete.07",
+      "text": "Paragraph checkpoint reached. Use a short reset, then continue. Name one strength and one next move.",
+      "domain": "writing_studio",
+      "event": "paragraph_complete",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_complete.08",
+      "text": "Paragraph checkpoint reached. Calm first. Name one strength and one next move.",
+      "domain": "writing_studio",
+      "event": "paragraph_complete",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_complete.09",
+      "text": "Paragraph checkpoint reached. Add one justification for your choice. Name one strength and one next move.",
+      "domain": "writing_studio",
+      "event": "paragraph_complete",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.paragraph_complete.10",
+      "text": "Paragraph checkpoint reached. Try a harder pattern and explain it. Name one strength and one next move.",
+      "domain": "writing_studio",
+      "event": "paragraph_complete",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.01",
+      "text": "Work paused for twenty seconds. Name the next step before acting. Re-enter with one small step now.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.02",
+      "text": "Work paused for twenty seconds. Keep the process steady and specific. Re-enter with one small step now.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.03",
+      "text": "Work paused for twenty seconds. Use one clear check before moving. Re-enter with one small step now.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.04",
+      "text": "Work paused for twenty seconds. Complete this step before the next. Re-enter with one small step now.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.05",
+      "text": "Work paused for twenty seconds. Use the target routine immediately. Re-enter with one small step now.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.06",
+      "text": "Work paused for twenty seconds. Use a short reset, then continue. Re-enter with one small step now.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.07",
+      "text": "Work paused for twenty seconds. Focus on one line at a time. Re-enter with one small step now.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.08",
+      "text": "Work paused for twenty seconds. Pause now. Re-enter with one small step now.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.09",
+      "text": "Work paused for twenty seconds. Slow down. Re-enter with one small step now.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "writing_studio.idle_20s.10",
+      "text": "Work paused for twenty seconds. Transfer this move to a new example. Re-enter with one small step now.",
+      "domain": "writing_studio",
+      "event": "idle_20s",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.01",
+      "text": "Group accuracy is below target. Keep the process steady and specific. Form a reteach group and model one step.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.02",
+      "text": "Group accuracy is below target. Use one clear check before moving. Form a reteach group and model one step.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.03",
+      "text": "Group accuracy is below target. Hold the pattern and verify one detail. Form a reteach group and model one step.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.04",
+      "text": "Group accuracy is below target. Use the target routine immediately. Form a reteach group and model one step.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.05",
+      "text": "Group accuracy is below target. Reset with one direct correction. Form a reteach group and model one step.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.06",
+      "text": "Group accuracy is below target. Focus on one line at a time. Form a reteach group and model one step.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.07",
+      "text": "Group accuracy is below target. You can recover with one calm step. Form a reteach group and model one step.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.08",
+      "text": "Group accuracy is below target. Slow down. Form a reteach group and model one step.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.09",
+      "text": "Group accuracy is below target. Transfer this move to a new example. Form a reteach group and model one step.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.low_group_accuracy.10",
+      "text": "Group accuracy is below target. Increase precision and defend your answer. Form a reteach group and model one step.",
+      "domain": "teacher_dashboard",
+      "event": "low_group_accuracy",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.group_pacing_drop.01",
+      "text": "Group pacing consistency dropped. Use one clear check before moving. Reset timing and run a short guided cycle.",
+      "domain": "teacher_dashboard",
+      "event": "group_pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.group_pacing_drop.02",
+      "text": "Group pacing consistency dropped. Hold the pattern and verify one detail. Reset timing and run a short guided cycle.",
+      "domain": "teacher_dashboard",
+      "event": "group_pacing_drop",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.group_pacing_drop.03",
+      "text": "Group pacing consistency dropped. Stay with evidence, not speed. Reset timing and run a short guided cycle.",
+      "domain": "teacher_dashboard",
+      "event": "group_pacing_drop",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.group_pacing_drop.04",
+      "text": "Group pacing consistency dropped. Reset with one direct correction. Reset timing and run a short guided cycle.",
+      "domain": "teacher_dashboard",
+      "event": "group_pacing_drop",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.group_pacing_drop.05",
+      "text": "Group pacing consistency dropped. Follow the checklist in sequence. Reset timing and run a short guided cycle.",
+      "domain": "teacher_dashboard",
+      "event": "group_pacing_drop",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.group_pacing_drop.06",
+      "text": "Group pacing consistency dropped. You can recover with one calm step. Reset timing and run a short guided cycle.",
+      "domain": "teacher_dashboard",
+      "event": "group_pacing_drop",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.group_pacing_drop.07",
+      "text": "Group pacing consistency dropped. Keep it simple and continue. Reset timing and run a short guided cycle.",
+      "domain": "teacher_dashboard",
+      "event": "group_pacing_drop",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.group_pacing_drop.08",
+      "text": "Group pacing consistency dropped. Reset your pace. Reset timing and run a short guided cycle.",
+      "domain": "teacher_dashboard",
+      "event": "group_pacing_drop",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.group_pacing_drop.09",
+      "text": "Group pacing consistency dropped. One step only. Reset timing and run a short guided cycle.",
+      "domain": "teacher_dashboard",
+      "event": "group_pacing_drop",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.group_pacing_drop.10",
+      "text": "Group pacing consistency dropped. Extend with one advanced check. Reset timing and run a short guided cycle.",
+      "domain": "teacher_dashboard",
+      "event": "group_pacing_drop",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.01",
+      "text": "Reteach signal is active. Hold the pattern and verify one detail. Launch the reteach move for this pattern.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.02",
+      "text": "Reteach signal is active. Stay with evidence, not speed. Launch the reteach move for this pattern.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.03",
+      "text": "Reteach signal is active. One careful move is enough right now. Launch the reteach move for this pattern.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.04",
+      "text": "Reteach signal is active. Follow the checklist in sequence. Launch the reteach move for this pattern.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.05",
+      "text": "Reteach signal is active. Do this next in order. Launch the reteach move for this pattern.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.06",
+      "text": "Reteach signal is active. Keep it simple and continue. Launch the reteach move for this pattern.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.07",
+      "text": "Reteach signal is active. Slow pace is fine when accuracy rises. Launch the reteach move for this pattern.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.08",
+      "text": "Reteach signal is active. One step only. Launch the reteach move for this pattern.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.09",
+      "text": "Reteach signal is active. Extend with one advanced check. Launch the reteach move for this pattern.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.reteach_recommended.10",
+      "text": "Reteach signal is active. Raise complexity with control. Launch the reteach move for this pattern.",
+      "domain": "teacher_dashboard",
+      "event": "reteach_recommended",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.student_growth_spike.01",
+      "text": "Growth spike detected. Stay with evidence, not speed. Raise task demand with one added reasoning step.",
+      "domain": "teacher_dashboard",
+      "event": "student_growth_spike",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.student_growth_spike.02",
+      "text": "Growth spike detected. One careful move is enough right now. Raise task demand with one added reasoning step.",
+      "domain": "teacher_dashboard",
+      "event": "student_growth_spike",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.student_growth_spike.03",
+      "text": "Growth spike detected. Name the next step before acting. Raise task demand with one added reasoning step.",
+      "domain": "teacher_dashboard",
+      "event": "student_growth_spike",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.student_growth_spike.04",
+      "text": "Growth spike detected. Do this next in order. Raise task demand with one added reasoning step.",
+      "domain": "teacher_dashboard",
+      "event": "student_growth_spike",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.student_growth_spike.05",
+      "text": "Growth spike detected. Apply one explicit rule now. Raise task demand with one added reasoning step.",
+      "domain": "teacher_dashboard",
+      "event": "student_growth_spike",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.student_growth_spike.06",
+      "text": "Growth spike detected. Slow pace is fine when accuracy rises. Raise task demand with one added reasoning step.",
+      "domain": "teacher_dashboard",
+      "event": "student_growth_spike",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.student_growth_spike.07",
+      "text": "Growth spike detected. Take a breath and restart small. Raise task demand with one added reasoning step.",
+      "domain": "teacher_dashboard",
+      "event": "student_growth_spike",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.student_growth_spike.08",
+      "text": "Growth spike detected. Breathe, then continue. Raise task demand with one added reasoning step.",
+      "domain": "teacher_dashboard",
+      "event": "student_growth_spike",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.student_growth_spike.09",
+      "text": "Growth spike detected. Calm first. Raise task demand with one added reasoning step.",
+      "domain": "teacher_dashboard",
+      "event": "student_growth_spike",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.student_growth_spike.10",
+      "text": "Growth spike detected. Add one justification for your choice. Raise task demand with one added reasoning step.",
+      "domain": "teacher_dashboard",
+      "event": "student_growth_spike",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.01",
+      "text": "Progress review is ready. One careful move is enough right now. Review trends and set the next target.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.02",
+      "text": "Progress review is ready. Name the next step before acting. Review trends and set the next target.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.03",
+      "text": "Progress review is ready. Keep the process steady and specific. Review trends and set the next target.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.04",
+      "text": "Progress review is ready. Apply one explicit rule now. Review trends and set the next target.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.05",
+      "text": "Progress review is ready. Complete this step before the next. Review trends and set the next target.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.06",
+      "text": "Progress review is ready. Take a breath and restart small. Review trends and set the next target.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.07",
+      "text": "Progress review is ready. Use a short reset, then continue. Review trends and set the next target.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.08",
+      "text": "Progress review is ready. Calm first. Review trends and set the next target.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.09",
+      "text": "Progress review is ready. Add one justification for your choice. Review trends and set the next target.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.progress_review_ready.10",
+      "text": "Progress review is ready. Try a harder pattern and explain it. Review trends and set the next target.",
+      "domain": "teacher_dashboard",
+      "event": "progress_review_ready",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.01",
+      "text": "Work paused for twenty seconds. Name the next step before acting. Re-enter with one small step now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.02",
+      "text": "Work paused for twenty seconds. Keep the process steady and specific. Re-enter with one small step now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.03",
+      "text": "Work paused for twenty seconds. Use one clear check before moving. Re-enter with one small step now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.04",
+      "text": "Work paused for twenty seconds. Complete this step before the next. Re-enter with one small step now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.05",
+      "text": "Work paused for twenty seconds. Use the target routine immediately. Re-enter with one small step now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.06",
+      "text": "Work paused for twenty seconds. Use a short reset, then continue. Re-enter with one small step now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.07",
+      "text": "Work paused for twenty seconds. Focus on one line at a time. Re-enter with one small step now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.08",
+      "text": "Work paused for twenty seconds. Pause now. Re-enter with one small step now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.09",
+      "text": "Work paused for twenty seconds. Slow down. Re-enter with one small step now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "teacher_dashboard.idle_20s.10",
+      "text": "Work paused for twenty seconds. Transfer this move to a new example. Re-enter with one small step now.",
+      "domain": "teacher_dashboard",
+      "event": "idle_20s",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_first_miss.01",
+      "text": "First miss recorded. Keep the process steady and specific. Use one letter-position check before the next try.",
+      "domain": "numeracy",
+      "event": "after_first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_first_miss.02",
+      "text": "First miss recorded. Use one clear check before moving. Use one letter-position check before the next try.",
+      "domain": "numeracy",
+      "event": "after_first_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_first_miss.03",
+      "text": "First miss recorded. Hold the pattern and verify one detail. Use one letter-position check before the next try.",
+      "domain": "numeracy",
+      "event": "after_first_miss",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_first_miss.04",
+      "text": "First miss recorded. Use the target routine immediately. Use one letter-position check before the next try.",
+      "domain": "numeracy",
+      "event": "after_first_miss",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_first_miss.05",
+      "text": "First miss recorded. Reset with one direct correction. Use one letter-position check before the next try.",
+      "domain": "numeracy",
+      "event": "after_first_miss",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_first_miss.06",
+      "text": "First miss recorded. Focus on one line at a time. Use one letter-position check before the next try.",
+      "domain": "numeracy",
+      "event": "after_first_miss",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_first_miss.07",
+      "text": "First miss recorded. You can recover with one calm step. Use one letter-position check before the next try.",
+      "domain": "numeracy",
+      "event": "after_first_miss",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_first_miss.08",
+      "text": "First miss recorded. Slow down. Use one letter-position check before the next try.",
+      "domain": "numeracy",
+      "event": "after_first_miss",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_first_miss.09",
+      "text": "First miss recorded. Transfer this move to a new example. Use one letter-position check before the next try.",
+      "domain": "numeracy",
+      "event": "after_first_miss",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_first_miss.10",
+      "text": "First miss recorded. Increase precision and defend your answer. Use one letter-position check before the next try.",
+      "domain": "numeracy",
+      "event": "after_first_miss",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_second_miss.01",
+      "text": "Second miss recorded. Use one clear check before moving. Switch one tested pattern and submit one precise try.",
+      "domain": "numeracy",
+      "event": "after_second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_second_miss.02",
+      "text": "Second miss recorded. Hold the pattern and verify one detail. Switch one tested pattern and submit one precise try.",
+      "domain": "numeracy",
+      "event": "after_second_miss",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_second_miss.03",
+      "text": "Second miss recorded. Stay with evidence, not speed. Switch one tested pattern and submit one precise try.",
+      "domain": "numeracy",
+      "event": "after_second_miss",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_second_miss.04",
+      "text": "Second miss recorded. Reset with one direct correction. Switch one tested pattern and submit one precise try.",
+      "domain": "numeracy",
+      "event": "after_second_miss",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_second_miss.05",
+      "text": "Second miss recorded. Follow the checklist in sequence. Switch one tested pattern and submit one precise try.",
+      "domain": "numeracy",
+      "event": "after_second_miss",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_second_miss.06",
+      "text": "Second miss recorded. You can recover with one calm step. Switch one tested pattern and submit one precise try.",
+      "domain": "numeracy",
+      "event": "after_second_miss",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_second_miss.07",
+      "text": "Second miss recorded. Keep it simple and continue. Switch one tested pattern and submit one precise try.",
+      "domain": "numeracy",
+      "event": "after_second_miss",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_second_miss.08",
+      "text": "Second miss recorded. Reset your pace. Switch one tested pattern and submit one precise try.",
+      "domain": "numeracy",
+      "event": "after_second_miss",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_second_miss.09",
+      "text": "Second miss recorded. One step only. Switch one tested pattern and submit one precise try.",
+      "domain": "numeracy",
+      "event": "after_second_miss",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.after_second_miss.10",
+      "text": "Second miss recorded. Extend with one advanced check. Switch one tested pattern and submit one precise try.",
+      "domain": "numeracy",
+      "event": "after_second_miss",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.01",
+      "text": "Wrong streak is moving too fast. Hold the pattern and verify one detail. Pause, breathe, and restart with one controlled step.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.02",
+      "text": "Wrong streak is moving too fast. Stay with evidence, not speed. Pause, breathe, and restart with one controlled step.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.03",
+      "text": "Wrong streak is moving too fast. One careful move is enough right now. Pause, breathe, and restart with one controlled step.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.04",
+      "text": "Wrong streak is moving too fast. Follow the checklist in sequence. Pause, breathe, and restart with one controlled step.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.05",
+      "text": "Wrong streak is moving too fast. Do this next in order. Pause, breathe, and restart with one controlled step.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.06",
+      "text": "Wrong streak is moving too fast. Keep it simple and continue. Pause, breathe, and restart with one controlled step.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.07",
+      "text": "Wrong streak is moving too fast. Slow pace is fine when accuracy rises. Pause, breathe, and restart with one controlled step.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.08",
+      "text": "Wrong streak is moving too fast. One step only. Pause, breathe, and restart with one controlled step.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.09",
+      "text": "Wrong streak is moving too fast. Extend with one advanced check. Pause, breathe, and restart with one controlled step.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.rapid_wrong_streak.10",
+      "text": "Wrong streak is moving too fast. Raise complexity with control. Pause, breathe, and restart with one controlled step.",
+      "domain": "numeracy",
+      "event": "rapid_wrong_streak",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.01",
+      "text": "You are close to the solve. Stay with evidence, not speed. Keep the pattern and test one high-value letter.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.02",
+      "text": "You are close to the solve. One careful move is enough right now. Keep the pattern and test one high-value letter.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.03",
+      "text": "You are close to the solve. Name the next step before acting. Keep the pattern and test one high-value letter.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.04",
+      "text": "You are close to the solve. Do this next in order. Keep the pattern and test one high-value letter.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.05",
+      "text": "You are close to the solve. Apply one explicit rule now. Keep the pattern and test one high-value letter.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.06",
+      "text": "You are close to the solve. Slow pace is fine when accuracy rises. Keep the pattern and test one high-value letter.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.07",
+      "text": "You are close to the solve. Take a breath and restart small. Keep the pattern and test one high-value letter.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.08",
+      "text": "You are close to the solve. Breathe, then continue. Keep the pattern and test one high-value letter.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "deescalation",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.09",
+      "text": "You are close to the solve. Calm first. Keep the pattern and test one high-value letter.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.near_solve.10",
+      "text": "You are close to the solve. Add one justification for your choice. Keep the pattern and test one high-value letter.",
+      "domain": "numeracy",
+      "event": "near_solve",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.01",
+      "text": "Accuracy streak is stable. One careful move is enough right now. Stretch with a harder pattern and justify your choice.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "neutral_coach",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.02",
+      "text": "Accuracy streak is stable. Name the next step before acting. Stretch with a harder pattern and justify your choice.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.03",
+      "text": "Accuracy streak is stable. Keep the process steady and specific. Stretch with a harder pattern and justify your choice.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.04",
+      "text": "Accuracy streak is stable. Apply one explicit rule now. Stretch with a harder pattern and justify your choice.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.05",
+      "text": "Accuracy streak is stable. Complete this step before the next. Stretch with a harder pattern and justify your choice.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.06",
+      "text": "Accuracy streak is stable. Take a breath and restart small. Stretch with a harder pattern and justify your choice.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "gentle_support",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.07",
+      "text": "Accuracy streak is stable. Use a short reset, then continue. Stretch with a harder pattern and justify your choice.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.08",
+      "text": "Accuracy streak is stable. Calm first. Stretch with a harder pattern and justify your choice.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.09",
+      "text": "Accuracy streak is stable. Add one justification for your choice. Stretch with a harder pattern and justify your choice.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.streak_three_correct.10",
+      "text": "Accuracy streak is stable. Try a harder pattern and explain it. Stretch with a harder pattern and justify your choice.",
+      "domain": "numeracy",
+      "event": "streak_three_correct",
+      "lane": "challenge_stretch",
+      "length": "medium",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.01",
+      "text": "Work paused for twenty seconds. Name the next step before acting. Re-enter with one small step now.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.02",
+      "text": "Work paused for twenty seconds. Keep the process steady and specific. Re-enter with one small step now.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.03",
+      "text": "Work paused for twenty seconds. Use one clear check before moving. Re-enter with one small step now.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "neutral_coach",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.04",
+      "text": "Work paused for twenty seconds. Complete this step before the next. Re-enter with one small step now.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.05",
+      "text": "Work paused for twenty seconds. Use the target routine immediately. Re-enter with one small step now.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "direct_instruction",
+      "length": "medium",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.06",
+      "text": "Work paused for twenty seconds. Use a short reset, then continue. Re-enter with one small step now.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.07",
+      "text": "Work paused for twenty seconds. Focus on one line at a time. Re-enter with one small step now.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "gentle_support",
+      "length": "short",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.08",
+      "text": "Work paused for twenty seconds. Pause now. Re-enter with one small step now.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.09",
+      "text": "Work paused for twenty seconds. Slow down. Re-enter with one small step now.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "deescalation",
+      "length": "micro",
+      "tier": [
+        "2",
+        "3"
+      ],
+      "audience": [
+        "student",
+        "teacher"
+      ]
+    },
+    {
+      "id": "numeracy.idle_20s.10",
+      "text": "Work paused for twenty seconds. Transfer this move to a new example. Re-enter with one small step now.",
+      "domain": "numeracy",
+      "event": "idle_20s",
+      "lane": "challenge_stretch",
+      "length": "short",
+      "tier": [
+        "2"
+      ],
+      "audience": [
+        "student",
+        "teacher"
       ]
     }
-  }
+  ]
 }
