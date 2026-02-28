@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Teacher Dashboard</title>
+  <title>Cornerstone MTSS - Teacher Dashboard</title>
   <script src="./config.js"></script>
   <script src="./storage-schema.js"></script>
-  <script src="./build-stamp.js"></script>
+  <script src="./build-stamp.js?v=20260228b"></script>
   <script src="./diagnostics.js"></script>
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,14 +18,29 @@
 <body class="writing-studio cs-page-teacher">
   <main id="td-root" class="writing-studio cs-page-teacher">
     <div class="td-header">
-      <h1>Teacher Dashboard</h1>
-      <p class="td-sub">Live structural insights across your learners.</p>
+      <h1>Cornerstone MTSS</h1>
+      <p class="td-sub">Teacher Dashboard • Tier 2/3 Intervention Engine</p>
+      <div class="td-tools-row">
+        <button id="td-import-sessions" class="td-tool-btn" type="button">Import Sessions</button>
+        <input id="td-import-sessions-input" type="file" accept=".json,application/json" hidden>
+        <span id="td-import-status" class="td-sub"></span>
+      </div>
     </div>
     <div id="td-coach-ribbon" class="cs-coach-ribbon" role="status" aria-live="polite">
       <span class="cs-coach-chip hidden"></span>
       <p class="cs-coach-text"></p>
       <button class="cs-coach-action hidden" type="button"></button>
     </div>
+
+    <section class="td-cornerstone ss-card cs-stage td-class-view">
+      <h2>Cornerstone Snapshot</h2>
+      <div id="td-cornerstone-primary" class="td-cornerstone-primary">Primary Risk Signal: Strategy</div>
+      <div id="td-cornerstone-confidence" class="td-cornerstone-line">Confidence: --</div>
+      <div id="td-cornerstone-intensity" class="td-cornerstone-line">Intensity: --</div>
+      <div id="td-cornerstone-next" class="td-cornerstone-next">Recommended 10-Minute Move: No signal yet.</div>
+      <h3 class="td-subhead">Recent Probe Results (Last 5)</h3>
+      <div id="td-cornerstone-recent" class="td-cornerstone-recent"></div>
+    </section>
 
     <section class="td-overview ss-card cs-stage td-class-view">
       <h2>Class Snapshot</h2>
@@ -83,6 +98,9 @@
   </main>
 
   <script src="./analytics-engine.js?v=20260227a" defer></script>
+  <script src="./js/cornerstone-signals.js?v=20260228a" defer></script>
+  <script src="./js/cornerstone-store.js?v=20260228a" defer></script>
+  <script src="./js/cornerstone-engine.js?v=20260228a" defer></script>
   <script src="./performance-engine.js?v=20260227a" defer></script>
   <script src="./pedagogy-engine.js?v=20260227a" defer></script>
   <script src="./ai-service.js?v=20260227b" defer></script>
@@ -90,8 +108,9 @@
   <script src="./growth-report-engine.js?v=20260227a" defer></script>
   <script src="./intervention-planner.js?v=20260227a" defer></script>
   <script src="./lesson-generator.js?v=20260227a" defer></script>
-  <script src="./js/ava-coach.js?v=20260228a" defer></script>
+  <script src="./js/ava-intensity.js?v=20260228a" defer></script>
+  <script src="./js/ava-coach.js?v=20260228d" defer></script>
   <script src="./js/coach-ribbon.js?v=20260228b" defer></script>
-  <script src="./teacher-dashboard.js?v=20260228b" defer></script>
+  <script src="./teacher-dashboard.js?v=20260228c" defer></script>
 </body>
 </html>

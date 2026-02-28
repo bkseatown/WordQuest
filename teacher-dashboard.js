@@ -25,6 +25,14 @@
   var sessionPanelBody = document.getElementById("td-session-plan-content");
   var miniLessonCard = document.getElementById("td-mini-lesson-card");
   var miniLessonBody = document.getElementById("td-mini-lesson-content");
+  var importBtn = document.getElementById("td-import-sessions");
+  var importInput = document.getElementById("td-import-sessions-input");
+  var importStatusEl = document.getElementById("td-import-status");
+  var cornerstonePrimaryEl = document.getElementById("td-cornerstone-primary");
+  var cornerstoneConfidenceEl = document.getElementById("td-cornerstone-confidence");
+  var cornerstoneIntensityEl = document.getElementById("td-cornerstone-intensity");
+  var cornerstoneNextEl = document.getElementById("td-cornerstone-next");
+  var cornerstoneRecentEl = document.getElementById("td-cornerstone-recent");
   var classViewEls = Array.prototype.slice.call(document.querySelectorAll(".td-class-view"));
   var studentViewEls = Array.prototype.slice.call(document.querySelectorAll(".td-student-view"));
 
@@ -383,6 +391,178 @@
     });
   }
 
+  function toBandLabel(value, strongMin, devMin, inverse) {
+    var n = Number(value || 0);
+    if (inverse) {
+      if (n <= strongMin) return "Strong";
+      if (n <= devMin) return "Developing";
+      return "Emerging";
+    }
+    if (n >= strongMin) return "Strong";
+    if (n >= devMin) return "Developing";
+    return "Emerging";
+  }
+
+  function safeSignalDomainLabel(domain) {
+    var d = String(domain || "").trim();
+    if (!d) return "Strategy";
+    return d.charAt(0).toUpperCase() + d.slice(1);
+  }
+
+  function getWordQuestSignalRows(studentId) {
+    var history = window.CSAnalyticsEngine && typeof window.CSAnalyticsEngine.readProgressHistory === "function"
+      ? window.CSAnalyticsEngine.readProgressHistory()
+      : {};
+    var rows = Array.isArray(history.wordQuestSignals) ? history.wordQuestSignals.slice() : [];
+    var target = String(studentId || "").trim();
+    if (target) {
+      var scoped = rows.filter(function (row) { return String(row && row.studentId || "").trim() === target; });
+      if (scoped.length) rows = scoped;
+    }
+    return rows.slice(-3).reverse();
+  }
+
+  function getRecentProbeRows(studentId) {
+    var rows = [];
+    var target = String(studentId || "").trim();
+    var history = window.CSAnalyticsEngine && typeof window.CSAnalyticsEngine.readProgressHistory === "function"
+      ? window.CSAnalyticsEngine.readProgressHistory()
+      : {};
+    var readingRows = [];
+    if (target && Array.isArray(history[target])) {
+      readingRows = history[target].filter(function (row) { return row && row.reading; }).slice(-3).map(function (row) {
+        return {
+          engine: "readinglab",
+          line: "Reading Lab • ORF " + Number(row.reading.wpm || 0) + " WPM • Punctuation " + Number(row.reading.punctScore || 0) + "%"
+        };
+      });
+    }
+    rows = rows.concat(getWordQuestSignalRows(target).map(function (row) {
+      var updateBand = toBandLabel(row.updateRespect, 0.75, 0.55, false);
+      var vowelBand = toBandLabel(row.uniqueVowels, 4, 2, false);
+      var repetitionBand = toBandLabel(row.repetitionPenalty, 0.08, 0.18, true);
+      var morphBand = toBandLabel(row.affixAttempts, 1, 1, false);
+      return {
+        engine: "wordquest",
+        line: "Strategy Probe • Update Respect: " + updateBand + " • Vowel Variety: " + vowelBand + " • Repetition Penalty: " + repetitionBand + " • Morphology Attempts: " + morphBand
+      };
+    }));
+    rows = rows.concat(readingRows);
+    return rows.slice(0, 3);
+  }
+
+  function getCornerstoneSessionRows(studentCode) {
+    if (!window.CSCornerstoneStore || typeof window.CSCornerstoneStore.listSessions !== "function") return [];
+    var code = String(studentCode || "").trim().toUpperCase();
+    var rows = window.CSCornerstoneStore.listSessions({});
+    if (code) {
+      rows = rows.filter(function (row) { return String(row && row.studentCode || "").trim().toUpperCase() === code; });
+    }
+    rows.sort(function (a, b) {
+      var at = Date.parse(String(a && a.createdAt || "")) || 0;
+      var bt = Date.parse(String(b && b.createdAt || "")) || 0;
+      return bt - at;
+    });
+    return rows;
+  }
+
+  function inferSkillDomainFromEngine(engine) {
+    var key = String(engine || "").toLowerCase();
+    if (key === "readinglab") return "fluency";
+    if (key === "writing") return "reasoning";
+    return "strategy";
+  }
+
+  function summarizeStudentGroup(rows) {
+    var list = Array.isArray(rows) ? rows : [];
+    if (!list.length) return null;
+    var latest = list[0];
+    var tier3 = list.find(function (row) { return String(row && row.tier || "").toLowerCase() === "tier3"; }) || null;
+    var primary = tier3 || latest;
+    return {
+      code: String(primary && primary.studentCode || "NO-CODE"),
+      domain: inferSkillDomainFromEngine(primary && primary.engine),
+      tier: String(primary && primary.tier || "tier2").toLowerCase() === "tier3" ? "Tier 3" : "Tier 2",
+      nextMove: String(primary && primary.nextMove && primary.nextMove.title || "Collect one probe and assign a 10-minute move."),
+      confidence: String(primary && primary.tier || "").toLowerCase() === "tier3" ? 48 : 72
+    };
+  }
+
+  function renderCornerstoneSnapshot(studentId) {
+    if (!cornerstonePrimaryEl || !cornerstoneConfidenceEl || !cornerstoneIntensityEl || !cornerstoneNextEl || !cornerstoneRecentEl) return;
+    var code = String(studentId || "").trim().toUpperCase();
+    var sessions = getCornerstoneSessionRows(code);
+    var latestSummary = summarizeStudentGroup(sessions);
+    if (!latestSummary) {
+      var fallbackLatest = window.CSCornerstoneEngine && typeof window.CSCornerstoneEngine.getLatestSignal === "function"
+        ? window.CSCornerstoneEngine.getLatestSignal(studentId)
+        : null;
+      latestSummary = {
+        domain: safeSignalDomainLabel(fallbackLatest && fallbackLatest.skill_domain),
+        tier: String(fallbackLatest && fallbackLatest.intensity || "").toLowerCase() === "tier3" ? "Tier 3" : "Tier 2",
+        nextMove: String(fallbackLatest && fallbackLatest.next_step || "Collect one probe, then run a targeted 10-minute move."),
+        confidence: Math.round(Math.max(0, Math.min(1, Number(fallbackLatest && fallbackLatest.confidence || 0))) * 100)
+      };
+    }
+
+    cornerstonePrimaryEl.textContent = "Primary Risk Signal: " + safeSignalDomainLabel(latestSummary.domain);
+    cornerstoneConfidenceEl.textContent = "Confidence: " + Math.max(0, Number(latestSummary.confidence || 0)) + "%";
+    cornerstoneIntensityEl.textContent = "Intensity: " + String(latestSummary.tier || "Tier 2");
+    cornerstoneNextEl.textContent = "Recommended 10-Minute Move: " + String(latestSummary.nextMove || "Collect one probe, then run a targeted 10-minute move.");
+
+    var recentSessions = getCornerstoneSessionRows("").slice(0, 5);
+    var grouped = {};
+    recentSessions.forEach(function (row) {
+      var key = String(row && row.studentCode || "NO-CODE").toUpperCase();
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(row);
+    });
+    var summaries = Object.keys(grouped).map(function (key) { return summarizeStudentGroup(grouped[key]); }).filter(Boolean);
+    if (!summaries.length) {
+      var recent = getRecentProbeRows(studentId);
+      if (!recent.length) {
+        cornerstoneRecentEl.innerHTML = '<div class="td-cornerstone-row">No recent probe results yet.</div>';
+        return;
+      }
+      cornerstoneRecentEl.innerHTML = recent.map(function (row) {
+        return '<div class="td-cornerstone-row">' + row.line + "</div>";
+      }).join("");
+      return;
+    }
+    cornerstoneRecentEl.innerHTML = summaries.map(function (row) {
+      return '<div class="td-cornerstone-row"><strong>' + row.code + '</strong> • Risk: ' + safeSignalDomainLabel(row.domain) + ' • ' + row.tier + '<br>Next Move: ' + row.nextMove + "</div>";
+    }).join("");
+  }
+
+  function bindImportSessions() {
+    if (!importBtn || !importInput || !window.CSCornerstoneStore) return;
+    importBtn.addEventListener("click", function () {
+      importInput.value = "";
+      importInput.click();
+    });
+    importInput.addEventListener("change", function () {
+      var file = importInput.files && importInput.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        var raw = String(reader.result || "");
+        var payload = null;
+        try {
+          payload = JSON.parse(raw);
+        } catch (_e) {
+          if (importStatusEl) importStatusEl.textContent = "Import failed: invalid JSON.";
+          return;
+        }
+        var result = window.CSCornerstoneStore.importSessions(payload);
+        if (importStatusEl) {
+          importStatusEl.textContent = "Imported " + result.added + " session(s), deduped " + result.deduped + ".";
+        }
+        renderCornerstoneSnapshot(state.selectedStudentId || "");
+      };
+      reader.readAsText(file);
+    });
+  }
+
   function getSelectedRow() {
     if (!state.rows.length || !state.selectedStudentId) return null;
     var id = state.selectedStudentId;
@@ -406,6 +586,7 @@
         ? "Focus: 1 skill today. Try the suggested mini-lesson."
         : "Start with Group B; use the recommended next step."
     );
+    renderCornerstoneSnapshot(row ? row.studentId : "");
     setStudentView(!!row);
   }
 
@@ -498,6 +679,7 @@
     var data = loadData();
     var analytics = loadAnalytics();
     if (!data.length) {
+      renderCornerstoneSnapshot("");
       setStudentView(false);
       if (groupRecsEl) groupRecsEl.innerHTML = "";
       if (aiSummaryEl) aiSummaryEl.classList.add("hidden");
@@ -550,6 +732,7 @@
     renderHeatmap(stats);
     renderLesson(snapshot);
     void renderTeacherSummary(snapshot, recommendations);
+    renderCornerstoneSnapshot(state.selectedStudentId);
     refreshSelectedLabel();
     attachStudentSelectionHandlers();
 
@@ -582,8 +765,10 @@
   }
 
   if (typeof window.requestIdleCallback === "function") {
+    bindImportSessions();
     window.requestIdleCallback(render, { timeout: 700 });
   } else {
+    bindImportSessions();
     window.setTimeout(render, 0);
   }
 })();
