@@ -393,7 +393,8 @@
   const FIRST_RUN_SETUP_KEY = 'wq_v2_first_run_setup_v1';
   const SESSION_SUMMARY_KEY = 'wq_v2_teacher_session_summary_v1';
   const ROSTER_STATE_KEY = 'wq_v2_teacher_roster_v1';
-  const PROBE_HISTORY_KEY = 'wq_v2_weekly_probe_history_v1';
+  const PROBE_HISTORY_KEY = 'cs_probe_history_v1';
+  const PROBE_HISTORY_LEGACY_KEYS = Object.freeze(['wq_v2_weekly_probe_history_v1']);
   const STUDENT_GOALS_KEY = 'wq_v2_student_goals_v1';
   const PLAYLIST_STATE_KEY = 'wq_v2_assignment_playlists_v1';
   const WRITING_STUDIO_RETURN_KEY = 'ws_return_to_wordquest_v1';
@@ -887,6 +888,15 @@
   let demoCoachEl = null;
   let demoCoachReadyTimer = 0;
   let demoDebugLabelEl = null;
+  let demoToastEl = null;
+  let demoToastTextEl = null;
+  let demoToastBarFillEl = null;
+  let demoToastChipEl = null;
+  let demoToastProgressTimer = 0;
+  let demoToastStartedAt = 0;
+  let demoToastDurationMs = 60000;
+  let demoToastCollapsed = false;
+  let demoToastAutoCollapsedByPlay = false;
   let homeCoachRibbon = null;
   let wordQuestCoachRibbon = null;
   let _wqDiagSession = null;
@@ -920,30 +930,124 @@
     '#modal-challenge-launch:not(.hidden)'
   ]);
 
+  function getDemoToastLine(stepKey) {
+    const key = String(stepKey || '').trim().toLowerCase();
+    if (key === 'afterfirstguess') return 'Nice. Use green/yellow clues on the next guess.';
+    if (key === 'idle20s') return 'Small step: change one letter using the clues.';
+    if (key === 'completed') return 'Demo done. Want another round?';
+    return 'Live demo: try one round.';
+  }
+
+  function stopDemoToastProgress() {
+    if (!demoToastProgressTimer) return;
+    clearInterval(demoToastProgressTimer);
+    demoToastProgressTimer = 0;
+  }
+
+  function renderDemoToastProgress(forcePct) {
+    if (!(demoToastBarFillEl instanceof HTMLElement)) return;
+    let pct = Number(forcePct);
+    if (!Number.isFinite(pct)) {
+      if (!demoToastStartedAt || !demoToastDurationMs) pct = 0;
+      else pct = ((Date.now() - demoToastStartedAt) / demoToastDurationMs) * 100;
+    }
+    const clamped = Math.max(0, Math.min(100, pct));
+    demoToastBarFillEl.style.width = `${clamped}%`;
+  }
+
+  function startDemoToastProgress(durationMs = 60000) {
+    demoToastDurationMs = Math.max(5000, Number(durationMs) || 60000);
+    demoToastStartedAt = Date.now();
+    renderDemoToastProgress(0);
+    stopDemoToastProgress();
+    demoToastProgressTimer = setInterval(() => {
+      renderDemoToastProgress();
+      if (Date.now() - demoToastStartedAt >= demoToastDurationMs) {
+        stopDemoToastProgress();
+      }
+    }, 160);
+  }
+
+  function setDemoToastText(stepKey) {
+    if (!(demoToastTextEl instanceof HTMLElement)) return;
+    demoToastTextEl.textContent = getDemoToastLine(stepKey);
+  }
+
+  function collapseDemoToast() {
+    demoToastCollapsed = true;
+    demoToastEl?.classList.add('hidden');
+    demoToastChipEl?.classList.remove('hidden');
+  }
+
+  function showDemoToast(forceOpen = false) {
+    if (!(demoToastEl instanceof HTMLElement)) return;
+    if (forceOpen || !demoToastCollapsed) {
+      demoToastEl.classList.remove('hidden');
+      demoToastChipEl?.classList.add('hidden');
+      demoToastCollapsed = false;
+    }
+  }
+
   function createDemoBanner() {
-    if (!DEMO_MODE || document.getElementById('wq-demo-banner')) return;
-    const banner = document.createElement('div');
-    banner.id = 'wq-demo-banner';
-    banner.className = 'wq-demo-banner';
-    banner.innerHTML =
-      '<div class=\"wq-demo-banner-left\">Live Demo (60 sec) - Try one round</div>' +
-      '<div class=\"wq-demo-banner-actions\">' +
-        '<button type=\"button\" id=\"wq-demo-skip-btn\">Skip demo</button>' +
-        '<button type=\"button\" id=\"wq-demo-restart-btn\">Restart demo</button>' +
-      '</div>';
-    document.body.prepend(banner);
-    demoBannerEl = banner;
-    document.body.classList.add('wq-demo-active');
-    _el('wq-demo-skip-btn')?.addEventListener('click', () => {
+    if (!DEMO_MODE || document.getElementById('cs-demo-toast')) return;
+    const toast = document.createElement('div');
+    toast.id = 'cs-demo-toast';
+    toast.className = 'cs-demo-toast hidden';
+    toast.setAttribute('role', 'region');
+    toast.setAttribute('aria-label', 'Live demo');
+    toast.innerHTML =
+      '<div class=\"cs-demo-toast__row\">' +
+        '<div class=\"cs-demo-toast__badge\" aria-hidden=\"true\">DEMO</div>' +
+        '<div class=\"cs-demo-toast__text\" aria-live=\"polite\" id=\"cs-demo-toast-text\">Live demo: try one round.</div>' +
+        '<div class=\"cs-demo-toast__actions\">' +
+          '<button class=\"cs-btn cs-btn--ghost\" id=\"cs-demo-skip\" type=\"button\">Skip</button>' +
+          '<button class=\"cs-btn cs-btn--primary\" id=\"cs-demo-restart\" type=\"button\">Restart</button>' +
+          '<button class=\"cs-btn cs-btn--icon\" id=\"cs-demo-close\" type=\"button\" aria-label=\"Hide demo banner\">×</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class=\"cs-demo-toast__bar\"><div class=\"cs-demo-toast__barFill\" id=\"cs-demo-toast-bar\"></div></div>';
+    document.body.appendChild(toast);
+    const chip = document.createElement('button');
+    chip.id = 'cs-demo-chip';
+    chip.className = 'cs-demo-chip hidden';
+    chip.type = 'button';
+    chip.setAttribute('aria-label', 'Show demo banner');
+    chip.textContent = 'DEMO';
+    document.body.appendChild(chip);
+    demoBannerEl = toast;
+    demoToastEl = toast;
+    demoToastTextEl = _el('cs-demo-toast-text');
+    demoToastBarFillEl = _el('cs-demo-toast-bar');
+    demoToastChipEl = chip;
+    showDemoToast(true);
+    setDemoToastText('preRound');
+    startDemoToastProgress(60000);
+    _el('cs-demo-skip')?.addEventListener('click', () => {
       const demoStateRuntime = getDemoState();
       demoStateRuntime.active = false;
+      stopDemoToastProgress();
       demoClearTimers();
+      stopDemoCoachReadyLoop();
+      hideDemoCoach();
+      if (window.WQAudio && typeof window.WQAudio.stop === 'function') window.WQAudio.stop();
+      if (window.speechSynthesis && typeof window.speechSynthesis.cancel === 'function') {
+        try { window.speechSynthesis.cancel(); } catch {}
+      }
       window.WQ_DEMO = false;
-      window.location.href = removeDemoParams(window.location.href);
+      window.location.href = 'index.html';
     });
-    _el('wq-demo-restart-btn')?.addEventListener('click', () => {
-      window.location.href = ensureDemoParam(window.location.href);
+    _el('cs-demo-restart')?.addEventListener('click', () => {
+      demoRoundComplete = false;
+      demoToastAutoCollapsedByPlay = false;
+      resetDemoScriptState();
+      closeDemoEndOverlay();
+      showDemoToast(true);
+      setDemoToastText('preRound');
+      startDemoToastProgress(60000);
+      newGame({ forceDemoReplay: true, launchMissionLab: false });
     });
+    _el('cs-demo-close')?.addEventListener('click', () => collapseDemoToast());
+    chip.addEventListener('click', () => showDemoToast(true));
   }
 
   function getDemoLaunchAnchorRect() {
@@ -1186,139 +1290,42 @@
   }
 
   function ensureDemoCoach() {
-    if (demoCoachEl instanceof HTMLElement) return demoCoachEl;
-    const existing = document.getElementById('csDemoCoach') || document.getElementById('wq-demo-coach');
-    if (existing instanceof HTMLElement) {
-      demoCoachEl = existing;
-      window.__CS_DEMO_COACH_MOUNTED = true;
-      return demoCoachEl;
-    }
-    if (window.__CS_DEMO_COACH_MOUNTED) return null;
-    window.__CS_DEMO_COACH_MOUNTED = true;
-    const coach = document.createElement('div');
-    coach.id = 'csDemoCoach';
-    coach.className = 'wq-demo-coach cs-hidden';
-    coach.innerHTML =
-      '<div class=\"wq-demo-coach-copy\" id=\"csCoachText\"></div>' +
-      '<div class=\"wq-demo-coach-actions\">' +
-        '<button type=\"button\" id=\"csCoachPrimary\">Got it</button>' +
-        '<button type=\"button\" id=\"csCoachSuggest\" class=\"hidden\">Use suggested word</button>' +
-        '<button type=\"button\" id=\"csCoachHint\" class=\"hidden\">Hint: reveal 2 letters</button>' +
-        '<button type=\"button\" id=\"csCoachSkip\">Skip</button>' +
-      '</div>';
-    document.body.appendChild(coach);
-    demoCoachEl = coach;
-    return coach;
+    return demoToastEl instanceof HTMLElement ? demoToastEl : null;
   }
 
   function hideDemoCoach() {
-    if (!(demoCoachEl instanceof HTMLElement)) return;
-    demoCoachEl.classList.remove('cs-visible');
-    demoCoachEl.classList.add('cs-hidden');
     stopDemoKeyPulse();
   }
 
   function positionDemoCoach(coachEl, preferredAnchor) {
-    if (!(coachEl instanceof HTMLElement)) return;
-    const board = _el('game-board');
-    const anchor = preferredAnchor || board || _el('keyboard') || document.body;
-    const anchorRect = (anchor && anchor.getBoundingClientRect)
-      ? anchor.getBoundingClientRect()
-      : { top: 84, left: 20, width: 300, height: 220, right: 320, bottom: 304 };
-    const boardRect = (board && board.getBoundingClientRect)
-      ? board.getBoundingClientRect()
-      : anchorRect;
-    const coachWidth = Math.max(260, Math.min(360, coachEl.offsetWidth || 340));
-    const gap = 12;
-    const viewportPadding = 10;
-    const maxLeft = Math.max(viewportPadding, window.innerWidth - coachWidth - viewportPadding);
-    const rightCandidate = Math.round(boardRect.right + gap);
-    const leftCandidate = Math.round(boardRect.left - coachWidth - gap);
-    let nextLeft = rightCandidate;
-    if (rightCandidate > maxLeft) {
-      if (leftCandidate >= viewportPadding) nextLeft = leftCandidate;
-      else nextLeft = maxLeft;
-    }
-    const anchorMidY = anchorRect.top + (anchorRect.height / 2);
-    const coachHeight = Math.max(112, coachEl.offsetHeight || 150);
-    let nextTop = Math.round(anchorMidY - (coachHeight / 2));
-    const keyboardTop = (_el('keyboard') && _el('keyboard').getBoundingClientRect)
-      ? _el('keyboard').getBoundingClientRect().top
-      : window.innerHeight;
-    const maxTop = Math.min(window.innerHeight - coachHeight - viewportPadding, keyboardTop - coachHeight - gap);
-    nextTop = Math.max(72, Math.min(maxTop, nextTop));
-    coachEl.style.left = `${Math.max(viewportPadding, Math.min(maxLeft, nextLeft))}px`;
-    coachEl.style.top = `${nextTop}px`;
+    return;
   }
 
   function showDemoCoach(config) {
     if (!DEMO_MODE) return;
     const demoStateRuntime = getDemoState();
     if (!demoStateRuntime.active) return;
-    const coach = ensureDemoCoach();
-    const copyEl = _el('csCoachText');
-    const primaryBtn = _el('csCoachPrimary');
-    const suggestBtn = _el('csCoachSuggest');
-    const hintBtn = _el('csCoachHint');
-    const skipBtn = _el('csCoachSkip');
-    if (!copyEl || !primaryBtn || !suggestBtn || !hintBtn || !skipBtn) return;
+    if (!ensureDemoCoach()) return;
     const nextStepId = String(config?.id || '').trim() || 'unknown';
-    const wasVisible = coach.classList.contains('cs-visible');
-    if (demoState.lastCoachStepId === nextStepId && coach.classList.contains('cs-visible')) {
+    if (demoState.lastCoachStepId === nextStepId) {
       return;
     }
     demoState.lastCoachStepId = nextStepId;
     window.__CS_DEMO_RENDER_COUNT = (window.__CS_DEMO_RENDER_COUNT || 0) + 1;
     console.log('[demo] coach render', window.__CS_DEMO_RENDER_COUNT, 'step', nextStepId);
 
-    copyEl.textContent = String(config?.text || '').trim();
-    primaryBtn.textContent = String(config?.primaryLabel || 'Got it').trim() || 'Got it';
-    primaryBtn.onclick = () => {
-      if (config?.deactivateOnPrimary) {
-        demoStateRuntime.active = false;
-        demoClearTimers();
-      }
-      if (typeof config?.onPrimary === 'function') config.onPrimary();
-      hideDemoCoach();
-    };
-    skipBtn.onclick = () => {
-      demoStateRuntime.active = false;
-      demoClearTimers();
-      hideDemoCoach();
-    };
+    let stateKey = 'preRound';
+    if (nextStepId === 'after_guess_1' || nextStepId === 'after_guess_2') stateKey = 'afterFirstGuess';
+    else if (nextStepId === 'hint') stateKey = 'idle20s';
+    else if (nextStepId === 'completed') stateKey = 'completed';
+    setDemoToastText(stateKey);
+    if (!demoToastAutoCollapsedByPlay || stateKey === 'completed') showDemoToast(stateKey === 'completed');
 
     const suggestedWord = String(config?.suggestedWord || '').trim().toLowerCase();
     if (suggestedWord) {
-      suggestBtn.classList.remove('hidden');
-      suggestBtn.onclick = () => {
-        hideDemoCoach();
-        applySuggestedDemoWord(suggestedWord);
-      };
       startDemoKeyPulse(suggestedWord);
     } else {
-      suggestBtn.classList.add('hidden');
       stopDemoKeyPulse();
-    }
-
-    if (config?.showHint === true) {
-      hintBtn.classList.remove('hidden');
-      hintBtn.onclick = () => {
-        demoState.hintUsed = true;
-        showDemoCoach({
-          id: 'hint',
-          text: 'Hint: the word starts with P and has L as the second letter.',
-          primaryLabel: 'Got it'
-        });
-      };
-    } else {
-      hintBtn.classList.add('hidden');
-    }
-
-    const anchor = config?.anchor || _el('game-board') || _el('keyboard') || document.body;
-    positionDemoCoach(coach, anchor);
-    if (!wasVisible) {
-      coach.classList.remove('cs-hidden');
-      coach.classList.add('cs-visible');
     }
   }
 
@@ -1340,6 +1347,12 @@
     demoClearTimers();
     stopDemoKeyPulse();
     hideDemoCoach();
+    stopDemoToastProgress();
+    demoToastCollapsed = false;
+    demoToastAutoCollapsedByPlay = false;
+    showDemoToast(true);
+    setDemoToastText('preRound');
+    startDemoToastProgress(60000);
     renderDemoDebugReadout();
   }
 
@@ -1427,9 +1440,9 @@
   }
 
   function closeDemoEndOverlay() {
-    if (!demoEndOverlayEl) return;
-    demoEndOverlayEl.classList.add('hidden');
     hideDemoCoach();
+    setDemoToastText('preRound');
+    if (!demoToastAutoCollapsedByPlay) showDemoToast(true);
   }
 
   function showDemoEndOverlay() {
@@ -1440,37 +1453,10 @@
     stopDemoCoachReadyLoop();
     stopDemoKeyPulse();
     hideDemoCoach();
-    if (!demoEndOverlayEl) {
-      const overlay = document.createElement('div');
-      overlay.id = 'wq-demo-end-overlay';
-      overlay.className = 'wq-demo-end-overlay hidden';
-      overlay.innerHTML =
-        '<div class=\"wq-demo-end-card\">' +
-          '<h2>That&rsquo;s Word Quest.</h2>' +
-          '<ul>' +
-            '<li>Instant feedback on phonics patterns</li>' +
-            '<li>Audio support built in</li>' +
-            '<li>Ready for Tier 2/3 practice</li>' +
-          '</ul>' +
-          '<div class=\"wq-demo-end-actions\">' +
-            '<button type=\"button\" id=\"wq-demo-full-btn\" class=\"audio-btn\">Play full Word Quest</button>' +
-            '<button type=\"button\" id=\"wq-demo-retry-btn\" class=\"audio-btn\">Try demo again</button>' +
-          '</div>' +
-        '</div>';
-      document.body.appendChild(overlay);
-      _el('wq-demo-full-btn')?.addEventListener('click', () => {
-        window.WQ_DEMO = false;
-        window.location.href = removeDemoParams(window.location.href);
-      });
-      _el('wq-demo-retry-btn')?.addEventListener('click', () => {
-        demoRoundComplete = false;
-        resetDemoScriptState();
-        closeDemoEndOverlay();
-        newGame({ forceDemoReplay: true, launchMissionLab: false });
-      });
-      demoEndOverlayEl = overlay;
-    }
-    demoEndOverlayEl.classList.remove('hidden');
+    setDemoToastText('completed');
+    showDemoToast(true);
+    stopDemoToastProgress();
+    renderDemoToastProgress(100);
   }
 
   function readTelemetryEnabled() {
@@ -5791,7 +5777,12 @@
       '#first-run-setup-modal:not(.hidden)',
       '#end-modal:not(.hidden)',
       '#modal-challenge-launch:not(.hidden)',
-      '#voice-help-modal:not(.hidden)'
+      '#voice-help-modal:not(.hidden)',
+      '#settings-panel:not(.hidden)',
+      '#teacher-panel:not(.hidden)',
+      '#play-tools-drawer:not(.hidden)',
+      '#theme-preview-strip:not(.hidden)',
+      '#quick-music-strip:not(.hidden)'
     ];
     for (const selector of selectors) {
       if (document.querySelector(selector)) return true;
@@ -5811,6 +5802,8 @@
   }
 
   function canRunAvaIdleCoaching() {
+    if (DEMO_MODE) return false;
+    if (document.hidden) return false;
     if (!isPlayMode()) return false;
     if (!isWordQuestActiveRound()) return false;
     if (!isCoachEnabled()) return false;
@@ -5851,6 +5844,10 @@
   }
 
   function startAvaWordQuestIdleWatcher() {
+    if (DEMO_MODE) {
+      logAvaIdleDev('watcher not started (demo mode)');
+      return;
+    }
     if (avaWqIdleTimer) return;
     if (!isPlayMode()) {
       logAvaIdleDev('watcher not started (not play mode)');
@@ -5908,6 +5905,7 @@
   function setHomePlayShellIsolation(isHome) {
     const hidden = !!isHome;
     const selectors = [
+      '#play-shell',
       'header',
       'main',
       '.top-control-hub',
@@ -5943,9 +5941,26 @@
     });
   }
 
+  function applyHomePlayVisibility(nextMode) {
+    const playShell = _el('play-shell');
+    const hero = _el('hero-v2');
+    const header = document.querySelector('body > header');
+    const inPlay = String(nextMode || '') === 'play';
+    if (playShell instanceof HTMLElement) {
+      playShell.style.display = inPlay ? 'block' : 'none';
+    }
+    if (hero instanceof HTMLElement) {
+      hero.style.display = inPlay ? 'none' : '';
+    }
+    if (header instanceof HTMLElement) {
+      header.style.display = inPlay ? 'block' : 'none';
+    }
+  }
+
   function setHomeMode(mode, options = {}) {
     const next = String(mode || '').toLowerCase() === 'play' ? 'play' : 'home';
     homeMode = next;
+    applyHomePlayVisibility(next);
     setHomePlayShellIsolation(next !== 'play');
     updateHomeCoachRibbon();
     setWordQuestCoachState(wordQuestCoachKey);
@@ -10748,7 +10763,19 @@
 
   function loadProbeHistory() {
     try {
-      const parsed = JSON.parse(localStorage.getItem(PROBE_HISTORY_KEY) || '[]');
+      let parsed = null;
+      const keys = [PROBE_HISTORY_KEY, ...PROBE_HISTORY_LEGACY_KEYS];
+      for (const key of keys) {
+        const raw = localStorage.getItem(key);
+        if (!raw) continue;
+        try {
+          parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) break;
+        } catch {
+          parsed = null;
+        }
+      }
+      if (parsed == null) parsed = [];
       if (!Array.isArray(parsed)) return [];
       return parsed
         .map((row) => ({
@@ -10897,7 +10924,13 @@
   }
 
   function saveProbeHistory() {
-    try { localStorage.setItem(PROBE_HISTORY_KEY, JSON.stringify(probeHistory.slice(0, 24))); } catch {}
+    const payload = JSON.stringify(probeHistory.slice(0, 24));
+    try {
+      localStorage.setItem(PROBE_HISTORY_KEY, payload);
+      PROBE_HISTORY_LEGACY_KEYS.forEach((key) => {
+        localStorage.setItem(key, payload);
+      });
+    } catch {}
   }
 
   function saveStudentGoalState() {
@@ -13850,6 +13883,7 @@
   window.visualViewport?.addEventListener('resize', reflowLayout);
   window.addEventListener('beforeunload', () => {
     stopAvaWordQuestIdleWatcher('beforeunload');
+    stopDemoToastProgress();
     if (_wqDiagTimer) {
       clearTimeout(_wqDiagTimer);
       _wqDiagTimer = null;
@@ -13900,6 +13934,13 @@
 
   function handleKey(key) {
     avaWqLastActionAt = Date.now();
+    if (DEMO_MODE && !demoToastAutoCollapsedByPlay) {
+      const normalized = String(key || '');
+      if (normalized === 'Enter' || normalized === 'Backspace' || /^[a-zA-Z]$/.test(normalized)) {
+        demoToastAutoCollapsedByPlay = true;
+        collapseDemoToast();
+      }
+    }
     clearStarterCoachTimer();
     if (_el('hint-clue-card') && !_el('hint-clue-card')?.classList.contains('hidden')) {
       hideInformantHintCard();
@@ -14100,7 +14141,13 @@
   // Physical keyboard
   document.addEventListener('keydown', e => {
     if (e.defaultPrevented) return;
+    avaWqLastActionAt = Date.now();
     if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (DEMO_MODE && e.key === 'Escape' && demoToastEl && !demoToastEl.classList.contains('hidden')) {
+      e.preventDefault();
+      collapseDemoToast();
+      return;
+    }
     const listeningHelpOpen = !(_el('listening-mode-overlay')?.classList.contains('hidden'));
     if (listeningHelpOpen) {
       if (e.key === 'Escape') hideListeningModeExplainer();
@@ -14156,6 +14203,18 @@
       const btn = document.querySelector(`.key[data-key="${e.key.toLowerCase()}"]`);
       if (btn) { btn.classList.add('wq-press'); setTimeout(() => btn.classList.remove('wq-press'), 220); }
     }
+  });
+
+  document.addEventListener('pointerdown', () => {
+    avaWqLastActionAt = Date.now();
+  }, { passive: true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopAvaWordQuestIdleWatcher('document hidden');
+      return;
+    }
+    if (isPlayMode()) startAvaWordQuestIdleWatcher();
   });
 
   // On-screen keyboard

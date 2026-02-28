@@ -7,25 +7,15 @@
   <title>Word Quest</title>
   <script src="config.js"></script>
   <script src="storage-schema.js"></script>
-  <script src="build-stamp.js"></script>
+  <script src="build-stamp.js?v=20260228b"></script>
   <script src="diagnostics.js"></script>
   <script>
     (function ensureGameplayRoute() {
       try {
         var url = new URL(window.location.href);
         var hasPlay = String(url.searchParams.get('play') || '').trim().toLowerCase();
-        var demoParam = String(url.searchParams.get('demo') || '').trim().toLowerCase();
-        var autoDemoParam = String(url.searchParams.get('autodemo') || '').trim().toLowerCase();
-        var needsDemoCleanup = (demoParam === '1' || demoParam === 'true') && !(autoDemoParam === '1' || autoDemoParam === 'true');
-        var needsPlay = !(hasPlay === '1' || hasPlay === 'true');
-        if (!needsPlay && !needsDemoCleanup) return;
+        if (hasPlay === '1' || hasPlay === 'true') return;
         url.searchParams.set('play', '1');
-        if (needsDemoCleanup) {
-          url.searchParams.delete('demo');
-          if (String(url.searchParams.get('mode') || '').trim().toLowerCase() === 'demo') {
-            url.searchParams.delete('mode');
-          }
-        }
         window.location.replace(url.toString());
       } catch (_e) {
         // no-op
@@ -39,11 +29,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/modes.css?v=20260223d">
   <link rel="stylesheet" href="style/themes.css?v=20260224v">
-  <link rel="stylesheet" href="style/components.css?v=20260227e">
+  <link rel="stylesheet" href="style/components.css?v=20260228f">
   <link rel="stylesheet" href="style/components.deep-dive-plus.css">
   <link rel="stylesheet" href="style/world-themes.css?v=20260226a">
   <link rel="stylesheet" href="style/premium-theme.css?v=20260226a">
   <link rel="stylesheet" href="hero-v2.css?v=20260227b">
+  <style>
+    /* First-paint guard to prevent hero/gameplay bleed before app.js runs. */
+    #play-shell { display: none; }
+    html[data-home-mode="play"] #play-shell { display: block; }
+    html[data-home-mode="play"] #hero-v2 { display: none; }
+    html[data-home-mode="play"] > body > header { display: block; }
+    html[data-home-mode="home"] > body > header { display: none; }
+    html[data-home-mode="home"],
+    html[data-home-mode="home"] body {
+      height: 100vh;
+      overflow: hidden !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -203,6 +206,7 @@
     </div>
   </section>
 
+  <div id="play-shell" class="play-shell">
   <!-- ── Focus bar ────────────────────────────────── -->
   <div class="top-control-hub" role="region" aria-label="Quest and curriculum controls">
     <div class="focus-bar">
@@ -1365,6 +1369,7 @@
   </div>
 
   <div id="wq-version-chip" class="wq-version-chip hidden" aria-hidden="true"></div>
+  </div>
 
   <script src="data/words-inline.js"></script>
   <script src="data/engagement-boosts.js?v=20260222c"></script>
@@ -1393,7 +1398,7 @@
   <script src="js/coach-ribbon.js?v=20260228b"></script>
   <script src="word-quest-preview.js?v=20260228c"></script>
   <script src="hero-v2.js?v=20260228c"></script>
-  <script src="js/app.js?v=20260228b"></script>
+  <script src="js/app.js?v=20260228c"></script>
   <script src="js/deep-dive-plus.js?v=20260226m"></script>
   <script src="js/theme-nav.js?v=20260225d"></script>
 </body>

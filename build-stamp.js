@@ -79,7 +79,13 @@
       badge.style.cursor = "pointer";
       badge.title = "Click to copy build version";
       badge.setAttribute("aria-label", "Build version");
-      document.body.appendChild(badge);
+      var target = document.body || document.documentElement;
+      if (!target || typeof target.appendChild !== "function") return;
+      try {
+        target.appendChild(badge);
+      } catch (_eAppend) {
+        return;
+      }
     }
 
     badge.textContent = "Build " + version;
@@ -116,7 +122,11 @@
       fetchedAt: Date.now()
     };
 
-    applyReloadGuard(version);
+    try {
+      applyReloadGuard(version);
+    } catch (_e1) {
+      // no-op
+    }
 
     var onReady = function () {
       if (!inDevMode()) return;
