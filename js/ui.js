@@ -189,7 +189,7 @@ const WQUI = (() => {
           if (key.length > 1) {
             btn.dataset.seq = key.toLowerCase();
           }
-          if (VOWELS.has(key)) btn.classList.add('vowel');
+          if (VOWELS.has(key)) btn.classList.add('vowel', 'is-vowel');
         }
 
         btn.addEventListener('pointerdown', () => {

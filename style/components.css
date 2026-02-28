@@ -493,7 +493,7 @@ header {
   font-size: 0.74rem;
   font-weight: 820;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
   color: color-mix(in oklab, var(--text) 74%, var(--text-muted) 26%);
 }
 
@@ -4540,6 +4540,12 @@ html[data-key-style="bubble"] .key.vowel:not(.correct):not(.present):not(.absent
   opacity: 0.9;
 }
 
+.key.is-vowel:not(.correct):not(.present):not(.absent) {
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+  filter: brightness(1.08) saturate(1.05);
+}
+
 html[data-key-style="classic"] .key {
   border-radius: 12px;
   box-shadow: 0 2px 0 color-mix(in oklab, var(--key-bg) 58%, #000000 28%), inset 0 1px 0 rgba(255,255,255,0.44);
@@ -7447,19 +7453,19 @@ html[data-layout-mode="compact"] .key.key-chunk {
   top: 12px;
   right: 12px;
   z-index: 234;
-  width: min(296px, calc(100vw - 20px));
+  width: min(460px, calc(100vw - 24px));
   min-height: 50px;
   display: grid;
-  gap: 4px;
-  padding: 7px 10px 7px;
+  gap: 6px;
+  padding: 9px 11px 8px;
   border-radius: 12px;
-  border: 1px solid color-mix(in oklab, var(--panel-border) 56%, transparent);
-  background: color-mix(in oklab, var(--panel-bg) 78%, #132130 22%);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 12px 22px rgba(7, 14, 24, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(12, 18, 28, 0.84);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.92);
   pointer-events: auto;
-  transform-origin: top right;
-  transform: scale(clamp(0.82, 0.72 + 0.24vw, 0.92));
 }
 
 .cs-demo-toast.hidden {
@@ -7488,13 +7494,14 @@ html[data-layout-mode="compact"] .key.key-chunk {
 }
 
 .cs-demo-toast__text {
-  color: #f2f8ff;
-  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.82rem;
   font-weight: 700;
   line-height: 1.25;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  max-width: 100%;
 }
 
 .cs-demo-toast__actions {
@@ -7536,9 +7543,9 @@ html[data-layout-mode="compact"] .key.key-chunk {
 }
 
 .cs-demo-toast__bar {
-  height: 3px;
+  height: 6px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.22);
   overflow: hidden;
 }
 
@@ -7627,9 +7634,8 @@ body.wq-demo .quest-overlay {
   .cs-demo-toast {
     top: 8px;
     right: 8px;
-    width: min(244px, calc(100vw - 16px));
-    padding: 7px 8px 6px;
-    transform: scale(clamp(0.74, 0.6 + 0.28vw, 0.86));
+    width: min(340px, calc(100vw - 16px));
+    padding: 8px 9px 7px;
   }
 
   .cs-demo-toast__row {
@@ -7644,7 +7650,7 @@ body.wq-demo .quest-overlay {
   }
 
   .cs-demo-toast__text {
-    font-size: 0.76rem;
+    font-size: 0.8rem;
     white-space: normal;
   }
 
@@ -7652,6 +7658,12 @@ body.wq-demo .quest-overlay {
     top: auto;
     bottom: 10px;
     right: 10px;
+  }
+}
+
+@media (max-width: 520px) {
+  .cs-demo-toast {
+    width: min(340px, calc(100vw - 16px));
   }
 }
 

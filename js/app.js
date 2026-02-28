@@ -5958,6 +5958,31 @@
     wordQuestCoachRibbon.set(next);
   }
 
+  function csSetHeaderTitleCenter(label) {
+    const el =
+      document.querySelector('[data-cs-header-title-center]') ||
+      _el('csHeaderTitleCenter') ||
+      document.querySelector('.cs-topbar-center-title') ||
+      _el('play-mode-label');
+    if (!el) return;
+    el.textContent = String(label || 'Cornerstone MTSS');
+  }
+
+  function csComputeHeaderTitleCenter() {
+    const path = String(location.pathname || '').toLowerCase();
+    if (path.endsWith('/reading-lab.html')) return 'Reading Lab';
+    if (path.endsWith('/teacher-dashboard.html')) return 'Teacher Dashboard';
+    if (path.endsWith('/sentence-surgery.html') || path.endsWith('/writing-studio.html')) return 'Writing Studio';
+    const mode = document.documentElement.getAttribute('data-home-mode');
+    if (mode === 'home') return 'Cornerstone MTSS';
+    if (mode === 'play') return 'Word Quest';
+    return 'Cornerstone MTSS';
+  }
+
+  function csSyncHeaderTitleCenter() {
+    csSetHeaderTitleCenter(csComputeHeaderTitleCenter());
+  }
+
   function setHomePlayShellIsolation(isHome) {
     const hidden = !!isHome;
     const selectors = [
@@ -6022,6 +6047,7 @@
     setWordQuestCoachState(wordQuestCoachKey);
     if (next === 'play') {
       document.documentElement.setAttribute('data-home-mode', 'play');
+      csSyncHeaderTitleCenter();
       startAvaWordQuestIdleWatcher();
       _el('home-tools-section')?.classList.add('hidden');
       _el('play-tools-drawer')?.classList.add('hidden');
@@ -6038,6 +6064,7 @@
       return;
     }
     document.documentElement.setAttribute('data-home-mode', 'home');
+    csSyncHeaderTitleCenter();
     stopAvaWordQuestIdleWatcher('home mode');
     _el('home-tools-section')?.classList.remove('hidden');
     assertHomeNoScrollDev();
@@ -6066,6 +6093,7 @@
     }
     if (forceGameplayRoute) forcePlay = true;
     setHomeMode(forcePlay ? 'play' : 'home', { scroll: false });
+    csSyncHeaderTitleCenter();
   }
 
   function syncPlayToolsRoleVisibility() {
@@ -6210,6 +6238,7 @@
   updatePageModeUrl('wordquest');
   initCoachRibbons();
   initializeHomeMode();
+  csSyncHeaderTitleCenter();
   updateHomeCoachRibbon();
   setWordQuestCoachState('before_guess');
   startAvaWordQuestIdleWatcher();
