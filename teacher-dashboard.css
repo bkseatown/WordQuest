@@ -30,6 +30,7 @@ body.teacher-dashboard {
 /* Prevent page scroll entirely on dashboard */
 body.td-page {
   overflow: hidden !important;
+  padding-top: 0 !important;
 }
 
 /* Nav shell offset must live on dashboard shell, not document padding. */
@@ -55,7 +56,7 @@ body.cs-has-nav-shell .td-shell {
   height: 100dvh;
   max-height: 100dvh;
   margin-top: 0;
-  padding-top: calc(10px + var(--nav-h));
+  padding-top: var(--nav-h, 0px);
 }
 
 .td-surface {
