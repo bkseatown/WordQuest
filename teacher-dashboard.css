@@ -61,12 +61,12 @@ body.cs-has-nav-shell .td-shell {
 
 .td-surface {
   border-radius: var(--radius-4);
-  border: 1px solid color-mix(in oklab, var(--border-subtle) 58%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border-soft) 64%, transparent);
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.055), rgba(11, 20, 29, 0.24)),
-    color-mix(in oklab, var(--surface-1) 72%, rgba(12, 22, 32, 0.86));
+    linear-gradient(160deg, rgba(255, 255, 255, 0.045), rgba(11, 20, 29, 0.2)),
+    color-mix(in oklab, var(--surface-1) 84%, rgba(12, 22, 32, 0.92));
   box-shadow: var(--shadow-medium);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(6px);
 }
 
 .td-top {
@@ -96,8 +96,8 @@ body.cs-has-nav-shell .td-shell {
 #td-search-input {
   width: 100%;
   border-radius: var(--radius-3);
-  border: 1px solid color-mix(in oklab, var(--border-subtle) 74%, transparent);
-  background: color-mix(in oklab, var(--surface-2) 72%, rgba(10, 20, 30, 0.7));
+  border: 1px solid color-mix(in oklab, var(--border-soft) 74%, transparent);
+  background: color-mix(in oklab, var(--surface-2) 84%, rgba(10, 20, 30, 0.82));
   color: var(--text-strong);
   padding: 10px 12px;
   font: inherit;
@@ -113,8 +113,8 @@ body.cs-has-nav-shell .td-shell {
 .td-top-actions { display: inline-flex; align-items: center; gap: 8px; }
 .td-top-btn {
   border-radius: var(--radius-2);
-  border: 1px solid color-mix(in oklab, var(--border-subtle) 74%, transparent);
-  background: color-mix(in oklab, var(--surface-1) 80%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border-subtle) 62%, transparent);
+  background: color-mix(in oklab, var(--surface-1) 90%, transparent);
   color: var(--text-strong);
   padding: 7px 10px;
   font: inherit;
@@ -122,6 +122,18 @@ body.cs-has-nav-shell .td-shell {
   font-weight: var(--fw-medium);
   cursor: pointer;
   transition: transform var(--motion-fast) var(--motion-ease), filter var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
+}
+.td-top-btn:focus-visible {
+  border-color: color-mix(in oklab, var(--accent) 62%, var(--border-subtle) 38%);
+}
+#td-new-session {
+  background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 70%, #f4fbff 30%), color-mix(in oklab, var(--accent-2) 36%, #163244 64%));
+  border-color: color-mix(in oklab, var(--accent) 65%, transparent);
+  color: #082033;
+  font-weight: var(--fw-semibold);
+}
+#td-new-session:hover {
+  filter: brightness(1.03);
 }
 .td-nav-btn {
   text-decoration: none;
@@ -203,8 +215,8 @@ body.cs-has-nav-shell .td-shell {
 
 .td-stage-empty, .td-empty {
   border-radius: var(--radius-3);
-  border: 1px dashed color-mix(in oklab, var(--border-subtle) 54%, transparent);
-  background: color-mix(in oklab, var(--surface-2) 52%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border-soft) 58%, transparent);
+  background: color-mix(in oklab, var(--surface-2) 64%, transparent);
   padding: var(--sp-4);
   color: var(--muted);
 }
@@ -253,8 +265,8 @@ body.cs-has-nav-shell .td-shell {
 .td-btn:hover { transform: translateY(-1px); }
 .td-btn:active { transform: translateY(0); filter: brightness(0.98); }
 .td-btn-primary {
-  background: color-mix(in oklab, var(--surface-2) 75%, transparent);
-  border-color: color-mix(in oklab, var(--border-subtle) 74%, transparent);
+  background: color-mix(in oklab, var(--surface-2) 86%, transparent);
+  border-color: color-mix(in oklab, var(--border-soft) 78%, transparent);
   color: var(--text-strong);
 }
 .td-btn-accent {
@@ -262,6 +274,9 @@ body.cs-has-nav-shell .td-shell {
   color: #132334;
   border-color: color-mix(in oklab, var(--accent) 64%, transparent);
   box-shadow: 0 10px 20px rgba(92, 209, 255, 0.26);
+}
+.td-btn-accent:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 24%, transparent), 0 10px 20px rgba(92, 209, 255, 0.26);
 }
 .td-btn-once { animation: tdPulse 220ms ease-out 1; }
 @keyframes tdPulse { 0% { transform: scale(1); } 40% { transform: scale(1.02); } 100% { transform: scale(1); } }

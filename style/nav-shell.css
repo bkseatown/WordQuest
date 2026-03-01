@@ -14,10 +14,10 @@
   justify-content: space-between;
   gap: 14px;
   padding: 0 14px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background: rgba(8, 18, 32, 0.7);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(10, 20, 34, 0.84);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .cs-nav-shell .cs-nav-brand {

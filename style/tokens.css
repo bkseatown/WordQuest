@@ -9,10 +9,13 @@
   /* color system */
   --bg-900: #0c1725;
   --bg-850: #0f1f31;
-  --surface-1: rgba(255, 255, 255, 0.04);
-  --surface-2: rgba(255, 255, 255, 0.07);
+  --surface-0: rgba(11, 20, 31, 0.9);
+  --surface-1: rgba(255, 255, 255, 0.06);
+  --surface-2: rgba(255, 255, 255, 0.09);
+  --surface-3: rgba(255, 255, 255, 0.13);
   --border-subtle: rgba(255, 255, 255, 0.10);
   --border-strong: rgba(255, 255, 255, 0.18);
+  --border-soft: rgba(255, 255, 255, 0.14);
   --text-strong: #edf3fb;
   --text: #d7e2f1;
   --muted: #90a8c2;
@@ -38,7 +41,7 @@
   --radius-round: 999px;
 
   /* shadow scale */
-  --shadow-soft: 0 8px 18px rgba(5, 12, 24, 0.28);
+  --shadow-soft: 0 8px 30px rgba(5, 12, 24, 0.25);
   --shadow-medium: 0 16px 34px rgba(5, 12, 24, 0.32);
   --shadow-strong: 0 22px 48px rgba(5, 12, 24, 0.36);
 
@@ -97,6 +100,12 @@
   --motion-fast: 140ms;
   --motion-med: 220ms;
   --motion-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+:where(button, [role="button"], input, select, textarea, a):focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 72%, white 28%);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent);
 }
 
 html[data-motion="reduced"] *,
