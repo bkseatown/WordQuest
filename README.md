@@ -64,6 +64,27 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 - Deploy trigger:
   - push to `main` (or run workflow manually in GitHub Actions)
 
+## Pages Freshness Monitor
+- Scheduled workflow:
+  - `/Users/robertwilliamknaus/Desktop/WordQuest/.github/workflows/pages-freshness.yml`
+- Schedule:
+  - runs hourly (`cron: 17 * * * *`) and on manual dispatch.
+- What it checks on live GitHub Pages:
+  - `/WordQuest/build.json` returns valid JSON and contains `buildId`.
+  - `build.json.time` is parseable and not stale (older than 14 days).
+  - `/WordQuest/teacher-dashboard.html` includes:
+    - `build-stamp.js`
+    - `js/build-badge.js`
+    - `js/nav-shell.js`
+  - `/WordQuest/style/tokens.css` returns `200` and `content-type: text/css`.
+- Failure behavior:
+  - workflow fails and opens a GitHub issue with a link to the failed run.
+- Manual run:
+  1. Open GitHub Actions.
+  2. Select `Pages Freshness`.
+  3. Click `Run workflow` (branch `main`).
+  4. Review logs and summary table.
+
 ## Collaboration Workflow (Recommended)
 1. Propose a small change batch (1-3 deltas).
 2. Convert request into measurable acceptance rules.
