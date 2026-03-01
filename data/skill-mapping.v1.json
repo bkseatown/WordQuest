@@ -1,9 +1,10 @@
 {
+  "version": "cs.skillMapping.v1",
   "modules": {
     "wordquest": {
       "primary": ["LIT.DEC.PHG", "LIT.DEC.SYL", "LIT.DEC.IRREG"],
       "secondary": ["LIT.LANG.VOC"],
-      "evidence": ["accuracy", "error_pattern", "latency", "retrieval_strength"]
+      "evidence": ["accuracy", "error_pattern", "latency"]
     },
     "readinglab": {
       "primary": ["LIT.FLU.ACC", "LIT.FLU.PRO"],
@@ -13,12 +14,12 @@
     "sentencesurgery": {
       "primary": ["LIT.LANG.SYN"],
       "secondary": ["LIT.LANG.VOC", "LIT.WRITE.SENT"],
-      "evidence": ["sentence_repair", "cloze", "grammar_events"]
+      "evidence": ["sentence_repair", "cloze", "error_pattern"]
     },
     "writingstudio": {
       "primary": ["LIT.WRITE.SENT", "LIT.WRITE.PAR"],
       "secondary": ["LIT.LANG.VOC"],
-      "evidence": ["sentence_quality", "cohesion_events"]
+      "evidence": ["sentence_quality", "cohesion_events", "usage_quality"]
     }
   }
 }

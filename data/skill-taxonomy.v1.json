@@ -11,31 +11,34 @@
           "tiers": ["T2", "T3"],
           "prereq": [],
           "micro": [
-            { "id": "LIT.DEC.PHG.CVC", "label": "CVC consistency" },
-            { "id": "LIT.DEC.PHG.BLEND", "label": "Blend integrity" }
+            { "id": "LIT.DEC.PHG.CVC", "label": "CVC Words" },
+            { "id": "LIT.DEC.PHG.DIGRAPHS", "label": "Digraphs" },
+            { "id": "LIT.DEC.PHG.BLENDS", "label": "Consonant Blends" }
           ],
-          "evidence": ["accuracy", "error_pattern", "latency", "retrieval_strength"]
+          "evidence": ["accuracy", "error_pattern", "latency"]
         },
         {
           "id": "LIT.DEC.SYL",
-          "label": "Syllable Strategy",
+          "label": "Syllable Types & Vowel Patterns",
           "tiers": ["T2", "T3"],
           "prereq": ["LIT.DEC.PHG"],
           "micro": [
-            { "id": "LIT.DEC.SYL.SEG", "label": "Syllable segmentation" },
-            { "id": "LIT.DEC.SYL.TYPE", "label": "Syllable type recognition" }
+            { "id": "LIT.DEC.SYL.CLOSED", "label": "Closed Syllables" },
+            { "id": "LIT.DEC.SYL.VCE", "label": "VCe Patterns" },
+            { "id": "LIT.DEC.SYL.RCONTROL", "label": "R-Controlled Syllables" },
+            { "id": "LIT.DEC.SYL.VOWELTEAMS", "label": "Vowel Teams" }
           ],
           "evidence": ["accuracy", "error_pattern", "latency"]
         },
         {
           "id": "LIT.DEC.IRREG",
-          "label": "Irregular Word Mapping",
+          "label": "Irregular / Heart Words",
           "tiers": ["T2", "T3"],
           "prereq": ["LIT.DEC.PHG"],
           "micro": [
-            { "id": "LIT.DEC.IRREG.SET", "label": "High-frequency irregular set" }
+            { "id": "LIT.DEC.IRREG.HF", "label": "High-Frequency Heart Words" }
           ],
-          "evidence": ["accuracy", "error_pattern", "retrieval_strength"]
+          "evidence": ["accuracy", "error_pattern", "latency"]
         }
       ]
     },
@@ -49,9 +52,11 @@
           "tiers": ["T2", "T3"],
           "prereq": ["LIT.DEC.SYL"],
           "micro": [
-            { "id": "LIT.MOR.INFLECT.EDING", "label": "-ed / -ing control" }
+            { "id": "LIT.MOR.INFLECT.S", "label": "Plural / Third-Person -s" },
+            { "id": "LIT.MOR.INFLECT.ED", "label": "Past Tense -ed" },
+            { "id": "LIT.MOR.INFLECT.ING", "label": "Progressive -ing" }
           ],
-          "evidence": ["accuracy", "error_pattern"]
+          "evidence": ["accuracy", "error_pattern", "latency"]
         },
         {
           "id": "LIT.MOR.DERIV",
@@ -59,10 +64,10 @@
           "tiers": ["T2", "T3"],
           "prereq": ["LIT.MOR.INFLECT"],
           "micro": [
-            { "id": "LIT.MOR.DERIV.PREFIX", "label": "Prefix analysis" },
-            { "id": "LIT.MOR.DERIV.SUFFIX", "label": "Suffix analysis" }
+            { "id": "LIT.MOR.DERIV.PREFIX", "label": "Prefix Meaning" },
+            { "id": "LIT.MOR.DERIV.SUFFIX", "label": "Suffix Meaning" }
           ],
-          "evidence": ["accuracy", "error_pattern", "latency"]
+          "evidence": ["accuracy", "error_pattern", "usage_quality"]
         }
       ]
     },
@@ -72,17 +77,19 @@
       "skills": [
         {
           "id": "LIT.FLU.ACC",
-          "label": "Fluency Accuracy",
+          "label": "Fluency: Accuracy",
           "tiers": ["T2", "T3"],
           "prereq": ["LIT.DEC.SYL"],
-          "evidence": ["wcpm", "error_rate", "self_correction"]
+          "micro": [],
+          "evidence": ["wcpm", "error_rate", "self_correction", "accuracy"]
         },
         {
           "id": "LIT.FLU.PRO",
-          "label": "Fluency Prosody",
+          "label": "Fluency: Prosody/Phrasing",
           "tiers": ["T2", "T3"],
           "prereq": ["LIT.FLU.ACC"],
-          "evidence": ["prosody_rating", "wcpm"]
+          "micro": [],
+          "evidence": ["prosody_rating", "wcpm", "latency"]
         }
       ]
     },
@@ -92,17 +99,25 @@
       "skills": [
         {
           "id": "LIT.LANG.VOC",
-          "label": "Vocabulary Access",
+          "label": "Vocabulary Depth",
           "tiers": ["T2", "T3"],
           "prereq": [],
-          "evidence": ["accuracy", "retrieval_strength", "error_pattern"]
+          "micro": [
+            { "id": "LIT.LANG.VOC.SYN", "label": "Synonyms/Antonyms" },
+            { "id": "LIT.LANG.VOC.POLY", "label": "Multiple-Meaning Words" }
+          ],
+          "evidence": ["definition_match", "usage_quality", "accuracy"]
         },
         {
           "id": "LIT.LANG.SYN",
-          "label": "Syntactic Processing",
+          "label": "Syntax & Sentence Meaning",
           "tiers": ["T2", "T3"],
           "prereq": ["LIT.LANG.VOC"],
-          "evidence": ["sentence_repair", "cloze", "grammar_events"]
+          "micro": [
+            { "id": "LIT.LANG.SYN.STRUCT", "label": "Sentence Structure" },
+            { "id": "LIT.LANG.SYN.CLAUSE", "label": "Clauses & Connectors" }
+          ],
+          "evidence": ["sentence_repair", "cloze", "accuracy"]
         }
       ]
     },
@@ -115,14 +130,16 @@
           "label": "Sentence Construction",
           "tiers": ["T2", "T3"],
           "prereq": ["LIT.LANG.SYN"],
-          "evidence": ["sentence_quality", "grammar_events"]
+          "micro": [],
+          "evidence": ["sentence_quality", "error_pattern", "usage_quality"]
         },
         {
           "id": "LIT.WRITE.PAR",
-          "label": "Paragraph Cohesion",
+          "label": "Paragraph Coherence",
           "tiers": ["T2", "T3"],
           "prereq": ["LIT.WRITE.SENT"],
-          "evidence": ["cohesion_events", "sentence_quality"]
+          "micro": [],
+          "evidence": ["cohesion_events", "sentence_quality", "usage_quality"]
         }
       ]
     }
