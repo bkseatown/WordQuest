@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
-const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const wordQuestHtml = fs.readFileSync(path.join(root, 'word-quest.html'), 'utf8');
 const appSource = fs.readFileSync(path.join(root, 'js/app.js'), 'utf8');
 const assignmentFeatureSource = fs.readFileSync(path.join(root, 'js/features/teacher-assignments.js'), 'utf8');
 
@@ -23,7 +23,7 @@ const requiredIds = [
 ];
 
 requiredIds.forEach((id) => {
-  requireText(indexHtml, new RegExp(`id="${id}"`), `Missing #${id} in index.html.`);
+  requireText(wordQuestHtml, new RegExp(`id="${id}"`), `Missing #${id} in word-quest.html.`);
 });
 
 requireText(

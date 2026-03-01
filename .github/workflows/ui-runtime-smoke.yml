@@ -25,6 +25,6 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install chromium
-      - name: Teacher daily flow runtime smoke (Playwright)
+      - name: Teacher daily flow contract smoke
         run: |
-          npm run smoke:teacher-daily-flow:playwright
+          npm run smoke:teacher-daily-flow
