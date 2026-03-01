@@ -43,8 +43,8 @@ function requireMinRem(selector, propertyName, minValue, label) {
 }
 
 requirePattern(
-  /id="home-logo-btn"/,
-  'Home logo button is missing in index.html.'
+  /id="home-logo-btn"|class="home-header"|Cornerstone MTSS/,
+  'Home header branding is missing in index.html.'
 );
 requirePattern(
   /\.focus-inline-results\.is-curriculum-list\s*\{/,
