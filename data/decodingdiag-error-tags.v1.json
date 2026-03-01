@@ -1,0 +1,26 @@
+{
+  "version": "cs.decodingErrorTags.v1",
+  "tags": [
+    { "id": "vowel_confusion_short", "label": "Short vowel confusion", "short": "Vowel(short)" },
+    { "id": "vowel_confusion_long", "label": "Long vowel / silent-e missed", "short": "Silent-e" },
+    { "id": "vowel_team_confusion", "label": "Vowel team confusion", "short": "Vowel team" },
+    { "id": "digraph_error", "label": "Digraph error (sh/th/ch/wh)", "short": "Digraph" },
+    { "id": "blend_reduction", "label": "Blend reduction (st->s)", "short": "Blend" },
+    { "id": "consonant_substitution", "label": "Consonant substitution", "short": "Cons" },
+    { "id": "omission", "label": "Omission", "short": "Omit" },
+    { "id": "addition", "label": "Addition", "short": "Add" },
+    { "id": "reversal_bd", "label": "b/d reversal", "short": "b/d" },
+    { "id": "told_by_teacher", "label": "Teacher told word", "short": "Told" },
+    { "id": "self_correction", "label": "Self-correction (<=3s)", "short": "SC" }
+  ],
+  "recommendedByTarget": {
+    "LIT.DEC.PHG.CVC": ["vowel_confusion_short", "consonant_substitution", "omission", "addition", "self_correction", "told_by_teacher", "reversal_bd"],
+    "LIT.DEC.PHG.DIGRAPHS": ["digraph_error", "consonant_substitution", "omission", "self_correction", "told_by_teacher"],
+    "LIT.DEC.PHG.BLENDS": ["blend_reduction", "consonant_substitution", "omission", "self_correction", "told_by_teacher"],
+    "LIT.DEC.SYL.CLOSED": ["vowel_confusion_short", "consonant_substitution", "self_correction", "told_by_teacher"],
+    "LIT.DEC.SYL.VCE": ["vowel_confusion_long", "vowel_confusion_short", "omission", "self_correction", "told_by_teacher"],
+    "LIT.DEC.SYL.RCONTROL": ["vowel_confusion_short", "consonant_substitution", "self_correction", "told_by_teacher"],
+    "LIT.DEC.SYL.VOWELTEAMS": ["vowel_team_confusion", "vowel_confusion_short", "self_correction", "told_by_teacher"],
+    "LIT.DEC.IRREG.HF": ["told_by_teacher", "self_correction"]
+  }
+}

@@ -1,0 +1,6447 @@
+{
+  "version": "cs.decodingProbes.v1",
+  "defaults": {
+    "itemsPerForm": 15,
+    "timedSeconds": 60
+  },
+  "targets": [
+    {
+      "targetId": "LIT.DEC.PHG.CVC",
+      "label": "CVC (short vowels)",
+      "forms": [
+        {
+          "formId": "CVC-A",
+          "gradeBands": [
+            "K-1",
+            "2-3"
+          ],
+          "items": [
+            {
+              "id": "cvc-a-001",
+              "text": "cap",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-002",
+              "text": "mip",
+              "type": "pseudo",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-003",
+              "text": "sun",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-004",
+              "text": "lat",
+              "type": "pseudo",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "tap",
+                "tape"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-005",
+              "text": "pet",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-006",
+              "text": "dog",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-007",
+              "text": "fin",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-008",
+              "text": "rug",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "tap",
+                "tape"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-009",
+              "text": "hop",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-010",
+              "text": "jam",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-011",
+              "text": "bed",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-012",
+              "text": "kit",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "tap",
+                "tape"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-013",
+              "text": "mud",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-014",
+              "text": "van",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-a-015",
+              "text": "lip",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "vowel_confusion_long",
+                "consonant_substitution"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "CVC-B",
+          "gradeBands": [
+            "K-1",
+            "2-3"
+          ],
+          "items": [
+            {
+              "id": "cvc-b-001",
+              "text": "map",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-002",
+              "text": "tub",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-003",
+              "text": "pin",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-004",
+              "text": "fog",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "tap",
+                "tape"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-005",
+              "text": "red",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-006",
+              "text": "sit",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-007",
+              "text": "pug",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-008",
+              "text": "ham",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "tap",
+                "tape"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-009",
+              "text": "net",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-010",
+              "text": "cot",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-011",
+              "text": "rim",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-012",
+              "text": "bug",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "tap",
+                "tape"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-013",
+              "text": "sad",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-014",
+              "text": "top",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "cvc-b-015",
+              "text": "win",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "CVC-C",
+          "gradeBands": [
+            "K-1",
+            "2-3"
+          ],
+          "items": [
+            {
+              "id": "cvc-c-001",
+              "text": "tap",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-002",
+              "text": "hen",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-003",
+              "text": "log",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-004",
+              "text": "dim",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "tap",
+                "tape"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-005",
+              "text": "cup",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-006",
+              "text": "rat",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-007",
+              "text": "nod",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-008",
+              "text": "fig",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "tap",
+                "tape"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-009",
+              "text": "jam",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-010",
+              "text": "bus",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-011",
+              "text": "pet",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-012",
+              "text": "hop",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "tap",
+                "tape"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-013",
+              "text": "lid",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "cape",
+                "cap"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-014",
+              "text": "mud",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "cvc-c-015",
+              "text": "can",
+              "type": "real",
+              "pattern": "CVC_short",
+              "graphemes": [
+                "a",
+                "e",
+                "i",
+                "o",
+                "u"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "targetId": "LIT.DEC.PHG.DIGRAPHS",
+      "label": "Digraphs",
+      "forms": [
+        {
+          "formId": "DIGRAPHS-A",
+          "gradeBands": [
+            "1-2",
+            "2-3"
+          ],
+          "items": [
+            {
+              "id": "dig-a-001",
+              "text": "ship",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-002",
+              "text": "thim",
+              "type": "pseudo",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-003",
+              "text": "chop",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-004",
+              "text": "whip",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "whip",
+                "hip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-005",
+              "text": "shed",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-006",
+              "text": "thud",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-007",
+              "text": "chat",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-008",
+              "text": "wham",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "whip",
+                "hip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-009",
+              "text": "shop",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-010",
+              "text": "thin",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-011",
+              "text": "chin",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-012",
+              "text": "when",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "whip",
+                "hip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-013",
+              "text": "rash",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-014",
+              "text": "math",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "dig-a-015",
+              "text": "much",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "consonant_substitution"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "DIGRAPHS-B",
+          "gradeBands": [
+            "1-2",
+            "2-3"
+          ],
+          "items": [
+            {
+              "id": "dig-b-001",
+              "text": "shut",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-002",
+              "text": "that",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-003",
+              "text": "chin",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-004",
+              "text": "whip",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "whip",
+                "hip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-005",
+              "text": "rush",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-006",
+              "text": "path",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-007",
+              "text": "chad",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-008",
+              "text": "whim",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "whip",
+                "hip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-009",
+              "text": "fish",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-010",
+              "text": "bath",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-011",
+              "text": "chop",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-012",
+              "text": "when",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "whip",
+                "hip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-013",
+              "text": "dash",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-014",
+              "text": "thaw",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            },
+            {
+              "id": "dig-b-015",
+              "text": "chap",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "omission"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "DIGRAPHS-C",
+          "gradeBands": [
+            "1-3"
+          ],
+          "items": [
+            {
+              "id": "dig-c-001",
+              "text": "shot",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-002",
+              "text": "thick",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-003",
+              "text": "chest",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-004",
+              "text": "whiz",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "whip",
+                "hip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-005",
+              "text": "dish",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-006",
+              "text": "thump",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-007",
+              "text": "chill",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-008",
+              "text": "wheat",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "whip",
+                "hip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-009",
+              "text": "cash",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-010",
+              "text": "then",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-011",
+              "text": "chunk",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-012",
+              "text": "whale",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "whip",
+                "hip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-013",
+              "text": "hush",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "ship",
+                "sip"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-014",
+              "text": "thick",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "then",
+                "ten"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            },
+            {
+              "id": "dig-c-015",
+              "text": "chime",
+              "type": "real",
+              "pattern": "digraph_mix",
+              "graphemes": [
+                "sh",
+                "th",
+                "ch",
+                "wh"
+              ],
+              "distractors": [
+                "chip",
+                "chop"
+              ],
+              "confusables": [
+                "digraph_error",
+                "addition"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "targetId": "LIT.DEC.PHG.BLENDS",
+      "label": "Initial and final blends",
+      "forms": [
+        {
+          "formId": "BLENDS-A",
+          "gradeBands": [
+            "1-3"
+          ],
+          "items": [
+            {
+              "id": "bl-a-001",
+              "text": "stop",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-002",
+              "text": "plim",
+              "type": "pseudo",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-003",
+              "text": "drip",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-004",
+              "text": "brag",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "trend",
+                "tend"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-005",
+              "text": "slip",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-006",
+              "text": "clap",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-007",
+              "text": "blot",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-008",
+              "text": "frup",
+              "type": "pseudo",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "trend",
+                "tend"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-009",
+              "text": "grin",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-010",
+              "text": "trom",
+              "type": "pseudo",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-011",
+              "text": "stog",
+              "type": "pseudo",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-012",
+              "text": "spen",
+              "type": "pseudo",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "trend",
+                "tend"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-013",
+              "text": "trim",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-014",
+              "text": "clog",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "bl-a-015",
+              "text": "blend",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "consonant_substitution"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "BLENDS-B",
+          "gradeBands": [
+            "1-3"
+          ],
+          "items": [
+            {
+              "id": "bl-b-001",
+              "text": "step",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-002",
+              "text": "drum",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-003",
+              "text": "brim",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-004",
+              "text": "slug",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "trend",
+                "tend"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-005",
+              "text": "clip",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-006",
+              "text": "bland",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-007",
+              "text": "frog",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-008",
+              "text": "grub",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "trend",
+                "tend"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-009",
+              "text": "spat",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-010",
+              "text": "stun",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-011",
+              "text": "plod",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-012",
+              "text": "crab",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "trend",
+                "tend"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-013",
+              "text": "glad",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-014",
+              "text": "frill",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            },
+            {
+              "id": "bl-b-015",
+              "text": "trend",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "omission"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "BLENDS-C",
+          "gradeBands": [
+            "2-4"
+          ],
+          "items": [
+            {
+              "id": "bl-c-001",
+              "text": "stack",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-002",
+              "text": "drab",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-003",
+              "text": "brisk",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-004",
+              "text": "slat",
+              "type": "pseudo",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "trend",
+                "tend"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-005",
+              "text": "clup",
+              "type": "pseudo",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-006",
+              "text": "blig",
+              "type": "pseudo",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-007",
+              "text": "frank",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-008",
+              "text": "grip",
+              "type": "pseudo",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "trend",
+                "tend"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-009",
+              "text": "spoon",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-010",
+              "text": "straw",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-011",
+              "text": "plush",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-012",
+              "text": "crisp",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "trend",
+                "tend"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-013",
+              "text": "glint",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "stop",
+                "sop"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-014",
+              "text": "froth",
+              "type": "real",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "brag",
+                "bag"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            },
+            {
+              "id": "bl-c-015",
+              "text": "tren",
+              "type": "pseudo",
+              "pattern": "blend_mix",
+              "graphemes": [
+                "st",
+                "sp",
+                "pl",
+                "dr",
+                "br",
+                "sl",
+                "cl",
+                "bl",
+                "fr",
+                "gr",
+                "tr"
+              ],
+              "distractors": [
+                "clap",
+                "cap"
+              ],
+              "confusables": [
+                "blend_reduction",
+                "addition"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "targetId": "LIT.DEC.SYL.VCE",
+      "label": "VCe syllables",
+      "forms": [
+        {
+          "formId": "VCE-A",
+          "gradeBands": [
+            "1-3"
+          ],
+          "items": [
+            {
+              "id": "vce-a-001",
+              "text": "cape",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-002",
+              "text": "bike",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-003",
+              "text": "home",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-004",
+              "text": "mule",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "tub",
+                "tube"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-005",
+              "text": "tape",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-006",
+              "text": "dime",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-007",
+              "text": "rope",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-008",
+              "text": "cute",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "tub",
+                "tube"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-009",
+              "text": "bake",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-010",
+              "text": "side",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-011",
+              "text": "note",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-012",
+              "text": "fume",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "tub",
+                "tube"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-013",
+              "text": "noke",
+              "type": "pseudo",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-014",
+              "text": "wime",
+              "type": "pseudo",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vce-a-015",
+              "text": "lape",
+              "type": "pseudo",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "vowel_confusion_short"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "VCE-B",
+          "gradeBands": [
+            "1-3"
+          ],
+          "items": [
+            {
+              "id": "vce-b-001",
+              "text": "cake",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-002",
+              "text": "hide",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-003",
+              "text": "cube",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-004",
+              "text": "made",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "tub",
+                "tube"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-005",
+              "text": "time",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-006",
+              "text": "hope",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-007",
+              "text": "line",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-008",
+              "text": "save",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "tub",
+                "tube"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-009",
+              "text": "name",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-010",
+              "text": "smile",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-011",
+              "text": "these",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-012",
+              "text": "theme",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "tub",
+                "tube"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-013",
+              "text": "zoke",
+              "type": "pseudo",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-014",
+              "text": "fipe",
+              "type": "pseudo",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            },
+            {
+              "id": "vce-b-015",
+              "text": "tave",
+              "type": "pseudo",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "omission"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "VCE-C",
+          "gradeBands": [
+            "2-4"
+          ],
+          "items": [
+            {
+              "id": "vce-c-001",
+              "text": "game",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-002",
+              "text": "ride",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-003",
+              "text": "cone",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-004",
+              "text": "vase",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "tub",
+                "tube"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-005",
+              "text": "kite",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-006",
+              "text": "bone",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-007",
+              "text": "flute",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-008",
+              "text": "same",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "tub",
+                "tube"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-009",
+              "text": "ripe",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-010",
+              "text": "vote",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-011",
+              "text": "rake",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-012",
+              "text": "tune",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "tub",
+                "tube"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-013",
+              "text": "taip",
+              "type": "pseudo",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "cap",
+                "cape"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-014",
+              "text": "sope",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "kit",
+                "kite"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            },
+            {
+              "id": "vce-c-015",
+              "text": "dape",
+              "type": "real",
+              "pattern": "vce",
+              "graphemes": [
+                "a_e",
+                "i_e",
+                "o_e",
+                "u_e"
+              ],
+              "distractors": [
+                "hop",
+                "hope"
+              ],
+              "confusables": [
+                "vowel_confusion_long",
+                "addition"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "targetId": "LIT.DEC.SYL.CLOSED",
+      "label": "Closed syllables (multisyllabic)",
+      "forms": [
+        {
+          "formId": "CLOSED-A",
+          "gradeBands": [
+            "2-4"
+          ],
+          "items": [
+            {
+              "id": "closed-a-001",
+              "text": "basket",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "napkin",
+                "nape-kin"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-002",
+              "text": "magnet",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "rabbit",
+                "rabit"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-003",
+              "text": "picnic",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "napkin",
+                "nape-kin"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-004",
+              "text": "sunset",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "rabbit",
+                "rabit"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-005",
+              "text": "napkin",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "napkin",
+                "nape-kin"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-006",
+              "text": "fantastic",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "rabbit",
+                "rabit"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-007",
+              "text": "rabbit",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "napkin",
+                "nape-kin"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-008",
+              "text": "planet",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "rabbit",
+                "rabit"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-009",
+              "text": "window",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "napkin",
+                "nape-kin"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-010",
+              "text": "pumpkin",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "rabbit",
+                "rabit"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-011",
+              "text": "traffic",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "napkin",
+                "nape-kin"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-012",
+              "text": "canvas",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "rabbit",
+                "rabit"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-013",
+              "text": "goblin",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "napkin",
+                "nape-kin"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-014",
+              "text": "sudden",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "rabbit",
+                "rabit"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "closed-a-015",
+              "text": "dentist",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "napkin",
+                "nape-kin"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "CLOSED-B",
+          "gradeBands": [
+            "2-4"
+          ],
+          "items": [
+            {
+              "id": "closed-b-001",
+              "text": "helmet",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "tablet",
+                "tablet"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-002",
+              "text": "cactus",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "campus",
+                "campous"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-003",
+              "text": "gadget",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "tablet",
+                "tablet"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-004",
+              "text": "cabin",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "campus",
+                "campous"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-005",
+              "text": "fabric",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "tablet",
+                "tablet"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-006",
+              "text": "sunlit",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "campus",
+                "campous"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-007",
+              "text": "tablet",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "tablet",
+                "tablet"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-008",
+              "text": "bandit",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "campus",
+                "campous"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-009",
+              "text": "traffic",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "tablet",
+                "tablet"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-010",
+              "text": "napkin",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "campus",
+                "campous"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-011",
+              "text": "contest",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "tablet",
+                "tablet"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-012",
+              "text": "pencil",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "campus",
+                "campous"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-013",
+              "text": "method",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "tablet",
+                "tablet"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-014",
+              "text": "badger",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "campus",
+                "campous"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "closed-b-015",
+              "text": "campus",
+              "type": "real",
+              "pattern": "closed_syllable",
+              "graphemes": [
+                "closed"
+              ],
+              "distractors": [
+                "tablet",
+                "tablet"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "targetId": "LIT.DEC.SYL.RCONTROL",
+      "label": "R-controlled vowels",
+      "forms": [
+        {
+          "formId": "RCONTROL-A",
+          "gradeBands": [
+            "1-3"
+          ],
+          "items": [
+            {
+              "id": "rcon-a-001",
+              "text": "car",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "car",
+                "cat"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-002",
+              "text": "fern",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "fork",
+                "folk"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-003",
+              "text": "bird",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "car",
+                "cat"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-004",
+              "text": "corn",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "fork",
+                "folk"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-005",
+              "text": "turn",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "car",
+                "cat"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-006",
+              "text": "park",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "fork",
+                "folk"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-007",
+              "text": "term",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "car",
+                "cat"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-008",
+              "text": "stir",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "fork",
+                "folk"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-009",
+              "text": "storm",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "car",
+                "cat"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-010",
+              "text": "burn",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "fork",
+                "folk"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-011",
+              "text": "farm",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "car",
+                "cat"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-012",
+              "text": "herd",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "fork",
+                "folk"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-013",
+              "text": "shirt",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "car",
+                "cat"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-014",
+              "text": "fork",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "fork",
+                "folk"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            },
+            {
+              "id": "rcon-a-015",
+              "text": "curl",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "car",
+                "cat"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "consonant_substitution"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "RCONTROL-B",
+          "gradeBands": [
+            "2-4"
+          ],
+          "items": [
+            {
+              "id": "rcon-b-001",
+              "text": "barn",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "barn",
+                "ban"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-002",
+              "text": "perk",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "third",
+                "tired"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-003",
+              "text": "chirp",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "barn",
+                "ban"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-004",
+              "text": "north",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "third",
+                "tired"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-005",
+              "text": "purse",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "barn",
+                "ban"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-006",
+              "text": "shark",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "third",
+                "tired"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-007",
+              "text": "verse",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "barn",
+                "ban"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-008",
+              "text": "third",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "third",
+                "tired"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-009",
+              "text": "short",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "barn",
+                "ban"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-010",
+              "text": "burst",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "third",
+                "tired"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-011",
+              "text": "starch",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "barn",
+                "ban"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-012",
+              "text": "serve",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "third",
+                "tired"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-013",
+              "text": "thirst",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "barn",
+                "ban"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-014",
+              "text": "chord",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "third",
+                "tired"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            },
+            {
+              "id": "rcon-b-015",
+              "text": "swirl",
+              "type": "real",
+              "pattern": "r_control",
+              "graphemes": [
+                "ar",
+                "er",
+                "ir",
+                "or",
+                "ur"
+              ],
+              "distractors": [
+                "barn",
+                "ban"
+              ],
+              "confusables": [
+                "vowel_confusion_short",
+                "omission"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "targetId": "LIT.DEC.SYL.VOWELTEAMS",
+      "label": "Vowel teams",
+      "forms": [
+        {
+          "formId": "VOWELTEAMS-A",
+          "gradeBands": [
+            "1-4"
+          ],
+          "items": [
+            {
+              "id": "vt-a-001",
+              "text": "boat",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "boat",
+                "bot"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-002",
+              "text": "rain",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "rain",
+                "ran"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-003",
+              "text": "team",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "boat",
+                "bot"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-004",
+              "text": "seed",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "rain",
+                "ran"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-005",
+              "text": "coat",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "boat",
+                "bot"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-006",
+              "text": "train",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "rain",
+                "ran"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-007",
+              "text": "float",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "boat",
+                "bot"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-008",
+              "text": "beach",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "rain",
+                "ran"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-009",
+              "text": "paint",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "boat",
+                "bot"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-010",
+              "text": "green",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "rain",
+                "ran"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-011",
+              "text": "toast",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "boat",
+                "bot"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-012",
+              "text": "cheat",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "rain",
+                "ran"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-013",
+              "text": "raim",
+              "type": "pseudo",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "boat",
+                "bot"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-014",
+              "text": "soat",
+              "type": "pseudo",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "rain",
+                "ran"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            },
+            {
+              "id": "vt-a-015",
+              "text": "tair",
+              "type": "pseudo",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "boat",
+                "bot"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "vowel_confusion_short"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "VOWELTEAMS-B",
+          "gradeBands": [
+            "2-4"
+          ],
+          "items": [
+            {
+              "id": "vt-b-001",
+              "text": "road",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "road",
+                "rod"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-002",
+              "text": "mail",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "meat",
+                "met"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-003",
+              "text": "sleep",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "road",
+                "rod"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-004",
+              "text": "meat",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "meat",
+                "met"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-005",
+              "text": "trail",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "road",
+                "rod"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-006",
+              "text": "foam",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "meat",
+                "met"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-007",
+              "text": "clean",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "road",
+                "rod"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-008",
+              "text": "dream",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "meat",
+                "met"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-009",
+              "text": "chain",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "road",
+                "rod"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-010",
+              "text": "steam",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "meat",
+                "met"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-011",
+              "text": "grain",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "road",
+                "rod"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-012",
+              "text": "toast",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "meat",
+                "met"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-013",
+              "text": "voat",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "road",
+                "rod"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-014",
+              "text": "taim",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "meat",
+                "met"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            },
+            {
+              "id": "vt-b-015",
+              "text": "peet",
+              "type": "real",
+              "pattern": "vowel_team",
+              "graphemes": [
+                "ai",
+                "oa",
+                "ea",
+                "ee"
+              ],
+              "distractors": [
+                "road",
+                "rod"
+              ],
+              "confusables": [
+                "vowel_team_confusion",
+                "omission"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "targetId": "LIT.DEC.IRREG.HF",
+      "label": "High-frequency irregular words",
+      "forms": [
+        {
+          "formId": "IRREGHF-A",
+          "gradeBands": [
+            "1-4"
+          ],
+          "items": [
+            {
+              "id": "irreg-a-001",
+              "text": "said",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "said",
+                "sade"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-002",
+              "text": "does",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "one",
+                "own"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-003",
+              "text": "have",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "said",
+                "sade"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-004",
+              "text": "come",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "one",
+                "own"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-005",
+              "text": "could",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "said",
+                "sade"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-006",
+              "text": "would",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "one",
+                "own"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-007",
+              "text": "should",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "said",
+                "sade"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-008",
+              "text": "once",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "one",
+                "own"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-009",
+              "text": "one",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "said",
+                "sade"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-010",
+              "text": "two",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "one",
+                "own"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-011",
+              "text": "who",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "said",
+                "sade"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-012",
+              "text": "were",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "one",
+                "own"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-013",
+              "text": "their",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "said",
+                "sade"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-014",
+              "text": "busy",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "one",
+                "own"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-a-015",
+              "text": "again",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "said",
+                "sade"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            }
+          ]
+        },
+        {
+          "formId": "IRREGHF-B",
+          "gradeBands": [
+            "2-5"
+          ],
+          "items": [
+            {
+              "id": "irreg-b-001",
+              "text": "friend",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "friend",
+                "freend"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-002",
+              "text": "enough",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "enough",
+                "enuf"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-003",
+              "text": "laugh",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "friend",
+                "freend"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-004",
+              "text": "answer",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "enough",
+                "enuf"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-005",
+              "text": "people",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "friend",
+                "freend"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-006",
+              "text": "because",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "enough",
+                "enuf"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-007",
+              "text": "beautiful",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "friend",
+                "freend"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-008",
+              "text": "through",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "enough",
+                "enuf"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-009",
+              "text": "though",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "friend",
+                "freend"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-010",
+              "text": "thought",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "enough",
+                "enuf"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-011",
+              "text": "young",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "friend",
+                "freend"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-012",
+              "text": "does",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "enough",
+                "enuf"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-013",
+              "text": "gone",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "friend",
+                "freend"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-014",
+              "text": "sure",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "enough",
+                "enuf"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            },
+            {
+              "id": "irreg-b-015",
+              "text": "build",
+              "type": "real",
+              "pattern": "hf_irregular",
+              "graphemes": [
+                "irregular"
+              ],
+              "distractors": [
+                "friend",
+                "freend"
+              ],
+              "confusables": [
+                "told_by_teacher",
+                "self_correction"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

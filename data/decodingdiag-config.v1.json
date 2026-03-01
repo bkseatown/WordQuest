@@ -1,0 +1,23 @@
+{
+  "version": "cs.decodingDiagConfig.v1",
+  "defaults": {
+    "itemsPerForm": 15,
+    "timedSeconds": 60,
+    "doseMinTimed": 3,
+    "doseMinUntimed": 5,
+    "confidenceDefault": 0.85,
+    "selfCorrectionWindowSec": 3,
+    "discontinueRule": {
+      "type": "zero_correct_first_n",
+      "n": 5,
+      "behavior": "suggest"
+    }
+  },
+  "cadence": {
+    "useIntensityLadder": true,
+    "fallbackCadenceDays": {
+      "T2": 14,
+      "T3": 7
+    }
+  }
+}
