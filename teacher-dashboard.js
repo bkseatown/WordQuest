@@ -11,6 +11,7 @@
   var SkillStoreAPI = window.CSSkillStore;
   var SkillLabels = window.CSSkillLabels;
   var Celebrations = window.CSCelebrations;
+  var MasteryLabels = window.CSMasteryLabels;
   var ExportNotes = window.CSExportNotes;
   var FlexGroupEngine = window.CSFlexGroupEngine;
   var PlanEngine = window.CSPlanEngine;
@@ -454,6 +455,12 @@
       var rationale = topSkill
         ? ("Priority: " + formatSkillBreadcrumb(topSkill.skillId) + " • Need: " + needLabel + " • Cadence: " + topSkill.stalenessDays + "d/" + cadenceDays + "d")
         : "Priority: Missing evidence";
+      var confidenceTip = "";
+      if (topSkill && MasteryLabels && typeof MasteryLabels.masteryToBand === "function") {
+        var estMastery = Math.max(0, Math.min(1, 1 - Number(topSkill.need || 0.5)));
+        var confBand = MasteryLabels.masteryToBand(estMastery);
+        confidenceTip = "Confidence: " + confBand.label + " (" + estMastery.toFixed(2) + ")";
+      }
       var celebration = Celebrations && typeof Celebrations.getCelebration === "function"
         ? Celebrations.getCelebration(sid, row.priority && row.priority.topSkills ? row.priority.topSkills : [])
         : null;
@@ -485,7 +492,7 @@
         '<button class="td-top-btn" type="button" data-today-launch="sentence-surgery" data-student-id="' + sid + '">Sentence Surgery</button>',
         '</div>',
         '</div>',
-        (rationale ? ('<p class="td-todayCard__last">' + rationale + '</p>') : ''),
+        (rationale ? ('<p class="td-todayCard__last" title="' + confidenceTip + '">' + rationale + '</p>') : ''),
         (trendLine ? ('<p class="td-todayCard__last">' + trendLine + '</p>') : ''),
         (nextStepLine ? ('<p class="td-todayCard__last">' + nextStepLine + '</p>') : ''),
         '<p class="td-todayCard__last">' + lastText + '</p>',
