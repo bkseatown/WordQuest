@@ -328,6 +328,29 @@
     };
   }
 
+  function getSkillTrajectory(studentId, skillId, k) {
+    var sid = String(studentId || '');
+    var target = String(skillId || '');
+    var count = Math.max(2, Number(k || 3));
+    var rows = getSkillRows(sid, target).slice(-count);
+    var accuracies = rows.map(function (r) {
+      return r && r.result && Number.isFinite(Number(r.result.accuracy))
+        ? clamp(Number(r.result.accuracy), 0, 1)
+        : null;
+    }).filter(function (v) { return v != null; });
+
+    if (accuracies.length < 2) {
+      return { direction: 'FLAT', delta: 0, label: 'Insufficient data' };
+    }
+
+    var first = accuracies[0];
+    var last = accuracies[accuracies.length - 1];
+    var slope = Number((last - first).toFixed(4));
+    if (slope >= 0.06) return { direction: 'UP', delta: slope, label: 'Improving' };
+    if (slope <= -0.06) return { direction: 'DOWN', delta: slope, label: 'Declining' };
+    return { direction: 'FLAT', delta: slope, label: 'Stable' };
+  }
+
   function _clearAll() {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem(STORAGE_KEY);
@@ -340,6 +363,7 @@
     recordEvidence: recordEvidence,
     getStudentSkillSnapshot: getStudentSkillSnapshot,
     computePriority: computePriority,
+    getSkillTrajectory: getSkillTrajectory,
     getIntensityTier: getIntensityTier,
     _setIntensityLadderForTest: function (ladder) {
       intensityLadder = normalizeIntensityLadder(ladder);

@@ -146,6 +146,34 @@ function run() {
   // cadence sensitivity: T3 cadence (7d) is stricter than T2 (14d)
   assert(t3Priority.stalenessNorm > t2Priority.stalenessNorm, 'T3 should have higher staleness norm with same stale days');
 
+  // trajectory directions from recent points
+  engine.recordEvidence({
+    studentId: 'traj-up',
+    timestamp: isoDaysAgo(3),
+    module: 'wordquest',
+    targets: ['LIT.DEC.SYL'],
+    tier: 'T2',
+    result: { accuracy: 0.3 }
+  });
+  engine.recordEvidence({
+    studentId: 'traj-up',
+    timestamp: isoDaysAgo(2),
+    module: 'wordquest',
+    targets: ['LIT.DEC.SYL'],
+    tier: 'T2',
+    result: { accuracy: 0.5 }
+  });
+  engine.recordEvidence({
+    studentId: 'traj-up',
+    timestamp: isoDaysAgo(1),
+    module: 'wordquest',
+    targets: ['LIT.DEC.SYL'],
+    tier: 'T2',
+    result: { accuracy: 0.72 }
+  });
+  const trendUp = engine.getSkillTrajectory('traj-up', 'LIT.DEC.SYL', 3);
+  assert.strictEqual(trendUp.direction, 'UP', 'trajectory up expected');
+
   // missing evidence fallback
   const missing = engine.computePriority('nobody');
   assert(missing.topSkills.length > 0, 'missing evidence still returns topSkills');

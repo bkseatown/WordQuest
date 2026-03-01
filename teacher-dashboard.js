@@ -223,6 +223,25 @@
     return id;
   }
 
+  function trajectoryArrow(direction) {
+    if (direction === "UP") return "⬆";
+    if (direction === "DOWN") return "⬇";
+    return "➡";
+  }
+
+  function buildTrajectoryLine(studentId, topSkills) {
+    if (!studentId || !Array.isArray(topSkills) || !topSkills.length) return "";
+    if (!EvidenceEngine || typeof EvidenceEngine.getSkillTrajectory !== "function") return "";
+    var parts = topSkills.slice(0, 3).map(function (skill) {
+      var sid = String(skill && skill.skillId || "");
+      if (!sid) return "";
+      var t = EvidenceEngine.getSkillTrajectory(studentId, sid, 3);
+      var shortLabel = getSkillLabelSafe(sid).split(" ")[0] || "Skill";
+      return shortLabel + " " + trajectoryArrow(t.direction);
+    }).filter(Boolean);
+    return parts.length ? ("Trend: " + parts.join(" • ")) : "";
+  }
+
   function bootstrapSkillStore() {
     if (!SkillStoreAPI || typeof SkillStoreAPI.initSkillStore !== "function") return;
     SkillStoreAPI.initSkillStore().then(function (store) {
@@ -435,6 +454,7 @@
         ? ("Priority: " + formatSkillBreadcrumb(topSkill.skillId) + " • Need: " + needLabel + " • Cadence: " + topSkill.stalenessDays + "d/" + cadenceDays + "d")
         : "Priority: Missing evidence";
       var nextStepLine = topSkill ? formatNextStep(sid, topSkill.skillId) : "";
+      var trendLine = buildTrajectoryLine(sid, row.priority && row.priority.topSkills ? row.priority.topSkills : []);
       return [
         '<article class="td-todayCard">',
         '<div class="td-todayCard__top">',
@@ -459,6 +479,7 @@
         '</div>',
         '</div>',
         (rationale ? ('<p class="td-todayCard__last">' + rationale + '</p>') : ''),
+        (trendLine ? ('<p class="td-todayCard__last">' + trendLine + '</p>') : ''),
         (nextStepLine ? ('<p class="td-todayCard__last">' + nextStepLine + '</p>') : ''),
         '<p class="td-todayCard__last">' + lastText + '</p>',
         '</article>'
