@@ -9,7 +9,8 @@
 
   var DATA_ASSETS = {
     skillTaxonomy: { url: 'data/skill-taxonomy.v1.json', versionKey: 'cs.skillTaxonomy.v1' },
-    skillMapping: { url: 'data/skill-mapping.v1.json', versionKey: 'cs.skillMapping.v1' }
+    skillMapping: { url: 'data/skill-mapping.v1.json', versionKey: 'cs.skillMapping.v1' },
+    intensityLadder: { url: 'data/intensity-ladder.v1.json', versionKey: 'cs.intensityLadder.v1' }
   };
 
   var buildIdPromise = null;

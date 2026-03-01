@@ -16,6 +16,13 @@ function isoDaysAgo(days) {
 }
 
 function run() {
+  engine._setIntensityLadderForTest({
+    version: 'cs.intensityLadder.v1',
+    tiers: {
+      T2: { label: 'Tier 2', sessionsPerWeek: 3, minutesPerSession: 20, groupSizeMax: 4, evidenceCadenceDays: 14, priorityWeight: 1.0 },
+      T3: { label: 'Tier 3', sessionsPerWeek: 4, minutesPerSession: 25, groupSizeMax: 2, evidenceCadenceDays: 7, priorityWeight: 1.2 }
+    }
+  });
   engine._clearAll();
 
   // recordEvidence appends + persists
@@ -112,6 +119,32 @@ function run() {
   assert(ewmaSnap.mastery < ewmaSnap.rawMastery, 'staleness penalty reduces mastery');
   const ewmaPriority = engine.computePriority('ewma').topSkills[0];
   assert(ewmaPriority.need > (1 - ewmaSnap.rawMastery), 'need increases after mastery penalty');
+
+  // tier intensity: same evidence -> T3 priority > T2 priority
+  engine.recordEvidence({
+    studentId: 'tier-t2',
+    timestamp: isoDaysAgo(10),
+    module: 'wordquest',
+    targets: ['LIT.DEC.PHG'],
+    tier: 'T2',
+    result: { accuracy: 0.7 },
+    confidence: 0.5
+  });
+  engine.recordEvidence({
+    studentId: 'tier-t3',
+    timestamp: isoDaysAgo(10),
+    module: 'wordquest',
+    targets: ['LIT.DEC.PHG'],
+    tier: 'T3',
+    result: { accuracy: 0.7 },
+    confidence: 0.5
+  });
+  const t2Priority = engine.computePriority('tier-t2').topSkills[0];
+  const t3Priority = engine.computePriority('tier-t3').topSkills[0];
+  assert(t3Priority.priorityScore > t2Priority.priorityScore, 'T3 tier should increase priority');
+
+  // cadence sensitivity: T3 cadence (7d) is stricter than T2 (14d)
+  assert(t3Priority.stalenessNorm > t2Priority.stalenessNorm, 'T3 should have higher staleness norm with same stale days');
 
   // missing evidence fallback
   const missing = engine.computePriority('nobody');

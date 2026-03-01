@@ -11,6 +11,29 @@
   var WINDOW_N = 5;
   var DEFAULT_CONFIDENCE = 0.5;
   var EWMA_ALPHA = 0.55;
+  var INTENSITY_DEFAULTS = {
+    version: 'cs.intensityLadder.v1',
+    tiers: {
+      T2: {
+        label: 'Tier 2',
+        sessionsPerWeek: 3,
+        minutesPerSession: 20,
+        groupSizeMax: 4,
+        evidenceCadenceDays: 14,
+        priorityWeight: 1.0
+      },
+      T3: {
+        label: 'Tier 3',
+        sessionsPerWeek: 4,
+        minutesPerSession: 25,
+        groupSizeMax: 2,
+        evidenceCadenceDays: 7,
+        priorityWeight: 1.2
+      }
+    }
+  };
+  var intensityLadder = INTENSITY_DEFAULTS;
+  var intensityLoadStarted = false;
 
   function clamp(v, lo, hi) {
     return Math.max(lo, Math.min(hi, v));
@@ -46,6 +69,61 @@
       ewma = (a * x) + ((1 - a) * ewma);
     }
     return clamp(ewma, 0, 1);
+  }
+
+  function normalizeIntensityLadder(input) {
+    var src = input && typeof input === 'object' ? input : {};
+    var tiers = src.tiers && typeof src.tiers === 'object' ? src.tiers : {};
+    function tierValue(tierKey, fallback) {
+      var raw = tiers[tierKey] && typeof tiers[tierKey] === 'object' ? tiers[tierKey] : {};
+      return {
+        label: String(raw.label || fallback.label),
+        sessionsPerWeek: Math.max(1, Number(raw.sessionsPerWeek || fallback.sessionsPerWeek)),
+        minutesPerSession: Math.max(1, Number(raw.minutesPerSession || fallback.minutesPerSession)),
+        groupSizeMax: Math.max(1, Number(raw.groupSizeMax || fallback.groupSizeMax)),
+        evidenceCadenceDays: Math.max(1, Number(raw.evidenceCadenceDays || fallback.evidenceCadenceDays)),
+        priorityWeight: Math.max(0, Number(raw.priorityWeight || fallback.priorityWeight))
+      };
+    }
+    return {
+      version: String(src.version || INTENSITY_DEFAULTS.version),
+      tiers: {
+        T2: tierValue('T2', INTENSITY_DEFAULTS.tiers.T2),
+        T3: tierValue('T3', INTENSITY_DEFAULTS.tiers.T3)
+      }
+    };
+  }
+
+  function getIntensityTier(tier) {
+    var key = tier === 'T3' ? 'T3' : 'T2';
+    var table = intensityLadder && intensityLadder.tiers ? intensityLadder.tiers : INTENSITY_DEFAULTS.tiers;
+    return table[key] || INTENSITY_DEFAULTS.tiers[key];
+  }
+
+  function tryLoadIntensityLadder() {
+    if (intensityLoadStarted) return;
+    intensityLoadStarted = true;
+    if (typeof fetch !== 'function') return;
+
+    var loadFromUrl = function (url) {
+      return fetch(url, { cache: 'no-store' })
+        .then(function (resp) { return resp && resp.ok ? resp.json() : null; })
+        .then(function (json) {
+          if (json && typeof json === 'object') {
+            intensityLadder = normalizeIntensityLadder(json);
+          }
+        });
+    };
+
+    var globalRegistry = root && root.CSDataRegistry;
+    if (globalRegistry && typeof globalRegistry.loadJsonAsset === 'function' && globalRegistry.DATA_ASSETS && globalRegistry.DATA_ASSETS.intensityLadder) {
+      globalRegistry.loadJsonAsset(globalRegistry.DATA_ASSETS.intensityLadder)
+        .then(function (json) { intensityLadder = normalizeIntensityLadder(json); })
+        .catch(function () {});
+      return;
+    }
+
+    loadFromUrl('./data/intensity-ladder.v1.json').catch(function () {});
   }
 
   function readStore() {
@@ -189,6 +267,7 @@
   }
 
   function computePriority(studentId, _opts) {
+    tryLoadIntensityLadder();
     var sid = String(studentId || '');
     var snapshot = getStudentSkillSnapshot(sid);
     var rows = [];
@@ -201,14 +280,24 @@
         ? clamp(Number(latest.confidence), 0, 1)
         : DEFAULT_CONFIDENCE;
       var tier = latest && latest.tier === 'T3' ? 'T3' : 'T2';
+      var tierCfg = getIntensityTier(tier);
+      var cadenceDays = Math.max(1, Number(tierCfg.evidenceCadenceDays || 14));
+      var intensityWeight = Math.max(0, Number(tierCfg.priorityWeight || 1));
+      var stalenessNorm = clamp(Number(skill.stalenessDays || 0) / cadenceDays, 0, 2);
       var need = 1 - Number(skill.mastery || 0.5);
-      var priorityScore = (need * 0.6) + (Number(skill.stalenessDays || 0) * 0.2) - (confidence * 0.1);
+      var priorityScore = (need * 0.55)
+        + (stalenessNorm * 0.25)
+        + ((intensityWeight - 1) * 0.2)
+        - (confidence * 0.1);
       rows.push({
         skillId: skillId,
         priorityScore: Number(priorityScore.toFixed(4)),
         need: Number(need.toFixed(4)),
         stalenessDays: Number(skill.stalenessDays || 0),
+        cadenceDays: cadenceDays,
+        stalenessNorm: Number(stalenessNorm.toFixed(4)),
         tier: tier,
+        intensityWeight: Number(intensityWeight.toFixed(4)),
         confidence: Number(confidence.toFixed(4))
       });
     });
@@ -223,7 +312,10 @@
         priorityScore: 0.9,
         need: 0.5,
         stalenessDays: 0,
+        cadenceDays: 14,
+        stalenessNorm: 0,
         tier: 'T2',
+        intensityWeight: 1,
         confidence: DEFAULT_CONFIDENCE
       });
       overallPriority = 0.9;
@@ -248,6 +340,11 @@
     recordEvidence: recordEvidence,
     getStudentSkillSnapshot: getStudentSkillSnapshot,
     computePriority: computePriority,
+    getIntensityTier: getIntensityTier,
+    _setIntensityLadderForTest: function (ladder) {
+      intensityLadder = normalizeIntensityLadder(ladder);
+      intensityLoadStarted = true;
+    },
     _clearAll: _clearAll,
     _getSkillRows: getSkillRows
   };
