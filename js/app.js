@@ -976,6 +976,7 @@
   let _wqDiagSession = null;
   let _wqDiagTimer = null;
   let _latestSavedSessionId = '';
+  let _activeEvidenceSessionId = '';
   let wordQuestCoachKey = 'before_guess';
   const DEMO_COACH_READY_MAX_TRIES = 25;
   const DEMO_COACH_READY_DELAY_MS = 120;
@@ -14089,6 +14090,31 @@
           streaks: Number(signals.streak || 0)
         });
       }
+      if (window.CSEvidence && typeof window.CSEvidence.addSession === 'function') {
+        const durationSec = Math.max(0, Number(signals.durSec || 0));
+        const avgGuessLatencyMs = guessCount > 0 ? Math.round((durationSec * 1000) / guessCount) : 0;
+        const misplaceRate = Math.max(0, Math.min(1, Number(signals.repetitionPenalty || 0) * 1.2));
+        const absentRate = Math.max(0, Math.min(1, 1 - patternAdherence));
+        window.CSEvidence.addSession(studentId, {
+          id: _activeEvidenceSessionId || undefined,
+          createdAt: new Date().toISOString(),
+          activity: 'wordquest',
+          durationSec: durationSec,
+          signals: {
+            guessCount: guessCount,
+            avgGuessLatencyMs: avgGuessLatencyMs,
+            misplaceRate: Number(misplaceRate.toFixed(3)),
+            absentRate: Number(absentRate.toFixed(3)),
+            repeatSameBadSlotCount: repeatedInvalidLetterPlacementCount,
+            vowelSwapCount: vowelSwapCount,
+            constraintViolations: repeatedInvalidLetterPlacementCount
+          },
+          outcomes: {
+            solved: !!signals.solved,
+            attemptsUsed: Math.max(0, Number(signals.guesses || 0))
+          }
+        });
+      }
     } catch {}
 
     try {
@@ -14130,6 +14156,7 @@
     closeRevealChallengeModal({ silent: true });
     clearClassroomTurnTimer();
     resetRoundTracking();
+    _activeEvidenceSessionId = "sess_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
     if (firstRunSetupPending && !_el('first-run-setup-modal')?.classList.contains('hidden')) {
       WQUI.showToast('Pick a setup style or skip for now.');
       return;
