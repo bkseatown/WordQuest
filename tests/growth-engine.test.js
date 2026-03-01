@@ -82,6 +82,18 @@ function run() {
   const trackDown = growth.computeTrackStatus('g-down');
   assert.strictEqual(trackDown.status, 'OFF_TRACK');
 
+  const stable = growth.computeGrowthStability('g-flat', 'LIT.DEC.SYL');
+  assert.strictEqual(stable.stability, 'STABLE');
+
+  seed('g-volatile', 'LIT.DEC.SYL', 'T2', [
+    { daysAgo: 20, acc: 0.2 },
+    { daysAgo: 15, acc: 0.9 },
+    { daysAgo: 10, acc: 0.25 },
+    { daysAgo: 5, acc: 0.85 }
+  ]);
+  const variable = growth.computeGrowthStability('g-volatile', 'LIT.DEC.SYL');
+  assert.strictEqual(variable.stability, 'VARIABLE');
+
   const insufficient = growth.computeGrowthVelocity('none', 'LIT.DEC.SYL');
   assert.strictEqual(insufficient.direction, 'INSUFFICIENT');
 

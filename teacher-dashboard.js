@@ -642,11 +642,15 @@
       var traj = top && EvidenceEngine && typeof EvidenceEngine.getSkillTrajectory === "function"
         ? EvidenceEngine.getSkillTrajectory(String(row.student && row.student.id || ""), top.skillId, 3)
         : { direction: "FLAT" };
+      var stability = top && GrowthEngine && typeof GrowthEngine.computeGrowthStability === "function"
+        ? GrowthEngine.computeGrowthStability(String(row.student && row.student.id || ""), top.skillId)
+        : { stability: "STABLE" };
       return {
         overallPriority: Number(row && row.score || 0),
         stalenessDays: Number(top && top.stalenessDays || 0),
         topSkillId: String(top && top.skillId || "BASELINE"),
-        trajectory: String(traj && traj.direction || "FLAT")
+        trajectory: String(traj && traj.direction || "FLAT"),
+        stability: String(stability && stability.stability || "STABLE")
       };
     });
     var summary = ProgressSummary && typeof ProgressSummary.buildExecutiveSummary === "function"

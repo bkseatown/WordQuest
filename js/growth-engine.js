@@ -92,10 +92,29 @@
     return { status: 'WATCH', reason: 'Growth below expected rate' };
   }
 
+  function computeGrowthStability(studentId, skillId) {
+    var rows = getRows(studentId, skillId);
+    var mastery = masteryFromRows(rows);
+    if (mastery.length < 3) {
+      return { stability: 'VARIABLE', variance: 0, sampleSize: mastery.length };
+    }
+    var mean = mastery.reduce(function (sum, n) { return sum + n; }, 0) / mastery.length;
+    var variance = mastery.reduce(function (sum, n) {
+      var d = n - mean;
+      return sum + (d * d);
+    }, 0) / mastery.length;
+    return {
+      stability: variance > 0.008 ? 'VARIABLE' : 'STABLE',
+      variance: Number(variance.toFixed(5)),
+      sampleSize: mastery.length
+    };
+  }
+
   return {
     computeGrowthVelocity: computeGrowthVelocity,
     expectedGrowthRate: expectedGrowthRate,
     compareToExpected: compareToExpected,
-    computeTrackStatus: computeTrackStatus
+    computeTrackStatus: computeTrackStatus,
+    computeGrowthStability: computeGrowthStability
   };
 }));
