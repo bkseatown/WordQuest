@@ -9,6 +9,7 @@
   var EvidenceEngine = window.CSEvidenceEngine;
   var SkillLabels = window.CSSkillLabels;
   var ExportNotes = window.CSExportNotes;
+  var FlexGroupEngine = window.CSFlexGroupEngine;
   var PlanEngine = window.CSPlanEngine;
   var CaseloadStore = window.CSCaseloadStore;
   if (!Evidence) return;
@@ -75,6 +76,8 @@
     todayGroup: document.getElementById("td-today-group"),
     todayGroupOpen: document.getElementById("td-group-open"),
     todayGroupBuild: document.getElementById("td-group-build"),
+    groupPanel: document.getElementById("td-group-panel"),
+    groupOutput: document.getElementById("td-group-output"),
     coachRibbon: document.getElementById("td-coach-ribbon"),
     coachLine: document.getElementById("td-coach-line"),
     coachPlay: document.getElementById("td-coach-play"),
@@ -249,6 +252,21 @@
     return "Student: " + student.name + "\\nFocus: " + skillLabel + "\\nNext: " + nextStep;
   }
 
+  function buildTodayCardFamilyNote(row) {
+    var student = row && row.student ? row.student : { id: "", name: "Student" };
+    var topSkill = row && row.priority && row.priority.topSkills && row.priority.topSkills[0] ? row.priority.topSkills[0] : null;
+    var skillLabel = topSkill ? formatSkillBreadcrumb(topSkill.skillId) : "baseline skills";
+    var nextStep = topSkill ? formatNextStep(student.id, topSkill.skillId).replace(/^Next Step:\\s*/i, "") : "baseline quick check";
+    if (ExportNotes && typeof ExportNotes.buildFamilyNote === "function") {
+      return ExportNotes.buildFamilyNote({
+        student: student,
+        topSkills: [skillLabel],
+        nextStep: nextStep
+      });
+    }
+    return "Family Update\\nStudent: " + student.name + "\\nFocus: " + skillLabel + "\\nNext: " + nextStep;
+  }
+
   function scoreStudent(student) {
     var sid = String(student && student.id || "");
     if (EvidenceEngine && typeof EvidenceEngine.computePriority === "function") {
@@ -327,10 +345,11 @@
       var topSkill = row.priority && row.priority.topSkills && row.priority.topSkills[0]
         ? row.priority.topSkills[0]
         : null;
-      var rationale = topSkill
-        ? ("Priority: " + formatSkillBreadcrumb(topSkill.skillId))
-        : "";
       var needLabel = topSkill && Number(topSkill.need) >= 0.65 ? "high" : (topSkill && Number(topSkill.need) >= 0.4 ? "moderate" : "low");
+      var staleLabel = topSkill && Number(topSkill.stalenessDays) > Number(topSkill.cadenceTargetDays || 14) ? "stale" : "on cadence";
+      var rationale = topSkill
+        ? ("Priority driver: " + formatSkillBreadcrumb(topSkill.skillId) + " • Need " + needLabel + " • Cadence " + staleLabel)
+        : "";
       var cadenceLine = topSkill
         ? ("Cadence target: " + topSkill.cadenceTargetDays + "d | Current: " + topSkill.stalenessDays + "d | Need: " + needLabel)
         : "";
@@ -346,7 +365,11 @@
         '</div>',
         '<div class="td-todayCard__actions">',
         '<button class="td-btn td-btn-accent btn btn-primary" type="button" data-build-block="' + sid + '">Build 20-min block</button>',
+        '<div class="td-todayCard__row">',
         '<button class="td-top-btn td-today-note-btn" type="button" data-copy-note="' + sid + '">Copy Note</button>',
+        '<button class="td-top-btn td-today-note-btn" type="button" data-copy-family-note="' + sid + '">Copy Family Note</button>',
+        '<span></span>',
+        '</div>',
         '<div class="td-todayCard__row">',
         '<button class="td-top-btn" type="button" data-today-launch="word-quest" data-student-id="' + sid + '">Word Quest</button>',
         '<button class="td-top-btn" type="button" data-today-launch="reading-lab" data-student-id="' + sid + '">Reading Lab</button>',
@@ -400,6 +423,46 @@
         });
       });
     });
+
+    Array.prototype.forEach.call(el.todayList.querySelectorAll("[data-copy-family-note]"), function (button) {
+      button.addEventListener("click", function () {
+        var sid = String(button.getAttribute("data-copy-family-note") || "");
+        var row = rows.find(function (x) { return String(x.student && x.student.id || "") === sid; });
+        if (!row) return;
+        copyText(buildTodayCardFamilyNote(row), function () {
+          setCoachLine("Copied family note for " + String(row.student && row.student.name || "student") + ".");
+        });
+      });
+    });
+  }
+
+  function renderFlexGroups(rows) {
+    if (!el.groupOutput) return;
+    if (!FlexGroupEngine || typeof FlexGroupEngine.buildGroups !== "function") {
+      el.groupOutput.textContent = "Group engine unavailable.";
+      return;
+    }
+    var built = FlexGroupEngine.buildGroups(rows, {
+      labelsApi: SkillLabels,
+      getTierConfig: EvidenceEngine && typeof EvidenceEngine.getTierConfig === "function"
+        ? EvidenceEngine.getTierConfig
+        : function () { return { minutesPerSession: 20, groupSizeMax: 4 }; }
+    });
+    var groups = built && Array.isArray(built.groups) ? built.groups : [];
+    if (!groups.length) {
+      el.groupOutput.textContent = "No shared-skill groups yet. Run more quick checks.";
+      return;
+    }
+    el.groupOutput.innerHTML = groups.map(function (group, idx) {
+      var names = (group.students || []).map(function (s) { return s && s.name ? s.name : "Student"; }).join(", ");
+      return [
+        '<article class="td-group-item">',
+        '<strong>Group ' + (idx + 1) + ': ' + String(group.skillLabel || "Targeted support") + '</strong>',
+        '<div class="td-todayCard__last">Tier: ' + String(group.tier || "T2") + ' • ' + String(group.minutesPerSession || 20) + ' min</div>',
+        '<div class="td-todayCard__last">Students: ' + names + '</div>',
+        '</article>'
+      ].join("");
+    }).join("");
   }
 
   function seedFromCaseloadStore() {
@@ -958,13 +1021,16 @@
     if (el.todayGroupOpen) {
       el.todayGroupOpen.addEventListener("click", function () {
         if (el.todayGroupBuild) el.todayGroupBuild.disabled = false;
+        if (el.groupPanel) el.groupPanel.open = true;
+        renderFlexGroups(state.todayPlan && state.todayPlan.students ? state.todayPlan.students : []);
         setCoachLine("Group selection ready. Pick 2-4 students, then build the shared plan.");
       });
     }
 
     if (el.todayGroupBuild) {
       el.todayGroupBuild.addEventListener("click", function () {
-        setCoachLine("Group plan v1: 3-min warm-up, 10-min guided stations, 5-min exit check.");
+        renderFlexGroups(state.todayPlan && state.todayPlan.students ? state.todayPlan.students : []);
+        setCoachLine("Group plan v1 generated from shared skills and cadence signals.");
       });
     }
 

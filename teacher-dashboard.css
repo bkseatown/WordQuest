@@ -379,6 +379,31 @@ body.cs-has-nav-shell .td-shell {
   flex-wrap: wrap;
 }
 
+.td-group-panel {
+  border-top: 1px solid color-mix(in oklab, var(--border-soft) 66%, transparent);
+  padding-top: 8px;
+}
+
+.td-group-panel > summary {
+  cursor: pointer;
+  color: color-mix(in oklab, var(--muted) 86%, white 14%);
+  font-size: var(--fs-1);
+  font-weight: var(--fw-medium);
+}
+
+.td-group-output {
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.td-group-item {
+  border: 1px solid color-mix(in oklab, var(--border-soft) 62%, transparent);
+  border-radius: var(--radius-2);
+  padding: 8px 10px;
+  background: color-mix(in oklab, var(--surface-2) 70%, transparent);
+}
+
 .td-work-row {
   min-height: 0;
   display: grid;
