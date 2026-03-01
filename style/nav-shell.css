@@ -1,0 +1,82 @@
+:root {
+  --nav-h: 58px;
+}
+
+.cs-nav-shell {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 0 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(8, 18, 32, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cs-nav-shell .cs-nav-brand {
+  color: #eef5ff;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.cs-nav-shell .cs-nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cs-nav-shell .cs-nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+.cs-nav-shell .cs-nav-link {
+  color: rgba(223, 236, 250, 0.86);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: transform 120ms ease, color 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.cs-nav-shell .cs-nav-link:hover {
+  color: #f3f8ff;
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.cs-nav-shell .cs-nav-link.is-active {
+  color: #f4f9ff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+  font-weight: 600;
+}
+
+.cs-nav-shell .cs-nav-link:focus-visible,
+.cs-nav-shell .cs-nav-brand:focus-visible {
+  outline: 2px solid rgba(139, 209, 255, 0.85);
+  outline-offset: 2px;
+}
+
+body.cs-has-nav-shell {
+  padding-top: var(--nav-h);
+}
