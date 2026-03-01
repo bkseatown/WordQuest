@@ -141,6 +141,9 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .td-top-actions { display: inline-flex; align-items: center; gap: 8px; }
+#td-demo-badge {
+  white-space: nowrap;
+}
 .td-top-btn {
   border-radius: var(--radius-2);
   border: 1px solid color-mix(in oklab, var(--border-subtle) 62%, transparent);

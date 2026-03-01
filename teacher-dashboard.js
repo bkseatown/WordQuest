@@ -12,7 +12,8 @@
   var state = {
     selectedId: "",
     caseload: [],
-    filtered: []
+    filtered: [],
+    demoMode: false
   };
 
   var el = {
@@ -51,8 +52,18 @@
     coachPlay: document.getElementById("td-coach-play"),
     coachMute: document.getElementById("td-coach-mute"),
     coachCollapse: document.getElementById("td-coach-collapse"),
-    coachChip: document.getElementById("td-coach-chip")
+    coachChip: document.getElementById("td-coach-chip"),
+    demoBadge: document.getElementById("td-demo-badge")
   };
+
+  function detectDemoMode() {
+    try {
+      state.demoMode = new URLSearchParams(window.location.search).get("demo") === "1";
+    } catch (_e) {
+      state.demoMode = false;
+    }
+    if (el.demoBadge) el.demoBadge.classList.toggle("hidden", !state.demoMode);
+  }
 
   function seedFromCaseloadStore() {
     if (!CaseloadStore || typeof CaseloadStore.loadCaseload !== "function") return;
@@ -78,6 +89,14 @@
       { id: "SAS7A-17", name: "Noah", gradeBand: "68", tags: ["writing"] },
       { id: "SAS7A-19", name: "Zoe", gradeBand: "68", tags: ["decoding"] }
     ].forEach(function (student) { Evidence.upsertStudent(student); });
+  }
+
+  function primeDemoMetrics() {
+    if (!state.demoMode) return;
+    ensureDemoCaseload();
+    if (el.metricAccuracy) el.metricAccuracy.textContent = "+4.2%";
+    if (el.metricTier) el.metricTier.textContent = "Tier 2";
+    if (el.metricSubline) el.metricSubline.textContent = "Accuracy +4.2% over last 3 sessions";
   }
 
   function refreshCaseload() {
@@ -389,8 +408,10 @@
   }
 
   Evidence.init();
+  detectDemoMode();
   seedFromCaseloadStore();
   ensureDemoCaseload();
+  primeDemoMetrics();
   refreshCaseload();
   bindEvents();
   document.addEventListener("keydown", function (event) {
