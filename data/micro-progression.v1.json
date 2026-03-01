@@ -1,0 +1,33 @@
+{
+  "version": "cs.microProgression.v1",
+  "ladders": {
+    "LIT.DEC.SYL": {
+      "ordered": [
+        "LIT.DEC.SYL.CLOSED",
+        "LIT.DEC.SYL.VCE",
+        "LIT.DEC.SYL.RCONTROL",
+        "LIT.DEC.SYL.VOWELTEAMS"
+      ],
+      "defaultBand": "2-3"
+    },
+    "LIT.MOR.INFLECT": {
+      "ordered": [
+        "LIT.MOR.INFLECT.S",
+        "LIT.MOR.INFLECT.ED",
+        "LIT.MOR.INFLECT.ING"
+      ]
+    },
+    "LIT.LANG.VOC": {
+      "ordered": [
+        "LIT.LANG.VOC.SYN",
+        "LIT.LANG.VOC.POLY"
+      ]
+    },
+    "LIT.LANG.SYN": {
+      "ordered": [
+        "LIT.LANG.SYN.STRUCT",
+        "LIT.LANG.SYN.CLAUSE"
+      ]
+    }
+  }
+}
