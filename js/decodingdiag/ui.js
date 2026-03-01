@@ -5,6 +5,7 @@
   var Scoring = root.CSDecodingDiagScoring;
   var EvidenceEngine = root.CSEvidenceEngine;
   var PrintAPI = root.CSDecodingDiagPrint;
+  var ReportsAPI = root.CSDecodingDiagReports;
 
   if (!ProbeStore || !Scoring) return;
 
@@ -319,6 +320,17 @@
     }
   }
 
+  function reportContext() {
+    return {
+      studentId: String(el.student.value || '').trim(),
+      targetId: state.targetId,
+      formId: state.formId,
+      mode: el.mode.value,
+      tier: el.tier.value,
+      summary: state.summary || {}
+    };
+  }
+
   function bind() {
     el.target.addEventListener('change', syncForms);
     el.form.addEventListener('change', function () { state.formId = el.form.value; });
@@ -334,15 +346,27 @@
 
     el.copyStudent.addEventListener('click', function () {
       if (!state.summary) return;
-      copyText('Date: ' + new Date().toISOString().slice(0, 10) + '\nProbe: Decoding Diagnostic - ' + state.targetId + ' (' + state.formId + ')\nTier: ' + el.tier.value + '\nResult: ' + Math.round(state.summary.accuracy * 100) + '% accuracy' + (el.mode.value === 'timed' ? (', ' + (state.summary.wcpm || 0) + ' WCPM') : ''));
+      if (ReportsAPI && typeof ReportsAPI.buildStudentNote === 'function') {
+        copyText(ReportsAPI.buildStudentNote(reportContext()));
+      } else {
+        copyText('Date: ' + new Date().toISOString().slice(0, 10) + '\nProbe: Decoding Diagnostic - ' + state.targetId + ' (' + state.formId + ')\nTier: ' + el.tier.value + '\nResult: ' + Math.round(state.summary.accuracy * 100) + '% accuracy' + (el.mode.value === 'timed' ? (', ' + (state.summary.wcpm || 0) + ' WCPM') : ''));
+      }
     });
     el.copyFamily.addEventListener('click', function () {
       if (!state.summary) return;
-      copyText('Today we practiced ' + state.targetId + '. Accuracy: ' + Math.round(state.summary.accuracy * 100) + '%. Next step: focused decoding practice.');
+      if (ReportsAPI && typeof ReportsAPI.buildFamilyNote === 'function') {
+        copyText(ReportsAPI.buildFamilyNote(reportContext()));
+      } else {
+        copyText('Today we practiced ' + state.targetId + '. Accuracy: ' + Math.round(state.summary.accuracy * 100) + '%. Next step: focused decoding practice.');
+      }
     });
     el.copyAdmin.addEventListener('click', function () {
       if (!state.summary) return;
-      copyText('Student: ' + (el.student.value || '--') + ' | Probe: ' + state.targetId + ' | Accuracy: ' + Math.round(state.summary.accuracy * 100) + '% | Tier: ' + el.tier.value);
+      if (ReportsAPI && typeof ReportsAPI.buildAdminSummary === 'function') {
+        copyText(ReportsAPI.buildAdminSummary(reportContext()));
+      } else {
+        copyText('Student: ' + (el.student.value || '--') + ' | Probe: ' + state.targetId + ' | Accuracy: ' + Math.round(state.summary.accuracy * 100) + '% | Tier: ' + el.tier.value);
+      }
     });
 
     document.addEventListener('keydown', function (e) {
