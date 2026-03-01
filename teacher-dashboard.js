@@ -16,6 +16,7 @@
   var FlexGroupEngineV2 = window.CSFlexGroupEngineV2;
   var ProgressSummary = window.CSProgressSummary;
   var PathwayEngine = window.CSPathwayEngine;
+  var GrowthEngine = window.CSGrowthEngine;
   var ExportNotes = window.CSExportNotes;
   var FlexGroupEngine = window.CSFlexGroupEngine;
   var PlanEngine = window.CSPlanEngine;
@@ -505,6 +506,13 @@
       var risk = (RiskBands && typeof RiskBands.computeRiskBand === "function")
         ? RiskBands.computeRiskBand(Number(row && row.score || 0))
         : { label: "Stable", colorClass: "td-risk-stable" };
+      var track = (GrowthEngine && typeof GrowthEngine.computeTrackStatus === "function")
+        ? GrowthEngine.computeTrackStatus(sid)
+        : { status: "WATCH", reason: "Growth signal pending" };
+      var trackLabel = track.status === "ON_TRACK" ? "On Track"
+        : (track.status === "OFF_TRACK" ? "Off Track" : "Watch Growth");
+      var trackClass = track.status === "ON_TRACK" ? "td-track-on"
+        : (track.status === "OFF_TRACK" ? "td-track-off" : "td-track-watch");
       var rationale = topSkill
         ? ("Priority: " + formatSkillBreadcrumb(topSkill.skillId) + " • Need: " + needLabel + " • Cadence: " + topSkill.stalenessDays + "d/" + cadenceDays + "d")
         : "Priority: Missing evidence";
@@ -545,6 +553,7 @@
         '<h3 class="td-todayCard__name">' + s.name + '</h3>',
         '<span class="td-todayCard__grade">' + grade + '</span>',
         '<span class="td-risk-chip ' + risk.colorClass + '">' + risk.label + '</span>',
+        '<span class="td-track-chip ' + trackClass + '" title="' + String(track.reason || "") + '">' + trackLabel + '</span>',
         '</div>',
         '<div class="td-todayCard__chips">',
         (row.focus || []).slice(0, 2).map(function (focus) { return '<span class="td-chip">' + focus + '</span>'; }).join(""),

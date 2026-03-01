@@ -70,9 +70,32 @@
     };
   }
 
+  function computeTrackStatus(studentId) {
+    var engine = root && root.CSEvidenceEngine;
+    if (!engine || typeof engine.computePriority !== 'function') {
+      return { status: 'WATCH', reason: 'Priority unavailable' };
+    }
+    var priority = engine.computePriority(String(studentId || ''));
+    var top = priority && Array.isArray(priority.topSkills) && priority.topSkills.length
+      ? priority.topSkills[0]
+      : null;
+    if (!top || !top.skillId || top.skillId === 'MISSING_EVIDENCE') {
+      return { status: 'WATCH', reason: 'Insufficient growth evidence' };
+    }
+    var cmp = compareToExpected(studentId, top.skillId);
+    if (cmp.slope < 0) {
+      return { status: 'OFF_TRACK', reason: 'Negative growth trend vs expected slope' };
+    }
+    if (cmp.meetsExpectation) {
+      return { status: 'ON_TRACK', reason: 'Growth rate meets tier expectation' };
+    }
+    return { status: 'WATCH', reason: 'Growth below expected rate' };
+  }
+
   return {
     computeGrowthVelocity: computeGrowthVelocity,
     expectedGrowthRate: expectedGrowthRate,
-    compareToExpected: compareToExpected
+    compareToExpected: compareToExpected,
+    computeTrackStatus: computeTrackStatus
   };
 }));

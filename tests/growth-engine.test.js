@@ -77,6 +77,11 @@ function run() {
   assert.strictEqual(cmpDown.meetsExpectation, false);
   assert(cmpDown.deltaFromExpected < 0, 'declining should be below expected');
 
+  const trackUp = growth.computeTrackStatus('g-up');
+  assert.strictEqual(trackUp.status, 'ON_TRACK');
+  const trackDown = growth.computeTrackStatus('g-down');
+  assert.strictEqual(trackDown.status, 'OFF_TRACK');
+
   const insufficient = growth.computeGrowthVelocity('none', 'LIT.DEC.SYL');
   assert.strictEqual(insufficient.direction, 'INSUFFICIENT');
 
