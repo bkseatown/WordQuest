@@ -6,6 +6,7 @@
   });
 
   var Evidence = window.CSEvidence;
+  var PlanEngine = window.CSPlanEngine;
   var CaseloadStore = window.CSCaseloadStore;
   if (!Evidence) return;
 
@@ -13,7 +14,9 @@
     selectedId: "",
     caseload: [],
     filtered: [],
-    demoMode: false
+    demoMode: false,
+    snapshot: null,
+    plan: null
   };
 
   var el = {
@@ -170,6 +173,12 @@
     }
 
     var summary = Evidence.getStudentSummary(state.selectedId);
+    state.snapshot = typeof Evidence.computeStudentSnapshot === "function"
+      ? Evidence.computeStudentSnapshot(state.selectedId)
+      : null;
+    state.plan = PlanEngine && typeof PlanEngine.buildPlan === "function"
+      ? PlanEngine.buildPlan({ student: summary.student, snapshot: state.snapshot || { needs: [] } })
+      : null;
     el.centerEmpty.classList.add("hidden");
     el.centerSelected.classList.remove("hidden");
     el.rightEmpty.classList.add("hidden");
@@ -193,11 +202,17 @@
       el.nextTierBadge.className = "tier-badge " + (tierLabel === "Tier 3" ? "tier-3" : "tier-2");
     }
 
-    el.quickCheck.onclick = function () { window.location.href = summary.nextMove.quickHref; };
+    el.quickCheck.onclick = function () {
+      var launch = state.plan && state.plan.plans && state.plan.plans.tenMin && state.plan.plans.tenMin[0] && state.plan.plans.tenMin[0].launch;
+      var href = launch && launch.url ? launch.url : "word-quest.html?quick=1";
+      window.location.href = appendStudentParam("./" + href.replace(/^\.\//, ""));
+    };
     el.startIntervention.onclick = function () {
       el.startIntervention.classList.add("td-btn-once");
       setTimeout(function () { el.startIntervention.classList.remove("td-btn-once"); }, 260);
-      window.location.href = summary.nextMove.interventionHref;
+      var launch = state.plan && state.plan.plans && state.plan.plans.thirtyMin && state.plan.plans.thirtyMin[0] && state.plan.plans.thirtyMin[0].launch;
+      var href = launch && launch.url ? launch.url : "word-quest.html?quick=1";
+      window.location.href = appendStudentParam("./" + href.replace(/^\.\//, ""));
     };
 
     renderEvidenceChips(summary.evidenceChips);
