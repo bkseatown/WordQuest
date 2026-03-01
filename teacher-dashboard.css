@@ -308,6 +308,13 @@ body.cs-has-nav-shell .td-shell {
   padding: 3px 8px;
 }
 
+.td-caseload-health {
+  font-size: var(--fs-1, 13px);
+  color: var(--text-strong);
+  margin-right: 2px;
+  white-space: nowrap;
+}
+
 .td-risk-chip {
   border-radius: 999px;
   padding: 2px 8px;

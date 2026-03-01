@@ -12,6 +12,7 @@
   var SkillLabels = window.CSSkillLabels;
   var Celebrations = window.CSCelebrations;
   var MasteryLabels = window.CSMasteryLabels;
+  var CaseloadHealth = window.CSCaseloadHealth;
   var ExportNotes = window.CSExportNotes;
   var FlexGroupEngine = window.CSFlexGroupEngine;
   var PlanEngine = window.CSPlanEngine;
@@ -466,7 +467,19 @@
       var bucket = (RiskBands && typeof RiskBands.bucketCaseload === "function")
         ? RiskBands.bucketCaseload(scoreList)
         : { pctHigh: 0, pctModerate: 0, pctStable: 100 };
+      var healthRows = allRows.map(function (row) {
+        var top = row && row.priority && row.priority.topSkills && row.priority.topSkills[0] ? row.priority.topSkills[0] : null;
+        return {
+          overallPriority: Number(row && row.score || 0),
+          avgNeed: Number(top && top.need || 0.5),
+          avgStalenessNorm: Number(top && top.stalenessNorm || 0)
+        };
+      });
+      var health = CaseloadHealth && typeof CaseloadHealth.computeCaseloadHealth === "function"
+        ? CaseloadHealth.computeCaseloadHealth(healthRows)
+        : { score: 100, band: "Stable" };
       el.caseloadSnapshot.innerHTML = [
+        '<span class="td-caseload-health">Caseload Health: ' + health.score + ' (' + health.band + ')</span>',
         '<span class="td-chip td-risk-high">High ' + bucket.pctHigh + '%</span>',
         '<span class="td-chip td-risk-moderate">Mod ' + bucket.pctModerate + '%</span>',
         '<span class="td-chip td-risk-stable">Stable ' + bucket.pctStable + '%</span>'
