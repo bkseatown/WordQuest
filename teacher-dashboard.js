@@ -265,8 +265,13 @@
       var grade = s.grade ? ("Grade " + s.grade) : "";
       var last = row.lastActivity;
       var lastText = last ? ("Last: " + moduleLabel(last.module) + " • " + ageDays(last.ts) + "d ago") : "Last: none yet";
-      var rationale = row.priority && row.priority.topSkills && row.priority.topSkills[0]
-        ? String(row.priority.topSkills[0].rationale || "")
+      var topSkill = row.priority && row.priority.topSkills && row.priority.topSkills[0]
+        ? row.priority.topSkills[0]
+        : null;
+      var rationale = topSkill ? String(topSkill.rationale || "") : "";
+      var needLabel = topSkill && Number(topSkill.need) >= 0.65 ? "high" : (topSkill && Number(topSkill.need) >= 0.4 ? "moderate" : "low");
+      var cadenceLine = topSkill
+        ? ("Cadence target: " + topSkill.cadenceTargetDays + "d | Current: " + topSkill.stalenessDays + "d | Need: " + needLabel)
         : "";
       return [
         '<article class="td-todayCard">',
@@ -286,6 +291,7 @@
         '</div>',
         '</div>',
         (rationale ? ('<p class="td-todayCard__last">' + rationale + '</p>') : ''),
+        (cadenceLine ? ('<p class="td-todayCard__last">' + cadenceLine + '</p>') : ''),
         '<p class="td-todayCard__last">' + lastText + '</p>',
         '</article>'
       ].join("");
@@ -306,7 +312,17 @@
         var sid = String(button.getAttribute("data-build-block") || "");
         var row = rows.find(function (x) { return String(x.student && x.student.id || "") === sid; });
         var focusLine = row && row.focus && row.focus.length ? row.focus.join(", ") : "Collect baseline";
-        setCoachLine("20-min block: 2-min warm-up, 8-min guided practice, 8-min quick check, 2-min reflection. Focus: " + focusLine + ".");
+        var topSkill = row && row.priority && row.priority.topSkills && row.priority.topSkills[0] ? row.priority.topSkills[0] : null;
+        var tier = topSkill && topSkill.tier ? topSkill.tier : "T2";
+        var tierCfg = EvidenceEngine && typeof EvidenceEngine.getTierConfig === "function"
+          ? EvidenceEngine.getTierConfig(tier)
+          : { minutesPerSession: tier === "T3" ? 25 : 20 };
+        var mins = Number(tierCfg.minutesPerSession || (tier === "T3" ? 25 : 20));
+        var warm = Math.max(2, Math.round(mins * 0.15));
+        var guided = Math.max(6, Math.round(mins * 0.4));
+        var check = Math.max(6, Math.round(mins * 0.35));
+        var reflect = Math.max(2, mins - warm - guided - check);
+        setCoachLine(mins + "-min block: " + warm + "-min warm-up, " + guided + "-min guided practice, " + check + "-min quick check, " + reflect + "-min reflection. Focus: " + focusLine + ".");
       });
     });
   }
