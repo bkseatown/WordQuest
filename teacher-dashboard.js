@@ -7,6 +7,7 @@
 
   var Evidence = window.CSEvidence;
   var EvidenceEngine = window.CSEvidenceEngine;
+  var SkillStoreAPI = window.CSSkillStore;
   var SkillLabels = window.CSSkillLabels;
   var ExportNotes = window.CSExportNotes;
   var FlexGroupEngine = window.CSFlexGroupEngine;
@@ -25,6 +26,7 @@
     activeNoteTab: "teacher",
     todayPlan: null
   };
+  var skillStoreLogged = false;
 
   var LAST_ACTIVITY_KEY = "cs.lastActivityByStudent.v1";
 
@@ -204,6 +206,39 @@
       return SkillLabels.getSkillBreadcrumb(skillId);
     }
     return String(skillId || "Skill");
+  }
+
+  function getSkillLabelSafe(skillId) {
+    var id = String(skillId || "");
+    if (!id) return "Skill";
+    if (SkillLabels && typeof SkillLabels.getSkillLabel === "function") {
+      return SkillLabels.getSkillLabel(id);
+    }
+    if (window.__CS_SKILLSTORE__ && window.__CS_SKILLSTORE__.dictionaries) {
+      var dict = window.__CS_SKILLSTORE__.dictionaries;
+      if (dict.skillLabelById && dict.skillLabelById[id]) return dict.skillLabelById[id];
+    }
+    return id;
+  }
+
+  function bootstrapSkillStore() {
+    if (!SkillStoreAPI || typeof SkillStoreAPI.initSkillStore !== "function") return;
+    SkillStoreAPI.initSkillStore().then(function (store) {
+      window.__CS_SKILLSTORE__ = store || null;
+      if (skillStoreLogged) return;
+      skillStoreLogged = true;
+      if (store && !store.disabled && store.dictionaries) {
+        var skillCount = Object.keys(store.dictionaries.skillLabelById || {}).length;
+        var microCount = Object.keys(store.dictionaries.microLabelById || {}).length;
+        console.info("[Dashboard] SkillStore ready:", skillCount, "skills,", microCount, "micro-skills");
+      } else {
+        console.warn("[Dashboard] SkillStore disabled:", store && store.reason ? store.reason : "unknown");
+      }
+    }).catch(function (err) {
+      if (skillStoreLogged) return;
+      skillStoreLogged = true;
+      console.warn("[Dashboard] SkillStore init failed:", err && err.message ? err.message : err);
+    });
   }
 
   function formatNextStep(studentId, topSkillId) {
@@ -1050,6 +1085,7 @@
 
   Evidence.init();
   detectDemoMode();
+  bootstrapSkillStore();
   seedFromCaseloadStore();
   ensureDemoCaseload();
   primeDemoMetrics();
