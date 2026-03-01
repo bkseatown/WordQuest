@@ -1,0 +1,130 @@
+{
+  "version": "cs.skillTaxonomy.v1",
+  "strands": [
+    {
+      "id": "LIT.DEC",
+      "label": "Decoding & Orthographic Mapping",
+      "skills": [
+        {
+          "id": "LIT.DEC.PHG",
+          "label": "Phoneme-Grapheme Mapping",
+          "tiers": ["T2", "T3"],
+          "prereq": [],
+          "micro": [
+            { "id": "LIT.DEC.PHG.CVC", "label": "CVC consistency" },
+            { "id": "LIT.DEC.PHG.BLEND", "label": "Blend integrity" }
+          ],
+          "evidence": ["accuracy", "error_pattern", "latency", "retrieval_strength"]
+        },
+        {
+          "id": "LIT.DEC.SYL",
+          "label": "Syllable Strategy",
+          "tiers": ["T2", "T3"],
+          "prereq": ["LIT.DEC.PHG"],
+          "micro": [
+            { "id": "LIT.DEC.SYL.SEG", "label": "Syllable segmentation" },
+            { "id": "LIT.DEC.SYL.TYPE", "label": "Syllable type recognition" }
+          ],
+          "evidence": ["accuracy", "error_pattern", "latency"]
+        },
+        {
+          "id": "LIT.DEC.IRREG",
+          "label": "Irregular Word Mapping",
+          "tiers": ["T2", "T3"],
+          "prereq": ["LIT.DEC.PHG"],
+          "micro": [
+            { "id": "LIT.DEC.IRREG.SET", "label": "High-frequency irregular set" }
+          ],
+          "evidence": ["accuracy", "error_pattern", "retrieval_strength"]
+        }
+      ]
+    },
+    {
+      "id": "LIT.MOR",
+      "label": "Morphology",
+      "skills": [
+        {
+          "id": "LIT.MOR.INFLECT",
+          "label": "Inflectional Morphology",
+          "tiers": ["T2", "T3"],
+          "prereq": ["LIT.DEC.SYL"],
+          "micro": [
+            { "id": "LIT.MOR.INFLECT.EDING", "label": "-ed / -ing control" }
+          ],
+          "evidence": ["accuracy", "error_pattern"]
+        },
+        {
+          "id": "LIT.MOR.DERIV",
+          "label": "Derivational Morphology",
+          "tiers": ["T2", "T3"],
+          "prereq": ["LIT.MOR.INFLECT"],
+          "micro": [
+            { "id": "LIT.MOR.DERIV.PREFIX", "label": "Prefix analysis" },
+            { "id": "LIT.MOR.DERIV.SUFFIX", "label": "Suffix analysis" }
+          ],
+          "evidence": ["accuracy", "error_pattern", "latency"]
+        }
+      ]
+    },
+    {
+      "id": "LIT.FLU",
+      "label": "Fluency",
+      "skills": [
+        {
+          "id": "LIT.FLU.ACC",
+          "label": "Fluency Accuracy",
+          "tiers": ["T2", "T3"],
+          "prereq": ["LIT.DEC.SYL"],
+          "evidence": ["wcpm", "error_rate", "self_correction"]
+        },
+        {
+          "id": "LIT.FLU.PRO",
+          "label": "Fluency Prosody",
+          "tiers": ["T2", "T3"],
+          "prereq": ["LIT.FLU.ACC"],
+          "evidence": ["prosody_rating", "wcpm"]
+        }
+      ]
+    },
+    {
+      "id": "LIT.LANG",
+      "label": "Language Comprehension",
+      "skills": [
+        {
+          "id": "LIT.LANG.VOC",
+          "label": "Vocabulary Access",
+          "tiers": ["T2", "T3"],
+          "prereq": [],
+          "evidence": ["accuracy", "retrieval_strength", "error_pattern"]
+        },
+        {
+          "id": "LIT.LANG.SYN",
+          "label": "Syntactic Processing",
+          "tiers": ["T2", "T3"],
+          "prereq": ["LIT.LANG.VOC"],
+          "evidence": ["sentence_repair", "cloze", "grammar_events"]
+        }
+      ]
+    },
+    {
+      "id": "LIT.WRITE",
+      "label": "Writing",
+      "skills": [
+        {
+          "id": "LIT.WRITE.SENT",
+          "label": "Sentence Construction",
+          "tiers": ["T2", "T3"],
+          "prereq": ["LIT.LANG.SYN"],
+          "evidence": ["sentence_quality", "grammar_events"]
+        },
+        {
+          "id": "LIT.WRITE.PAR",
+          "label": "Paragraph Cohesion",
+          "tiers": ["T2", "T3"],
+          "prereq": ["LIT.WRITE.SENT"],
+          "evidence": ["cohesion_events", "sentence_quality"]
+        }
+      ]
+    }
+  ]
+}

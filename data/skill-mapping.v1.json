@@ -1,0 +1,24 @@
+{
+  "modules": {
+    "wordquest": {
+      "primary": ["LIT.DEC.PHG", "LIT.DEC.SYL", "LIT.DEC.IRREG"],
+      "secondary": ["LIT.LANG.VOC"],
+      "evidence": ["accuracy", "error_pattern", "latency", "retrieval_strength"]
+    },
+    "readinglab": {
+      "primary": ["LIT.FLU.ACC", "LIT.FLU.PRO"],
+      "secondary": ["LIT.LANG.SYN"],
+      "evidence": ["wcpm", "error_rate", "self_correction", "prosody_rating"]
+    },
+    "sentencesurgery": {
+      "primary": ["LIT.LANG.SYN"],
+      "secondary": ["LIT.LANG.VOC", "LIT.WRITE.SENT"],
+      "evidence": ["sentence_repair", "cloze", "grammar_events"]
+    },
+    "writingstudio": {
+      "primary": ["LIT.WRITE.SENT", "LIT.WRITE.PAR"],
+      "secondary": ["LIT.LANG.VOC"],
+      "evidence": ["sentence_quality", "cohesion_events"]
+    }
+  }
+}
