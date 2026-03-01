@@ -233,6 +233,137 @@
       .slice(0, limit);
   }
 
+  function getLastSession(studentId, activity) {
+    var sid = normalizeStudentId(studentId);
+    var sessions = getRecentSessions(sid, { limit: MAX_STUDENT_SESSIONS });
+    if (!activity) return sessions[0] || null;
+    var target = String(activity || "").toLowerCase();
+    for (var i = 0; i < sessions.length; i += 1) {
+      if (String(sessions[i].activity || "").toLowerCase() === target) return sessions[i];
+    }
+    return null;
+  }
+
+  function computeWordQuestScore(session) {
+    var sig = (session && session.signals) || {};
+    var latencyPenalty = Math.min(1, (Number(sig.avgGuessLatencyMs || 0) / 20000));
+    var score = 100
+      - (Math.max(0, Number(sig.misplaceRate || 0)) * 40)
+      - (Math.max(0, Number(sig.absentRate || 0)) * 30)
+      - (Math.max(0, Number(sig.constraintViolations || 0)) * 10)
+      - (Math.max(0, Number(sig.repeatSameBadSlotCount || 0)) * 5)
+      - (latencyPenalty * 15);
+    return Math.max(0, Math.min(100, Math.round(score)));
+  }
+
+  function computeTrend(series) {
+    var points = Array.isArray(series) ? series : [];
+    if (!points.length) return { last7: [], slope: 0, stability: 1 };
+    var last7 = points.slice(-7);
+    var first = Number(last7[0].score || 0);
+    var last = Number(last7[last7.length - 1].score || 0);
+    var slope = +(last - first).toFixed(2);
+    var mean = last7.reduce(function (sum, p) { return sum + Number(p.score || 0); }, 0) / last7.length;
+    var variance = last7.reduce(function (sum, p) {
+      var d = Number(p.score || 0) - mean;
+      return sum + d * d;
+    }, 0) / last7.length;
+    var stability = +Math.max(0, Math.min(1, 1 - Math.sqrt(variance) / 40)).toFixed(3);
+    return { last7: last7, slope: slope, stability: stability };
+  }
+
+  function detectNeedsFromWordQuest(lastSessions) {
+    var sessions = Array.isArray(lastSessions) ? lastSessions.slice(0, 7) : [];
+    if (!sessions.length) return [];
+    var aggregates = {
+      misplaceRate: 0,
+      absentRate: 0,
+      repeatSameBadSlotCount: 0,
+      vowelSwapCount: 0,
+      constraintViolations: 0,
+      avgGuessLatencyMs: 0
+    };
+    sessions.forEach(function (row) {
+      var sig = row.signals || {};
+      Object.keys(aggregates).forEach(function (k) { aggregates[k] += Number(sig[k] || 0); });
+    });
+    Object.keys(aggregates).forEach(function (k) { aggregates[k] = aggregates[k] / sessions.length; });
+
+    var needs = [];
+    function pushNeed(key, label, sev, conf, rationale) {
+      needs.push({ key: key, label: label, severity: sev, confidence: conf, rationale: rationale.slice(0, 3) });
+    }
+
+    if (aggregates.repeatSameBadSlotCount >= 1.5 || aggregates.constraintViolations >= 1.2) {
+      pushNeed("constraint_tracking", "Constraint Tracking", 4, 0.84, [
+        "Repeated blocked-slot placements detected.",
+        "Constraint violations are recurring across recent sessions."
+      ]);
+    }
+    if (aggregates.vowelSwapCount >= 2.5) {
+      pushNeed("vowel_mapping", "Vowel Mapping", 4, 0.8, [
+        "Frequent vowel swaps suggest unstable vowel mapping.",
+        "Target short/long vowel discrimination before speed work."
+      ]);
+    }
+    if (aggregates.misplaceRate >= 0.24) {
+      pushNeed("positional_strategy", "Positional Strategy", 3, 0.74, [
+        "Misplaced-letter rate remains elevated.",
+        "Position-lock strategy likely underused."
+      ]);
+    }
+    if (aggregates.avgGuessLatencyMs >= 9000) {
+      pushNeed("guess_efficiency", "Guess Efficiency", 3, 0.69, [
+        "High guess latency indicates pacing/cognitive load issue.",
+        "Use guided first-guess routine."
+      ]);
+    }
+
+    return needs
+      .sort(function (a, b) { return (b.severity * b.confidence) - (a.severity * a.confidence); })
+      .slice(0, 4);
+  }
+
+  function computeStudentSnapshot(studentId) {
+    var sid = normalizeStudentId(studentId);
+    var recent = getRecentSessions(sid, { limit: MAX_STUDENT_SESSIONS });
+    var lastByActivity = {};
+    recent.forEach(function (row) {
+      var activity = String(row.activity || "").toLowerCase();
+      if (!activity || lastByActivity[activity]) return;
+      lastByActivity[activity] = row;
+    });
+
+    var wqSeries = recent
+      .filter(function (row) { return String(row.activity || "").toLowerCase() === "wordquest"; })
+      .slice(0, 7)
+      .reverse()
+      .map(function (row) {
+        return {
+          t: row.createdAt,
+          score: computeWordQuestScore(row),
+          solved: !!(row.outcomes && row.outcomes.solved),
+          guessCount: Number((row.signals && row.signals.guessCount) || 0)
+        };
+      });
+
+    var trends = {
+      wordquest: computeTrend(wqSeries),
+      readinglab: { last7: [], slope: 0, stability: 1 },
+      sentencesurgery: { last7: [], slope: 0, stability: 1 },
+      writingstudio: { last7: [], slope: 0, stability: 1 },
+      numeracy: { last7: [], slope: 0, stability: 1 }
+    };
+
+    return {
+      studentId: sid,
+      updatedAt: new Date().toISOString(),
+      needs: detectNeedsFromWordQuest(recent.filter(function (row) { return String(row.activity || "").toLowerCase() === "wordquest"; })),
+      trends: trends,
+      lastSessionsByActivity: lastByActivity
+    };
+  }
+
   function exportStudentJSON(studentId) {
     var sid = normalizeStudentId(studentId);
     return JSON.stringify({
@@ -480,6 +611,8 @@
     appendSession: appendSession,
     addSession: addSession,
     getRecentSessions: getRecentSessions,
+    getLastSession: getLastSession,
+    computeStudentSnapshot: computeStudentSnapshot,
     exportStudentCSV: exportStudentCSV,
     exportStudentJSON: exportStudentJSON,
     recommendNextSteps: recommendNextSteps,
