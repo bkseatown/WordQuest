@@ -4,14 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cornerstone MTSS - Numeracy Lab</title>
-  <script src="./config.js"></script>
+  <script src="./config.js?v=20260301w"></script>
   <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="stylesheet" href="./style/tokens.css?v=20260301w">
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100dvh;
-      font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+      font-family: var(--font-ui);
       background: linear-gradient(145deg, #1f2a35 0%, #243848 45%, #1b2632 100%);
       color: #e8edf2;
       display: grid;
@@ -31,7 +32,7 @@
     h1 {
       margin: 0;
       font-size: clamp(1.4rem, 2.8vw, 1.95rem);
-      font-family: "Nunito", "Atkinson Hyperlegible", sans-serif;
+      font-family: var(--font-ui);
     }
     p { margin: 0; opacity: 0.9; }
     .btns {
@@ -77,5 +78,8 @@
     <div class="note">Cornerstone MTSS route is active. Numeracy modules are staged and not live yet.</div>
     <div class="back"><a href="./index.html">Back to Cornerstone MTSS</a></div>
   </main>
+  <script src="./build-stamp.js?v=20260301w"></script>
+  <script src="./js/build-badge.js?v=20260301w"></script>
+  <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
 </body>
 </html>

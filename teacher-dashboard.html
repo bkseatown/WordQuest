@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="./">
   <title>Cornerstone MTSS - Teacher Dashboard</title>
-  <script src="./config.js"></script>
-  <script src="./build-stamp.js?v=20260301a"></script>
+  <script src="./config.js?v=20260301w"></script>
   <link rel="icon" href="./favicon.ico" sizes="any">
-  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260301a">
+  <link rel="stylesheet" href="./style/tokens.css?v=20260301w">
+  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260301w">
 </head>
 <body class="teacher-dashboard">
   <main class="td-shell" id="td-shell">
-    <header class="td-top td-surface">
+    <header class="td-top td-surface card">
       <div class="td-wordmark">
         <strong>Cornerstone MTSS</strong>
         <span>Teacher Dashboard</span>
@@ -24,7 +24,8 @@
 
       <div class="td-top-actions">
         <button id="td-coach-chip" class="td-top-btn td-coach-chip" type="button">Coach</button>
-        <button id="td-add-student" class="td-top-btn" type="button">+ Add Student</button>
+        <button id="td-admin-demo" class="td-top-btn" type="button">Admin Demo</button>
+        <button id="td-new-session" class="td-top-btn" type="button">New Session</button>
         <button id="td-import-export" class="td-top-btn" type="button">Import/Export</button>
         <button id="td-settings" class="td-top-btn" type="button">Settings</button>
         <button id="td-local-status" class="td-local-dot" type="button" title="Local data on this device" aria-label="Local mode"></button>
@@ -32,20 +33,22 @@
     </header>
 
     <section class="td-body">
-      <aside class="td-left td-surface">
-        <h2>Today</h2>
+      <aside class="td-left td-surface card td-support-rail">
+        <h2>Search-first</h2>
+        <div id="td-recent-students" class="td-recent-row"></div>
+        <div id="td-recent-sessions" class="td-recent-list"></div>
         <div id="td-no-caseload" class="td-empty hidden">
           <p>No caseload yet.</p>
           <div class="td-empty-actions">
-            <button class="td-btn td-btn-ghost" data-empty-action="add">Add student</button>
-            <button class="td-btn td-btn-ghost" data-empty-action="import">Import roster</button>
-            <button class="td-btn td-btn-ghost" data-empty-action="demo">Use demo caseload</button>
+            <button class="td-btn td-btn-ghost btn btn-quiet" data-empty-action="add">Add student</button>
+            <button class="td-btn td-btn-ghost btn btn-quiet" data-empty-action="import">Import roster</button>
+            <button class="td-btn td-btn-ghost btn btn-quiet" data-empty-action="demo">Use demo caseload</button>
           </div>
         </div>
         <div id="td-caseload-list" class="td-caseload-list"></div>
       </aside>
 
-      <section class="td-center td-surface" id="td-center-stage" aria-live="polite">
+      <section class="td-center td-surface card td-primary-stage" id="td-center-stage" aria-live="polite">
         <div id="td-center-empty" class="td-stage-empty">
           <h2>Search or pick a student</h2>
           <p>In under 3 seconds: who to support, what to do next, and where to launch.</p>
@@ -57,6 +60,11 @@
         </div>
 
         <div id="td-center-selected" class="td-stage-selected hidden">
+          <article class="td-next-step-card">
+            <p class="td-label">Recommended Next Step</p>
+            <h3 id="td-next-step-title">Start intervention</h3>
+            <p id="td-next-step-sub" class="td-reco-line"></p>
+          </article>
           <div class="td-selected-head">
             <div>
               <p id="td-student-label" class="td-label"></p>
@@ -70,26 +78,42 @@
           </div>
 
           <div class="td-cta-row">
-            <button id="td-quick-check" class="td-btn td-btn-primary" type="button">Run 90-sec Quick Check</button>
-            <button id="td-start-intervention" class="td-btn td-btn-accent" type="button">Start Intervention</button>
+            <button id="td-quick-check" class="td-btn td-btn-primary btn btn-quiet" type="button">Run 90-sec Quick Check</button>
+            <button id="td-start-intervention" class="td-btn td-btn-accent btn btn-primary" type="button">Start Intervention</button>
+          </div>
+          <div class="td-quick-launch-row">
+            <button class="td-top-btn" data-quick="word-quest">Word Quest</button>
+            <button class="td-top-btn" data-quick="reading-lab">Reading Lab</button>
+            <button class="td-top-btn" data-quick="sentence-surgery">Sentence Surgery</button>
+            <button class="td-top-btn" data-quick="writing-studio">Writing Studio</button>
           </div>
         </div>
       </section>
 
-      <aside class="td-right td-surface">
+      <aside class="td-right td-surface card td-secondary-rail">
         <h2>Evidence + Tools</h2>
         <div id="td-right-empty" class="td-empty">Select a student to view evidence chips and artifacts.</div>
         <div id="td-right-content" class="hidden">
           <div id="td-evidence-chips" class="td-chip-grid"></div>
           <div class="td-artifacts">
-            <h3>Recent artifacts</h3>
-            <a id="td-artifact-reading" href="#">Reading Lab summary</a>
-            <a id="td-artifact-sentence" href="#">Sentence Surgery summary</a>
+            <h3>Recent sessions</h3>
+            <div id="td-session-list"></div>
           </div>
-          <div class="td-share">
-            <button id="td-export-json" class="td-btn td-btn-ghost" type="button">Export JSON</button>
-            <button id="td-copy-csv" class="td-btn td-btn-ghost" type="button">Copy CSV</button>
-          </div>
+          <details class="td-details" open>
+            <summary>Notes</summary>
+            <label class="td-notes">
+              <span>Intervention follow-up</span>
+              <textarea id="td-notes-input" rows="3" placeholder="Add notes for intervention follow-up..."></textarea>
+            </label>
+          </details>
+          <details class="td-details">
+            <summary>Export + Share</summary>
+            <div class="td-share">
+              <button id="td-export-json" class="td-btn td-btn-ghost btn btn-quiet" type="button">Export JSON</button>
+              <button id="td-copy-csv" class="td-btn td-btn-ghost btn btn-quiet" type="button">Copy CSV</button>
+              <button id="td-copy-summary" class="td-btn td-btn-ghost btn btn-quiet" type="button">Copy summary</button>
+            </div>
+          </details>
         </div>
       </aside>
     </section>
@@ -103,9 +127,12 @@
     <button id="td-coach-mute" type="button" aria-label="Mute coach">🔈</button>
   </div>
 
-  <script src="./storage-schema.js?v=20260301a" defer></script>
-  <script src="./js/caseload-store.js?v=20260301a" defer></script>
-  <script src="./js/evidence-store.js?v=20260301a" defer></script>
-  <script src="./teacher-dashboard.js?v=20260301a" defer></script>
+  <script src="./build-stamp.js?v=20260301w"></script>
+  <script src="./js/build-badge.js?v=20260301w"></script>
+  <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
+  <script src="./storage-schema.js?v=20260301w" defer></script>
+  <script src="./js/caseload-store.js?v=20260301w" defer></script>
+  <script src="./js/evidence-store.js?v=20260301w" defer></script>
+  <script src="./teacher-dashboard.js?v=20260301w" defer></script>
 </body>
 </html>

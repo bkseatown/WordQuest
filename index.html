@@ -3,17 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="wq-build" content="dev-local">
+  <meta name="wq-build" content="20260301w">
   <base href="./">
-  <script src="build-stamp.js?v=20260228d"></script>
   <title>Cornerstone MTSS</title>
   <link rel="icon" href="./favicon.ico" sizes="any">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style/components.css?v=20260228h">
-  <link rel="stylesheet" href="hero-v2.css?v=20260227b">
-  <link rel="stylesheet" href="style/home-lock.css?v=20260228a">
+  <link rel="stylesheet" href="style/tokens.css?v=20260301w">
+  <link rel="stylesheet" href="style/components.css?v=20260301w">
+  <link rel="stylesheet" href="hero-v2.css?v=20260301w">
+  <link rel="stylesheet" href="style/home-lock.css?v=20260301w">
   <style>
     html, body {
       height: 100%;
@@ -39,14 +36,14 @@
       justify-content: space-between;
       min-height: 42px;
       color: #ecf4fc;
-      font-family: "Nunito", "Atkinson Hyperlegible", sans-serif;
+      font-family: var(--font-ui);
       font-size: clamp(0.95rem, 1.4vw, 1.12rem);
       letter-spacing: 0.02em;
     }
     .home-header a {
       color: #9bdcff;
       text-decoration: none;
-      font-family: "Atkinson Hyperlegible", sans-serif;
+      font-family: var(--font-ui);
       font-size: 0.82rem;
       font-weight: 700;
     }
@@ -173,7 +170,7 @@
     </section>
   </div>
 
-  <script src="word-quest-preview.js?v=20260228d"></script>
+  <script src="word-quest-preview.js?v=20260301w"></script>
   <script>
     (function homeHashRouter() {
       function routeTo(route) {
@@ -219,6 +216,9 @@
       window.CSRoute = Object.assign(window.CSRoute || {}, { routeTo: routeTo });
     })();
   </script>
-  <script src="hero-v2.js?v=20260228d"></script>
+  <script src="build-stamp.js?v=20260301w"></script>
+  <script src="js/build-badge.js?v=20260301w"></script>
+  <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
+  <script src="hero-v2.js?v=20260301w"></script>
 </body>
 </html>
