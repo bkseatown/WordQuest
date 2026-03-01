@@ -10,6 +10,7 @@
   var RiskBands = window.CSRiskBands;
   var SkillStoreAPI = window.CSSkillStore;
   var SkillLabels = window.CSSkillLabels;
+  var Celebrations = window.CSCelebrations;
   var ExportNotes = window.CSExportNotes;
   var FlexGroupEngine = window.CSFlexGroupEngine;
   var PlanEngine = window.CSPlanEngine;
@@ -453,6 +454,12 @@
       var rationale = topSkill
         ? ("Priority: " + formatSkillBreadcrumb(topSkill.skillId) + " • Need: " + needLabel + " • Cadence: " + topSkill.stalenessDays + "d/" + cadenceDays + "d")
         : "Priority: Missing evidence";
+      var celebration = Celebrations && typeof Celebrations.getCelebration === "function"
+        ? Celebrations.getCelebration(sid, row.priority && row.priority.topSkills ? row.priority.topSkills : [])
+        : null;
+      if (celebration && celebration.text) {
+        rationale += " • " + celebration.text;
+      }
       var nextStepLine = topSkill ? formatNextStep(sid, topSkill.skillId) : "";
       var trendLine = buildTrajectoryLine(sid, row.priority && row.priority.topSkills ? row.priority.topSkills : []);
       return [
