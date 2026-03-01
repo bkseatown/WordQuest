@@ -7,6 +7,7 @@
 
   var Evidence = window.CSEvidence;
   var EvidenceEngine = window.CSEvidenceEngine;
+  var RiskBands = window.CSRiskBands;
   var SkillStoreAPI = window.CSSkillStore;
   var SkillLabels = window.CSSkillLabels;
   var ExportNotes = window.CSExportNotes;
@@ -74,6 +75,7 @@
     emptyActions: Array.prototype.slice.call(document.querySelectorAll("[data-empty-action]")),
     todayRoot: document.getElementById("td-today"),
     todayList: document.getElementById("td-today-list"),
+    caseloadSnapshot: document.getElementById("td-caseload-snapshot"),
     todayRefresh: document.getElementById("td-today-refresh"),
     todayGroup: document.getElementById("td-today-group"),
     todayGroupOpen: document.getElementById("td-group-open"),
@@ -358,7 +360,7 @@
   }
 
   function buildTodayPlan() {
-    var ranked = getCaseload()
+    var allRows = getCaseload()
       .map(function (student) {
         var sid = String(student.id || "");
         var snapshot = getStudentEvidence(sid) || null;
@@ -374,9 +376,8 @@
           lastActivity: getLastActivity(sid),
           score: computed.ok ? Number(priority && priority.overallPriority || 0) : fallbackScore
         };
-      })
-      .sort(function (a, b) { return b.score - a.score; })
-      .slice(0, 3);
+      });
+    var ranked = allRows.slice().sort(function (a, b) { return b.score - a.score; }).slice(0, 3);
 
     if (!ranked.length) {
       ranked = [
@@ -395,7 +396,7 @@
       });
     }
 
-    return { students: ranked };
+    return { students: ranked, allStudents: allRows };
   }
 
   function renderTodayEngine(plan) {
@@ -403,6 +404,18 @@
     var rows = plan && Array.isArray(plan.students) ? plan.students : [];
     if (!rows.length) {
       rows = buildTodayPlan().students;
+    }
+    var allRows = plan && Array.isArray(plan.allStudents) ? plan.allStudents : rows;
+    if (el.caseloadSnapshot) {
+      var scoreList = allRows.map(function (row) { return Number(row && row.score || 0); });
+      var bucket = (RiskBands && typeof RiskBands.bucketCaseload === "function")
+        ? RiskBands.bucketCaseload(scoreList)
+        : { pctHigh: 0, pctModerate: 0, pctStable: 100 };
+      el.caseloadSnapshot.innerHTML = [
+        '<span class="td-chip td-risk-high">High ' + bucket.pctHigh + '%</span>',
+        '<span class="td-chip td-risk-moderate">Mod ' + bucket.pctModerate + '%</span>',
+        '<span class="td-chip td-risk-stable">Stable ' + bucket.pctStable + '%</span>'
+      ].join('');
     }
     el.todayList.innerHTML = rows.map(function (row) {
       var s = row.student || {};
@@ -415,6 +428,9 @@
         : null;
       var needLabel = topSkill && Number(topSkill.need) >= 0.65 ? "high" : (topSkill && Number(topSkill.need) >= 0.4 ? "moderate" : "low");
       var cadenceDays = topSkill && Number.isFinite(Number(topSkill.cadenceDays)) ? Number(topSkill.cadenceDays) : 14;
+      var risk = (RiskBands && typeof RiskBands.computeRiskBand === "function")
+        ? RiskBands.computeRiskBand(Number(row && row.score || 0))
+        : { label: "Stable", colorClass: "td-risk-stable" };
       var rationale = topSkill
         ? ("Priority: " + formatSkillBreadcrumb(topSkill.skillId) + " • Need: " + needLabel + " • Cadence: " + topSkill.stalenessDays + "d/" + cadenceDays + "d")
         : "Priority: Missing evidence";
@@ -424,6 +440,7 @@
         '<div class="td-todayCard__top">',
         '<h3 class="td-todayCard__name">' + s.name + '</h3>',
         '<span class="td-todayCard__grade">' + grade + '</span>',
+        '<span class="td-risk-chip ' + risk.colorClass + '">' + risk.label + '</span>',
         '</div>',
         '<div class="td-todayCard__chips">',
         (row.focus || []).slice(0, 2).map(function (focus) { return '<span class="td-chip">' + focus + '</span>'; }).join(""),

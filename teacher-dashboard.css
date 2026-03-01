@@ -291,6 +291,47 @@ body.cs-has-nav-shell .td-shell {
   gap: 12px;
 }
 
+.td-caseload-snapshot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: color-mix(in oklab, var(--muted) 84%, white 16%);
+  font-size: var(--fs-1, 13px);
+}
+
+.td-caseload-snapshot .td-chip {
+  font-size: var(--fs-0, 12px);
+  padding: 3px 8px;
+}
+
+.td-risk-chip {
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: var(--fs-0, 12px);
+  font-weight: var(--fw-semibold, 600);
+  border: 1px solid color-mix(in oklab, var(--border-subtle) 66%, transparent);
+  white-space: nowrap;
+}
+
+.td-risk-high {
+  background: color-mix(in oklab, var(--tier-3) 22%, transparent);
+  color: color-mix(in oklab, var(--tier-3) 72%, white 28%);
+}
+
+.td-risk-moderate {
+  background: color-mix(in oklab, var(--tier-2) 20%, transparent);
+  color: color-mix(in oklab, var(--tier-2) 72%, white 28%);
+}
+
+.td-risk-stable {
+  background: color-mix(in oklab, var(--tier-1) 20%, transparent);
+  color: color-mix(in oklab, var(--tier-1) 72%, white 28%);
+}
+
 .td-todayCard {
   border-radius: 16px;
   border: 1px solid color-mix(in oklab, var(--border-soft) 68%, transparent);
