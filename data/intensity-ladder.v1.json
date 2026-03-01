@@ -1,0 +1,21 @@
+{
+  "version": "cs.intensityLadder.v1",
+  "tiers": {
+    "T2": {
+      "label": "Tier 2",
+      "sessionsPerWeek": 3,
+      "minutesPerSession": 20,
+      "groupSizeMax": 4,
+      "evidenceCadenceDays": 14,
+      "priorityWeight": 1.0
+    },
+    "T3": {
+      "label": "Tier 3",
+      "sessionsPerWeek": 4,
+      "minutesPerSession": 25,
+      "groupSizeMax": 2,
+      "evidenceCadenceDays": 7,
+      "priorityWeight": 1.2
+    }
+  }
+}
