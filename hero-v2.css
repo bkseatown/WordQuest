@@ -55,7 +55,7 @@
   color: #0f172a;
   font-weight: var(--fw-semibold);
   box-shadow: 0 10px 22px rgba(79,195,247,0.36);
-  transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease);
+  transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out), filter var(--dur-1) var(--ease-out);
   cursor: pointer;
 }
 .primary-btn:focus-visible {
@@ -72,7 +72,7 @@
   border: 1px solid color-mix(in oklab, var(--border-subtle) 80%, transparent);
   color: var(--text-strong);
   font-weight: var(--fw-medium);
-  transition: transform var(--motion-fast) var(--motion-ease);
+  transition: transform var(--dur-1) var(--ease-out), filter var(--dur-1) var(--ease-out);
   cursor: pointer;
 }
 .secondary-btn:focus-visible {
@@ -94,6 +94,11 @@
   background: color-mix(in oklab, var(--surface-1) 76%, transparent);
   border: 1px solid color-mix(in oklab, var(--border-subtle) 72%, transparent);
   color: var(--text);
+  transition: transform var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), filter var(--dur-2) var(--ease-out);
+}
+.hero-proof-item:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
 }
 
 .hero-proof-item strong { display: block; font-size: 1.2rem; margin-bottom: 6px; }

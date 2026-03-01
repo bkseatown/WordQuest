@@ -67,6 +67,7 @@ body.cs-has-nav-shell .td-shell {
     color-mix(in oklab, var(--surface-1) 84%, rgba(12, 22, 32, 0.92));
   box-shadow: var(--shadow-medium);
   backdrop-filter: blur(6px);
+  transition: filter var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
 }
 
 .td-top {
@@ -121,7 +122,7 @@ body.cs-has-nav-shell .td-shell {
   font-size: var(--fs-small);
   font-weight: var(--fw-medium);
   cursor: pointer;
-  transition: transform var(--motion-fast) var(--motion-ease), filter var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
+  transition: transform var(--dur-1) var(--ease-out), filter var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
 }
 .td-top-btn:focus-visible {
   border-color: color-mix(in oklab, var(--accent) 62%, var(--border-subtle) 38%);
@@ -260,7 +261,7 @@ body.cs-has-nav-shell .td-shell {
   min-height: 42px;
   padding: 10px 12px;
   cursor: pointer;
-  transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease);
+  transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out), filter var(--dur-1) var(--ease-out);
 }
 .td-btn:hover { transform: translateY(-1px); }
 .td-btn:active { transform: translateY(0); filter: brightness(0.98); }
@@ -289,6 +290,11 @@ body.cs-has-nav-shell .td-shell {
   padding: 4px 8px;
   font-size: var(--fs-sm);
   animation: tdTick 190ms var(--motion-ease);
+  transition: transform var(--dur-1) var(--ease-out), filter var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+}
+.td-chip:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
 }
 @keyframes tdTick { from { transform: scale(1.02); opacity: 0.85; } to { transform: scale(1); opacity: 1; } }
 
