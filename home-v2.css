@@ -1,3 +1,5 @@
+@import url("./style/tokens.css");
+
 .hero-v2 {
   min-height: 540px;
   display: grid;
@@ -8,14 +10,17 @@
   background:
     radial-gradient(circle at 50% 30%, rgba(255,255,255,0.05), transparent 60%),
     linear-gradient(135deg, #1f2a35 0%, #243848 45%, #1b2632 100%);
-  color: #e8edf2;
+  color: var(--text-strong);
+  font-family: var(--font-sans);
 }
 
 .hero-title {
   margin: 0;
-  font-size: clamp(34px, 4vw, 52px);
-  font-weight: 700;
-  line-height: 1.1;
+  font-size: var(--fs-hero);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  font-family: var(--font-display);
 }
 
 .hero-accent {
@@ -24,8 +29,9 @@
 
 .hero-sub {
   margin-top: 20px;
-  font-size: 18px;
-  opacity: 0.8;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  opacity: 0.9;
   max-width: 480px;
 }
 
@@ -41,7 +47,9 @@
   border-radius: 999px;
   text-decoration: none;
   transition: transform 160ms ease;
-  font-weight: 800;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-2);
+  letter-spacing: var(--tracking-ui);
 }
 
 .hero-btn.primary {
@@ -90,10 +98,12 @@
 }
 
 .hero-preview-label {
-  font-size: 13px;
-  font-weight: 800;
+  font-size: var(--fs-0);
+  font-weight: var(--fw-semibold);
   color: rgba(231,240,249,0.85);
   margin-bottom: 10px;
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
 }
 
 .hero-board {
