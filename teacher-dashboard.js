@@ -13,6 +13,7 @@
   var Celebrations = window.CSCelebrations;
   var MasteryLabels = window.CSMasteryLabels;
   var CaseloadHealth = window.CSCaseloadHealth;
+  var FlexGroupEngineV2 = window.CSFlexGroupEngineV2;
   var ExportNotes = window.CSExportNotes;
   var FlexGroupEngine = window.CSFlexGroupEngine;
   var PlanEngine = window.CSPlanEngine;
@@ -617,27 +618,41 @@
 
   function renderFlexGroups(rows) {
     if (!el.groupOutput) return;
-    if (!FlexGroupEngine || typeof FlexGroupEngine.buildGroups !== "function") {
+    var engineV2 = FlexGroupEngineV2 && typeof FlexGroupEngineV2.buildGroups === "function";
+    var engineV1 = FlexGroupEngine && typeof FlexGroupEngine.buildGroups === "function";
+    if (!engineV2 && !engineV1) {
       el.groupOutput.textContent = "Group engine unavailable.";
       return;
     }
-    var built = FlexGroupEngine.buildGroups(rows, {
-      labelsApi: SkillLabels,
-      getTierConfig: EvidenceEngine && typeof EvidenceEngine.getIntensityTier === "function"
-        ? EvidenceEngine.getIntensityTier
-        : function () { return { minutesPerSession: 20, groupSizeMax: 4 }; }
-    });
-    var groups = built && Array.isArray(built.groups) ? built.groups : [];
+    var groups = [];
+    if (engineV2) {
+      groups = FlexGroupEngineV2.buildGroups(rows, {
+        getTierConfig: EvidenceEngine && typeof EvidenceEngine.getIntensityTier === "function"
+          ? EvidenceEngine.getIntensityTier
+          : function () { return { minutesPerSession: 20, groupSizeMax: 4 }; }
+      });
+    } else {
+      var built = FlexGroupEngine.buildGroups(rows, {
+        labelsApi: SkillLabels,
+        getTierConfig: EvidenceEngine && typeof EvidenceEngine.getIntensityTier === "function"
+          ? EvidenceEngine.getIntensityTier
+          : function () { return { minutesPerSession: 20, groupSizeMax: 4 }; }
+      });
+      groups = built && Array.isArray(built.groups) ? built.groups : [];
+    }
     if (!groups.length) {
       el.groupOutput.textContent = "No shared-skill groups yet. Run more quick checks.";
       return;
     }
     el.groupOutput.innerHTML = groups.map(function (group, idx) {
       var names = (group.students || []).map(function (s) { return s && s.name ? s.name : "Student"; }).join(", ");
+      var groupLabel = String(group.label || group.skillLabel || "Targeted support");
+      var tierMix = Array.isArray(group.tierMix) ? group.tierMix.join("/") : String(group.tier || "T2");
+      var mins = Number(group.suggestedMinutes || group.minutesPerSession || 20);
       return [
         '<article class="td-group-item">',
-        '<strong>Group ' + (idx + 1) + ': ' + String(group.skillLabel || "Targeted support") + '</strong>',
-        '<div class="td-todayCard__last">Tier: ' + String(group.tier || "T2") + ' • ' + String(group.minutesPerSession || 20) + ' min</div>',
+        '<strong>Group ' + (idx + 1) + ' — ' + groupLabel + ' (' + (group.students || []).length + ' students)</strong>',
+        '<div class="td-todayCard__last">Tier mix: ' + tierMix + ' • ' + mins + ' min</div>',
         '<div class="td-todayCard__last">Students: ' + names + '</div>',
         '</article>'
       ].join("");
