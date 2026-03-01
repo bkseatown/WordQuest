@@ -511,11 +511,13 @@
         : { status: "WATCH", reason: "Growth signal pending" };
       var trackLabel = track.status === "ON_TRACK" ? "On Track"
         : (track.status === "OFF_TRACK" ? "Off Track" : "Watch Growth");
+      var growthSymbol = track.status === "ON_TRACK" ? "↑" : (track.status === "OFF_TRACK" ? "↓" : "→");
       var trackClass = track.status === "ON_TRACK" ? "td-track-on"
         : (track.status === "OFF_TRACK" ? "td-track-off" : "td-track-watch");
       var rationale = topSkill
         ? ("Priority: " + formatSkillBreadcrumb(topSkill.skillId) + " • Need: " + needLabel + " • Cadence: " + topSkill.stalenessDays + "d/" + cadenceDays + "d")
         : "Priority: Missing evidence";
+      rationale += " • " + growthSymbol;
       var confidenceTip = "";
       if (topSkill && MasteryLabels && typeof MasteryLabels.masteryToBand === "function") {
         var estMastery = Math.max(0, Math.min(1, 1 - Number(topSkill.need || 0.5)));
@@ -645,12 +647,16 @@
       var stability = top && GrowthEngine && typeof GrowthEngine.computeGrowthStability === "function"
         ? GrowthEngine.computeGrowthStability(String(row.student && row.student.id || ""), top.skillId)
         : { stability: "STABLE" };
+      var track = GrowthEngine && typeof GrowthEngine.computeTrackStatus === "function"
+        ? GrowthEngine.computeTrackStatus(String(row.student && row.student.id || ""))
+        : { status: "WATCH" };
       return {
         overallPriority: Number(row && row.score || 0),
         stalenessDays: Number(top && top.stalenessDays || 0),
         topSkillId: String(top && top.skillId || "BASELINE"),
         trajectory: String(traj && traj.direction || "FLAT"),
-        stability: String(stability && stability.stability || "STABLE")
+        stability: String(stability && stability.stability || "STABLE"),
+        trackStatus: String(track && track.status || "WATCH")
       };
     });
     var summary = ProgressSummary && typeof ProgressSummary.buildExecutiveSummary === "function"

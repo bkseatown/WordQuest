@@ -20,6 +20,7 @@
     var avgStale = rows.reduce(function (sum, r) { return sum + Number(r.stalenessDays || 0); }, 0) / rows.length;
     var improving = rows.filter(function (r) { return String(r.trajectory || '') === 'UP'; }).length;
     var variableGrowth = rows.filter(function (r) { return String(r.stability || '') === 'VARIABLE'; }).length;
+    var onTrack = rows.filter(function (r) { return String(r.trackStatus || '') === 'ON_TRACK'; }).length;
     var dominant = rows.reduce(function (acc, row) {
       var key = String(row.topSkillId || 'BASELINE');
       acc[key] = (acc[key] || 0) + 1;
@@ -36,8 +37,10 @@
       bullets.push('Growth variability elevated in ' + variableGrowth + ' students');
     }
 
+    var dominantPct = Math.round((dominant[dominantSkillId] || 0) * 100 / rows.length);
+    var onTrackPct = Math.round(onTrack * 100 / rows.length);
     return {
-      headline: dominantSkillId + ' remains primary driver (' + Math.round((dominant[dominantSkillId] || 0) * 100 / rows.length) + '% of caseload)',
+      headline: dominantSkillId + ' remains primary driver (' + dominantPct + '% of caseload) • Growth Trend: ' + onTrackPct + '% On Track',
       bulletPoints: bullets,
       riskShiftTrend: highRisk > Math.ceil(rows.length * 0.3) ? 'Risk elevated' : 'Risk stabilizing'
     };
