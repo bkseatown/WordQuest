@@ -25,13 +25,13 @@
   color: var(--text-strong);
   line-height: var(--line-tight);
   max-width: 640px;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.012em;
 }
 
 .hero-sub {
-  margin-top: var(--space-2);
+  margin-top: var(--sp-2);
   font-size: var(--body);
-  line-height: 1.58;
+  line-height: 1.5;
   color: color-mix(in oklab, var(--muted) 86%, white 14%);
   max-width: 520px;
 }
@@ -39,19 +39,20 @@
 #home-coach-ribbon { margin-top: var(--space-2); max-width: 520px; }
 
 .hero-cta {
-  margin-top: var(--space-3);
+  margin-top: var(--sp-3);
   display: flex;
-  gap: var(--space-2);
+  gap: var(--sp-2);
   flex-wrap: wrap;
 }
 
 .primary-btn {
   background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 88%, white 12%), color-mix(in oklab, var(--accent-2) 40%, #0f172a 60%));
   border-radius: var(--radius-round);
-  padding: 12px 22px;
+  min-height: 42px;
+  padding: 10px 18px;
   border: 1px solid color-mix(in oklab, var(--accent) 70%, transparent);
   color: #0f172a;
-  font-weight: 700;
+  font-weight: var(--fw-semibold);
   box-shadow: 0 10px 22px rgba(79,195,247,0.36);
   transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease);
   cursor: pointer;
@@ -62,10 +63,11 @@
 .secondary-btn {
   background: color-mix(in oklab, var(--surface-1) 80%, transparent);
   border-radius: var(--radius-round);
-  padding: 12px 22px;
+  min-height: 42px;
+  padding: 10px 18px;
   border: 1px solid color-mix(in oklab, var(--border-subtle) 80%, transparent);
   color: var(--text-strong);
-  font-weight: 650;
+  font-weight: var(--fw-medium);
   transition: transform var(--motion-fast) var(--motion-ease);
   cursor: pointer;
 }

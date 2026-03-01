@@ -1,0 +1,91 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  --fs-0: clamp(0.76rem, 0.72vw, 0.82rem);
+  --fs-1: clamp(0.84rem, 0.8vw, 0.9rem);
+  --fs-2: clamp(0.95rem, 0.92vw, 1rem);
+  --fs-3: clamp(1.08rem, 1.24vw, 1.2rem);
+  --fs-4: clamp(1.32rem, 1.75vw, 1.55rem);
+  --fs-5: clamp(1.78rem, 2.6vw, 2.3rem);
+  --fs-6: clamp(2.2rem, 4.1vw, 2.9rem);
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --sp-1: 6px;
+  --sp-2: 10px;
+  --sp-3: 14px;
+  --sp-4: 18px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: "Inter", var(--font-sans, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
+  font-size: var(--fs-2);
+  line-height: 1.5;
+}
+
+h1, .h1 {
+  font-size: var(--fs-5);
+  line-height: 1.14;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.012em;
+}
+
+h2, .h2 {
+  font-size: var(--fs-4);
+  line-height: 1.22;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+}
+
+h3, .h3 {
+  font-size: var(--fs-3);
+  line-height: 1.28;
+  font-weight: var(--fw-medium);
+}
+
+p {
+  line-height: 1.52;
+}
+
+.kicker {
+  font-size: var(--fs-0);
+  line-height: 1.35;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: var(--fw-medium);
+}
+
+.muted {
+  color: color-mix(in oklab, var(--muted, #9ab1c9) 84%, #ffffff 16%);
+}
+
+.mono {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace);
+  font-feature-settings: "tnum" 1, "zero" 0;
+}
+
+.btn-label,
+button,
+.button {
+  font-size: var(--fs-1);
+  font-weight: var(--fw-medium);
+  line-height: 1.1;
+}
+
+.td-surface,
+.rl-surface,
+.ss-stage,
+.ss-rail,
+#ws-stage,
+#ws-canvas,
+#ws-rail,
+.card {
+  padding: var(--sp-4);
+}

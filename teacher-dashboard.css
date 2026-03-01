@@ -29,6 +29,10 @@ body.teacher-dashboard {
   gap: 10px;
 }
 
+body.cs-has-nav-shell .td-shell {
+  height: calc(100dvh - var(--nav-h));
+}
+
 .td-surface {
   border-radius: var(--radius-4);
   border: 1px solid color-mix(in oklab, var(--border-subtle) 58%, transparent);
@@ -42,16 +46,16 @@ body.teacher-dashboard {
 .td-top {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: var(--space-3);
+  gap: var(--sp-3);
   align-items: center;
-  padding: 10px 12px;
+  padding: 12px 14px;
   position: sticky;
   top: 0;
   z-index: 9;
 }
 
 .td-wordmark strong { display: block; font-size: 1rem; }
-.td-wordmark span { font-size: var(--fs-sm); color: color-mix(in oklab, var(--muted) 82%, white 18%); font-weight: var(--fw-medium); }
+.td-wordmark span { font-size: var(--fs-1); color: color-mix(in oklab, var(--muted) 82%, white 18%); font-weight: var(--fw-medium); }
 
 #td-search-input {
   width: 100%;
@@ -137,8 +141,17 @@ body.teacher-dashboard {
   border-radius: var(--radius-3);
   border: 1px dashed color-mix(in oklab, var(--border-subtle) 54%, transparent);
   background: color-mix(in oklab, var(--surface-2) 52%, transparent);
-  padding: 14px;
+  padding: var(--sp-4);
   color: var(--muted);
+}
+.td-stage-empty h2,
+.td-right h2,
+.td-left h2 {
+  margin-bottom: var(--sp-2);
+}
+.td-stage-empty p {
+  margin: 0;
+  font-size: var(--fs-2);
 }
 
 .td-demo-chips, .td-empty-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
@@ -168,7 +181,8 @@ body.teacher-dashboard {
   font-weight: var(--fw-semibold);
   border-radius: var(--radius-3);
   border: 1px solid transparent;
-  padding: 11px;
+  min-height: 42px;
+  padding: 10px 12px;
   cursor: pointer;
   transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease);
 }
