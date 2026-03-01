@@ -17,7 +17,7 @@
 body.cs-page-reading-lab {
   margin: 0;
   min-height: 100dvh;
-  font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
   color: var(--rl-text);
   background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.04), transparent 58%), var(--rl-bg);
 }
@@ -42,17 +42,17 @@ body.cs-page-reading-lab {
 
 .rl-head h1 {
   margin: 0;
-  font-family: "Nunito", "Atkinson Hyperlegible", sans-serif;
+  font-family: var(--font-display);
   font-size: var(--cs-h1);
-  line-height: 1.16;
-  letter-spacing: 0.01em;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
 }
 
 .rl-head p {
   margin: 8px 0 0;
   color: color-mix(in oklab, var(--rl-muted) 88%, #ffffff 12%);
-  font-size: var(--cs-body);
-  line-height: 1.56;
+  font-size: max(0.875rem, var(--cs-body));
+  line-height: var(--lh-body);
 }
 
 .rl-meta-title {

@@ -45,18 +45,23 @@
   /* typography */
   --font-ui: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   --font-sans: var(--font-ui);
-  --font-display: ui-serif, Georgia, "Times New Roman", Times, serif;
+  --font-display: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   --font-family: var(--font-ui);
   --font: var(--font-ui);
   --font-logo: var(--font-ui);
 
-  --fs-xxl: clamp(1.9rem, 3.2vw, 2.75rem);
-  --fs-xl: clamp(1.45rem, 2.2vw, 2rem);
-  --fs-lg: clamp(1.12rem, 1.35vw, 1.36rem);
-  --fs-md: clamp(0.95rem, 0.92vw, 1.03rem);
-  --fs-sm: clamp(0.84rem, 0.8vw, 0.91rem);
-  --fs-xs: clamp(0.76rem, 0.72vw, 0.82rem);
+  --fs-hero: clamp(2.2rem, 3.2vw, 3.4rem);
+  --fs-h1: clamp(1.6rem, 2.2vw, 2.2rem);
+  --fs-h2: clamp(1.2rem, 1.5vw, 1.5rem);
+  --fs-body: 1rem;
+  --fs-small: 0.9rem;
+  --fs-xxl: var(--fs-h1);
+  --fs-xl: var(--fs-h2);
+  --fs-lg: clamp(1.04rem, 1.28vw, 1.3rem);
+  --fs-md: var(--fs-body);
+  --fs-sm: var(--fs-small);
+  --fs-xs: 0.875rem;
   --fs-0: 12px;
   --fs-1: 13px;
   --fs-2: 14px;
@@ -70,19 +75,21 @@
   --h3: var(--fs-lg);
   --body: var(--fs-md);
   --meta: var(--fs-sm);
-  --lh-tight: 1.15;
-  --lh-normal: 1.38;
+  --lh-tight: 1.1;
+  --lh-ui: 1.35;
+  --lh-normal: var(--lh-ui);
+  --lh-body: 1.5;
   --lh-relaxed: 1.55;
   --line-tight: var(--lh-tight);
-  --line-body: var(--lh-normal);
+  --line-body: var(--lh-body);
   --fw-regular: 400;
   --fw-medium: 500;
   --fw-semibold: 600;
   --fw-bold: 650;
-  --ls-tight: -0.012em;
-  --ls-base: -0.006em;
+  --ls-tight: -0.015em;
+  --ls-base: -0.005em;
   --ls-wide: 0.01em;
-  --track-tight: -0.015em;
+  --track-tight: var(--ls-tight);
   --track-normal: 0em;
   --track-wide: 0.02em;
 
@@ -103,8 +110,8 @@ html[data-motion="reduced"] *::after {
 html,
 body {
   font-family: var(--font-sans);
-  font-size: var(--fs-md);
-  line-height: var(--lh-relaxed);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -133,7 +140,8 @@ select,
 textarea,
 label {
   font-family: var(--font-ui);
-  font-size: var(--fs-md);
+  font-size: max(0.875rem, var(--fs-small));
+  line-height: var(--lh-ui);
   letter-spacing: var(--ls-base);
 }
 

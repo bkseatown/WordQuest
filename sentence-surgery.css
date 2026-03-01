@@ -21,7 +21,7 @@ body.cs-page-surgery {
     radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.06), transparent 58%),
     var(--ss-bg);
   color: var(--ss-text);
-  font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
 }
 
 .ss-container {
@@ -66,10 +66,11 @@ body.cs-page-surgery {
 
 .ss-stage-head h1 {
   margin: 0;
-  font-family: "Nunito", "Atkinson Hyperlegible", sans-serif;
+  font-family: var(--font-display);
   font-size: var(--cs-h2);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
 }
 
 .cs-coach-ribbon {

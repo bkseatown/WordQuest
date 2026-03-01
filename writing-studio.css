@@ -39,7 +39,7 @@ body.cs-page-writing {
     radial-gradient(1200px 700px at 20% 10%, rgba(94, 200, 255, 0.2) 0%, rgba(0, 0, 0, 0) 55%),
     linear-gradient(135deg, #101824 0%, #1b2a3c 45%, #121e2d 100%);
   color: var(--ws-ink-light);
-  font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
 }
 
 body.cs-page-writing:not(.ws-started) #ws-stage {
@@ -149,10 +149,10 @@ body.cs-page-writing.cs-hv2-theme-seahawks #ws-editor {
 
 .ws-title {
   font-size: 30px;
-  font-family: "Nunito", "Atkinson Hyperlegible", sans-serif;
+  font-family: var(--font-display);
   font-weight: 900;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
 }
 
 .ws-subtitle {

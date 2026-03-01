@@ -80,7 +80,13 @@ body.cs-has-nav-shell .td-shell {
   z-index: 9;
 }
 
-.td-wordmark strong { display: block; font-size: 1rem; }
+.td-wordmark strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+}
 .td-wordmark span { font-size: var(--fs-1); color: color-mix(in oklab, var(--muted) 82%, white 18%); font-weight: var(--fw-medium); }
 .td-brand-home {
   text-decoration: none;
@@ -95,7 +101,7 @@ body.cs-has-nav-shell .td-shell {
   color: var(--text-strong);
   padding: 10px 12px;
   font: inherit;
-  font-size: var(--fs-md);
+  font-size: var(--fs-small);
 }
 
 #td-search-input:focus-visible {
@@ -112,7 +118,7 @@ body.cs-has-nav-shell .td-shell {
   color: var(--text-strong);
   padding: 7px 10px;
   font: inherit;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-small);
   font-weight: var(--fw-medium);
   cursor: pointer;
   transition: transform var(--motion-fast) var(--motion-ease), filter var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
@@ -228,7 +234,7 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .td-selected-head { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
-.td-label { margin: 0; color: color-mix(in oklab, var(--muted) 84%, white 16%); font-size: var(--fs-sm); font-weight: var(--fw-medium); letter-spacing: var(--ls-wide); text-transform: uppercase; }
+.td-label { margin: 0; color: color-mix(in oklab, var(--muted) 84%, white 16%); font-size: max(0.875rem, var(--fs-small)); font-weight: var(--fw-medium); letter-spacing: var(--ls-wide); text-transform: uppercase; }
 .td-reco-line { margin: 8px 0 0; font-size: var(--fs-md); line-height: var(--lh-normal); }
 .td-mini-chart { width: 220px; max-width: 44%; }
 #td-sparkline { width: 100%; height: 48px; display: block; }

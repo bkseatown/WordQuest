@@ -20,12 +20,13 @@
 
 .hero-title {
   margin: 0;
-  font-size: var(--h1);
+  font-size: var(--fs-hero);
+  font-family: var(--font-display);
   font-weight: 740;
   color: var(--text-strong);
-  line-height: var(--line-tight);
+  line-height: var(--lh-tight);
   max-width: 640px;
-  letter-spacing: -0.012em;
+  letter-spacing: var(--tracking-tight);
 }
 
 .hero-sub {
