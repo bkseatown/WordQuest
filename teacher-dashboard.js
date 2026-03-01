@@ -32,6 +32,8 @@
     importExport: document.getElementById("td-import-export"),
     addStudent: document.getElementById("td-add-student"),
     settings: document.getElementById("td-settings"),
+    copySummary: document.getElementById("td-copy-summary"),
+    quickLaunchButtons: Array.prototype.slice.call(document.querySelectorAll("[data-quick]")),
     emptyActions: Array.prototype.slice.call(document.querySelectorAll("[data-empty-action]")),
     coachRibbon: document.getElementById("td-coach-ribbon"),
     coachLine: document.getElementById("td-coach-line"),
@@ -292,6 +294,29 @@
       setCoachLine("Copied roster CSV.");
     });
 
+    if (el.copySummary) {
+      el.copySummary.addEventListener("click", function () {
+        if (!state.selectedId) return;
+        var summary = Evidence.getStudentSummary(state.selectedId);
+        var text = [
+          summary.student.name + " (" + summary.student.id + ")",
+          "Focus: " + summary.focus,
+          "Recommended next step: " + summary.nextMove.line
+        ].join("\n");
+        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+        setCoachLine("Copied family/admin summary.");
+      });
+    }
+
+    el.quickLaunchButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        var target = String(button.getAttribute("data-quick") || "").trim();
+        if (!target) return;
+        var sid = encodeURIComponent(state.selectedId || "demo-student");
+        window.location.href = target + ".html?student=" + sid;
+      });
+    });
+
     el.emptyActions.forEach(function (button) {
       button.addEventListener("click", function () {
         var action = button.getAttribute("data-empty-action");
@@ -312,5 +337,12 @@
   refreshCaseload();
   bindEvents();
   setupCoachRibbon();
-  selectStudent(state.caseload[0] && state.caseload[0].id || "");
+  var initial = (function () {
+    try {
+      var sid = new URLSearchParams(window.location.search).get("student");
+      if (sid) return sid;
+    } catch (_e) {}
+    return state.caseload[0] && state.caseload[0].id || "";
+  })();
+  selectStudent(initial);
 })();

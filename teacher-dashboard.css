@@ -83,6 +83,11 @@ body.teacher-dashboard {
   cursor: pointer;
   transition: transform var(--motion-fast) var(--motion-ease), filter var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
 }
+.td-nav-btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
 .td-top-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
 .td-top-btn:active { transform: translateY(0); filter: brightness(0.98); }
 .td-coach-chip { border-color: color-mix(in oklab, var(--accent) 58%, transparent); }
