@@ -422,9 +422,31 @@
     swUpdateToastEl = toast;
   }
 
+  function isOfflineRuntimeEnabled() {
+    try {
+      return localStorage.getItem('wq_enable_offline_runtime') === '1';
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  async function unregisterOfflineRuntime() {
+    if (!('serviceWorker' in navigator)) return;
+    try {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((reg) => reg.unregister().catch(() => false)));
+    } catch (_e) {
+      // no-op
+    }
+  }
+
   async function registerOfflineRuntime() {
     if (DEMO_MODE) return;
     if (!('serviceWorker' in navigator)) return;
+    if (!isOfflineRuntimeEnabled()) {
+      await unregisterOfflineRuntime();
+      return;
+    }
     if (!window.isSecureContext && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
       return;
     }

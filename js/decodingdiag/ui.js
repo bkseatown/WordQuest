@@ -390,7 +390,18 @@
     });
   }
 
-  ProbeStore.loadProbeStore().then(function (result) {
+  function decodeDiagDataPaths() {
+    var path = String((root.location && root.location.pathname) || '').toLowerCase();
+    var isActivitiesPage = path.indexOf('/activities/') !== -1;
+    var base = isActivitiesPage ? '../data/' : './data/';
+    return {
+      probesPath: base + 'decodingdiag-probes.v1.json',
+      tagsPath: base + 'decodingdiag-error-tags.v1.json',
+      configPath: base + 'decodingdiag-config.v1.json'
+    };
+  }
+
+  ProbeStore.loadProbeStore(decodeDiagDataPaths()).then(function (result) {
     state.store = result;
     initStudent();
     if (!result.ok) {
