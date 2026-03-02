@@ -672,6 +672,62 @@ body.cs-has-nav-shell .td-shell {
 @keyframes tdPulse { 0% { transform: scale(1); } 40% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
 .td-chip-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+.td-skill-tiles {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.td-skill-tile {
+  border: 1px solid color-mix(in oklab, var(--border-soft) 72%, transparent);
+  background: color-mix(in oklab, var(--surface-2) 72%, transparent);
+  border-radius: 12px;
+  padding: 8px;
+  display: grid;
+  gap: 6px;
+}
+.td-skill-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.td-skill-head strong {
+  font-size: var(--fs-sm);
+  line-height: 1.2;
+}
+.td-skill-meter {
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--surface-2) 85%, #0f2235 15%);
+}
+.td-skill-meter > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 86%, white 14%), color-mix(in oklab, var(--accent-2) 46%, #0e1a28 54%));
+}
+.td-skill-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--fs-xs, 12px);
+  opacity: 0.82;
+}
+.td-skill-meta svg {
+  width: 72px;
+  height: 24px;
+  display: block;
+}
+.td-skill-meta path {
+  fill: none;
+  stroke: color-mix(in oklab, var(--accent) 74%, #b5dbff 26%);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .td-chip {
   border-radius: 999px;
   border: 1px solid color-mix(in oklab, var(--border-subtle) 72%, transparent);
@@ -771,6 +827,7 @@ body.cs-has-nav-shell .td-shell {
 @media (max-width: 1180px) {
   .td-shell { width: min(1160px, calc(100vw - 14px)); }
   .td-today__list { grid-template-columns: 1fr; }
+  .td-skill-tiles { grid-template-columns: 1fr; }
   .td-todayCard__row { grid-template-columns: 1fr; }
   .td-top-row { grid-template-columns: 1fr; }
   .td-work-row { grid-template-columns: 1fr 1.3fr; }

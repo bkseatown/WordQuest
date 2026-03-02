@@ -58,6 +58,7 @@
     rightEmpty: document.getElementById("td-right-empty"),
     rightContent: document.getElementById("td-right-content"),
     evidenceChips: document.getElementById("td-evidence-chips"),
+    skillTiles: document.getElementById("td-skill-tiles"),
     needsChipList: document.getElementById("td-needs-chip-list"),
     planList: document.getElementById("td-plan-list"),
     planTabs: Array.prototype.slice.call(document.querySelectorAll("[data-plan-tab]")),
@@ -813,6 +814,7 @@
       if (el.lastSessionMeta) el.lastSessionMeta.textContent = "Run a 90-second Word Quest quick check to generate signals.";
       renderNeeds(null);
       renderTodayPlan(null);
+      renderSkillTiles("");
       renderProgressNote(null, null);
       updateAuditMarkers();
       setCoachLine("Search or pick a student and I will suggest the next best move.");
@@ -863,6 +865,7 @@
     };
 
     renderEvidenceChips(summary.evidenceChips);
+    renderSkillTiles(state.selectedId);
     renderNeeds(state.snapshot);
     renderTodayPlan(state.plan);
     renderProgressNote(state.plan, summary.student);
@@ -878,6 +881,62 @@
     }
     el.evidenceChips.innerHTML = chips.map(function (chip) {
       return '<span class="td-chip"><strong>' + chip.label + ':</strong> ' + chip.value + '</span>';
+    }).join("");
+  }
+
+  function buildTinySpark(points) {
+    var arr = Array.isArray(points) && points.length ? points : [38, 42, 46, 50];
+    var max = Math.max.apply(Math, arr);
+    var min = Math.min.apply(Math, arr);
+    var span = Math.max(1, max - min);
+    return arr.map(function (value, idx) {
+      var x = Math.round((idx / Math.max(1, arr.length - 1)) * 72);
+      var y = Math.round(22 - ((Number(value || 0) - min) / span) * 18);
+      return (idx ? "L" : "M") + x + " " + y;
+    }).join(" ");
+  }
+
+  function renderSkillTiles(studentId) {
+    if (!el.skillTiles) return;
+    if (!studentId || !Evidence || typeof Evidence.getSkillModel !== "function") {
+      el.skillTiles.innerHTML = '<div class="td-skill-tile"><p class="td-reco-line">Select a student to view skill tiles.</p></div>';
+      return;
+    }
+    var model = Evidence.getSkillModel(studentId);
+    var rows = model && model.mastery && typeof model.mastery === "object"
+      ? Object.keys(model.mastery).map(function (skillId) {
+          var row = model.mastery[skillId] || {};
+          var mastery = Math.max(0, Math.min(100, Number(row.mastery || 0)));
+          return {
+            skillId: skillId,
+            label: getSkillLabelSafe(skillId),
+            mastery: mastery,
+            level: Math.max(0, Math.min(3, Number(row.level || 0))),
+            lastUpdated: String(row.lastUpdated || ""),
+            sparkline: Array.isArray(row.sparkline) ? row.sparkline.slice(-7) : []
+          };
+        })
+      : [];
+    rows.sort(function (a, b) { return a.mastery - b.mastery; });
+    if (!rows.length) {
+      el.skillTiles.innerHTML = '<div class="td-skill-tile"><p class="td-reco-line">No skill evidence yet. Run a quick check.</p></div>';
+      return;
+    }
+    el.skillTiles.innerHTML = rows.slice(0, 8).map(function (row) {
+      var updated = row.lastUpdated ? new Date(row.lastUpdated).toLocaleDateString() : "—";
+      return [
+        '<article class="td-skill-tile">',
+        '<div class="td-skill-head">',
+        '<strong>' + row.label + '</strong>',
+        '<span class="tier-badge tier-' + Math.max(1, Math.min(3, row.level + 1)) + '">L' + row.level + '</span>',
+        '</div>',
+        '<div class="td-skill-meter"><span style="width:' + row.mastery + '%"></span></div>',
+        '<div class="td-skill-meta">',
+        '<svg viewBox="0 0 72 24" preserveAspectRatio="none"><path d="' + buildTinySpark(row.sparkline) + '" /></svg>',
+        '<span>' + row.mastery + '% · ' + updated + '</span>',
+        '</div>',
+        '</article>'
+      ].join("");
     }).join("");
   }
 

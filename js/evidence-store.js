@@ -10,6 +10,7 @@
   "use strict";
 
   var KEY = "CS_EVIDENCE_V1";
+  var SKILL_MODEL_KEY = "CS_SKILL_MODEL_V1";
   var LEGACY_KEYS = ["cs_evidence_v1"];
   var VERSION = 1;
   var MAX_SPARK_POINTS = 14;
@@ -25,6 +26,16 @@
   function parseJSON(raw) {
     if (!raw) return null;
     try { return JSON.parse(raw); } catch (_err) { return null; }
+  }
+
+  function readSkillState() {
+    var parsed = parseJSON(localStorage.getItem(SKILL_MODEL_KEY));
+    if (!parsed || typeof parsed !== "object") return {};
+    return parsed;
+  }
+
+  function writeSkillState(state) {
+    localStorage.setItem(SKILL_MODEL_KEY, JSON.stringify(state || {}));
   }
 
   function readRawState() {
@@ -596,6 +607,119 @@
     return '"' + String(value == null ? "" : value).replace(/"/g, '""') + '"';
   }
 
+  function skillCatalog() {
+    return (typeof window !== "undefined" && window.CSSkillTaxonomy && Array.isArray(window.CSSkillTaxonomy.SKILLS))
+      ? window.CSSkillTaxonomy.SKILLS
+      : [];
+  }
+
+  function defaultSkillModel(studentId) {
+    var sid = normalizeStudentId(studentId);
+    var nowIso = new Date().toISOString();
+    var model = {
+      studentId: sid,
+      mastery: {},
+      topNeeds: [],
+      updatedAt: nowIso
+    };
+    skillCatalog().forEach(function (skill) {
+      var id = String(skill.id || "");
+      if (!id) return;
+      model.mastery[id] = {
+        skillId: id,
+        level: 1,
+        mastery: 42,
+        lastUpdated: "",
+        sparkline: []
+      };
+    });
+    return model;
+  }
+
+  function normalizeSkillRow(row, skillId) {
+    var src = row && typeof row === "object" ? row : {};
+    var spark = Array.isArray(src.sparkline) ? src.sparkline.slice(-MAX_SPARK_POINTS) : [];
+    var mastery = Math.max(0, Math.min(100, Math.round(Number(src.mastery || 0))));
+    var level = Math.max(0, Math.min(3, Number.isFinite(Number(src.level)) ? Number(src.level) : Math.round(mastery / 34)));
+    return {
+      skillId: String(skillId || src.skillId || ""),
+      level: level,
+      mastery: mastery,
+      lastUpdated: String(src.lastUpdated || ""),
+      sparkline: spark.map(function (n) { return Math.max(0, Math.min(100, Math.round(Number(n || 0)))); })
+    };
+  }
+
+  function getSkillModel(studentId) {
+    var sid = normalizeStudentId(studentId);
+    var state = readSkillState();
+    var current = state[sid];
+    var base = defaultSkillModel(sid);
+    if (current && typeof current === "object") {
+      var mastery = current.mastery && typeof current.mastery === "object" ? current.mastery : {};
+      Object.keys(mastery).forEach(function (skillId) {
+        base.mastery[skillId] = normalizeSkillRow(mastery[skillId], skillId);
+      });
+      base.topNeeds = Array.isArray(current.topNeeds) ? current.topNeeds.slice(0, 5) : [];
+      base.updatedAt = String(current.updatedAt || base.updatedAt);
+    }
+    if (!base.topNeeds.length) base.topNeeds = computeTopNeeds(base);
+    return base;
+  }
+
+  function deriveLevel(mastery) {
+    var m = Math.max(0, Math.min(100, Number(mastery || 0)));
+    if (m >= 80) return 3;
+    if (m >= 60) return 2;
+    if (m >= 35) return 1;
+    return 0;
+  }
+
+  function applySkillEvidence(studentId, patch) {
+    var sid = normalizeStudentId(studentId);
+    var state = readSkillState();
+    var model = getSkillModel(sid);
+    var deltas = patch && patch.skillDelta && typeof patch.skillDelta === "object" ? patch.skillDelta : {};
+    var stamp = String((patch && patch.createdAt) || new Date().toISOString());
+    Object.keys(deltas).forEach(function (skillId) {
+      var delta = Math.max(-2, Math.min(2, Number(deltas[skillId] || 0)));
+      if (!Number.isFinite(delta)) return;
+      var row = normalizeSkillRow(model.mastery[skillId], skillId);
+      var next = Math.max(0, Math.min(100, row.mastery + (delta * 8)));
+      row.mastery = Math.round(next);
+      row.level = deriveLevel(next);
+      row.lastUpdated = stamp;
+      row.sparkline.push(row.mastery);
+      if (row.sparkline.length > MAX_SPARK_POINTS) row.sparkline = row.sparkline.slice(-MAX_SPARK_POINTS);
+      model.mastery[skillId] = row;
+    });
+    model.topNeeds = computeTopNeeds(model);
+    model.updatedAt = stamp;
+    state[sid] = model;
+    writeSkillState(state);
+    return model;
+  }
+
+  function computeTopNeeds(model) {
+    var rows = [];
+    var mastery = model && model.mastery && typeof model.mastery === "object" ? model.mastery : {};
+    Object.keys(mastery).forEach(function (skillId) {
+      var row = normalizeSkillRow(mastery[skillId], skillId);
+      rows.push({
+        skillId: skillId,
+        level: row.level,
+        mastery: row.mastery,
+        lastUpdated: row.lastUpdated
+      });
+    });
+    return rows
+      .sort(function (a, b) {
+        if (a.mastery !== b.mastery) return a.mastery - b.mastery;
+        return String(a.skillId).localeCompare(String(b.skillId));
+      })
+      .slice(0, 5);
+  }
+
   function init() {
     var state = load();
     save(state);
@@ -613,6 +737,9 @@
     getRecentSessions: getRecentSessions,
     getLastSession: getLastSession,
     computeStudentSnapshot: computeStudentSnapshot,
+    getSkillModel: getSkillModel,
+    applySkillEvidence: applySkillEvidence,
+    computeTopNeeds: computeTopNeeds,
     exportStudentCSV: exportStudentCSV,
     exportStudentJSON: exportStudentJSON,
     recommendNextSteps: recommendNextSteps,

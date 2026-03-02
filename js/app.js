@@ -14115,6 +14115,37 @@
           }
         });
       }
+      if (
+        window.CSSkillMapper &&
+        typeof window.CSSkillMapper.mapWQSignalsToSkillEvidence === 'function' &&
+        window.CSEvidence &&
+        typeof window.CSEvidence.applySkillEvidence === 'function'
+      ) {
+        const evidencePatch = window.CSSkillMapper.mapWQSignalsToSkillEvidence({
+          session: {
+            studentId,
+            createdAt: new Date().toISOString(),
+            activity: 'wordquest',
+            durationSec: Math.max(0, Number(signals.durSec || 0))
+          },
+          events: payloadMeta.events || [],
+          result: {
+            solved: !!signals.solved,
+            guesses: guessCount,
+            patternAdherence,
+            repetitionPenalty: Number(signals.repetitionPenalty || 0),
+            uniqueVowels: Number(signals.uniqueVowels || 0),
+            vowelRatio: Number(signals.vowelRatio || 0),
+            helpUsed: !!payloadMeta.helpUsed,
+            hintUsed: Number(signals.hintsUsed || 0),
+            affixAttempts: Number(signals.affixAttempts || 0),
+            orthographicPatternMiss: Number(signals.orthographicPatternMiss || 0)
+          }
+        });
+        if (evidencePatch && evidencePatch.skillDelta) {
+          window.CSEvidence.applySkillEvidence(studentId, evidencePatch);
+        }
+      }
     } catch {}
 
     try {
