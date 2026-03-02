@@ -277,7 +277,7 @@
   // ─── 1. Load data ──────────────────────────────────
   const loadingEl = document.getElementById('loading-screen');
   const LOADING_WATCHDOG_MS = 18000;
-  let loadingRecoveryShown = false;
+  var loadingRecoveryShown = false;
 
   function buildCacheBustedUrl() {
     const nextUrl = new URL(location.href);
@@ -366,7 +366,7 @@
   const APP_SEMVER = '1.0.0';
   const SW_RUNTIME_VERSION = '20260228-v11';
   const SW_RUNTIME_URL = `./sw-runtime.js?v=${encodeURIComponent(SW_RUNTIME_VERSION)}`;
-  let swUpdateToastEl = null;
+  var swUpdateToastEl = null;
 
   function showSwUpdateToast(onUpdateNow) {
     if (swUpdateToastEl) return;
@@ -720,13 +720,13 @@
   prefs.lessonTarget = DEFAULT_PREFS.lessonTarget;
 
   function setPref(k, v) { prefs[k] = v; savePrefs(prefs); }
-  let autoPhysicalKeyboardSwitchApplied = false;
-  let firstRunSetupPending = false;
-  let pageMode = 'wordquest';
-  let homeMode = 'home';
-  let focusSupportUnlockAt = 0;
-  let focusSupportUnlockTimer = 0;
-  let focusSupportUnlockedByMiss = false;
+  var autoPhysicalKeyboardSwitchApplied = false;
+  var firstRunSetupPending = false;
+  var pageMode = 'wordquest';
+  var homeMode = 'home';
+  var focusSupportUnlockAt = 0;
+  var focusSupportUnlockTimer = 0;
+  var focusSupportUnlockedByMiss = false;
 
   // One-time baseline migration so existing installs land on your intended defaults.
   if (localStorage.getItem(PREF_MIGRATION_KEY) !== 'done') {
@@ -947,49 +947,49 @@
   const TELEMETRY_QUEUE_LIMIT = 500;
   const TELEMETRY_SESSION_ID = `sess_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
   const telemetrySessionStartedAt = Date.now();
-  let telemetryLastMusicSignature = '';
-  let telemetryUploadInFlight = false;
-  let telemetryUploadIntervalId = 0;
+  var telemetryLastMusicSignature = '';
+  var telemetryUploadInFlight = false;
+  var telemetryUploadIntervalId = 0;
   const HOVER_NOTE_DELAY_MS = 500;
   const HOVER_NOTE_TARGET_SELECTOR = '.icon-btn, .header-quick-btn, .focus-action-btn, .theme-preview-music, .wq-theme-nav-btn, .quick-popover-done';
-  let hoverNoteTimer = 0;
-  let hoverNoteTarget = null;
-  let hoverNoteEl = null;
-  let focusSearchReopenGuardUntil = 0;
+  var hoverNoteTimer = 0;
+  var hoverNoteTarget = null;
+  var hoverNoteEl = null;
+  var focusSearchReopenGuardUntil = 0;
   const ThemeRegistry = window.WQThemeRegistry || null;
   const shouldPersistTheme = () => (prefs.themeSave || DEFAULT_PREFS.themeSave) === 'on';
-  let musicController = null;
-  let challengeSprintTimer = 0;
-  let challengePacingTimer = 0;
-  let challengeModalReturnFocusEl = null;
-  let demoRoundComplete = false;
-  let demoEndOverlayEl = null;
-  let demoBannerEl = null;
-  let demoLaunchBtnEl = null;
-  let demoCoachEl = null;
-  let demoCoachReadyTimer = 0;
-  let demoDebugLabelEl = null;
-  let demoToastEl = null;
-  let demoToastTextEl = null;
-  let demoToastBarFillEl = null;
-  let demoToastChipEl = null;
-  let demoToastProgressTimer = 0;
-  let demoToastStartedAt = 0;
-  let demoToastDurationMs = 90000;
-  let demoToastCollapsed = false;
-  let demoToastAutoCollapsedByPlay = false;
-  let demoToastMessageTimer = 0;
-  let demoToastLastMessageAt = 0;
-  let demoToastPendingKey = '';
+  var musicController = null;
+  var challengeSprintTimer = 0;
+  var challengePacingTimer = 0;
+  var challengeModalReturnFocusEl = null;
+  var demoRoundComplete = false;
+  var demoEndOverlayEl = null;
+  var demoBannerEl = null;
+  var demoLaunchBtnEl = null;
+  var demoCoachEl = null;
+  var demoCoachReadyTimer = 0;
+  var demoDebugLabelEl = null;
+  var demoToastEl = null;
+  var demoToastTextEl = null;
+  var demoToastBarFillEl = null;
+  var demoToastChipEl = null;
+  var demoToastProgressTimer = 0;
+  var demoToastStartedAt = 0;
+  var demoToastDurationMs = 90000;
+  var demoToastCollapsed = false;
+  var demoToastAutoCollapsedByPlay = false;
+  var demoToastMessageTimer = 0;
+  var demoToastLastMessageAt = 0;
+  var demoToastPendingKey = '';
   const DEMO_TOAST_DEFAULT_DURATION_MS = 90000;
   const DEMO_TOAST_MIN_DWELL_MS = 3200;
-  let homeCoachRibbon = null;
-  let wordQuestCoachRibbon = null;
-  let _wqDiagSession = null;
-  let _wqDiagTimer = null;
-  let _latestSavedSessionId = '';
-  let _activeEvidenceSessionId = '';
-  let wordQuestCoachKey = 'before_guess';
+  var homeCoachRibbon = null;
+  var wordQuestCoachRibbon = null;
+  var _wqDiagSession = null;
+  var _wqDiagTimer = null;
+  var _latestSavedSessionId = '';
+  var _activeEvidenceSessionId = '';
+  var wordQuestCoachKey = 'before_guess';
   const DEMO_COACH_READY_MAX_TRIES = 25;
   const DEMO_COACH_READY_DELAY_MS = 120;
   const demoState = {
@@ -3216,7 +3216,7 @@
     return normalized;
   }
 
-  let lastAssessmentLockNoticeAt = 0;
+  var lastAssessmentLockNoticeAt = 0;
 
   function isAssessmentLockEnabled() {
     const toggle = _el('s-assessment-lock');
@@ -3547,8 +3547,8 @@
     card.classList.add('hidden');
   }
 
-  let starterCoachTimer = 0;
-  let informantHintHideTimer = 0;
+  var starterCoachTimer = 0;
+  var informantHintHideTimer = 0;
 
   const SOR_HINT_PROFILES = Object.freeze({
     initial_blend: Object.freeze({
@@ -5443,7 +5443,7 @@
     }
   }
 
-  let reviewQueueState = loadReviewQueueState();
+  var reviewQueueState = loadReviewQueueState();
 
   function saveReviewQueueState() {
     const cleanedItems = reviewQueueState.items
@@ -5587,19 +5587,19 @@
     } catch {}
   }
 
-  let activeRoundStartedAt = 0;
-  let currentRoundHintRequested = false;
-  let currentRoundStarterWordsShown = false;
-  let currentRoundVoiceAttempts = 0;
-  let currentRoundErrorCounts = Object.create(null);
-  let currentRoundSkillKey = 'classic';
-  let currentRoundSkillLabel = 'Classic mixed practice';
-  let blockedLetterToastAt = 0;
+  var activeRoundStartedAt = 0;
+  var currentRoundHintRequested = false;
+  var currentRoundStarterWordsShown = false;
+  var currentRoundVoiceAttempts = 0;
+  var currentRoundErrorCounts = Object.create(null);
+  var currentRoundSkillKey = 'classic';
+  var currentRoundSkillLabel = 'Classic mixed practice';
+  var blockedLetterToastAt = 0;
 
-  let classroomTurnTimer = 0;
-  let classroomTurnEndsAt = 0;
-  let classroomTurnRemaining = 0;
-  let classroomTeamIndex = 0;
+  var classroomTurnTimer = 0;
+  var classroomTurnEndsAt = 0;
+  var classroomTurnRemaining = 0;
+  var classroomTeamIndex = 0;
 
   function isTeamModeEnabled() {
     return normalizeTeamMode(_el('s-team-mode')?.value || prefs.teamMode || DEFAULT_PREFS.teamMode) === 'on';
@@ -6016,15 +6016,15 @@
     homeCoachRibbon.update({});
   }
 
-  let avaWqWrongStreak = 0;
-  let avaWqCorrectStreak = 0;
-  let avaWqTotalWrong = 0;
-  let avaWqTotalCorrect = 0;
-  let avaWqRapidEvents = [];
-  let avaWqLastActionAt = Date.now();
-  let avaWqLastIdleEmitAt = 0;
-  let avaWqIdleTimer = 0;
-  let avaWqIdleFiredThisRound = false;
+  var avaWqWrongStreak = 0;
+  var avaWqCorrectStreak = 0;
+  var avaWqTotalWrong = 0;
+  var avaWqTotalCorrect = 0;
+  var avaWqRapidEvents = [];
+  var avaWqLastActionAt = Date.now();
+  var avaWqLastIdleEmitAt = 0;
+  var avaWqIdleTimer = 0;
+  var avaWqIdleFiredThisRound = false;
 
   function logAvaIdleDev(message, detail) {
     if (!isDevModeEnabled()) return;
@@ -7612,23 +7612,23 @@
     }
   });
 
-  let voiceTakeComplete = false;
-  let voiceRecorder = null;
-  let voiceStream = null;
-  let voiceChunks = [];
-  let voiceClipUrl = null;
-  let voiceClipBlob = null;
-  let voicePreviewAudio = null;
-  let voiceAnalyser = null;
-  let voiceAudioCtx = null;
-  let voiceWaveRaf = 0;
-  let voiceIsRecording = false;
-  let voiceAutoStopTimer = 0;
-  let voiceCountdownTimer = 0;
-  let voiceCountdownToken = 0;
-  let voiceKaraokeTimer = 0;
-  let voiceKaraokeRunToken = 0;
-  let revealNarrationToken = 0;
+  var voiceTakeComplete = false;
+  var voiceRecorder = null;
+  var voiceStream = null;
+  var voiceChunks = [];
+  var voiceClipUrl = null;
+  var voiceClipBlob = null;
+  var voicePreviewAudio = null;
+  var voiceAnalyser = null;
+  var voiceAudioCtx = null;
+  var voiceWaveRaf = 0;
+  var voiceIsRecording = false;
+  var voiceAutoStopTimer = 0;
+  var voiceCountdownTimer = 0;
+  var voiceCountdownToken = 0;
+  var voiceKaraokeTimer = 0;
+  var voiceKaraokeRunToken = 0;
+  var revealNarrationToken = 0;
   const VOICE_PRIVACY_TOAST_KEY = 'wq_voice_privacy_toast_seen_v1';
   const VOICE_CAPTURE_MS = 3000;
   const VOICE_COUNTDOWN_SECONDS = 3;
@@ -7672,11 +7672,12 @@
     }
   }
 
-  let voiceHistory = loadVoiceHistory();
+  var voiceHistory = loadVoiceHistory();
 
   function saveVoiceHistory() {
+    const entries = Array.isArray(voiceHistory) ? voiceHistory : [];
     try {
-      localStorage.setItem(VOICE_HISTORY_KEY, JSON.stringify(voiceHistory.slice(0, VOICE_HISTORY_LIMIT)));
+      localStorage.setItem(VOICE_HISTORY_KEY, JSON.stringify(entries.slice(0, VOICE_HISTORY_LIMIT)));
     } catch {}
   }
 
@@ -7684,7 +7685,7 @@
     const listEl = _el('voice-history-items');
     const trendEl = _el('voice-history-trend');
     if (!listEl || !trendEl) return;
-    const entries = voiceHistory.slice(0, VOICE_HISTORY_LIMIT);
+    const entries = Array.isArray(voiceHistory) ? voiceHistory.slice(0, VOICE_HISTORY_LIMIT) : [];
     listEl.innerHTML = '';
 
     if (!entries.length) {
@@ -8579,7 +8580,7 @@
     'vocab-ela-912':'ELA vocabulary · Grades 9-12'
   };
 
-  let lessonPackApplying = false;
+  var lessonPackApplying = false;
 
   function getLessonPackSelectElements() {
     return [_el('s-lesson-pack')]
@@ -9625,8 +9626,8 @@
       .map((row) => row.entry);
   }
 
-  let focusNavIndex = -1;
-  let focusCurriculumPackFilter = '';
+  var focusNavIndex = -1;
+  var focusCurriculumPackFilter = '';
 
   function setFocusSearchOpen(isOpen) {
     document.documentElement.setAttribute('data-focus-search-open', isOpen ? 'true' : 'false');
@@ -10633,8 +10634,8 @@
     if (!cleaned.length) return MIDGAME_BOOST_FALLBACK;
     return Object.freeze(cleaned.map((item) => Object.freeze(item)));
   })();
-  let midgameBoostShown = false;
-  let midgameBoostAutoHideTimer = 0;
+  var midgameBoostShown = false;
+  var midgameBoostAutoHideTimer = 0;
 
   function clearMidgameBoostAutoHideTimer() {
     if (!midgameBoostAutoHideTimer) return;
@@ -11318,10 +11319,10 @@
     };
   }
 
-  let rosterState = loadRosterState();
-  let probeHistory = loadProbeHistory();
-  let studentGoalState = loadStudentGoalState();
-  let playlistState = loadPlaylistState();
+  var rosterState = loadRosterState();
+  var probeHistory = loadProbeHistory();
+  var studentGoalState = loadStudentGoalState();
+  var playlistState = loadPlaylistState();
   const teacherAssignmentsFeature = window.WQTeacherAssignmentsFeature?.createFeature?.({
     contract: TEACHER_ASSIGNMENTS_CONTRACT,
     el: _el,
@@ -11337,9 +11338,9 @@
     applyStudentTargetConfig,
     isAssessmentRoundLocked
   }) || null;
-  let probeState = createEmptyProbeState();
-  let sessionSummary = loadSessionSummaryState();
-  let activeMiniLessonKey = 'top';
+  var probeState = createEmptyProbeState();
+  var sessionSummary = loadSessionSummaryState();
+  var activeMiniLessonKey = 'top';
 
   function saveSessionSummaryState() {
     try { sessionStorage.setItem(SESSION_SUMMARY_KEY, JSON.stringify(sessionSummary)); } catch {}
@@ -15048,8 +15049,8 @@
   var revealAutoAdvanceTimer = 0;
   var revealAutoCountdownTimer = 0;
   var revealAutoAdvanceEndsAt = 0;
-  let revealChallengeState = null;
-  let challengeOnboardingState = loadChallengeOnboardingState();
+  var revealChallengeState = null;
+  var challengeOnboardingState = loadChallengeOnboardingState();
 
   function pickRandom(items) {
     if (!Array.isArray(items) || !items.length) return '';
@@ -16860,8 +16861,8 @@
   });
   const PHONICS_CLUE_TIMER_OPTIONS = new Set(['off', '45', '60', '75', '90']);
 
-  let phonicsClueDeckMap = Object.create(null);
-  let phonicsClueDeckPromise = null;
+  var phonicsClueDeckMap = Object.create(null);
+  var phonicsClueDeckPromise = null;
   const phonicsClueState = {
     deckId: 'taboo_phonics_g2_3_starter_30',
     context: 'solo',
@@ -17399,7 +17400,7 @@
 
   // ─── 10. Duplicate-letter dismissible toast ──────────
   const DUPE_PREF_KEY = 'wq_v2_dupe_dismissed';
-  let _dupeToastEl = null;
+  var _dupeToastEl = null;
 
   function removeDupeToast() {
     if (_dupeToastEl) { _dupeToastEl.remove(); _dupeToastEl = null; }
