@@ -120,6 +120,10 @@
     lastSessionTitle: document.getElementById("td-last-session-title"),
     lastSessionMeta: document.getElementById("td-last-session-meta"),
     shareSummary: document.getElementById("td-share-summary"),
+    shareQuickCopy: document.getElementById("td-share-quick-copy"),
+    shareQuickPacket: document.getElementById("td-share-quick-packet"),
+    shareLink: document.getElementById("td-share-link"),
+    shareBuildline: document.getElementById("td-share-buildline"),
     shareModal: document.getElementById("td-share-modal"),
     shareModalClose: document.getElementById("td-share-modal-close"),
     sharePreview: document.getElementById("td-share-preview"),
@@ -375,12 +379,21 @@
       var buildId = String(data && (data.buildId || data.id || data.build) || "").trim();
       if (!buildId) {
         el.buildline.textContent = fallback;
+        if (el.shareBuildline) el.shareBuildline.textContent = fallback;
         return;
       }
       el.buildline.textContent = "Build: " + buildId;
+      if (el.shareBuildline) el.shareBuildline.textContent = "Build: " + buildId;
     }).catch(function () {
       el.buildline.textContent = fallback;
+      if (el.shareBuildline) el.shareBuildline.textContent = fallback;
     });
+  }
+
+  function getCurrentBuildId() {
+    var fromLine = String(el.buildline && el.buildline.textContent || "").replace(/^Build:\s*/i, "").trim();
+    if (fromLine && fromLine !== "local" && fromLine !== "checking...") return fromLine;
+    return "";
   }
 
   function formatNextStep(studentId, topSkillId) {
@@ -959,11 +972,24 @@
   }
 
   function renderEvidenceChips(chips) {
-    if (!chips || !chips.length) {
+    var rows = Array.isArray(chips) ? chips.slice(0, 8) : [];
+    if (SupportStore && state.selectedId && typeof SupportStore.getRecentEvidencePoints === "function") {
+      try {
+        var recent = SupportStore.getRecentEvidencePoints(state.selectedId, 7, 8);
+        recent.forEach(function (row) {
+          if (Array.isArray(row.chips) && row.chips.length) {
+            row.chips.slice(0, 2).forEach(function (chipText) {
+              rows.push({ label: String(row.module || "Activity"), value: String(chipText || "") });
+            });
+          }
+        });
+      } catch (_e) {}
+    }
+    if (!rows.length) {
       el.evidenceChips.innerHTML = '<span class="td-chip">No recent evidence yet</span>';
       return;
     }
-    el.evidenceChips.innerHTML = chips.map(function (chip) {
+    el.evidenceChips.innerHTML = rows.slice(0, 12).map(function (chip) {
       return '<span class="td-chip"><strong>' + chip.label + ':</strong> ' + chip.value + '</span>';
     }).join("");
   }
@@ -2016,7 +2042,10 @@
       hasTier1EvidenceTool: !!document.getElementById("td-tier1-pack") || !!document.querySelector("[data-tier1-action='start']"),
       hasAccommodationsPanel: !!document.querySelector("[data-support-tab='accommodations']"),
       hasMeetingNotesTool: !!document.getElementById("td-meeting-mode") || !!document.getElementById("td-open-meeting-notes"),
-      hasReferralPacketExport: !!document.getElementById("td-support-export-packet")
+      hasReferralPacketExport: !!document.getElementById("td-support-export-packet"),
+      hasShareControls: !!document.getElementById("td-share-cluster"),
+      hasCopySummary: !!document.getElementById("td-share-quick-copy"),
+      hasEvidenceChips: !!document.getElementById("td-evidence-chips")
     };
     window.__TD_MARKERS__ = {
       hasToday: !!document.getElementById("td-today"),
@@ -2111,6 +2140,46 @@
         if (!state.selectedId) return;
         openShareModal(state.selectedId);
         setCoachLine("Share summary ready.");
+      });
+    }
+    if (el.shareQuickCopy) {
+      el.shareQuickCopy.addEventListener("click", function () {
+        if (!state.selectedId) return;
+        var payload = buildSharePayload(state.selectedId);
+        copyText(payload.text || "", function () {
+          if (!navigator.clipboard) {
+            openShareModal(state.selectedId);
+            setCoachLine("Clipboard unavailable. Summary opened for manual copy.");
+            return;
+          }
+          setCoachLine("Summary copied.");
+        });
+      });
+    }
+    if (el.shareQuickPacket) {
+      el.shareQuickPacket.addEventListener("click", function () {
+        if (!state.selectedId || !SupportStore || typeof SupportStore.exportReferralPacket !== "function") return;
+        var packet = SupportStore.exportReferralPacket(state.selectedId);
+        download("mdt-packet-" + state.selectedId + ".html", packet.html, "text/html");
+        setCoachLine("MDT packet exported.");
+      });
+    }
+    if (el.shareLink) {
+      el.shareLink.addEventListener("click", function () {
+        if (!state.selectedId) return;
+        var buildId = getCurrentBuildId();
+        var link = appendStudentParam("./teacher-dashboard.html", state.selectedId);
+        var url = new URL(link, window.location.href);
+        if (buildId) url.searchParams.set("v", buildId);
+        copyText(url.toString(), function () {
+          if (!navigator.clipboard) {
+            if (el.sharePreview) el.sharePreview.value = url.toString();
+            if (el.shareModal) el.shareModal.classList.remove("hidden");
+            setCoachLine("Link ready in modal for manual copy.");
+            return;
+          }
+          setCoachLine("Share link copied.");
+        });
       });
     }
 
