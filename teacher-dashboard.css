@@ -795,6 +795,24 @@ body.cs-has-nav-shell .td-shell {
   margin: 0;
   font-size: var(--fs-sm);
 }
+.td-support-line {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+.td-mini-spark {
+  width: 100%;
+  height: 24px;
+  display: block;
+  margin-top: 6px;
+}
+.td-mini-spark path {
+  fill: none;
+  stroke: color-mix(in oklab, var(--accent) 72%, #b8dcff 28%);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .td-plan-tabs {
   display: flex;
   gap: 8px;
