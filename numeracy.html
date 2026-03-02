@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cornerstone MTSS - Numeracy Lab</title>
+  <title>Cornerstone MTSS - Numeracy Quick Check</title>
   <script src="./config.js?v=20260301y"></script>
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260301y">
@@ -13,16 +13,18 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      min-height: 100dvh;
+      height: 100dvh;
       font-family: var(--font-ui);
       background: linear-gradient(145deg, #1f2a35 0%, #243848 45%, #1b2632 100%);
       color: #e8edf2;
       display: grid;
       place-items: center;
       padding: 16px;
+      overflow: hidden;
     }
     .card {
       width: min(760px, 96vw);
+      max-height: calc(100dvh - 32px);
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,0.12);
       background: rgba(12,23,34,0.38);
@@ -30,6 +32,7 @@
       padding: 18px;
       display: grid;
       gap: 10px;
+      overflow: auto;
     }
     h1 {
       margin: 0;
@@ -66,21 +69,64 @@
       text-decoration: none;
       font-weight: 650;
     }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 8px;
+    }
+    .row input, .row select {
+      min-height: 38px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: #e8edf2;
+      padding: 0 10px;
+    }
+    .prompt {
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      padding: 10px 0;
+    }
+    .meta {
+      display: flex;
+      gap: 12px;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
   </style>
 </head>
 <body>
-  <main class="card" aria-label="Numeracy Lab placeholder">
-    <h1 class="h1">Numeracy Lab - Conceptual Reasoning</h1>
-    <p class="muted">Bridges / Figureoutable Math</p>
-    <div class="btns">
-      <button type="button">Number Sense Probe - Coming Soon - Under Construction</button>
-      <button type="button">Fact Fluency Insight - Coming Soon - Under Construction</button>
-      <button type="button">Concept Builder - Coming Soon - Under Construction</button>
+  <main class="card" aria-label="Numeracy Quick Check">
+    <h1 class="h1">Numeracy Quick Check (v0.1)</h1>
+    <p class="muted">Run a 90-second fact fluency probe and emit MTSS evidence instantly.</p>
+    <div class="row">
+      <input id="nq-student" type="text" placeholder="Student ID (e.g. SAS7A-01)">
+      <select id="nq-tier" aria-label="Tier">
+        <option value="T2">T2</option>
+        <option value="T3">T3</option>
+      </select>
     </div>
-    <div class="note">Cornerstone MTSS route is active. Numeracy modules are staged and not live yet.</div>
+    <div class="meta">
+      <span id="nq-progress">0/12</span>
+      <span id="nq-timer">0s / 90s</span>
+    </div>
+    <div id="nq-prompt" class="prompt">--</div>
+    <div class="row">
+      <input id="nq-answer" type="number" inputmode="numeric" placeholder="Type answer, press Enter">
+      <button id="nq-submit" type="button">Submit</button>
+    </div>
+    <div class="btns">
+      <button id="nq-start" type="button">Start 90s Quick Check</button>
+      <button id="nq-stop" type="button">Stop + Save Summary</button>
+    </div>
+    <div id="nq-summary" class="note">Ready. Results will be stored locally in evidence + support stores.</div>
     <div class="back"><a href="./index.html">Back to Cornerstone MTSS</a></div>
   </main>
   <script src="./js/nav-shell.js?v=20260301y"></script>
+  <script src="./js/support-store.js?v=20260301y"></script>
+  <script src="./js/evidence-engine.js?v=20260301y"></script>
+  <script src="./js/numeracy-quickcheck.js?v=20260302c"></script>
   <script src="./build-stamp.js?v=20260301y"></script>
   <script src="./js/build-badge.js?v=20260301y"></script>
   <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>

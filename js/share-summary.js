@@ -6,6 +6,7 @@
   root.CSShareSummary = factory();
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
+  var host = typeof globalThis !== "undefined" ? globalThis : (typeof window !== "undefined" ? window : {});
 
   function csv(value) {
     return '"' + String(value == null ? "" : value).replace(/"/g, '""') + '"';
@@ -39,6 +40,11 @@
     var deltas = trendSlice.length >= 2
       ? (trendSlice[0].guesses - trendSlice[trendSlice.length - 1].guesses)
       : 0;
+    var mtssDecision = null;
+    var topSkillId = topNeeds.length && topNeeds[0] ? String(topNeeds[0].skillId || "") : "";
+    if (topSkillId && host.CSEvidenceEngine && typeof host.CSEvidenceEngine.computeMtssTrendDecision === "function") {
+      mtssDecision = host.CSEvidenceEngine.computeMtssTrendDecision(String(student.id || "demo-student"), topSkillId);
+    }
 
     var text = [
       "Student: " + String(student.name || "Student") + " (" + String(student.id || "demo-student") + ")",
@@ -49,6 +55,7 @@
         return id + " L" + Number(row.level || 0) + " (" + Number(row.mastery || 0) + "%)";
       }).join(" | "),
       "Last 7 Sessions Delta: guesses " + (deltas >= 0 ? "+" : "") + deltas,
+      "MTSS Trend Rule: " + (mtssDecision ? (mtssDecision.status + " (" + mtssDecision.points + " pts)") : "Need 6-8 data points"),
       "Today's Plan: " + (plan.length ? plan.map(function (p) {
         return p.title + " (" + Number(p.minutes || 0) + "m)";
       }).join(" -> ") : "Run quick check and regenerate plan")
