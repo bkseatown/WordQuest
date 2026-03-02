@@ -6,7 +6,7 @@
  * - Audio files: stale-while-revalidate runtime cache (bounded size)
  */
 
-const SW_VERSION = '20260302-v4';
+const SW_VERSION = '20260303-v5';
 const RUNTIME_BUILD_ID = new URL(self.location.href).searchParams.get('v') || SW_VERSION;
 const CACHE_PREFIX = `cs-cache-${RUNTIME_BUILD_ID}`;
 const SHELL_CACHE = `${CACHE_PREFIX}-shell`;
@@ -18,6 +18,15 @@ const AUDIO_MAX_ENTRIES = 1800;
 const CORE_FILES = [
   './',
   './index.html',
+  './teacher-dashboard.html',
+  './word-quest.html',
+  './reading-lab.html',
+  './sentence-surgery.html',
+  './writing-studio.html',
+  './numeracy.html',
+  './literacy.html',
+  './admin-dashboard.html',
+  './activities/decoding-diagnostic.html',
   './sw.js',
   './sw-runtime.js'
 ];
