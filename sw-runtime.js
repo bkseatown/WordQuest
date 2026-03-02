@@ -141,7 +141,6 @@ async function trimCache(cacheName, maxEntries) {
 }
 
 async function navigationHandler(request) {
-  const cache = await caches.open(SHELL_CACHE);
   try {
     const networkRequest = new Request(request.url, {
       method: request.method,
@@ -152,18 +151,15 @@ async function navigationHandler(request) {
       cache: 'reload'
     });
     const response = await fetch(networkRequest);
-    // Never mask an upstream 404 with a cached shell; return network response as-is.
-    if (response && response.status === 404) return response;
-    if (response && response.ok) {
-      cache.put(request, response.clone()).catch(() => {});
-    }
+    // Never mask upstream status with cached shell.
     return response;
   } catch {
-    const fallback = await cache.match(new URL('./index.html', self.registration.scope).toString(), { ignoreSearch: true });
-    if (fallback) return fallback;
-    return new Response('Offline and no cached shell available.', {
+    return new Response('Network unavailable. Reload when connection is restored.', {
       status: 503,
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-store'
+      }
     });
   }
 }

@@ -364,7 +364,20 @@
   WQUI.init();
 
   const APP_SEMVER = '1.0.0';
-  const SW_RUNTIME_VERSION = '20260228-v11';
+  const SW_RUNTIME_FALLBACK_VERSION = '20260302-v1';
+  function resolveSwRuntimeVersion() {
+    try {
+      const payload = window.CS_BUILD || window.__BUILD__ || window.__CS_BUILD__ || {};
+      const buildId = String(payload.buildId || payload.stamp || payload.version || '').trim();
+      if (buildId) return buildId;
+    } catch {}
+    try {
+      const qp = String(new URLSearchParams(window.location.search || '').get('v') || '').trim();
+      if (qp) return qp;
+    } catch {}
+    return SW_RUNTIME_FALLBACK_VERSION;
+  }
+  const SW_RUNTIME_VERSION = resolveSwRuntimeVersion();
   const SW_RUNTIME_URL = `./sw-runtime.js?v=${encodeURIComponent(SW_RUNTIME_VERSION)}`;
   var swUpdateToastEl = null;
 

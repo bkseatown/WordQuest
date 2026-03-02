@@ -76,7 +76,6 @@
         }
       }
       await clearAllCaches();
-      try { window.localStorage.clear(); } catch (_e3) {}
       try { window.sessionStorage.clear(); } catch (_e4) {}
       var url = new URL(window.location.href);
       url.searchParams.set("_cb", deployed || Date.now().toString());
@@ -203,6 +202,17 @@
     updateLabels(current, deployed);
     if (deployed && current && deployed !== current) {
       ensureToast().hidden = false;
+      try {
+        var existingCb = String(new URL(window.location.href).searchParams.get("_cb") || "").trim();
+        if (existingCb !== deployed) {
+          var autoKey = "cs_build_autofix_" + deployed;
+          var done = sessionStorage.getItem(autoKey) === "1";
+          if (!done) {
+            sessionStorage.setItem(autoKey, "1");
+            setTimeout(function () { forceUpdate(); }, 500);
+          }
+        }
+      } catch (_autoErr) {}
       if ("serviceWorker" in navigator && navigator.serviceWorker.getRegistration) {
         navigator.serviceWorker.getRegistration().then(function (reg) {
           if (!reg || !reg.waiting) return;
