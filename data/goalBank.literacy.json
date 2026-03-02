@@ -1,0 +1,32 @@
+{
+  "version": "cs.goalBank.literacy.v1",
+  "goals": [
+    {
+      "id": "lit-dec-001",
+      "domain": "literacy.decoding",
+      "grade_band": "K-2",
+      "skill": "Short vowel decoding",
+      "baseline_prompt": "Student currently decodes CVC words with inconsistent vowel accuracy.",
+      "goal_template_smart": "Within 6 weeks, the student will decode grade-level CVC and CVCE targets at 85% accuracy across 3 consecutive probes.",
+      "progress_monitoring_method": "Weekly 10-word probe"
+    },
+    {
+      "id": "lit-flu-001",
+      "domain": "literacy.fluency",
+      "grade_band": "3-5",
+      "skill": "Oral reading fluency",
+      "baseline_prompt": "Student reads grade-level passages with hesitations and limited phrasing.",
+      "goal_template_smart": "Within 8 weeks, the student will improve oral reading fluency by 15 wcpm while sustaining 95% accuracy on weekly progress checks.",
+      "progress_monitoring_method": "Weekly fluency timing"
+    },
+    {
+      "id": "lit-morph-001",
+      "domain": "literacy.spelling",
+      "grade_band": "3-8",
+      "skill": "Morphology application",
+      "baseline_prompt": "Student inconsistently applies inflectional and derivational patterns in decoding and spelling.",
+      "goal_template_smart": "Within 6 weeks, the student will apply taught morphology patterns in word analysis tasks at 80% accuracy over 4 sessions.",
+      "progress_monitoring_method": "Biweekly morphology check"
+    }
+  ]
+}

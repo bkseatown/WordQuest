@@ -1,0 +1,23 @@
+{
+  "version": "cs.goalBank.writing.v1",
+  "goals": [
+    {
+      "id": "wrt-sent-001",
+      "domain": "writing.sentence",
+      "grade_band": "3-8",
+      "skill": "Sentence clarity",
+      "baseline_prompt": "Student writes short responses with weak sentence control.",
+      "goal_template_smart": "Within 6 weeks, the student will produce complete, clear sentences in 4/5 writing checks using a sentence checklist.",
+      "progress_monitoring_method": "Twice-weekly sentence sample"
+    },
+    {
+      "id": "wrt-par-001",
+      "domain": "writing.paragraph",
+      "grade_band": "4-10",
+      "skill": "Paragraph organization",
+      "baseline_prompt": "Student needs support organizing ideas into cohesive paragraphs.",
+      "goal_template_smart": "Within 8 weeks, the student will write a coherent paragraph with topic sentence, supporting details, and closing in 3 consecutive tasks.",
+      "progress_monitoring_method": "Weekly paragraph rubric"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "version": "cs.goalBank.math.v1",
+  "goals": [
+    {
+      "id": "math-flu-001",
+      "domain": "numeracy.fluency",
+      "grade_band": "3-8",
+      "skill": "Fact fluency",
+      "baseline_prompt": "Student shows inconsistent retrieval of core math facts during class tasks.",
+      "goal_template_smart": "Within 6 weeks, the student will increase accurate fact retrieval to 85% on weekly fluency probes.",
+      "progress_monitoring_method": "Weekly timed fact check"
+    },
+    {
+      "id": "math-strat-001",
+      "domain": "numeracy.fluency",
+      "grade_band": "6-10",
+      "skill": "Problem-solving strategy use",
+      "baseline_prompt": "Student attempts problems without a consistent strategy.",
+      "goal_template_smart": "Within 8 weeks, the student will apply a named strategy and explain steps on 4/5 monitored problems.",
+      "progress_monitoring_method": "Teacher strategy checklist"
+    }
+  ]
+}

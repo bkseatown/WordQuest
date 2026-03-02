@@ -1,0 +1,40 @@
+{
+  "version": "cs.interventions.catalog.v1",
+  "interventions": [
+    {
+      "id": "intv-wilson-routine",
+      "name": "Wilson-style decoding routine",
+      "domain": "literacy.decoding",
+      "tags": ["SAS-aligned", "Tier1", "Tier2", "Fundations", "Just Words"],
+      "descriptor": "Explicit phonics routine with modeling, guided blending, and dictation transfer."
+    },
+    {
+      "id": "intv-ufli-blending",
+      "name": "UFLI blending sprint",
+      "domain": "literacy.decoding",
+      "tags": ["SAS-aligned", "Tier1", "UFLI"],
+      "descriptor": "Short, high-frequency blending practice for sound-symbol mapping."
+    },
+    {
+      "id": "intv-read-naturally",
+      "name": "Read Naturally repeated reading",
+      "domain": "literacy.fluency",
+      "tags": ["SAS-aligned", "Tier1", "Tier2", "Read Naturally"],
+      "descriptor": "Guided repeated reading to build pacing, accuracy, and phrasing."
+    },
+    {
+      "id": "intv-lexia-path",
+      "name": "Lexia targeted path",
+      "domain": "literacy.spelling",
+      "tags": ["SAS-aligned", "Tier2", "Lexia"],
+      "descriptor": "Assigned digital pathway aligned to identified decoding and language needs."
+    },
+    {
+      "id": "intv-sentence-frame",
+      "name": "Sentence frame + revision checklist",
+      "domain": "writing.sentence",
+      "tags": ["SAS-aligned", "Tier1", "Step Up to Writing"],
+      "descriptor": "Sentence scaffold with guided revision checks for clarity and syntax."
+    }
+  ]
+}
