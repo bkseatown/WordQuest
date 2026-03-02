@@ -23,7 +23,7 @@
   }
 
   function canonicalWordQuestHref() {
-    return withAppBase("word-quest/index.html#wordquest");
+    return withAppBase("word-quest.html?play=1#wordquest");
   }
 
   function mountWordQuestDemo() {
