@@ -692,8 +692,9 @@
   }
 
   function normalizeUiSkin(mode) {
-    const raw = String(mode || '').trim().toLowerCase();
-    return ALLOWED_UI_SKINS.has(raw) ? raw : DEFAULT_PREFS.uiSkin;
+    // Premium skin is temporarily disabled to prevent washed-out gameplay surfaces.
+    // Keep a hard fallback to classic regardless of stale saved prefs.
+    return 'classic';
   }
 
   function normalizeTextSize(mode) {
