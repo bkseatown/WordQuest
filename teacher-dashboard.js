@@ -13,6 +13,7 @@
   var SkillLabels = window.CSSkillLabels;
   var Celebrations = window.CSCelebrations;
   var MasteryLabels = window.CSMasteryLabels;
+  var MasteryEngine = window.CSMasteryEngine;
   var CaseloadHealth = window.CSCaseloadHealth;
   var FlexGroupEngineV2 = window.CSFlexGroupEngineV2;
   var ProgressSummary = window.CSProgressSummary;
@@ -83,6 +84,8 @@
     rightContent: document.getElementById("td-right-content"),
     evidenceChips: document.getElementById("td-evidence-chips"),
     skillTiles: document.getElementById("td-skill-tiles"),
+    masteryList: document.getElementById("td-mastery-list"),
+    nextSkill: document.getElementById("td-next-skill"),
     needsChipList: document.getElementById("td-needs-chip-list"),
     supportBody: document.getElementById("td-support-body"),
     supportTabs: Array.prototype.slice.call(document.querySelectorAll("[data-support-tab]")),
@@ -921,6 +924,7 @@
       renderRecommendedPlan("");
       renderTodayPlan(null);
       renderSkillTiles("");
+      renderMasteryUI("");
       renderProgressNote(null, null);
       updateAuditMarkers();
       setCoachLine("Search or pick a student and I will suggest the next best move.");
@@ -972,6 +976,7 @@
 
     renderEvidenceChips(summary.evidenceChips);
     renderSkillTiles(state.selectedId);
+    renderMasteryUI(state.selectedId);
     renderNeeds(state.snapshot);
     renderSupportHub(state.selectedId);
     renderDrawer(state.selectedId);
@@ -1085,6 +1090,95 @@
           };
         }));
       } catch (_e) {}
+    }
+  }
+
+  function getSkillEvidencePoints(studentId, skillId) {
+    var sid = String(studentId || "");
+    var id = String(skillId || "");
+    if (!sid || !id) return [];
+    if (EvidenceEngine && typeof EvidenceEngine._getSkillRows === "function") {
+      return (EvidenceEngine._getSkillRows(sid, id) || []).map(function (row) {
+        return {
+          timestamp: row && row.timestamp,
+          accuracy: row && row.result ? Number(row.result.accuracy) : NaN
+        };
+      });
+    }
+    return [];
+  }
+
+  function buildSkillGraph() {
+    var graph = {};
+    var taxonomy = window.__CS_SKILLSTORE__ && window.__CS_SKILLSTORE__.taxonomy;
+    if (taxonomy && Array.isArray(taxonomy.strands)) {
+      taxonomy.strands.forEach(function (strand) {
+        (strand.skills || []).forEach(function (skill) {
+          var id = String(skill && skill.id || "");
+          if (!id) return;
+          graph[id] = graph[id] || { prereq: [], next: [] };
+          graph[id].prereq = Array.isArray(skill.prereq) ? skill.prereq.slice() : [];
+        });
+      });
+      Object.keys(graph).forEach(function (id) {
+        (graph[id].prereq || []).forEach(function (pre) {
+          if (!graph[pre]) graph[pre] = { prereq: [], next: [] };
+          if (graph[pre].next.indexOf(id) === -1) graph[pre].next.push(id);
+        });
+      });
+      return graph;
+    }
+    return {
+      "LIT.DEC.PHG": { prereq: [], next: ["LIT.DEC.SYL", "LIT.DEC.IRREG"] },
+      "LIT.DEC.SYL": { prereq: ["LIT.DEC.PHG"], next: ["LIT.FLU.ACC"] },
+      "LIT.DEC.IRREG": { prereq: ["LIT.DEC.PHG"], next: ["LIT.FLU.ACC"] },
+      "LIT.FLU.ACC": { prereq: ["LIT.DEC.SYL"], next: ["LIT.LANG.SYN"] },
+      "LIT.LANG.SYN": { prereq: ["LIT.FLU.ACC"], next: ["LIT.WRITE.SENT"] },
+      "LIT.WRITE.SENT": { prereq: ["LIT.LANG.SYN"], next: [] },
+      "NUM.FLU.FACT": { prereq: [], next: ["NUM.STRAT.USE"] },
+      "NUM.STRAT.USE": { prereq: ["NUM.FLU.FACT"], next: [] }
+    };
+  }
+
+  function renderMasteryUI(studentId) {
+    if (!el.masteryList || !el.nextSkill) return;
+    if (!studentId || !MasteryEngine) {
+      el.masteryList.innerHTML = '<div class="td-skill-row"><span class="td-skill-name">Select a student to view mastery.</span></div>';
+      el.nextSkill.innerHTML = '<div class="td-skill-row"><span class="td-skill-name">No recommendation yet.</span></div>';
+      return;
+    }
+
+    var model = Evidence && typeof Evidence.getSkillModel === "function" ? Evidence.getSkillModel(studentId) : { mastery: {} };
+    var rows = model && model.mastery && typeof model.mastery === "object" ? Object.keys(model.mastery) : [];
+    var masteryMap = {};
+    if (!rows.length) {
+      el.masteryList.innerHTML = '<div class="td-skill-row"><span class="td-skill-name">Run quick checks to build mastery evidence.</span></div>';
+    } else {
+      el.masteryList.innerHTML = rows.slice(0, 8).map(function (skillId) {
+        var points = getSkillEvidencePoints(studentId, skillId);
+        var masteryState = MasteryEngine.computeMasteryState(points);
+        var mtss = MasteryEngine.computeMtssTrendDecision(points, 0.85);
+        masteryMap[skillId] = masteryState.band;
+        var fadePreview = "";
+        if (mtss === "FADE") {
+          fadePreview = '<div class="td-fade-preview">Fade: ' + MasteryEngine.generateFadeSchedule(5, 1).join(" → ") + "</div>";
+        }
+        return [
+          '<div class="td-skill-row">',
+          '<span class="td-skill-name">' + getSkillLabelSafe(skillId) + '</span>',
+          '<span class="td-band-chip td-band-' + masteryState.band + '">' + masteryState.band + '</span>',
+          '<span class="td-mtss-badge td-mtss-' + mtss + '">' + mtss + "</span>",
+          "</div>",
+          fadePreview
+        ].join("");
+      }).join("");
+    }
+
+    var nextSkillId = MasteryEngine.nextBestSkill(buildSkillGraph(), masteryMap);
+    if (!nextSkillId) {
+      el.nextSkill.innerHTML = '<div class="td-skill-row"><strong>All foundational skills secured.</strong></div>';
+    } else {
+      el.nextSkill.innerHTML = '<div class="td-skill-row"><strong>' + getSkillLabelSafe(nextSkillId) + '</strong><span>Target for instruction</span></div>';
     }
   }
 

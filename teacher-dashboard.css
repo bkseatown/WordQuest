@@ -758,6 +758,61 @@ body.cs-has-nav-shell .td-shell {
   animation: tdTick 190ms var(--motion-ease);
   transition: transform var(--dur-1) var(--ease-out), filter var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
 }
+
+.td-mastery-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.td-skill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--surface-1) 88%, transparent);
+  font-size: 0.9rem;
+  gap: 10px;
+}
+
+.td-skill-row .td-skill-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.td-band-chip {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.td-band-EMERGING { background: #fbe3e3; color: #a94442; }
+.td-band-DEVELOPING { background: #fff4d6; color: #8a6d3b; }
+.td-band-SECURE { background: #e3f7e3; color: #2f7a2f; }
+.td-band-AUTOMATED { background: #d9ecff; color: #2c5aa0; }
+.td-band-NOT_STARTED { background: #e8eaee; color: #4d5562; }
+
+.td-mtss-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.td-mtss-HOLD { background: #ececec; color: #3f444b; }
+.td-mtss-FADE { background: #d4f7d4; color: #2f7a2f; }
+.td-mtss-INTENSIFY { background: #ffdede; color: #a94442; }
+
+.td-fade-preview {
+  font-size: 0.7rem;
+  opacity: 0.74;
+  margin-top: 2px;
+}
 .td-chip:hover {
   transform: translateY(-1px);
   filter: brightness(1.04);
