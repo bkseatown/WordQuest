@@ -61,10 +61,10 @@ body.cs-has-nav-shell .td-shell {
 
 .td-surface {
   border-radius: var(--radius-4);
-  border: 1px solid color-mix(in oklab, var(--border-soft) 64%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border-soft) 52%, transparent);
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.045), rgba(11, 20, 29, 0.2)),
-    color-mix(in oklab, var(--surface-1) 84%, rgba(12, 22, 32, 0.92));
+    linear-gradient(160deg, rgba(255, 255, 255, 0.055), rgba(11, 20, 29, 0.16)),
+    color-mix(in oklab, var(--surface-1) 78%, rgba(18, 30, 43, 0.9));
   box-shadow: var(--shadow-medium);
   backdrop-filter: blur(6px);
   transition: filter var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
@@ -118,6 +118,13 @@ body.cs-has-nav-shell .td-shell {
   font-feature-settings: "tnum" 1, "zero" 0;
 }
 .td-wordmark span { font-size: var(--fs-1); color: color-mix(in oklab, var(--muted) 82%, white 18%); font-weight: var(--fw-medium); }
+.td-buildline {
+  display: block;
+  margin-top: 3px;
+  font-size: var(--fs-0);
+  color: color-mix(in oklab, var(--muted) 80%, white 20%);
+  letter-spacing: var(--ls-base);
+}
 .td-brand-home {
   text-decoration: none;
   color: inherit;
@@ -198,7 +205,7 @@ body.cs-has-nav-shell .td-shell {
   min-height: 34px;
   padding-right: 28px;
 }
-.td-top-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.td-top-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
 .td-top-btn:active { transform: translateY(0); filter: brightness(0.98); }
 .td-coach-chip { border-color: color-mix(in oklab, var(--accent) 58%, transparent); }
 .td-coach-chip.is-fresh { animation: tdCoachPulse 220ms ease-out 1; }
@@ -782,7 +789,7 @@ body.cs-has-nav-shell .td-shell {
   gap: 8px;
 }
 .td-support-item {
-  border: 1px solid color-mix(in oklab, var(--border-soft) 68%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border-soft) 52%, transparent);
   border-radius: 10px;
   padding: 8px;
   background: color-mix(in oklab, var(--surface-1) 88%, transparent);
@@ -855,7 +862,7 @@ body.cs-has-nav-shell .td-shell {
   transition: transform var(--dur-1) var(--ease-out), filter var(--dur-1) var(--ease-out);
 }
 .td-plan-card:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   filter: brightness(1.03);
 }
 .td-plan-card ul {

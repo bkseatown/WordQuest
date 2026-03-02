@@ -156,6 +156,8 @@
     coachCollapse: document.getElementById("td-coach-collapse"),
     coachChip: document.getElementById("td-coach-chip"),
     demoBadge: document.getElementById("td-demo-badge")
+    ,
+    buildline: document.getElementById("td-buildline")
   };
 
   function detectDemoMode() {
@@ -360,6 +362,24 @@
       if (skillStoreLogged) return;
       skillStoreLogged = true;
       console.warn("[Dashboard] SkillStore init failed:", err && err.message ? err.message : err);
+    });
+  }
+
+  function refreshBuildLine() {
+    if (!el.buildline) return;
+    var fallback = "Build: local";
+    fetch("./build.json", { cache: "no-store" }).then(function (resp) {
+      if (!resp.ok) throw new Error("build");
+      return resp.json();
+    }).then(function (data) {
+      var buildId = String(data && (data.buildId || data.id || data.build) || "").trim();
+      if (!buildId) {
+        el.buildline.textContent = fallback;
+        return;
+      }
+      el.buildline.textContent = "Build: " + buildId;
+    }).catch(function () {
+      el.buildline.textContent = fallback;
     });
   }
 
@@ -2446,6 +2466,7 @@
   Evidence.init();
   detectDemoMode();
   bootstrapSkillStore();
+  refreshBuildLine();
   seedFromCaseloadStore();
   ensureDemoCaseload();
   primeDemoMetrics();
