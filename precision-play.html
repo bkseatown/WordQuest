@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" data-page="precision-play">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="./">
+  <title>Cornerstone MTSS - Precision Play</title>
+  <script src="./config.js?v=20260301y"></script>
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="stylesheet" href="./style/tokens.css?v=20260301y">
+  <link rel="stylesheet" href="./style/typography.css?v=20260301y">
+  <link rel="stylesheet" href="./style/nav-shell.css?v=20260301y">
+  <link rel="stylesheet" href="./precision-play.css?v=20260302a">
+</head>
+<body>
+  <main class="pp-shell" id="pp-shell">
+    <header class="pp-top">
+      <div>
+        <h1 class="pp-title">Precision Play</h1>
+        <p class="pp-sub">Help your team guess the word without using these words.</p>
+      </div>
+      <a class="pp-link" href="./teacher-dashboard.html">Back to Teacher Dashboard</a>
+    </header>
+
+    <section class="pp-stage" aria-live="polite">
+      <section id="pp-setup" class="pp-setup">
+        <div>
+          <h2 class="h3" style="margin:0 0 6px;">Session Setup</h2>
+          <p class="pp-sub" style="margin:0;">Fun classroom play with structured intervention layers.</p>
+        </div>
+
+        <div class="pp-grid">
+          <div class="pp-field">
+            <label for="pp-grade-band">Grade Band</label>
+            <select id="pp-grade-band" class="pp-select">
+              <option value="K-2">K-2</option>
+              <option value="3-5" selected>3-5</option>
+              <option value="6-8">6-8</option>
+              <option value="9-12">9-12</option>
+            </select>
+          </div>
+
+          <div class="pp-field">
+            <label for="pp-energy">Energy Level</label>
+            <select id="pp-energy" class="pp-select">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+
+          <div class="pp-field">
+            <label for="pp-challenge">Challenge Layer</label>
+            <select id="pp-challenge" class="pp-select">
+              <option value="classic">Classic</option>
+              <option value="guided" selected>Guided</option>
+              <option value="precision">Precision</option>
+            </select>
+            <button id="pp-advanced-link" class="pp-advanced-link pp-hidden" type="button">Advanced ▸</button>
+            <div id="pp-advanced" class="pp-advanced" hidden>
+              <div class="pp-field">
+                <label for="pp-reveal-timing">Required Move Reveal Timing</label>
+                <select id="pp-reveal-timing" class="pp-select">
+                  <option value="immediate" selected>Immediate</option>
+                  <option value="after">After round starts</option>
+                  <option value="teacher">Teacher only</option>
+                </select>
+              </div>
+              <label class="pp-lock" for="pp-log-enabled">
+                <input id="pp-log-enabled" type="checkbox">
+                Enable Session Logging
+              </label>
+            </div>
+          </div>
+
+          <div class="pp-field">
+            <label for="pp-expression-mode">Expression Mode</label>
+            <select id="pp-expression-mode" class="pp-select">
+              <option value="mixed" selected>Mixed</option>
+              <option value="speak">Speak</option>
+              <option value="act">Act</option>
+              <option value="draw">Draw</option>
+            </select>
+            <label class="pp-lock" for="pp-expression-lock">
+              <input id="pp-expression-lock" type="checkbox">
+              Lock expression mode
+            </label>
+          </div>
+        </div>
+
+        <button id="pp-start" class="pp-start" type="button">Start Precision Play</button>
+      </section>
+
+      <section id="pp-game" class="pp-game pp-hidden">
+        <section class="pp-center">
+          <article class="pp-target">
+            <h2 id="pp-target-word">Target</h2>
+          </article>
+
+          <article class="pp-forbidden">
+            <p class="td-label" style="margin:0 0 8px;">Forbidden Words</p>
+            <div id="pp-forbidden-list" class="pp-forbidden-list"></div>
+          </article>
+
+          <article id="pp-required-row" class="pp-required pp-hidden">
+            <p class="td-label" style="margin:0 0 6px;">Required Move</p>
+            <div id="pp-required-text" class="pp-value"></div>
+          </article>
+
+          <article class="pp-controls">
+            <label id="pp-required-ok-row" class="pp-lock pp-hidden" for="pp-required-ok">
+              <input id="pp-required-ok" type="checkbox">
+              Required move satisfied
+            </label>
+            <div class="pp-actions" style="margin-top:8px;">
+              <button id="pp-guessed" class="pp-btn primary" type="button">Guessed Correct</button>
+              <button id="pp-skip" class="pp-btn" type="button">Skip / Time Up</button>
+              <button id="pp-next" class="pp-btn" type="button">Next Round</button>
+              <button id="pp-end" class="pp-btn" type="button">End Session</button>
+            </div>
+            <p id="pp-status" class="pp-note">Ready.</p>
+          </article>
+
+          <article class="pp-expression">
+            <p class="td-label" style="margin:0;">Expression Cue</p>
+            <p id="pp-expression-cue" class="pp-cue mixed">MIXED</p>
+            <p id="pp-expression-note" class="pp-note">Mixed sequence rotates each round.</p>
+          </article>
+        </section>
+
+        <aside class="pp-side">
+          <article class="pp-stat">
+            <p class="pp-stat-label">Timer</p>
+            <p id="pp-timer" class="pp-stat-value">0s</p>
+          </article>
+          <article class="pp-stat">
+            <p class="pp-stat-label">Score</p>
+            <p id="pp-score" class="pp-stat-value">0</p>
+          </article>
+          <article class="pp-stat">
+            <p class="pp-stat-label">Round</p>
+            <p id="pp-round" class="pp-stat-value">1</p>
+          </article>
+          <article class="pp-stat">
+            <p class="pp-stat-label">Layer</p>
+            <p id="pp-mode" class="pp-stat-value">GUIDED</p>
+          </article>
+        </aside>
+      </section>
+    </section>
+  </main>
+
+  <script src="./js/nav-shell.js?v=20260301y"></script>
+  <script src="./precision-play.js?v=20260302a"></script>
+  <script src="./build-stamp.js?v=20260301y"></script>
+  <script src="./js/build-badge.js?v=20260301y"></script>
+  <script>
+    window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();
+  </script>
+</body>
+</html>

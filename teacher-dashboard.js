@@ -220,6 +220,7 @@
     if (k === "sentence-surgery") return "Sentence Studio";
     if (k === "writing-studio") return "Writing Studio";
     if (k === "numeracy") return "Numeracy";
+    if (k === "precision-play") return "Precision Play";
     return "Activity";
   }
 

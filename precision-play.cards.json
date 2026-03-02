@@ -1,0 +1,48 @@
+{
+  "version": "precision-play.v1",
+  "cards": [
+    {"id":"k2-lit-01","gradeBand":"K-2","domain":"Literacy","target":"habitat","forbidden":["home","animal","live","place"],"requiredMove":"Use the frame: '___ is a kind of ___." ,"skillTag":"vocabulary.classify"},
+    {"id":"k2-lit-02","gradeBand":"K-2","domain":"Literacy","target":"predict","forbidden":["guess","next","think","happen"],"requiredMove":"Start with: 'I predict...'","skillTag":"comprehension.predict"},
+    {"id":"k2-lit-03","gradeBand":"K-2","domain":"Literacy","target":"syllable","forbidden":["clap","parts","word","beats"],"requiredMove":"Model with one example word.","skillTag":"phonological.syllables"},
+    {"id":"k2-lit-04","gradeBand":"K-2","domain":"Literacy","target":"sequence","forbidden":["order","first","next","last"],"requiredMove":"Use transition words in order.","skillTag":"language.sequence"},
+    {"id":"k2-hum-01","gradeBand":"K-2","domain":"Humanities","target":"community","forbidden":["town","people","live","together"],"requiredMove":"Explain with one school example.","skillTag":"social.community"},
+    {"id":"k2-hum-02","gradeBand":"K-2","domain":"Humanities","target":"tradition","forbidden":["holiday","family","special","year"],"requiredMove":"Use: 'A tradition is...'","skillTag":"culture.traditions"},
+    {"id":"k2-hum-03","gradeBand":"K-2","domain":"Humanities","target":"responsibility","forbidden":["job","must","do","help"],"requiredMove":"Give a classroom responsibility.","skillTag":"civics.responsibility"},
+    {"id":"k2-math-01","gradeBand":"K-2","domain":"Math reasoning language","target":"equal","forbidden":["same","both","balance","amount"],"requiredMove":"Use an equation example.","skillTag":"math.equality"},
+    {"id":"k2-math-02","gradeBand":"K-2","domain":"Math reasoning language","target":"estimate","forbidden":["about","guess","close","number"],"requiredMove":"Say why your estimate is reasonable.","skillTag":"math.estimation"},
+    {"id":"k2-math-03","gradeBand":"K-2","domain":"Math reasoning language","target":"pattern","forbidden":["repeat","again","shape","order"],"requiredMove":"Name the rule in words.","skillTag":"math.patterns"},
+
+    {"id":"35-lit-01","gradeBand":"3-5","domain":"Literacy","target":"infer","forbidden":["guess","clue","text","figure"],"requiredMove":"Use: 'I infer ___ because ___." ,"skillTag":"comprehension.infer"},
+    {"id":"35-lit-02","gradeBand":"3-5","domain":"Literacy","target":"main idea","forbidden":["topic","about","point","paragraph"],"requiredMove":"State one supporting detail.","skillTag":"comprehension.mainidea"},
+    {"id":"35-lit-03","gradeBand":"3-5","domain":"Literacy","target":"morphology","forbidden":["prefix","suffix","word","part"],"requiredMove":"Break one example into morphemes.","skillTag":"morphology.wordparts"},
+    {"id":"35-lit-04","gradeBand":"3-5","domain":"Literacy","target":"evidence","forbidden":["proof","text","quote","supports"],"requiredMove":"Use sentence frame with a citation cue.","skillTag":"analysis.evidence"},
+    {"id":"35-hum-01","gradeBand":"3-5","domain":"Humanities","target":"cause","forbidden":["because","reason","made","happen"],"requiredMove":"Provide one cause-and-effect chain.","skillTag":"history.causation"},
+    {"id":"35-hum-02","gradeBand":"3-5","domain":"Humanities","target":"perspective","forbidden":["view","opinion","side","think"],"requiredMove":"Contrast two perspectives.","skillTag":"civics.perspective"},
+    {"id":"35-hum-03","gradeBand":"3-5","domain":"Humanities","target":"region","forbidden":["area","place","map","location"],"requiredMove":"Name one defining feature.","skillTag":"geography.region"},
+    {"id":"35-math-01","gradeBand":"3-5","domain":"Math reasoning language","target":"factor","forbidden":["multiply","times","number","pairs"],"requiredMove":"Give one factor pair.","skillTag":"math.factors"},
+    {"id":"35-math-02","gradeBand":"3-5","domain":"Math reasoning language","target":"multiple","forbidden":["times","table","number","skip"],"requiredMove":"Show two multiples in sequence.","skillTag":"math.multiples"},
+    {"id":"35-math-03","gradeBand":"3-5","domain":"Math reasoning language","target":"equivalent fraction","forbidden":["same","value","fraction","equal"],"requiredMove":"Use one visual or numeric example.","skillTag":"math.fractions.equivalent"},
+
+    {"id":"68-lit-01","gradeBand":"6-8","domain":"Literacy","target":"connotation","forbidden":["feeling","word","meaning","tone"],"requiredMove":"Compare two words with different connotations.","skillTag":"vocabulary.connotation"},
+    {"id":"68-lit-02","gradeBand":"6-8","domain":"Literacy","target":"counterclaim","forbidden":["other side","argument","against","disagree"],"requiredMove":"State claim then counterclaim.","skillTag":"argument.counterclaim"},
+    {"id":"68-lit-03","gradeBand":"6-8","domain":"Literacy","target":"cohesion","forbidden":["flow","connect","sentence","transition"],"requiredMove":"Use one cohesive device example.","skillTag":"writing.cohesion"},
+    {"id":"68-lit-04","gradeBand":"6-8","domain":"Literacy","target":"theme","forbidden":["lesson","message","story","idea"],"requiredMove":"Support with a concrete text detail.","skillTag":"comprehension.theme"},
+    {"id":"68-hum-01","gradeBand":"6-8","domain":"Humanities","target":"bias","forbidden":["unfair","one side","opinion","source"],"requiredMove":"Identify bias signal language.","skillTag":"history.bias"},
+    {"id":"68-hum-02","gradeBand":"6-8","domain":"Humanities","target":"reliability","forbidden":["trust","source","credible","true"],"requiredMove":"Name one reliability check.","skillTag":"research.reliability"},
+    {"id":"68-hum-03","gradeBand":"6-8","domain":"Humanities","target":"continuity","forbidden":["same","over time","stays","change"],"requiredMove":"Contrast continuity with change.","skillTag":"history.continuity"},
+    {"id":"68-math-01","gradeBand":"6-8","domain":"Math reasoning language","target":"proportional","forbidden":["ratio","scale","constant","compare"],"requiredMove":"Use a real-world proportion example.","skillTag":"math.proportionality"},
+    {"id":"68-math-02","gradeBand":"6-8","domain":"Math reasoning language","target":"linear relationship","forbidden":["line","graph","slope","equation"],"requiredMove":"Describe how one variable changes.","skillTag":"math.linear"},
+    {"id":"68-math-03","gradeBand":"6-8","domain":"Math reasoning language","target":"justify","forbidden":["explain","why","reason","answer"],"requiredMove":"Include at least two reasoning steps.","skillTag":"math.justification"},
+
+    {"id":"912-lit-01","gradeBand":"9-12","domain":"Literacy","target":"synthesis","forbidden":["combine","sources","ideas","together"],"requiredMove":"Reference two perspectives in one statement.","skillTag":"analysis.synthesis"},
+    {"id":"912-lit-02","gradeBand":"9-12","domain":"Literacy","target":"rhetorical strategy","forbidden":["author","purpose","effect","technique"],"requiredMove":"Name strategy and intended effect.","skillTag":"rhetoric.strategy"},
+    {"id":"912-lit-03","gradeBand":"9-12","domain":"Literacy","target":"nuance","forbidden":["small difference","subtle","detail","meaning"],"requiredMove":"Contrast two close interpretations.","skillTag":"analysis.nuance"},
+    {"id":"912-lit-04","gradeBand":"9-12","domain":"Literacy","target":"thesis","forbidden":["claim","argument","essay","main point"],"requiredMove":"State defensible claim + scope.","skillTag":"writing.thesis"},
+    {"id":"912-hum-01","gradeBand":"9-12","domain":"Humanities","target":"corroboration","forbidden":["confirm","source","agree","evidence"],"requiredMove":"Compare at least two sources.","skillTag":"history.corroboration"},
+    {"id":"912-hum-02","gradeBand":"9-12","domain":"Humanities","target":"historical context","forbidden":["time period","background","event","before"],"requiredMove":"Tie claim to contextual factor.","skillTag":"history.context"},
+    {"id":"912-hum-03","gradeBand":"9-12","domain":"Humanities","target":"significance","forbidden":["important","impact","matters","result"],"requiredMove":"State short-term and long-term impact.","skillTag":"history.significance"},
+    {"id":"912-math-01","gradeBand":"9-12","domain":"Math reasoning language","target":"function behavior","forbidden":["graph","increase","decrease","curve"],"requiredMove":"Describe interval behavior precisely.","skillTag":"math.functions.behavior"},
+    {"id":"912-math-02","gradeBand":"9-12","domain":"Math reasoning language","target":"model assumptions","forbidden":["assume","real world","equation","limitations"],"requiredMove":"State one assumption and one limitation.","skillTag":"math.modeling.assumptions"},
+    {"id":"912-math-03","gradeBand":"9-12","domain":"Math reasoning language","target":"proof","forbidden":["show","true","steps","logic"],"requiredMove":"Name theorem/definition used.","skillTag":"math.proof.reasoning"}
+  ]
+}

@@ -20,6 +20,7 @@ const CRITICAL_ASSETS = [
 const RUNTIME_ROUTES = [
   { url: './?play=1', marker: 'body' },
   { url: 'word-quest.html?play=1#wordquest', marker: '.tile' },
+  { url: 'precision-play.html', marker: '#pp-shell' },
   { url: 'teacher-dashboard.html', marker: '#td-shell' },
   { url: 'reading-lab.html', marker: '#rl-root' },
   { url: 'sentence-surgery.html', marker: '.ss-container' }
