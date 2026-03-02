@@ -905,6 +905,64 @@ body.cs-has-nav-shell .td-shell {
   flex-wrap: wrap;
   gap: 8px;
 }
+.td-sas-library-card {
+  width: min(920px, calc(100vw - 24px));
+}
+.td-sas-library-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(320px, 1.4fr);
+  gap: 10px;
+  min-height: 300px;
+  max-height: 48dvh;
+}
+.td-sas-list,
+.td-sas-detail {
+  border: 1px solid color-mix(in oklab, var(--border-soft) 72%, transparent);
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--surface-2) 72%, transparent);
+  overflow: auto;
+  padding: 8px;
+  min-height: 0;
+}
+.td-sas-row {
+  width: 100%;
+  text-align: left;
+  border: 1px solid color-mix(in oklab, var(--border-soft) 68%, transparent);
+  border-radius: 9px;
+  background: color-mix(in oklab, var(--surface-1) 88%, transparent);
+  color: var(--text-strong);
+  padding: 8px;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+.td-sas-row strong {
+  display: block;
+  font-size: var(--fs-sm);
+}
+.td-sas-row span {
+  display: block;
+  margin-top: 2px;
+  color: color-mix(in oklab, var(--muted) 84%, white 16%);
+  font-size: var(--fs-xs, 12px);
+}
+.td-sas-row.is-active {
+  border-color: color-mix(in oklab, var(--accent) 56%, transparent);
+}
+#td-suggested-goals {
+  margin-top: 8px;
+  display: grid;
+  gap: 6px;
+}
+.td-suggest-goal {
+  border: 1px solid color-mix(in oklab, var(--border-soft) 72%, transparent);
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--surface-2) 72%, transparent);
+  padding: 8px;
+}
+.td-suggest-goal p {
+  margin: 4px 0 0;
+  font-size: var(--fs-sm);
+}
 .td-meeting-privacy {
   margin: 0;
   color: color-mix(in oklab, var(--muted) 70%, #def2ff 30%);
@@ -991,6 +1049,10 @@ body.cs-has-nav-shell .td-shell {
     max-height: 100dvh;
   }
   .td-top { grid-template-columns: 1fr; }
+  .td-sas-library-grid {
+    grid-template-columns: 1fr;
+    max-height: 52dvh;
+  }
   .td-work-row {
     grid-template-columns: repeat(3, 100%);
     grid-auto-flow: column;

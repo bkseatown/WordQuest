@@ -24,6 +24,7 @@
   var ShareSummaryAPI = window.CSShareSummary;
   var SupportStore = window.CSSupportStore;
   var MeetingNotes = window.CSMeetingNotes;
+  var SASLibrary = window.CSSASLibrary;
   var CaseloadStore = window.CSCaseloadStore;
   if (!Evidence) return;
 
@@ -40,7 +41,10 @@
     activeDrawerTab: "snapshot",
     todayPlan: null,
     sharePayload: null,
-    meetingRecognizer: null
+    meetingRecognizer: null,
+    sasPack: null,
+    sasTab: "interventions",
+    sasSelection: null
   };
   var skillStoreLogged = false;
 
@@ -94,6 +98,14 @@
     meetingActions: document.getElementById("td-meeting-actions"),
     meetingSave: document.getElementById("td-meeting-save"),
     meetingGoals: document.getElementById("td-meeting-goals"),
+    sasLibraryBtn: document.getElementById("td-sas-library-btn"),
+    sasLibraryModal: document.getElementById("td-sas-library-modal"),
+    sasLibraryClose: document.getElementById("td-sas-library-close"),
+    sasSearch: document.getElementById("td-sas-search"),
+    sasTabs: Array.prototype.slice.call(document.querySelectorAll("[data-sas-tab]")),
+    sasList: document.getElementById("td-sas-list"),
+    sasDetail: document.getElementById("td-sas-detail"),
+    sasApplyPlan: document.getElementById("td-sas-apply-plan"),
     supportExportPacket: document.getElementById("td-support-export-packet"),
     planList: document.getElementById("td-plan-list"),
     planTabs: Array.prototype.slice.call(document.querySelectorAll("[data-plan-tab]")),
@@ -1032,11 +1044,17 @@
     }
     if (state.activeSupportTab === "plan") {
       var goals = studentSupport.goals || [];
-      el.supportBody.innerHTML = goals.length
+      el.supportBody.innerHTML = '<div class="td-support-item"><h4>SMART Goal Builder</h4><p>Generate 3-5 SAS-aligned goal templates by domain + baseline.</p><button id="td-suggest-goals-btn" class="td-top-btn" type="button">Suggest Goals</button><div id="td-suggested-goals"></div></div>' + (goals.length
         ? goals.slice(0, 5).map(function (g) {
             return '<div class="td-support-item"><h4>' + (g.skill || g.domain || "Goal") + '</h4><p>Baseline ' + (g.baseline || "--") + ' → Target ' + (g.target || "--") + ' • Review every ' + (g.reviewEveryDays || 14) + 'd</p></div>';
           }).join("")
-        : '<div class="td-support-item"><p>No SMART goals yet. Add from Meeting Notes conversion.</p></div>';
+        : '<div class="td-support-item"><p>No SMART goals yet. Add from Meeting Notes conversion.</p></div>');
+      var suggestBtn = document.getElementById("td-suggest-goals-btn");
+      if (suggestBtn) {
+        suggestBtn.addEventListener("click", function () {
+          renderSuggestedGoals(studentId);
+        });
+      }
       return;
     }
     if (state.activeSupportTab === "accommodations") {
@@ -1423,6 +1441,127 @@
     ].join("\n");
   }
 
+  function getSelectedStudentGradeBand() {
+    var student = (state.caseload || []).find(function (row) { return row.id === state.selectedId; });
+    var grade = student && student.grade ? String(student.grade) : "";
+    var n = Number(String(grade).replace(/[^0-9]/g, ""));
+    if (!Number.isFinite(n)) return "";
+    if (n <= 2) return "K-2";
+    if (n <= 5) return "3-5";
+    if (n <= 8) return "6-8";
+    return "9-12";
+  }
+
+  function closeSasLibraryModal() {
+    if (el.sasLibraryModal) el.sasLibraryModal.classList.add("hidden");
+  }
+
+  function openSasLibraryModal() {
+    if (!el.sasLibraryModal) return;
+    if (!SASLibrary || typeof SASLibrary.ensureLoaded !== "function") {
+      if (el.sasDetail) el.sasDetail.textContent = "SAS library module unavailable.";
+      el.sasLibraryModal.classList.remove("hidden");
+      return;
+    }
+    SASLibrary.ensureLoaded().then(function (loaded) {
+      state.sasPack = loaded.pack || null;
+      state.sasSelection = null;
+      if (el.sasApplyPlan) el.sasApplyPlan.disabled = true;
+      renderSasLibraryResults();
+      el.sasLibraryModal.classList.remove("hidden");
+    }).catch(function (err) {
+      if (el.sasDetail) el.sasDetail.textContent = "SAS alignment pack unavailable. Run npm run sas:build. (" + String(err && err.message || "load error") + ")";
+      if (el.sasList) el.sasList.innerHTML = "";
+      el.sasLibraryModal.classList.remove("hidden");
+    });
+  }
+
+  function renderSasLibraryResults() {
+    if (!el.sasList || !el.sasDetail || !state.sasPack || !SASLibrary) return;
+    var query = String(el.sasSearch && el.sasSearch.value || "");
+    var gradeBand = getSelectedStudentGradeBand();
+    var rows = SASLibrary.search(state.sasPack, {
+      tab: state.sasTab,
+      query: query,
+      gradeBand: gradeBand
+    });
+    if (!rows.length) {
+      el.sasList.innerHTML = '<p class=\"td-reco-line\">No matches. Adjust search or tab.</p>';
+      el.sasDetail.textContent = "No item selected.";
+      state.sasSelection = null;
+      if (el.sasApplyPlan) el.sasApplyPlan.disabled = true;
+      return;
+    }
+    el.sasList.innerHTML = rows.map(function (row) {
+      return '<button class=\"td-sas-row\" type=\"button\" data-sas-id=\"' + row.id + '\"><strong>' + row.title + '</strong><span>' + (row.subtitle || row.id) + '</span></button>';
+    }).join("");
+    Array.prototype.forEach.call(el.sasList.querySelectorAll("[data-sas-id]"), function (button, idx) {
+      button.addEventListener("click", function () {
+        var selected = rows.find(function (row) { return row.id === button.getAttribute("data-sas-id"); }) || rows[0];
+        state.sasSelection = selected;
+        Array.prototype.forEach.call(el.sasList.querySelectorAll(".td-sas-row"), function (rowBtn) { rowBtn.classList.remove("is-active"); });
+        button.classList.add("is-active");
+        el.sasDetail.textContent = SASLibrary.describeItem(state.sasTab, selected.row);
+        if (el.sasApplyPlan) el.sasApplyPlan.disabled = false;
+      });
+      if (idx === 0) button.click();
+    });
+  }
+
+  function applySelectedSasItemToPlan() {
+    if (!state.sasSelection) return;
+    var row = state.sasSelection.row || {};
+    var line = [state.sasSelection.title, row.goal_template_smart || row.progress_monitoring || row.cadence || ""].filter(Boolean).join(" — ");
+    if (el.notesInput) {
+      var prefix = el.notesInput.value && !/\\n$/.test(el.notesInput.value) ? "\\n" : "";
+      el.notesInput.value = (el.notesInput.value || "") + prefix + "[SAS] " + line;
+    }
+    setCoachLine("Added SAS-aligned item to plan notes.");
+    closeSasLibraryModal();
+  }
+
+  function renderSuggestedGoals(studentId) {
+    var target = document.getElementById("td-suggested-goals");
+    if (!target || !state.sasPack || !SASLibrary) return;
+    var domainInput = window.prompt("Goal domain (literacy/math/writing/behavior/executive)", "literacy");
+    if (!domainInput) return;
+    var baselineInput = window.prompt("Baseline note (short)", "Current baseline from classwork and quick checks");
+    if (baselineInput == null) return;
+    var suggested = SASLibrary.suggestGoals(state.sasPack, {
+      domain: domainInput,
+      gradeBand: getSelectedStudentGradeBand(),
+      baseline: baselineInput
+    });
+    if (!suggested.length) {
+      target.innerHTML = '<p class="td-reco-line">No goal templates matched that domain/grade. Try broader domain.</p>';
+      return;
+    }
+    target.innerHTML = suggested.map(function (goal) {
+      return [
+        '<article class="td-suggest-goal">',
+        '<strong>' + (goal.skill || goal.domain || "Goal") + '</strong>',
+        '<p>' + (goal.goal_template_smart || '') + '</p>',
+        '</article>'
+      ].join('');
+    }).join('');
+    if (SupportStore && studentId && typeof SupportStore.addGoal === "function") {
+      suggested.slice(0, 2).forEach(function (goal) {
+        SupportStore.addGoal(studentId, {
+          domain: goal.domain || domainInput,
+          skill: goal.skill || "SAS aligned goal",
+          baseline: baselineInput || (goal.baseline_prompt || "Baseline"),
+          target: (goal.goal_template_smart || "").slice(0, 180),
+          metric: goal.progress_monitoring_method || "Progress monitoring method",
+          method: "SAS goal-bank suggestion",
+          schedule: "2-3x/week",
+          reviewEveryDays: 14,
+          notes: "Auto-suggested from SAS Alignment Pack"
+        });
+      });
+    }
+    setCoachLine("Suggested SAS goal templates ready.");
+  }
+
   function download(name, contents, mime) {
     var a = document.createElement("a");
     var blob = new Blob([contents], { type: mime });
@@ -1800,6 +1939,38 @@
         state.activeSupportTab = "plan";
         renderSupportHub(state.selectedId);
         setCoachLine("Converted action items to SMART-goal drafts.");
+      });
+    }
+
+    if (el.sasLibraryBtn) {
+      el.sasLibraryBtn.addEventListener("click", function () {
+        openSasLibraryModal();
+      });
+    }
+    if (el.sasLibraryClose) {
+      el.sasLibraryClose.addEventListener("click", closeSasLibraryModal);
+    }
+    if (el.sasLibraryModal) {
+      el.sasLibraryModal.addEventListener("click", function (event) {
+        if (event.target === el.sasLibraryModal) closeSasLibraryModal();
+      });
+    }
+    if (el.sasSearch) {
+      el.sasSearch.addEventListener("input", function () {
+        renderSasLibraryResults();
+      });
+    }
+    if (Array.isArray(el.sasTabs)) {
+      el.sasTabs.forEach(function (tabBtn) {
+        tabBtn.addEventListener("click", function () {
+          state.sasTab = String(tabBtn.getAttribute("data-sas-tab") || "interventions");
+          renderSasLibraryResults();
+        });
+      });
+    }
+    if (el.sasApplyPlan) {
+      el.sasApplyPlan.addEventListener("click", function () {
+        applySelectedSasItemToPlan();
       });
     }
 

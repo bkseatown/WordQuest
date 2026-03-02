@@ -9,6 +9,7 @@
   var schoolMetricsEl = document.getElementById("admin-school-metrics");
   var classBarsEl = document.getElementById("admin-class-bars");
   var trendInsightsEl = document.getElementById("admin-trend-insights");
+  var sasSummaryEl = document.getElementById("admin-sas-summary");
 
   if (!schoolMetricsEl || !classBarsEl || !trendInsightsEl || !window.CSMultiClassEngine) return;
 
@@ -93,6 +94,43 @@
     }).join("");
   }
 
+  function countBy(rows, keyFn) {
+    var out = {};
+    (rows || []).forEach(function (row) {
+      var key = keyFn(row) || "unspecified";
+      out[key] = (out[key] || 0) + 1;
+    });
+    return out;
+  }
+
+  function formatCounts(label, counts) {
+    var keys = Object.keys(counts || {});
+    if (!keys.length) return '<div class=\"admin-muted\">' + label + ': none</div>';
+    return '<div class=\"admin-trend\"><strong>' + label + ':</strong> ' + keys.sort().map(function (k) { return k + ' ' + counts[k]; }).join(' • ') + '</div>';
+  }
+
+  function renderSasSummary(pack) {
+    if (!sasSummaryEl) return;
+    if (!pack || typeof pack !== "object") {
+      sasSummaryEl.innerHTML = '<div class=\"admin-muted\">SAS alignment pack not available. Run npm run sas:build.</div>';
+      return;
+    }
+    var interventions = Array.isArray(pack.interventions) ? pack.interventions : [];
+    var goals = Array.isArray(pack.goal_bank) ? pack.goal_bank : [];
+    var assessments = Array.isArray(pack.assessments) ? pack.assessments : [];
+
+    var byTier = countBy(interventions, function (row) { return row.tier || "unspecified"; });
+    var byArea = countBy(interventions, function (row) { return row.area || "unspecified"; });
+    var byGrade = countBy(goals, function (row) { return row.grade_band || "unspecified"; });
+
+    sasSummaryEl.innerHTML = [
+      '<div class=\"admin-trend\">Docs: ' + ((pack.sourceDocs && pack.sourceDocs.length) || 0) + ' • Interventions: ' + interventions.length + ' • Goals: ' + goals.length + ' • Assessments: ' + assessments.length + '</div>',
+      formatCounts('Interventions by tier', byTier),
+      formatCounts('Interventions by domain', byArea),
+      formatCounts('Goals by grade band', byGrade)
+    ].join('');
+  }
+
   function progressionSummary(snapshot) {
     var p = window.CSProgressionEngine;
     if (!p || typeof p.computeSkillLevel !== "function") return "";
@@ -128,6 +166,13 @@
       window.requestIdleCallback(work, { timeout: 800 });
     } else {
       window.setTimeout(work, 0);
+    }
+
+    if (sasSummaryEl) {
+      fetch('./docs/sas/derived/sas_alignment_pack.json', { cache: 'no-cache' })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (pack) { renderSasSummary(pack); })
+        .catch(function () { renderSasSummary(null); });
     }
   }
 

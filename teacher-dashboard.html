@@ -45,6 +45,7 @@
         <button id="td-new-session" class="td-top-btn" type="button">New Session</button>
         <button id="td-meeting-mode" class="td-top-btn" type="button">Meeting Notes</button>
         <button id="td-tier1-pack" class="td-top-btn" type="button">Tier 1 Pack</button>
+        <button id="td-sas-library-btn" class="td-top-btn" type="button">SAS Library</button>
         <button id="td-import-export" class="td-top-btn" type="button">Import/Export</button>
         <button id="td-settings" class="td-top-btn" type="button">Settings</button>
         <button id="td-local-status" class="td-local-dot" type="button" title="Local data on this device" aria-label="Local mode"></button>
@@ -375,6 +376,30 @@
     </div>
   </div>
 
+  <div id="td-sas-library-modal" class="td-modal hidden" role="dialog" aria-modal="true" aria-labelledby="td-sas-library-title">
+    <div class="td-modal-card td-sas-library-card">
+      <div class="td-modal-head">
+        <h2 id="td-sas-library-title" class="td-section-title">SAS Library</h2>
+        <button id="td-sas-library-close" class="td-top-btn" type="button">Close</button>
+      </div>
+      <input id="td-sas-search" class="td-top-btn" type="search" placeholder="Search interventions, goals, assessments...">
+      <div class="td-plan-tabs" id="td-sas-tabs">
+        <button class="td-top-btn" type="button" data-sas-tab="interventions">Interventions</button>
+        <button class="td-top-btn" type="button" data-sas-tab="goals">Goals</button>
+        <button class="td-top-btn" type="button" data-sas-tab="assessments">Assessments</button>
+        <button class="td-top-btn" type="button" data-sas-tab="principles">Principles</button>
+        <button class="td-top-btn" type="button" data-sas-tab="templates">Templates</button>
+      </div>
+      <div class="td-sas-library-grid">
+        <div id="td-sas-list" class="td-sas-list"></div>
+        <div id="td-sas-detail" class="td-sas-detail">Select an item to view details.</div>
+      </div>
+      <div class="td-modal-actions">
+        <button id="td-sas-apply-plan" class="td-btn td-btn-primary btn btn-quiet" type="button" disabled>Apply to Plan</button>
+      </div>
+    </div>
+  </div>
+
   <div id="td-coach-ribbon" class="td-coach-ribbon" role="status" aria-live="polite">
     <button id="td-coach-collapse" type="button" aria-label="Collapse coach">▾</button>
     <span class="td-coach-title">Ava Coach</span>
@@ -411,6 +436,7 @@
   <script src="./js/session-planner.js?v=20260301y" defer></script>
   <script src="./js/share-summary.js?v=20260301y" defer></script>
   <script src="./js/meeting-notes.js?v=20260301y" defer></script>
+  <script src="./js/sas-alignment-library.js?v=20260302a" defer></script>
   <script src="./teacher-dashboard.js?v=20260301y" defer></script>
 </body>
 </html>
