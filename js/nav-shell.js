@@ -10,17 +10,29 @@
     return raw.toLowerCase();
   }
 
+  function appBasePath() {
+    var path = String((window.location && window.location.pathname) || "");
+    var marker = "/WordQuest/";
+    var idx = path.indexOf(marker);
+    return idx >= 0 ? path.slice(0, idx + marker.length - 1) : "";
+  }
+
+  function withBase(path) {
+    var clean = String(path || "").replace(/^\.?\//, "");
+    return appBasePath() + "/" + clean;
+  }
+
   function buildLinks() {
     var links = [
-      { href: "./index.html", label: "Home", pages: ["", "/", "index.html"] },
-      { href: "./teacher-dashboard.html", label: "Teacher Dashboard", pages: ["teacher-dashboard.html"] },
-      { href: "./word-quest.html", label: "Word Quest", pages: ["word-quest.html"] },
-      { href: "./reading-lab.html", label: "Reading Lab", pages: ["reading-lab.html"] },
-      { href: "./sentence-surgery.html", label: "Sentence Surgery", pages: ["sentence-surgery.html"] },
-      { href: "./activities/decoding-diagnostic.html", label: "Decoding Diagnostic", pages: ["decoding-diagnostic.html"] },
-      { href: "./writing-studio.html", label: "Writing Studio", pages: ["writing-studio.html"] },
-      { href: "./numeracy.html", label: "Numeracy", pages: ["numeracy.html"] },
-      { href: "./admin-dashboard.html", label: "Admin Dashboard", pages: ["admin-dashboard.html"] }
+      { href: withBase("index.html"), label: "Home", pages: ["", "/", "index.html"] },
+      { href: withBase("teacher-dashboard.html"), label: "Teacher Dashboard", pages: ["teacher-dashboard.html"] },
+      { href: withBase("word-quest.html"), label: "Word Quest", pages: ["word-quest.html"] },
+      { href: withBase("reading-lab.html"), label: "Reading Lab", pages: ["reading-lab.html"] },
+      { href: withBase("sentence-surgery.html"), label: "Sentence Surgery", pages: ["sentence-surgery.html"] },
+      { href: withBase("activities/decoding-diagnostic.html"), label: "Decoding Diagnostic", pages: ["decoding-diagnostic.html"] },
+      { href: withBase("writing-studio.html"), label: "Writing Studio", pages: ["writing-studio.html"] },
+      { href: withBase("numeracy.html"), label: "Numeracy", pages: ["numeracy.html"] },
+      { href: withBase("admin-dashboard.html"), label: "Admin Dashboard", pages: ["admin-dashboard.html"] }
     ];
     return links;
   }
@@ -36,7 +48,7 @@
 
     var brand = document.createElement("a");
     brand.className = "cs-nav-brand";
-    brand.href = "./index.html";
+    brand.href = withBase("index.html");
     brand.textContent = "Cornerstone MTSS";
     nav.appendChild(brand);
 

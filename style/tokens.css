@@ -4,31 +4,54 @@
    ================================================================== */
 
 :root {
-  /* color system */
-  --bg-900: #0c1725;
-  --bg-850: #0f1f31;
-  --surface-0: rgba(11, 20, 31, 0.9);
-  --surface-1: rgba(255, 255, 255, 0.06);
-  --surface-2: rgba(255, 255, 255, 0.09);
-  --surface-3: rgba(255, 255, 255, 0.13);
-  --border-subtle: rgba(255, 255, 255, 0.10);
+  /* human-centered color system */
+  --surface-base: #111a22;
+  --surface-elev-1: #16222d;
+  --surface-elev-2: #1c2a37;
+  --surface-elev-3: #223344;
+  --surface-focus: #1f3344;
+  --bg-900: #111a22;
+  --bg-850: #16222d;
+  --surface-0: rgba(17, 26, 34, 0.92);
+  --surface-1: rgba(255, 255, 255, 0.048);
+  --surface-2: rgba(255, 255, 255, 0.075);
+  --surface-3: rgba(255, 255, 255, 0.11);
+  --border-subtle: rgba(255, 255, 255, 0.06);
   --border-strong: rgba(255, 255, 255, 0.18);
   --border-soft: rgba(255, 255, 255, 0.14);
+  --text-primary: #e6edf3;
+  --text-secondary: #a8b3bd;
+  --text-muted: #7e8b96;
   --text-strong: #edf3fb;
   --text: #d7e2f1;
   --muted: #90a8c2;
-  --accent: #5cd1ff;
+  --accent: #5a9bff;
   --accent-2: #6ee7b7;
+  --action-primary: #5a9bff;
+  --action-primary-soft: rgba(90, 155, 255, 0.18);
+  --status-secure: #4cc38a;
+  --status-developing: #f2b94b;
+  --status-intensify: #ff7a5a;
+  --status-risk: #e45c5c;
+  --status-ef: #b88cff;
+  --status-literacy: #5a9bff;
+  --status-writing: #6ec2a6;
+  --status-numeracy: #67b8ff;
+  --bg-secure: rgba(76, 195, 138, 0.12);
+  --bg-developing: rgba(242, 185, 75, 0.12);
+  --bg-intensify: rgba(255, 122, 90, 0.12);
+  --bg-ef: rgba(184, 140, 255, 0.12);
+  --glow-primary: 0 0 12px rgba(90, 155, 255, 0.12);
   --warn: #f4c978;
   --danger: #ff8b8b;
 
   /* spacing scale */
   --space-1: 6px;
-  --space-2: 10px;
+  --space-2: 12px;
   --space-3: 14px;
-  --space-4: 18px;
+  --space-4: 20px;
   --space-5: 24px;
-  --space-6: 32px;
+  --space-6: 36px;
   --space-7: 44px;
   --sp-1: var(--space-1);
   --sp-2: var(--space-2);
@@ -45,9 +68,9 @@
   --radius-round: 999px;
 
   /* shadow scale */
-  --shadow-soft: 0 8px 30px rgba(5, 12, 24, 0.25);
-  --shadow-medium: 0 16px 34px rgba(5, 12, 24, 0.32);
-  --shadow-strong: 0 22px 48px rgba(5, 12, 24, 0.36);
+  --shadow-soft: 0 4px 14px rgba(5, 12, 24, 0.12);
+  --shadow-medium: 0 8px 20px rgba(5, 12, 24, 0.16);
+  --shadow-strong: 0 12px 28px rgba(5, 12, 24, 0.2);
 
   /* typography */
   --font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
@@ -149,12 +172,81 @@ body {
   font-kerning: normal;
 }
 
+body {
+  background: linear-gradient(180deg, #0f1820 0%, #111a22 40%, #0f1820 100%);
+  color: var(--text-primary);
+}
+
 h1,
 h2,
 h3 {
-  letter-spacing: var(--ls-tight);
+  letter-spacing: 0.3px;
   line-height: var(--lh-tight);
   font-weight: var(--fw-semibold);
+}
+
+.section-title {
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: var(--ls-wide);
+}
+
+.section-plan {
+  background: var(--surface-focus);
+  border: 1px solid var(--border-subtle);
+}
+
+.section-analytics {
+  background: var(--surface-elev-2);
+  border: 1px solid var(--border-subtle);
+}
+
+.section-tools {
+  background: var(--surface-elev-1);
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-primary {
+  background: var(--action-primary);
+  box-shadow: var(--glow-primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.badge-secure {
+  background: var(--bg-secure);
+  color: var(--status-secure);
+}
+
+.badge-developing {
+  background: var(--bg-developing);
+  color: var(--status-developing);
+}
+
+.badge-intensify {
+  background: var(--bg-intensify);
+  color: var(--status-intensify);
+}
+
+.badge-ef {
+  background: var(--bg-ef);
+  color: var(--status-ef);
+}
+
+.card,
+.td-panel {
+  background: var(--surface-elev-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  transition: background var(--dur-2) var(--ease-out);
+}
+
+.card:hover {
+  background: var(--surface-elev-2);
 }
 
 small,

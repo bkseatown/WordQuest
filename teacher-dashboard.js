@@ -182,7 +182,9 @@
   }
 
   function getLastActivityMap() {
-    return safeJsonParse(localStorage.getItem(LAST_ACTIVITY_KEY), {});
+    var parsed = safeJsonParse(localStorage.getItem(LAST_ACTIVITY_KEY), {});
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+    return parsed;
   }
 
   function setLastActivityMap(map) {
@@ -2147,6 +2149,7 @@
       hasBuildBlock: hasBuildBlock,
       hasTier1EvidenceTool: !!document.getElementById("td-tier1-pack") || !!document.querySelector("[data-tier1-action='start']"),
       hasAccommodationsPanel: !!document.querySelector("[data-support-tab='accommodations']"),
+      hasAccommodationButtons: !!document.querySelector("[data-accommodation-toggle]") || !!document.querySelector("[data-support-tab='accommodations']"),
       hasMeetingNotesTool: !!document.getElementById("td-meeting-mode") || !!document.getElementById("td-open-meeting-notes"),
       hasReferralPacketExport: !!document.getElementById("td-support-export-packet"),
       hasShareControls: !!document.getElementById("td-share-cluster"),

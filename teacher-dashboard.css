@@ -15,9 +15,9 @@ body.teacher-dashboard {
   margin: 0;
   overflow: hidden;
   background:
-    radial-gradient(circle at 16% 8%, rgba(92, 209, 255, 0.1), transparent 38%),
-    radial-gradient(circle at 82% 18%, rgba(110, 231, 183, 0.08), transparent 34%),
-    linear-gradient(155deg, #0d1927 0%, #12263a 48%, #0f1b2a 100%);
+    radial-gradient(circle at 16% 8%, rgba(90, 155, 255, 0.08), transparent 38%),
+    radial-gradient(circle at 82% 18%, rgba(110, 194, 166, 0.06), transparent 34%),
+    linear-gradient(155deg, #101922 0%, #152230 48%, #111a22 100%);
   color: var(--text-strong);
   font-family: var(--font-ui);
   font-size: var(--body);
@@ -44,10 +44,10 @@ body.td-page.cs-has-nav-shell {
   height: 100dvh;
   max-height: 100dvh;
   margin: 0 auto;
-  padding: 10px 0;
+  padding: 12px 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   overflow: hidden;
 }
 
@@ -65,7 +65,7 @@ body.cs-has-nav-shell .td-shell {
   background:
     linear-gradient(160deg, rgba(255, 255, 255, 0.055), rgba(11, 20, 29, 0.16)),
     color-mix(in oklab, var(--surface-1) 78%, rgba(18, 30, 43, 0.9));
-  box-shadow: var(--shadow-medium);
+  box-shadow: var(--shadow-soft);
   backdrop-filter: blur(6px);
   transition: filter var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
 }
@@ -75,7 +75,7 @@ body.cs-has-nav-shell .td-shell {
   grid-template-columns: minmax(220px, auto) minmax(360px, 1fr) auto;
   gap: var(--sp-3);
   align-items: center;
-  padding: 12px 14px;
+  padding: 14px 16px;
   position: sticky;
   top: 0;
   z-index: 9;
@@ -236,7 +236,7 @@ body.cs-has-nav-shell .td-shell {
 .td-main {
   display: grid;
   grid-template-rows: auto auto auto 1fr;
-  gap: 12px;
+  gap: 16px;
   min-height: 100%;
   overflow: visible;
 }
@@ -245,12 +245,12 @@ body.cs-has-nav-shell .td-shell {
   min-height: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 
 .td-metric-card {
   min-height: 0;
-  padding: 14px;
+  padding: 16px;
   display: grid;
   gap: 10px;
 }
@@ -271,9 +271,9 @@ body.cs-has-nav-shell .td-shell {
 /* === TODAY ENGINE ================================================= */
 .td-today {
   min-height: 0;
-  padding: 12px 14px;
+  padding: 14px 16px;
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .td-today__head {
@@ -313,7 +313,7 @@ body.cs-has-nav-shell .td-shell {
 .td-today__list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .td-caseload-snapshot {
@@ -399,14 +399,14 @@ body.cs-has-nav-shell .td-shell {
   display: grid;
   gap: 10px;
   min-width: 0;
-  box-shadow: 0 8px 22px rgba(7, 14, 24, 0.18);
+  box-shadow: 0 4px 14px rgba(7, 14, 24, 0.12);
   transition: transform var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
 }
 
 .td-todayCard:hover {
   transform: translateY(-1px);
   border-color: color-mix(in oklab, var(--accent) 36%, var(--border-soft) 64%);
-  box-shadow: 0 12px 24px rgba(7, 14, 24, 0.24);
+  box-shadow: 0 8px 18px rgba(7, 14, 24, 0.16);
 }
 
 .td-todayCard__top {
@@ -539,7 +539,7 @@ body.cs-has-nav-shell .td-shell {
   min-height: 0;
   display: grid;
   grid-template-columns: 0.95fr 1.6fr 1fr;
-  gap: 10px;
+  gap: 12px;
   overflow: hidden;
 }
 
@@ -547,7 +547,7 @@ body.cs-has-nav-shell .td-shell {
 .td-panel,
 .td-left, .td-center, .td-right {
   min-height: 0;
-  padding: 12px;
+  padding: 14px;
   overflow: auto;
 }
 
@@ -684,10 +684,10 @@ body.cs-has-nav-shell .td-shell {
   background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 88%, white 12%), color-mix(in oklab, var(--accent-2) 36%, #0e1a28 64%));
   color: #132334;
   border-color: color-mix(in oklab, var(--accent) 64%, transparent);
-  box-shadow: 0 10px 20px rgba(92, 209, 255, 0.26);
+  box-shadow: 0 4px 12px rgba(90, 155, 255, 0.16);
 }
 .td-btn-accent:focus-visible {
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 24%, transparent), 0 10px 20px rgba(92, 209, 255, 0.26);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 24%, transparent), 0 4px 12px rgba(90, 155, 255, 0.16);
 }
 .td-btn-once { animation: tdPulse 220ms ease-out 1; }
 @keyframes tdPulse { 0% { transform: scale(1); } 40% { transform: scale(1.02); } 100% { transform: scale(1); } }
@@ -791,11 +791,11 @@ body.cs-has-nav-shell .td-shell {
   font-size: 0.75rem;
 }
 
-.td-band-EMERGING { background: #fbe3e3; color: #a94442; }
-.td-band-DEVELOPING { background: #fff4d6; color: #8a6d3b; }
-.td-band-SECURE { background: #e3f7e3; color: #2f7a2f; }
-.td-band-AUTOMATED { background: #d9ecff; color: #2c5aa0; }
-.td-band-NOT_STARTED { background: #e8eaee; color: #4d5562; }
+.td-band-EMERGING { background: var(--bg-intensify); color: var(--status-intensify); }
+.td-band-DEVELOPING { background: var(--bg-developing); color: var(--status-developing); }
+.td-band-SECURE { background: var(--bg-secure); color: var(--status-secure); }
+.td-band-AUTOMATED { background: color-mix(in oklab, var(--status-literacy) 14%, transparent); color: var(--status-literacy); }
+.td-band-NOT_STARTED { background: color-mix(in oklab, var(--surface-3) 68%, transparent); color: var(--text-secondary); }
 
 .td-mtss-badge {
   font-size: 0.75rem;
@@ -804,9 +804,9 @@ body.cs-has-nav-shell .td-shell {
   border-radius: 6px;
 }
 
-.td-mtss-HOLD { background: #ececec; color: #3f444b; }
-.td-mtss-FADE { background: #d4f7d4; color: #2f7a2f; }
-.td-mtss-INTENSIFY { background: #ffdede; color: #a94442; }
+.td-mtss-HOLD { background: color-mix(in oklab, var(--surface-3) 72%, transparent); color: var(--text-secondary); }
+.td-mtss-FADE { background: var(--bg-secure); color: var(--status-secure); }
+.td-mtss-INTENSIFY { background: var(--bg-intensify); color: var(--status-intensify); }
 
 .td-fade-preview {
   font-size: 0.7rem;
