@@ -800,7 +800,7 @@ body.cs-has-nav-shell .td-shell {
   height: 6px;
   border-radius: 999px;
   overflow: hidden;
-  background: color-mix(in oklab, var(--surface-2) 85%, #0f2235 15%);
+  background: var(--surface-elev-3);
 }
 .td-skill-meter > span {
   display: block;
