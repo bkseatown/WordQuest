@@ -1,32 +1,11 @@
+/* Word Quest isolation guardrails (layout/interaction only).
+   Keep visual theme tokens sourced from style/themes.css. */
+
 .wordquest-root {
-  --wq-bg: #f4f6f8;
-  --wq-surface: #ffffff;
-  --wq-surface-2: #eef2f7;
-  --wq-tile-bg: #f8fbff;
-  --wq-tile-border: #9daac0;
-  --wq-key-bg: #f1f5fb;
-  --wq-key-shadow: 0 2px 0 rgba(45, 63, 94, 0.25);
-  --wq-correct: #2f9e44;
-  --wq-present: #d49500;
-  --wq-absent: #8a96ab;
-}
-
-.wordquest-root.theme-huskies {
-  --wq-correct: #4c6fd6;
-  --wq-present: #9b7a1f;
-  --wq-absent: #8390a8;
-}
-
-.wordquest-root.theme-seahawks {
-  --wq-correct: #2c8f53;
-  --wq-present: #a6861c;
-  --wq-absent: #7c8da1;
-}
-
-.wordquest-root.theme-matrix {
-  --wq-correct: #2f8f58;
-  --wq-present: #6e9d2d;
-  --wq-absent: #74859a;
+  background:
+    radial-gradient(circle at 16% 6%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 44%),
+    linear-gradient(180deg, var(--page-bg), var(--page-bg2));
+  color: var(--text);
 }
 
 .wordquest-root #play-shell {
