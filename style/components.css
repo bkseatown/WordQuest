@@ -1266,7 +1266,16 @@ html[data-home-mode="play"] .play-mode-label {
 }
 
 html[data-home-mode="play"] .header-quick-controls {
+  display: inline-flex !important;
+  align-items: center;
+}
+
+html[data-home-mode="play"] .header-quick-controls > * {
   display: none !important;
+}
+
+html[data-home-mode="play"] #play-style-toggle {
+  display: inline-flex !important;
 }
 
 html[data-home-mode="play"] .header-icon-controls > * {

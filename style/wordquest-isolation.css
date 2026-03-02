@@ -9,17 +9,6 @@
   --wq-correct: #2f9e44;
   --wq-present: #d49500;
   --wq-absent: #8a96ab;
-
-  /* Bridge legacy token names used by Word Quest CSS only. */
-  --page-bg: var(--wq-bg);
-  --panel-bg: var(--wq-surface);
-  --panel-bg2: var(--wq-surface-2);
-  --tile-face: var(--wq-tile-bg);
-  --tile-border: var(--wq-tile-border);
-  --key-bg: var(--wq-key-bg);
-  --correct: var(--wq-correct);
-  --present: var(--wq-present);
-  --absent: var(--wq-absent);
 }
 
 .wordquest-root.theme-huskies {

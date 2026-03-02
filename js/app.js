@@ -6443,20 +6443,18 @@
   function applyHashRoute() {
     const route = String(location.hash || '#').replace(/^#/, '').toLowerCase();
     if (!route || route === 'home') {
-      if (!route) {
-        try {
-          const params = new URLSearchParams(window.location.search || '');
-          const playParam = String(params.get('play') || '').toLowerCase();
-          const fromParam = String(params.get('from') || '').toLowerCase();
-          const forcePlay = playParam === '1' || playParam === 'true' || fromParam === 'home';
-          if (forcePlay) {
-            setHomeMode('play', { scroll: false });
-            if (!WQGame.getState?.()?.word) newGame({ launchMissionLab: false });
-            return;
-          }
-        } catch (_e) {
-          // no-op
+      try {
+        const params = new URLSearchParams(window.location.search || '');
+        const playParam = String(params.get('play') || '').toLowerCase();
+        const fromParam = String(params.get('from') || '').toLowerCase();
+        const forcePlay = playParam === '1' || playParam === 'true' || fromParam === 'home';
+        if (forcePlay) {
+          setHomeMode('play', { scroll: false });
+          if (!WQGame.getState?.()?.word) newGame({ launchMissionLab: false });
+          return;
         }
+      } catch (_e) {
+        // no-op
       }
       setHomeMode('home', { scroll: false });
       return;
