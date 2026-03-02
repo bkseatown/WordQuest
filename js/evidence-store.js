@@ -16,6 +16,7 @@
   var MAX_SPARK_POINTS = 14;
   var MAX_SESSIONS = 600;
   var MAX_STUDENT_SESSIONS = 120;
+  var LEGACY_BRIDGE_WARNED = false;
 
   function now() { return Date.now(); }
 
@@ -176,6 +177,7 @@
     state.sessions.push(session);
     if (state.sessions.length > MAX_SESSIONS) state.sessions = state.sessions.slice(-MAX_SESSIONS);
     save(state);
+    bridgeLegacySessionToEvidenceV2(sid, session);
     return session;
   }
 
@@ -231,7 +233,83 @@
     if (!exists) state.sessions.push(normalized);
     if (state.sessions.length > MAX_SESSIONS) state.sessions = state.sessions.slice(-MAX_SESSIONS);
     save(state);
+    bridgeWordQuestEnvelopeToEvidenceV2(sid, normalized);
     return normalized;
+  }
+
+  function targetForModule(module) {
+    var mod = String(module || "").toLowerCase();
+    if (mod === "wordquest") return "LIT.DEC.PHG";
+    if (mod === "reading_lab" || mod === "readinglab") return "LIT.FLU.ACC";
+    if (mod === "sentence_surgery" || mod === "sentencesurgery") return "LIT.LANG.SYN";
+    if (mod === "writing_studio" || mod === "writingstudio") return "LIT.WRITE.SENT";
+    if (mod === "numeracy") return "NUM.FLU.FACT";
+    return "";
+  }
+
+  function accuracyForLegacyMetric(session) {
+    var metrics = session && session.metrics ? session.metrics : {};
+    var score = Math.max(0, Math.min(100, Number(session && session.score || 0)));
+    if (Number.isFinite(Number(metrics.accuracy))) return Math.max(0, Math.min(1, Number(metrics.accuracy) / 100));
+    if (Number.isFinite(Number(metrics.solveSuccess))) return metrics.solveSuccess ? 1 : 0;
+    return Number((score / 100).toFixed(3));
+  }
+
+  function bridgeLegacySessionToEvidenceV2(studentId, session) {
+    if (typeof window === "undefined" || !window.CSEvidenceEngine || typeof window.CSEvidenceEngine.recordEvidence !== "function") return;
+    var target = targetForModule(session && session.module);
+    if (!target) return;
+    try {
+      window.CSEvidenceEngine.recordEvidence({
+        studentId: normalizeStudentId(studentId),
+        timestamp: new Date(Number(session && session.ts || now())).toISOString(),
+        module: String(session && session.module || ""),
+        activityId: "legacy." + String(session && session.module || "activity"),
+        targets: [target],
+        tier: "T2",
+        doseMin: 3,
+        result: {
+          accuracy: accuracyForLegacyMetric(session),
+          attempts: Math.max(0, Number(session && session.metrics && session.metrics.totalGuesses || session && session.metrics && session.metrics.attempts || 0))
+        },
+        confidence: 0.65,
+        notes: "legacy-bridge"
+      });
+      if (!LEGACY_BRIDGE_WARNED) {
+        LEGACY_BRIDGE_WARNED = true;
+        if (typeof console !== "undefined" && typeof console.info === "function") {
+          console.info("[evidence] Legacy CSEvidence writes are being mirrored into cs.evidence.v2");
+        }
+      }
+    } catch (_err) {}
+  }
+
+  function bridgeWordQuestEnvelopeToEvidenceV2(studentId, envelope) {
+    if (typeof window === "undefined" || !window.CSEvidenceEngine || typeof window.CSEvidenceEngine.recordEvidence !== "function") return;
+    var sig = envelope && envelope.signals ? envelope.signals : {};
+    var solved = !!(envelope && envelope.outcomes && envelope.outcomes.solved);
+    var attempts = Math.max(0, Number(sig.guessCount || 0));
+    var misplace = Math.max(0, Math.min(1, Number(sig.misplaceRate || 0)));
+    var accuracy = solved ? Math.max(0.5, 1 - misplace) : Math.max(0, 0.45 - misplace * 0.2);
+    try {
+      window.CSEvidenceEngine.recordEvidence({
+        studentId: normalizeStudentId(studentId),
+        timestamp: String(envelope && envelope.createdAt || new Date().toISOString()),
+        module: "wordquest",
+        activityId: "legacy.wordquest.session",
+        targets: ["LIT.DEC.PHG"],
+        tier: "T2",
+        doseMin: 3,
+        result: {
+          accuracy: Number(Math.max(0, Math.min(1, accuracy)).toFixed(3)),
+          attempts: attempts,
+          latencyMs: Math.max(0, Number(sig.avgGuessLatencyMs || 0)),
+          errorRate: Number(Math.max(0, Math.min(1, misplace)).toFixed(3))
+        },
+        confidence: 0.7,
+        notes: "legacy-envelope-bridge"
+      });
+    } catch (_err) {}
   }
 
   function getRecentSessions(studentId, opts) {
