@@ -27,28 +27,33 @@
 
       <div class="td-top-actions">
         <button id="td-add-student" class="td-top-btn" type="button">Add Student</button>
-        <button id="td-home-btn" class="td-top-btn td-nav-btn" type="button">Home</button>
-        <label class="td-activity-pick" for="td-activity-select">
-          <span>Activities</span>
-          <select id="td-activity-select" class="td-top-btn">
-            <option value="">Go to...</option>
-            <option value="word-quest.html">Word Quest</option>
-            <option value="reading-lab.html">Reading Lab</option>
-            <option value="sentence-surgery.html">Sentence Surgery</option>
-            <option value="writing-studio.html">Writing Studio</option>
-            <option value="numeracy.html">Numeracy</option>
-            <option value="activities/decoding-diagnostic.html">Decoding Diagnostic</option>
-          </select>
-        </label>
-        <button id="td-coach-chip" class="td-top-btn td-coach-chip" type="button">Coach</button>
-        <span id="td-demo-badge" class="tier-badge tier-2 hidden" aria-live="polite">Demo data</span>
-        <button id="td-admin-demo" class="td-top-btn" type="button">Admin Demo</button>
         <button id="td-new-session" class="td-top-btn" type="button">New Session</button>
-        <button id="td-meeting-mode" class="td-top-btn" type="button">Meeting Notes</button>
-        <button id="td-tier1-pack" class="td-top-btn" type="button">Tier 1 Evidence</button>
-        <button id="td-sas-library-btn" class="td-top-btn" type="button">SAS Library</button>
-        <button id="td-import-export" class="td-top-btn" type="button">Import/Export</button>
         <button id="td-settings" class="td-top-btn" type="button">Settings</button>
+        <div class="td-top-overflow">
+          <button id="td-top-overflow-toggle" class="td-top-btn" type="button" aria-expanded="false" aria-controls="td-top-overflow-menu">More</button>
+          <div id="td-top-overflow-menu" class="td-top-overflow-menu hidden">
+            <button id="td-home-btn" class="td-top-btn td-nav-btn" type="button">Home</button>
+            <label class="td-activity-pick" for="td-activity-select">
+              <span>Activities</span>
+              <select id="td-activity-select" class="td-top-btn">
+                <option value="">Go to...</option>
+                <option value="word-quest.html">Word Quest</option>
+                <option value="reading-lab.html">Reading Lab</option>
+                <option value="sentence-surgery.html">Sentence Surgery</option>
+                <option value="writing-studio.html">Writing Studio</option>
+                <option value="numeracy.html">Numeracy</option>
+                <option value="activities/decoding-diagnostic.html">Decoding Diagnostic</option>
+              </select>
+            </label>
+            <button id="td-coach-chip" class="td-top-btn td-coach-chip" type="button">Coach</button>
+            <span id="td-demo-badge" class="tier-badge tier-2 hidden" aria-live="polite">Demo data</span>
+            <button id="td-admin-demo" class="td-top-btn" type="button">Admin Demo</button>
+            <button id="td-meeting-mode" class="td-top-btn" type="button">Meeting Notes</button>
+            <button id="td-tier1-pack" class="td-top-btn" type="button">Tier 1 Evidence</button>
+            <button id="td-sas-library-btn" class="td-top-btn" type="button">SAS Library</button>
+            <button id="td-import-export" class="td-top-btn" type="button">Import/Export</button>
+          </div>
+        </div>
         <button id="td-local-status" class="td-local-dot" type="button" title="Local data on this device" aria-label="Local mode"></button>
       </div>
     </header>
@@ -150,8 +155,8 @@
             </section>
           </div>
           <div class="triage-right">
-            <article class="td-metric-card td-metric-card--reco td-surface card fade-in section-analytics module-literacy">
-            <p class="td-label">Today's Move</p>
+            <article class="td-metric-card td-metric-card--reco recommendation-panel td-surface card fade-in section-analytics module-literacy">
+            <p class="td-label">System Recommendation</p>
             <h2 id="td-focus-title" class="td-title">Tier 2 - Strategic Reinforcement Recommended</h2>
             <p id="td-reco-line" class="td-reco-line">Pick a student to generate a targeted intervention move.</p>
             <div class="td-cta-row">

@@ -21,12 +21,11 @@
   var seenColors = { gray: false, yellow: false, green: false };
 
   var COACH_LINES = [
-    'Watch one round.',
-    'Gray means: not in the word.',
-    'Yellow means: right letter, wrong spot.',
-    'Green means: right letter, right spot.',
-    'We change one sound at a time.',
-    'Now it\'s your turn.'
+    'Immediate vowel feedback detected.',
+    'Letter-position error corrected in-session.',
+    'Adaptive support adjusts next target.',
+    'Tier 2 scaffold activated.',
+    'Phoneme confusion flagged and reinforced.'
   ];
 
   try {
@@ -98,33 +97,33 @@
       var state = String(event.detail && event.detail.state || '');
       if (state === 'is-gray' && !seenColors.gray) {
         seenColors.gray = true;
-        setCoachLine(1);
+        setCoachLine(4);
       } else if (state === 'is-yellow' && seenColors.gray && !seenColors.yellow) {
         seenColors.yellow = true;
-        setCoachLine(2);
+        setCoachLine(0);
       } else if (state === 'is-green' && seenColors.yellow && !seenColors.green) {
         seenColors.green = true;
-        setCoachLine(3);
+        setCoachLine(1);
       }
       return;
     }
     if (type === 'round:first-feedback') {
       if (!seenColors.green) {
         seenColors.green = true;
-        setCoachLine(3);
+        setCoachLine(2);
       }
       return;
     }
     if (type === 'round:strategy') {
-      setCoachLine(4);
+      setCoachLine(2);
       return;
     }
     if (type === 'round:complete') {
-      setCoachLine(5);
+      setCoachLine(3);
       return;
     }
     if (type === 'round:loop-reset') {
-      setCoachLine(0);
+      setCoachLine((coachIndex + 1) % COACH_LINES.length);
     }
   }
 
@@ -148,7 +147,7 @@
   preview = mountWordQuestPreview(container, {
     mode: 'hero',
     loop: true,
-    resetDelayMs: 900,
+    resetDelayMs: 1100,
     resetFadeMs: prefersReducedMotion ? 0 : 250,
     onEvent: onPreviewEvent
   });

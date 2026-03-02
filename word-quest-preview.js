@@ -7,7 +7,7 @@
     var opts = options && typeof options === "object" ? options : {};
     var shouldLoop = opts.loop !== false;
     var onEvent = typeof opts.onEvent === "function" ? opts.onEvent : null;
-    var resetDelayMs = Number(opts.resetDelayMs || 900);
+    var resetDelayMs = Number(opts.resetDelayMs || 1100);
     var resetFadeMs = Number(opts.resetFadeMs || 250);
     var timers = [];
     var running = false;
@@ -64,6 +64,8 @@
       if (!keyEl) return;
       keyEl.classList.remove('is-gray', 'is-yellow', 'is-green');
       keyEl.classList.add(stateClass);
+      keyEl.classList.add('is-pop');
+      setTimer(function () { keyEl.classList.remove('is-pop'); }, 120);
     }
 
     function animateGuess(rowIndex, word, states, done) {
@@ -75,12 +77,12 @@
       function typeNext() {
         if (!running || document.hidden) return;
         if (t >= word.length) {
-          flipNext(0);
+          setTimer(function () { flipNext(0); }, 300);
           return;
         }
         tiles[t].textContent = word[t];
         t += 1;
-        setTimer(typeNext, 70);
+        setTimer(typeNext, 80);
       }
 
       function flipNext(index) {
@@ -102,9 +104,9 @@
             letter: word[index],
             state: tileState
           });
-          setTimer(function () { tiles[index].classList.remove('settle'); }, 220);
-          setTimer(function () { flipNext(index + 1); }, 280);
-        }, 280);
+          setTimer(function () { tiles[index].classList.remove('settle'); }, 120);
+          setTimer(function () { flipNext(index + 1); }, 120);
+        }, 120);
       }
 
       typeNext();
@@ -115,13 +117,13 @@
       emit('round:start');
       animateGuess(0, 'SLATE', ['is-gray', 'is-green', 'is-green', 'is-yellow', 'is-gray'], function () {
         emit('round:first-feedback');
-        setTimer(function () {
-          emit('round:strategy');
-          animateGuess(1, 'PLAIN', ['is-green', 'is-green', 'is-green', 'is-gray', 'is-gray'], function () {
-            setTimer(function () {
-              animateGuess(2, 'PLANT', ['is-green', 'is-green', 'is-green', 'is-green', 'is-green'], function () {
-                emit('round:complete');
-                setTimer(function () {
+          setTimer(function () {
+            emit('round:strategy');
+            animateGuess(1, 'PLAIN', ['is-green', 'is-green', 'is-green', 'is-gray', 'is-gray'], function () {
+              setTimer(function () {
+                animateGuess(2, 'PLANT', ['is-green', 'is-green', 'is-green', 'is-green', 'is-green'], function () {
+                  emit('round:complete');
+                  setTimer(function () {
                   if (!running || document.hidden) return;
                   if (!shouldLoop) return;
                   root.classList.add('is-resetting');
@@ -133,9 +135,9 @@
                   }, resetFadeMs);
                 }, resetDelayMs);
               });
-            }, 380);
+            }, 300);
           });
-        }, 380);
+        }, 300);
       });
     }
 

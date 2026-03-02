@@ -141,6 +141,8 @@
     addStudent: document.getElementById("td-add-student"),
     brandHome: document.querySelector(".td-brand-home"),
     settings: document.getElementById("td-settings"),
+    topOverflowToggle: document.getElementById("td-top-overflow-toggle"),
+    topOverflowMenu: document.getElementById("td-top-overflow-menu"),
     homeBtn: document.getElementById("td-home-btn"),
     activitySelect: document.getElementById("td-activity-select"),
     copySummary: document.getElementById("td-copy-summary"),
@@ -619,11 +621,7 @@
       var track = (GrowthEngine && typeof GrowthEngine.computeTrackStatus === "function")
         ? GrowthEngine.computeTrackStatus(sid)
         : { status: "WATCH", reason: "Growth signal pending" };
-      var trackLabel = track.status === "ON_TRACK" ? "On Track"
-        : (track.status === "OFF_TRACK" ? "Off Track" : "Watch Growth");
       var growthSymbol = track.status === "ON_TRACK" ? "↑" : (track.status === "OFF_TRACK" ? "↓" : "→");
-      var trackClass = track.status === "ON_TRACK" ? "td-track-on"
-        : (track.status === "OFF_TRACK" ? "td-track-off" : "td-track-watch");
       var rationale = topSkill
         ? ("Priority: " + formatSkillBreadcrumb(topSkill.skillId) + " • Need: " + needLabel + " • Cadence: " + topSkill.stalenessDays + "d/" + cadenceDays + "d")
         : "Priority: Missing evidence";
@@ -661,16 +659,19 @@
       }
       var tierClass = topSkill && topSkill.tier === "T3" ? "student-tier-3"
         : (topSkill && topSkill.tier === "T2" ? "student-tier-2" : "student-tier-1");
+      var tierBadge = topSkill && topSkill.tier ? topSkill.tier : "T1";
+      var missingEvidenceBadge = row.priorityFallback || !topSkill
+        ? '<span class="td-chip td-risk-high">Missing Evidence</span>'
+        : '';
       return [
-        '<article class="td-todayCard ' + tierClass + '">',
+        '<article class="td-todayCard student-card ' + tierClass + '">',
         '<div class="td-todayCard__top">',
         '<h3 class="td-todayCard__name">' + s.name + '</h3>',
         '<span class="td-todayCard__grade">' + grade + '</span>',
-        '<span class="td-risk-chip ' + risk.colorClass + '">' + risk.label + '</span>',
-        '<span class="td-track-chip ' + trackClass + '" title="' + String(track.reason || "") + '">' + trackLabel + '</span>',
         '</div>',
         '<div class="td-todayCard__chips">',
-        (row.focus || []).slice(0, 2).map(function (focus) { return '<span class="td-chip">' + focus + '</span>'; }).join(""),
+        '<span class="td-chip">' + tierBadge + '</span>',
+        missingEvidenceBadge,
         '</div>',
         '<div class="td-todayCard__actions">',
         '<div class="student-actions">',
@@ -681,14 +682,14 @@
         '<button class="td-top-btn" type="button" data-today-launch="word-quest" data-student-id="' + sid + '">Word Quest</button>',
         '<button class="td-top-btn" type="button" data-today-launch="reading-lab" data-student-id="' + sid + '">Reading Lab</button>',
         '<button class="td-top-btn" type="button" data-today-launch="sentence-surgery" data-student-id="' + sid + '">Sentence Surgery</button>',
-        '</div>',
-        '</div>',
         (rationale ? ('<p class="td-todayCard__last" title="' + confidenceTip + '">' + rationale + '</p>') : ''),
         '<p class="td-todayCard__last">Primary Focus: ' + pathway.pathway + '</p>',
         (trendLine ? ('<p class="td-todayCard__last">' + trendLine + '</p>') : ''),
         (nextStepLine ? ('<p class="td-todayCard__last">' + nextStepLine + '</p>') : ''),
         (whyItems.length ? ('<details class="td-todayWhy"><summary>Why</summary><ul>' + whyItems.map(function (item) { return "<li>" + item + "</li>"; }).join("") + '</ul></details>') : ''),
         '<p class="td-todayCard__last">' + lastText + '</p>',
+        '</div>',
+        '</div>',
         '</article>'
       ].join("");
     }).join("");
@@ -2676,3 +2677,17 @@
   })();
   selectStudent(initial);
 })();
+    if (el.topOverflowToggle && el.topOverflowMenu) {
+      el.topOverflowToggle.addEventListener("click", function (event) {
+        event.stopPropagation();
+        var isHidden = el.topOverflowMenu.classList.contains("hidden");
+        el.topOverflowMenu.classList.toggle("hidden", !isHidden);
+        el.topOverflowToggle.setAttribute("aria-expanded", isHidden ? "true" : "false");
+      });
+      document.addEventListener("click", function (event) {
+        if (el.topOverflowMenu.classList.contains("hidden")) return;
+        if (el.topOverflowMenu.contains(event.target) || el.topOverflowToggle.contains(event.target)) return;
+        el.topOverflowMenu.classList.add("hidden");
+        el.topOverflowToggle.setAttribute("aria-expanded", "false");
+      });
+    }

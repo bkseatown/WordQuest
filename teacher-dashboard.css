@@ -152,7 +152,8 @@ body.cs-has-nav-shell .td-shell {
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  position: relative;
 }
 #td-demo-badge {
   white-space: nowrap;
@@ -206,6 +207,34 @@ body.cs-has-nav-shell .td-shell {
 .td-coach-chip { border-color: color-mix(in oklab, var(--accent) 58%, transparent); }
 .td-coach-chip.is-fresh { animation: tdCoachPulse 220ms ease-out 1; }
 @keyframes tdCoachPulse { 0% { transform: scale(1); } 45% { transform: scale(1.04); } 100% { transform: scale(1); } }
+
+.td-top-overflow {
+  position: relative;
+}
+
+.td-top-overflow-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 20;
+  min-width: 220px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--border-soft) 72%, transparent);
+  background: var(--surface-elev-1);
+  box-shadow: var(--shadow-strong);
+  display: grid;
+  gap: 8px;
+}
+
+.td-top-overflow-menu.hidden {
+  display: none;
+}
+
+.td-top-overflow-menu .td-activity-pick {
+  display: grid;
+  gap: 4px;
+}
 
 .td-local-dot {
   width: 18px;
@@ -262,7 +291,7 @@ body.cs-has-nav-shell .td-shell {
 
 .triage-right {
   position: sticky;
-  top: 24px;
+  top: 140px;
   align-self: start;
 }
 
@@ -416,20 +445,22 @@ body.cs-has-nav-shell .td-shell {
   border-color: color-mix(in oklab, var(--tier-3) 36%, transparent);
 }
 
-.td-todayCard {
+.td-todayCard,
+.student-card {
   border-radius: 16px;
   border: 1px solid color-mix(in oklab, var(--border-soft) 68%, transparent);
   background: var(--surface-elev-1);
-  padding: 10px;
+  padding: 16px;
   display: grid;
   gap: 8px;
   min-width: 0;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  transition: transform var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
+  transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 }
 
-.td-todayCard:hover {
-  transform: translateY(-1px);
+.td-todayCard:hover,
+.student-card:hover {
+  transform: translateY(-2px);
   border-color: color-mix(in oklab, var(--accent) 36%, var(--border-soft) 64%);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
 }
@@ -459,7 +490,7 @@ body.cs-has-nav-shell .td-shell {
 .td-todayCard__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 .td-todayCard__actions {
@@ -476,8 +507,10 @@ body.cs-has-nav-shell .td-shell {
 .td-more-tools {
   margin-top: 6px;
   display: none;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
+  border-top: 1px dashed color-mix(in oklab, var(--border-soft) 64%, transparent);
+  padding-top: 8px;
 }
 
 .td-more-tools.is-open {
@@ -497,9 +530,9 @@ body.cs-has-nav-shell .td-shell {
 .td-todayCard__last {
   font-size: var(--fs-1, 13px);
   opacity: 0.72;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: initial;
 }
 
 .td-todayWhy {
@@ -762,11 +795,21 @@ body.cs-has-nav-shell .td-shell {
 .student-tier-1 { border-left: 4px solid var(--status-secure); }
 
 .td-metric-card--reco {
-  padding: 20px;
+  padding: 32px;
+  font-size: 1.1rem;
+  background: #eef3ff;
+  border: 1px solid #dbe4ff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .td-metric-card--reco .td-title {
   font-size: clamp(1.5rem, 2.1vw, 2rem);
+}
+
+#td-start-intervention {
+  min-height: 48px;
+  padding: 12px 16px;
+  font-size: var(--fs-3);
 }
 .td-btn-once { animation: tdPulse 220ms ease-out 1; }
 @keyframes tdPulse { 0% { transform: scale(1); } 40% { transform: scale(1.02); } 100% { transform: scale(1); } }
