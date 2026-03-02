@@ -1075,21 +1075,28 @@
         '<div class="td-support-item"><h4>Next Best Activity</h4><p>' + summary.nextMove.line + '</p><button class="td-top-btn" type="button" data-drawer-launch="' + summary.nextMove.quickHref + '">Launch</button></div>'
       ].join("");
     } else if (state.activeDrawerTab === "goals") {
-      el.drawerBody.innerHTML = (support.goals || []).length
+      var goalsList = (support.goals || []).length
         ? support.goals.slice(0, 6).map(function (g) {
             return '<div class="td-support-item"><h4>' + (g.skill || g.domain || "Goal") + '</h4><p>' + (g.baseline || "--") + ' → ' + (g.target || "--") + ' • updated ' + (g.updatedAt || g.createdAt || "") + '</p></div>';
           }).join("")
         : '<div class="td-support-item"><p>No goals yet. Use Meeting Notes → Convert to Goals.</p></div>';
+      el.drawerBody.innerHTML = '<div class="td-support-item"><h4>SMART Goal Builder</h4><p>Quick add one baseline-to-target goal from today\'s discussion.</p><button class="td-top-btn" type="button" data-drawer-action="add-goal">Add Goal</button></div>' + goalsList;
     } else if (state.activeDrawerTab === "interventions") {
-      el.drawerBody.innerHTML = (support.interventions || []).length
+      var interventionList = (support.interventions || []).length
         ? support.interventions.slice(0, 8).map(function (i) {
             return '<div class="td-support-item"><h4>Tier ' + (i.tier || 1) + ' • ' + (i.domain || "") + '</h4><p>' + (i.strategy || i.focus || "") + ' • ' + (i.frequency || "") + ' • ' + (i.durationMin || "--") + ' min</p></div>';
           }).join("")
         : '<div class="td-support-item"><p>No intervention entries yet.</p></div>';
+      el.drawerBody.innerHTML = '<div class="td-support-item"><h4>Tier 1/2/3 Quick Log</h4><p>3-click entry for what/when/how long.</p><button class="td-top-btn" type="button" data-drawer-action="add-intervention">Quick Log</button></div>' + interventionList;
     } else if (state.activeDrawerTab === "evidence") {
       el.drawerBody.innerHTML = '<div class="td-support-item"><h4>Evidence (filterable)</h4><p>' + (summary.evidenceChips || []).map(function (c) { return c.label + ": " + c.value; }).join(" • ") + '</p></div>';
     } else {
-      el.drawerBody.innerHTML = '<div class="td-support-item"><h4>Share</h4><p>Use Share Summary or Tier 1 Evidence Pack export.</p><button id="td-drawer-share-now" class="td-top-btn" type="button">Open Share Summary</button></div>';
+      el.drawerBody.innerHTML = [
+        '<div class="td-support-item"><h4>Share</h4><p>Generate meeting-ready outputs in one click.</p></div>',
+        '<div class="td-support-item"><button id="td-drawer-share-now" class="td-top-btn" type="button">Open Share Summary</button></div>',
+        '<div class="td-support-item"><button class="td-top-btn" type="button" data-drawer-action="meeting-summary">Meeting Summary (printable)</button></div>',
+        '<div class="td-support-item"><button class="td-top-btn" type="button" data-drawer-action="tier1-pack">Tier 1 Evidence Pack</button></div>'
+      ].join("");
     }
     Array.prototype.forEach.call(el.drawerBody.querySelectorAll("[data-drawer-launch]"), function (button) {
       button.addEventListener("click", function () {
@@ -1101,6 +1108,53 @@
     if (shareBtn) {
       shareBtn.addEventListener("click", function () { openShareModal(studentId); });
     }
+    Array.prototype.forEach.call(el.drawerBody.querySelectorAll("[data-drawer-action]"), function (button) {
+      button.addEventListener("click", function () {
+        var action = String(button.getAttribute("data-drawer-action") || "");
+        if (!SupportStore) return;
+        if (action === "add-goal") {
+          SupportStore.addGoal(studentId, {
+            domain: "literacy",
+            skill: "Decoding strategy",
+            baseline: "Current classroom baseline",
+            target: "Target growth in 6 weeks",
+            metric: "Session evidence + class sample",
+            method: "Weekly check",
+            schedule: "3x/week",
+            reviewEveryDays: 14
+          });
+          renderDrawer(studentId);
+          return;
+        }
+        if (action === "add-intervention") {
+          SupportStore.addIntervention(studentId, {
+            tier: 1,
+            domain: "Reading",
+            focus: "Decoding",
+            startAt: new Date().toISOString(),
+            frequency: "3x/week",
+            durationMin: 20,
+            strategy: "Phonics routine + guided decoding",
+            fidelityChecklist: ["Modeled", "Prompted", "Checked for transfer"]
+          });
+          renderDrawer(studentId);
+          return;
+        }
+        if (action === "meeting-summary") {
+          var meeting = SupportStore.buildMeetingSummary(studentId, {});
+          download("meeting-summary-" + studentId + ".html", meeting.html, "text/html");
+          if (navigator.clipboard) navigator.clipboard.writeText(meeting.text).catch(function () {});
+          setCoachLine("Meeting Summary exported + copied.");
+          return;
+        }
+        if (action === "tier1-pack") {
+          var pack = SupportStore.buildTier1EvidencePack(studentId, { domains: ["Reading", "Writing"] });
+          download("tier1-evidence-pack-" + studentId + ".html", pack.html, "text/html");
+          if (navigator.clipboard) navigator.clipboard.writeText(pack.text).catch(function () {});
+          setCoachLine("Tier 1 Evidence Pack exported + copied.");
+        }
+      });
+    });
   }
 
   function renderRecommendedPlan(studentId) {
@@ -1708,10 +1762,19 @@
     if (el.tier1PackBtn) {
       el.tier1PackBtn.addEventListener("click", function () {
         if (!state.selectedId || !SupportStore) return;
-        var packet = SupportStore.exportReferralPacket(state.selectedId);
+        var concerns = window.prompt("Concern area(s) comma-separated", "Reading, Writing");
+        var duration = window.prompt("Intervention duration", "6 weeks");
+        var frequency = window.prompt("Frequency", "3x/week");
+        var notes = window.prompt("Tier 1 notes", "");
+        var packet = SupportStore.buildTier1EvidencePack(state.selectedId, {
+          domains: String(concerns || "Reading").split(",").map(function (s) { return s.trim(); }).filter(Boolean),
+          duration: duration || "6 weeks",
+          frequency: frequency || "3x/week",
+          notes: notes || ""
+        });
         download("tier1-evidence-pack-" + state.selectedId + ".html", packet.html, "text/html");
         if (navigator.clipboard) {
-          navigator.clipboard.writeText("Tier 1 Evidence Pack ready for " + state.selectedId + ".").catch(function () {});
+          navigator.clipboard.writeText(packet.text || ("Tier 1 Evidence Pack ready for " + state.selectedId + ".")).catch(function () {});
         }
         setCoachLine("Tier 1 Evidence Pack exported.");
       });
