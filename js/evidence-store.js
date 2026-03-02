@@ -607,6 +607,27 @@
     return '"' + String(value == null ? "" : value).replace(/"/g, '""') + '"';
   }
 
+  function canonicalSkillId(skillId) {
+    var id = String(skillId || "").trim();
+    if (!id) return "";
+    if (typeof window !== "undefined" && window.CSSkillResolver && typeof window.CSSkillResolver.canonicalizeSkillId === "function") {
+      return String(window.CSSkillResolver.canonicalizeSkillId(id) || "").trim();
+    }
+    var fallbackMap = {
+      "decoding.short_vowels": "LIT.DEC.PHG",
+      "decoding.long_vowels": "LIT.DEC.SYL",
+      "orthography.pattern_control": "LIT.DEC.SYL",
+      "morphology.inflectional": "LIT.MOR.INFLECT",
+      "morphology.derivational": "LIT.MOR.DERIV",
+      "fluency.pacing": "LIT.FLU.ACC",
+      "sentence.syntax_clarity": "LIT.LANG.SYN",
+      "writing.elaboration": "LIT.WRITE.SENT",
+      "numeracy.fact_fluency": "NUM.FLU.FACT",
+      "numeracy.strategy_use": "NUM.STRAT.USE"
+    };
+    return fallbackMap[id] || id;
+  }
+
   function skillCatalog() {
     return (typeof window !== "undefined" && window.CSSkillTaxonomy && Array.isArray(window.CSSkillTaxonomy.SKILLS))
       ? window.CSSkillTaxonomy.SKILLS
@@ -642,7 +663,7 @@
     var mastery = Math.max(0, Math.min(100, Math.round(Number(src.mastery || 0))));
     var level = Math.max(0, Math.min(3, Number.isFinite(Number(src.level)) ? Number(src.level) : Math.round(mastery / 34)));
     return {
-      skillId: String(skillId || src.skillId || ""),
+      skillId: canonicalSkillId(skillId || src.skillId || ""),
       level: level,
       mastery: mastery,
       lastUpdated: String(src.lastUpdated || ""),
@@ -658,7 +679,8 @@
     if (current && typeof current === "object") {
       var mastery = current.mastery && typeof current.mastery === "object" ? current.mastery : {};
       Object.keys(mastery).forEach(function (skillId) {
-        base.mastery[skillId] = normalizeSkillRow(mastery[skillId], skillId);
+        var canonicalId = canonicalSkillId(skillId);
+        base.mastery[canonicalId] = normalizeSkillRow(mastery[skillId], canonicalId);
       });
       base.topNeeds = Array.isArray(current.topNeeds) ? current.topNeeds.slice(0, 5) : [];
       base.updatedAt = String(current.updatedAt || base.updatedAt);
@@ -682,16 +704,17 @@
     var deltas = patch && patch.skillDelta && typeof patch.skillDelta === "object" ? patch.skillDelta : {};
     var stamp = String((patch && patch.createdAt) || new Date().toISOString());
     Object.keys(deltas).forEach(function (skillId) {
+      var canonicalId = canonicalSkillId(skillId);
       var delta = Math.max(-2, Math.min(2, Number(deltas[skillId] || 0)));
       if (!Number.isFinite(delta)) return;
-      var row = normalizeSkillRow(model.mastery[skillId], skillId);
+      var row = normalizeSkillRow(model.mastery[canonicalId], canonicalId);
       var next = Math.max(0, Math.min(100, row.mastery + (delta * 8)));
       row.mastery = Math.round(next);
       row.level = deriveLevel(next);
       row.lastUpdated = stamp;
       row.sparkline.push(row.mastery);
       if (row.sparkline.length > MAX_SPARK_POINTS) row.sparkline = row.sparkline.slice(-MAX_SPARK_POINTS);
-      model.mastery[skillId] = row;
+      model.mastery[canonicalId] = row;
     });
     model.topNeeds = computeTopNeeds(model);
     model.updatedAt = stamp;
@@ -704,9 +727,10 @@
     var rows = [];
     var mastery = model && model.mastery && typeof model.mastery === "object" ? model.mastery : {};
     Object.keys(mastery).forEach(function (skillId) {
-      var row = normalizeSkillRow(mastery[skillId], skillId);
+      var canonicalId = canonicalSkillId(skillId);
+      var row = normalizeSkillRow(mastery[skillId], canonicalId);
       rows.push({
-        skillId: skillId,
+        skillId: canonicalId,
         level: row.level,
         mastery: row.mastery,
         lastUpdated: row.lastUpdated

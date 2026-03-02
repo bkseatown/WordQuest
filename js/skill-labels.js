@@ -89,6 +89,25 @@
     return map[label] || label;
   }
 
+  function canonicalSkillId(skillId) {
+    var id = String(skillId || '').trim();
+    if (!id) return '';
+    if (typeof globalThis !== 'undefined' && globalThis.CSSkillResolver && typeof globalThis.CSSkillResolver.canonicalizeSkillId === 'function') {
+      return String(globalThis.CSSkillResolver.canonicalizeSkillId(id) || '').trim();
+    }
+    var fallbackMap = {
+      'decoding.short_vowels': 'LIT.DEC.PHG',
+      'decoding.long_vowels': 'LIT.DEC.SYL',
+      'orthography.pattern_control': 'LIT.DEC.SYL',
+      'morphology.inflectional': 'LIT.MOR.INFLECT',
+      'morphology.derivational': 'LIT.MOR.DERIV',
+      'fluency.pacing': 'LIT.FLU.ACC',
+      'sentence.syntax_clarity': 'LIT.LANG.SYN',
+      'writing.elaboration': 'LIT.WRITE.SENT'
+    };
+    return fallbackMap[id] || id;
+  }
+
   function setTaxonomyData(taxonomy) {
     var strands = Array.isArray(taxonomy && taxonomy.strands) ? taxonomy.strands : DEFAULT_TAXONOMY.strands;
     cache.strandLabelById = {};
@@ -138,12 +157,12 @@
   function getSkillLabel(skillId) {
     if (!cache.loaded) setTaxonomyData(DEFAULT_TAXONOMY);
     ensureLoaded();
-    var id = String(skillId || '');
+    var id = canonicalSkillId(skillId);
     return cache.skillLabelById[id] || toTitleFallback(id) || 'Skill';
   }
 
   function getSkillBreadcrumb(skillId) {
-    var id = String(skillId || '');
+    var id = canonicalSkillId(skillId);
     var strandId = cache.skillToStrand[id];
     var strand = strandId ? cache.strandLabelById[strandId] : toTitleFallback(id.split('.').slice(0, 2).join('.'));
     return String(strand || 'Literacy') + ' -> ' + getSkillLabel(id);

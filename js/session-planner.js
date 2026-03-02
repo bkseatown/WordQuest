@@ -18,13 +18,13 @@
   function looksWeak(skillId) {
     var id = String(skillId || "");
     return {
-      decoding: /^decoding\./.test(id),
-      orthography: /^orthography\./.test(id),
-      morphology: /^morphology\./.test(id),
-      fluency: /^fluency\./.test(id),
-      sentence: /^sentence\./.test(id),
-      writing: /^writing\./.test(id),
-      numeracy: /^numeracy\./.test(id)
+      decoding: /^decoding\./.test(id) || /^LIT\.DEC/.test(id),
+      orthography: /^orthography\./.test(id) || /^LIT\.DEC/.test(id),
+      morphology: /^morphology\./.test(id) || /^LIT\.MOR/.test(id),
+      fluency: /^fluency\./.test(id) || /^LIT\.FLU/.test(id),
+      sentence: /^sentence\./.test(id) || /^LIT\.LANG\.SYN/.test(id),
+      writing: /^writing\./.test(id) || /^LIT\.WRITE/.test(id),
+      numeracy: /^numeracy\./.test(id) || /^NUM\./.test(id)
     };
   }
 
@@ -62,7 +62,7 @@
       pushPlan(rows, {
         activityId: "word-quest",
         title: "Word Quest Quick Check",
-        focusSkillId: weakFlags.morphology ? "morphology.inflectional" : "decoding.short_vowels",
+        focusSkillId: weakFlags.morphology ? "LIT.MOR.INFLECT" : "LIT.DEC.PHG",
         minutes: 7,
         href: "word-quest.html?quick=1"
       }, budget);
@@ -71,7 +71,7 @@
       pushPlan(rows, {
         activityId: "reading-lab",
         title: "Reading Lab Fluency Sprint",
-        focusSkillId: "fluency.pacing",
+        focusSkillId: "LIT.FLU.ACC",
         minutes: 7,
         href: "reading-lab.html"
       }, budget);
@@ -80,7 +80,7 @@
       pushPlan(rows, {
         activityId: weakFlags.writing ? "writing-studio" : "sentence-surgery",
         title: weakFlags.writing ? "Writing Studio Precision" : "Sentence Surgery Repair",
-        focusSkillId: weakFlags.writing ? "writing.elaboration" : "sentence.syntax_clarity",
+        focusSkillId: weakFlags.writing ? "LIT.WRITE.SENT" : "LIT.LANG.SYN",
         minutes: 6,
         href: weakFlags.writing ? "writing-studio.html" : "sentence-surgery.html"
       }, budget);
@@ -89,7 +89,7 @@
       pushPlan(rows, {
         activityId: "numeracy",
         title: "Numeracy Boost",
-        focusSkillId: "numeracy.fact_fluency",
+        focusSkillId: "NUM.FLU.FACT",
         minutes: 6,
         href: "numeracy.html"
       }, budget);
@@ -99,7 +99,7 @@
       pushPlan(rows, {
         activityId: "word-quest",
         title: "Word Quest Reinforcement",
-        focusSkillId: "orthography.pattern_control",
+        focusSkillId: "LIT.DEC.SYL",
         minutes: Math.min(5, budget.remaining),
         href: "word-quest.html?quick=1"
       }, budget);

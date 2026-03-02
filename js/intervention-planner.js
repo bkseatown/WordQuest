@@ -37,6 +37,11 @@
 
   function mapNeedToDomain(needKey) {
     var key = String(needKey || "").toLowerCase();
+    if (key.indexOf("lit.dec") === 0) return "literacy.decoding";
+    if (key.indexOf("lit.flu") === 0) return "literacy.fluency";
+    if (key.indexOf("lit.mor") === 0) return "literacy.spelling";
+    if (key.indexOf("lit.lang.syn") === 0 || key.indexOf("lit.write") === 0) return "writing.sentence";
+    if (key.indexOf("num.") === 0) return "numeracy.fluency";
     if (key.indexOf("vowel") >= 0 || key.indexOf("dec") >= 0 || key.indexOf("syll") >= 0) return "literacy.decoding";
     if (key.indexOf("flu") >= 0 || key.indexOf("pace") >= 0) return "literacy.fluency";
     if (key.indexOf("spell") >= 0 || key.indexOf("morph") >= 0) return "literacy.spelling";

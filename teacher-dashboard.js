@@ -9,6 +9,7 @@
   var EvidenceEngine = window.CSEvidenceEngine;
   var RiskBands = window.CSRiskBands;
   var SkillStoreAPI = window.CSSkillStore;
+  var SkillResolver = window.CSSkillResolver;
   var SkillLabels = window.CSSkillLabels;
   var Celebrations = window.CSCelebrations;
   var MasteryLabels = window.CSMasteryLabels;
@@ -277,14 +278,19 @@
   }
 
   function formatSkillBreadcrumb(skillId) {
+    var canonicalId = SkillResolver && typeof SkillResolver.canonicalizeSkillId === "function"
+      ? SkillResolver.canonicalizeSkillId(skillId)
+      : String(skillId || "");
     if (SkillLabels && typeof SkillLabels.getSkillBreadcrumb === "function") {
-      return SkillLabels.getSkillBreadcrumb(skillId);
+      return SkillLabels.getSkillBreadcrumb(canonicalId);
     }
-    return String(skillId || "Skill");
+    return String(canonicalId || "Skill");
   }
 
   function getSkillLabelSafe(skillId) {
-    var id = String(skillId || "");
+    var id = SkillResolver && typeof SkillResolver.canonicalizeSkillId === "function"
+      ? SkillResolver.canonicalizeSkillId(skillId)
+      : String(skillId || "");
     if (!id) return "Skill";
     if (SkillLabels && typeof SkillLabels.getSkillLabel === "function") {
       return SkillLabels.getSkillLabel(id);
@@ -316,11 +322,17 @@
   }
 
   function moduleForSkill(skillId) {
-    var id = String(skillId || "");
+    var id = SkillResolver && typeof SkillResolver.canonicalizeSkillId === "function"
+      ? SkillResolver.canonicalizeSkillId(skillId)
+      : String(skillId || "");
     if (id.indexOf("LIT.DEC") === 0) return "Word Quest";
     if (id.indexOf("LIT.FLU") === 0) return "Reading Lab";
     if (id.indexOf("LIT.LANG.SYN") === 0 || id.indexOf("LIT.WRITE") === 0) return "Sentence Surgery";
     if (id.indexOf("LIT.LANG.VOC") === 0) return "Sentence Surgery";
+    if (id.indexOf("NUM.") === 0 || id.indexOf("numeracy.") === 0) return "Numeracy";
+    if (id.indexOf("decoding.") === 0 || id.indexOf("orthography.") === 0 || id.indexOf("morphology.") === 0) return "Word Quest";
+    if (id.indexOf("fluency.") === 0) return "Reading Lab";
+    if (id.indexOf("sentence.") === 0 || id.indexOf("writing.") === 0) return "Sentence Surgery";
     return "Word Quest";
   }
 
