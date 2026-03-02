@@ -4384,6 +4384,25 @@
           voiceFlatFlag: !hasReasoning,
           timeOnTaskSec: Math.max(0, Math.round((Date.now() - sessionStartTime) / 1000))
         });
+        if (window.CSSupportStore && typeof window.CSSupportStore.addEvidencePoint === "function") {
+          var revisions = Math.max(0, Number(roiState && roiState.artifacts || 0));
+          var checkpoints = checklistInputs.filter(function (input) { return !!(input && input.checked); }).length;
+          window.CSSupportStore.addEvidencePoint(studentId, {
+            module: "writing_studio",
+            domain: "writing.paragraph",
+            metrics: {
+              draftLength: text.length,
+              revisionCount: revisions,
+              rubricCheckpoints: checkpoints,
+              timeOnTaskSec: Math.max(0, Math.round((Date.now() - sessionStartTime) / 1000))
+            },
+            chips: [
+              "Draft " + text.length + " chars",
+              "Revisions " + revisions,
+              "Checkpoints " + checkpoints
+            ]
+          });
+        }
       }
     } catch (_e) {}
     showToast("Draft saved");

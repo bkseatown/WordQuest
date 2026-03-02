@@ -76,6 +76,9 @@ async function getDashboardMarkers(page) {
       hasAccommodationsPanel: !!document.querySelector('[data-support-tab="accommodations"]') || !!audit.hasAccommodationsPanel,
       hasMeetingNotesTool: !!document.getElementById('td-meeting-mode') || !!audit.hasMeetingNotesTool,
       hasReferralPacketExport: !!document.getElementById('td-support-export-packet') || !!audit.hasReferralPacketExport,
+      hasShareControls: !!document.getElementById('td-share-cluster') || !!audit.hasShareControls,
+      hasCopySummary: !!document.getElementById('td-share-quick-copy') || !!audit.hasCopySummary,
+      hasEvidenceChips: !!document.getElementById('td-evidence-chips') || !!audit.hasEvidenceChips,
       tdShell: !!document.querySelector('.td-shell'),
       bodyClass: document.body.className
     };
@@ -128,6 +131,9 @@ test.describe('UI screenshot audit', () => {
           expect(markers.hasAccommodationsPanel, 'teacher-dashboard missing accommodations panel').toBe(true);
           expect(markers.hasMeetingNotesTool, 'teacher-dashboard missing meeting notes tool').toBe(true);
           expect(markers.hasReferralPacketExport, 'teacher-dashboard missing referral packet export').toBe(true);
+          expect(markers.hasShareControls, 'teacher-dashboard missing share controls').toBe(true);
+          expect(markers.hasCopySummary, 'teacher-dashboard missing copy summary button').toBe(true);
+          expect(markers.hasEvidenceChips, 'teacher-dashboard missing evidence chips').toBe(true);
           testInfo.attach(`audit-dashboard-markers-${viewport.width}x${viewport.height}`, {
             body: Buffer.from(JSON.stringify(markers, null, 2)),
             contentType: 'application/json'
