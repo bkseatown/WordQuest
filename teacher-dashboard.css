@@ -237,10 +237,39 @@ body.cs-has-nav-shell .td-shell {
   overflow: visible;
 }
 
+.section {
+  margin-bottom: 32px;
+}
+
+.section-divider {
+  margin: 48px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.dashboard-viewport {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  min-height: 100dvh;
+  padding-bottom: 24px;
+}
+
+.triage-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.triage-right {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
 .td-top-row {
   min-height: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
 }
 
@@ -391,9 +420,9 @@ body.cs-has-nav-shell .td-shell {
   border-radius: 16px;
   border: 1px solid color-mix(in oklab, var(--border-soft) 68%, transparent);
   background: var(--surface-elev-1);
-  padding: 13px;
+  padding: 10px;
   display: grid;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   transition: transform var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
@@ -436,6 +465,23 @@ body.cs-has-nav-shell .td-shell {
 .td-todayCard__actions {
   display: grid;
   gap: 8px;
+}
+
+.student-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.td-more-tools {
+  margin-top: 6px;
+  display: none;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.td-more-tools.is-open {
+  display: grid;
 }
 
 .td-today-note-btn {
@@ -534,7 +580,7 @@ body.cs-has-nav-shell .td-shell {
 .td-work-row {
   min-height: 0;
   display: grid;
-  grid-template-columns: 0.95fr 1.6fr 1fr;
+  grid-template-columns: 1.45fr 0.95fr 1fr;
   gap: 12px;
   overflow: hidden;
 }
@@ -684,6 +730,43 @@ body.cs-has-nav-shell .td-shell {
 }
 .td-btn-accent:focus-visible {
   box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent);
+}
+
+.priority-strip {
+  background: #fff4e6;
+  border: 1px solid #ffe8cc;
+  padding: 16px 20px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.priority-label {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: var(--fs-0);
+  color: var(--text-secondary);
+  font-weight: var(--fw-semibold);
+}
+
+.priority-summary {
+  font-size: var(--fs-3);
+  color: var(--text-primary);
+  font-weight: var(--fw-semibold);
+}
+
+.student-tier-3 { border-left: 4px solid var(--status-risk); }
+.student-tier-2 { border-left: 4px solid var(--status-developing); }
+.student-tier-1 { border-left: 4px solid var(--status-secure); }
+
+.td-metric-card--reco {
+  padding: 20px;
+}
+
+.td-metric-card--reco .td-title {
+  font-size: clamp(1.5rem, 2.1vw, 2rem);
 }
 .td-btn-once { animation: tdPulse 220ms ease-out 1; }
 @keyframes tdPulse { 0% { transform: scale(1); } 40% { transform: scale(1.02); } 100% { transform: scale(1); } }
@@ -1124,9 +1207,17 @@ body.cs-has-nav-shell .td-shell {
 
 @media (max-width: 1180px) {
   .td-shell { width: min(1160px, calc(100vw - 14px)); }
+  .dashboard-viewport {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .triage-right {
+    position: static;
+  }
   .td-today__list { grid-template-columns: 1fr; }
   .td-skill-tiles { grid-template-columns: 1fr; }
   .td-todayCard__row { grid-template-columns: 1fr; }
+  .td-more-tools { grid-template-columns: 1fr; }
   .td-top-row { grid-template-columns: 1fr; }
   .td-work-row { grid-template-columns: 1fr 1.3fr; }
   .td-right { grid-column: 1 / -1; }
@@ -1149,6 +1240,12 @@ body.cs-has-nav-shell .td-shell {
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
+  }
+  .section {
+    margin-bottom: 20px;
+  }
+  .student-actions {
+    grid-template-columns: 1fr;
   }
   .td-left, .td-center, .td-right { scroll-snap-align: start; }
 }

@@ -150,6 +150,8 @@
     todayList: document.getElementById("td-today-list"),
     caseloadSnapshot: document.getElementById("td-caseload-snapshot"),
     todayRefresh: document.getElementById("td-today-refresh"),
+    viewAllStudents: document.getElementById("td-view-all-students"),
+    priorityReview: document.getElementById("td-priority-review"),
     todayGroup: document.getElementById("td-today-group"),
     todayGroupOpen: document.getElementById("td-group-open"),
     todayGroupBuild: document.getElementById("td-group-build"),
@@ -657,8 +659,10 @@
           "Confidence: " + masteryBand
         ];
       }
+      var tierClass = topSkill && topSkill.tier === "T3" ? "student-tier-3"
+        : (topSkill && topSkill.tier === "T2" ? "student-tier-2" : "student-tier-1");
       return [
-        '<article class="td-todayCard">',
+        '<article class="td-todayCard ' + tierClass + '">',
         '<div class="td-todayCard__top">',
         '<h3 class="td-todayCard__name">' + s.name + '</h3>',
         '<span class="td-todayCard__grade">' + grade + '</span>',
@@ -669,13 +673,11 @@
         (row.focus || []).slice(0, 2).map(function (focus) { return '<span class="td-chip">' + focus + '</span>'; }).join(""),
         '</div>',
         '<div class="td-todayCard__actions">',
-        '<button class="td-btn td-btn-accent btn btn-primary" type="button" data-build-block="' + sid + '">Build 20-min block</button>',
-        '<div class="td-todayCard__row">',
-        '<button class="td-top-btn td-today-note-btn" type="button" data-copy-note="' + sid + '">Copy Note</button>',
-        '<button class="td-top-btn td-today-note-btn" type="button" data-copy-family-note="' + sid + '">Copy Family Note</button>',
-        '<span></span>',
+        '<div class="student-actions">',
+        '<button class="td-btn td-btn-accent btn btn-primary" type="button" data-build-block="' + sid + '">Start 20-min Block</button>',
+        '<button class="td-btn td-btn-primary btn btn-quiet" type="button" data-more-tools-toggle="' + sid + '">More Tools</button>',
         '</div>',
-        '<div class="td-todayCard__row">',
+        '<div class="td-more-tools" data-more-tools="' + sid + '">',
         '<button class="td-top-btn" type="button" data-today-launch="word-quest" data-student-id="' + sid + '">Word Quest</button>',
         '<button class="td-top-btn" type="button" data-today-launch="reading-lab" data-student-id="' + sid + '">Reading Lab</button>',
         '<button class="td-top-btn" type="button" data-today-launch="sentence-surgery" data-student-id="' + sid + '">Sentence Surgery</button>',
@@ -701,6 +703,16 @@
       });
     });
 
+    Array.prototype.forEach.call(el.todayList.querySelectorAll("[data-more-tools-toggle]"), function (button) {
+      button.addEventListener("click", function () {
+        var sid = String(button.getAttribute("data-more-tools-toggle") || "");
+        if (!sid) return;
+        var panel = el.todayList.querySelector('[data-more-tools="' + sid + '"]');
+        if (!panel) return;
+        panel.classList.toggle("is-open");
+      });
+    });
+
     Array.prototype.forEach.call(el.todayList.querySelectorAll("[data-build-block]"), function (button) {
       button.addEventListener("click", function () {
         var sid = String(button.getAttribute("data-build-block") || "");
@@ -721,27 +733,6 @@
       });
     });
 
-    Array.prototype.forEach.call(el.todayList.querySelectorAll("[data-copy-note]"), function (button) {
-      button.addEventListener("click", function () {
-        var sid = String(button.getAttribute("data-copy-note") || "");
-        var row = rows.find(function (x) { return String(x.student && x.student.id || "") === sid; });
-        if (!row) return;
-        copyText(buildTodayCardNote(row), function () {
-          setCoachLine("Copied session note for " + String(row.student && row.student.name || "student") + ".");
-        });
-      });
-    });
-
-    Array.prototype.forEach.call(el.todayList.querySelectorAll("[data-copy-family-note]"), function (button) {
-      button.addEventListener("click", function () {
-        var sid = String(button.getAttribute("data-copy-family-note") || "");
-        var row = rows.find(function (x) { return String(x.student && x.student.id || "") === sid; });
-        if (!row) return;
-        copyText(buildTodayCardFamilyNote(row), function () {
-          setCoachLine("Copied family note for " + String(row.student && row.student.name || "student") + ".");
-        });
-      });
-    });
   }
 
   function renderExecutiveSnapshot(rows) {
@@ -2608,6 +2599,22 @@
         renderTodayEngine(state.todayPlan);
         updateAuditMarkers();
         setCoachLine("Today plan refreshed.");
+      });
+    }
+
+    if (el.priorityReview) {
+      el.priorityReview.addEventListener("click", function () {
+        if (el.todayRoot && typeof el.todayRoot.scrollIntoView === "function") {
+          el.todayRoot.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    }
+
+    if (el.viewAllStudents) {
+      el.viewAllStudents.addEventListener("click", function () {
+        if (el.list && typeof el.list.scrollIntoView === "function") {
+          el.list.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       });
     }
 

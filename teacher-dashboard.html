@@ -55,20 +55,30 @@
 
     <section class="td-body">
       <div class="td-main">
-        <section id="td-today" class="td-surface card td-today fade-in section-plan module-literacy" role="region" aria-label="Today’s Plan">
-          <div class="td-today__head">
-            <div class="td-today__titleWrap">
-              <div class="td-today__kicker">Cornerstone MTSS</div>
-              <h2 class="td-today__title">Today’s Plan</h2>
-              <div class="td-today__sub">Tap a student to start a 12–20 min support block.</div>
-            </div>
-            <div class="td-today__meta">
-              <span class="td-chip td-chip--auto" title="Auto-generated">Auto</span>
-              <button id="td-today-refresh" class="td-btn td-btn-primary btn btn-quiet" type="button" aria-label="Refresh Today plan">Refresh</button>
-            </div>
-          </div>
+        <div class="dashboard-viewport section">
+          <div class="triage-left">
+            <section class="td-surface card priority-strip">
+              <div>
+                <div class="priority-label">Priority Today</div>
+                <div class="priority-summary">Students requiring Tier 2 review</div>
+              </div>
+              <button class="td-btn td-btn-accent btn btn-primary" type="button" id="td-priority-review">Review Now</button>
+            </section>
 
-          <div id="td-today-list" class="td-today__list" aria-label="Today plan students">
+            <section id="td-today" class="td-surface card td-today fade-in section-plan module-literacy" role="region" aria-label="Who Needs Support">
+              <div class="td-today__head">
+                <div class="td-today__titleWrap">
+                  <div class="td-today__kicker">Cornerstone MTSS</div>
+                  <h2 class="td-today__title">Who Needs Support</h2>
+                  <div class="td-today__sub">Tap a student to start a 12–20 min support block.</div>
+                </div>
+                <div class="td-today__meta">
+                  <span class="td-chip td-chip--auto" title="Auto-generated">Auto</span>
+                  <button id="td-today-refresh" class="td-btn td-btn-primary btn btn-quiet" type="button" aria-label="Refresh Today plan">Refresh</button>
+                </div>
+              </div>
+
+              <div id="td-today-list" class="td-today__list" aria-label="Today plan students">
             <article class="td-todayCard">
               <div class="td-todayCard__top">
                 <h3 class="td-todayCard__name">Demo Student A</h3>
@@ -78,11 +88,9 @@
                 <span class="td-chip">Collect baseline</span>
               </div>
               <div class="td-todayCard__actions">
-                <button class="td-btn td-btn-accent btn btn-primary" type="button" data-build-block="demo-a">Build 20-min block</button>
-                <div class="td-todayCard__row">
-                  <button class="td-top-btn" type="button" data-today-launch="word-quest" data-student-id="demo-a">Word Quest</button>
-                  <button class="td-top-btn" type="button" data-today-launch="reading-lab" data-student-id="demo-a">Reading Lab</button>
-                  <button class="td-top-btn" type="button" data-today-launch="sentence-surgery" data-student-id="demo-a">Sentence Surgery</button>
+                <div class="student-actions">
+                  <button class="td-btn td-btn-accent btn btn-primary" type="button" data-build-block="demo-a">Start 20-min Block</button>
+                  <button class="td-btn td-btn-primary btn btn-quiet" type="button" data-more-tools-toggle="demo-a">More Tools</button>
                 </div>
               </div>
             </article>
@@ -95,11 +103,9 @@
                 <span class="td-chip">Collect baseline</span>
               </div>
               <div class="td-todayCard__actions">
-                <button class="td-btn td-btn-accent btn btn-primary" type="button" data-build-block="demo-b">Build 20-min block</button>
-                <div class="td-todayCard__row">
-                  <button class="td-top-btn" type="button" data-today-launch="word-quest" data-student-id="demo-b">Word Quest</button>
-                  <button class="td-top-btn" type="button" data-today-launch="reading-lab" data-student-id="demo-b">Reading Lab</button>
-                  <button class="td-top-btn" type="button" data-today-launch="sentence-surgery" data-student-id="demo-b">Sentence Surgery</button>
+                <div class="student-actions">
+                  <button class="td-btn td-btn-accent btn btn-primary" type="button" data-build-block="demo-b">Start 20-min Block</button>
+                  <button class="td-btn td-btn-primary btn btn-quiet" type="button" data-more-tools-toggle="demo-b">More Tools</button>
                 </div>
               </div>
             </article>
@@ -112,51 +118,54 @@
                 <span class="td-chip">Collect baseline</span>
               </div>
               <div class="td-todayCard__actions">
-                <button class="td-btn td-btn-accent btn btn-primary" type="button" data-build-block="demo-c">Build 20-min block</button>
-                <div class="td-todayCard__row">
-                  <button class="td-top-btn" type="button" data-today-launch="word-quest" data-student-id="demo-c">Word Quest</button>
-                  <button class="td-top-btn" type="button" data-today-launch="reading-lab" data-student-id="demo-c">Reading Lab</button>
-                  <button class="td-top-btn" type="button" data-today-launch="sentence-surgery" data-student-id="demo-c">Sentence Surgery</button>
+                <div class="student-actions">
+                  <button class="td-btn td-btn-accent btn btn-primary" type="button" data-build-block="demo-c">Start 20-min Block</button>
+                  <button class="td-btn td-btn-primary btn btn-quiet" type="button" data-more-tools-toggle="demo-c">More Tools</button>
                 </div>
               </div>
             </article>
+              </div>
+              <button id="td-view-all-students" class="td-btn td-btn-primary btn btn-quiet" type="button">View All Students</button>
+
+              <div id="td-caseload-snapshot" class="td-caseload-snapshot" aria-label="Caseload risk snapshot"></div>
+
+              <div id="td-today-group" class="td-today__group" aria-label="Group plan">
+                <div class="td-today__groupRow">
+                  <div class="td-today__groupTitle">Start a small group</div>
+                  <div class="td-today__groupHint">Pick 2–4 students and generate a shared plan.</div>
+                </div>
+                <div class="td-today__groupActions">
+                  <button id="td-group-open" class="td-btn td-btn-ghost btn btn-quiet" type="button">Select students</button>
+                  <button id="td-group-build" class="td-btn td-btn-accent btn btn-primary" type="button" disabled>Build group plan</button>
+                </div>
+                <details id="td-group-panel" class="td-group-panel">
+                  <summary>Suggested Groups</summary>
+                  <div id="td-group-output" class="td-group-output">No groups generated yet.</div>
+                </details>
+                <details id="td-exec-panel" class="td-group-panel">
+                  <summary>Executive Snapshot</summary>
+                  <div id="td-exec-output" class="td-group-output">No executive summary yet.</div>
+                </details>
+              </div>
+            </section>
           </div>
-
-          <div id="td-caseload-snapshot" class="td-caseload-snapshot" aria-label="Caseload risk snapshot"></div>
-
-          <div id="td-today-group" class="td-today__group" aria-label="Group plan">
-            <div class="td-today__groupRow">
-              <div class="td-today__groupTitle">Start a small group</div>
-              <div class="td-today__groupHint">Pick 2–4 students and generate a shared plan.</div>
-            </div>
-            <div class="td-today__groupActions">
-              <button id="td-group-open" class="td-btn td-btn-ghost btn btn-quiet" type="button">Select students</button>
-              <button id="td-group-build" class="td-btn td-btn-accent btn btn-primary" type="button" disabled>Build group plan</button>
-            </div>
-            <details id="td-group-panel" class="td-group-panel">
-              <summary>Suggested Groups</summary>
-              <div id="td-group-output" class="td-group-output">No groups generated yet.</div>
-            </details>
-            <details id="td-exec-panel" class="td-group-panel">
-              <summary>Executive Snapshot</summary>
-              <div id="td-exec-output" class="td-group-output">No executive summary yet.</div>
-            </details>
-          </div>
-        </section>
-
-        <section class="td-top-row">
-          <article class="td-metric-card td-surface card fade-in section-analytics module-literacy">
+          <div class="triage-right">
+            <article class="td-metric-card td-metric-card--reco td-surface card fade-in section-analytics module-literacy">
             <p class="td-label">Today's Move</p>
             <h2 id="td-focus-title" class="td-title">Tier 2 - Strategic Reinforcement Recommended</h2>
             <p id="td-reco-line" class="td-reco-line">Pick a student to generate a targeted intervention move.</p>
             <div class="td-cta-row">
-              <button id="td-quick-check" class="td-btn td-btn-primary btn btn-quiet" type="button">Run 90-sec Quick Check</button>
               <button id="td-start-intervention" class="td-btn td-btn-accent btn btn-primary" type="button">Start Intervention</button>
             </div>
           </article>
+          </div>
+        </div>
 
+        <div class="section-divider" aria-hidden="true"></div>
+
+        <section class="td-top-row section">
           <article class="td-metric-card td-surface card fade-in td-snapshot-card section-analytics module-literacy">
-            <p class="td-label">Caseload Snapshot</p>
+            <p class="td-label">Recommendation Panel</p>
             <div class="td-snapshot-grid">
               <div>
                 <p class="td-label">Accuracy trend</p>
@@ -171,8 +180,8 @@
           </article>
         </section>
 
-        <section class="td-activities-strip td-surface card fade-in section-tools module-literacy">
-          <p class="td-label">Activities Quick Launch</p>
+        <section class="td-activities-strip td-surface card fade-in section section-tools module-literacy">
+          <p class="td-label">Instructional Tools</p>
           <div class="td-quick-launch-row">
             <button class="td-top-btn" data-quick="word-quest">Word Quest</button>
             <button class="td-top-btn" data-quick="reading-lab">Reading Lab</button>
@@ -183,24 +192,9 @@
           </div>
         </section>
 
-        <section class="td-work-row">
-          <aside class="td-left td-surface card td-support-rail section-tools">
-            <h2 class="td-section-title">Students</h2>
-            <div id="td-recent-students" class="td-recent-row"></div>
-            <div id="td-recent-sessions" class="td-recent-list"></div>
-            <div id="td-no-caseload" class="td-empty hidden">
-              <p>No caseload yet.</p>
-              <div class="td-empty-actions">
-                <button class="td-btn td-btn-ghost btn btn-quiet" data-empty-action="add">Add student</button>
-                <button class="td-btn td-btn-ghost btn btn-quiet" data-empty-action="import">Import roster</button>
-                <button class="td-btn td-btn-ghost btn btn-quiet" data-empty-action="demo">Use demo caseload</button>
-              </div>
-            </div>
-            <div id="td-caseload-list" class="td-caseload-list"></div>
-          </aside>
-
+        <section class="td-work-row section">
           <section class="td-center td-surface card td-primary-stage section-plan" id="td-center-stage" aria-live="polite">
-            <h2 class="td-section-title">Today’s Next Actions</h2>
+            <h2 class="td-section-title">Student Search</h2>
             <div id="td-center-empty" class="td-stage-empty">
               <h2 class="td-section-title">Search or pick a student</h2>
               <p class="muted">In under 3 seconds: who to support, what to do next, and where to launch.</p>
@@ -242,8 +236,22 @@
             </div>
           </section>
 
+          <aside class="td-left td-surface card td-support-rail section-tools">
+            <h2 class="td-section-title">Students</h2>
+            <div id="td-recent-students" class="td-recent-row"></div>
+            <div id="td-recent-sessions" class="td-recent-list"></div>
+            <div id="td-no-caseload" class="td-empty hidden">
+              <p>No caseload yet.</p>
+              <div class="td-empty-actions">
+                <button class="td-btn td-btn-ghost btn btn-quiet" data-empty-action="add">Add student</button>
+                <button class="td-btn td-btn-ghost btn btn-quiet" data-empty-action="import">Import roster</button>
+                <button class="td-btn td-btn-ghost btn btn-quiet" data-empty-action="demo">Use demo caseload</button>
+              </div>
+            </div>
+            <div id="td-caseload-list" class="td-caseload-list"></div>
+          </aside>
           <aside class="td-right td-surface card td-secondary-rail section-analytics">
-            <h2 class="td-section-title">Evidence &amp; Plans</h2>
+            <h2 class="td-section-title">Evidence &amp; Compliance</h2>
             <div id="td-right-empty" class="td-empty">Select a student to view evidence chips and artifacts.</div>
             <div id="td-right-content" class="hidden">
             <div id="td-evidence-chips" class="td-chip-grid"></div>
