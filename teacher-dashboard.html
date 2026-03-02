@@ -351,15 +351,21 @@
         <h2 id="td-meeting-title" class="td-section-title">Meeting Notes Mode</h2>
         <button id="td-meeting-close" class="td-top-btn" type="button">Close</button>
       </div>
-      <p class="td-reco-line">Transcription is optional and OFF by default. No audio is stored by Cornerstone MTSS.</p>
+      <p class="td-reco-line td-meeting-privacy">Local-only. No recordings uploaded. Confirm meeting consent before device transcription.</p>
       <div class="td-plan-tabs">
         <select id="td-meeting-type" class="td-top-btn">
           <option value="SSM">SSM</option>
           <option value="MDT">MDT</option>
           <option value="Parent">Parent</option>
         </select>
-        <label class="td-label"><input id="td-meeting-stt" type="checkbox"> Enable device transcription banner</label>
+        <button id="td-meeting-stt-start" class="td-top-btn" type="button">Start STT</button>
+        <button id="td-meeting-stt-stop" class="td-top-btn" type="button" disabled>Stop STT</button>
+        <button id="td-meeting-stamp" class="td-top-btn" type="button">Insert timestamp</button>
+        <button id="td-meeting-tag-student" class="td-top-btn" type="button">Tag student</button>
+        <button id="td-meeting-tag-tier" class="td-top-btn" type="button">Tag tier</button>
+        <button id="td-meeting-copy-summary" class="td-top-btn" type="button">Copy summary</button>
       </div>
+      <p id="td-meeting-stt-status" class="td-reco-line">Transcription ready (manual mode fallback if unsupported).</p>
       <textarea id="td-meeting-notes" class="td-share-preview" placeholder="Agenda, concerns, strengths, data reviewed..."></textarea>
       <textarea id="td-meeting-actions" class="td-share-preview" placeholder="Action items (one per line)"></textarea>
       <div class="td-modal-actions">

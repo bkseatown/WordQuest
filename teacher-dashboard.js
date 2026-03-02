@@ -39,7 +39,8 @@
     activeSupportTab: "snapshot",
     activeDrawerTab: "snapshot",
     todayPlan: null,
-    sharePayload: null
+    sharePayload: null,
+    meetingRecognizer: null
   };
   var skillStoreLogged = false;
 
@@ -82,7 +83,13 @@
     meetingModal: document.getElementById("td-meeting-modal"),
     meetingClose: document.getElementById("td-meeting-close"),
     meetingType: document.getElementById("td-meeting-type"),
-    meetingStt: document.getElementById("td-meeting-stt"),
+    meetingSttStart: document.getElementById("td-meeting-stt-start"),
+    meetingSttStop: document.getElementById("td-meeting-stt-stop"),
+    meetingStamp: document.getElementById("td-meeting-stamp"),
+    meetingTagStudent: document.getElementById("td-meeting-tag-student"),
+    meetingTagTier: document.getElementById("td-meeting-tag-tier"),
+    meetingCopySummary: document.getElementById("td-meeting-copy-summary"),
+    meetingSttStatus: document.getElementById("td-meeting-stt-status"),
     meetingNotes: document.getElementById("td-meeting-notes"),
     meetingActions: document.getElementById("td-meeting-actions"),
     meetingSave: document.getElementById("td-meeting-save"),
@@ -1353,11 +1360,67 @@
       if (el.meetingNotes) el.meetingNotes.value = notesText;
       if (el.meetingActions) el.meetingActions.value = "";
     }
+    updateMeetingSttStatus(MeetingNotes && typeof MeetingNotes.supportsSpeechRecognition === "function" && MeetingNotes.supportsSpeechRecognition()
+      ? "Transcription ready. Click Start STT to capture local text."
+      : "Speech recognition unavailable in this browser. Manual notes mode is active.", !(MeetingNotes && typeof MeetingNotes.supportsSpeechRecognition === "function" && MeetingNotes.supportsSpeechRecognition()) ? "warn" : "");
+    if (el.meetingSttStart) el.meetingSttStart.disabled = !(MeetingNotes && typeof MeetingNotes.supportsSpeechRecognition === "function" && MeetingNotes.supportsSpeechRecognition());
+    if (el.meetingSttStop) el.meetingSttStop.disabled = true;
     el.meetingModal.classList.remove("hidden");
   }
 
   function closeMeetingModal() {
+    stopMeetingRecognition();
     if (el.meetingModal) el.meetingModal.classList.add("hidden");
+  }
+
+  function insertAtCursor(text) {
+    if (!el.meetingNotes) return;
+    var noteText = String(text || "");
+    var area = el.meetingNotes;
+    var start = typeof area.selectionStart === "number" ? area.selectionStart : area.value.length;
+    var end = typeof area.selectionEnd === "number" ? area.selectionEnd : area.value.length;
+    var prefix = area.value.slice(0, start);
+    var suffix = area.value.slice(end);
+    area.value = prefix + noteText + suffix;
+    var nextPos = prefix.length + noteText.length;
+    area.selectionStart = area.selectionEnd = nextPos;
+    area.focus();
+  }
+
+  function updateMeetingSttStatus(text, tone) {
+    if (!el.meetingSttStatus) return;
+    el.meetingSttStatus.textContent = String(text || "");
+    el.meetingSttStatus.classList.toggle("is-live", tone === "live");
+    el.meetingSttStatus.classList.toggle("is-warn", tone === "warn");
+  }
+
+  function stopMeetingRecognition() {
+    if (state.meetingRecognizer && typeof state.meetingRecognizer.stop === "function") {
+      state.meetingRecognizer.stop();
+    }
+    state.meetingRecognizer = null;
+    if (el.meetingSttStop) el.meetingSttStop.disabled = true;
+    if (el.meetingSttStart && MeetingNotes && typeof MeetingNotes.supportsSpeechRecognition === "function") {
+      el.meetingSttStart.disabled = !MeetingNotes.supportsSpeechRecognition();
+    }
+  }
+
+  function buildMeetingClipboardSummary() {
+    var sid = state.selectedId || "student";
+    var meetingType = el.meetingType ? String(el.meetingType.value || "SSM") : "SSM";
+    var notes = String(el.meetingNotes && el.meetingNotes.value || "").trim();
+    var actions = String(el.meetingActions && el.meetingActions.value || "").trim();
+    return [
+      "Meeting Notes (" + meetingType + ")",
+      "Student: " + sid,
+      "Date: " + new Date().toISOString().slice(0, 10),
+      "",
+      "Notes:",
+      notes || "No notes captured.",
+      "",
+      "Action Items:",
+      actions || "No action items captured."
+    ].join("\n");
   }
 
   function download(name, contents, mime) {
@@ -1641,9 +1704,7 @@
     if (el.meetingSave) {
       el.meetingSave.addEventListener("click", function () {
         if (!state.selectedId || !SupportStore || typeof SupportStore.addMeeting !== "function") return;
-        var sttBanner = el.meetingStt && el.meetingStt.checked
-          ? "Transcription may use device/vendor speech services. No audio is stored by Cornerstone MTSS. Confirm consent."
-          : "";
+        var sttBanner = "Local-only notes. No audio recordings are stored by Cornerstone MTSS.";
         SupportStore.addMeeting(state.selectedId, {
           type: el.meetingType ? String(el.meetingType.value || "SSM") : "SSM",
           date: new Date().toISOString().slice(0, 10),
@@ -1659,6 +1720,71 @@
         renderSupportHub(state.selectedId);
         closeMeetingModal();
         setCoachLine("Meeting notes saved (local-first).");
+      });
+    }
+    if (el.meetingSttStart) {
+      el.meetingSttStart.addEventListener("click", function () {
+        if (!MeetingNotes || typeof MeetingNotes.createRecognizer !== "function") {
+          updateMeetingSttStatus("Speech recognition unavailable. Manual notes mode is active.", "warn");
+          return;
+        }
+        stopMeetingRecognition();
+        state.meetingRecognizer = MeetingNotes.createRecognizer({
+          onStatus: function (status) {
+            if (status === "live") {
+              updateMeetingSttStatus("Listening... transcription is local to this browser session.", "live");
+              if (el.meetingSttStart) el.meetingSttStart.disabled = true;
+              if (el.meetingSttStop) el.meetingSttStop.disabled = false;
+              return;
+            }
+            updateMeetingSttStatus("Transcription stopped. Manual editing remains available.");
+            if (el.meetingSttStart) el.meetingSttStart.disabled = !(MeetingNotes && MeetingNotes.supportsSpeechRecognition && MeetingNotes.supportsSpeechRecognition());
+            if (el.meetingSttStop) el.meetingSttStop.disabled = true;
+          },
+          onTranscript: function (snippet) {
+            if (!snippet) return;
+            insertAtCursor((el.meetingNotes && el.meetingNotes.value ? " " : "") + snippet + " ");
+          },
+          onError: function (reason) {
+            updateMeetingSttStatus("Transcription error: " + reason + ". Continue in manual mode.", "warn");
+          }
+        });
+        if (!state.meetingRecognizer) {
+          updateMeetingSttStatus("Speech recognition unavailable. Manual notes mode is active.", "warn");
+          return;
+        }
+        state.meetingRecognizer.start();
+      });
+    }
+    if (el.meetingSttStop) {
+      el.meetingSttStop.addEventListener("click", function () {
+        stopMeetingRecognition();
+        updateMeetingSttStatus("Transcription stopped. Manual notes mode is active.");
+      });
+    }
+    if (el.meetingStamp) {
+      el.meetingStamp.addEventListener("click", function () {
+        var stamp = "[" + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + "] ";
+        insertAtCursor(stamp);
+      });
+    }
+    if (el.meetingTagStudent) {
+      el.meetingTagStudent.addEventListener("click", function () {
+        if (!state.selectedId) return;
+        insertAtCursor("[Student:" + state.selectedId + "] ");
+      });
+    }
+    if (el.meetingTagTier) {
+      el.meetingTagTier.addEventListener("click", function () {
+        var tier = (el.metricTier && el.metricTier.textContent || "").match(/Tier\s*\d/) ? (el.metricTier.textContent.match(/Tier\s*\d/) || ["Tier 2"])[0] : "Tier 2";
+        insertAtCursor("[" + tier + "] ");
+      });
+    }
+    if (el.meetingCopySummary) {
+      el.meetingCopySummary.addEventListener("click", function () {
+        var text = buildMeetingClipboardSummary();
+        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+        setCoachLine("Meeting summary copied.");
       });
     }
     if (el.meetingGoals) {

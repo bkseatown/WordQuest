@@ -905,6 +905,20 @@ body.cs-has-nav-shell .td-shell {
   flex-wrap: wrap;
   gap: 8px;
 }
+.td-meeting-privacy {
+  margin: 0;
+  color: color-mix(in oklab, var(--muted) 70%, #def2ff 30%);
+}
+#td-meeting-stt-status {
+  margin: -2px 0 2px;
+  font-size: var(--fs-sm);
+}
+#td-meeting-stt-status.is-live {
+  color: color-mix(in oklab, var(--success) 76%, #dff9eb 24%);
+}
+#td-meeting-stt-status.is-warn {
+  color: color-mix(in oklab, #f3c977 78%, #fff4d5 22%);
+}
 
 .td-coach-ribbon {
   position: fixed;

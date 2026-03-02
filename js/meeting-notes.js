@@ -62,9 +62,59 @@
     });
   }
 
+  function supportsSpeechRecognition() {
+    return !!(typeof window !== "undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition));
+  }
+
+  function createRecognizer(handlers) {
+    if (!supportsSpeechRecognition()) return null;
+    var RecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var recognition = new RecognitionCtor();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    var active = false;
+    recognition.onstart = function () {
+      active = true;
+      if (handlers && typeof handlers.onStatus === "function") handlers.onStatus("live");
+    };
+    recognition.onend = function () {
+      active = false;
+      if (handlers && typeof handlers.onStatus === "function") handlers.onStatus("stopped");
+    };
+    recognition.onerror = function (event) {
+      if (handlers && typeof handlers.onError === "function") {
+        handlers.onError(event && event.error ? String(event.error) : "speech-error");
+      }
+    };
+    recognition.onresult = function (event) {
+      var finalText = "";
+      for (var i = event.resultIndex; i < event.results.length; i += 1) {
+        var part = event.results[i] && event.results[i][0] ? event.results[i][0].transcript : "";
+        if (event.results[i].isFinal) finalText += part + " ";
+      }
+      if (finalText && handlers && typeof handlers.onTranscript === "function") {
+        handlers.onTranscript(finalText.trim());
+      }
+    };
+
+    return {
+      start: function () {
+        try { recognition.start(); } catch (_e) {}
+      },
+      stop: function () {
+        try { recognition.stop(); } catch (_e) {}
+      },
+      isActive: function () { return active; }
+    };
+  }
+
   return {
     templates: templates,
     toActionItems: toActionItems,
-    toDraftGoals: toDraftGoals
+    toDraftGoals: toDraftGoals,
+    supportsSpeechRecognition: supportsSpeechRecognition,
+    createRecognizer: createRecognizer
   };
 });
