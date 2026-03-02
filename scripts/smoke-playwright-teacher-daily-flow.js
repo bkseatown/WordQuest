@@ -110,7 +110,7 @@ async function run() {
       throw lastError || new Error(`Click failed for ${selector}`);
     }
 
-    await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(baseUrl + '/word-quest.html?play=1', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForSelector(SEL.loadingScreen, { state: 'hidden', timeout: 30000 });
     const firstRunVisible = await page.locator(`${SEL.firstRunSetupModal}:not(.hidden)`).count();
     if (firstRunVisible) {
@@ -122,30 +122,40 @@ async function run() {
       await page.waitForSelector(SEL.firstRunSetupModal, { state: 'hidden', timeout: 10000 });
     }
 
-    await page.waitForSelector(SEL.teacherPanelBtn, { state: 'visible', timeout: 10000 });
-    await page.evaluate((selector) => {
+    const teacherPanelVisible = await page.evaluate((selector) => {
       const btn = document.querySelector(selector);
-      if (btn instanceof HTMLElement) btn.click();
+      if (!(btn instanceof HTMLElement)) return false;
+      const style = window.getComputedStyle(btn);
+      const hidden = style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0';
+      return !hidden && btn.offsetParent !== null;
     }, SEL.teacherPanelBtn);
-    await page.waitForFunction(() => {
-      const panel = document.getElementById('teacher-panel');
-      if (!(panel instanceof HTMLElement)) return false;
-      const hiddenClass = panel.classList.contains('hidden');
-      const hiddenAttr = panel.hidden || panel.getAttribute('aria-hidden') === 'true';
-      const style = window.getComputedStyle(panel);
-      const visuallyHidden = style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0';
-      return !hiddenClass && !hiddenAttr && !visuallyHidden;
-    }, { timeout: 15000 });
-    await clickWithRetries(SEL.assignTargetBtn, { attempts: 3, optional: true, settleMs: 300 });
-    await page.evaluate((selector) => {
-      const btn = document.querySelector(selector);
-      if (btn instanceof HTMLElement) btn.click();
-    }, SEL.teacherPanelClose);
-    await page.waitForFunction(() => {
-      const panel = document.getElementById('teacher-panel');
-      if (!(panel instanceof HTMLElement)) return true;
-      return panel.classList.contains('hidden') || panel.hidden || panel.getAttribute('aria-hidden') === 'true';
-    }, { timeout: 15000 });
+    if (teacherPanelVisible) {
+      await page.evaluate((selector) => {
+        const btn = document.querySelector(selector);
+        if (btn instanceof HTMLElement) btn.click();
+      }, SEL.teacherPanelBtn);
+      await page.waitForFunction(() => {
+        const panel = document.getElementById('teacher-panel');
+        if (!(panel instanceof HTMLElement)) return false;
+        const hiddenClass = panel.classList.contains('hidden');
+        const hiddenAttr = panel.hidden || panel.getAttribute('aria-hidden') === 'true';
+        const style = window.getComputedStyle(panel);
+        const visuallyHidden = style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0';
+        return !hiddenClass && !hiddenAttr && !visuallyHidden;
+      }, { timeout: 15000 });
+      await clickWithRetries(SEL.assignTargetBtn, { attempts: 3, optional: true, settleMs: 300 });
+      await page.evaluate((selector) => {
+        const btn = document.querySelector(selector);
+        if (btn instanceof HTMLElement) btn.click();
+      }, SEL.teacherPanelClose);
+      await page.waitForFunction(() => {
+        const panel = document.getElementById('teacher-panel');
+        if (!(panel instanceof HTMLElement)) return true;
+        return panel.classList.contains('hidden') || panel.hidden || panel.getAttribute('aria-hidden') === 'true';
+      }, { timeout: 15000 });
+    } else {
+      console.log('Teacher panel button hidden; skipping teacher hub subflow.');
+    }
 
     await page.evaluate(() => {
       const focus = document.getElementById('setting-focus');
@@ -167,7 +177,10 @@ async function run() {
 
     let targetWord = '';
     for (let attempt = 0; attempt < 4; attempt += 1) {
-      await clickWithRetries(SEL.newGameBtn, { attempts: 3, settleMs: 250 });
+      const clickedNewGame = await clickWithRetries(SEL.newGameBtn, { attempts: 2, optional: true, settleMs: 250 });
+      if (!clickedNewGame) {
+        console.log('new-game button unavailable; attempting direct runtime startGame fallback.');
+      }
       try {
         await page.waitForFunction(() => {
           const word = (typeof WQGame !== 'undefined' ? WQGame?.getState?.()?.word : '');

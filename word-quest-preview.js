@@ -7,8 +7,15 @@
     var opts = options && typeof options === "object" ? options : {};
     var shouldLoop = opts.loop !== false;
     var onEvent = typeof opts.onEvent === "function" ? opts.onEvent : null;
-    var resetDelayMs = Number(opts.resetDelayMs || 1100);
+    var resetDelayMs = Number(opts.resetDelayMs || 1800);
     var resetFadeMs = Number(opts.resetFadeMs || 250);
+    var typeDelayMs = Number(opts.typeDelayMs || 130);
+    var preFlipDelayMs = Number(opts.preFlipDelayMs || 520);
+    var flipDurationMs = Number(opts.flipDurationMs || 180);
+    var flipGapMs = Number(opts.flipGapMs || 180);
+    var betweenGuessDelayMs = Number(opts.betweenGuessDelayMs || 520);
+    var writingLineDelayMs = Number(opts.writingLineDelayMs || 420);
+    var writingScoreDelayMs = Number(opts.writingScoreDelayMs || 520);
     var timers = [];
     var running = false;
 
@@ -125,13 +132,13 @@
       function typeNext() {
         if (!running || document.hidden) return;
         if (t >= word.length) {
-          setTimer(function () { flipNext(0); }, 300);
+          setTimer(function () { flipNext(0); }, preFlipDelayMs);
           return;
         }
         tiles[t].textContent = word[t];
         tiles[t].classList.add('filled');
         t += 1;
-        setTimer(typeNext, 80);
+        setTimer(typeNext, typeDelayMs);
       }
 
       function flipNext(index) {
@@ -153,9 +160,9 @@
             letter: word[index],
             state: tileState
           });
-          setTimer(function () { tiles[index].classList.remove('settle'); }, 120);
-          setTimer(function () { flipNext(index + 1); }, 120);
-        }, 120);
+          setTimer(function () { tiles[index].classList.remove('settle'); }, flipDurationMs);
+          setTimer(function () { flipNext(index + 1); }, flipGapMs);
+        }, flipDurationMs);
       }
 
       typeNext();
@@ -176,9 +183,9 @@
                     if (typeof next === 'function') next();
                   }, resetDelayMs);
               });
-            }, 300);
+            }, betweenGuessDelayMs);
           });
-        }, 300);
+        }, betweenGuessDelayMs);
       });
     }
 
@@ -206,12 +213,12 @@
             setTimer(function () {
               if (typeof next === 'function') next();
             }, resetDelayMs);
-          }, 240);
+          }, writingScoreDelayMs);
           return;
         }
         lineEls[idx].textContent = lines[idx];
         idx += 1;
-        setTimer(typeLine, 240);
+        setTimer(typeLine, writingLineDelayMs);
       }
 
       typeLine();

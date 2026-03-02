@@ -69,7 +69,14 @@
   preview = mountWordQuestPreview(container, {
     mode: 'hero',
     loop: true,
-    resetDelayMs: 1100,
+    resetDelayMs: 1900,
+    typeDelayMs: 140,
+    preFlipDelayMs: 560,
+    flipDurationMs: 190,
+    flipGapMs: 190,
+    betweenGuessDelayMs: 560,
+    writingLineDelayMs: 460,
+    writingScoreDelayMs: 600,
     resetFadeMs: prefersReducedMotion ? 0 : 250
   });
 

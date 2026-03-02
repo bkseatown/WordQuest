@@ -1,193 +1,52 @@
 <!DOCTYPE html>
-<html lang="en" data-home-mode="home" data-page="home-hero-only">
+<html lang="en" data-page="home">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="wq-build" content="20260301y">
   <base href="./">
   <title>Cornerstone MTSS</title>
   <link rel="icon" href="./favicon.ico" sizes="any">
-  <link rel="stylesheet" href="style/tokens.css?v=20260301y">
-  <link rel="stylesheet" href="style/typography.css?v=20260301y">
-  <link rel="stylesheet" href="style/components.css?v=20260301y">
-  <link rel="stylesheet" href="hero-v2.css?v=20260301y">
-  <link rel="stylesheet" href="style/home-lock.css?v=20260301y">
-  <style>
-    html, body {
-      height: 100%;
-      min-height: 100%;
-      margin: 0;
-      overflow: hidden !important;
-    }
-    #cs-home-root {
-      height: 100vh;
-      max-height: 100vh;
-      overflow: clip;
-      display: block;
-      padding: 8px;
-      box-sizing: border-box;
-      background: var(--surface-base);
-    }
-    #hero-v2 {
-      height: 100%;
-      max-height: 100%;
-      margin-top: 0;
-      margin-bottom: 0;
-    }
-    .hero-v2 {
-      min-height: 0 !important;
-      height: 100%;
-      max-height: 100%;
-      overflow: clip;
-      align-items: center;
-      padding: clamp(12px, 2.8vh, 28px) clamp(12px, 3vw, 32px) !important;
-    }
-    .hero-left {
-      min-height: 0;
-    }
-    .hero-title {
-      font-size: clamp(1.5rem, 3.5vw, 2.5rem) !important;
-      line-height: 1.08;
-    }
-    .hero-sub {
-      margin-top: 8px !important;
-      font-size: clamp(0.85rem, 1.35vw, 1rem) !important;
-      line-height: 1.4;
-    }
-    #home-coach-ribbon {
-      margin-top: 8px !important;
-    }
-    .hero-cta {
-      margin-top: 12px !important;
-      gap: 10px;
-    }
-    .hero-proof {
-      margin-top: 10px !important;
-      gap: 4px;
-      font-size: 0.76rem;
-      line-height: 1.3;
-    }
-    .hero-right {
-      min-height: 0;
-      justify-content: center;
-    }
-    #hero-preview-container {
-      max-height: min(43vh, 360px) !important;
-      aspect-ratio: 13 / 11;
-    }
-    .home-demo-coach {
-      min-height: 32px;
-      font-size: 0.8rem;
-      padding: 6px 10px;
-    }
-    @media (max-width: 1024px) {
-      #cs-home-root {
-        padding: 6px;
-      }
-      .home-header {
-        min-height: 34px;
-      }
-      .hero-v2 {
-        padding: 10px 12px !important;
-      }
-      .hero-cta button {
-        min-height: 38px;
-        padding-inline: 14px;
-      }
-    }
-    @media (max-width: 640px) {
-      .home-header {
-        font-size: 0.9rem;
-      }
-      .hero-v2 {
-        grid-template-columns: 1fr !important;
-        row-gap: 8px !important;
-        text-align: center;
-      }
-      .hero-left,
-      .hero-proof,
-      #home-coach-ribbon {
-        margin-left: auto;
-        margin-right: auto;
-      }
-      #hero-preview-container {
-        max-height: min(36vh, 260px) !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./style/tokens.css?v=20260302a">
+  <link rel="stylesheet" href="./style/typography.css?v=20260302a">
+  <link rel="stylesheet" href="./home-v3.css?v=20260302a">
 </head>
-<body class="home-locked">
-  <div id="cs-home-root">
-    <section id="hero-v2" class="hero-v2" aria-label="Cornerstone MTSS home stage">
-      <div class="hero-left">
-        <h1 class="hero-title h1">Cornerstone MTSS</h1>
-        <p class="hero-sub muted">A Tier 2/3 Intervention Engine for Literacy and Numeracy Growth</p>
-        <div class="hero-cta">
-          <button id="cta-dashboard" class="primary-btn btn-label" type="button">Open Teacher Dashboard</button>
-          <a id="cta-wordquest-link" class="secondary-btn btn-label" href="./word-quest.html?play=1#wordquest">Open Word Quest</a>
+<body class="cs-home-page">
+  <main id="cs-home-root" class="cs-home-root" aria-label="Cornerstone MTSS home">
+    <section class="home-shell" aria-label="Homepage layout">
+      <article class="home-card home-sequencer" aria-labelledby="home-next-move-title">
+        <header class="home-head">
+          <p class="home-kicker">Cornerstone MTSS</p>
+          <h1 id="home-next-move-title">Recommended Next Move</h1>
+          <p class="home-sub">Teacher-centered instructional sequencing for Tier 2/3 literacy and numeracy support.</p>
+        </header>
+        <div id="home-sequencer-preview" class="home-sequencer-preview" aria-live="polite"></div>
+        <div class="home-sequencer-actions">
+          <button id="home-start-this" class="home-btn home-btn-primary" type="button">Start This</button>
+          <button id="home-see-all" class="home-btn home-btn-quiet" type="button" aria-expanded="false" aria-controls="home-all-options">See All 3 Options</button>
+          <a id="home-dashboard-link" class="home-btn home-btn-quiet" href="./teacher-dashboard.html">Open Teacher Dashboard</a>
         </div>
-      </div>
-      <div class="hero-right">
-        <div id="hero-preview-container" aria-live="polite">
-          <div id="home-demo-preview" class="home-demo-preview" aria-label="Word Quest preview" role="img"></div>
-        </div>
-      </div>
+        <div id="home-all-options" class="home-all-options hidden"></div>
+      </article>
+
+      <section class="home-domain-row" aria-label="Domain branching">
+        <article class="home-card home-domain" id="home-literacy-card">
+          <h2>Literacy</h2>
+          <p>Word-level to composition support across decoding, language, writing, and fluency.</p>
+          <a class="home-btn home-btn-primary" href="./literacy.html">Explore Literacy Tools</a>
+        </article>
+        <article class="home-card home-domain" id="home-numeracy-card">
+          <h2>Numeracy</h2>
+          <p>Structured progression from number fluency to mathematical reasoning and language.</p>
+          <a class="home-btn home-btn-primary" href="./numeracy.html">Explore Numeracy Tools</a>
+        </article>
+      </section>
     </section>
-  </div>
+  </main>
 
-  <script src="word-quest-preview.js?v=20260301y"></script>
-  <script>
-    (function homeHashRouter() {
-      function appBasePath() {
-        var path = String((window.location && window.location.pathname) || '');
-        var marker = '/WordQuest/';
-        var idx = path.indexOf(marker);
-        return idx >= 0 ? path.slice(0, idx + marker.length - 1) : '';
-      }
-
-      function withAppBase(path) {
-        var clean = String(path || '').replace(/^\.?\//, '');
-        return appBasePath() + '/' + clean;
-      }
-
-      function routeTo(route) {
-        var next = String(route || 'home').toLowerCase();
-        if (location.hash !== '#' + next) location.hash = '#' + next;
-        applyRoute();
-      }
-
-      function applyRoute() {
-        var route = String(location.hash || '#home').replace(/^#/, '').toLowerCase();
-        if (route === 'home' || !route) return;
-        if (route === 'dashboard') {
-          window.location.href = withAppBase('teacher-dashboard.html');
-          return;
-        }
-        if (route === 'wordquest') {
-          window.location.href = withAppBase('word-quest.html?play=1#wordquest');
-          return;
-        }
-      }
-
-      document.getElementById('cta-dashboard')?.addEventListener('click', function (event) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        routeTo('dashboard');
-      }, { capture: true });
-      document.getElementById('cta-wordquest-link')?.addEventListener('click', function (event) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        routeTo('wordquest');
-      }, { capture: true });
-
-      window.addEventListener('hashchange', applyRoute);
-      applyRoute();
-      window.CSRoute = Object.assign(window.CSRoute || {}, { routeTo: routeTo });
-    })();
-  </script>
-  <script src="build-stamp.js?v=20260301y"></script>
-  <script src="js/build-badge.js?v=20260301y"></script>
+  <script src="./js/instructional-sequencer.js?v=20260302a"></script>
+  <script src="./home-v3.js?v=20260302a"></script>
+  <script src="./build-stamp.js?v=20260302a"></script>
+  <script src="./js/build-badge.js?v=20260302a"></script>
   <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
-  <script src="hero-v2.js?v=20260301y"></script>
 </body>
 </html>

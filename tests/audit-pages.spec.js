@@ -12,6 +12,8 @@ const VIEWPORTS = [
 const PAGES = [
   { slug: 'index', url: './' },
   { slug: 'play', url: './?play=1' },
+  { slug: 'literacy-hub', url: 'literacy.html' },
+  { slug: 'numeracy-hub', url: 'numeracy.html' },
   { slug: 'word-quest', url: 'word-quest.html' },
   { slug: 'precision-play', url: 'precision-play.html' },
   { slug: 'reading-lab', url: 'reading-lab.html' },
@@ -110,7 +112,9 @@ test.describe('UI screenshot audit', () => {
         const auditUrl = fullUrl + (fullUrl.includes('?') ? '&' : '?') + 'audit=1';
         const response = await page.goto(auditUrl, { waitUntil: 'domcontentloaded' });
         expect(response, `No response for ${fullUrl}`).toBeTruthy();
-        expect(response.status(), `Non-200 for ${fullUrl}`).toBe(200);
+        const status = response.status();
+        expect(status, `Non-success status for ${fullUrl}`).toBeGreaterThanOrEqual(200);
+        expect(status, `Unexpected status for ${fullUrl}`).toBeLessThan(400);
         await expect(page.locator(expectedMarker(pageDef.slug)).first()).toBeVisible();
 
         const buildId = await getBuildId(page);

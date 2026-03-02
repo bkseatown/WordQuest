@@ -5,17 +5,17 @@
 
 :root {
   /* ===== Core Academic Surface System ===== */
-  --surface-base: #e9edf3;
-  --surface-elev-1: #f7f9fc;
-  --surface-elev-2: #eef3f8;
-  --surface-elev-3: #e5ecf4;
-  --surface-focus: #f4f7fb;
-  --bg-900: #e9edf3;
-  --bg-850: #eef3f8;
-  --surface-0: #f7f9fc;
-  --surface-1: #f7f9fc;
-  --surface-2: #eef3f8;
-  --surface-3: #e5ecf4;
+  --surface-base: #dde6f1;
+  --surface-elev-1: #eef4fb;
+  --surface-elev-2: #e5edf7;
+  --surface-elev-3: #d9e4f1;
+  --surface-focus: #eaf1f9;
+  --bg-900: #dde6f1;
+  --bg-850: #e5edf7;
+  --surface-0: #eef4fb;
+  --surface-1: #eef4fb;
+  --surface-2: #e5edf7;
+  --surface-3: #d9e4f1;
   --border-subtle: rgba(0, 0, 0, 0.06);
   --border-strong: rgba(0, 0, 0, 0.12);
   --border-soft: rgba(0, 0, 0, 0.08);

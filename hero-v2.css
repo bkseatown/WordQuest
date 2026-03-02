@@ -194,6 +194,33 @@
   border-radius: 10px;
   font-size: 1.25rem;
   font-weight: 700;
+  color: #10233f;
+  background: #f2f6fb;
+  border: 2px solid #9bb0ca;
+  box-shadow: inset 0 -2px 0 rgba(16, 35, 63, 0.12);
+}
+
+.hero-game-tile.tile.filled {
+  color: #10233f;
+  background: #e8eff8;
+}
+
+.hero-game-tile.tile.correct {
+  color: #ffffff;
+  background: #24a35a;
+  border-color: #1f7f47;
+}
+
+.hero-game-tile.tile.present {
+  color: #1e2f45;
+  background: #f2b647;
+  border-color: #cf8f22;
+}
+
+.hero-game-tile.tile.absent {
+  color: #e7edf6;
+  background: #6f8198;
+  border-color: #5e6f86;
 }
 
 .hero-game-tile.tile.flip {
@@ -228,6 +255,28 @@
   border-radius: 8px;
   font-size: 0.86rem;
   font-weight: 700;
+  color: #162a43;
+  background: #eef4fb;
+  border: 1px solid #a2b4ca;
+  box-shadow: inset 0 -1px 0 rgba(16, 35, 63, 0.12);
+}
+
+.hero-game-key.key.correct {
+  color: #ffffff;
+  background: #24a35a;
+  border-color: #1f7f47;
+}
+
+.hero-game-key.key.present {
+  color: #1e2f45;
+  background: #f2b647;
+  border-color: #cf8f22;
+}
+
+.hero-game-key.key.absent {
+  color: #dee5ef;
+  background: #6f8198;
+  border-color: #5e6f86;
 }
 
 .hero-writing-shell {
