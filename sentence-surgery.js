@@ -641,6 +641,22 @@
         timeOnTaskSec: Math.max(0, Math.round((Date.now() - sessionStartedAt) / 1000))
       });
     }
+    if (window.CSSupportStore && typeof window.CSSupportStore.addEvidencePoint === "function") {
+      window.CSSupportStore.addEvidencePoint(studentCode || "demo-student", {
+        module: "sentence-surgery",
+        domain: "writing.sentence",
+        metrics: {
+          editsCount: Math.max(0, Number(editCount || 0)),
+          backspaceBurst: Math.max(0, Number(backspaceBurstCount || 0)),
+          revisionStall: Math.max(0, Number(backspaceBurstCount || 0) - Math.round(Number(editCount || 0) * 0.4))
+        },
+        chips: [
+          "Edits " + Math.max(0, Number(editCount || 0)),
+          "Backspace bursts " + Math.max(0, Number(backspaceBurstCount || 0)),
+          (reasoningAdded ? "Reasoning added" : "Reasoning missing")
+        ]
+      });
+    }
   }
 
   async function shareLatestSession() {

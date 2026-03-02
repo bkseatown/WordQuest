@@ -718,6 +718,22 @@
         hardWordsTop3: topHardWords(3)
       });
     }
+    if (window.CSSupportStore && typeof window.CSSupportStore.addEvidencePoint === "function") {
+      window.CSSupportStore.addEvidencePoint(studentId || "demo-student", {
+        module: "reading-lab",
+        domain: "literacy.fluency",
+        metrics: {
+          accuracyProxy: Math.max(0, Math.min(100, Number(metrics.accuracy || 0))),
+          pacingVarianceProxy: Math.max(0, Number(metrics.pacingVar || 0)),
+          repeats: Math.max(0, Number(metrics.repeatCount || 0))
+        },
+        chips: [
+          "Accuracy " + Math.round(Number(metrics.accuracy || 0)) + "%",
+          "Pacing variance " + Math.round(Number(metrics.pacingVar || 0)),
+          "Repeats " + Math.max(0, Number(metrics.repeatCount || 0))
+        ]
+      });
+    }
   }
 
   async function shareLatestSession() {

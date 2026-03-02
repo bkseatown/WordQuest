@@ -14115,6 +14115,24 @@
           }
         });
       }
+      if (window.CSSupportStore && typeof window.CSSupportStore.addEvidencePoint === 'function') {
+        window.CSSupportStore.addEvidencePoint(studentId, {
+          module: 'wordquest',
+          domain: 'literacy.decoding',
+          metrics: {
+            attempts: guessCount,
+            timeOnTaskSec: Math.max(0, Number(signals.durSec || 0)),
+            success: !!signals.solved,
+            letterPositionConflicts: repeatedInvalidLetterPlacementCount,
+            vowelChangeFrequency: Number(vowelSwapCount || 0)
+          },
+          chips: [
+            'Attempts ' + guessCount,
+            (signals.solved ? 'Solved' : 'Not solved'),
+            'Vowel shifts ' + Number(vowelSwapCount || 0)
+          ]
+        });
+      }
       if (
         window.CSSkillMapper &&
         typeof window.CSSkillMapper.mapWQSignalsToSkillEvidence === 'function' &&

@@ -56,7 +56,8 @@
         accommodations: [],
         interventions: [],
         meetings: [],
-        artifacts: []
+        artifacts: [],
+        evidencePoints: []
       };
       store.students[sid] = row;
     }
@@ -69,7 +70,7 @@
     if (!Array.isArray(row.profile.tags)) row.profile.tags = [];
     if (!row.profile.createdAt) row.profile.createdAt = nowIso();
     row.profile.updatedAt = nowIso();
-    ["needs", "goals", "accommodations", "interventions", "meetings", "artifacts"].forEach(function (key) {
+    ["needs", "goals", "accommodations", "interventions", "meetings", "artifacts", "evidencePoints"].forEach(function (key) {
       if (!Array.isArray(row[key])) row[key] = [];
     });
     return row;
@@ -484,6 +485,35 @@
     return { json: payload, csv: csv };
   }
 
+  function addEvidencePoint(studentId, payload) {
+    var store = load();
+    var student = ensureStudent(store, studentId);
+    var src = payload && typeof payload === "object" ? payload : {};
+    var point = {
+      id: uid("evp"),
+      createdAt: nowIso(),
+      module: String(src.module || "unknown"),
+      domain: String(src.domain || ""),
+      metrics: src.metrics && typeof src.metrics === "object" ? src.metrics : {},
+      chips: Array.isArray(src.chips) ? src.chips.slice(0, 8).map(String) : []
+    };
+    student.evidencePoints.unshift(point);
+    student.evidencePoints = student.evidencePoints.slice(0, 120);
+    save(store);
+    return point;
+  }
+
+  function getRecentEvidencePoints(studentId, days, limit) {
+    var sid = normalizeId(studentId);
+    var student = getStudent(sid);
+    var maxDays = Number(days || 7);
+    var maxRows = Number(limit || 16);
+    var cutoff = Date.now() - (maxDays * 86400000);
+    return (student.evidencePoints || [])
+      .filter(function (row) { return Date.parse(String(row.createdAt || "")) >= cutoff; })
+      .slice(0, maxRows);
+  }
+
   function escapeHtml(value) {
     return String(value == null ? "" : value)
       .replace(/&/g, "&amp;")
@@ -510,6 +540,8 @@
     getReferralReadiness: computeReferralReadiness,
     addMeeting: function (studentId, payload) { return addItem(studentId, "meetings", payload); },
     addArtifact: function (studentId, payload) { return addItem(studentId, "artifacts", payload); },
+    addEvidencePoint: addEvidencePoint,
+    getRecentEvidencePoints: getRecentEvidencePoints,
     toggleAccommodationImplemented: toggleAccommodationImplemented,
     exportStudentSummary: exportStudentSummary,
     exportReferralPacket: exportReferralPacket,
