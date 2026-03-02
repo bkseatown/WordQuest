@@ -1,0 +1,65 @@
+.wordquest-root {
+  --wq-bg: #f4f6f8;
+  --wq-surface: #ffffff;
+  --wq-surface-2: #eef2f7;
+  --wq-tile-bg: #f8fbff;
+  --wq-tile-border: #9daac0;
+  --wq-key-bg: #f1f5fb;
+  --wq-key-shadow: 0 2px 0 rgba(45, 63, 94, 0.25);
+  --wq-correct: #2f9e44;
+  --wq-present: #d49500;
+  --wq-absent: #8a96ab;
+
+  /* Bridge legacy token names used by Word Quest CSS only. */
+  --page-bg: var(--wq-bg);
+  --panel-bg: var(--wq-surface);
+  --panel-bg2: var(--wq-surface-2);
+  --tile-face: var(--wq-tile-bg);
+  --tile-border: var(--wq-tile-border);
+  --key-bg: var(--wq-key-bg);
+  --correct: var(--wq-correct);
+  --present: var(--wq-present);
+  --absent: var(--wq-absent);
+}
+
+.wordquest-root.theme-huskies {
+  --wq-correct: #4c6fd6;
+  --wq-present: #9b7a1f;
+  --wq-absent: #8390a8;
+}
+
+.wordquest-root.theme-seahawks {
+  --wq-correct: #2c8f53;
+  --wq-present: #a6861c;
+  --wq-absent: #7c8da1;
+}
+
+.wordquest-root.theme-matrix {
+  --wq-correct: #2f8f58;
+  --wq-present: #6e9d2d;
+  --wq-absent: #74859a;
+}
+
+.wordquest-root #play-shell {
+  height: calc(100dvh - var(--nav-h, 58px));
+  overflow: visible;
+}
+
+.wordquest-root .board-zone,
+.wordquest-root .board-plate,
+.wordquest-root #game-board {
+  overflow: visible;
+}
+
+.wordquest-root #main {
+  overflow: visible;
+}
+
+.wordquest-root #keyboard .key.is-blocked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wordquest-root #keyboard .key[disabled] {
+  pointer-events: none;
+}

@@ -3126,6 +3126,15 @@
     labelEl.title = `Current theme: ${getThemeDisplayLabel(normalized)}`;
   }
 
+  function syncWordQuestRootThemeClass(themeId) {
+    const root = document.body;
+    if (!(root instanceof HTMLElement)) return;
+    const normalized = normalizeTheme(themeId || document.documentElement.getAttribute('data-theme'), getThemeFallback());
+    const themeClasses = Array.from(root.classList).filter((name) => name.startsWith('theme-'));
+    themeClasses.forEach((name) => root.classList.remove(name));
+    root.classList.add(`theme-${normalized}`);
+  }
+
   function applyTheme(name) {
     const normalized = normalizeTheme(name, getThemeFallback());
     const beforeTheme = normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
@@ -3134,6 +3143,7 @@
     const select = _el('s-theme');
     if (select && select.value !== normalized) select.value = normalized;
     syncSettingsThemeName(normalized);
+    syncWordQuestRootThemeClass(normalized);
     syncMusicForTheme();
     if (beforeTheme !== normalized) {
       emitTelemetry('wq_theme_change', {
@@ -3335,7 +3345,7 @@
     if (!toggle) return;
     const listening = mode === 'listening';
     toggle.innerHTML = `
-      <span class="play-style-toggle-mode">${listening ? 'Hear & Spell' : 'Guess & Check'}</span>
+      <span class="play-style-toggle-mode">${listening ? 'Listen & Spell' : 'Guess & Check'}</span>
       <span class="play-style-toggle-switch">Toggle Mode</span>
     `;
     toggle.setAttribute('aria-pressed', listening ? 'true' : 'false');
@@ -4323,64 +4333,113 @@
     return result;
   }
 
-  function buildStarterWordConstraint(state) {
-    const length = Math.max(1, Number(state?.wordLength || state?.word?.length || 0));
-    const guesses = Array.isArray(state?.guesses) ? state.guesses.map((guess) => normalizeReviewWord(guess)) : [];
+  function deriveWordState(state) {
+    const wordLength = Math.max(1, Number(state?.wordLength || state?.word?.length || 0));
     const target = normalizeReviewWord(state?.word || '');
-    const fixedLetters = Array.from({ length }, () => '');
-    const excludedByPosition = Array.from({ length }, () => new Set());
+    const guesses = Array.isArray(state?.guesses)
+      ? state.guesses.map((guess) => normalizeReviewWord(guess)).filter((guess) => guess.length === wordLength)
+      : [];
+    const correctPositions = {};
+    const lockedPositions = {};
+    const forbiddenByPosition = Array.from({ length: wordLength }, () => new Set());
+    const presentLetters = new Set();
+    const absentLetters = new Set();
+    const guessedLetters = new Set();
     const minCounts = {};
     const maxCounts = {};
-    const guessedLetters = new Set();
-    const positiveLetters = new Set();
+    const usedLetters = {};
+    const statusRank = { neutral: 0, absent: 1, present: 2, correct: 3 };
+
+    const setUsedStatus = (letter, status) => {
+      if (!/^[a-z]$/.test(letter)) return;
+      const next = String(status || 'neutral').toLowerCase();
+      const prev = String(usedLetters[letter] || 'neutral').toLowerCase();
+      if ((statusRank[next] || 0) >= (statusRank[prev] || 0)) {
+        usedLetters[letter] = next;
+      }
+    };
 
     guesses.forEach((guessWord) => {
-      if (!guessWord || guessWord.length !== length) return;
       const marks = evaluateGuessPattern(guessWord, target);
-      const guessCounts = {};
-      const positiveCounts = {};
+      const rowGuessCounts = {};
+      const rowPositiveCounts = {};
       for (let index = 0; index < guessWord.length; index += 1) {
         const letter = guessWord[index];
-        const mark = marks[index];
-        if (!letter) continue;
+        const mark = marks[index] || 'absent';
+        if (!/^[a-z]$/.test(letter)) continue;
         guessedLetters.add(letter);
-        guessCounts[letter] = (guessCounts[letter] || 0) + 1;
+        rowGuessCounts[letter] = (rowGuessCounts[letter] || 0) + 1;
+
         if (mark === 'correct') {
-          fixedLetters[index] = letter;
+          correctPositions[index] = letter;
+          lockedPositions[index] = letter;
+          presentLetters.add(letter);
+          rowPositiveCounts[letter] = (rowPositiveCounts[letter] || 0) + 1;
+          setUsedStatus(letter, 'correct');
+        } else if (mark === 'present') {
+          forbiddenByPosition[index].add(letter);
+          presentLetters.add(letter);
+          rowPositiveCounts[letter] = (rowPositiveCounts[letter] || 0) + 1;
+          setUsedStatus(letter, 'present');
         } else {
-          excludedByPosition[index].add(letter);
-        }
-        if (mark === 'present' || mark === 'correct') {
-          positiveLetters.add(letter);
-          positiveCounts[letter] = (positiveCounts[letter] || 0) + 1;
+          if (!correctPositions[index]) forbiddenByPosition[index].add(letter);
+          setUsedStatus(letter, 'absent');
         }
       }
-      Object.entries(positiveCounts).forEach(([letter, count]) => {
-        minCounts[letter] = Math.max(minCounts[letter] || 0, count);
+
+      Object.entries(rowPositiveCounts).forEach(([letter, count]) => {
+        minCounts[letter] = Math.max(Number(minCounts[letter] || 0), Number(count || 0));
       });
-      Object.entries(guessCounts).forEach(([letter, count]) => {
-        const positiveCount = positiveCounts[letter] || 0;
-        if (positiveCount < count) {
+      Object.entries(rowGuessCounts).forEach(([letter, count]) => {
+        const positiveCount = Number(rowPositiveCounts[letter] || 0);
+        if (positiveCount < Number(count || 0)) {
           if (maxCounts[letter] === undefined) maxCounts[letter] = positiveCount;
-          else maxCounts[letter] = Math.min(maxCounts[letter], positiveCount);
+          else maxCounts[letter] = Math.min(Number(maxCounts[letter]), positiveCount);
         }
       });
     });
 
-    const absentLetters = new Set();
     guessedLetters.forEach((letter) => {
-      if (!positiveLetters.has(letter)) absentLetters.add(letter);
+      if (!presentLetters.has(letter)) absentLetters.add(letter);
+    });
+    absentLetters.forEach((letter) => {
+      if (!presentLetters.has(letter) && !correctPositions[letter]) {
+        setUsedStatus(letter, 'absent');
+      }
     });
 
     return {
-      length,
-      guessCount: guesses.length,
-      fixedLetters,
-      excludedByPosition,
+      correctPositions,
+      presentLetters,
+      absentLetters,
+      lockedPositions,
+      forbiddenByPosition,
+      usedLetters,
       minCounts,
       maxCounts,
-      absentLetters,
-      guessedLetters
+      guessCount: guesses.length,
+      guessedLetters,
+      length: wordLength,
+      mode: normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle),
+      theme: normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback())
+    };
+  }
+
+  function buildStarterWordConstraint(state) {
+    const wordState = deriveWordState(state);
+    const fixedLetters = Array.from({ length: wordState.length }, (_, index) => (
+      wordState.correctPositions[index] || ''
+    ));
+    return {
+      length: wordState.length,
+      guessCount: wordState.guessCount,
+      fixedLetters,
+      excludedByPosition: wordState.forbiddenByPosition,
+      minCounts: wordState.minCounts,
+      maxCounts: wordState.maxCounts,
+      absentLetters: wordState.absentLetters,
+      guessedLetters: wordState.guessedLetters,
+      wordState
     };
   }
 
@@ -4496,83 +4555,17 @@
     return ranked.slice(0, Math.max(3, Math.min(12, Number(limit) || 9)));
   }
 
-  function buildCoachConstraints(guesses, marks, wordLength) {
-    const L = Math.max(1, Number(wordLength || 5));
-    const fixedPos = Array(L).fill('');
-    const forbiddenPos = Array.from({ length: L }, () => new Set());
-    const mustInclude = {};
-    const cannotInclude = new Set();
-    const everGood = new Set();
-
-    for (let gi = 0; gi < guesses.length; gi += 1) {
-      const guess = normalizeReviewWord(guesses[gi] || '');
-      const rowMarks = Array.isArray(marks[gi]) ? marks[gi] : [];
-      if (!guess || guess.length !== L) continue;
-      const positiveCounts = {};
-      for (let i = 0; i < L; i += 1) {
-        const ch = guess[i];
-        const m = rowMarks[i];
-        if (m === 'correct') {
-          fixedPos[i] = ch;
-          everGood.add(ch);
-          positiveCounts[ch] = (positiveCounts[ch] || 0) + 1;
-        } else if (m === 'present') {
-          forbiddenPos[i].add(ch);
-          everGood.add(ch);
-          positiveCounts[ch] = (positiveCounts[ch] || 0) + 1;
-        }
-      }
-      Object.entries(positiveCounts).forEach(([ch, count]) => {
-        mustInclude[ch] = Math.max(Number(mustInclude[ch] || 0), Number(count || 0));
-      });
-    }
-
-    for (let gi = 0; gi < guesses.length; gi += 1) {
-      const guess = normalizeReviewWord(guesses[gi] || '');
-      const rowMarks = Array.isArray(marks[gi]) ? marks[gi] : [];
-      if (!guess || guess.length !== L) continue;
-      for (let i = 0; i < L; i += 1) {
-        const ch = guess[i];
-        if (rowMarks[i] === 'absent' && !everGood.has(ch)) cannotInclude.add(ch);
-      }
-    }
-
-    return { fixedPos, forbiddenPos, mustInclude, cannotInclude, length: L };
-  }
-
-  function candidateMatchesCoachConstraints(word, constraints) {
-    const normalized = normalizeReviewWord(word);
-    if (!normalized || normalized.length !== constraints.length) return false;
-    const counts = {};
-    for (let i = 0; i < normalized.length; i += 1) {
-      const ch = normalized[i];
-      if (constraints.fixedPos[i] && constraints.fixedPos[i] !== ch) return false;
-      if (constraints.forbiddenPos[i] && constraints.forbiddenPos[i].has(ch)) return false;
-      counts[ch] = (counts[ch] || 0) + 1;
-    }
-    for (const ch of constraints.cannotInclude) {
-      if (normalized.includes(ch)) return false;
-    }
-    for (const [ch, minCount] of Object.entries(constraints.mustInclude || {})) {
-      if ((counts[ch] || 0) < minCount) return false;
-    }
-    return true;
-  }
-
   function getConstraintSafeCoachSuggestion(state) {
     if (!state || !state.word || state.gameOver) return '';
-    const guesses = Array.isArray(state.guesses) ? state.guesses.slice() : [];
-    const target = normalizeReviewWord(state.word || '');
-    if (!target || !guesses.length) return '';
-    const marks = guesses.map((guess) => evaluateGuessPattern(normalizeReviewWord(guess), target));
-    const constraints = buildCoachConstraints(guesses, marks, state.wordLength || 5);
+    const constraint = buildStarterWordConstraint(state);
+    if (!constraint.guessCount) return '';
     const pool = pickStarterWordsForRound(state, 24);
-    const tried = new Set(guesses.join('').toLowerCase().split(''));
+    const tried = new Set((state.guesses || []).join('').toLowerCase().split(''));
     let best = '';
     let bestScore = -Infinity;
     for (const row of pool) {
       const word = normalizeReviewWord(row);
-      if (!candidateMatchesCoachConstraints(word, constraints)) continue;
+      if (!wordMatchesStarterConstraint(word, constraint, { enforceMaxCounts: true })) continue;
       const uniq = new Set(word.split(''));
       let score = 0;
       uniq.forEach((ch) => {
@@ -5685,6 +5678,99 @@
     blockedLetterToastAt = now;
     const safeLetter = String(letter || '').toUpperCase().slice(0, 1);
     WQUI.showToast(`Nice try. We already tested ${safeLetter}. Pick a different letter.`);
+  }
+
+  function getLiveWordState() {
+    return deriveWordState(WQGame.getState?.() || {});
+  }
+
+  function checkLetterEntryConstraints(letter, state, wordState) {
+    const normalized = String(letter || '').toLowerCase();
+    if (!/^[a-z]$/.test(normalized)) return { ok: true };
+    const liveState = state || (WQGame.getState?.() || {});
+    const liveWordState = wordState || deriveWordState(liveState);
+    const slot = Math.max(0, Number(liveState?.guess?.length || 0));
+    const requiredAtSlot = liveWordState.correctPositions?.[slot];
+    if (requiredAtSlot && requiredAtSlot !== normalized) {
+      return { ok: false, reason: 'locked_position', requiredLetter: requiredAtSlot };
+    }
+    if (liveWordState.absentLetters?.has(normalized)) {
+      return { ok: false, reason: 'absent_letter' };
+    }
+    const maxCount = Number(liveWordState.maxCounts?.[normalized]);
+    if (Number.isFinite(maxCount)) {
+      const currentCount = String(liveState?.guess || '').split('').filter((ch) => ch === normalized).length;
+      if ((currentCount + 1) > maxCount) {
+        return { ok: false, reason: 'max_count', maxCount };
+      }
+    }
+    return { ok: true };
+  }
+
+  function maybeShowConstraintToast(check, letter) {
+    const now = Date.now();
+    if (now - blockedLetterToastAt < 700) return;
+    blockedLetterToastAt = now;
+    const safeLetter = String(letter || '').toUpperCase().slice(0, 1);
+    if (check?.reason === 'locked_position') {
+      const must = String(check.requiredLetter || '').toUpperCase().slice(0, 1);
+      WQUI.showToast(`Slot is locked. Use ${must} in this position.`);
+      return;
+    }
+    if (check?.reason === 'max_count') {
+      const maxCount = Math.max(0, Number(check.maxCount) || 0);
+      WQUI.showToast(`${safeLetter} is already used ${maxCount} time${maxCount === 1 ? '' : 's'} here.`);
+      return;
+    }
+    WQUI.showToast(`Nice try. We already tested ${safeLetter}. Pick a different letter.`);
+  }
+
+  function syncKeyboardInputLocks(state, wordState) {
+    const keyboard = _el('keyboard');
+    if (!keyboard) return;
+    const liveState = state || (WQGame.getState?.() || {});
+    const liveWordState = wordState || deriveWordState(liveState);
+    const slot = Math.max(0, Number(liveState?.guess?.length || 0));
+    const requiredAtSlot = liveWordState.correctPositions?.[slot] || '';
+    keyboard.querySelectorAll('.key[data-key]').forEach((keyEl) => {
+      const raw = String(keyEl.getAttribute('data-key') || '').toLowerCase();
+      if (!/^[a-z]$/.test(raw)) {
+        keyEl.removeAttribute('disabled');
+        keyEl.setAttribute('aria-disabled', 'false');
+        return;
+      }
+      const check = checkLetterEntryConstraints(raw, liveState, liveWordState);
+      const blocked = !check.ok;
+      keyEl.classList.toggle('is-blocked', blocked);
+      if (blocked) {
+        keyEl.setAttribute('disabled', 'disabled');
+        keyEl.setAttribute('aria-disabled', 'true');
+      } else {
+        keyEl.removeAttribute('disabled');
+        keyEl.setAttribute('aria-disabled', 'false');
+      }
+      if (requiredAtSlot && raw === requiredAtSlot) keyEl.classList.add('in-play');
+      const status = String(liveWordState.usedLetters?.[raw] || '').toLowerCase();
+      if (status === 'correct') {
+        keyEl.classList.remove('present', 'absent');
+        keyEl.classList.add('correct');
+      } else if (status === 'present') {
+        if (!keyEl.classList.contains('correct')) {
+          keyEl.classList.remove('absent');
+          keyEl.classList.add('present');
+        }
+      } else if (status === 'absent') {
+        if (!keyEl.classList.contains('correct') && !keyEl.classList.contains('present')) {
+          keyEl.classList.add('absent');
+        }
+      }
+    });
+  }
+
+  function refreshStarterSuggestionsIfOpen() {
+    const card = _el('starter-word-card');
+    if (!card || card.classList.contains('hidden')) return;
+    showStarterWordCard({ source: 'manual' });
   }
 
   function clearCurrentGuessInput() {
@@ -6853,6 +6939,7 @@
       const result = evaluateGuessForKeyboard(guess, state.word);
       WQUI.updateKeyboard(result, guess);
     });
+    syncKeyboardInputLocks(state);
   }
 
   function refreshKeyboardLayoutPreview() {
@@ -6866,6 +6953,7 @@
     if (state.wordLength && state.maxGuesses) {
       WQUI.calcLayout(state.wordLength, state.maxGuesses);
     }
+    syncKeyboardInputLocks(state);
   }
 
   _el('s-board-style')?.addEventListener('change', e => {
@@ -14311,6 +14399,7 @@
     WQUI.calcLayout(result.wordLength, result.maxGuesses);
     WQUI.buildBoard(result.wordLength, result.maxGuesses);
     WQUI.buildKeyboard();
+    syncKeyboardInputLocks(WQGame.getState?.() || {});
     WQUI.hideModal();
     _el('new-game-btn')?.classList.remove('pulse');
     _el('settings-panel')?.classList.add('hidden');
@@ -14432,6 +14521,7 @@
         WQUI.showToast('Fill in all the letters first');
         WQUI.shakeRow(s.guesses, s.wordLength);
         updateNextActionLine();
+        syncKeyboardInputLocks(WQGame.getState?.() || {});
         if (!DEMO_MODE) positionDemoLaunchButton();
         return;
       }
@@ -14481,6 +14571,7 @@
           applyTheme(themeAtSubmit);
         }
         WQUI.updateKeyboard(result.result, result.guess);
+        syncKeyboardInputLocks(WQGame.getState?.() || {});
         checkDuplicates(result);
         if (
           MIDGAME_BOOST_ENABLED &&
@@ -14572,6 +14663,7 @@
           advanceTeamTurn();
           updateNextActionLine();
           if (!DEMO_MODE) positionDemoLaunchButton();
+          refreshStarterSuggestionsIfOpen();
         }
       });
 
@@ -14579,20 +14671,27 @@
       WQGame.deleteLetter();
       const s2 = WQGame.getState();
       WQUI.updateCurrentRow(s2.guess, s2.wordLength, s2.guesses.length);
+      syncKeyboardInputLocks(s2);
+      refreshStarterSuggestionsIfOpen();
       updateNextActionLine();
       if (!DEMO_MODE) positionDemoLaunchButton();
 
     } else if (/^[a-zA-Z]$/.test(key)) {
       const normalizedLetter = String(key || '').toLowerCase();
-      if (isKnownAbsentLetter(normalizedLetter)) {
+      const liveState = WQGame.getState?.() || {};
+      const liveWordState = deriveWordState(liveState);
+      const check = checkLetterEntryConstraints(normalizedLetter, liveState, liveWordState);
+      if (!check.ok) {
         pulseBlockedLetterKey(normalizedLetter);
-        maybeShowBlockedLetterToast(normalizedLetter);
+        maybeShowConstraintToast(check, normalizedLetter);
         updateNextActionLine();
         return;
       }
       WQGame.addLetter(key);
       const s2 = WQGame.getState();
       WQUI.updateCurrentRow(s2.guess, s2.wordLength, s2.guesses.length);
+      syncKeyboardInputLocks(s2, liveWordState);
+      refreshStarterSuggestionsIfOpen();
       updateNextActionLine();
       if (!DEMO_MODE) positionDemoLaunchButton();
     }
