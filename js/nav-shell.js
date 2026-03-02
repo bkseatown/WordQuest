@@ -26,7 +26,7 @@
     var links = [
       { href: withBase("index.html"), label: "Home", pages: ["", "/", "index.html"] },
       { href: withBase("teacher-dashboard.html"), label: "Teacher Dashboard", pages: ["teacher-dashboard.html"] },
-      { href: withBase("word-quest.html"), label: "Word Quest", pages: ["word-quest.html"] },
+      { href: withBase("word-quest.html?play=1#wordquest"), label: "Word Quest", pages: ["word-quest.html"] },
       { href: withBase("reading-lab.html"), label: "Reading Lab", pages: ["reading-lab.html"] },
       { href: withBase("sentence-surgery.html"), label: "Sentence Studio", pages: ["sentence-surgery.html"] },
       { href: withBase("activities/decoding-diagnostic.html"), label: "Decoding Diagnostic", pages: ["decoding-diagnostic.html"] },
