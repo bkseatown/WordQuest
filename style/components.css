@@ -2090,10 +2090,10 @@ html[data-home-mode="play"] .focus-inline-results {
 /* ── Settings panel ─────────────────────────────────── */
 .settings-panel {
   position:      fixed;
-  top:           clamp(74px, 8vh, 94px);
+  top:           clamp(78px, 10vh, 108px);
   left:          50%;
   transform:     translateX(-50%);
-  width:         min(920px, calc(100vw - 26px));
+  width:         min(560px, calc(100vw - 26px));
   margin:        0;
   background:    linear-gradient(
     180deg,
@@ -2108,7 +2108,7 @@ html[data-home-mode="play"] .focus-inline-results {
   backdrop-filter: blur(12px);
   z-index:       260;
   animation:     slideDown 0.18s ease;
-  max-height:    min(76dvh, 680px);
+  max-height:    min(56dvh, 420px);
   display:       flex;
   flex-direction: column;
   overflow: hidden;
@@ -2162,6 +2162,8 @@ html[data-home-mode="play"] .focus-inline-results {
   font-weight:     700;
   font-size:       0.88rem;
   color:           var(--text);
+  cursor:          move;
+  user-select:     none;
 }
 
 .settings-title-wrap {

@@ -6850,6 +6850,9 @@
     if (opening) {
       setSettingsView('quick');
       void renderDiagnosticsPanel();
+      panel.style.left = '50%';
+      panel.style.top = 'clamp(78px, 10vh, 108px)';
+      panel.style.transform = 'translateX(-50%)';
     }
     syncHeaderControlsVisibility();
   });
@@ -6857,6 +6860,45 @@
     _el('settings-panel')?.classList.add('hidden');
     syncHeaderControlsVisibility();
   });
+  {
+    const panel = _el('settings-panel');
+    const header = panel?.querySelector('.settings-header');
+    let dragging = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    const onPointerMove = (event) => {
+      if (!dragging || !panel) return;
+      const x = Math.max(8, Math.min(window.innerWidth - panel.offsetWidth - 8, event.clientX - dragOffsetX));
+      const y = Math.max(8, Math.min(window.innerHeight - panel.offsetHeight - 8, event.clientY - dragOffsetY));
+      panel.style.left = `${x}px`;
+      panel.style.top = `${y}px`;
+      panel.style.transform = 'none';
+    };
+    const stopDragging = () => {
+      dragging = false;
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', stopDragging);
+    };
+    header?.addEventListener('pointerdown', (event) => {
+      if (!(panel instanceof HTMLElement)) return;
+      if ((event.target instanceof HTMLElement) && event.target.closest('#settings-close')) return;
+      dragging = true;
+      const rect = panel.getBoundingClientRect();
+      dragOffsetX = event.clientX - rect.left;
+      dragOffsetY = event.clientY - rect.top;
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', stopDragging);
+    });
+    document.addEventListener('pointerdown', (event) => {
+      if (!panel || panel.classList.contains('hidden')) return;
+      const target = event.target instanceof Node ? event.target : null;
+      if (!target) return;
+      if (panel.contains(target)) return;
+      if (_el('settings-btn')?.contains(target)) return;
+      panel.classList.add('hidden');
+      syncHeaderControlsVisibility();
+    });
+  }
 
   
   // Voice help modal
