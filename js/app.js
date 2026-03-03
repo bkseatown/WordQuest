@@ -3402,8 +3402,11 @@
     if (!toggle) return;
     const listening = mode === 'listening';
     toggle.innerHTML = `
-      <span class="play-style-toggle-mode">${listening ? 'Listen & Spell' : 'Guess & Check'}</span>
-      <span class="play-style-toggle-switch">Toggle Mode</span>
+      <span class="play-style-toggle-label">Game Mode</span>
+      <span class="play-style-toggle-pills" aria-hidden="true">
+        <span class="play-style-pill ${listening ? '' : 'is-active'}">Guess & Check</span>
+        <span class="play-style-pill ${listening ? 'is-active' : ''}">Listen & Spell</span>
+      </span>
     `;
     toggle.setAttribute('aria-pressed', listening ? 'true' : 'false');
     toggle.classList.toggle('is-listening', listening);
@@ -6847,7 +6850,6 @@
     if (opening) {
       setSettingsView('quick');
       void renderDiagnosticsPanel();
-      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     syncHeaderControlsVisibility();
   });
