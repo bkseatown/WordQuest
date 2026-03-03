@@ -14,6 +14,8 @@ body.cs-home-page {
   background: var(--surface-base);
   color: var(--text-primary);
   font-family: var(--font-ui, var(--font-sans, system-ui, -apple-system, Segoe UI, Roboto, sans-serif));
+  font-size: 16px;
+  line-height: 1.56;
 }
 
 .cs-home-root {
@@ -84,16 +86,47 @@ body.cs-home-page {
 
 .home-head h1 {
   margin: 0;
-  font-size: clamp(1.6rem, 2.4vw, 2rem);
-  line-height: 1.1;
+  font-size: clamp(2rem, 2.9vw, 2.25rem);
+  line-height: 1.16;
   color: var(--text-primary);
 }
 
 .home-sub {
   margin: 0;
   color: var(--text-secondary);
-  font-size: 0.98rem;
-  line-height: 1.4;
+  font-size: 1rem;
+  line-height: 1.58;
+}
+
+.home-sub-detail {
+  font-size: 0.96rem;
+  color: color-mix(in oklab, var(--text-secondary) 88%, var(--text-primary) 12%);
+}
+
+.home-value-ribbon {
+  margin-top: 2px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--border-soft) 74%, transparent);
+  background: color-mix(in oklab, var(--surface-elev-2) 86%, var(--accent) 14%);
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  line-height: 1.42;
+  font-weight: 600;
+}
+
+.home-feature-bullets {
+  margin: 2px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 5px;
+  color: color-mix(in oklab, var(--text-secondary) 90%, var(--text-primary) 10%);
+  font-size: 0.96rem;
+  line-height: 1.48;
+}
+
+.home-feature-bullets li {
+  margin: 0;
 }
 
 .home-sequencer-preview {
@@ -347,7 +380,8 @@ body.cs-home-page {
 
 .home-domain h2 {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: clamp(1.38rem, 1.9vw, 1.5rem);
+  line-height: 1.26;
 }
 
 .home-domain p {
