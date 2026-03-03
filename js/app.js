@@ -631,6 +631,7 @@
     uiSkin: 'classic',
     textSize: 'medium'
   });
+  const STUDENT_RECORDING_ENABLED = false;
   const SAFE_DEFAULT_GRADE_BAND = 'K-2';
   const ALLOWED_MASTERY_SORT_MODES = new Set([
     'attempts_desc',
@@ -7917,7 +7918,6 @@
   const VOICE_COUNTDOWN_SECONDS = 3;
   const VOICE_HISTORY_KEY = 'wq_v2_voice_history_v1';
   const VOICE_HISTORY_LIMIT = 3;
-  const STUDENT_RECORDING_ENABLED = false;
 
   function setVoiceRecordingUI(isRecording) {
     const recordBtn = _el('voice-record-btn');
