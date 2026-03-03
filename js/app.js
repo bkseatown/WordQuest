@@ -373,6 +373,7 @@
   WQUI.init();
 
   const APP_SEMVER = '1.0.0';
+  const REFRESH_BANNER_LAST_ACTION_KEY = 'wq_refresh_banner_last_action_v1';
   const SW_RUNTIME_FALLBACK_VERSION = '20260302-v1';
   function resolveSwRuntimeVersion() {
     try {
@@ -5460,10 +5461,7 @@
     }
   }
 
-  async function forceUpdateNow() {
-    const approved = window.confirm('Force update now? This clears offline cache and reloads the latest build.');
-    if (!approved) return;
-
+  async function forceUpdateNow(options = {}) {
     cancelRevealNarration();
     stopVoiceCaptureNow();
 
@@ -5496,9 +5494,42 @@
       } catch {}
     }
 
-    WQUI.showToast(`Force update: cleared ${clearedCaches} cache bucket(s), reset ${unregistered} service worker(s). Reloading...`);
+    if (!options.silentToast) {
+      WQUI.showToast(`Refreshing to load the latest update (${clearedCaches} cache bucket(s), ${unregistered} service worker reset).`);
+    }
     const nextUrl = `${location.pathname}?cb=force-update-${Date.now()}${location.hash || ''}`;
     setTimeout(() => { location.replace(nextUrl); }, 280);
+  }
+
+  function initRefreshLatestBanner() {
+    const banner = _el('refresh-latest-banner');
+    const btn = _el('refresh-latest-btn');
+    if (!banner || !btn) return;
+
+    const label = banner.querySelector('span');
+    banner.classList.remove('hidden');
+    banner.setAttribute('aria-hidden', 'false');
+
+    let lastActionMs = 0;
+    try {
+      lastActionMs = Number(localStorage.getItem(REFRESH_BANNER_LAST_ACTION_KEY) || 0);
+    } catch {}
+    const ageMin = lastActionMs > 0 ? Math.max(0, Math.round((Date.now() - lastActionMs) / 60000)) : null;
+    if (label && ageMin !== null && Number.isFinite(ageMin)) {
+      label.textContent = ageMin <= 1
+        ? 'Updated just now. Refresh again if needed.'
+        : `Updated ${ageMin}m ago. Refresh again if needed.`;
+    }
+
+    btn.addEventListener('click', () => {
+      btn.disabled = true;
+      btn.textContent = 'Refreshing...';
+      if (label) label.textContent = 'Refreshing to latest build...';
+      try {
+        localStorage.setItem(REFRESH_BANNER_LAST_ACTION_KEY, String(Date.now()));
+      } catch {}
+      void forceUpdateNow({ silentToast: true });
+    });
   }
 
   function rerunOnboardingSetup() {
@@ -7536,6 +7567,7 @@
   _el('s-force-update-now-top')?.addEventListener('click', () => {
     void forceUpdateNow();
   });
+  initRefreshLatestBanner();
   _el('diag-refresh-btn')?.addEventListener('click', () => {
     void renderDiagnosticsPanel();
   });

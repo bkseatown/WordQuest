@@ -19,7 +19,7 @@
     Object.freeze({ id: 'minecraft', label: '⛏️ Minecraft', family: 'inspired' }),
     Object.freeze({ id: 'marvel', label: '💥 Marvel', family: 'inspired' }),
     Object.freeze({ id: 'ironman', label: '🔴 Iron Man', family: 'inspired' }),
-    Object.freeze({ id: 'harleyquinn', label: '🎭 Harley Quinn', family: 'inspired' }),
+    Object.freeze({ id: 'harleyquinn', label: '🎨 Pop Duo', family: 'inspired' }),
     Object.freeze({ id: 'kuromi', label: '🖤 Kuromi', family: 'inspired' }),
     Object.freeze({ id: 'poppink', label: '💖 Pop Pink', family: 'inspired' }),
     Object.freeze({ id: 'harrypotter', label: '🪄 Wizard House', family: 'inspired' }),
