@@ -1370,6 +1370,22 @@
     return next.toString();
   }
 
+  function exitDemoModeToPlay() {
+    if (!DEMO_MODE) return;
+    try {
+      const demoStateRuntime = getDemoState();
+      demoStateRuntime.active = false;
+    } catch {}
+    clearDemoAutoplayTimer();
+    demoClearTimers();
+    stopDemoCoachReadyLoop();
+    stopDemoKeyPulse();
+    const next = new URL(removeDemoParams(window.location.href), window.location.href);
+    next.searchParams.set('play', '1');
+    next.searchParams.set('page', 'wordquest');
+    window.location.replace(next.toString());
+  }
+
   function stopDemoKeyPulse() {
     if (!demoState.keyPulseTimer) return;
     clearTimeout(demoState.keyPulseTimer);
@@ -1558,8 +1574,8 @@
     const demoStateRuntime = getDemoState();
     if (!demoStateRuntime.active) return;
     const script = ['slate', 'plain', DEMO_TARGET_WORD];
-    const typeDelayMs = 130;
-    const betweenGuessesMs = 1100;
+    const typeDelayMs = 260;
+    const betweenGuessesMs = 2200;
 
     clearDemoAutoplayTimer();
 
@@ -1591,7 +1607,7 @@
         demoAutoplayTimer = demoSetTimeout(() => typeGuessAt(index + 1), betweenGuessesMs);
       };
 
-      demoAutoplayTimer = demoSetTimeout(typeNextLetter, 250);
+      demoAutoplayTimer = demoSetTimeout(typeNextLetter, 500);
     };
 
     typeGuessAt(0);
@@ -4442,7 +4458,7 @@
       if (!presentLetters.has(letter)) absentLetters.add(letter);
     });
     absentLetters.forEach((letter) => {
-      if (!presentLetters.has(letter) && !correctPositions[letter]) {
+      if (!presentLetters.has(letter)) {
         setUsedStatus(letter, 'absent');
       }
     });
@@ -4579,7 +4595,7 @@
     const constraint = buildStarterWordConstraint(state);
     const candidates = Array.from(prioritized);
     let filtered = candidates;
-    if (constraint.guessCount >= 2) {
+    if (constraint.guessCount >= 1) {
       const strict = candidates.filter((word) => wordMatchesStarterConstraint(word, constraint, { enforceMaxCounts: true }));
       if (strict.length >= 3) filtered = strict;
       else {
@@ -4673,11 +4689,11 @@
 
     const words = pickStarterWordsForRound(state, 9);
     currentRoundStarterWordsShown = true;
-    if (titleEl) titleEl.textContent = guessCount >= 2 ? 'Try a Pattern Match' : (source === 'auto' ? 'Try a Starter Word' : 'Need Ideas? Try a Starter Word');
+    if (titleEl) titleEl.textContent = guessCount >= 1 ? 'Try a Pattern Match' : (source === 'auto' ? 'Try a Starter Word' : 'Need Ideas? Try a Starter Word');
     if (messageEl) {
-      if (guessCount >= 2) {
+      if (guessCount >= 1) {
         const patternHint = knownPattern ? ` Pattern: ${knownPattern}.` : '';
-        messageEl.textContent = `These options fit what you already know.${patternHint} Pick one to test next.`;
+        messageEl.textContent = `These options fit your green/yellow/gray clues.${patternHint} Pick one to test next.`;
       } else {
         messageEl.textContent = source === 'auto'
           ? `You are ${guessCount} guesses in. Pick one idea to keep momentum.`
@@ -4788,8 +4804,10 @@
       setHoverNoteForElement(teacherBtn, 'Teacher Hub: class tools, reports, and weekly planning.');
     }
     const themeBtn = _el('theme-dock-toggle-btn');
+    if (themeBtn) themeBtn.innerHTML = '<span class="icon-emoji" aria-hidden="true">🎨</span>';
     setHoverNoteForElement(themeBtn, 'Open style picker.');
     const musicBtn = _el('music-dock-toggle-btn');
+    if (musicBtn) musicBtn.innerHTML = '<span class="icon-emoji" aria-hidden="true">🎵</span>';
     setHoverNoteForElement(musicBtn, 'Open music controls.');
     const settingsBtn = _el('settings-btn');
     if (settingsBtn) {
@@ -4867,7 +4885,7 @@
     const caseHint = isUpper
       ? 'Uppercase letters are on. Tap for lowercase.'
       : 'Lowercase letters are on. Tap for uppercase.';
-    toggle.textContent = 'Aa';
+    toggle.innerHTML = '<span class="case-toggle-glyph" aria-hidden="true">Aa</span>';
     toggle.setAttribute('aria-pressed', isUpper ? 'true' : 'false');
     toggle.setAttribute('aria-label', caseHint);
     toggle.dataset.hint = caseHint;
@@ -6564,10 +6582,18 @@
     }
     const newWordBtn = _el('new-game-btn');
     if (newWordBtn) {
-      newWordBtn.textContent = missionMode ? 'Deep Dive Mode' : 'Next Word';
+      if (DEMO_MODE) {
+        newWordBtn.textContent = 'Stop Demo';
+        newWordBtn.classList.add('is-demo-stop');
+      } else {
+        newWordBtn.textContent = missionMode ? 'Deep Dive Mode' : 'Next Word';
+        newWordBtn.classList.remove('is-demo-stop');
+      }
       newWordBtn.setAttribute(
         'aria-label',
-        missionMode ? 'Start a standalone Deep Dive round' : 'Start the next word round'
+        DEMO_MODE
+          ? 'Stop automated demo and enter play mode'
+          : (missionMode ? 'Start a standalone Deep Dive round' : 'Start the next word round')
       );
       newWordBtn.removeAttribute('title');
       if (missionMode) newWordBtn.classList.remove('pulse');
@@ -14704,7 +14730,7 @@
               _el('new-game-btn')?.classList.remove('pulse');
               demoAutoplayTimer = demoSetTimeout(() => {
                 newGame({ forceDemoReplay: true });
-              }, 1400);
+              }, 2800);
             } else {
               WQUI.showModal(result);
               _el('new-game-btn')?.classList.add('pulse');
@@ -14860,7 +14886,14 @@
   });
 
   // Buttons
-  _el('new-game-btn')?.addEventListener('click',  newGame);
+  _el('new-game-btn')?.addEventListener('click',  (event) => {
+    if (DEMO_MODE) {
+      event.preventDefault();
+      exitDemoModeToPlay();
+      return;
+    }
+    newGame();
+  });
   _el('play-again-btn')?.addEventListener('click', newGame);
   _el('phonics-clue-open-btn')?.addEventListener('click', () => {
     showInformantHintToast();
