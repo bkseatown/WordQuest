@@ -1,0 +1,8 @@
+{
+  "fromHomeHref": "http://127.0.0.1:4173/word-quest.html?play=1#wordquest",
+  "modeTextBefore": "Guess & Check\nTOGGLE MODE",
+  "modeTextAfter": "Listen & Spell\nTOGGLE MODE",
+  "numeracyUrl": "http://127.0.0.1:4173/numeracy/index.html",
+  "hasAdminNav": true,
+  "ts": "2026-03-02T22:31:07.910Z"
+}

@@ -5038,13 +5038,25 @@
   }
 
   function getVoicePracticeMode() {
+    if (!STUDENT_RECORDING_ENABLED) return 'off';
     return normalizeVoicePracticeMode(_el('s-voice-task')?.value || prefs.voicePractice || DEFAULT_PREFS.voicePractice);
   }
 
   function setVoicePracticeMode(mode, options = {}) {
-    const normalized = normalizeVoicePracticeMode(mode);
+    const normalized = STUDENT_RECORDING_ENABLED
+      ? normalizeVoicePracticeMode(mode)
+      : 'off';
     const select = _el('s-voice-task');
     if (select && select.value !== normalized) select.value = normalized;
+    if (select) {
+      select.disabled = !STUDENT_RECORDING_ENABLED;
+      select.setAttribute('aria-disabled', STUDENT_RECORDING_ENABLED ? 'false' : 'true');
+      if (!STUDENT_RECORDING_ENABLED) {
+        select.title = 'Student recording is temporarily turned off.';
+      } else {
+        select.removeAttribute('title');
+      }
+    }
     setPref('voicePractice', normalized);
     if (!(_el('modal-overlay')?.classList.contains('hidden'))) {
       updateVoicePracticePanel(WQGame.getState());
@@ -7905,6 +7917,7 @@
   const VOICE_COUNTDOWN_SECONDS = 3;
   const VOICE_HISTORY_KEY = 'wq_v2_voice_history_v1';
   const VOICE_HISTORY_LIMIT = 3;
+  const STUDENT_RECORDING_ENABLED = false;
 
   function setVoiceRecordingUI(isRecording) {
     const recordBtn = _el('voice-record-btn');
@@ -8349,8 +8362,10 @@
     const practiceStatus = _el('modal-practice-status');
     const target = _el('voice-practice-target');
     const playAgain = _el('play-again-btn');
+    const challengePracticeBtn = _el('challenge-open-practice');
     const mode = getVoicePracticeMode();
     const word = String(state?.word || '').toUpperCase();
+    if (challengePracticeBtn) challengePracticeBtn.classList.toggle('hidden', !STUDENT_RECORDING_ENABLED);
 
     if (practiceStatus) {
       const required = mode === 'required';
@@ -16599,7 +16614,6 @@
     const cues = [];
     if (/\?$/.test(sentence)) cues.push('Lift your voice slightly at the end for the question mark.');
     else if (/!$/.test(sentence)) cues.push('Use a strong voice at the exclamation point.');
-    else cues.push('Let your voice drop at the period to finish clearly.');
     if (/,/.test(sentence)) cues.push('Pause briefly at commas.');
     else if (/\b(because|although|when|if|while)\b/i.test(sentence)) cues.push('Add a small pause before the clause word.');
     return cues.slice(0, 2).join(' ');
