@@ -2758,6 +2758,60 @@ html[data-mission-lab="off"] #session-copy-mission-csv-btn {
   font-weight: 760;
 }
 
+/* ── Panel readability floor (play mode) ───────────── */
+html[data-home-mode="play"] .settings-panel,
+html[data-home-mode="play"] .teacher-panel-card {
+  color: #eaf2ff;
+}
+
+html[data-home-mode="play"] .settings-header,
+html[data-home-mode="play"] .teacher-panel-head,
+html[data-home-mode="play"] .settings-group > summary,
+html[data-home-mode="play"] .wq-teacher-heading {
+  color: #eef5ff;
+}
+
+html[data-home-mode="play"] .close-btn {
+  color: #dbe8ff;
+}
+
+html[data-home-mode="play"] .close-btn:hover {
+  color: #ffffff;
+}
+
+html[data-home-mode="play"] .teacher-panel-note,
+html[data-home-mode="play"] .wq-teacher-help,
+html[data-home-mode="play"] .setting-row label,
+html[data-home-mode="play"] .teacher-panel-grid label,
+html[data-home-mode="play"] .settings-inline-note,
+html[data-home-mode="play"] .setting-row-help,
+html[data-home-mode="play"] .setting-checkbox-help {
+  color: color-mix(in oklab, #d8e8ff 84%, #ffffff 16%);
+}
+
+html[data-home-mode="play"] .setting-row select,
+html[data-home-mode="play"] .teacher-panel-grid select,
+html[data-home-mode="play"] .teacher-hub-grid-2 select,
+html[data-home-mode="play"] .settings-text-input,
+html[data-home-mode="play"] .wq-teacher-words {
+  color: #f3f8ff;
+  border-color: color-mix(in oklab, var(--panel-border) 58%, #c8d8ee 42%);
+  background: color-mix(in oklab, #243a57 56%, var(--panel-bg) 44%);
+}
+
+html[data-home-mode="play"] .setting-row select option,
+html[data-home-mode="play"] .teacher-panel-grid select option,
+html[data-home-mode="play"] .teacher-hub-grid-2 select option {
+  color: #f3f8ff;
+  background: #243a57;
+}
+
+html[data-home-mode="play"] .teacher-session-chip,
+html[data-home-mode="play"] .teacher-session-btn,
+html[data-home-mode="play"] .quick-action-btn {
+  color: #eaf3ff;
+}
+
 .lesson-pack-row {
   display: grid;
   gap: 8px;
@@ -3626,6 +3680,31 @@ html[data-home-mode="play"] .icon-btn {
   background: color-mix(in oklab, var(--panel-bg) 74%, #ffffff 26%);
 }
 
+html[data-home-mode="play"] #theme-dock-toggle-btn,
+html[data-home-mode="play"] #music-dock-toggle-btn,
+html[data-home-mode="play"] #case-toggle-btn,
+html[data-home-mode="play"] #keyboard-layout-toggle {
+  color: color-mix(in oklab, var(--text) 70%, #ffffff 30%);
+  text-shadow: 0 1px 1px rgba(6, 15, 28, 0.52);
+  font-weight: 900;
+}
+
+html[data-home-mode="play"] #music-dock-toggle-btn .icon-emoji,
+html[data-home-mode="play"] #theme-dock-toggle-btn .icon-emoji,
+html[data-home-mode="play"] #keyboard-layout-toggle .icon-emoji {
+  font-size: 1.12rem;
+  line-height: 1;
+}
+
+html[data-home-mode="play"] .case-toggle-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  font-weight: 900;
+}
+
 html[data-home-mode="play"] .focus-search-label span {
   border-color: color-mix(in oklab, var(--panel-border) 78%, #ffffff 22%);
   background: color-mix(in oklab, var(--panel-bg) 62%, #ffffff 38%);
@@ -3644,6 +3723,16 @@ html[data-home-mode="play"] .focus-inline-search::placeholder {
 html[data-home-mode="play"] .grade-target-inline {
   border-color: color-mix(in oklab, var(--panel-border) 74%, #ffffff 26%);
   background: color-mix(in oklab, var(--panel-bg) 58%, #ffffff 42%);
+}
+
+html[data-home-mode="play"] #new-game-btn.is-demo-stop {
+  background: linear-gradient(145deg, color-mix(in oklab, #d65b5b 72%, #8d1b1b 28%), color-mix(in oklab, #8d1b1b 72%, #000000 28%));
+  border-color: color-mix(in oklab, #ff9e9e 46%, #822525 54%);
+  color: #fff9f9;
+}
+
+html[data-home-mode="play"] #new-game-btn.is-demo-stop:hover {
+  background: linear-gradient(145deg, color-mix(in oklab, #de6a6a 76%, #a62424 24%), color-mix(in oklab, #992020 74%, #000000 26%));
 }
 
 .play-support-row {
@@ -4080,13 +4169,14 @@ html[data-motion="fun"] .tile.just-typed::before {
   --tile-scale: 1;
 }
 .tile.absent {
-  background:   linear-gradient(160deg, #c8d5e0, var(--absent));
-  color:        #1f3248;
+  background:   linear-gradient(160deg, color-mix(in oklab, #dce6f1 74%, #ffffff 26%), color-mix(in oklab, var(--absent) 58%, #9fb0c5 42%));
+  color:        #f3f8ff;
   border-color: var(--absent-dk);
-  box-shadow:   0 3px 0 var(--absent-dk);
+  box-shadow:   0 3px 0 var(--absent-dk), inset 0 1px 0 rgba(255,255,255,0.28);
   --tile-lift: 0px;
   --tile-scale: 1;
   opacity:      1;
+  text-shadow: 0 1px 2px rgba(8, 16, 28, 0.64);
 }
 
 /* Soundcard mode needs explicit state specificity so result colors win. */
@@ -4105,11 +4195,12 @@ html[data-board-style="soundcard"] .tile.present {
 }
 
 html[data-board-style="soundcard"] .tile.absent {
-  background: linear-gradient(160deg, #c8d5e0, var(--absent));
-  color: #1f3248;
+  background: linear-gradient(160deg, color-mix(in oklab, #dce6f1 74%, #ffffff 26%), color-mix(in oklab, var(--absent) 58%, #9fb0c5 42%));
+  color: #f3f8ff;
   border-color: var(--absent-dk);
-  box-shadow: 0 3px 0 var(--absent-dk);
+  box-shadow: 0 3px 0 var(--absent-dk), inset 0 1px 0 rgba(255,255,255,0.28);
   opacity: 1;
+  text-shadow: 0 1px 2px rgba(8, 16, 28, 0.64);
 }
 
 .tile.flip  { animation: tile-flip 0.45s ease forwards; }
@@ -4592,9 +4683,9 @@ html[data-key-style="bubble"] .key.wide {
 
 /* Keep vowels visibly distinct on dark bubble keys even when hint mode is off. */
 html[data-key-style="bubble"] .key.vowel:not(.correct):not(.present):not(.absent) {
-  color: #89e6d6;
+  color: #e8f7ff;
   border-color: color-mix(in oklab, #4f6d86 48%, #9fd7cf 52%);
-  text-shadow: 0 0 8px rgba(103, 224, 202, 0.34);
+  text-shadow: 0 1px 3px rgba(10, 20, 36, 0.72), 0 0 8px rgba(103, 224, 202, 0.28);
 }
 
 html[data-key-style="bubble"] .key.vowel:not(.correct):not(.present):not(.absent)::before {
@@ -4723,7 +4814,7 @@ html[data-key-style="pebble"] .key::after {
 /* ── Vowel cue ───────────────────────────────────── */
 /* Hint cue uses a tiny top "smile" notch: no dot and no border ring. */
 html[data-hint="on"] .key.vowel:not(.correct):not(.present):not(.absent) {
-  color: color-mix(in oklab, var(--key-text) 84%, var(--vowel-accent) 16%);
+  color: #eef8ff;
 }
 
 html[data-hint="on"] .key.vowel:not(.correct):not(.present):not(.absent)::before {
@@ -5178,8 +5269,8 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
   top: calc(var(--header-h) + var(--focus-h) + 12px);
   left: 50%;
   transform: translateX(-50%) translateY(-10px) scale(0.985);
-  width: min(620px, calc(100vw - 24px));
-  max-height: min(58vh, 430px);
+  width: min(460px, calc(100vw - 24px));
+  max-height: min(46vh, 320px);
   overflow: auto;
   padding: 13px 14px 12px;
   border-radius: 16px;
@@ -5247,17 +5338,17 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
 
 .starter-word-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
-  gap: 7px;
+  grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
+  gap: 6px;
 }
 
 .starter-word-chip {
-  min-height: 36px;
-  border-radius: 10px;
+  min-height: 32px;
+  border-radius: 9px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 80%, #95a5b6 20%);
   background: linear-gradient(155deg, #ffffff 0%, #eef2f6 100%);
   color: #314659;
-  font-size: 0.87rem;
+  font-size: 0.81rem;
   font-weight: 820;
   letter-spacing: 0.01em;
   text-transform: uppercase;
