@@ -7,6 +7,14 @@
 })(typeof globalThis !== "undefined" ? globalThis : window, function createFrameworkRegistry() {
   "use strict";
 
+  var FRAMEWORK_LABELS = Object.freeze([
+    { key: "scienceOfReading", label: "Science of Reading Aligned" },
+    { key: "structuredLiteracy", label: "Structured Literacy" },
+    { key: "illustrativeMath", label: "Illustrative Math Aligned" },
+    { key: "mtssTieredModel", label: "MTSS Tier Logic" },
+    { key: "progressMonitoring", label: "Progress Monitoring Supported" }
+  ]);
+
   var DEFAULT_ALIGNMENT = Object.freeze({
     scienceOfReading: false,
     structuredLiteracy: false,
@@ -43,7 +51,17 @@
     return out;
   }
 
+  function getFrameworkLabels(alignment) {
+    var src = alignment && typeof alignment === "object" ? alignment : DEFAULT_ALIGNMENT;
+    return FRAMEWORK_LABELS.filter(function (row) {
+      return !!src[row.key];
+    }).map(function (row) {
+      return row.label;
+    });
+  }
+
   return {
-    getFrameworkAlignment: getFrameworkAlignment
+    getFrameworkAlignment: getFrameworkAlignment,
+    getFrameworkLabels: getFrameworkLabels
   };
 });

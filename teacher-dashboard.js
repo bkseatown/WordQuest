@@ -245,14 +245,17 @@
   }
 
   function frameworkListFromAlignment(alignment) {
+    if (FrameworkRegistry && typeof FrameworkRegistry.getFrameworkLabels === "function") {
+      return FrameworkRegistry.getFrameworkLabels(alignment);
+    }
     var a = alignment || {};
-    var list = [];
-    if (a.scienceOfReading) list.push("Science of Reading Aligned");
-    if (a.structuredLiteracy) list.push("Structured Literacy");
-    if (a.illustrativeMath) list.push("Illustrative Math Aligned");
-    if (a.mtssTieredModel) list.push("MTSS Tier Logic");
-    if (a.progressMonitoring) list.push("Progress Monitoring Supported");
-    return list;
+    var fallback = [];
+    if (a.scienceOfReading) fallback.push("Science of Reading Aligned");
+    if (a.structuredLiteracy) fallback.push("Structured Literacy");
+    if (a.illustrativeMath) fallback.push("Illustrative Math Aligned");
+    if (a.mtssTieredModel) fallback.push("MTSS Tier Logic");
+    if (a.progressMonitoring) fallback.push("Progress Monitoring Supported");
+    return fallback;
   }
 
   function renderFrameworkBadges(target, skillNode) {

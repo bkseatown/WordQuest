@@ -77,18 +77,15 @@
     var num = Array.isArray(numeracyData && numeracyData.frameworkAlignment) ? numeracyData.frameworkAlignment : [];
     if (!lit.length && registry && typeof registry.getFrameworkAlignment === "function") {
       var litRaw = registry.getFrameworkAlignment(literacyData && literacyData.focus);
-      lit = [];
-      if (litRaw && litRaw.scienceOfReading) lit.push("Science of Reading Aligned");
-      if (litRaw && litRaw.structuredLiteracy) lit.push("Structured Literacy");
-      if (litRaw && litRaw.mtssTieredModel) lit.push("MTSS Tier Logic");
-      if (litRaw && litRaw.progressMonitoring) lit.push("Progress Monitoring Supported");
+      lit = registry && typeof registry.getFrameworkLabels === "function"
+        ? registry.getFrameworkLabels(litRaw)
+        : [];
     }
     if (!num.length && registry && typeof registry.getFrameworkAlignment === "function") {
       var numRaw = registry.getFrameworkAlignment(numeracyData && numeracyData.contentFocus);
-      num = [];
-      if (numRaw && numRaw.illustrativeMath) num.push("Illustrative Math Aligned");
-      if (numRaw && numRaw.mtssTieredModel) num.push("MTSS Tier Logic");
-      if (numRaw && numRaw.progressMonitoring) num.push("Progress Monitoring Supported");
+      num = registry && typeof registry.getFrameworkLabels === "function"
+        ? registry.getFrameworkLabels(numRaw)
+        : [];
     }
     var merged = lit.concat(num).filter(Boolean).filter(function (item, idx, arr) {
       return arr.indexOf(item) === idx;
