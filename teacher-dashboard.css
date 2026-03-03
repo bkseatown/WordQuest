@@ -16,9 +16,9 @@ body.teacher-dashboard {
   overflow: hidden;
   background: var(--surface-base);
   color: var(--text-primary);
-  font-family: var(--font-ui);
-  font-size: 16px;
-  line-height: 1.56;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
   letter-spacing: var(--ls-base);
   font-variant-numeric: normal;
   font-feature-settings: "zero" 0;
@@ -58,11 +58,11 @@ body.cs-has-nav-shell .td-shell {
 
 .td-surface {
   border-radius: var(--radius-4);
-  border: 1px solid color-mix(in oklab, var(--border-soft) 52%, transparent);
-  background: var(--surface-elev-1);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   backdrop-filter: none;
-  transition: border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+  transition: border-color var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
 }
 
 .td-top {
@@ -167,15 +167,15 @@ body.cs-has-nav-shell .td-shell {
 }
 .td-top-btn {
   border-radius: var(--radius-2);
-  border: 1px solid color-mix(in oklab, var(--border-subtle) 62%, transparent);
-  background: var(--surface-elev-1);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-1);
   color: var(--text-primary);
   padding: 7px 10px;
   font: inherit;
-  font-size: var(--fs-small);
-  font-weight: var(--fw-medium);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
   cursor: pointer;
-  transition: transform var(--dur-1) var(--ease-out), filter var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
+  transition: background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
 }
 .td-top-btn:focus-visible {
   border-color: color-mix(in oklab, var(--accent) 62%, var(--border-subtle) 38%);
@@ -209,11 +209,10 @@ body.cs-has-nav-shell .td-shell {
   min-height: 34px;
   padding-right: 28px;
 }
-.td-top-btn:hover { transform: translateY(-1px); filter: none; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); }
-.td-top-btn:active { transform: translateY(0); filter: none; }
+.td-top-btn:hover { background: var(--surface-elev-2); }
+.td-top-btn:active { background: var(--surface-elev-2); }
 .td-coach-chip { border-color: color-mix(in oklab, var(--accent) 58%, transparent); }
-.td-coach-chip.is-fresh { animation: tdCoachPulse 220ms ease-out 1; }
-@keyframes tdCoachPulse { 0% { transform: scale(1); } 45% { transform: scale(1.04); } 100% { transform: scale(1); } }
+.td-coach-chip.is-fresh { animation: none; }
 
 .td-top-overflow {
   position: relative;
@@ -263,13 +262,13 @@ body.cs-has-nav-shell .td-shell {
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: var(--sp-5);
+  gap: 24px;
   padding: var(--sp-5);
   overflow: hidden;
 }
 
 .dashboard-focus {
-  flex: 0 0 40%;
+  flex: 0 0 48%;
   min-height: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -278,18 +277,18 @@ body.cs-has-nav-shell .td-shell {
 
 .focus-card {
   height: 100%;
-  padding: var(--sp-5);
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--sp-3);
-  border: 1px solid color-mix(in oklab, var(--border-soft) 60%, transparent);
-  box-shadow: var(--shadow-card, var(--shadow-medium));
+  gap: 16px;
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .numeracy-focus-card {
-  border: 1px solid color-mix(in oklab, var(--border-soft) 58%, transparent);
-  box-shadow: var(--shadow-card, var(--shadow-medium));
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .numeracy-title {
@@ -371,7 +370,7 @@ body.cs-has-nav-shell .td-shell {
 .dashboard-kicker {
   margin: 0;
   font-size: var(--fs-1);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-regular);
   color: var(--text-secondary);
   letter-spacing: var(--ls-wide);
   text-transform: uppercase;
@@ -386,8 +385,8 @@ body.cs-has-nav-shell .td-shell {
 
 .focus-student-name {
   margin: 0;
-  font-size: clamp(2rem, 2.4vw, 2.25rem);
-  line-height: 1.14;
+  font-size: var(--fs-xl);
+  line-height: var(--lh-tight);
   letter-spacing: var(--ls-tight);
   color: var(--text-strong);
 }
@@ -405,8 +404,8 @@ body.cs-has-nav-shell .td-shell {
 
 .focus-reason {
   margin: 0;
-  font-size: var(--fs-3);
-  line-height: var(--lh-relaxed);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
   color: var(--text-primary);
   max-width: 80ch;
 }
@@ -478,23 +477,26 @@ body.cs-has-nav-shell .td-shell {
 .dashboard-queue,
 .dashboard-launch {
   min-height: 0;
-  padding: var(--sp-4);
+  padding: 20px;
   display: grid;
-  gap: var(--sp-3);
+  gap: 16px;
 }
 
 .dashboard-queue {
   flex: 1 1 auto;
+  background: var(--surface-elev-2);
 }
 
 .dashboard-launch {
   flex: 0 0 auto;
+  background: var(--surface-elev-2);
 }
 
 .dashboard-section-title {
   margin: 0;
-  font-size: clamp(1.38rem, 1.8vw, 1.5rem);
+  font-size: var(--fs-md);
   line-height: var(--lh-tight);
+  font-weight: var(--fw-semibold);
   color: var(--text-strong);
 }
 
@@ -505,18 +507,18 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .queue-card {
-  padding: var(--sp-3);
+  padding: 16px;
   border-radius: var(--radius-2);
-  border: 1px solid color-mix(in oklab, var(--border-subtle) 65%, transparent);
-  background: var(--surface-elev-2);
-  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-1);
+  box-shadow: none;
   display: grid;
   gap: var(--space-2);
 }
 
 .queue-name {
   margin: 0;
-  font-size: var(--fs-3);
+  font-size: var(--fs-base);
   line-height: var(--lh-tight);
   color: var(--text-strong);
 }
@@ -534,7 +536,7 @@ body.cs-has-nav-shell .td-shell {
 
 .queue-signal {
   margin: 0;
-  font-size: var(--fs-2);
+  font-size: var(--fs-sm);
   line-height: var(--lh-normal);
   color: var(--text-secondary);
 }
@@ -556,10 +558,10 @@ body.cs-has-nav-shell .td-shell {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--fs-3);
-  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
   border-radius: var(--radius-2);
-  background: var(--surface-elev-2);
+  background: var(--surface-1);
   color: var(--text-primary);
   border: 1px solid color-mix(in oklab, var(--border-subtle) 64%, transparent);
 }
@@ -1032,19 +1034,19 @@ body.cs-has-nav-shell .td-shell {
 .td-btn {
   font: inherit;
   font-weight: var(--fw-semibold);
-  border-radius: var(--radius-3);
+  border-radius: 8px;
   border: 1px solid transparent;
   min-height: 42px;
   padding: 10px 12px;
   cursor: pointer;
-  transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out), filter var(--dur-1) var(--ease-out);
+  transition: background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
 }
-.td-btn:hover { transform: translateY(-1px); }
-.td-btn:active { transform: translateY(0); filter: brightness(0.98); }
+.td-btn:hover { background: var(--surface-elev-2); }
+.td-btn:active { filter: none; }
 .td-btn-primary {
-  background: color-mix(in oklab, var(--surface-2) 86%, transparent);
-  border-color: color-mix(in oklab, var(--border-soft) 78%, transparent);
-  color: var(--text-strong);
+  background: var(--action-primary);
+  border-color: var(--action-primary);
+  color: #ffffff;
 }
 .td-btn-accent {
   background: var(--action-primary);
@@ -1102,8 +1104,7 @@ body.cs-has-nav-shell .td-shell {
   padding: 12px 16px;
   font-size: var(--fs-3);
 }
-.td-btn-once { animation: tdPulse 220ms ease-out 1; }
-@keyframes tdPulse { 0% { transform: scale(1); } 40% { transform: scale(1.02); } 100% { transform: scale(1); } }
+.td-btn-once { animation: none; }
 
 .td-chip-grid { display: flex; flex-wrap: wrap; gap: 7px; }
 .td-skill-tiles {
@@ -1544,9 +1545,9 @@ body.cs-has-nav-shell .td-shell {
   width: min(760px, calc(100vw - 28px));
   max-height: min(78dvh, 720px);
   border-radius: 14px;
-  border: 1px solid color-mix(in oklab, var(--border-soft) 72%, transparent);
-  background: var(--surface-elev-1);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   padding: 12px;
   display: grid;
   gap: 10px;
@@ -1564,11 +1565,11 @@ body.cs-has-nav-shell .td-shell {
   max-height: 48dvh;
   resize: none;
   border-radius: 10px;
-  border: 1px solid color-mix(in oklab, var(--border-soft) 72%, transparent);
-  background: color-mix(in oklab, var(--surface-2) 72%, transparent);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-elev-2);
   color: var(--text-strong);
   padding: 10px;
-  font: 500 var(--fs-sm) / var(--lh-normal) var(--font-sans);
+  font: 400 var(--fs-base) / var(--lh-normal) var(--font-body);
   overflow: auto;
 }
 #td-meeting-notes,
@@ -1608,9 +1609,9 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .td-report-preview {
-  border: 1px solid color-mix(in oklab, var(--border-soft) 72%, transparent);
+  border: 1px solid var(--surface-border);
   border-radius: 10px;
-  background: color-mix(in oklab, var(--surface-2) 72%, transparent);
+  background: var(--surface-elev-2);
   color: var(--text-strong);
   padding: 14px;
   min-height: 240px;
@@ -1618,12 +1619,13 @@ body.cs-has-nav-shell .td-shell {
   overflow: auto;
   line-height: 1.55;
   display: grid;
-  gap: 12px;
+  gap: 16px;
 }
 
 .td-report-preview section {
-  padding-bottom: 10px;
-  border-bottom: 1px solid color-mix(in oklab, var(--border-soft) 62%, transparent);
+  max-width: 700px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--surface-border);
 }
 
 .td-report-preview section:last-child {

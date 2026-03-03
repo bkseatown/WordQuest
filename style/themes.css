@@ -31,8 +31,8 @@
   --radius-key:      16px;
   --radius-plate:    20px;
   --radius-panel:    16px;
-  --font:      'Atkinson Hyperlegible', system-ui, sans-serif;
-  --font-logo: 'Nunito', system-ui, sans-serif;
+  --font:      Inter, system-ui, sans-serif;
+  --font-logo: Inter, system-ui, sans-serif;
 }
 
 /* ── DEFAULT ── 60-30-10 gray / sage / plum ─── */
@@ -107,8 +107,8 @@
    Wolf gray keys (actual brand color), green key shadows = instant ID   */
 [data-theme="seahawks"] {
   /* 60% dominant: College Navy */
-  --page-bg:      #2f5877;
-  --page-bg2:     #1e4665;
+  --page-bg:      #244563;
+  --page-bg2:     #14324d;
   --header-bg:    #002244;
   --brand:        #002244;
   --brand-dk:     #001a34;
@@ -116,8 +116,8 @@
   --focusbar-bg:  rgba(7, 31, 55, 0.72);
 
   /* 30% secondary: Wolf Grey / white-tinted structural surfaces */
-  --panel-bg:     #8ea2b3;
-  --panel-border: rgba(218, 225, 231, 0.34);
+  --panel-bg:     #a6b0b8;
+  --panel-border: rgba(222, 229, 235, 0.48);
   --plate-bg:     rgba(165, 172, 175, 0.20);
   --plate-border: rgba(189, 198, 204, 0.44);
   --tile-face:    linear-gradient(160deg, #f8fbfd 0%, #e8eef3 100%);
@@ -126,12 +126,12 @@
   --tile-filled-text: #001433;
   --tile-shadow:  0 3px 0 #21394f, 0 1px 4px rgba(0,0,0,0.25);
   --tile-filled-border: #69be28;
-  --key-bg:       #c1c9ce;
+  --key-bg:       #c8cfd3;
   --key-text:     #001a34;
   --key-shadow:   0 3px 0 #667887, 0 1px 3px rgba(0,0,0,0.2);
   --key-hover:    #c5cdd1;
-  --text:         #f7fbff;
-  --text-muted:   #d9e3eb;
+  --text:         #10283f;
+  --text-muted:   #2d4c67;
   --modal-bg:     #8fa1b0;
 
   /* 10% accent: Action Green */
@@ -150,8 +150,8 @@
 /* ── HUSKIES ── Purple #4B2E83 + Gold #B7A57A/#85754D
    Medium purple page — not dark. Gold keys dominate = UW game day feel */
 [data-theme="huskies"] {
-  --page-bg:      #3c2870;
-  --page-bg2:     #2c1e58;
+  --page-bg:      #4b2e83;
+  --page-bg2:     #2e1b57;
   --plate-bg:     rgba(0,0,0,0.18);
   --plate-border: rgba(200,168,72,0.45);
   --tile-face:    linear-gradient(160deg, #fff8ee 0%, #f5ead8 100%);
@@ -159,23 +159,23 @@
   --tile-text:    #1a0800;
   --tile-shadow:  0 3px 0 #4b2e83, 0 1px 4px rgba(0,0,0,0.25);
   --tile-filled-border: #d8bb66;
-  --key-bg:       #f2eee6;
+  --key-bg:       #efe8db;
   --key-text:     #241540;
   --key-shadow:   0 3px 0 #9a8d72, 0 1px 3px rgba(45,28,78,0.24);
   --key-hover:    #faf6ef;
   --vowel-accent: #e3cb87;
-  --brand:        #d5b75f;
+  --brand:        #b7a57a;
   --brand-dk:     #85754d;
   --brand-text:   #1a0800;
-  --accent:       #f6df8f;
+  --accent:       #d7c08a;
   --header-bg:    #4b2e83;
   --header-border: rgba(214,184,95,0.62);
   --focusbar-bg:  rgba(30,15,60,0.6);
   --panel-bg:     #2a1860;
   --panel-border: rgba(216,188,108,0.34);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  --text:         #f0e0c0;
-  --text-muted:   #c9ab6a;
+  --text:         #efe4c9;
+  --text-muted:   #d6bd85;
   --modal-bg:     #2a1860;
   --fun-bg:       #1e1000;
   --fun-text:     #f0d040;
@@ -185,8 +185,8 @@
 /* ── COFFEE / STARBUCKS ── Green #00704A + espresso + cream
    Rich espresso atmosphere. Cream keys like a latte             */
 [data-theme="coffee"] {
-  --page-bg:      #48352a;
-  --page-bg2:     #37261e;
+  --page-bg:      #2d1e16;
+  --page-bg2:     #1f1510;
   --plate-bg:     rgba(203,160,95,0.08);
   --plate-border: rgba(203,160,95,0.28);
   --tile-face:    linear-gradient(160deg, #fff8ef 0%, #f0dcc8 100%);
@@ -194,24 +194,24 @@
   --tile-text:    #24140c;
   --tile-shadow:  0 4px 0 rgba(0,0,0,0.32), 0 10px 22px rgba(0,0,0,0.18);
   --tile-filled-border: #00704a;
-  --key-bg:       #e8c898;
+  --key-bg:       #e9cfaa;
   --key-text:     #1a0c06;
   --key-shadow:   0 4px 0 rgba(0,0,0,0.25), 0 8px 18px rgba(0,0,0,0.15);
   --key-hover:    #f0d8b0;
-  --vowel-accent: #00704a;
+  --vowel-accent: #007a50;
   --brand:        #00704a;
   --brand-dk:     #004a30;
   --brand-text:   #ffffff;
-  --accent:       #cba05f;
+  --accent:       #ceb27a;
   --header-bg:    #00704a;
-  --header-border: rgba(203,160,95,0.45);
+  --header-border: rgba(214,190,143,0.46);
   --focusbar-bg:  rgba(46,30,18,0.66);
-  --panel-bg:     #2a1d16;
-  --panel-border: rgba(203,160,95,0.25);
+  --panel-bg:     #433126;
+  --panel-border: rgba(206,178,122,0.35);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.55);
-  --text:         #f7eadf;
-  --text-muted:   #b09060;
-  --modal-bg:     #2a1d16;
+  --text:         #f8ecdd;
+  --text-muted:   #c6aa7e;
+  --modal-bg:     #392a21;
   --fun-bg:       #180e06;
   --fun-text:     #cba05f;
   --fun-border:   #5a3a10;
@@ -220,33 +220,33 @@
 /* ── MATRIX ── Electric green on deep green. INTENTIONALLY high contrast.
    Dark forest green page — the dark IS the brand here. Mint keys readable. */
 [data-theme="matrix"] {
-  --page-bg:      #213036;
-  --page-bg2:     #151f25;
+  --page-bg:      #13241d;
+  --page-bg2:     #0c1813;
   --plate-bg:     rgba(65,175,118,0.08);
-  --plate-border: rgba(82,217,152,0.26);
-  --tile-face:    linear-gradient(160deg, #f0f7f2 0%, #dce9df 100%);
-  --tile-border:  #6cae88;
-  --tile-text:    #11221a;
+  --plate-border: rgba(82,217,152,0.36);
+  --tile-face:    linear-gradient(160deg, #e8efe8 0%, #d6e2d8 100%);
+  --tile-border:  #5ea97f;
+  --tile-text:    #0c1914;
   --tile-shadow:  0 4px 0 #2d4b3c, 0 11px 24px rgba(0,0,0,0.30);
   --tile-filled-border: #4fdc8f;
-  --key-bg:       #dfe7e1;
-  --key-text:     #12271d;
+  --key-bg:       #ced8d0;
+  --key-text:     #0e1f18;
   --key-shadow:   0 4px 0 #6b8478, 0 8px 18px rgba(0,0,0,0.22);
   --key-hover:    #ebf3ed;
   --vowel-accent: #50d394;
-  --brand:        #2ea666;
-  --brand-dk:     #1d7c4b;
+  --brand:        #30b86f;
+  --brand-dk:     #1e834f;
   --brand-text:   #05120b;
-  --accent:       #8be27e;
-  --header-bg:    #0f3d30;
-  --header-border: rgba(86,214,150,0.35);
+  --accent:       #98f28f;
+  --header-bg:    #0b2f24;
+  --header-border: rgba(118,241,172,0.44);
   --focusbar-bg:  rgba(12,34,24,0.72);
-  --panel-bg:     #182a22;
-  --panel-border: rgba(80,208,140,0.24);
+  --panel-bg:     #1c3a2f;
+  --panel-border: rgba(80,208,140,0.3);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.66);
-  --text:         #d7f3e3;
-  --text-muted:   #8ac7aa;
-  --modal-bg:     #182a22;
+  --text:         #d8f7e6;
+  --text-muted:   #8fd4b0;
+  --modal-bg:     #1d352b;
   --fun-bg:       #0d1f16;
   --fun-text:     #8be27e;
   --fun-border:   #2f6a4c;
@@ -288,33 +288,33 @@
 
 /* ── SUPERMAN ── sky blue page, bold blue+red hero palette ── */
 [data-theme="superman"] {
-  --page-bg:      #bed2f4;
-  --page-bg2:     #9db8e7;
+  --page-bg:      #adc5ee;
+  --page-bg2:     #9bb9ea;
   --plate-bg:     rgba(26,64,154,0.12);
   --plate-border: rgba(200,42,55,0.30);
   --tile-face:    linear-gradient(160deg, #ffffff 0%, #eef3ff 100%);
-  --tile-border:  #6f89c4;
+  --tile-border:  #6281c8;
   --tile-text:    #10224f;
   --tile-shadow:  0 3px 0 #2a4ea8, 0 1px 4px rgba(10,24,84,0.18);
   --tile-filled-border: #cf2433;
-  --key-bg:       #f1d6d8;
-  --key-text:     #40161f;
+  --key-bg:       #f5dddf;
+  --key-text:     #38141b;
   --key-shadow:   0 3px 0 #a43f4a, 0 1px 3px rgba(85,22,30,0.24);
   --key-hover:    #f8e4e5;
   --vowel-accent: #f5c94a;
-  --brand:        #cf2433;
+  --brand:        #d62839;
   --brand-dk:     #9f1725;
   --brand-text:   #ffffff;
   --accent:       #f5c94a;
-  --header-bg:    #1d4aa4;
+  --header-bg:    linear-gradient(90deg, #1a4db3 0%, #1f46a1 56%, #b91c2f 100%);
   --header-border: rgba(245,199,69,0.46);
   --focusbar-bg:  rgba(220,232,255,0.90);
-  --panel-bg:     #f4f7ff;
+  --panel-bg:     #d9e5f8;
   --panel-border: rgba(16,38,102,0.16);
   --panel-shadow: 0 8px 32px rgba(10,24,84,0.16);
   --text:         #122750;
   --text-muted:   #3d5792;
-  --modal-bg:     #f5f8ff;
+  --modal-bg:     #e2ebfb;
   --fun-bg:       #fff6dc;
   --fun-text:     #7b2f18;
   --fun-border:   #f2d37c;
@@ -506,8 +506,8 @@
 
 /* ── HARRY POTTER ── burgundy, parchment, and brass ─────── */
 [data-theme="harrypotter"] {
-  --page-bg:      #3a2026;
-  --page-bg2:     #29161c;
+  --page-bg:      #4a272f;
+  --page-bg2:     #2f181d;
   --plate-bg:     rgba(212,175,55,0.10);
   --plate-border: rgba(212,175,55,0.30);
   --tile-face:    linear-gradient(160deg, #fff8e9 0%, #f0dfc2 100%);
@@ -515,7 +515,7 @@
   --tile-text:    #211205;
   --tile-shadow:  0 4px 0 #6d4f27, 0 10px 22px rgba(0,0,0,0.28);
   --tile-filled-border: #7a1f2b;
-  --key-bg:       #ecd8b2;
+  --key-bg:       #eedcbc;
   --key-text:     #231406;
   --key-shadow:   0 4px 0 #7f5f2a, 0 8px 18px rgba(0,0,0,0.24);
   --key-hover:    #f3e2c2;
@@ -524,10 +524,10 @@
   --brand-dk:     #58161f;
   --brand-text:   #f3ddb0;
   --accent:       #d4af37;
-  --header-bg:    #4b1620;
+  --header-bg:    linear-gradient(90deg, #5a1e2a 0%, #442126 100%);
   --header-border: rgba(212,175,55,0.42);
-  --focusbar-bg:  rgba(40,20,26,0.74);
-  --panel-bg:     #2a171d;
+  --focusbar-bg:  rgba(49,24,31,0.76);
+  --panel-bg:     #311b22;
   --panel-border: rgba(212,175,55,0.26);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.62);
   --text:         #f3e3c2;
@@ -575,16 +575,16 @@
 /* ── MINECRAFT ── Dirt brown page, stone gray keys, grass green header
    Instantly feels like opening the game.                                */
 [data-theme="minecraft"] {
-  --page-bg:      #2f3a2a;
-  --page-bg2:     #232d20;
+  --page-bg:      #34422d;
+  --page-bg2:     #24301f;
   --plate-bg:     rgba(126,186,76,0.12);
   --plate-border: rgba(126,186,76,0.32);
-  --tile-face:    linear-gradient(160deg, #f1f4eb 0%, #dce5cc 100%);
+  --tile-face:    linear-gradient(160deg, #edf2e6 0%, #d7e0c7 100%);
   --tile-border:  #6a7e58;
   --tile-text:    #15210f;
   --tile-shadow:  0 4px 0 #3e4d34, 0 12px 24px rgba(0,0,0,0.26);
   --tile-filled-border: #6aa13a;
-  --key-bg:       #c6d6ad;
+  --key-bg:       #bfcea4;
   --key-text:     #182511;
   --key-shadow:   0 4px 0 #566d45, 0 8px 18px rgba(0,0,0,0.24);
   --key-hover:    #d5e1bf;
@@ -593,7 +593,7 @@
   --brand-dk:     #4c7529;
   --brand-text:   #0e1808;
   --accent:       #8bcf6d;
-  --header-bg:    #4f7f2a;
+  --header-bg:    linear-gradient(180deg, #5d8e35 0%, #4a7429 100%);
   --header-border: rgba(139,207,109,0.36);
   --focusbar-bg:  rgba(26,39,20,0.72);
   --panel-bg:     #263320;
@@ -609,33 +609,33 @@
 
 /* ── MARIO ── Mushroom Kingdom red+blue with warm cream playfield */
 [data-theme="mario"] {
-  --page-bg:      #fef3d8;
-  --page-bg2:     #f9ddab;
+  --page-bg:      #f3deb2;
+  --page-bg2:     #efc87f;
   --plate-bg:     rgba(220,38,38,0.08);
   --plate-border: rgba(37,99,235,0.24);
   --tile-face:    linear-gradient(160deg, #fffaf2 0%, #ffeacc 100%);
   --tile-border:  #d9a26d;
   --tile-text:    #33170a;
   --tile-shadow:  0 3px 0 #1f4ab5, 0 1px 4px rgba(120,40,10,0.20);
-  --tile-filled-border: #dc2626;
-  --key-bg:       #ffe8c7;
+  --tile-filled-border: #d7262f;
+  --key-bg:       #ffe1bb;
   --key-text:     #2d1406;
   --key-shadow:   0 4px 0 #bf2b1f, 0 8px 18px rgba(0,0,0,0.16);
   --key-hover:    #fff0da;
   --vowel-accent: #2563eb;
-  --brand:        #dc2626;
+  --brand:        #d92b2b;
   --brand-dk:     #ab1a1a;
   --brand-text:   #fff6ee;
   --accent:       #2563eb;
   --header-bg:    linear-gradient(90deg, #dc2626 58%, #1d4ed8 58%);
   --header-border: rgba(255,255,255,0.32);
-  --focusbar-bg:  rgba(255,246,228,0.92);
-  --panel-bg:     #fff7e8;
+  --focusbar-bg:  rgba(255,244,220,0.92);
+  --panel-bg:     #f6e8cd;
   --panel-border: rgba(194,78,32,0.20);
   --panel-shadow: 0 8px 32px rgba(120,40,10,0.20);
   --text:         #3a1d0c;
   --text-muted:   #8c4f2d;
-  --modal-bg:     #fff7e8;
+  --modal-bg:     #f9ecd4;
   --fun-bg:       #ffeed4;
   --fun-text:     #1f4ab5;
   --fun-border:   #e2ba80;
@@ -680,33 +680,33 @@
 
 /* ── AMONG US ── deep space with crewmate red + visor cyan ── */
 [data-theme="amongus"] {
-  --page-bg:      #20233a;
-  --page-bg2:     #111225;
+  --page-bg:      #202543;
+  --page-bg2:     #0c0f22;
   --plate-bg:     rgba(94,112,190,0.10);
   --plate-border: rgba(225,29,72,0.30);
   --tile-face:    linear-gradient(160deg, #f6f8ff 0%, #e5e9ff 100%);
-  --tile-border:  #8a95bd;
+  --tile-border:  #7f8cb8;
   --tile-text:    #0f1534;
   --tile-shadow:  0 4px 0 #3b456f, 0 10px 22px rgba(0,0,0,0.30);
   --tile-filled-border: #e11d48;
-  --key-bg:       #e0e6ff;
+  --key-bg:       #d8e1ff;
   --key-text:     #121939;
   --key-shadow:   0 4px 0 #5c6696, 0 8px 18px rgba(0,0,0,0.24);
   --key-hover:    #ebefff;
   --vowel-accent: #22d3ee;
-  --brand:        #e11d48;
+  --brand:        #dc234c;
   --brand-dk:     #be123c;
   --brand-text:   #ffffff;
   --accent:       #22d3ee;
   --header-bg:    #202544;
   --header-border: rgba(103,224,245,0.38);
   --focusbar-bg:  rgba(16,20,42,0.78);
-  --panel-bg:     #1a2142;
+  --panel-bg:     #24305b;
   --panel-border: rgba(94,112,190,0.32);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.60);
   --text:         #ecf0ff;
   --text-muted:   #a7b4db;
-  --modal-bg:     #1a2142;
+  --modal-bg:     #1f2a52;
   --fun-bg:       #121937;
   --fun-text:     #8fe9ff;
   --fun-border:   #345d86;
@@ -714,33 +714,33 @@
 
 /* ── RAINBOW FRIENDS ── playful cyan-lime-orange palette ── */
 [data-theme="rainbowfriends"] {
-  --page-bg:      #dbe4ef;
-  --page-bg2:     #bfccdb;
+  --page-bg:      #c2d3e8;
+  --page-bg2:     #a4b9d1;
   --plate-bg:     rgba(34,58,86,0.14);
   --plate-border: rgba(41,131,201,0.28);
   --tile-face:    linear-gradient(160deg, #ffffff 0%, #ecf2f9 100%);
   --tile-border:  #6e8faf;
   --tile-text:    #122b44;
   --tile-shadow:  0 3px 0 #506c8a, 0 1px 4px rgba(16,80,128,0.20);
-  --tile-filled-border: #ff7a1b;
-  --key-bg:       #9fb4c8;
+  --tile-filled-border: #ff781f;
+  --key-bg:       #a8bdd0;
   --key-text:     #11283f;
   --key-shadow:   0 3px 0 #5f748b, 0 1px 3px rgba(14,95,132,0.20);
   --key-hover:    #b5c7d8;
   --vowel-accent: #ff7a1b;
-  --brand:        #2584c8;
+  --brand:        #1f86cf;
   --brand-dk:     #1a628f;
   --brand-text:   #061722;
-  --accent:       #ff7a1b;
+  --accent:       #ff8a1f;
   --header-bg:    linear-gradient(90deg, #2f4d69 0%, #2584c8 70%);
   --header-border: rgba(255,122,27,0.34);
   --focusbar-bg:  rgba(229,237,246,0.90);
-  --panel-bg:     #f3f7fb;
+  --panel-bg:     #dde8f2;
   --panel-border: rgba(39,88,136,0.20);
   --panel-shadow: 0 8px 32px rgba(16,50,90,0.20);
   --text:         #16324d;
   --text-muted:   #4f6f8e;
-  --modal-bg:     #f4f8fc;
+  --modal-bg:     #e4edf6;
   --fun-bg:       #fff0e2;
   --fun-text:     #92531d;
   --fun-border:   #eabf97;
