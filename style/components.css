@@ -1402,7 +1402,7 @@ html[data-home-mode="play"] #play-tools-btn.hidden {
   border: 1px solid color-mix(in oklab, var(--header-border) 82%, #95a3b4 18%);
   border-radius: 14px;
   background: color-mix(in oklab, var(--panel-bg) 92%, #ffffff 8%);
-  color: color-mix(in oklab, var(--text) 80%, #ffffff 20%);
+  color: color-mix(in oklab, var(--text) 92%, #ffffff 8%);
   font-family: var(--font);
   font-size: 0.84rem;
   font-weight: 800;
@@ -1421,7 +1421,7 @@ html[data-home-mode="play"] #play-tools-btn.hidden {
 }
 
 .focus-inline-search::placeholder {
-  color: color-mix(in oklab, var(--text-muted) 72%, #ffffff 28%);
+  color: color-mix(in oklab, var(--text-muted) 42%, #ffffff 58%);
   font-weight: 760;
   opacity: 1;
 }
@@ -2809,25 +2809,34 @@ html[data-home-mode="play"] .focus-search-empty b {
 .setting-row select {
   min-height: 31px;
   padding: 4px 9px;
-  border: 1px solid color-mix(in oklab, var(--panel-border) 68%, transparent);
+  border: 1px solid color-mix(in oklab, var(--panel-border) 54%, #ffffff 46%);
   border-radius: 10px;
-  background: color-mix(in oklab, var(--panel-bg) 88%, var(--page-bg) 12%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--panel-bg) 80%, #ffffff 20%) 0%,
+    color-mix(in oklab, var(--panel-bg) 92%, #c9d4e1 8%) 100%
+  );
   color: var(--text);
   font-size: 0.76rem;
   font-weight: 760;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.72),
+    0 2px 0 rgba(24, 38, 58, 0.18);
 }
 
 /* ── Panel readability floor (play mode) ───────────── */
 html[data-home-mode="play"] .settings-panel,
 html[data-home-mode="play"] .teacher-panel-card {
-  color: #eaf2ff;
+  color: #12253b;
+  background: linear-gradient(180deg, #eef3f9 0%, #e2e9f1 100%);
+  border-color: color-mix(in oklab, #7f99b6 56%, #d6dfeb 44%);
 }
 
 html[data-home-mode="play"] .settings-header,
 html[data-home-mode="play"] .teacher-panel-head,
 html[data-home-mode="play"] .settings-group > summary,
 html[data-home-mode="play"] .wq-teacher-heading {
-  color: #eef5ff;
+  color: #14304a;
 }
 
 html[data-home-mode="play"] .close-btn {
@@ -2845,7 +2854,17 @@ html[data-home-mode="play"] .teacher-panel-grid label,
 html[data-home-mode="play"] .settings-inline-note,
 html[data-home-mode="play"] .setting-row-help,
 html[data-home-mode="play"] .setting-checkbox-help {
-  color: color-mix(in oklab, #d8e8ff 84%, #ffffff 16%);
+  color: #34516c;
+}
+
+html[data-home-mode="play"] .teacher-panel-head {
+  background: linear-gradient(180deg, #c6d5d6 0%, #b7c8cc 100%);
+  border-bottom-color: color-mix(in oklab, #6f879f 58%, #d6dfea 42%);
+}
+
+html[data-home-mode="play"] .wq-teacher-tools {
+  background: color-mix(in oklab, #f4f7fb 84%, var(--panel-bg) 16%);
+  border-color: color-mix(in oklab, #8ea5bc 48%, #d7e1ec 52%);
 }
 
 html[data-home-mode="play"] .setting-row select,
@@ -2853,16 +2872,19 @@ html[data-home-mode="play"] .teacher-panel-grid select,
 html[data-home-mode="play"] .teacher-hub-grid-2 select,
 html[data-home-mode="play"] .settings-text-input,
 html[data-home-mode="play"] .wq-teacher-words {
-  color: #f3f8ff;
-  border-color: color-mix(in oklab, var(--panel-border) 58%, #c8d8ee 42%);
-  background: color-mix(in oklab, #243a57 56%, var(--panel-bg) 44%);
+  color: #102238;
+  border-color: color-mix(in oklab, #6b89a8 56%, #d4deea 44%);
+  background: linear-gradient(180deg, #f6f9fc 0%, #e9eff6 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.86),
+    0 2px 0 rgba(18, 30, 48, 0.14);
 }
 
 html[data-home-mode="play"] .setting-row select option,
 html[data-home-mode="play"] .teacher-panel-grid select option,
 html[data-home-mode="play"] .teacher-hub-grid-2 select option {
-  color: #f3f8ff;
-  background: #243a57;
+  color: #102238;
+  background: #e8eef5;
 }
 
 html[data-home-mode="play"] .teacher-session-chip,
@@ -3771,12 +3793,13 @@ html[data-home-mode="play"] .focus-search-label span {
 
 html[data-home-mode="play"] .focus-inline-search,
 html[data-home-mode="play"] .curriculum-main-step-field select {
-  border-color: color-mix(in oklab, var(--header-border) 74%, #ffffff 26%);
-  background: color-mix(in oklab, var(--panel-bg) 76%, #ffffff 24%);
+  border-color: color-mix(in oklab, var(--header-border) 56%, #ffffff 44%);
+  background: linear-gradient(180deg, #f5f9fd 0%, #e8eff7 100%);
+  color: #122a42;
 }
 
 html[data-home-mode="play"] .focus-inline-search::placeholder {
-  color: color-mix(in oklab, var(--text-muted) 52%, #ffffff 48%);
+  color: color-mix(in oklab, #5b7290 64%, #ffffff 36%);
 }
 
 html[data-home-mode="play"] .hover-note-toast {
@@ -5137,10 +5160,10 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
   top: calc(var(--header-h) + var(--focus-h) + 12px);
   left: 50%;
   transform: translateX(-50%) translateY(-10px) scale(0.985);
-  width: min(640px, calc(100vw - 24px));
-  max-height: min(62vh, 470px);
+  width: min(560px, calc(100vw - 24px));
+  max-height: min(52vh, 390px);
   overflow: auto;
-  padding: 14px 16px 14px;
+  padding: 12px 14px 12px;
   border-radius: 18px;
   background:
     radial-gradient(circle at 92% -8%, rgba(226, 228, 232, 0.42), transparent 50%),
@@ -5153,7 +5176,7 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
     inset 0 1px 0 rgba(255,255,255,0.7);
   display: grid;
   gap: 14px;
-  font-size: 0.98rem;
+  font-size: 0.9rem;
   line-height: 1.38;
   text-align: left;
   pointer-events: auto;
@@ -5210,7 +5233,7 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
 }
 
 .hint-clue-title {
-  font-size: clamp(1.18rem, 1.9vw, 1.5rem);
+  font-size: clamp(1.04rem, 1.5vw, 1.24rem);
   font-weight: 930;
   letter-spacing: 0.012em;
   text-transform: none;
@@ -5218,11 +5241,50 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
 }
 
 .hint-clue-message {
-  max-width: 44ch;
-  font-size: clamp(0.96rem, 1.25vw, 1.1rem);
+  max-width: 40ch;
+  font-size: clamp(0.86rem, 1.05vw, 0.98rem);
   font-weight: 780;
   line-height: 1.42;
   color: #334659;
+}
+
+.refresh-latest-banner {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  z-index: 220;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 48%, #ffffff 52%);
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklab, #11243a 86%, var(--brand) 14%),
+    color-mix(in oklab, #0b1b30 84%, var(--brand-dk) 16%)
+  );
+  color: #f4f9ff;
+  font-size: 0.72rem;
+  font-weight: 760;
+  box-shadow: 0 10px 24px rgba(8, 18, 34, 0.34);
+}
+
+.refresh-latest-banner button {
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 62%, #ffffff 38%);
+  background: color-mix(in oklab, var(--accent) 24%, #f8fcff 76%);
+  color: #0f2438;
+  font-family: var(--font);
+  font-size: 0.7rem;
+  font-weight: 820;
+  cursor: pointer;
+}
+
+.refresh-latest-banner button:hover {
+  background: color-mix(in oklab, var(--accent) 34%, #f8fcff 66%);
 }
 
 .hint-clue-examples {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="wq-build" content="20260303c">
+  <meta name="wq-build" content="20260303d">
   <base href="./">
   <title>Word Quest</title>
   <script src="config.js?v=20260303c"></script>
@@ -42,8 +42,8 @@
   <link rel="stylesheet" href="style/tokens.css?v=20260303c">
   <link rel="stylesheet" href="style/typography.css?v=20260303c">
   <link rel="stylesheet" href="style/modes.css?v=20260303c">
-  <link rel="stylesheet" href="style/themes.css?v=20260303c">
-  <link rel="stylesheet" href="style/components.css?v=20260303c">
+  <link rel="stylesheet" href="style/themes.css?v=20260303d">
+  <link rel="stylesheet" href="style/components.css?v=20260303d">
   <link rel="stylesheet" href="style/components.deep-dive-plus.css?v=20260303c">
   <link rel="stylesheet" href="style/world-themes.css?v=20260303c">
   <link rel="stylesheet" href="style/wordquest-isolation.css?v=20260303a">
@@ -335,7 +335,7 @@
             <div class="setting-row"><label>Max Guesses<select id="s-guesses"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option></select></label></div>
             <div class="setting-row"><label>Try These Words<select id="s-starter-words"><option value="off">Off</option><option value="on_demand">On demand</option><option value="after_2">Auto after 2 guesses</option><option value="after_3" selected>Auto after 3 guesses</option></select></label></div>
             <div class="setting-row setting-row-full">
-              <button id="s-force-update-now-top" class="quick-action-btn quick-action-btn-warning" type="button">Force Update Now</button>
+              <button id="s-force-update-now-top" class="quick-action-btn quick-action-btn-warning" type="button">Refresh for Latest</button>
             </div>
             <div class="setting-row hidden" aria-hidden="true"><label>Hint Cues<select id="s-hint"><option value="off">Off</option><option value="on">On</option></select></label></div>
             <div class="setting-row"><label>Game Mode<select id="s-play-style"><option value="detective" selected>Guess &amp; Check Mode (color + clue strategy)</option><option value="listening">Listen &amp; Spell Mode (hear + spell)</option></select></label></div>
@@ -760,7 +760,7 @@
         </details>
         <div class="settings-inline-actions settings-maintenance-row">
           <button id="s-reset-look-cache" class="quick-action-btn" type="button">Reset Appearance</button>
-          <button id="s-force-update-now" class="quick-action-btn quick-action-btn-warning" type="button">Force Update Now</button>
+          <button id="s-force-update-now" class="quick-action-btn quick-action-btn-warning" type="button">Refresh for Latest</button>
         </div>
       </section>
     </div>
@@ -1028,6 +1028,11 @@
       <button id="hint-clue-sentence-btn" class="audio-btn hint-clue-btn" type="button">Hear Sentence</button>
       <button id="hint-clue-close-btn" class="audio-btn hint-clue-btn hint-clue-btn-muted" type="button">Close</button>
     </div>
+  </div>
+
+  <div id="refresh-latest-banner" class="refresh-latest-banner" role="status" aria-live="polite">
+    <span>Please refresh for the latest update.</span>
+    <button id="refresh-latest-btn" type="button">Refresh</button>
   </div>
   <div id="starter-word-card" class="starter-word-card hidden" role="dialog" aria-label="Try these words">
     <div class="starter-word-head">
@@ -1412,7 +1417,7 @@
   <script src="js/audio.js?v=20260303c"></script>
   <script src="js/game.js?v=20260303c"></script>
   <script src="js/ui.js?v=20260303c"></script>
-  <script src="js/theme-registry.js?v=20260303c"></script>
+  <script src="js/theme-registry.js?v=20260303d"></script>
   <script src="js/feature-flags.js?v=20260303c"></script>
   <script src="data/curriculum-taxonomy.js?v=20260303c"></script>
   <script src="data/assignment-schema.js?v=20260303c"></script>
@@ -1433,8 +1438,8 @@
   <script src="js/coach-ribbon.js?v=20260303c"></script>
   <script src="word-quest-preview.js?v=20260303c"></script>
   <script src="hero-v2.js?v=20260303c"></script>
-  <script src="js/app.js?v=20260303c"></script>
+  <script src="js/app.js?v=20260303d"></script>
   <script src="js/deep-dive-plus.js?v=20260303c"></script>
-  <script src="js/theme-nav.js?v=20260303c"></script>
+  <script src="js/theme-nav.js?v=20260303d"></script>
 </body>
 </html>

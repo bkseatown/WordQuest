@@ -116,7 +116,7 @@
   --focusbar-bg:  rgba(7, 31, 55, 0.72);
 
   /* 30% secondary: Wolf Grey / white-tinted structural surfaces */
-  --panel-bg:     #a5acaf;
+  --panel-bg:     #3f5567;
   --panel-border: rgba(218, 225, 231, 0.34);
   --plate-bg:     rgba(165, 172, 175, 0.20);
   --plate-border: rgba(189, 198, 204, 0.44);
@@ -125,19 +125,19 @@
   --tile-text:    #001833;
   --tile-filled-text: #001433;
   --tile-shadow:  0 3px 0 #21394f, 0 1px 4px rgba(0,0,0,0.25);
-  --tile-filled-border: #8ca1b8;
+  --tile-filled-border: #69be28;
   --key-bg:       #a5acaf;
   --key-text:     #001a34;
   --key-shadow:   0 3px 0 #667887, 0 1px 3px rgba(0,0,0,0.2);
-  --key-hover:    #bcc4c8;
-  --text:         #eef4f9;
-  --text-muted:   #c4cfd9;
-  --modal-bg:     #8f989d;
+  --key-hover:    #c5cdd1;
+  --text:         #f6fbff;
+  --text-muted:   #d6e0e8;
+  --modal-bg:     #4a6276;
 
   /* 10% accent: Action Green */
   --accent:       #69be28;
   --vowel-accent: #69be28;
-  --header-border: rgba(105, 190, 40, 0.38);
+  --header-border: rgba(105, 190, 40, 0.58);
   --fun-bg:       #122a1a;
   --fun-text:     #69be28;
   --fun-border:   #2a5f12;
@@ -155,24 +155,24 @@
   --tile-border:  #b7a57a;
   --tile-text:    #1a0800;
   --tile-shadow:  0 3px 0 #4b2e83, 0 1px 4px rgba(0,0,0,0.25);
-  --tile-filled-border: #c8a840;
+  --tile-filled-border: #d8bb66;
   --key-bg:       #f2eee6;
   --key-text:     #241540;
   --key-shadow:   0 3px 0 #9a8d72, 0 1px 3px rgba(45,28,78,0.24);
   --key-hover:    #faf6ef;
-  --vowel-accent: #d7c37f;
-  --brand:        #c8a840;
+  --vowel-accent: #e3cb87;
+  --brand:        #d5b75f;
   --brand-dk:     #85754d;
   --brand-text:   #1a0800;
-  --accent:       #f0d880;
+  --accent:       #f6df8f;
   --header-bg:    #4b2e83;
-  --header-border: rgba(200,168,72,0.50);
+  --header-border: rgba(214,184,95,0.62);
   --focusbar-bg:  rgba(30,15,60,0.6);
   --panel-bg:     #2a1860;
-  --panel-border: rgba(200,168,72,0.25);
+  --panel-border: rgba(216,188,108,0.34);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.5);
   --text:         #f0e0c0;
-  --text-muted:   #b09060;
+  --text-muted:   #c9ab6a;
   --modal-bg:     #2a1860;
   --fun-bg:       #1e1000;
   --fun-text:     #f0d040;
