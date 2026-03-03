@@ -106,37 +106,42 @@
 /* ── SEAHAWKS ── Navy #002244 + Action Green #69BE28 + Wolf Gray #A5ACAF
    Wolf gray keys (actual brand color), green key shadows = instant ID   */
 [data-theme="seahawks"] {
-  --page-bg:      #2d5268;
-  --page-bg2:     #23465c;
-  --plate-bg:     rgba(0,0,0,0.20);
-  --plate-border: rgba(128,152,178,0.40);
-  --tile-face:    linear-gradient(160deg, #ffffff 0%, #eef3f8 100%);
-  --tile-border:  #7f96af;
+  /* 60% dominant: College Navy */
+  --page-bg:      #002244;
+  --page-bg2:     #0a3258;
+  --header-bg:    #002244;
+  --brand:        #002244;
+  --brand-dk:     #001a34;
+  --brand-text:   #f4f8fb;
+  --focusbar-bg:  rgba(7, 31, 55, 0.72);
+
+  /* 30% secondary: Wolf Grey / white-tinted structural surfaces */
+  --panel-bg:     #a5acaf;
+  --panel-border: rgba(218, 225, 231, 0.34);
+  --plate-bg:     rgba(165, 172, 175, 0.20);
+  --plate-border: rgba(189, 198, 204, 0.44);
+  --tile-face:    linear-gradient(160deg, #f8fbfd 0%, #e8eef3 100%);
+  --tile-border:  #7f94a6;
   --tile-text:    #001833;
   --tile-filled-text: #001433;
-  --tile-shadow:  0 3px 0 #002244, 0 1px 4px rgba(0,0,0,0.25);
+  --tile-shadow:  0 3px 0 #21394f, 0 1px 4px rgba(0,0,0,0.25);
   --tile-filled-border: #8ca1b8;
   --key-bg:       #a5acaf;
-  --key-text:     #001433;
-  --key-shadow:   0 3px 0 #6f869f, 0 1px 3px rgba(0,0,0,0.2);
-  --key-hover:    #c0c8cc;
-  --vowel-accent: #69be28;
-  --brand:        #69be28;
-  --brand-dk:     #4a8a1c;
-  --brand-text:   #001433;
+  --key-text:     #001a34;
+  --key-shadow:   0 3px 0 #667887, 0 1px 3px rgba(0,0,0,0.2);
+  --key-hover:    #bcc4c8;
+  --text:         #eef4f9;
+  --text-muted:   #c4cfd9;
+  --modal-bg:     #8f989d;
+
+  /* 10% accent: Action Green */
   --accent:       #69be28;
-  --header-bg:    #002244;
-  --header-border: rgba(105,190,40,0.32);
-  --focusbar-bg:  rgba(12,30,58,0.58);
-  --panel-bg:     #1d3040;
-  --panel-border: rgba(124,149,177,0.24);
-  --panel-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  --text:         #d0dce8;
-  --text-muted:   #8898a8;
-  --modal-bg:     #152838;
-  --fun-bg:       #0a2018;
+  --vowel-accent: #69be28;
+  --header-border: rgba(105, 190, 40, 0.38);
+  --fun-bg:       #122a1a;
   --fun-text:     #69be28;
-  --fun-border:   #1e4400;
+  --fun-border:   #2a5f12;
+  --panel-shadow: 0 8px 32px rgba(0,0,0,0.44);
 }
 
 /* ── HUSKIES ── Purple #4B2E83 + Gold #B7A57A/#85754D
