@@ -71,6 +71,34 @@
     return lit + " " + num;
   }
 
+  function buildInstructionalFrameworkAlignment(literacyData, numeracyData) {
+    var registry = root && root.CSFrameworkRegistry;
+    var lit = Array.isArray(literacyData && literacyData.frameworkAlignment) ? literacyData.frameworkAlignment : [];
+    var num = Array.isArray(numeracyData && numeracyData.frameworkAlignment) ? numeracyData.frameworkAlignment : [];
+    if (!lit.length && registry && typeof registry.getFrameworkAlignment === "function") {
+      var litRaw = registry.getFrameworkAlignment(literacyData && literacyData.focus);
+      lit = [];
+      if (litRaw && litRaw.scienceOfReading) lit.push("Science of Reading Aligned");
+      if (litRaw && litRaw.structuredLiteracy) lit.push("Structured Literacy");
+      if (litRaw && litRaw.mtssTieredModel) lit.push("MTSS Tier Logic");
+      if (litRaw && litRaw.progressMonitoring) lit.push("Progress Monitoring Supported");
+    }
+    if (!num.length && registry && typeof registry.getFrameworkAlignment === "function") {
+      var numRaw = registry.getFrameworkAlignment(numeracyData && numeracyData.contentFocus);
+      num = [];
+      if (numRaw && numRaw.illustrativeMath) num.push("Illustrative Math Aligned");
+      if (numRaw && numRaw.mtssTieredModel) num.push("MTSS Tier Logic");
+      if (numRaw && numRaw.progressMonitoring) num.push("Progress Monitoring Supported");
+    }
+    var merged = lit.concat(num).filter(Boolean).filter(function (item, idx, arr) {
+      return arr.indexOf(item) === idx;
+    });
+    if (!merged.length) {
+      return "MTSS Tier Logic; Progress Monitoring Supported";
+    }
+    return merged.join("; ");
+  }
+
   function buildNextSteps(literacyData, numeracyData) {
     var lit = asText(literacyData && literacyData.nextStep, "Keep literacy support targeted and short-cycle.");
     var num = asText(numeracyData && numeracyData.recommendedAction, "Run a numeracy check and adjust strategy support.");
@@ -109,6 +137,7 @@
       numeracyProgress: buildNumeracyProgress(num),
       tierStatement: String(tierSignal.tierLevel || "Tier 2") + " instructional support is recommended at this time. Trend decision: " + String(tierSignal.trendDecision || "HOLD") + ".",
       curriculumAlignment: buildCurriculumAlignment(lit, num),
+      instructionalFrameworkAlignment: buildInstructionalFrameworkAlignment(lit, num),
       recommendedNextSteps: buildNextSteps(lit, num),
       interventionFidelitySummary: buildFidelitySummary(profile, fidelitySummary),
       tierDecisionExplanation: Array.isArray(tierSignal.reasoning) ? tierSignal.reasoning.slice(0, 4).join(" ") : "",
@@ -131,6 +160,7 @@
       numeracyProgress: "[" + label + " placeholder] " + asText(report && report.numeracyProgress, ""),
       tierStatement: "[" + label + " placeholder] " + asText(report && report.tierStatement, ""),
       curriculumAlignment: "[" + label + " placeholder] " + asText(report && report.curriculumAlignment, ""),
+      instructionalFrameworkAlignment: "[" + label + " placeholder] " + asText(report && report.instructionalFrameworkAlignment, ""),
       interventionFidelitySummary: "[" + label + " placeholder] " + asText(report && report.interventionFidelitySummary, ""),
       tierDecisionExplanation: "[" + label + " placeholder] " + asText(report && report.tierDecisionExplanation, ""),
       recommendedNextSteps: Array.isArray(report && report.recommendedNextSteps)

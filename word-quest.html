@@ -170,6 +170,7 @@
             </svg>
           </button>
           <button id="new-game-btn" data-testid="new-game-btn" data-no-hover-note="true">Next Word</button>
+          <span id="active-grade-lock-chip" class="active-grade-lock-chip" aria-live="polite">Active Grade Band locked: All (K-2 safe)</span>
           <!-- Legacy regression sentinel: <button id="new-game-btn">Next Word</button> -->
         </div>
       </div>
@@ -228,6 +229,16 @@
             <button id="home-open-numeracy" class="home-tools-tile-btn" type="button">Open Numeracy Lab</button>
           </article>
         </div>
+        <section class="institutional-alignment-block" aria-label="Institutional alignment">
+          <h3>Built on:</h3>
+          <ul>
+            <li>Science of Reading</li>
+            <li>Structured Literacy (Wilson, Fundations)</li>
+            <li>Illustrative Mathematics</li>
+            <li>Tiered MTSS Framework</li>
+            <li>Evidence-Based Progress Monitoring</li>
+          </ul>
+        </section>
       </section>
     </div>
     <div class="hero-right">
@@ -338,8 +349,8 @@
               <button id="s-force-update-now-top" class="quick-action-btn quick-action-btn-warning hidden" aria-hidden="true" type="button" tabindex="-1">Refresh for Latest</button>
             </div>
             <div class="setting-row hidden" aria-hidden="true"><label>Hint Cues<select id="s-hint"><option value="off">Off</option><option value="on">On</option></select></label></div>
-            <div class="setting-row"><label>Game Mode<select id="s-play-style"><option value="detective" selected>Guess &amp; Check Mode (teacher-led strategy)</option><option value="listening">Listen &amp; Spell Mode (audio-first decoding)</option></select></label></div>
-            <div class="setting-row setting-row-full setting-row-help">Teacher tip: <b>Guess &amp; Check</b> for visual strategy rounds, <b>Listen &amp; Spell</b> for auditory mapping and dictation practice.</div>
+            <div class="setting-row"><label>Game Mode<select id="s-play-style"><option value="detective" selected>Detective Mode (visual clue strategy)</option><option value="listening">Spelling Mode (hear + spell)</option></select></label></div>
+            <div class="setting-row setting-row-full setting-row-help">Teacher tip: <b>Detective Mode</b> for visual strategy rounds, <b>Spelling Mode</b> for auditory mapping and dictation practice.</div>
             <div class="setting-row hidden settings-keyboard-layout-row" aria-hidden="true" style="display:none !important;"><label>Keyboard Layout<select id="s-keyboard-layout"><option value="standard" selected>QWERTY</option><option value="alphabet">Alphabet</option></select></label></div>
             <div class="setting-row hidden" aria-hidden="true"><label>Text Size<select id="s-text-size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></label></div>
             <div class="setting-row hidden" aria-hidden="true"><label>Keyboard Style<select id="s-key-style"><option value="bubble" selected>Puffy Rounded</option></select></label></div>
@@ -1307,6 +1318,7 @@
         <label class="first-run-grade-row" for="first-run-grade-band">
           <span>Choose grade band</span>
           <select id="first-run-grade-band">
+            <option value="" selected disabled>Choose grade band (required)</option>
             <option value="all">All grades (K-2 safe)</option>
             <option value="K-2">K–2</option>
             <option value="G3-5">Grades 3–5</option>

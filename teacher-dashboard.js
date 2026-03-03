@@ -27,6 +27,7 @@
   var NumeracySequencer = window.CSNumeracySequencer;
   var CurriculumMap = window.CSCurriculumMap;
   var ReportingGenerator = window.CSReportingGenerator;
+  var FrameworkRegistry = window.CSFrameworkRegistry;
   var TierEngine = window.CSTierEngine;
   var FidelityEngine = window.CSFidelity;
   var AlignmentLoader = window.CSAlignmentLoader;
@@ -212,6 +213,8 @@
     expFidelity: document.getElementById("td-exp-fidelity"),
     expTierRule: document.getElementById("td-exp-tier-rule"),
     expTrend: document.getElementById("td-exp-trend"),
+    expFrameworks: document.getElementById("td-exp-frameworks"),
+    litFrameworkBadges: document.getElementById("td-lit-framework-badges"),
     focusStartBtn: document.getElementById("td-focus-start-btn"),
     surgicalAttentionList: document.getElementById("td-surgical-attention-list"),
     numeracyTier: document.getElementById("td-num-tier"),
@@ -224,8 +227,43 @@
     numLessonSelect: document.getElementById("td-num-lesson-select"),
     numCurriculumBadge: document.getElementById("td-num-curriculum-badge"),
     numCurriculumLine: document.getElementById("td-num-curriculum-line"),
+    numFrameworkBadges: document.getElementById("td-num-framework-badges"),
     buildline: document.getElementById("td-buildline")
   };
+
+  function getFrameworkAlignmentSafe(skillNode) {
+    if (!FrameworkRegistry || typeof FrameworkRegistry.getFrameworkAlignment !== "function") {
+      return {
+        scienceOfReading: false,
+        structuredLiteracy: false,
+        illustrativeMath: false,
+        mtssTieredModel: true,
+        progressMonitoring: true
+      };
+    }
+    return FrameworkRegistry.getFrameworkAlignment(skillNode);
+  }
+
+  function frameworkListFromAlignment(alignment) {
+    var a = alignment || {};
+    var list = [];
+    if (a.scienceOfReading) list.push("Science of Reading Aligned");
+    if (a.structuredLiteracy) list.push("Structured Literacy");
+    if (a.illustrativeMath) list.push("Illustrative Math Aligned");
+    if (a.mtssTieredModel) list.push("MTSS Tier Logic");
+    if (a.progressMonitoring) list.push("Progress Monitoring Supported");
+    return list;
+  }
+
+  function renderFrameworkBadges(target, skillNode) {
+    if (!target) return [];
+    var alignment = getFrameworkAlignmentSafe(skillNode);
+    var labels = frameworkListFromAlignment(alignment);
+    target.innerHTML = labels.map(function (label) {
+      return '<span class="framework-badge">' + escAttr(label) + "</span>";
+    }).join("");
+    return labels;
+  }
 
   function getIllustrativeMapSafe() {
     if (!CurriculumMap || typeof CurriculumMap.getIllustrativeMap !== "function") return {};
@@ -456,7 +494,7 @@
     return signal;
   }
 
-  function renderExplainability(signal) {
+  function renderExplainability(signal, skillNode) {
     var s = signal || { input: {} };
     var input = s.input || {};
     if (el.expRecentAccuracy) el.expRecentAccuracy.textContent = Math.round(toPct(input.recentAccuracy || 0)) + "%";
@@ -468,6 +506,10 @@
     if (el.expTierRule) {
       var reason = Array.isArray(s.reasoning) && s.reasoning[0] ? s.reasoning[0] : "Rule not available";
       el.expTierRule.textContent = reason;
+    }
+    if (el.expFrameworks) {
+      var labels = frameworkListFromAlignment(getFrameworkAlignmentSafe(skillNode));
+      el.expFrameworks.textContent = labels.length ? labels.join(", ") : "--";
     }
     if (el.focusFidelityLine) {
       var fidelitySummary = input.fidelitySummary || {};
@@ -490,6 +532,7 @@
     el.numeracyPracticeMode.textContent = String(recommendation.practiceMode || fallback.practiceMode);
     if (el.numeracyTier) el.numeracyTier.textContent = String(recommendation.tierSignal || fallback.tierSignal);
     el.numeracyActionLine.textContent = String(recommendation.recommendedAction || fallback.recommendedAction);
+    renderFrameworkBadges(el.numFrameworkBadges, String(recommendation.contentFocus || "numeracy"));
     renderNumeracyAlignmentLine();
   }
 
@@ -530,6 +573,9 @@
       "Curriculum Alignment",
       String(report && report.curriculumAlignment || ""),
       "",
+      "Instructional Framework Alignment",
+      String(report && report.instructionalFrameworkAlignment || ""),
+      "",
       "Intervention Fidelity Summary",
       String(report && report.interventionFidelitySummary || ""),
       "",
@@ -558,6 +604,7 @@
       "<section><h3>Numeracy Progress</h3><p>" + escHtml(translated.numeracyProgress || "") + "</p></section>",
       "<section><h3>Tier Statement</h3><p>" + escHtml(translated.tierStatement || "") + "</p></section>",
       "<section><h3>Curriculum Alignment</h3><p>" + escHtml(translated.curriculumAlignment || "") + "</p></section>",
+      "<section><h3>Instructional Framework Alignment</h3><p>" + escHtml(translated.instructionalFrameworkAlignment || "") + "</p></section>",
       "<section><h3>Intervention Fidelity Summary</h3><p>" + escHtml(translated.interventionFidelitySummary || "") + "</p></section>",
       "<section><h3>Tier Decision Explanation</h3><p>" + escHtml(translated.tierDecisionExplanation || "") + "</p></section>",
       "<section><h3>Recommended Next Steps</h3><ul>" + nextSteps.map(function (step) { return "<li>" + escHtml(step) + "</li>"; }).join("") + "</ul></section>",
@@ -574,6 +621,8 @@
     var numeracy = latestNumeracyRecommendation(row);
     var tierSignal = computeTierSignalForRow(row);
     var tierInput = tierSignal.input || {};
+    var literacyFrameworks = frameworkListFromAlignment(getFrameworkAlignmentSafe(summary ? summary.focus : "literacy"));
+    var numeracyFrameworks = frameworkListFromAlignment(getFrameworkAlignmentSafe(numeracy.contentFocus || "numeracy"));
     var curriculumLine = el.numCurriculumLine ? String(el.numCurriculumLine.textContent || "").trim() : "";
     var literacyData = {
       focus: summary ? String(summary.focus || "Foundational literacy") : "Foundational literacy",
@@ -585,7 +634,8 @@
       stableCount: Number(tierInput.stableCount || 2),
       weeksInIntervention: Number(tierInput.weeksInIntervention || 6),
       fidelitySummary: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 },
-      curriculumAlignment: "Literacy sequencing aligned to active instructional pathways."
+      curriculumAlignment: "Literacy sequencing aligned to active instructional pathways.",
+      frameworkAlignment: literacyFrameworks
     };
     var numeracyData = {
       contentFocus: numeracy.contentFocus,
@@ -594,7 +644,8 @@
       tierSignal: numeracy.tierSignal,
       recommendedAction: numeracy.recommendedAction,
       fidelitySummary: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 },
-      curriculumAlignment: curriculumLine || "Numeracy sequencing aligned to active instructional pathways."
+      curriculumAlignment: curriculumLine || "Numeracy sequencing aligned to active instructional pathways.",
+      frameworkAlignment: numeracyFrameworks
     };
     var studentProfile = {
       id: String(student.id || state.selectedId),
@@ -615,6 +666,7 @@
         numeracyProgress: "",
         tierStatement: "",
         curriculumAlignment: "",
+        instructionalFrameworkAlignment: "",
         interventionFidelitySummary: "",
         tierDecisionExplanation: "",
         recommendedNextSteps: [],
@@ -1075,7 +1127,8 @@
       if (el.focusStudentName) el.focusStudentName.textContent = "Select a student";
       if (el.focusTierLine) el.focusTierLine.textContent = "Tier 2 focus";
       if (el.focusReasonLine) el.focusReasonLine.textContent = "Search a student to get a clear next move.";
-      renderExplainability(null);
+      renderExplainability(null, "");
+      renderFrameworkBadges(el.litFrameworkBadges, "");
       renderNumeracyRecommendationCard(null);
       if (el.surgicalAttentionList) {
         el.surgicalAttentionList.innerHTML = '<article class="queue-card"><h3 class="queue-name">No queued students</h3><p class="queue-signal">Add students to generate a focused queue.</p></article>';
@@ -1094,7 +1147,9 @@
     if (el.focusStudentName) el.focusStudentName.textContent = String(focusStudent.name || "Select a student");
     if (el.focusTierLine) el.focusTierLine.textContent = focusTier + " focus";
     if (el.focusReasonLine) el.focusReasonLine.textContent = signalLineForRow(focus);
-    renderExplainability(tierSignal);
+    var focusSkillId = String(focusTop && focusTop.skillId || "literacy");
+    renderExplainability(tierSignal, focusSkillId);
+    renderFrameworkBadges(el.litFrameworkBadges, focusSkillId);
     renderNumeracyRecommendationCard(focus);
     if (el.focusStartBtn) {
       el.focusStartBtn.onclick = function () {

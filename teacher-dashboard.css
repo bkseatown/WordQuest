@@ -428,6 +428,26 @@ body.cs-has-nav-shell .td-shell {
   color: color-mix(in oklab, #b23a48 62%, var(--text-secondary));
 }
 
+.framework-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.framework-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--surface-border) 76%, transparent);
+  background: color-mix(in oklab, var(--surface-elev-2) 82%, transparent);
+  color: var(--text-secondary);
+  font-size: var(--fs-0);
+  line-height: 1.2;
+  font-weight: var(--fw-regular);
+}
+
 .td-explainability {
   border: 1px solid color-mix(in oklab, var(--border-subtle) 68%, transparent);
   border-radius: var(--radius-2);
