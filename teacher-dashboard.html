@@ -71,6 +71,19 @@
               <span id="td-focus-tier-line" class="focus-tier">Tier 2</span>
             </div>
             <p id="td-focus-reason-line" class="focus-reason">Instructional sequencing and intervention planning for Tier 2/3 literacy and numeracy support.</p>
+            <p id="td-focus-fidelity-line" class="focus-fidelity-line fidelity-good">Fidelity: 0% over 0 sessions</p>
+            <details class="td-explainability">
+              <summary>Why this recommendation?</summary>
+              <div class="td-explainability-grid">
+                <span>Recent Accuracy</span><strong id="td-exp-recent-accuracy">--</strong>
+                <span>Goal Accuracy</span><strong id="td-exp-goal-accuracy">--</strong>
+                <span>Stability Count</span><strong id="td-exp-stable-count">--</strong>
+                <span>Weeks in Intervention</span><strong id="td-exp-weeks">--</strong>
+                <span>Fidelity %</span><strong id="td-exp-fidelity">--</strong>
+                <span>Tier Rule Triggered</span><strong id="td-exp-tier-rule">--</strong>
+                <span>Trend Decision</span><strong id="td-exp-trend">--</strong>
+              </div>
+            </details>
             <button id="td-focus-start-btn" class="btn-primary td-top-btn focus-start" type="button">Start Session</button>
           </article>
           <article class="focus-card card td-surface numeracy-focus-card" aria-labelledby="td-num-title">
@@ -354,6 +367,8 @@
   </div>
 
   <script src="./js/nav-shell.js?v=20260301y"></script>
+  <script src="./js/core/tier-engine.js?v=20260303a" defer></script>
+  <script src="./js/core/fidelity.js?v=20260303a" defer></script>
   <script src="./js/numeracy/sequencer.js?v=20260303a" defer></script>
   <script src="./js/numeracy/curriculum-map.js?v=20260303b" defer></script>
   <script src="./build-stamp.js?v=20260301y"></script>

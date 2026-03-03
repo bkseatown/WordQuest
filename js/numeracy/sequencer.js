@@ -1,10 +1,10 @@
 (function numeracySequencerModule(root, factory) {
   if (typeof module === "object" && module.exports) {
-    module.exports = factory();
+    module.exports = factory(root || globalThis);
     return;
   }
-  root.CSNumeracySequencer = factory();
-})(typeof globalThis !== "undefined" ? globalThis : window, function createNumeracySequencer() {
+  root.CSNumeracySequencer = factory(root || globalThis);
+})(typeof globalThis !== "undefined" ? globalThis : window, function createNumeracySequencer(root) {
   "use strict";
 
   var CONTENT_FOCUS = Object.freeze([
@@ -59,13 +59,6 @@
     return toNumber(m[1], null);
   }
 
-  function inferTierSignal(profile) {
-    var score = toNumber(profile && profile.accuracy, 0.7);
-    if (score < 0.45) return "Tier 3";
-    if (score < 0.7) return "Tier 2";
-    return "Tier 1";
-  }
-
   function inferStrategyStage(profile) {
     var gradeLevel = parseGradeLevel(profile && profile.gradeBand);
     var confidence = toNumber(profile && profile.confidence, 0.5);
@@ -110,12 +103,36 @@
     return PRACTICE_MODE[0];
   }
 
+  function computeTierFromSharedEngine(profile) {
+    var tierEngine = root && root.CSTierEngine;
+    if (!tierEngine || typeof tierEngine.computeTierSignal !== "function") {
+      return {
+        tierLevel: "Tier 2",
+        trendDecision: "HOLD",
+        reasoning: ["Tier engine unavailable; fallback signal used."]
+      };
+    }
+    var recentAccuracy = toNumber(profile && profile.accuracy, 0.7);
+    var goalAccuracy = toNumber(profile && profile.goalAccuracy, 0.8);
+    var stableCount = toNumber(profile && profile.stableCount, recentAccuracy >= goalAccuracy ? 3 : 1);
+    var weeksInIntervention = toNumber(profile && profile.weeksInIntervention, recentAccuracy < goalAccuracy ? 8 : 4);
+    var fidelityPercent = toNumber(profile && profile.fidelityPercent, 85);
+    return tierEngine.computeTierSignal({
+      recentAccuracy: recentAccuracy,
+      goalAccuracy: goalAccuracy,
+      stableCount: stableCount,
+      weeksInIntervention: weeksInIntervention,
+      fidelityPercent: fidelityPercent
+    });
+  }
+
   function generateNumeracyRecommendation(studentProfile) {
     var profile = studentProfile && typeof studentProfile === "object" ? studentProfile : {};
     var contentFocus = inferContentFocus(profile);
     var strategyStage = inferStrategyStage(profile);
     var errorPattern = inferErrorPattern(profile);
-    var tierSignal = inferTierSignal(profile);
+    var tier = computeTierFromSharedEngine(profile);
+    var tierSignal = String(tier.tierLevel || "Tier 2");
     var practiceMode = inferPracticeMode(strategyStage, errorPattern);
     var recommendedAction = "Run " + practiceMode + " targeting " + contentFocus + " at the " + strategyStage + " stage.";
 
@@ -124,6 +141,8 @@
       strategyStage: strategyStage,
       errorPattern: errorPattern,
       tierSignal: tierSignal,
+      trendDecision: String(tier.trendDecision || "HOLD"),
+      tierReasoning: Array.isArray(tier.reasoning) ? tier.reasoning.slice(0, 4) : [],
       recommendedAction: recommendedAction,
       practiceMode: practiceMode
     };

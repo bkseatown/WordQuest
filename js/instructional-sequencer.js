@@ -70,6 +70,30 @@
   }
 
   function getTierLevel(studentId, primarySkill) {
+    var TierEngine = root.CSTierEngine;
+    if (TierEngine && typeof TierEngine.computeTierSignal === 'function') {
+      var rows = getSkillRows(studentId, primarySkill && primarySkill.skillId);
+      var recentAccuracy = clamp(primarySkill && primarySkill.mastery, 0, 1);
+      var goalAccuracy = 0.8;
+      var stableCount = rows.slice(-5).reduce(function (count, row) {
+        var score = Number(row && (row.accuracy != null ? row.accuracy : row.score));
+        if (!Number.isFinite(score)) return count;
+        if (score > 1) score = score / 100;
+        return score >= goalAccuracy ? count + 1 : count;
+      }, 0);
+      var weeksInIntervention = Math.max(1, Math.round(rows.length / 2));
+      var fidelityPercent = 85;
+      var tier = TierEngine.computeTierSignal({
+        recentAccuracy: recentAccuracy,
+        goalAccuracy: goalAccuracy,
+        stableCount: stableCount,
+        weeksInIntervention: weeksInIntervention,
+        fidelityPercent: fidelityPercent
+      });
+      if (tier && tier.tierLevel === 'Tier 3') return 3;
+      if (tier && tier.tierLevel === 'Tier 2') return 2;
+      return 1;
+    }
     try {
       var SupportStore = root.CSSupportStore;
       if (SupportStore && typeof SupportStore.getStudent === 'function') {

@@ -411,6 +411,55 @@ body.cs-has-nav-shell .td-shell {
   max-width: 80ch;
 }
 
+.focus-fidelity-line {
+  margin: 0;
+  font-size: var(--fs-1);
+  color: var(--text-secondary);
+}
+
+.focus-fidelity-line.fidelity-good {
+  color: color-mix(in oklab, #2f9e44 55%, var(--text-secondary));
+}
+
+.focus-fidelity-line.fidelity-mid {
+  color: color-mix(in oklab, #b08900 62%, var(--text-secondary));
+}
+
+.focus-fidelity-line.fidelity-low {
+  color: color-mix(in oklab, #b23a48 62%, var(--text-secondary));
+}
+
+.td-explainability {
+  border: 1px solid color-mix(in oklab, var(--border-subtle) 68%, transparent);
+  border-radius: var(--radius-2);
+  background: color-mix(in oklab, var(--surface-elev-2) 78%, transparent);
+  padding: 8px 10px;
+}
+
+.td-explainability summary {
+  cursor: pointer;
+  font-size: var(--fs-1);
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+}
+
+.td-explainability-grid {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(0, 1fr);
+  gap: 6px 12px;
+  font-size: var(--fs-1);
+}
+
+.td-explainability-grid span {
+  color: var(--text-secondary);
+}
+
+.td-explainability-grid strong {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+
 .focus-start {
   align-self: start;
   min-height: calc(var(--sp-6) + var(--space-1));
