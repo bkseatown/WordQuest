@@ -1235,24 +1235,24 @@ html[data-home-mode="play"] #home-tools-section {
 }
 
 html[data-home-mode="play"] .top-control-hub {
-  display: none !important;
+  display: block !important;
 }
 
 html[data-home-mode="play"] main {
-  height: calc(100dvh - var(--play-header-h) - var(--play-safe-padding));
-  min-height: calc(100dvh - var(--play-header-h) - var(--play-safe-padding));
-  padding-top: 2px;
-  padding-bottom: 0;
-  overflow: hidden;
+  height: auto;
+  min-height: calc(100dvh - var(--play-header-h));
+  padding-top: 0;
+  padding-bottom: var(--play-safe-padding);
+  overflow: visible;
 }
 
 html[data-home-mode="play"] .board-zone {
-  min-height: 0;
-  gap: 6px;
+  min-height: auto;
+  gap: 10px;
 }
 
 html[data-home-mode="play"] .gameplay-audio {
-  margin-bottom: 2px;
+  margin-bottom: 8px;
 }
 
 html[data-home-mode="play"] .header-main-row {
@@ -1262,7 +1262,7 @@ html[data-home-mode="play"] .header-main-row {
 }
 
 html[data-home-mode="play"] .play-mode-label {
-  display: inline-flex;
+  display: none !important;
 }
 
 html[data-home-mode="play"] .header-quick-controls {
@@ -1274,7 +1274,7 @@ html[data-home-mode="play"] .header-quick-controls > * {
   display: none !important;
 }
 
-html[data-home-mode="play"] #play-style-toggle {
+html[data-home-mode="play"] #new-game-btn {
   display: inline-flex !important;
 }
 
@@ -1282,12 +1282,12 @@ html[data-home-mode="play"] .header-icon-controls > * {
   display: none !important;
 }
 
-html[data-home-mode="play"] #play-tools-btn {
+html[data-home-mode="play"] #settings-btn {
   display: inline-flex !important;
 }
 
 html[data-home-mode="play"] #play-tools-btn.hidden {
-  display: inline-flex !important;
+  display: none !important;
 }
 
 .focus-bar {
