@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en" data-page="precision-play">
+<html lang="en" data-page="word-connections">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="./">
-  <title>Cornerstone MTSS - Precision Play</title>
+  <title>Cornerstone MTSS - Word Connections</title>
   <script src="./config.js?v=20260301y"></script>
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260301y">
@@ -16,17 +16,64 @@
   <main class="pp-shell" id="pp-shell">
     <header class="pp-top">
       <div>
-        <h1 class="pp-title">Precision Play</h1>
-        <p class="pp-sub">Help your team guess the word without using these words.</p>
+        <h1 class="pp-title">Word Connections</h1>
+        <p class="pp-sub">Structured literacy practice for vocabulary, morphology, and word relationships.</p>
+        <p id="pp-alignment-badge" class="pp-alignment-badge">Aligned to Literacy Focus: Vocabulary Development</p>
       </div>
-      <a class="pp-link" href="./teacher-dashboard.html">Back to Teacher Dashboard</a>
+      <div class="pp-top-actions">
+        <button id="pp-teacher-toggle" class="pp-teacher-btn" type="button" aria-expanded="false" aria-controls="pp-teacher-panel" aria-label="Open teacher controls">👩‍🏫 Teacher</button>
+        <a class="pp-link" href="./teacher-dashboard.html">Back to Teacher Dashboard</a>
+      </div>
     </header>
 
     <section class="pp-stage" aria-live="polite">
+      <section id="pp-teacher-panel" class="pp-teacher-panel pp-hidden" aria-label="Teacher controls">
+        <div class="pp-teacher-grid">
+          <div class="pp-field">
+            <label for="pp-mode">Mode</label>
+            <select id="pp-mode-select" class="pp-select">
+              <option value="FUN">FUN</option>
+              <option value="TARGETED" selected>TARGETED</option>
+              <option value="INTERVENTION">INTERVENTION</option>
+            </select>
+          </div>
+          <div class="pp-field">
+            <label for="pp-skill-node">Skill Focus</label>
+            <input id="pp-skill-node" class="pp-input" type="text" value="LIT.VOC.ACAD" placeholder="LIT.MOR.ROOT">
+            <label class="pp-lock" for="pp-lock-skill-node">
+              <input id="pp-lock-skill-node" type="checkbox">
+              Lock to skill node
+            </label>
+          </div>
+          <div class="pp-field">
+            <label for="pp-teacher-word">Add custom target word</label>
+            <input id="pp-teacher-word" class="pp-input" type="text" placeholder="morpheme">
+          </div>
+          <div class="pp-field">
+            <label for="pp-teacher-forbidden">Forbidden words (comma-separated)</label>
+            <input id="pp-teacher-forbidden" class="pp-input" type="text" placeholder="prefix, suffix, part, root">
+          </div>
+          <div class="pp-field">
+            <label for="pp-upload-list">Upload word list</label>
+            <input id="pp-upload-list" class="pp-input" type="file" accept=".json,.csv,.txt">
+          </div>
+          <div class="pp-field">
+            <label class="pp-lock" for="pp-timer-enabled">
+              <input id="pp-timer-enabled" type="checkbox" checked>
+              Timer enabled
+            </label>
+            <div class="pp-actions-inline">
+              <button id="pp-add-custom" class="pp-btn" type="button">Add Custom Word</button>
+              <button id="pp-shuffle-lesson" class="pp-btn" type="button">Shuffle Lesson Set</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="pp-setup" class="pp-setup">
         <div>
           <h2 class="h3" style="margin:0 0 6px;">Session Setup</h2>
-          <p class="pp-sub" style="margin:0;">Fun classroom play with structured intervention layers.</p>
+          <p class="pp-sub" style="margin:0;">Choose FUN, TARGETED, or INTERVENTION mode based on literacy focus.</p>
         </div>
 
         <div class="pp-grid">
@@ -41,7 +88,7 @@
           </div>
 
           <div class="pp-field">
-            <label for="pp-energy">Energy Level</label>
+            <label for="pp-energy">Timer Profile</label>
             <select id="pp-energy" class="pp-select">
               <option value="low">Low</option>
               <option value="medium" selected>Medium</option>
@@ -50,11 +97,11 @@
           </div>
 
           <div class="pp-field">
-            <label for="pp-challenge">Challenge Layer</label>
+            <label for="pp-challenge">Instructional Mode</label>
             <select id="pp-challenge" class="pp-select">
-              <option value="classic">Classic</option>
-              <option value="guided" selected>Guided</option>
-              <option value="precision">Precision</option>
+              <option value="FUN">FUN</option>
+              <option value="TARGETED" selected>TARGETED</option>
+              <option value="INTERVENTION">INTERVENTION</option>
             </select>
             <button id="pp-advanced-link" class="pp-advanced-link pp-hidden" type="button">Advanced ▸</button>
             <div id="pp-advanced" class="pp-advanced" hidden>
@@ -88,13 +135,14 @@
           </div>
         </div>
 
-        <button id="pp-start" class="pp-start" type="button">Start Precision Play</button>
+        <button id="pp-start" class="pp-start" type="button">Start Word Connections</button>
       </section>
 
       <section id="pp-game" class="pp-game pp-hidden">
         <section class="pp-center">
           <article class="pp-target">
             <h2 id="pp-target-word">Target</h2>
+            <p id="pp-instructional-focus" class="pp-note">Instructional focus: Vocabulary depth</p>
           </article>
 
           <article class="pp-forbidden">
@@ -142,16 +190,31 @@
             <p id="pp-round" class="pp-stat-value">1</p>
           </article>
           <article class="pp-stat">
-            <p class="pp-stat-label">Layer</p>
-            <p id="pp-mode" class="pp-stat-value">GUIDED</p>
+            <p class="pp-stat-label">Mode</p>
+            <p id="pp-mode" class="pp-stat-value">TARGETED</p>
+          </article>
+          <article class="pp-stat">
+            <p class="pp-stat-label">Practice Type</p>
+            <p id="pp-practice-type" class="pp-stat-value">Word Connections</p>
           </article>
         </aside>
+      </section>
+
+      <section id="pp-summary" class="pp-summary pp-hidden" aria-live="polite">
+        <h2 class="h3">Round Summary</h2>
+        <p id="pp-summary-text" class="pp-note">Session summary will appear here.</p>
+        <p id="pp-summary-suggested" class="pp-note">Suggested next round: Targeted morphology practice.</p>
+        <div class="pp-actions-inline">
+          <button id="pp-summary-next" class="pp-btn primary" type="button">Start Next Round</button>
+          <a class="pp-btn" href="./teacher-dashboard.html">Return to Literacy Dashboard</a>
+        </div>
       </section>
     </section>
   </main>
 
   <script src="./js/nav-shell.js?v=20260301y"></script>
-  <script src="./precision-play.js?v=20260302a"></script>
+  <script src="./js/literacy/word-connections-engine.js?v=20260304a"></script>
+  <script src="./precision-play.js?v=20260304a"></script>
   <script src="./build-stamp.js?v=20260301y"></script>
   <script src="./js/build-badge.js?v=20260301y"></script>
   <script>

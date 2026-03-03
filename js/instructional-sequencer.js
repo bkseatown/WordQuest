@@ -11,6 +11,7 @@
     {
       rank: 1,
       module: 'WordQuest',
+      practiceMode: 'Word Quest',
       title: 'Foundational Decoding Warm-up',
       skillId: 'LIT.DEC.PHG.CVC',
       durationMin: 7,
@@ -19,6 +20,7 @@
     {
       rank: 2,
       module: 'ReadingLab',
+      practiceMode: 'Fluency Builder',
       title: 'Fluency Reinforcement Sprint',
       skillId: 'LIT.FLU.ACC',
       durationMin: 6,
@@ -27,6 +29,7 @@
     {
       rank: 3,
       module: 'WritingStudio',
+      practiceMode: 'Guided Practice',
       title: 'Sentence Clarity Check',
       skillId: 'LIT.WRITE.SENT',
       durationMin: 5,
@@ -36,6 +39,7 @@
 
   var MODULE_ROUTE = Object.freeze({
     WordQuest: 'word-quest.html?play=1',
+    WordConnections: 'precision-play.html',
     PrecisionPlay: 'precision-play.html',
     ReadingLab: 'reading-lab.html',
     WritingStudio: 'writing-studio.html',
@@ -209,8 +213,24 @@
     return sorted[0] || null;
   }
 
-  function moduleForSkill(domain, band, trend) {
+  function isWordConnectionsEligible(skillId) {
+    var sid = String(skillId || '').toUpperCase();
+    if (!sid) return false;
+    return (
+      sid.indexOf('VOC') >= 0 ||
+      sid.indexOf('MOR') >= 0 ||
+      sid.indexOf('LANG') >= 0 ||
+      sid.indexOf('SEM') >= 0 ||
+      sid.indexOf('REL') >= 0 ||
+      sid.indexOf('ACA') >= 0
+    );
+  }
+
+  function moduleForSkill(domain, band, trend, skillId) {
     if (domain === 'literacy') {
+      if (isWordConnectionsEligible(skillId) && (band === 'DEVELOPING' || trend === 'HOLD' || trend === 'INTENSIFY')) {
+        return 'WordConnections';
+      }
       if (band === 'EMERGING' || band === 'NOT_STARTED') return 'WordQuest';
       if (band === 'DEVELOPING') return 'PrecisionPlay';
       return trend === 'FADE' ? 'ReadingLab' : 'WordQuest';
@@ -230,6 +250,7 @@
 
   function titleForOption(domain, module, rank, trend, band) {
     if (domain === 'literacy') {
+      if (module === 'WordConnections') return rank === 1 ? 'Academic Vocabulary Connections' : 'Word Relationship Reinforcement';
       if (module === 'WordQuest') return rank === 1 ? 'Targeted Decoding Reset' : 'Structured Decoding Repetition';
       if (module === 'PrecisionPlay') return rank === 1 ? 'Academic Language Precision Round' : 'Vocabulary-to-Meaning Reinforcement';
       if (module === 'ReadingLab') return trend === 'FADE' ? 'Fluency Generalization Sprint' : 'Fluency Stability Check';
@@ -273,6 +294,9 @@
     if (domain === 'writing') {
       return 'Focused writing rehearsal supports clarity and organization with manageable cognitive load.';
     }
+    if (args.module === 'WordConnections') {
+      return 'Vocabulary, morphology, and word relationships are priority signals; Word Connections provides structured language rehearsal tied to the current literacy focus.';
+    }
     if (domain === 'math') {
       return 'Short structured math language practice helps maintain conceptual accuracy and response confidence.';
     }
@@ -295,6 +319,14 @@
     return 5;
   }
 
+  function practiceModeForModule(module) {
+    var m = String(module || '');
+    if (m === 'WordQuest') return 'Word Quest';
+    if (m === 'WordConnections' || m === 'PrecisionPlay') return 'Word Connections';
+    if (m === 'ReadingLab') return 'Fluency Builder';
+    return 'Guided Practice';
+  }
+
   function uniquePush(out, item) {
     if (!item) return;
     var key = String(item.module || '') + '|' + String(item.skillId || '') + '|' + String(item.title || '');
@@ -310,41 +342,44 @@
     var trend = primary.trend || 'HOLD';
     var domain = primary.domain || 'literacy';
 
-    var primaryModule = moduleForSkill(domain, primary.band, trend);
+    var primaryModule = moduleForSkill(domain, primary.band, trend, primary.skillId);
     uniquePush(options, {
       rank: 1,
       module: primaryModule,
+      practiceMode: practiceModeForModule(primaryModule),
       title: titleForOption(domain, primaryModule, 1, trend, primary.band),
       skillId: primary.skillId,
       durationMin: durationForOption(trend, tierLevel, 1),
-      reason: reasonForOption({ trend: trend, tierLevel: tierLevel, domain: domain, rank: 1 }),
-      href: MODULE_ROUTE[primaryModule] || 'word-quest.html?play=1'
+      reason: reasonForOption({ trend: trend, tierLevel: tierLevel, domain: domain, rank: 1, module: primaryModule }),
+      href: (MODULE_ROUTE[primaryModule] || 'word-quest.html?play=1') + (primaryModule === 'WordConnections' ? ('?mode=TARGETED&skill=' + encodeURIComponent(primary.skillId || 'literacy.vocabulary')) : '')
     });
 
     var secondDomain = trend === 'HOLD'
       ? (domain === 'literacy' ? 'writing' : 'literacy')
       : domain;
-    var secondModule = moduleForSkill(secondDomain, 'DEVELOPING', trend === 'FADE' ? 'HOLD' : trend);
+    var secondModule = moduleForSkill(secondDomain, 'DEVELOPING', trend === 'FADE' ? 'HOLD' : trend, primary.skillId);
     uniquePush(options, {
       rank: 2,
       module: secondModule,
+      practiceMode: practiceModeForModule(secondModule),
       title: titleForOption(secondDomain, secondModule, 2, trend, 'DEVELOPING'),
       skillId: primary.skillId,
       durationMin: durationForOption(trend, tierLevel, 2),
-      reason: reasonForOption({ trend: trend, tierLevel: tierLevel, domain: secondDomain, rank: 2 }),
-      href: MODULE_ROUTE[secondModule] || 'word-quest.html?play=1'
+      reason: reasonForOption({ trend: trend, tierLevel: tierLevel, domain: secondDomain, rank: 2, module: secondModule }),
+      href: (MODULE_ROUTE[secondModule] || 'word-quest.html?play=1') + (secondModule === 'WordConnections' ? ('?mode=TARGETED&skill=' + encodeURIComponent(primary.skillId || 'literacy.vocabulary')) : '')
     });
 
     var thirdDomain = tierLevel >= 3 ? domain : (domain === 'math' ? 'literacy' : 'math');
-    var thirdModule = moduleForSkill(thirdDomain, 'SECURE', trend === 'INTENSIFY' ? 'HOLD' : trend);
+    var thirdModule = moduleForSkill(thirdDomain, 'SECURE', trend === 'INTENSIFY' ? 'HOLD' : trend, primary.skillId);
     uniquePush(options, {
       rank: 3,
       module: thirdModule,
+      practiceMode: practiceModeForModule(thirdModule),
       title: titleForOption(thirdDomain, thirdModule, 3, trend, 'SECURE'),
       skillId: primary.skillId,
       durationMin: durationForOption(trend, tierLevel, 3),
-      reason: reasonForOption({ trend: trend, tierLevel: tierLevel, domain: thirdDomain, rank: 3 }),
-      href: MODULE_ROUTE[thirdModule] || 'word-quest.html?play=1'
+      reason: reasonForOption({ trend: trend, tierLevel: tierLevel, domain: thirdDomain, rank: 3, module: thirdModule }),
+      href: (MODULE_ROUTE[thirdModule] || 'word-quest.html?play=1') + (thirdModule === 'WordConnections' ? ('?mode=TARGETED&skill=' + encodeURIComponent(primary.skillId || 'literacy.vocabulary')) : '')
     });
 
     var fallbackIdx = 0;
@@ -353,6 +388,7 @@
       uniquePush(options, {
         rank: options.rows.length + 1,
         module: fallback.module,
+        practiceMode: fallback.practiceMode || practiceModeForModule(fallback.module),
         title: fallback.title,
         skillId: fallback.skillId,
         durationMin: fallback.durationMin,
@@ -366,6 +402,7 @@
       return {
         rank: index + 1,
         module: row.module,
+        practiceMode: row.practiceMode || practiceModeForModule(row.module),
         title: row.title,
         skillId: row.skillId,
         durationMin: clamp(row.durationMin, 5, 10),

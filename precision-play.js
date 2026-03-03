@@ -1,71 +1,127 @@
 (function () {
-  var LOG_KEY = 'cs.precisionPlay.log.v1';
-  var EXPRESSIONS = ['SPEAK', 'ACT', 'DRAW'];
-  var ENERGY = {
-    low: { seconds: 70, tempo: 'calm' },
-    medium: { seconds: 55, tempo: 'standard' },
-    high: { seconds: 42, tempo: 'fast' }
+  "use strict";
+
+  var ENGAGEMENT_KEY = "cs.wordConnections.engagement.v1";
+  var EXPRESSIONS = ["SPEAK", "ACT", "DRAW"];
+  var MODE_DEFAULTS = {
+    FUN: { energy: "low", timerMin: 60, timerMax: 90, strictScoring: false },
+    TARGETED: { energy: "medium", timerMin: 45, timerMax: 60, strictScoring: true },
+    INTERVENTION: { energy: "medium", timerMin: 0, timerMax: 45, strictScoring: true }
   };
 
-  var setupEl = document.getElementById('pp-setup');
-  var gameEl = document.getElementById('pp-game');
-  var startBtn = document.getElementById('pp-start');
-  var gradeBandEl = document.getElementById('pp-grade-band');
-  var energyEl = document.getElementById('pp-energy');
-  var challengeEl = document.getElementById('pp-challenge');
-  var expressionModeEl = document.getElementById('pp-expression-mode');
-  var lockExpressionEl = document.getElementById('pp-expression-lock');
-  var advancedLinkEl = document.getElementById('pp-advanced-link');
-  var advancedPanelEl = document.getElementById('pp-advanced');
-  var revealTimingEl = document.getElementById('pp-reveal-timing');
-  var logEnabledEl = document.getElementById('pp-log-enabled');
+  var setupEl = document.getElementById("pp-setup");
+  var gameEl = document.getElementById("pp-game");
+  var summaryEl = document.getElementById("pp-summary");
+  var startBtn = document.getElementById("pp-start");
+  var gradeBandEl = document.getElementById("pp-grade-band");
+  var energyEl = document.getElementById("pp-energy");
+  var challengeEl = document.getElementById("pp-challenge");
+  var expressionModeEl = document.getElementById("pp-expression-mode");
+  var lockExpressionEl = document.getElementById("pp-expression-lock");
+  var advancedLinkEl = document.getElementById("pp-advanced-link");
+  var advancedPanelEl = document.getElementById("pp-advanced");
+  var revealTimingEl = document.getElementById("pp-reveal-timing");
 
-  var targetEl = document.getElementById('pp-target-word');
-  var forbiddenEl = document.getElementById('pp-forbidden-list');
-  var requiredRowEl = document.getElementById('pp-required-row');
-  var requiredTextEl = document.getElementById('pp-required-text');
-  var requiredOkRowEl = document.getElementById('pp-required-ok-row');
-  var requiredOkEl = document.getElementById('pp-required-ok');
-  var cueEl = document.getElementById('pp-expression-cue');
-  var cueNoteEl = document.getElementById('pp-expression-note');
-  var timerEl = document.getElementById('pp-timer');
-  var scoreEl = document.getElementById('pp-score');
-  var roundEl = document.getElementById('pp-round');
-  var modeEl = document.getElementById('pp-mode');
-  var guessedBtn = document.getElementById('pp-guessed');
-  var skipBtn = document.getElementById('pp-skip');
-  var nextBtn = document.getElementById('pp-next');
-  var endBtn = document.getElementById('pp-end');
-  var statusEl = document.getElementById('pp-status');
+  var teacherToggleEl = document.getElementById("pp-teacher-toggle");
+  var teacherPanelEl = document.getElementById("pp-teacher-panel");
+  var teacherModeEl = document.getElementById("pp-mode-select");
+  var teacherSkillNodeEl = document.getElementById("pp-skill-node");
+  var lockSkillNodeEl = document.getElementById("pp-lock-skill-node");
+  var timerEnabledEl = document.getElementById("pp-timer-enabled");
+  var addCustomBtn = document.getElementById("pp-add-custom");
+  var customWordEl = document.getElementById("pp-teacher-word");
+  var customForbiddenEl = document.getElementById("pp-teacher-forbidden");
+  var uploadListEl = document.getElementById("pp-upload-list");
+  var shuffleLessonBtn = document.getElementById("pp-shuffle-lesson");
+
+  var targetEl = document.getElementById("pp-target-word");
+  var forbiddenEl = document.getElementById("pp-forbidden-list");
+  var requiredRowEl = document.getElementById("pp-required-row");
+  var requiredTextEl = document.getElementById("pp-required-text");
+  var requiredOkRowEl = document.getElementById("pp-required-ok-row");
+  var requiredOkEl = document.getElementById("pp-required-ok");
+  var cueEl = document.getElementById("pp-expression-cue");
+  var cueNoteEl = document.getElementById("pp-expression-note");
+  var timerEl = document.getElementById("pp-timer");
+  var scoreEl = document.getElementById("pp-score");
+  var roundEl = document.getElementById("pp-round");
+  var modeEl = document.getElementById("pp-mode");
+  var practiceTypeEl = document.getElementById("pp-practice-type");
+  var guessedBtn = document.getElementById("pp-guessed");
+  var skipBtn = document.getElementById("pp-skip");
+  var nextBtn = document.getElementById("pp-next");
+  var endBtn = document.getElementById("pp-end");
+  var statusEl = document.getElementById("pp-status");
+  var alignmentBadgeEl = document.getElementById("pp-alignment-badge");
+  var instructionalFocusEl = document.getElementById("pp-instructional-focus");
+  var summaryTextEl = document.getElementById("pp-summary-text");
+  var summarySuggestedEl = document.getElementById("pp-summary-suggested");
+  var summaryNextEl = document.getElementById("pp-summary-next");
 
   var state = {
     cards: [],
     deck: [],
     round: 0,
+    successfulRounds: 0,
+    attempts: 0,
     score: 0,
     index: -1,
     card: null,
     expressionIndex: 0,
-    expression: 'MIXED',
+    expression: "MIXED",
     timerSec: 0,
     timerId: 0,
     startedAtMs: 0,
     canAdvance: false,
     config: null,
-    logs: []
+    engagement: []
   };
 
-  function getStudentId() {
+  function getParam(name, fallback) {
     try {
-      return new URLSearchParams(window.location.search).get('student') || '';
+      var params = new URLSearchParams(window.location.search || "");
+      var value = String(params.get(name) || "").trim();
+      return value || String(fallback || "");
     } catch (_e) {
-      return '';
+      return String(fallback || "");
     }
   }
 
-  function readLogs() {
+  function normalizeGradeBand(value) {
+    var v = String(value || "").toUpperCase();
+    if (v === "K-2" || v === "3-5" || v === "6-8" || v === "9-12") return v;
+    if (v.indexOf("K") >= 0 || v.indexOf("2") >= 0) return "K-2";
+    if (v.indexOf("3") >= 0 || v.indexOf("5") >= 0) return "3-5";
+    if (v.indexOf("6") >= 0 || v.indexOf("8") >= 0) return "6-8";
+    return "9-12";
+  }
+
+  function normalizeMode(value) {
+    var m = String(value || "").toUpperCase();
+    if (m === "TARGETED" || m === "INTERVENTION") return m;
+    return "FUN";
+  }
+
+  function deriveModeFromChallenge() {
+    return normalizeMode(challengeEl && challengeEl.value || "TARGETED");
+  }
+
+  function mapSkillName(skillNode) {
+    var node = String(skillNode || "").toUpperCase();
+    if (node.indexOf("MOR") >= 0) return "Morphology";
+    if (node.indexOf("VOC") >= 0) return "Vocabulary Depth";
+    if (node.indexOf("LANG") >= 0) return "Academic Language";
+    if (node.indexOf("REL") >= 0 || node.indexOf("SEM") >= 0) return "Word Relationships";
+    return "Literacy Focus";
+  }
+
+  function getStudentId() {
+    return getParam("student", "");
+  }
+
+  function readEngagement() {
     try {
-      var raw = localStorage.getItem(LOG_KEY);
+      var raw = localStorage.getItem(ENGAGEMENT_KEY);
       var parsed = raw ? JSON.parse(raw) : [];
       return Array.isArray(parsed) ? parsed : [];
     } catch (_e) {
@@ -73,9 +129,9 @@
     }
   }
 
-  function writeLogs(items) {
+  function writeEngagement(items) {
     try {
-      localStorage.setItem(LOG_KEY, JSON.stringify(items));
+      localStorage.setItem(ENGAGEMENT_KEY, JSON.stringify(items));
     } catch (_e) {}
   }
 
@@ -90,57 +146,85 @@
     return next;
   }
 
-  function challengeForbiddenCount(mode) {
-    if (mode === 'classic') return 4;
-    if (mode === 'guided') return 5;
-    return 6;
-  }
-
   function expressionForRound(mode, lock) {
-    if (lock) return String(mode || 'MIXED').toUpperCase();
-    if (String(mode || '').toLowerCase() !== 'mixed') return String(mode || 'SPEAK').toUpperCase();
+    if (lock) return String(mode || "MIXED").toUpperCase();
+    if (String(mode || "").toLowerCase() !== "mixed") return String(mode || "SPEAK").toUpperCase();
     var pick = EXPRESSIONS[state.expressionIndex % EXPRESSIONS.length];
     state.expressionIndex += 1;
     return pick;
   }
 
   function ensureAdvancedVisibility() {
-    var isPrecision = String(challengeEl.value || '') === 'precision';
-    advancedLinkEl.classList.toggle('pp-hidden', !isPrecision);
-    if (!isPrecision) advancedPanelEl.hidden = true;
+    var isIntervention = deriveModeFromChallenge() === "INTERVENTION";
+    advancedLinkEl.classList.toggle("pp-hidden", !isIntervention);
+    if (!isIntervention) advancedPanelEl.hidden = true;
+  }
+
+  function parseUploadedWordList(raw, fallbackGrade, fallbackSkill) {
+    var text = String(raw || "").trim();
+    if (!text) return [];
+    try {
+      var parsed = JSON.parse(text);
+      var rows = Array.isArray(parsed) ? parsed : (parsed && Array.isArray(parsed.cards) ? parsed.cards : []);
+      return rows.map(function (row, idx) {
+        return {
+          id: String(row.id || ("uploaded-" + Date.now() + "-" + idx)),
+          gradeBand: normalizeGradeBand(row.gradeBand || fallbackGrade),
+          domain: "Literacy",
+          target: String(row.target || row.targetWord || "").trim(),
+          forbidden: Array.isArray(row.forbidden)
+            ? row.forbidden.map(function (w) { return String(w || "").trim(); }).filter(Boolean)
+            : String(row.forbidden || "").split(",").map(function (w) { return w.trim(); }).filter(Boolean),
+          requiredMove: String(row.requiredMove || "Use one sentence frame tied to the target word.").trim(),
+          skillTag: String(row.skillTag || fallbackSkill || "LIT.VOC.ACAD")
+        };
+      }).filter(function (row) { return row.target && row.forbidden.length; });
+    } catch (_e) {
+      return text.split(/\r?\n/).map(function (line, idx) {
+        var parts = String(line || "").split(",").map(function (p) { return p.trim(); });
+        if (parts.length < 2) return null;
+        return {
+          id: "uploaded-csv-" + Date.now() + "-" + idx,
+          gradeBand: normalizeGradeBand(fallbackGrade),
+          domain: "Literacy",
+          target: parts[0],
+          forbidden: parts.slice(1, 5),
+          requiredMove: "Use one sentence frame tied to the target word.",
+          skillTag: String(fallbackSkill || "LIT.VOC.ACAD")
+        };
+      }).filter(Boolean);
+    }
   }
 
   function buildDeck() {
-    var gradeBand = gradeBandEl.value;
-    var match = state.cards.filter(function (card) { return card.gradeBand === gradeBand; });
-    state.deck = shuffle(match);
-  }
+    var gradeBand = normalizeGradeBand(gradeBandEl.value);
+    var mode = deriveModeFromChallenge();
+    var lockedSkill = !!(lockSkillNodeEl && lockSkillNodeEl.checked);
+    var skillNode = String(teacherSkillNodeEl && teacherSkillNodeEl.value || state.config && state.config.skillNode || "LIT.VOC.ACAD");
 
-  function startTimer() {
-    clearInterval(state.timerId);
-    var energy = ENERGY[state.config.energy] || ENERGY.medium;
-    state.timerSec = energy.seconds;
-    timerEl.textContent = state.timerSec + 's';
-    state.startedAtMs = Date.now();
-    state.timerId = setInterval(function () {
-      state.timerSec -= 1;
-      timerEl.textContent = Math.max(0, state.timerSec) + 's';
-      if (state.timerSec <= 0) {
-        clearInterval(state.timerId);
-        state.timerId = 0;
-        finishRound(false);
-      }
-    }, 1000);
-  }
+    var rows = state.cards.filter(function (card) {
+      if (!card || String(card.domain || "").toLowerCase().indexOf("literacy") < 0) return false;
+      if (normalizeGradeBand(card.gradeBand) !== gradeBand) return false;
+      if (lockedSkill && String(card.skillTag || "").toLowerCase().indexOf(skillNode.toLowerCase()) < 0) return false;
+      if (mode === "INTERVENTION" && String(card.skillTag || "").toLowerCase().indexOf(skillNode.toLowerCase()) < 0) return false;
+      return true;
+    });
 
-  function currentRoundNumber() {
-    return state.round + 1;
+    if (!rows.length) {
+      rows = state.cards.filter(function (card) {
+        return card && normalizeGradeBand(card.gradeBand) === gradeBand;
+      });
+    }
+    state.deck = shuffle(rows);
+    state.index = -1;
   }
 
   function updateScoreboard() {
-    scoreEl.textContent = String(state.score);
-    roundEl.textContent = String(currentRoundNumber());
-    modeEl.textContent = state.config.challenge.toUpperCase();
+    var mode = deriveModeFromChallenge();
+    scoreEl.textContent = mode === "FUN" ? String(state.successfulRounds) : String(state.score);
+    roundEl.textContent = String(state.round + 1);
+    modeEl.textContent = mode;
+    if (practiceTypeEl) practiceTypeEl.textContent = "Word Connections";
   }
 
   function setStatus(text) {
@@ -157,79 +241,122 @@
     return state.deck[state.index] || null;
   }
 
-  function renderCard(card) {
-    state.card = card;
-    targetEl.textContent = card.target;
-    targetEl.classList.remove('pp-reveal');
-    void targetEl.offsetWidth;
-    targetEl.classList.add('pp-reveal');
-
-    var forbiddenCount = challengeForbiddenCount(state.config.challenge);
-    var words = (card.forbidden || []).slice(0, forbiddenCount);
-    forbiddenEl.innerHTML = words.map(function (w) {
-      return '<span class="pp-pill">' + escapeHtml(w) + '</span>';
-    }).join('');
-
-    var needsMove = state.config.challenge !== 'classic';
-    requiredRowEl.classList.toggle('pp-hidden', !needsMove);
-    requiredOkRowEl.classList.toggle('pp-hidden', !needsMove);
-    requiredTextEl.textContent = card.requiredMove || 'Use one complete sentence frame.';
-    requiredOkEl.checked = false;
-
-    var shouldShowMove = needsMove;
-    if (state.config.challenge === 'precision') {
-      if (state.config.revealTiming === 'teacher') {
-        shouldShowMove = false;
-      } else if (state.config.revealTiming === 'after') {
-        shouldShowMove = false;
-        setTimeout(function () {
-          if (!state.card || state.card.id !== card.id) return;
-          requiredRowEl.classList.remove('pp-hidden');
-        }, 1200);
+  function startTimer(seconds) {
+    clearInterval(state.timerId);
+    state.timerSec = Math.max(0, Number(seconds || 0));
+    timerEl.textContent = state.timerSec > 0 ? (state.timerSec + "s") : "Off";
+    state.startedAtMs = Date.now();
+    if (state.timerSec <= 0 || !(timerEnabledEl && timerEnabledEl.checked)) return;
+    state.timerId = setInterval(function () {
+      state.timerSec -= 1;
+      timerEl.textContent = Math.max(0, state.timerSec) + "s";
+      if (state.timerSec <= 0) {
+        clearInterval(state.timerId);
+        state.timerId = 0;
+        finishRound(false);
       }
-    }
-    if (!shouldShowMove) requiredRowEl.classList.add('pp-hidden');
-
-    cueEl.textContent = state.expression;
-    cueEl.className = 'pp-cue ' + String(state.expression || '').toLowerCase();
-    cueNoteEl.textContent = state.config.lockExpression
-      ? 'Expression mode locked for consistency.'
-      : ('Mixed sequence: ' + EXPRESSIONS.join(' → '));
-
-    state.canAdvance = true;
-    setStatus('Round live. Use the core rule and avoid forbidden words.');
+    }, 1000);
   }
 
   function scoreRound(success, requiredMet, elapsedSec) {
+    var mode = deriveModeFromChallenge();
     if (!success) return 0;
-    var mode = state.config.challenge;
-    if (mode === 'classic') {
-      var speedBonus = elapsedSec <= 20 ? 1 : 0;
-      return 1 + speedBonus;
+    if (mode === "FUN") return 0;
+    if (mode === "TARGETED") {
+      if (!requiredMet) return 1;
+      return elapsedSec <= 20 ? 3 : 2;
     }
-    if (mode === 'guided') {
-      return requiredMet ? 2 : 1;
-    }
-    var base = requiredMet ? 1 : 0;
-    var speed = elapsedSec <= 18 ? 0.25 : elapsedSec <= 28 ? 0.1 : 0;
-    return Math.round((base + speed) * 100) / 100;
+    if (!requiredMet) return 1;
+    return 2;
   }
 
-  function logRound(success, requiredMet, elapsedSec) {
-    if (!state.config.logging) return;
-    var logItem = {
+  function logEngagement(success, elapsedSec) {
+    var mode = deriveModeFromChallenge();
+    state.engagement.push({
       ts: new Date().toISOString(),
-      studentId: getStudentId() || '',
-      target: state.card && state.card.target || '',
-      gradeBand: state.config.gradeBand,
-      expressionType: state.expression,
-      challengeLayer: state.config.challenge,
-      requiredMoveSuccess: !!requiredMet,
-      timeToSuccessSec: Number(elapsedSec || 0),
-      success: !!success
+      studentId: getStudentId(),
+      attempts: 1,
+      successfulRounds: success ? 1 : 0,
+      timeToCompletionSec: Number(elapsedSec || 0),
+      modeUsed: mode
+    });
+    writeEngagement(state.engagement.slice(-500));
+  }
+
+  function modeForEngine() {
+    return deriveModeFromChallenge();
+  }
+
+  function currentTier() {
+    return getParam("tier", "Tier 2");
+  }
+
+  function buildRoundFromCard(card) {
+    var engine = window.CSWordConnectionsEngine;
+    var skillNode = String((teacherSkillNodeEl && teacherSkillNodeEl.value) || (card && card.skillTag) || getParam("skill", "LIT.VOC.ACAD"));
+    var mode = modeForEngine();
+    var payload = {
+      skillNode: skillNode,
+      gradeBand: normalizeGradeBand(gradeBandEl.value),
+      tierLevel: currentTier(),
+      mode: mode,
+      selectedCard: {
+        targetWord: card && card.target,
+        target: card && card.target,
+        forbidden: card && card.forbidden,
+        scaffolds: card && card.scaffolds,
+        requiredMove: card && card.requiredMove,
+        skillTag: card && card.skillTag
+      }
     };
-    state.logs.push(logItem);
-    writeLogs(state.logs);
+    return engine && typeof engine.generateWordConnectionsRound === "function"
+      ? engine.generateWordConnectionsRound(payload)
+      : {
+          targetWord: card && card.target || "target",
+          forbiddenWords: card && card.forbidden || [],
+          scaffolds: ["Use a complete sentence."],
+          difficultyLevel: mode,
+          timerSeconds: mode === "FUN" ? 75 : (mode === "TARGETED" ? 55 : 45),
+          instructionalFocus: "Vocabulary and word relationships"
+        };
+  }
+
+  function renderRound(round, card) {
+    state.card = card;
+    targetEl.textContent = round.targetWord;
+    targetEl.classList.remove("pp-reveal");
+    void targetEl.offsetWidth;
+    targetEl.classList.add("pp-reveal");
+
+    forbiddenEl.innerHTML = (round.forbiddenWords || []).map(function (w) {
+      return '<span class="pp-pill">' + escapeHtml(w) + "</span>";
+    }).join("");
+
+    requiredRowEl.classList.toggle("pp-hidden", modeForEngine() === "FUN");
+    requiredOkRowEl.classList.toggle("pp-hidden", modeForEngine() === "FUN");
+    requiredTextEl.textContent = String(card && card.requiredMove || round.scaffolds && round.scaffolds[0] || "Use one complete sentence frame.");
+    requiredOkEl.checked = false;
+
+    if (instructionalFocusEl) {
+      instructionalFocusEl.textContent = "Instructional focus: " + String(round.instructionalFocus || "Vocabulary and language connections");
+    }
+
+    if (alignmentBadgeEl) {
+      alignmentBadgeEl.textContent = "Aligned to Literacy Focus: " + mapSkillName(teacherSkillNodeEl && teacherSkillNodeEl.value || card && card.skillTag || "LIT.VOC.ACAD");
+    }
+
+    var expression = expressionForRound(expressionModeEl.value, !!(lockExpressionEl && lockExpressionEl.checked));
+    state.expression = expression;
+    cueEl.textContent = expression;
+    cueEl.className = "pp-cue " + expression.toLowerCase();
+    cueNoteEl.textContent = modeForEngine() === "FUN"
+      ? "Team play is allowed in FUN mode."
+      : "Use the instructional scaffold and avoid forbidden words.";
+
+    var timerSeconds = timerEnabledEl && timerEnabledEl.checked ? Number(round.timerSeconds || 0) : 0;
+    startTimer(timerSeconds);
+    state.canAdvance = true;
+    setStatus("Round live. Keep explanations aligned to literacy focus.");
   }
 
   function finishRound(success) {
@@ -239,81 +366,142 @@
     state.timerId = 0;
 
     var elapsedSec = Math.max(1, Math.round((Date.now() - state.startedAtMs) / 1000));
-    var requiredMet = !!requiredOkEl.checked || state.config.challenge === 'classic';
+    var requiredMet = !!requiredOkEl.checked || modeForEngine() === "FUN";
     var gained = scoreRound(success, requiredMet, elapsedSec);
+
+    state.attempts += 1;
+    if (success) state.successfulRounds += 1;
     state.score += gained;
+    logEngagement(success, elapsedSec);
     updateScoreboard();
 
-    logRound(success, requiredMet, elapsedSec);
+    if (!summaryEl.classList.contains("pp-hidden")) summaryEl.classList.add("pp-hidden");
 
-    if (!success) {
-      setStatus('Time up / skipped. No point this round.');
-    } else if (state.config.challenge !== 'classic' && !requiredMet) {
-      setStatus('Correct guess, but required move was not met.');
+    if (success && requiredMet) {
+      setStatus("Round complete. Ready for next round.");
+    } else if (success && !requiredMet) {
+      setStatus("Correct response, but scaffold requirement not yet met.");
     } else {
-      setStatus('Round scored +' + gained + '. Ready for next round.');
+      setStatus("Round ended. Try another focused attempt.");
     }
+
+    summaryTextEl.textContent =
+      "Attempts: " + state.attempts +
+      " | Successful rounds: " + state.successfulRounds +
+      " | Time this round: " + elapsedSec + "s" +
+      " | Mode used: " + modeForEngine();
+    summarySuggestedEl.textContent = modeForEngine() === "FUN"
+      ? "Suggested next round: TARGETED mode for academic language transfer."
+      : (modeForEngine() === "TARGETED"
+        ? "Suggested next round: INTERVENTION mode with locked skill node."
+        : "Suggested next round: TARGETED mode to generalize the skill.");
+    summaryEl.classList.remove("pp-hidden");
   }
 
   function nextRound() {
     clearInterval(state.timerId);
     state.timerId = 0;
     state.round += 1;
-    state.expression = expressionForRound(state.config.expressionMode, state.config.lockExpression);
+    if (!summaryEl.classList.contains("pp-hidden")) summaryEl.classList.add("pp-hidden");
     updateScoreboard();
 
     var card = getNextCard();
     if (!card) {
-      setStatus('No cards available for this grade band.');
+      setStatus("No cards available for this grade band and skill focus.");
       return;
     }
-    renderCard(card);
-    startTimer();
+    var round = buildRoundFromCard(card);
+    renderRound(round, card);
   }
 
   function endSession() {
     clearInterval(state.timerId);
     state.timerId = 0;
-    gameEl.classList.add('pp-hidden');
-    setupEl.classList.remove('pp-hidden');
-    setStatus('Session ended. Score: ' + state.score);
+    gameEl.classList.add("pp-hidden");
+    setupEl.classList.remove("pp-hidden");
+    summaryEl.classList.remove("pp-hidden");
+    summaryTextEl.textContent = "Session complete. Attempts: " + state.attempts + " | Successful rounds: " + state.successfulRounds + " | Mode used: " + modeForEngine();
+    summarySuggestedEl.textContent = "Suggested next round: Continue in " + modeForEngine() + " or return to the literacy dashboard.";
+    setStatus("Session ended.");
   }
 
   function startSession() {
     state.config = {
-      gradeBand: gradeBandEl.value,
-      energy: energyEl.value,
-      challenge: challengeEl.value,
-      expressionMode: expressionModeEl.value,
-      lockExpression: !!lockExpressionEl.checked,
-      revealTiming: revealTimingEl.value,
-      logging: !!logEnabledEl.checked
+      gradeBand: normalizeGradeBand(gradeBandEl.value),
+      mode: modeForEngine(),
+      skillNode: String(teacherSkillNodeEl && teacherSkillNodeEl.value || getParam("skill", "LIT.VOC.ACAD")),
+      tierLevel: currentTier()
     };
+
     state.round = 0;
     state.score = 0;
-    state.index = -1;
+    state.attempts = 0;
+    state.successfulRounds = 0;
     state.expressionIndex = 0;
-    state.logs = readLogs();
+    state.index = -1;
+    state.engagement = readEngagement();
 
     buildDeck();
-    setupEl.classList.add('pp-hidden');
-    gameEl.classList.remove('pp-hidden');
+    setupEl.classList.add("pp-hidden");
+    summaryEl.classList.add("pp-hidden");
+    gameEl.classList.remove("pp-hidden");
     nextRound();
   }
 
+  function addCustomWord() {
+    var target = String(customWordEl && customWordEl.value || "").trim();
+    var forbidden = String(customForbiddenEl && customForbiddenEl.value || "")
+      .split(",")
+      .map(function (w) { return w.trim(); })
+      .filter(Boolean);
+    if (!target || forbidden.length < 2) {
+      setStatus("Add custom word requires a target and at least two forbidden words.");
+      return;
+    }
+    state.cards.unshift({
+      id: "custom-" + Date.now(),
+      gradeBand: normalizeGradeBand(gradeBandEl.value),
+      domain: "Literacy",
+      target: target,
+      forbidden: forbidden,
+      requiredMove: "Use one sentence frame tied to literacy focus.",
+      skillTag: String(teacherSkillNodeEl && teacherSkillNodeEl.value || "LIT.VOC.ACAD")
+    });
+    customWordEl.value = "";
+    customForbiddenEl.value = "";
+    buildDeck();
+    setStatus("Custom word added to current lesson set.");
+  }
+
+  function handleUpload(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var rows = parseUploadedWordList(reader.result, gradeBandEl.value, teacherSkillNodeEl && teacherSkillNodeEl.value);
+      if (!rows.length) {
+        setStatus("No valid words found in uploaded file.");
+        return;
+      }
+      state.cards = rows.concat(state.cards);
+      buildDeck();
+      setStatus("Uploaded " + rows.length + " words into the lesson set.");
+    };
+    reader.readAsText(file);
+  }
+
   function escapeHtml(value) {
-    return String(value || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   function loadCards() {
-    return fetch('./precision-play.cards.json', { cache: 'no-cache' })
+    return fetch("./precision-play.cards.json", { cache: "no-cache" })
       .then(function (r) {
-        if (!r.ok) throw new Error('Card load failed (' + r.status + ')');
+        if (!r.ok) throw new Error("Card load failed (" + r.status + ")");
         return r.json();
       })
       .then(function (payload) {
@@ -321,39 +509,101 @@
         state.cards = cards.filter(function (card) {
           return card && card.id && card.gradeBand && card.target && Array.isArray(card.forbidden);
         });
-        if (!state.cards.length) throw new Error('No valid cards found.');
+        if (!state.cards.length) throw new Error("No valid cards found.");
       });
   }
 
   function bindEvents() {
-    challengeEl.addEventListener('change', ensureAdvancedVisibility);
-    advancedLinkEl.addEventListener('click', function () {
+    challengeEl.addEventListener("change", function () {
+      ensureAdvancedVisibility();
+      if (teacherModeEl) teacherModeEl.value = modeForEngine();
+    });
+    advancedLinkEl.addEventListener("click", function () {
       advancedPanelEl.hidden = !advancedPanelEl.hidden;
     });
-    startBtn.addEventListener('click', startSession);
-    guessedBtn.addEventListener('click', function () { finishRound(true); });
-    skipBtn.addEventListener('click', function () { finishRound(false); });
-    nextBtn.addEventListener('click', nextRound);
-    endBtn.addEventListener('click', endSession);
+    startBtn.addEventListener("click", startSession);
+    guessedBtn.addEventListener("click", function () { finishRound(true); });
+    skipBtn.addEventListener("click", function () { finishRound(false); });
+    nextBtn.addEventListener("click", nextRound);
+    endBtn.addEventListener("click", endSession);
+    summaryNextEl.addEventListener("click", function () {
+      summaryEl.classList.add("pp-hidden");
+      if (setupEl.classList.contains("pp-hidden")) nextRound();
+      else startSession();
+    });
 
-    document.addEventListener('keydown', function (event) {
-      if (setupEl.classList.contains('pp-hidden')) {
-        if (event.key === 'g' || event.key === 'G') finishRound(true);
-        if (event.key === 's' || event.key === 'S') finishRound(false);
-        if (event.key === 'n' || event.key === 'N') nextRound();
+    if (teacherToggleEl) {
+      teacherToggleEl.addEventListener("click", function () {
+        var nextOpen = teacherPanelEl.classList.contains("pp-hidden");
+        teacherPanelEl.classList.toggle("pp-hidden", !nextOpen);
+        teacherToggleEl.setAttribute("aria-expanded", String(nextOpen));
+      });
+    }
+
+    if (teacherModeEl) {
+      teacherModeEl.addEventListener("change", function () {
+        challengeEl.value = normalizeMode(teacherModeEl.value);
+        ensureAdvancedVisibility();
+      });
+    }
+
+    if (addCustomBtn) addCustomBtn.addEventListener("click", addCustomWord);
+    if (shuffleLessonBtn) {
+      shuffleLessonBtn.addEventListener("click", function () {
+        state.cards = shuffle(state.cards);
+        buildDeck();
+        setStatus("Lesson set shuffled.");
+      });
+    }
+    if (uploadListEl) {
+      uploadListEl.addEventListener("change", function () {
+        var file = uploadListEl.files && uploadListEl.files[0];
+        handleUpload(file);
+      });
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (setupEl.classList.contains("pp-hidden")) {
+        if (event.key === "g" || event.key === "G") finishRound(true);
+        if (event.key === "s" || event.key === "S") finishRound(false);
+        if (event.key === "n" || event.key === "N") nextRound();
       }
     });
   }
 
+  function initFromQuery() {
+    var mode = normalizeMode(getParam("mode", "TARGETED"));
+    var grade = normalizeGradeBand(getParam("grade", "3-5"));
+    var skill = getParam("skill", "LIT.VOC.ACAD");
+
+    challengeEl.value = mode;
+    if (teacherModeEl) teacherModeEl.value = mode;
+    gradeBandEl.value = grade;
+    if (teacherSkillNodeEl) teacherSkillNodeEl.value = skill;
+
+    if (mode === "FUN") energyEl.value = "low";
+    else if (mode === "TARGETED") energyEl.value = "medium";
+    else energyEl.value = "high";
+
+    if (mode === "INTERVENTION" && timerEnabledEl) {
+      timerEnabledEl.checked = false;
+    }
+
+    if (alignmentBadgeEl) {
+      alignmentBadgeEl.textContent = "Aligned to Literacy Focus: " + mapSkillName(skill);
+    }
+  }
+
   function init() {
     bindEvents();
+    initFromQuery();
     ensureAdvancedVisibility();
     loadCards()
       .then(function () {
-        setStatus('Ready. Pick settings and start.');
+        setStatus("Ready. Select mode and start Word Connections.");
       })
       .catch(function (error) {
-        setStatus('Unable to load cards: ' + (error && error.message ? error.message : 'Unknown error'));
+        setStatus("Unable to load cards: " + (error && error.message ? error.message : "Unknown error"));
         startBtn.disabled = true;
       });
   }

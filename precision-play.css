@@ -2,20 +2,20 @@
   --pp-bg: var(--surface-base, #f4f6f8);
   --pp-surface: var(--surface-elev-1, #ffffff);
   --pp-surface-2: var(--surface-elev-2, #f0f2f5);
-  --pp-border: var(--border-subtle, rgba(0, 0, 0, 0.08));
+  --pp-border: var(--surface-border, rgba(0, 0, 0, 0.08));
   --pp-text: var(--text-primary, #1c2733);
   --pp-muted: var(--text-secondary, #4a5a6a);
-  --pp-accent: var(--action-primary, #2e6fd8);
-  --pp-secure: var(--status-secure, #2f9e44);
-  --pp-dev: var(--status-developing, #f59f00);
-  --pp-intense: var(--status-intensify, #e8590c);
+  --pp-accent: var(--action-primary, #2b5da8);
+  --pp-secure: var(--status-secure, #4e8d6a);
+  --pp-dev: var(--status-developing, #b58a45);
+  --pp-intense: #8a5d99;
 }
 
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: var(--font-ui, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif);
+  font-family: var(--font-body, Inter, system-ui, sans-serif);
   color: var(--pp-text);
   background: var(--pp-bg);
   overflow: hidden;
@@ -36,16 +36,22 @@ body {
   gap: 12px;
 }
 
+.pp-top-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .pp-title {
   margin: 0;
-  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
-  font-weight: 700;
+  font-size: var(--fs-lg);
+  font-weight: 600;
 }
 
 .pp-sub {
   margin: 2px 0 0;
   color: var(--pp-muted);
-  font-size: 0.9rem;
+  font-size: var(--fs-base);
 }
 
 .pp-link {
@@ -54,17 +60,55 @@ body {
   text-decoration: none;
 }
 
+.pp-teacher-btn {
+  min-height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--pp-border);
+  background: var(--pp-surface);
+  color: var(--pp-text);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.pp-alignment-badge {
+  margin: 8px 0 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid var(--pp-border);
+  border-radius: 999px;
+  background: var(--pp-surface-2);
+  color: var(--pp-muted);
+  padding: 2px 10px;
+  font-size: var(--fs-sm);
+}
+
 .pp-stage {
   min-height: 0;
   border: 1px solid var(--pp-border);
   border-radius: 14px;
   background: var(--pp-surface);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   overflow: hidden;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+}
+
+.pp-teacher-panel {
+  border-bottom: 1px solid var(--pp-border);
+  padding: 12px;
+  background: var(--pp-surface-2);
+}
+
+.pp-teacher-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 10px 12px;
 }
 
 .pp-setup {
-  height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
   padding: 16px;
@@ -84,17 +128,13 @@ body {
 }
 
 .pp-field label {
-  font-size: 0.86rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--pp-muted);
 }
 
-.pp-field select,
-.pp-field input[type="checkbox"] {
-  min-height: 40px;
-}
-
-.pp-select {
+.pp-select,
+.pp-input {
   width: 100%;
   min-height: 40px;
   border: 1px solid var(--pp-border);
@@ -102,7 +142,7 @@ body {
   background: #fff;
   color: var(--pp-text);
   padding: 0 10px;
-  font-size: 0.95rem;
+  font-size: var(--fs-base);
 }
 
 .pp-lock {
@@ -111,7 +151,7 @@ body {
   gap: 8px;
   margin-top: 4px;
   color: var(--pp-muted);
-  font-size: 0.88rem;
+  font-size: var(--fs-sm);
 }
 
 .pp-advanced-link {
@@ -138,16 +178,16 @@ body {
 .pp-start {
   min-height: 46px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--pp-accent);
   color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--fs-base);
+  font-weight: 600;
   cursor: pointer;
 }
 
 .pp-game {
-  height: 100%;
+  min-height: 0;
   display: grid;
   grid-template-columns: minmax(320px, 2fr) minmax(220px, 1fr);
   gap: 12px;
@@ -162,11 +202,19 @@ body {
   min-height: 0;
 }
 
-.pp-target {
+.pp-target,
+.pp-forbidden,
+.pp-required,
+.pp-controls,
+.pp-expression,
+.pp-stat {
   border: 1px solid var(--pp-border);
   border-radius: 12px;
-  padding: 16px;
-  background: #fff;
+  background: var(--pp-surface);
+  padding: 10px;
+}
+
+.pp-target {
   text-align: center;
 }
 
@@ -180,14 +228,8 @@ body {
   animation: ppFadeUp 180ms ease;
 }
 
-.pp-forbidden,
-.pp-required,
-.pp-controls,
-.pp-expression {
-  border: 1px solid var(--pp-border);
-  border-radius: 12px;
+.pp-forbidden {
   background: var(--pp-surface-2);
-  padding: 10px;
 }
 
 .pp-forbidden-list {
@@ -204,7 +246,7 @@ body {
   border-radius: 999px;
   background: #fff;
   border: 1px solid var(--pp-border);
-  font-size: 0.84rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
 }
 
@@ -216,23 +258,16 @@ body {
   align-content: start;
 }
 
-.pp-stat {
-  border: 1px solid var(--pp-border);
-  border-radius: 12px;
-  background: #fff;
-  padding: 10px;
-}
-
 .pp-stat-label {
-  font-size: 0.75rem;
+  font-size: var(--fs-sm);
   color: var(--pp-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .pp-stat-value {
-  font-size: 1.35rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 600;
   margin-top: 4px;
 }
 
@@ -241,14 +276,25 @@ body {
   gap: 8px;
 }
 
+.pp-actions-inline {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .pp-btn {
   min-height: 40px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid var(--pp-border);
   background: #fff;
   color: var(--pp-text);
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
 }
 
 .pp-btn.primary {
@@ -259,12 +305,13 @@ body {
 
 .pp-expression {
   text-align: center;
+  background: var(--pp-surface-2);
 }
 
 .pp-cue {
   margin: 0;
   font-size: clamp(1.2rem, 2.5vw, 1.7rem);
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.1em;
 }
 
@@ -276,7 +323,15 @@ body {
 .pp-note {
   margin: 4px 0 0;
   color: var(--pp-muted);
-  font-size: 0.83rem;
+  font-size: var(--fs-sm);
+}
+
+.pp-summary {
+  border-top: 1px solid var(--pp-border);
+  padding: 12px;
+  background: var(--pp-surface);
+  display: grid;
+  gap: 8px;
 }
 
 .pp-hidden { display: none !important; }
@@ -296,6 +351,8 @@ body {
     align-content: stretch;
   }
   .pp-actions { grid-column: span 3; }
+  .pp-teacher-grid,
+  .pp-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
