@@ -776,13 +776,13 @@ html[data-page-mode="wordquest"] #mission-lab-nav-btn {
   max-width: min(270px, calc(100vw - 28px));
   padding: 7px 10px;
   border-radius: 12px;
-  border: 1px solid color-mix(in oklab, var(--brand) 48%, var(--panel-border) 52%);
+  border: 1px solid color-mix(in oklab, var(--accent) 46%, rgba(255,255,255,0.54) 54%);
   background: linear-gradient(
     145deg,
-    color-mix(in oklab, var(--panel-bg) 86%, #ffffff 14%),
-    color-mix(in oklab, var(--panel-bg) 68%, var(--brand) 32%)
+    color-mix(in oklab, #15253a 88%, var(--brand) 12%),
+    color-mix(in oklab, #0f1c30 84%, var(--brand-dk) 16%)
   );
-  color: color-mix(in oklab, var(--text) 90%, #ffffff 10%);
+  color: #f6fbff;
   font-size: 0.66rem;
   font-weight: 760;
   letter-spacing: 0.01em;
@@ -5091,8 +5091,12 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
   top:            calc(var(--header-h) + var(--focus-h) + 12px);
   left:           50%;
   transform:      translateX(-50%) translateY(-6px);
-  background:     color-mix(in oklab, var(--panel-bg) 74%, var(--brand) 26%);
-  color:          color-mix(in oklab, var(--text) 92%, #ffffff 8%);
+  background:     linear-gradient(
+    145deg,
+    color-mix(in oklab, #182b41 86%, var(--brand) 14%),
+    color-mix(in oklab, #102036 84%, var(--brand-dk) 16%)
+  );
+  color:          #f5faff;
   padding:        9px 20px;
   border-radius:  24px;
   font-size:      0.87rem;
@@ -5103,8 +5107,8 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
   z-index:        200;
   max-width:      88vw;
   text-align:     center;
-  border:         1px solid color-mix(in oklab, var(--panel-border) 64%, var(--brand) 36%);
-  box-shadow:     0 10px 26px rgba(10, 20, 40, 0.24);
+  border:         1px solid color-mix(in oklab, var(--accent) 44%, rgba(255,255,255,0.56) 56%);
+  box-shadow:     0 12px 28px rgba(8, 18, 34, 0.36);
 }
 #toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
 
