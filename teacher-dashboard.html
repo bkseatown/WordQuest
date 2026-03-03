@@ -51,6 +51,7 @@
             <span id="td-demo-badge" class="tier-badge tier-2 hidden" aria-live="polite">Demo data</span>
             <button id="td-admin-demo" class="td-top-btn" type="button">Admin Demo</button>
             <button id="td-meeting-mode" class="td-top-btn" type="button">Meeting Notes</button>
+            <button id="td-generate-summary" class="td-top-btn" type="button">Generate Meeting Summary</button>
             <button id="td-tier1-pack" class="td-top-btn" type="button">Tier 1 Evidence</button>
             <button id="td-sas-library-btn" class="td-top-btn" type="button">SAS Library</button>
             <button id="td-import-export" class="td-top-btn" type="button">Import/Export</button>
@@ -297,6 +298,29 @@
     </div>
   </div>
 
+  <div id="td-report-modal" class="td-modal hidden" role="dialog" aria-modal="true" aria-labelledby="td-report-title">
+    <div class="td-modal-card td-report-modal-card">
+      <div class="td-modal-head">
+        <h2 id="td-report-title" class="td-section-title">Meeting Summary Preview</h2>
+        <button id="td-report-close" class="td-top-btn" type="button">Close</button>
+      </div>
+      <div class="td-plan-tabs">
+        <label class="td-meeting-label" for="td-report-language">Translation</label>
+        <select id="td-report-language" class="td-top-btn">
+          <option value="en">English</option>
+          <option value="zh">Mandarin</option>
+          <option value="es">Spanish</option>
+          <option value="hi">Hindi</option>
+        </select>
+      </div>
+      <div id="td-report-preview" class="td-report-preview" aria-live="polite"></div>
+      <div class="td-modal-actions">
+        <button id="td-report-copy" class="td-btn td-btn-primary btn btn-quiet" type="button">Copy to Clipboard</button>
+        <button id="td-report-download-pdf" class="td-btn td-btn-ghost btn btn-quiet" type="button">Download PDF</button>
+      </div>
+    </div>
+  </div>
+
   <div id="td-sas-library-modal" class="td-modal hidden" role="dialog" aria-modal="true" aria-labelledby="td-sas-library-title">
     <div class="td-modal-card td-sas-library-card">
       <div class="td-modal-head">
@@ -363,6 +387,7 @@
   <script src="./js/instructional-sequencer.js?v=20260302a" defer></script>
   <script src="./js/alignment-loader.js?v=20260302a" defer></script>
   <script src="./js/share-summary.js?v=20260301y" defer></script>
+  <script src="./js/reporting/generator.js?v=20260303a" defer></script>
   <script src="./js/meeting-notes.js?v=20260301y" defer></script>
   <script src="./js/meeting-translation.js?v=20260302b" defer></script>
   <script src="./js/sas-alignment-library.js?v=20260302a" defer></script>

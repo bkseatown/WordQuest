@@ -26,6 +26,7 @@
   var InstructionalSequencer = window.CSInstructionalSequencer;
   var NumeracySequencer = window.CSNumeracySequencer;
   var CurriculumMap = window.CSCurriculumMap;
+  var ReportingGenerator = window.CSReportingGenerator;
   var AlignmentLoader = window.CSAlignmentLoader;
   var InterventionPlanner = window.CSInterventionPlanner;
   var ShareSummaryAPI = window.CSShareSummary;
@@ -58,7 +59,8 @@
     efSecondsLeft: 0,
     meetingFormat: "sas",
     meetingLanguage: "en",
-    liveTranslate: false
+    liveTranslate: false,
+    reportDraft: null
   };
   var skillStoreLogged = false;
 
@@ -87,6 +89,7 @@
     quickCheck: document.getElementById("td-quick-check"),
     startIntervention: document.getElementById("td-start-intervention"),
     meetingModeBtn: document.getElementById("td-meeting-mode"),
+    generateSummaryBtn: document.getElementById("td-generate-summary"),
     tier1PackBtn: document.getElementById("td-tier1-pack"),
     openStudentDrawer: document.getElementById("td-open-student-drawer"),
     drawer: document.getElementById("td-student-drawer"),
@@ -126,6 +129,12 @@
     meetingExportFormat: document.getElementById("td-meeting-export-format"),
     meetingSave: document.getElementById("td-meeting-save"),
     meetingGoals: document.getElementById("td-meeting-goals"),
+    reportModal: document.getElementById("td-report-modal"),
+    reportClose: document.getElementById("td-report-close"),
+    reportLanguage: document.getElementById("td-report-language"),
+    reportPreview: document.getElementById("td-report-preview"),
+    reportCopy: document.getElementById("td-report-copy"),
+    reportDownloadPdf: document.getElementById("td-report-download-pdf"),
     sasLibraryBtn: document.getElementById("td-sas-library-btn"),
     sasLibraryModal: document.getElementById("td-sas-library-modal"),
     sasLibraryClose: document.getElementById("td-sas-library-close"),
@@ -317,8 +326,7 @@
     };
   }
 
-  function renderNumeracyRecommendationCard(row) {
-    if (!el.numeracyContentFocus || !el.numeracyStrategyStage || !el.numeracyPracticeMode || !el.numeracyActionLine) return;
+  function latestNumeracyRecommendation(row) {
     var profile = buildNumeracyStubProfile(row || null);
     var fallback = {
       contentFocus: "Number Fluency",
@@ -328,15 +336,136 @@
       recommendedAction: "Run Quick Check targeting Number Fluency at the Additive stage.",
       practiceMode: "Quick Check"
     };
-    var recommendation = NumeracySequencer && typeof NumeracySequencer.generateNumeracyRecommendation === "function"
-      ? NumeracySequencer.generateNumeracyRecommendation(profile)
-      : fallback;
+    if (NumeracySequencer && typeof NumeracySequencer.generateNumeracyRecommendation === "function") {
+      return NumeracySequencer.generateNumeracyRecommendation(profile);
+    }
+    return fallback;
+  }
+
+  function renderNumeracyRecommendationCard(row) {
+    if (!el.numeracyContentFocus || !el.numeracyStrategyStage || !el.numeracyPracticeMode || !el.numeracyActionLine) return;
+    var fallback = latestNumeracyRecommendation(null);
+    var recommendation = latestNumeracyRecommendation(row || null);
     el.numeracyContentFocus.textContent = String(recommendation.contentFocus || fallback.contentFocus);
     el.numeracyStrategyStage.textContent = String(recommendation.strategyStage || fallback.strategyStage);
     el.numeracyPracticeMode.textContent = String(recommendation.practiceMode || fallback.practiceMode);
     if (el.numeracyTier) el.numeracyTier.textContent = String(recommendation.tierSignal || fallback.tierSignal);
     el.numeracyActionLine.textContent = String(recommendation.recommendedAction || fallback.recommendedAction);
     renderNumeracyAlignmentLine();
+  }
+
+  function reportLanguageLabel(code) {
+    var c = String(code || "en").toLowerCase();
+    if (c === "zh") return "Mandarin";
+    if (c === "es") return "Spanish";
+    if (c === "hi") return "Hindi";
+    return "English";
+  }
+
+  function escHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function buildReportText(report, language) {
+    var nextSteps = Array.isArray(report && report.recommendedNextSteps) ? report.recommendedNextSteps : [];
+    var lines = [
+      "Unified Student Summary (" + reportLanguageLabel(language) + ")",
+      "",
+      "Executive Summary",
+      String(report && report.executiveSummary || ""),
+      "",
+      "Literacy Progress",
+      String(report && report.literacyProgress || ""),
+      "",
+      "Numeracy Progress",
+      String(report && report.numeracyProgress || ""),
+      "",
+      "Tier Statement",
+      String(report && report.tierStatement || ""),
+      "",
+      "Curriculum Alignment",
+      String(report && report.curriculumAlignment || ""),
+      "",
+      "Recommended Next Steps",
+      nextSteps.map(function (step, idx) { return (idx + 1) + ". " + step; }).join("\n"),
+      "",
+      "Parent Summary",
+      String(report && report.parentSummary || "")
+    ];
+    return lines.join("\n");
+  }
+
+  function renderReportPreview() {
+    if (!el.reportPreview || !state.reportDraft) return;
+    var language = el.reportLanguage ? String(el.reportLanguage.value || "en") : "en";
+    var translated = ReportingGenerator && typeof ReportingGenerator.translateReport === "function"
+      ? ReportingGenerator.translateReport(state.reportDraft, language)
+      : state.reportDraft;
+    var nextSteps = Array.isArray(translated && translated.recommendedNextSteps) ? translated.recommendedNextSteps : [];
+    el.reportPreview.innerHTML = [
+      "<section><h3>Executive Summary</h3><p>" + escHtml(translated.executiveSummary || "") + "</p></section>",
+      "<section><h3>Literacy Progress</h3><p>" + escHtml(translated.literacyProgress || "") + "</p></section>",
+      "<section><h3>Numeracy Progress</h3><p>" + escHtml(translated.numeracyProgress || "") + "</p></section>",
+      "<section><h3>Tier Statement</h3><p>" + escHtml(translated.tierStatement || "") + "</p></section>",
+      "<section><h3>Curriculum Alignment</h3><p>" + escHtml(translated.curriculumAlignment || "") + "</p></section>",
+      "<section><h3>Recommended Next Steps</h3><ul>" + nextSteps.map(function (step) { return "<li>" + escHtml(step) + "</li>"; }).join("") + "</ul></section>",
+      "<section><h3>Parent Summary</h3><p>" + escHtml(translated.parentSummary || "") + "</p></section>"
+    ].join("");
+  }
+
+  function openReportModal() {
+    if (!el.reportModal || !el.reportPreview || !state.selectedId) return;
+    var summary = Evidence && typeof Evidence.getStudentSummary === "function" ? Evidence.getStudentSummary(state.selectedId) : null;
+    var student = summary && summary.student ? summary.student : {};
+    var focusRows = state.todayPlan && Array.isArray(state.todayPlan.students) ? state.todayPlan.students : [];
+    var row = focusRows.find(function (item) { return item && item.student && String(item.student.id || "") === String(state.selectedId); }) || null;
+    var numeracy = latestNumeracyRecommendation(row);
+    var curriculumLine = el.numCurriculumLine ? String(el.numCurriculumLine.textContent || "").trim() : "";
+    var literacyData = {
+      focus: summary ? String(summary.focus || "Foundational literacy") : "Foundational literacy",
+      growth: summary && summary.metrics ? Number(summary.metrics.weekDelta || 0.12) : 0.12,
+      nextStep: summary && summary.nextMove ? String(summary.nextMove.line || "Continue targeted literacy support.") : "Continue targeted literacy support.",
+      tier: summary && summary.metrics ? String(summary.metrics.tierLabel || "Tier 2") : "Tier 2",
+      curriculumAlignment: "Literacy sequencing aligned to active instructional pathways."
+    };
+    var numeracyData = {
+      contentFocus: numeracy.contentFocus,
+      strategyStage: numeracy.strategyStage,
+      practiceMode: numeracy.practiceMode,
+      tierSignal: numeracy.tierSignal,
+      recommendedAction: numeracy.recommendedAction,
+      curriculumAlignment: curriculumLine || "Numeracy sequencing aligned to active instructional pathways."
+    };
+    var studentProfile = {
+      id: String(student.id || state.selectedId),
+      name: String(student.name || "Student"),
+      tier: literacyData.tier
+    };
+
+    if (ReportingGenerator && typeof ReportingGenerator.generateStudentReport === "function") {
+      state.reportDraft = ReportingGenerator.generateStudentReport(studentProfile, literacyData, numeracyData);
+    } else {
+      state.reportDraft = {
+        executiveSummary: "Summary is unavailable.",
+        literacyProgress: "",
+        numeracyProgress: "",
+        tierStatement: "",
+        curriculumAlignment: "",
+        recommendedNextSteps: [],
+        parentSummary: ""
+      };
+    }
+    renderReportPreview();
+    el.reportModal.classList.remove("hidden");
+  }
+
+  function closeReportModal() {
+    if (el.reportModal) el.reportModal.classList.add("hidden");
   }
 
   function detectDemoMode() {
@@ -3714,6 +3843,50 @@
       el.meetingModeBtn.addEventListener("click", function () {
         if (!state.selectedId) return;
         openMeetingModal();
+      });
+    }
+    if (el.generateSummaryBtn) {
+      el.generateSummaryBtn.addEventListener("click", function () {
+        if (!state.selectedId) return;
+        openReportModal();
+      });
+    }
+    if (el.reportClose) {
+      el.reportClose.addEventListener("click", closeReportModal);
+    }
+    if (el.reportModal) {
+      el.reportModal.addEventListener("click", function (event) {
+        if (event.target === el.reportModal) closeReportModal();
+      });
+    }
+    if (el.reportLanguage) {
+      el.reportLanguage.addEventListener("change", function () {
+        renderReportPreview();
+      });
+    }
+    if (el.reportCopy) {
+      el.reportCopy.addEventListener("click", function () {
+        if (!state.reportDraft) return;
+        var lang = el.reportLanguage ? String(el.reportLanguage.value || "en") : "en";
+        var report = ReportingGenerator && typeof ReportingGenerator.translateReport === "function"
+          ? ReportingGenerator.translateReport(state.reportDraft, lang)
+          : state.reportDraft;
+        var text = buildReportText(report, lang);
+        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+        setCoachLine("Meeting summary copied to clipboard.");
+      });
+    }
+    if (el.reportDownloadPdf) {
+      el.reportDownloadPdf.addEventListener("click", function () {
+        if (!state.reportDraft) return;
+        var lang = el.reportLanguage ? String(el.reportLanguage.value || "en") : "en";
+        var report = ReportingGenerator && typeof ReportingGenerator.translateReport === "function"
+          ? ReportingGenerator.translateReport(state.reportDraft, lang)
+          : state.reportDraft;
+        var text = buildReportText(report, lang);
+        var sid = state.selectedId || "student";
+        download("meeting-summary-" + sid + ".pdf.txt", text, "text/plain");
+        setCoachLine("PDF export stub downloaded as text payload.");
       });
     }
     if (el.tier1PackBtn) {

@@ -1553,6 +1553,49 @@ body.cs-has-nav-shell .td-shell {
   color: var(--text-secondary);
   font-size: var(--fs-xs, 12px);
 }
+
+.td-report-modal-card {
+  width: min(860px, calc(100vw - 24px));
+}
+
+.td-report-preview {
+  border: 1px solid color-mix(in oklab, var(--border-soft) 72%, transparent);
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--surface-2) 72%, transparent);
+  color: var(--text-strong);
+  padding: 14px;
+  min-height: 240px;
+  max-height: 52dvh;
+  overflow: auto;
+  line-height: 1.55;
+  display: grid;
+  gap: 12px;
+}
+
+.td-report-preview section {
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in oklab, var(--border-soft) 62%, transparent);
+}
+
+.td-report-preview section:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.td-report-preview h3 {
+  margin: 0 0 4px;
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+.td-report-preview p,
+.td-report-preview ul {
+  margin: 0;
+}
+
+.td-report-preview ul {
+  padding-left: 18px;
+}
 .td-plan-tabs .td-top-btn.is-active {
   border-color: color-mix(in oklab, var(--accent) 58%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent);
