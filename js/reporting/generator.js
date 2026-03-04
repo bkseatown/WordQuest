@@ -167,20 +167,21 @@
       hi: "Hindi"
     };
     var label = labelMap[target] || target;
+    var notice = "Assisted draft translation (" + label + ") — review recommended. ";
     return {
-      executiveSummary: "[" + label + " placeholder] " + asText(report && report.executiveSummary, ""),
-      literacyProgress: "[" + label + " placeholder] " + asText(report && report.literacyProgress, ""),
-      numeracyProgress: "[" + label + " placeholder] " + asText(report && report.numeracyProgress, ""),
-      tierStatement: "[" + label + " placeholder] " + asText(report && report.tierStatement, ""),
-      curriculumAlignment: "[" + label + " placeholder] " + asText(report && report.curriculumAlignment, ""),
-      instructionalFrameworkAlignment: "[" + label + " placeholder] " + asText(report && report.instructionalFrameworkAlignment, ""),
-      interventionFidelitySummary: "[" + label + " placeholder] " + asText(report && report.interventionFidelitySummary, ""),
-      tierDecisionExplanation: "[" + label + " placeholder] " + asText(report && report.tierDecisionExplanation, ""),
-      executiveFunctionSupport: "[" + label + " placeholder] " + asText(report && report.executiveFunctionSupport, ""),
+      executiveSummary: notice + asText(report && report.executiveSummary, ""),
+      literacyProgress: notice + asText(report && report.literacyProgress, ""),
+      numeracyProgress: notice + asText(report && report.numeracyProgress, ""),
+      tierStatement: notice + asText(report && report.tierStatement, ""),
+      curriculumAlignment: notice + asText(report && report.curriculumAlignment, ""),
+      instructionalFrameworkAlignment: notice + asText(report && report.instructionalFrameworkAlignment, ""),
+      interventionFidelitySummary: notice + asText(report && report.interventionFidelitySummary, ""),
+      tierDecisionExplanation: notice + asText(report && report.tierDecisionExplanation, ""),
+      executiveFunctionSupport: notice + asText(report && report.executiveFunctionSupport, ""),
       recommendedNextSteps: Array.isArray(report && report.recommendedNextSteps)
-        ? report.recommendedNextSteps.map(function (step) { return "[" + label + " placeholder] " + asText(step, ""); })
+        ? report.recommendedNextSteps.map(function (step) { return notice + asText(step, ""); })
         : [],
-      parentSummary: "[" + label + " placeholder] " + asText(report && report.parentSummary, "")
+      parentSummary: notice + asText(report && report.parentSummary, "")
     };
   }
 

@@ -14,7 +14,7 @@ html, body {
 body.teacher-dashboard {
   margin: 0;
   overflow: hidden;
-  background: var(--surface-base);
+  background: var(--surface-base-gradient);
   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: var(--fs-base);
@@ -73,10 +73,10 @@ body.cs-has-nav-shell .td-shell {
 .td-surface {
   border-radius: var(--radius-4);
   border: 1px solid var(--surface-border);
-  background: var(--surface-1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background: color-mix(in oklab, var(--surface-1) 92%, #f3f7fc 8%);
+  box-shadow: var(--shadow-medium);
   backdrop-filter: none;
-  transition: border-color var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+  transition: border-color var(--dur-2) ease-in-out, background-color var(--dur-2) ease-in-out, box-shadow var(--dur-2) ease-in-out, transform var(--dur-2) ease-in-out;
 }
 
 .td-top {
@@ -84,10 +84,16 @@ body.cs-has-nav-shell .td-shell {
   grid-template-columns: minmax(220px, auto) minmax(360px, 1fr) auto;
   gap: var(--sp-3);
   align-items: center;
-  padding: 14px 16px;
+  padding: 16px 18px;
   position: sticky;
   top: 0;
   z-index: 9;
+}
+
+.td-top.td-surface {
+  background: color-mix(in oklab, var(--surface-elev-1) 90%, #edf4ff 10%);
+  border-color: color-mix(in oklab, var(--surface-border) 68%, #a8bbd6 32%);
+  box-shadow: var(--shadow-medium);
 }
 
 .td-wordmark strong {
@@ -189,7 +195,7 @@ body.cs-has-nav-shell .td-shell {
   font-size: var(--fs-sm);
   font-weight: var(--fw-regular);
   cursor: pointer;
-  transition: background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+  transition: background-color var(--dur-1) ease-in-out, border-color var(--dur-1) ease-in-out, color var(--dur-1) ease-in-out, transform var(--dur-1) ease-in-out;
 }
 .td-top-btn:focus-visible {
   border-color: color-mix(in oklab, var(--accent) 62%, var(--border-subtle) 38%);
@@ -276,8 +282,8 @@ body.cs-has-nav-shell .td-shell {
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: 28px;
-  padding: 24px 28px;
+  gap: 20px;
+  padding: 18px 24px 22px;
   overflow: hidden;
 }
 
@@ -285,8 +291,10 @@ body.cs-has-nav-shell .td-shell {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding: 8px 10px;
+  padding: 8px 12px;
   background: color-mix(in oklab, var(--surface-elev-2) 74%, var(--surface-1));
+  border: 1px solid color-mix(in oklab, var(--surface-border) 72%, transparent);
+  box-shadow: var(--shadow-soft);
 }
 
 .dashboard-focus {
@@ -336,7 +344,19 @@ body.cs-has-nav-shell .td-shell {
   justify-content: space-between;
   gap: 20px;
   border: 1px solid var(--surface-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-medium);
+  position: relative;
+}
+
+.focus-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 4px;
+  border-radius: 14px 14px 0 0;
+  background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 72%, #92b3e2 28%), color-mix(in oklab, var(--accent-2) 64%, #dbe7f7 36%));
 }
 
 .focus-actions {
@@ -500,10 +520,11 @@ body.cs-has-nav-shell .td-shell {
 
 .focus-student-name {
   margin: 0;
-  font-size: var(--fs-xl);
+  font-size: clamp(2rem, 3.2vw, 2.45rem);
   line-height: var(--lh-tight);
   letter-spacing: var(--ls-tight);
   color: var(--text-strong);
+  font-weight: 600;
 }
 
 .focus-tier {
@@ -600,13 +621,23 @@ body.cs-has-nav-shell .td-shell {
   padding-inline: var(--sp-4);
   font-size: var(--fs-3);
   font-weight: var(--fw-semibold);
-  background: var(--accent);
-  border-color: var(--accent);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 92%, white 8%), color-mix(in oklab, var(--accent) 82%, black 18%));
+  border-color: color-mix(in oklab, var(--accent) 84%, black 16%);
   color: #ffffff;
+  box-shadow: 0 8px 18px rgba(43, 93, 168, 0.24);
+  transform: translateZ(0);
+  transition: transform var(--dur-1) ease-in-out, box-shadow var(--dur-1) ease-in-out, filter var(--dur-1) ease-in-out;
 }
 
 .focus-start:hover {
-  background: color-mix(in oklab, var(--accent) 88%, black 12%);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 88%, white 12%), color-mix(in oklab, var(--accent) 78%, black 22%));
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(43, 93, 168, 0.28);
+}
+
+.focus-start.is-launching {
+  transform: translateY(-1px) scale(0.992);
+  filter: saturate(1.05);
 }
 
 .dashboard-queue,
@@ -781,8 +812,22 @@ body.td-classroom-mode #td-top-overflow-toggle {
 .dashboard-mode-strip #td-mode-reports,
 .dashboard-mode-strip #td-mode-classroom {
   color: var(--text-secondary);
-  background: var(--surface-elev-2);
+  background: color-mix(in oklab, var(--surface-elev-2) 84%, transparent);
   border-color: color-mix(in oklab, var(--surface-border) 70%, transparent);
+}
+
+.dashboard-mode-strip .td-top-btn.is-active {
+  box-shadow: 0 2px 6px rgba(43, 93, 168, 0.14);
+}
+
+body.td-page .dashboard-focus,
+body.td-page .dashboard-queue,
+body.td-page .dashboard-launch,
+body.td-page .dashboard-confidence,
+body.td-page .focus-card,
+body.td-page .td-plan-tabs .td-top-btn,
+body.td-page .td-modal-card {
+  transition: opacity var(--dur-2) ease-in-out, transform var(--dur-2) ease-in-out, box-shadow var(--dur-2) ease-in-out, background-color var(--dur-2) ease-in-out;
 }
 
 @media (max-width: 1200px) {
@@ -1755,10 +1800,15 @@ body.td-classroom-mode #td-top-overflow-toggle {
   position: fixed;
   inset: 0;
   z-index: 80;
-  background: rgba(28, 39, 51, 0.24);
+  background: rgba(28, 39, 51, 0.18);
   display: grid;
   place-items: center;
   padding: 16px;
+  transition: opacity var(--dur-2) ease-in-out;
+}
+
+.td-modal.is-opening {
+  animation: tdModalIn 220ms ease-in-out;
 }
 .td-modal-card {
   width: min(760px, calc(100vw - 28px));
@@ -1766,11 +1816,16 @@ body.td-classroom-mode #td-top-overflow-toggle {
   border-radius: 14px;
   border: 1px solid var(--surface-border);
   background: var(--surface-1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-strong);
   padding: 22px;
   display: grid;
   gap: 14px;
   overflow: auto;
+}
+
+@keyframes tdModalIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .td-modal-head {
   display: flex;

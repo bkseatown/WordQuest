@@ -9,7 +9,7 @@ body {
 }
 
 body.cs-hub-page {
-  background: var(--surface-base);
+  background: var(--surface-base-gradient);
   color: var(--text-primary);
   font-family: var(--font-ui, var(--font-sans, system-ui, -apple-system, Segoe UI, Roboto, sans-serif));
 }
@@ -22,14 +22,15 @@ body.cs-hub-page {
 }
 
 .cs-hub-head {
-  background: var(--surface-elev-1);
+  background: color-mix(in oklab, var(--surface-elev-1) 90%, #eef4fc 10%);
   border: 1px solid color-mix(in oklab, var(--border-subtle) 90%, transparent);
   border-radius: 14px;
-  padding: 14px 16px;
+  padding: 16px 18px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+  box-shadow: var(--shadow-medium);
 }
 
 .cs-hub-head h1 {
@@ -84,12 +85,19 @@ body.cs-hub-page {
 }
 
 .cs-hub-section {
-  background: var(--surface-elev-1);
+  background: color-mix(in oklab, var(--surface-elev-1) 93%, #f5f8fd 7%);
   border: 1px solid color-mix(in oklab, var(--border-subtle) 90%, transparent);
   border-radius: 12px;
-  padding: 12px 14px;
+  padding: 14px 16px;
   display: grid;
   gap: 8px;
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--dur-2) ease-in-out, box-shadow var(--dur-2) ease-in-out;
+}
+
+.cs-hub-section:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
 }
 
 .cs-hub-section h2 {

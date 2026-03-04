@@ -363,7 +363,7 @@
     }
     el.numCurriculumBadge.classList.remove("hidden");
     el.numCurriculumLine.classList.remove("hidden");
-    el.numCurriculumLine.textContent = "Aligned to Illustrative Math — " + keyLabel("grade", grade) + ", " + keyLabel("unit", unit);
+    el.numCurriculumLine.textContent = "Mapped to Illustrative Math " + keyLabel("grade", grade) + ", " + keyLabel("unit", unit) + " (sample coverage)";
   }
 
   function syncNumeracyCurriculumSelectors() {
@@ -878,19 +878,12 @@
   }
 
   function initRuntimeState() {
-    var params;
     var stored = safeJsonParse(localStorage.getItem(DASHBOARD_RUNTIME_KEY), {});
-    try {
-      params = new URLSearchParams(window.location.search || "");
-    } catch (_e) {
-      params = new URLSearchParams("");
-    }
-    var roleFromUrl = params.get("role");
     var roleFromStore = stored && stored.role;
     var role = DashboardRole && typeof DashboardRole.normalizeRole === "function"
-      ? DashboardRole.normalizeRole(roleFromUrl || roleFromStore || "teacher")
-      : String(roleFromUrl || roleFromStore || "teacher").toLowerCase() === "admin" ? "admin" : "teacher";
-    var demoMode = params.get("demo") === "1" || !!(stored && stored.featureFlags && stored.featureFlags.demoMode);
+      ? DashboardRole.normalizeRole(roleFromStore || "teacher")
+      : String(roleFromStore || "teacher").toLowerCase() === "admin" ? "admin" : "teacher";
+    var demoMode = !!(stored && stored.featureFlags && stored.featureFlags.demoMode);
     appState.set({
       role: role,
       featureFlags: {
@@ -1431,6 +1424,10 @@
         if (!sid) return;
         selectStudent(sid);
         var href = pickLaunchHrefForRow(focus);
+        el.focusStartBtn.classList.add("is-launching");
+        setTimeout(function () {
+          if (el.focusStartBtn) el.focusStartBtn.classList.remove("is-launching");
+        }, 220);
         window.location.href = appendStudentParam("./" + href.replace(/^\.\//, ""), sid);
       };
     }
@@ -3365,7 +3362,11 @@
     if (el.meetingSttStop) el.meetingSttStop.disabled = true;
     renderMeetingOutput();
     setWorkspaceTab("summary");
+    if (el.meetingModal) el.meetingModal.classList.add("is-opening");
     el.meetingModal.classList.remove("hidden");
+    setTimeout(function () {
+      if (el.meetingModal) el.meetingModal.classList.remove("is-opening");
+    }, 220);
   }
 
   function closeMeetingModal() {
@@ -3558,7 +3559,7 @@
     if (el.meetingTranslationBadge) {
       el.meetingTranslationBadge.classList.toggle("hidden", language === "en");
       if (language !== "en" && MeetingTranslation && typeof MeetingTranslation.languageLabel === "function") {
-        el.meetingTranslationBadge.textContent = "Translated from English • " + MeetingTranslation.languageLabel(language);
+        el.meetingTranslationBadge.textContent = "Assisted draft translation — review recommended (" + MeetingTranslation.languageLabel(language) + ")";
       }
     }
     renderMeetingWorkspacePanels();
@@ -3660,7 +3661,7 @@
     return [
       english,
       "",
-      "Translated from English",
+      "Assisted draft translation — review recommended",
       translated || english
     ].join("\n");
   }
