@@ -1,6 +1,6 @@
 :root {
-  --pp-bg: var(--surface-base, #f4f6f8);
-  --pp-surface: var(--surface-elev-1, #ffffff);
+  --pp-bg: var(--surface-base-gradient, #f4f6f8);
+  --pp-surface: color-mix(in oklab, var(--surface-elev-1, #ffffff) 92%, #eef4fc 8%);
   --pp-surface-2: var(--surface-elev-2, #f0f2f5);
   --pp-border: var(--surface-border, rgba(0, 0, 0, 0.08));
   --pp-text: var(--text-primary, #1c2733);
@@ -90,7 +90,7 @@ body {
   border: 1px solid var(--pp-border);
   border-radius: 14px;
   background: var(--pp-surface);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: var(--shadow-medium);
   overflow: hidden;
   display: grid;
   grid-template-rows: auto auto 1fr auto;
@@ -184,6 +184,13 @@ body {
   font-size: var(--fs-base);
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 8px 18px rgba(43, 93, 168, 0.24);
+  transition: transform var(--dur-1) ease-in-out, box-shadow var(--dur-1) ease-in-out, filter var(--dur-1) ease-in-out;
+}
+
+.pp-start:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(43, 93, 168, 0.28);
 }
 
 .pp-game {
@@ -212,6 +219,8 @@ body {
   border-radius: 12px;
   background: var(--pp-surface);
   padding: 10px;
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--dur-2) ease-in-out, box-shadow var(--dur-2) ease-in-out, background-color var(--dur-2) ease-in-out;
 }
 
 .pp-target {
@@ -225,7 +234,7 @@ body {
 }
 
 .pp-reveal {
-  animation: ppFadeUp 180ms ease;
+  animation: ppFadeUp 220ms ease-in-out;
 }
 
 .pp-forbidden {
