@@ -281,6 +281,13 @@ body.cs-has-nav-shell .td-shell {
   overflow: hidden;
 }
 
+.dashboard-mode-strip {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+}
+
 .dashboard-focus {
   flex: 0 0 48%;
   min-height: 0;
@@ -329,6 +336,13 @@ body.cs-has-nav-shell .td-shell {
   gap: 16px;
   border: 1px solid var(--surface-border);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.focus-actions {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .numeracy-focus-card {
@@ -610,6 +624,38 @@ body.cs-has-nav-shell .td-shell {
 .dashboard-launch {
   flex: 0 0 auto;
   background: var(--surface-elev-2);
+}
+
+.dashboard-confidence {
+  padding: 12px 16px;
+}
+
+body.td-daily-mode .dashboard-queue,
+body.td-daily-mode .dashboard-launch,
+body.td-daily-mode .numeracy-focus-card {
+  display: none;
+}
+
+body.td-daily-mode .dashboard-focus {
+  grid-template-columns: 1fr;
+}
+
+body.td-advanced-mode .dashboard-queue,
+body.td-advanced-mode .dashboard-launch {
+  display: grid;
+}
+
+body.td-reports-mode .dashboard-queue,
+body.td-reports-mode .dashboard-launch {
+  display: none;
+}
+
+body.td-classroom-mode .dashboard-queue {
+  display: grid;
+}
+
+body.td-classroom-mode .dashboard-launch {
+  display: none;
 }
 
 .dashboard-section-title {

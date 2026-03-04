@@ -75,6 +75,7 @@
     meetingDeck: [],
     meetingDeckIndex: 0,
     meetingDeckConcernMode: false,
+    workspaceTab: "summary",
     executiveProfile: null,
     executivePlan: null
   };
@@ -105,8 +106,7 @@
     quickCheck: document.getElementById("td-quick-check"),
     startIntervention: document.getElementById("td-start-intervention"),
     meetingModeBtn: document.getElementById("td-meeting-mode"),
-    enterMeetingModeBtn: document.getElementById("td-enter-meeting-mode"),
-    generateSummaryBtn: document.getElementById("td-generate-summary"),
+    meetingWorkspaceBtn: document.getElementById("td-meeting-workspace"),
     tier1PackBtn: document.getElementById("td-tier1-pack"),
     openStudentDrawer: document.getElementById("td-open-student-drawer"),
     drawer: document.getElementById("td-student-drawer"),
@@ -146,6 +146,12 @@
     meetingExportFormat: document.getElementById("td-meeting-export-format"),
     meetingSave: document.getElementById("td-meeting-save"),
     meetingGoals: document.getElementById("td-meeting-goals"),
+    workspaceTabSummary: document.getElementById("td-workspace-tab-summary"),
+    workspaceTabDeck: document.getElementById("td-workspace-tab-deck"),
+    workspaceTabNotes: document.getElementById("td-workspace-tab-notes"),
+    workspaceTabExport: document.getElementById("td-workspace-tab-export"),
+    workspaceSummaryPanel: document.getElementById("td-workspace-summary-panel"),
+    workspaceDeckPanel: document.getElementById("td-workspace-deck-panel"),
     reportModal: document.getElementById("td-report-modal"),
     reportClose: document.getElementById("td-report-close"),
     reportLanguage: document.getElementById("td-report-language"),
@@ -211,6 +217,11 @@
     todayList: document.getElementById("td-today-list"),
     caseloadSnapshot: document.getElementById("td-caseload-snapshot"),
     todayRefresh: document.getElementById("td-today-refresh"),
+    modeDaily: document.getElementById("td-mode-daily"),
+    modeAdvanced: document.getElementById("td-mode-advanced"),
+    modeReports: document.getElementById("td-mode-reports"),
+    modeClassroom: document.getElementById("td-mode-classroom"),
+    confidenceLine: document.getElementById("td-confidence-line"),
     viewAllStudents: document.getElementById("td-view-all-students"),
     priorityReview: document.getElementById("td-priority-review"),
     todayGroup: document.getElementById("td-today-group"),
@@ -242,6 +253,7 @@
     expFrameworks: document.getElementById("td-exp-frameworks"),
     litFrameworkBadges: document.getElementById("td-lit-framework-badges"),
     focusStartBtn: document.getElementById("td-focus-start-btn"),
+    focusViewDetailsBtn: document.getElementById("td-focus-view-details-btn"),
     surgicalAttentionList: document.getElementById("td-surgical-attention-list"),
     numeracyTier: document.getElementById("td-num-tier"),
     numeracyContentFocus: document.getElementById("td-num-content-focus"),
@@ -752,6 +764,13 @@
       else if (fidelityPct >= 60) el.focusFidelityLine.classList.add("fidelity-mid");
       else el.focusFidelityLine.classList.add("fidelity-low");
     }
+    if (el.confidenceLine) {
+      var trend = String(s.trendDecision || "HOLD").toUpperCase();
+      var fidelityState = Math.round(Number(input.fidelityPercent || 0)) >= 70 ? "active" : "watch";
+      el.confidenceLine.textContent = "Tier signal " + (trend === "HOLD" || trend === "FADE" ? "stable" : "active") +
+        " • Fidelity tracking " + fidelityState +
+        " • Curriculum alignment active";
+    }
   }
 
   function renderNumeracyRecommendationCard(row) {
@@ -1054,6 +1073,40 @@
       state.demoMode = false;
     }
     if (el.demoBadge) el.demoBadge.classList.toggle("hidden", !state.demoMode);
+  }
+
+  function getRuntimeRole() {
+    try {
+      var role = String(new URLSearchParams(window.location.search || "").get("role") || "teacher").toLowerCase();
+      return role === "admin" ? "admin" : "teacher";
+    } catch (_e) {
+      return "teacher";
+    }
+  }
+
+  function setDashboardMode(mode) {
+    var next = String(mode || "daily").toLowerCase();
+    document.body.classList.remove("td-daily-mode", "td-advanced-mode", "td-reports-mode", "td-classroom-mode");
+    if (next === "advanced") document.body.classList.add("td-advanced-mode");
+    else if (next === "reports") document.body.classList.add("td-reports-mode");
+    else if (next === "classroom") document.body.classList.add("td-classroom-mode");
+    else document.body.classList.add("td-daily-mode");
+
+    if (el.modeDaily) el.modeDaily.classList.toggle("is-active", next === "daily");
+    if (el.modeAdvanced) el.modeAdvanced.classList.toggle("is-active", next === "advanced");
+    if (el.modeReports) el.modeReports.classList.toggle("is-active", next === "reports");
+    if (el.modeClassroom) el.modeClassroom.classList.toggle("is-active", next === "classroom");
+  }
+
+  function applyRoleBasedSimplification() {
+    var role = getRuntimeRole();
+    document.body.classList.toggle("td-admin-role", role === "admin");
+    document.body.classList.toggle("td-teacher-role", role !== "admin");
+    if (role !== "admin") {
+      if (el.activitySelect) el.activitySelect.closest(".td-activity-pick") && el.activitySelect.closest(".td-activity-pick").classList.add("hidden");
+      if (el.coachChip) el.coachChip.classList.add("hidden");
+      if (el.adminDemo) el.adminDemo.classList.add("hidden");
+    }
   }
 
   function safeJsonParse(s, fallback) {
@@ -3420,6 +3473,22 @@
 
   function openMeetingModal() {
     if (!el.meetingModal) return;
+    var row = getSelectedPlanRow();
+    var ctx = buildReportingContext(row);
+    if (ReportingGenerator && typeof ReportingGenerator.generateStudentReport === "function") {
+      state.reportDraft = ReportingGenerator.generateStudentReport(ctx.studentProfile, ctx.literacyData, ctx.numeracyData);
+    }
+    if (MeetingGenerator && typeof MeetingGenerator.generateMeetingDeck === "function") {
+      state.meetingDeck = MeetingGenerator.generateMeetingDeck({
+        studentProfile: ctx.studentProfile,
+        literacyData: ctx.literacyData,
+        numeracyData: ctx.numeracyData,
+        tierSignal: ctx.tierSignal,
+        fidelityData: ctx.fidelityData,
+        parentSummary: state.reportDraft && state.reportDraft.parentSummary
+      }) || [];
+      state.meetingDeckIndex = 0;
+    }
     if (el.meetingType && MeetingNotes && MeetingNotes.templates) {
       var type = String(el.meetingType.value || "SSM");
       var preset = MeetingNotes.templates[type] || MeetingNotes.templates.SSM || {};
@@ -3449,6 +3518,7 @@
     if (el.meetingSttStart) el.meetingSttStart.disabled = !(MeetingNotes && typeof MeetingNotes.supportsSpeechRecognition === "function" && MeetingNotes.supportsSpeechRecognition());
     if (el.meetingSttStop) el.meetingSttStop.disabled = true;
     renderMeetingOutput();
+    setWorkspaceTab("summary");
     el.meetingModal.classList.remove("hidden");
   }
 
@@ -3638,6 +3708,58 @@
       el.meetingTranslationBadge.classList.toggle("hidden", language === "en");
       if (language !== "en" && MeetingTranslation && typeof MeetingTranslation.languageLabel === "function") {
         el.meetingTranslationBadge.textContent = "Translated from English • " + MeetingTranslation.languageLabel(language);
+      }
+    }
+    renderMeetingWorkspacePanels();
+  }
+
+  function setWorkspaceTab(tab) {
+    var next = String(tab || "summary");
+    state.workspaceTab = next;
+    var map = {
+      summary: el.workspaceTabSummary,
+      deck: el.workspaceTabDeck,
+      notes: el.workspaceTabNotes,
+      export: el.workspaceTabExport
+    };
+    Object.keys(map).forEach(function (key) {
+      if (map[key]) map[key].classList.toggle("is-active", key === next);
+    });
+    if (el.workspaceSummaryPanel) el.workspaceSummaryPanel.classList.toggle("hidden", next !== "summary");
+    if (el.workspaceDeckPanel) el.workspaceDeckPanel.classList.toggle("hidden", next !== "deck");
+    if (el.meetingNotes) el.meetingNotes.classList.toggle("hidden", next !== "notes");
+    if (el.meetingActions) el.meetingActions.classList.toggle("hidden", next !== "notes");
+    if (el.meetingPreview) el.meetingPreview.classList.toggle("hidden", next === "deck");
+  }
+
+  function renderMeetingWorkspacePanels() {
+    if (el.workspaceSummaryPanel) {
+      var lang = getMeetingLanguage();
+      var report = state.reportDraft;
+      if (report && ReportingGenerator && typeof ReportingGenerator.translateReport === "function") {
+        report = ReportingGenerator.translateReport(report, lang);
+      }
+      if (report) {
+        el.workspaceSummaryPanel.innerHTML = [
+          "<section><h3>Executive Summary</h3><p>" + escHtml(report.executiveSummary || "") + "</p></section>",
+          "<section><h3>Tier Statement</h3><p>" + escHtml(report.tierStatement || "") + "</p></section>",
+          "<section><h3>Executive Function &amp; Organizational Support</h3><p>" + escHtml(report.executiveFunctionSupport || "") + "</p></section>",
+          "<section><h3>Parent Summary</h3><p>" + escHtml(report.parentSummary || "") + "</p></section>"
+        ].join("");
+      } else {
+        el.workspaceSummaryPanel.innerHTML = "<section><p>Generate report context by selecting a student.</p></section>";
+      }
+    }
+    if (el.workspaceDeckPanel) {
+      var deck = Array.isArray(state.meetingDeck) ? state.meetingDeck : [];
+      if (!deck.length) {
+        el.workspaceDeckPanel.innerHTML = "<h3>No deck generated</h3><p>Use Meeting & Reports after selecting a student.</p>";
+      } else {
+        var slide = deck[Math.max(0, Math.min(deck.length - 1, Number(state.meetingDeckIndex || 0)))] || {};
+        el.workspaceDeckPanel.innerHTML = "<h3>" + escHtml(slide.title || "Slide") + "</h3><ul>" +
+          (Array.isArray(slide.contentBlocks) ? slide.contentBlocks : []).map(function (line) {
+            return "<li>" + escHtml(String(line || "")) + "</li>";
+          }).join("") + "</ul>";
       }
     }
   }
@@ -4195,6 +4317,18 @@
         if (event.target === el.meetingModal) closeMeetingModal();
       });
     }
+    if (el.workspaceTabSummary) {
+      el.workspaceTabSummary.addEventListener("click", function () { setWorkspaceTab("summary"); });
+    }
+    if (el.workspaceTabDeck) {
+      el.workspaceTabDeck.addEventListener("click", function () { setWorkspaceTab("deck"); });
+    }
+    if (el.workspaceTabNotes) {
+      el.workspaceTabNotes.addEventListener("click", function () { setWorkspaceTab("notes"); });
+    }
+    if (el.workspaceTabExport) {
+      el.workspaceTabExport.addEventListener("click", function () { setWorkspaceTab("export"); });
+    }
     if (el.meetingType) {
       el.meetingType.addEventListener("change", function () {
         openMeetingModal();
@@ -4480,23 +4614,32 @@
         });
       });
     }
-    if (el.meetingModeBtn) {
-      el.meetingModeBtn.addEventListener("click", function () {
+    if (el.meetingWorkspaceBtn) {
+      el.meetingWorkspaceBtn.addEventListener("click", function () {
         if (!state.selectedId) return;
         openMeetingModal();
+        setDashboardMode("reports");
       });
     }
-    if (el.enterMeetingModeBtn) {
-      el.enterMeetingModeBtn.addEventListener("click", function () {
-        if (!state.selectedId) return;
-        openMeetingDeckMode();
+    if (el.focusViewDetailsBtn) {
+      el.focusViewDetailsBtn.addEventListener("click", function () {
+        setDashboardMode("advanced");
       });
     }
-    if (el.generateSummaryBtn) {
-      el.generateSummaryBtn.addEventListener("click", function () {
-        if (!state.selectedId) return;
-        openReportModal();
+    if (el.modeDaily) {
+      el.modeDaily.addEventListener("click", function () { setDashboardMode("daily"); });
+    }
+    if (el.modeAdvanced) {
+      el.modeAdvanced.addEventListener("click", function () { setDashboardMode("advanced"); });
+    }
+    if (el.modeReports) {
+      el.modeReports.addEventListener("click", function () {
+        setDashboardMode("reports");
+        if (state.selectedId) openMeetingModal();
       });
+    }
+    if (el.modeClassroom) {
+      el.modeClassroom.addEventListener("click", function () { setDashboardMode("classroom"); });
     }
     if (el.reportClose) {
       el.reportClose.addEventListener("click", closeReportModal);
@@ -4754,6 +4897,8 @@
   detectDemoMode();
   bootstrapSkillStore();
   refreshBuildLine();
+  applyRoleBasedSimplification();
+  setDashboardMode("daily");
   seedFromCaseloadStore();
   ensureDemoCaseload();
   primeDemoMetrics();

@@ -18,9 +18,9 @@
           <div class="home-sequencer-left">
             <header class="home-head">
               <p class="home-kicker">Cornerstone MTSS</p>
-              <h1 id="home-next-move-title">Recommended Next Move</h1>
-              <p class="home-sub">Tier-Aligned Instruction. Instant Next Steps. Zero Guesswork.</p>
-              <p class="home-sub home-sub-detail">Cornerstone MTSS generates curriculum-aligned literacy and numeracy recommendations, practice tools, and meeting-ready documentation for Learning Support and EAL teachers.</p>
+              <h1 id="home-next-move-title">Choose Role</h1>
+              <p class="home-sub">Teacher flow is now centralized in one landing page.</p>
+              <p class="home-sub home-sub-detail">Teacher: select student, review snapshot, launch one action, log session. Student: open practice tools only.</p>
               <div class="home-value-ribbon" role="note">This recommendation is aligned to curriculum pacing and Tier support logic.</div>
               <ul class="home-feature-bullets" aria-label="Core platform value">
                 <li>Auto-sequenced literacy &amp; numeracy pathways</li>
@@ -28,14 +28,10 @@
                 <li>Meeting-ready reports with parent-friendly summaries</li>
               </ul>
             </header>
-            <div id="home-sequencer-preview" class="home-sequencer-preview" aria-live="polite"></div>
             <div class="home-sequencer-actions">
-              <button id="home-start-this" class="home-btn home-btn-primary" type="button">Start This</button>
-              <button id="home-see-all" class="home-btn home-btn-quiet" type="button" aria-expanded="false" aria-controls="home-all-options">See All 3 Options</button>
-              <a id="home-open-wordquest" class="home-btn home-btn-quiet" href="./cornerstone-mtss.html?play=1#wordquest">Open Word Quest</a>
-              <a id="home-dashboard-link" class="home-btn home-btn-quiet" href="./teacher-dashboard.html">Open Teacher Dashboard</a>
+              <a id="home-dashboard-link" class="home-btn home-btn-primary" href="./teacher-dashboard.html?role=teacher">Teacher</a>
+              <a id="home-open-wordquest" class="home-btn home-btn-quiet" href="./cornerstone-mtss.html?play=1#wordquest">Student</a>
             </div>
-            <div id="home-all-options" class="home-all-options hidden"></div>
           </div>
           <aside class="home-sequencer-right" aria-label="Word Quest demo">
             <div id="home-wordquest-demo" class="home-wordquest-demo"></div>
@@ -63,12 +59,6 @@
   <script src="./home-v3.js?v=20260302b"></script>
   <script src="./build-stamp.js?v=20260302b"></script>
   <script src="./js/build-badge.js?v=20260302b"></script>
-  <!-- Legacy regression sentinel: <input id="focus-inline-search" placeholder="Select your quest or track"> -->
-  <!-- Legacy regression sentinel: <button id="new-game-btn">Next Word</button> -->
-  <!-- Legacy regression sentinel: <div id="hint-clue-title">Sound Clue</div> -->
-  <!-- Legacy regression sentinel: <div id="starter-word-title">Try a Starter Word</div> -->
-  <!-- Legacy regression sentinel: <div id="modal-challenge-launch-helper">Optional after each solved word. Complete 3 quick steps.</div> -->
-  <!-- Legacy regression sentinel: <button id="session-copy-outcomes-btn">Copy Session Outcomes</button> -->
   <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
 </body>
 </html>

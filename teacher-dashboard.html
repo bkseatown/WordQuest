@@ -50,9 +50,7 @@
             <button id="td-coach-chip" class="td-top-btn td-coach-chip" type="button">Coach</button>
             <span id="td-demo-badge" class="tier-badge tier-2 hidden" aria-live="polite">Demo data</span>
             <button id="td-admin-demo" class="td-top-btn" type="button">Admin Demo</button>
-            <button id="td-meeting-mode" class="td-top-btn" type="button">Meeting Notes</button>
-            <button id="td-enter-meeting-mode" class="td-top-btn" type="button">Enter Meeting Mode</button>
-            <button id="td-generate-summary" class="td-top-btn" type="button">Generate Meeting Summary</button>
+            <button id="td-meeting-workspace" class="td-top-btn" type="button">Meeting &amp; Reports</button>
             <button id="td-tier1-pack" class="td-top-btn" type="button">Tier 1 Evidence</button>
             <button id="td-sas-library-btn" class="td-top-btn" type="button">SAS Library</button>
             <button id="td-import-export" class="td-top-btn" type="button">Import/Export</button>
@@ -64,6 +62,12 @@
 
     <section class="td-body">
       <main class="dashboard" aria-label="Dashboard decision layer">
+        <section class="dashboard-mode-strip card td-surface" aria-label="Workflow mode">
+          <button id="td-mode-daily" class="td-top-btn is-active" type="button">Daily</button>
+          <button id="td-mode-advanced" class="td-top-btn" type="button">Advanced</button>
+          <button id="td-mode-reports" class="td-top-btn" type="button">Reports</button>
+          <button id="td-mode-classroom" class="td-top-btn" type="button">Classroom Mode</button>
+        </section>
         <section class="dashboard-focus">
           <article class="focus-card card td-surface">
             <p class="dashboard-kicker">Today's Focus</p>
@@ -88,7 +92,10 @@
                 <span>Framework Alignment</span><strong id="td-exp-frameworks">--</strong>
               </div>
             </details>
-            <button id="td-focus-start-btn" class="btn-primary td-top-btn focus-start" type="button">Start Session</button>
+            <div class="focus-actions">
+              <button id="td-focus-start-btn" class="btn-primary td-top-btn focus-start" type="button">Start Recommended Session</button>
+              <button id="td-focus-view-details-btn" class="td-top-btn" type="button">View Details</button>
+            </div>
           </article>
           <article class="focus-card card td-surface numeracy-focus-card" aria-labelledby="td-num-title">
             <p class="dashboard-kicker">Numeracy Recommendation</p>
@@ -208,6 +215,10 @@
             <button class="launch-card td-top-btn" data-quick="numeracy" type="button">Numeracy</button>
           </div>
         </section>
+        <footer class="dashboard-confidence card td-surface" aria-label="System confidence">
+          <h2 class="dashboard-section-title">Today's System Confidence</h2>
+          <p id="td-confidence-line">Tier signal stable • Fidelity tracking active • Curriculum alignment active</p>
+        </footer>
       </main>
 
       <section id="td-compat-sink" class="td-compat-sink hidden" aria-hidden="true">
@@ -323,6 +334,12 @@
       </div>
       <p class="td-reco-line td-meeting-privacy">Local-only. No recordings uploaded. Confirm meeting consent before device transcription.</p>
       <div class="td-plan-tabs">
+        <button id="td-workspace-tab-summary" class="td-top-btn is-active" type="button">Summary</button>
+        <button id="td-workspace-tab-deck" class="td-top-btn" type="button">Deck</button>
+        <button id="td-workspace-tab-notes" class="td-top-btn" type="button">Notes</button>
+        <button id="td-workspace-tab-export" class="td-top-btn" type="button">Export</button>
+      </div>
+      <div class="td-plan-tabs">
         <select id="td-meeting-type" class="td-top-btn">
           <option value="SSM">SSM</option>
           <option value="MDT">MDT</option>
@@ -356,6 +373,8 @@
       <textarea id="td-meeting-notes" class="td-share-preview" placeholder="Agenda, concerns, strengths, data reviewed..."></textarea>
       <textarea id="td-meeting-actions" class="td-share-preview" placeholder="Action items (one per line)"></textarea>
       <div id="td-meeting-translation-badge" class="td-meeting-translation-badge hidden">Translated from English</div>
+      <div id="td-workspace-summary-panel" class="td-report-preview"></div>
+      <article id="td-workspace-deck-panel" class="td-meeting-deck-slide hidden"></article>
       <textarea id="td-meeting-preview" class="td-share-preview" readonly placeholder="Generated narrative (English canonical output)"></textarea>
       <textarea id="td-meeting-translation-preview" class="td-share-preview hidden" placeholder="Live translation preview (editable before save)"></textarea>
       <div class="td-plan-tabs">
@@ -371,56 +390,6 @@
         <button id="td-meeting-save" class="td-btn td-btn-primary btn btn-quiet" type="button">Save Meeting</button>
         <button id="td-meeting-goals" class="td-btn td-btn-ghost btn btn-quiet" type="button">Convert to Goals</button>
       </div>
-    </div>
-  </div>
-
-  <div id="td-report-modal" class="td-modal hidden" role="dialog" aria-modal="true" aria-labelledby="td-report-title">
-    <div class="td-modal-card td-report-modal-card">
-      <div class="td-modal-head">
-        <h2 id="td-report-title" class="td-section-title">Meeting Summary Preview</h2>
-        <button id="td-report-close" class="td-top-btn" type="button">Close</button>
-      </div>
-      <div class="td-plan-tabs">
-        <label class="td-meeting-label" for="td-report-language">Translation</label>
-        <select id="td-report-language" class="td-top-btn">
-          <option value="en">English</option>
-          <option value="zh">Mandarin</option>
-          <option value="es">Spanish</option>
-          <option value="hi">Hindi</option>
-        </select>
-      </div>
-      <div id="td-report-preview" class="td-report-preview" aria-live="polite"></div>
-      <div class="td-modal-actions">
-        <button id="td-report-copy" class="td-btn td-btn-primary btn btn-quiet" type="button">Copy to Clipboard</button>
-        <button id="td-report-download-pdf" class="td-btn td-btn-ghost btn btn-quiet" type="button">Download PDF</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="td-meeting-deck-modal" class="td-modal hidden" role="dialog" aria-modal="true" aria-labelledby="td-meeting-deck-title">
-    <div class="td-modal-card td-meeting-deck-card">
-      <div class="td-modal-head">
-        <h2 id="td-meeting-deck-title" class="td-section-title">Institutional Meeting Mode</h2>
-        <button id="td-meeting-deck-close" class="td-top-btn" type="button">Close</button>
-      </div>
-      <div class="td-meeting-deck-controls">
-        <button id="td-meeting-deck-prev" class="td-top-btn" type="button" aria-label="Previous slide">← Prev</button>
-        <span id="td-meeting-deck-counter" class="td-chip">Slide 1 of 7</span>
-        <button id="td-meeting-deck-next" class="td-top-btn" type="button" aria-label="Next slide">Next →</button>
-        <label class="td-meeting-label" for="td-meeting-deck-language">Language</label>
-        <select id="td-meeting-deck-language" class="td-top-btn">
-          <option value="en" selected>English</option>
-          <option value="zh">Mandarin</option>
-          <option value="es">Spanish</option>
-          <option value="hi">Hindi</option>
-        </select>
-        <button id="td-meeting-deck-concern" class="td-top-btn" type="button">Students of Concern Mode</button>
-        <button id="td-meeting-deck-copy" class="td-top-btn" type="button">Copy summary text</button>
-        <button id="td-meeting-deck-json" class="td-top-btn" type="button">Download structured JSON</button>
-        <button id="td-meeting-deck-pdf" class="td-top-btn" type="button">Export to PDF</button>
-        <button id="td-meeting-deck-print" class="td-top-btn" type="button">Print-friendly view</button>
-      </div>
-      <article id="td-meeting-deck-slide" class="td-meeting-deck-slide" aria-live="polite"></article>
     </div>
   </div>
 
