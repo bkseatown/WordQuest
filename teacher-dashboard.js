@@ -43,6 +43,7 @@
   var DashboardUI = window.CSDashboardUI;
   var DashboardFocus = window.CSDashboardFocus;
   var DashboardMeeting = window.CSDashboardMeeting;
+  var DashboardModals = window.CSDashboardModals;
   var SupportStore = window.CSSupportStore;
   var MeetingNotes = window.CSMeetingNotes;
   var MeetingTranslation = window.CSMeetingTranslation;
@@ -276,6 +277,19 @@
     numFrameworkBadges: document.getElementById("td-num-framework-badges"),
     buildline: document.getElementById("td-buildline")
   };
+  var modalController = DashboardModals && typeof DashboardModals.create === "function"
+    ? DashboardModals.create()
+    : null;
+  var bootContext = (function readBootContext() {
+    try {
+      var params = new URLSearchParams(window.location.search || "");
+      return {
+        student: String(params.get("student") || "").trim()
+      };
+    } catch (_e) {
+      return { student: "" };
+    }
+  })();
 
   function getFrameworkAlignmentSafe(skillNode) {
     if (!FrameworkRegistry || typeof FrameworkRegistry.getFrameworkAlignment !== "function") {
@@ -943,12 +957,7 @@
   }
 
   function isAdminContext() {
-    try {
-      var params = new URLSearchParams(window.location.search || "");
-      return params.get("admin") === "1";
-    } catch (_e) {
-      return false;
-    }
+    return getRuntimeRole() === "admin";
   }
 
   function escAttr(value) {
@@ -3298,7 +3307,7 @@
   }
 
   function closeShareModal() {
-    if (el.shareModal) el.shareModal.classList.add("hidden");
+    if (modalController) modalController.hide("share");
   }
 
   function openShareModal(studentId) {
@@ -3306,7 +3315,7 @@
     var payload = buildSharePayload(studentId);
     state.sharePayload = payload;
     el.sharePreview.value = payload.text;
-    el.shareModal.classList.remove("hidden");
+    if (modalController) modalController.show("share");
   }
 
   function openMeetingModal() {
@@ -3362,11 +3371,7 @@
     if (el.meetingSttStop) el.meetingSttStop.disabled = true;
     renderMeetingOutput();
     setWorkspaceTab("summary");
-    if (el.meetingModal) el.meetingModal.classList.add("is-opening");
-    el.meetingModal.classList.remove("hidden");
-    setTimeout(function () {
-      if (el.meetingModal) el.meetingModal.classList.remove("is-opening");
-    }, 220);
+    if (modalController) modalController.show("meeting", { openingClass: "is-opening", openingMs: 220 });
   }
 
   function closeMeetingModal() {
@@ -3376,7 +3381,7 @@
     } else {
       appState.updateMeetingWorkspace({ open: false });
     }
-    if (el.meetingModal) el.meetingModal.classList.add("hidden");
+    if (modalController) modalController.hide("meeting");
   }
 
   function insertAtCursor(text) {
@@ -3678,14 +3683,14 @@
   }
 
   function closeSasLibraryModal() {
-    if (el.sasLibraryModal) el.sasLibraryModal.classList.add("hidden");
+    if (modalController) modalController.hide("sas-library");
   }
 
   function openSasLibraryModal() {
     if (!el.sasLibraryModal) return;
     if (!SASLibrary || typeof SASLibrary.ensureLoaded !== "function") {
       if (el.sasDetail) el.sasDetail.textContent = "SAS library module unavailable.";
-      el.sasLibraryModal.classList.remove("hidden");
+      if (modalController) modalController.show("sas-library");
       return;
     }
     SASLibrary.ensureLoaded().then(function (loaded) {
@@ -3693,11 +3698,11 @@
       state.sasSelection = null;
       if (el.sasApplyPlan) el.sasApplyPlan.disabled = true;
       renderSasLibraryResults();
-      el.sasLibraryModal.classList.remove("hidden");
+      if (modalController) modalController.show("sas-library");
     }).catch(function (err) {
       if (el.sasDetail) el.sasDetail.textContent = "SAS alignment pack unavailable. Run npm run sas:build. (" + String(err && err.message || "load error") + ")";
       if (el.sasList) el.sasList.innerHTML = "";
-      el.sasLibraryModal.classList.remove("hidden");
+      if (modalController) modalController.show("sas-library");
     });
   }
 
@@ -3949,11 +3954,7 @@
   }
 
   function currentStudentParam() {
-    try {
-      var sid = new URLSearchParams(window.location.search).get("student");
-      if (sid) return sid;
-    } catch (_e) {}
-    return state.selectedId || "";
+    return state.selectedId || bootContext.student || "";
   }
 
   function appendStudentParam(url, overrideStudentId) {
@@ -3999,6 +4000,16 @@
   }
 
   function bindEvents() {
+    if (modalController) {
+      modalController.register("share", el.shareModal);
+      modalController.register("meeting", el.meetingModal, stopMeetingRecognition);
+      modalController.register("sas-library", el.sasLibraryModal);
+      modalController.bindBackdropClose("share");
+      modalController.bindBackdropClose("meeting");
+      modalController.bindBackdropClose("sas-library");
+      modalController.closeOnEscape();
+    }
+
     el.search.addEventListener("input", function () { filterCaseload(el.search.value || ""); });
     el.importExport.addEventListener("click", handleImportExport);
     el.addStudent.addEventListener("click", addStudentQuick);
@@ -4118,7 +4129,8 @@
         copyText(url.toString(), function () {
           if (!navigator.clipboard) {
             if (el.sharePreview) el.sharePreview.value = url.toString();
-            if (el.shareModal) el.shareModal.classList.remove("hidden");
+            if (modalController) modalController.show("share");
+            else if (el.shareModal) el.shareModal.classList.remove("hidden");
             setCoachLine("Link ready in modal for manual copy.");
             return;
           }
@@ -4129,11 +4141,6 @@
 
     if (el.shareModalClose) {
       el.shareModalClose.addEventListener("click", closeShareModal);
-    }
-    if (el.shareModal) {
-      el.shareModal.addEventListener("click", function (event) {
-        if (event.target === el.shareModal) closeShareModal();
-      });
     }
     if (el.shareCopy) {
       el.shareCopy.addEventListener("click", function () {
@@ -4168,11 +4175,6 @@
     }
     if (el.meetingClose) {
       el.meetingClose.addEventListener("click", closeMeetingModal);
-    }
-    if (el.meetingModal) {
-      el.meetingModal.addEventListener("click", function (event) {
-        if (event.target === el.meetingModal) closeMeetingModal();
-      });
     }
     if (el.workspaceTabSummary) {
       el.workspaceTabSummary.addEventListener("click", function () { setWorkspaceTab("summary"); });
@@ -4364,11 +4366,6 @@
     }
     if (el.sasLibraryClose) {
       el.sasLibraryClose.addEventListener("click", closeSasLibraryModal);
-    }
-    if (el.sasLibraryModal) {
-      el.sasLibraryModal.addEventListener("click", function (event) {
-        if (event.target === el.sasLibraryModal) closeSasLibraryModal();
-      });
     }
     if (el.sasSearch) {
       el.sasSearch.addEventListener("input", function () {
@@ -4656,10 +4653,7 @@
   setupCoachRibbon();
   updateAuditMarkers();
   var initial = (function () {
-    try {
-      var sid = new URLSearchParams(window.location.search).get("student");
-      if (sid) return sid;
-    } catch (_e) {}
+    if (bootContext.student) return bootContext.student;
     return state.caseload[0] && state.caseload[0].id || "";
   })();
   selectStudent(initial);
