@@ -1323,6 +1323,10 @@ html[data-home-mode="play"] #new-game-btn {
   display: inline-flex !important;
 }
 
+html[data-home-mode="play"] #teacher-dashboard-btn {
+  display: inline-flex !important;
+}
+
 html[data-home-mode="play"] .header-icon-controls > * {
   display: none !important;
 }

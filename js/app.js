@@ -7056,7 +7056,7 @@
   _el('teacher-open-writing-studio-btn')?.addEventListener('click', openWritingStudioPage);
   _el('teacher-open-sentence-surgery-btn')?.addEventListener('click', openSentenceSurgeryPage);
   _el('teacher-open-reading-lab-btn')?.addEventListener('click', openReadingLabPage);
-  _el('teacher-dashboard-btn')?.addEventListener('click', () => routeTo('dashboard'));
+  _el('teacher-dashboard-btn')?.addEventListener('click', openTeacherDashboardPage);
   _el('play-tools-btn')?.addEventListener('click', togglePlayToolsDrawer);
   _el('play-drawer-close')?.addEventListener('click', () => {
     _el('play-tools-drawer')?.classList.add('hidden');
