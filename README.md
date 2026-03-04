@@ -96,6 +96,15 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 5. Run smoke test.
 6. Commit only after pass/fail report is clean.
 
+## Industry UI/UX Audit Commands
+- Accessibility (serious/critical WCAG A/AA): `npm run audit:a11y`
+- Core Web Vitals budget checks: `npm run audit:performance`
+- Visual baseline capture: `npm run test:visual:update`
+- Visual regression check: `npm run test:visual:regression`
+- Cross-browser runtime + a11y matrix: `npm run audit:matrix`
+- Full audit bundle: `npm run audit:industry`
+- Audit stack details: [INDUSTRY_EVALUATION_STACK.md](/Users/robertwilliamknaus/Desktop/WordQuest/docs/INDUSTRY_EVALUATION_STACK.md)
+
 ## Request Template For Future Edits
 - `Surface`:
 - `Intent`:
