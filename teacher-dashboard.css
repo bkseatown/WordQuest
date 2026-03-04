@@ -30,6 +30,20 @@ body.td-page {
   padding-top: 0 !important;
 }
 
+body.td-meeting-mode .dashboard-queue,
+body.td-meeting-mode .dashboard-launch,
+body.td-meeting-mode #td-coach-ribbon {
+  display: none !important;
+}
+
+body.td-meeting-mode .dashboard-focus {
+  grid-template-columns: 1fr;
+}
+
+body.td-meeting-mode .focus-card {
+  font-size: calc(var(--fs-base) * 1.05);
+}
+
 /* Nav shell offset must live on dashboard shell, not document padding. */
 body.td-page.cs-has-nav-shell {
   padding-top: 0 !important;
@@ -1689,6 +1703,60 @@ body.cs-has-nav-shell .td-shell {
 
 .td-report-modal-card {
   width: min(860px, calc(100vw - 24px));
+}
+
+.td-meeting-deck-card {
+  width: min(980px, calc(100vw - 28px));
+  max-height: min(92vh, 980px);
+  background: #ffffff;
+}
+
+.td-meeting-deck-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.td-meeting-deck-slide {
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-3);
+  background: #ffffff;
+  padding: 20px;
+  min-height: 420px;
+  max-height: 62vh;
+  overflow: auto;
+}
+
+.td-meeting-deck-slide h3 {
+  margin: 0 0 10px;
+  font-size: clamp(1.45rem, 2.2vw, 1.7rem);
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.td-meeting-deck-slide p {
+  margin: 0 0 8px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.td-meeting-deck-slide ul {
+  margin: 0 0 10px;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+}
+
+.td-meeting-deck-note {
+  margin-top: 8px;
+  border-top: 1px solid var(--surface-border);
+  padding-top: 8px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
 }
 
 .td-report-preview {
