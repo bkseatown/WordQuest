@@ -28,6 +28,7 @@
   var NumeracyPracticeEngine = window.CSNumeracyPracticeEngine;
   var CurriculumMap = window.CSCurriculumMap;
   var ReportingGenerator = window.CSReportingGenerator;
+  var MeetingGenerator = window.CSMeetingGenerator;
   var FrameworkRegistry = window.CSFrameworkRegistry;
   var TierEngine = window.CSTierEngine;
   var FidelityEngine = window.CSFidelity;
@@ -67,7 +68,10 @@
     meetingLanguage: "en",
     liveTranslate: false,
     reportDraft: null,
-    numeracyMapLoaded: false
+    numeracyMapLoaded: false,
+    meetingDeck: [],
+    meetingDeckIndex: 0,
+    meetingDeckConcernMode: false
   };
   var skillStoreLogged = false;
 
@@ -96,6 +100,7 @@
     quickCheck: document.getElementById("td-quick-check"),
     startIntervention: document.getElementById("td-start-intervention"),
     meetingModeBtn: document.getElementById("td-meeting-mode"),
+    enterMeetingModeBtn: document.getElementById("td-enter-meeting-mode"),
     generateSummaryBtn: document.getElementById("td-generate-summary"),
     tier1PackBtn: document.getElementById("td-tier1-pack"),
     openStudentDrawer: document.getElementById("td-open-student-drawer"),
@@ -142,6 +147,18 @@
     reportPreview: document.getElementById("td-report-preview"),
     reportCopy: document.getElementById("td-report-copy"),
     reportDownloadPdf: document.getElementById("td-report-download-pdf"),
+    meetingDeckModal: document.getElementById("td-meeting-deck-modal"),
+    meetingDeckClose: document.getElementById("td-meeting-deck-close"),
+    meetingDeckPrev: document.getElementById("td-meeting-deck-prev"),
+    meetingDeckNext: document.getElementById("td-meeting-deck-next"),
+    meetingDeckCounter: document.getElementById("td-meeting-deck-counter"),
+    meetingDeckLanguage: document.getElementById("td-meeting-deck-language"),
+    meetingDeckConcern: document.getElementById("td-meeting-deck-concern"),
+    meetingDeckCopy: document.getElementById("td-meeting-deck-copy"),
+    meetingDeckJson: document.getElementById("td-meeting-deck-json"),
+    meetingDeckPdf: document.getElementById("td-meeting-deck-pdf"),
+    meetingDeckPrint: document.getElementById("td-meeting-deck-print"),
+    meetingDeckSlide: document.getElementById("td-meeting-deck-slide"),
     sasLibraryBtn: document.getElementById("td-sas-library-btn"),
     sasLibraryModal: document.getElementById("td-sas-library-modal"),
     sasLibraryClose: document.getElementById("td-sas-library-close"),
@@ -756,6 +773,137 @@
       "<section><h3>Recommended Next Steps</h3><ul>" + nextSteps.map(function (step) { return "<li>" + escHtml(step) + "</li>"; }).join("") + "</ul></section>",
       "<section><h3>Parent Summary</h3><p>" + escHtml(translated.parentSummary || "") + "</p></section>"
     ].join("");
+  }
+
+  function buildReportingContext(row) {
+    var summary = Evidence && typeof Evidence.getStudentSummary === "function" ? Evidence.getStudentSummary(state.selectedId) : null;
+    var student = summary && summary.student ? summary.student : {};
+    var numeracy = latestNumeracyRecommendation(row);
+    var tierSignal = computeTierSignalForRow(row);
+    var tierInput = tierSignal.input || {};
+    var literacyFrameworks = frameworkListFromAlignment(getFrameworkAlignmentSafe(summary ? summary.focus : "literacy"));
+    var numeracyFrameworks = frameworkListFromAlignment(getFrameworkAlignmentSafe(numeracy.contentFocus || "numeracy"));
+    var curriculumLine = el.numCurriculumLine ? String(el.numCurriculumLine.textContent || "").trim() : "";
+    var literacyData = {
+      focus: summary ? String(summary.focus || "Foundational literacy") : "Foundational literacy",
+      growth: summary && summary.metrics ? Number(summary.metrics.weekDelta || 0.12) : 0.12,
+      nextStep: summary && summary.nextMove ? String(summary.nextMove.line || "Continue targeted literacy support.") : "Continue targeted literacy support.",
+      tier: String(tierSignal.tierLevel || (summary && summary.metrics ? summary.metrics.tierLabel : "Tier 2")),
+      recentAccuracy: Number(tierInput.recentAccuracy || 0.72),
+      goalAccuracy: Number(tierInput.goalAccuracy || 0.8),
+      stableCount: Number(tierInput.stableCount || 2),
+      weeksInIntervention: Number(tierInput.weeksInIntervention || 6),
+      fidelitySummary: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 },
+      curriculumAlignment: "Literacy sequencing aligned to active instructional pathways.",
+      frameworkAlignment: literacyFrameworks
+    };
+    var numeracyData = {
+      contentFocus: numeracy.contentFocus,
+      strategyStage: numeracy.strategyStage,
+      practiceMode: numeracy.practiceMode,
+      tierSignal: numeracy.tierSignal,
+      recommendedAction: numeracy.recommendedAction,
+      fidelitySummary: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 },
+      curriculumAlignment: curriculumLine || "Numeracy sequencing aligned to active instructional pathways.",
+      frameworkAlignment: numeracyFrameworks
+    };
+    var studentProfile = {
+      id: String(student.id || state.selectedId),
+      name: String(student.name || "Student"),
+      grade: String(student.grade || "G5"),
+      tier: literacyData.tier,
+      recentAccuracy: Number(tierInput.recentAccuracy || 0.72),
+      goalAccuracy: Number(tierInput.goalAccuracy || 0.8),
+      stableCount: Number(tierInput.stableCount || 2),
+      weeksInIntervention: Number(tierInput.weeksInIntervention || 6)
+    };
+    return {
+      summary: summary,
+      studentProfile: studentProfile,
+      literacyData: literacyData,
+      numeracyData: numeracyData,
+      tierSignal: tierSignal,
+      fidelityData: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 }
+    };
+  }
+
+  function meetingDeckLanguage() {
+    return el.meetingDeckLanguage ? String(el.meetingDeckLanguage.value || "en") : "en";
+  }
+
+  function translateSlideBlock(text, language) {
+    if (language === "en") return text;
+    if (!ReportingGenerator || typeof ReportingGenerator.translateReport !== "function") {
+      return "[" + language + " placeholder] " + text;
+    }
+    var translated = ReportingGenerator.translateReport({ parentSummary: text }, language);
+    return String(translated && translated.parentSummary || text);
+  }
+
+  function renderMeetingDeckSlide() {
+    if (!el.meetingDeckSlide) return;
+    var deck = Array.isArray(state.meetingDeck) ? state.meetingDeck : [];
+    if (!deck.length) {
+      el.meetingDeckSlide.innerHTML = "<h3>No slides available</h3><p>Select a student to generate meeting slides.</p>";
+      if (el.meetingDeckCounter) el.meetingDeckCounter.textContent = "Slide 0 of 0";
+      return;
+    }
+    state.meetingDeckIndex = Math.max(0, Math.min(deck.length - 1, Number(state.meetingDeckIndex || 0)));
+    var slide = deck[state.meetingDeckIndex] || { title: "Slide", contentBlocks: [], notes: "" };
+    var language = meetingDeckLanguage();
+    var blocks = Array.isArray(slide.contentBlocks) ? slide.contentBlocks : [];
+    var renderedBlocks = blocks.map(function (block) { return translateSlideBlock(String(block || ""), language); });
+    el.meetingDeckSlide.innerHTML = [
+      "<h3>" + escHtml(slide.title || "Slide") + "</h3>",
+      "<ul>" + renderedBlocks.map(function (line) { return "<li>" + escHtml(line) + "</li>"; }).join("") + "</ul>",
+      "<p class=\"td-meeting-deck-note\"><strong>Presenter notes:</strong> " + escHtml(slide.notes || "") + "</p>"
+    ].join("");
+    if (el.meetingDeckCounter) {
+      el.meetingDeckCounter.textContent = "Slide " + (state.meetingDeckIndex + 1) + " of " + deck.length;
+    }
+  }
+
+  function buildMeetingDeckText(language) {
+    var deck = Array.isArray(state.meetingDeck) ? state.meetingDeck : [];
+    var lines = [];
+    deck.forEach(function (slide, idx) {
+      lines.push("Slide " + (idx + 1) + ": " + String(slide.title || ""));
+      (Array.isArray(slide.contentBlocks) ? slide.contentBlocks : []).forEach(function (block) {
+        lines.push("- " + translateSlideBlock(String(block || ""), language));
+      });
+      lines.push("Notes: " + String(slide.notes || ""));
+      lines.push("");
+    });
+    return lines.join("\n");
+  }
+
+  function openMeetingDeckMode() {
+    if (!el.meetingDeckModal || !state.selectedId) return;
+    var row = getSelectedPlanRow();
+    var ctx = buildReportingContext(row);
+    if (ReportingGenerator && typeof ReportingGenerator.generateStudentReport === "function") {
+      state.reportDraft = ReportingGenerator.generateStudentReport(ctx.studentProfile, ctx.literacyData, ctx.numeracyData);
+    }
+    if (!MeetingGenerator || typeof MeetingGenerator.generateMeetingDeck !== "function") return;
+    state.meetingDeckConcernMode = false;
+    state.meetingDeck = MeetingGenerator.generateMeetingDeck({
+      studentProfile: ctx.studentProfile,
+      literacyData: ctx.literacyData,
+      numeracyData: ctx.numeracyData,
+      tierSignal: ctx.tierSignal,
+      fidelityData: ctx.fidelityData,
+      parentSummary: state.reportDraft && state.reportDraft.parentSummary
+    }) || [];
+    state.meetingDeckIndex = 0;
+    if (el.meetingDeckConcern) el.meetingDeckConcern.textContent = "Students of Concern Mode";
+    document.body.classList.add("td-meeting-mode");
+    el.meetingDeckModal.classList.remove("hidden");
+    renderMeetingDeckSlide();
+  }
+
+  function closeMeetingDeckMode() {
+    if (el.meetingDeckModal) el.meetingDeckModal.classList.add("hidden");
+    document.body.classList.remove("td-meeting-mode");
   }
 
   function openReportModal() {
@@ -4227,6 +4375,12 @@
         openMeetingModal();
       });
     }
+    if (el.enterMeetingModeBtn) {
+      el.enterMeetingModeBtn.addEventListener("click", function () {
+        if (!state.selectedId) return;
+        openMeetingDeckMode();
+      });
+    }
     if (el.generateSummaryBtn) {
       el.generateSummaryBtn.addEventListener("click", function () {
         if (!state.selectedId) return;
@@ -4269,6 +4423,91 @@
         var sid = state.selectedId || "student";
         download("meeting-summary-" + sid + ".pdf.txt", text, "text/plain");
         setCoachLine("PDF export stub downloaded as text payload.");
+      });
+    }
+    if (el.meetingDeckClose) {
+      el.meetingDeckClose.addEventListener("click", closeMeetingDeckMode);
+    }
+    if (el.meetingDeckModal) {
+      el.meetingDeckModal.addEventListener("click", function (event) {
+        if (event.target === el.meetingDeckModal) closeMeetingDeckMode();
+      });
+    }
+    if (el.meetingDeckPrev) {
+      el.meetingDeckPrev.addEventListener("click", function () {
+        state.meetingDeckIndex = Math.max(0, Number(state.meetingDeckIndex || 0) - 1);
+        renderMeetingDeckSlide();
+      });
+    }
+    if (el.meetingDeckNext) {
+      el.meetingDeckNext.addEventListener("click", function () {
+        var max = Math.max(0, (Array.isArray(state.meetingDeck) ? state.meetingDeck.length : 1) - 1);
+        state.meetingDeckIndex = Math.min(max, Number(state.meetingDeckIndex || 0) + 1);
+        renderMeetingDeckSlide();
+      });
+    }
+    if (el.meetingDeckLanguage) {
+      el.meetingDeckLanguage.addEventListener("change", function () {
+        renderMeetingDeckSlide();
+      });
+    }
+    if (el.meetingDeckConcern) {
+      el.meetingDeckConcern.addEventListener("click", function () {
+        var row = getSelectedPlanRow();
+        var ctx = buildReportingContext(row);
+        if (!MeetingGenerator || typeof MeetingGenerator.generateConcernSummary !== "function" || typeof MeetingGenerator.generateMeetingDeck !== "function") return;
+        if (state.meetingDeckConcernMode) {
+          state.meetingDeck = MeetingGenerator.generateMeetingDeck({
+            studentProfile: ctx.studentProfile,
+            literacyData: ctx.literacyData,
+            numeracyData: ctx.numeracyData,
+            tierSignal: ctx.tierSignal,
+            fidelityData: ctx.fidelityData,
+            parentSummary: state.reportDraft && state.reportDraft.parentSummary
+          }) || [];
+          state.meetingDeckConcernMode = false;
+          el.meetingDeckConcern.textContent = "Students of Concern Mode";
+        } else {
+          state.meetingDeck = MeetingGenerator.generateConcernSummary({
+            studentProfile: ctx.studentProfile,
+            tierSignal: ctx.tierSignal,
+            fidelityData: ctx.fidelityData,
+            recommendation: ctx.numeracyData.recommendedAction
+          }) || [];
+          state.meetingDeckConcernMode = true;
+          el.meetingDeckConcern.textContent = "Full Deck Mode";
+        }
+        state.meetingDeckIndex = 0;
+        renderMeetingDeckSlide();
+      });
+    }
+    if (el.meetingDeckCopy) {
+      el.meetingDeckCopy.addEventListener("click", function () {
+        var lang = meetingDeckLanguage();
+        var text = buildMeetingDeckText(lang);
+        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+        setCoachLine("Meeting deck summary copied.");
+      });
+    }
+    if (el.meetingDeckJson) {
+      el.meetingDeckJson.addEventListener("click", function () {
+        var sid = state.selectedId || "student";
+        download("meeting-deck-" + sid + ".json", JSON.stringify(state.meetingDeck || [], null, 2), "application/json");
+        setCoachLine("Structured meeting deck JSON downloaded.");
+      });
+    }
+    if (el.meetingDeckPdf) {
+      el.meetingDeckPdf.addEventListener("click", function () {
+        var sid = state.selectedId || "student";
+        var lang = meetingDeckLanguage();
+        var text = buildMeetingDeckText(lang);
+        download("meeting-deck-" + sid + ".pdf.txt", text, "text/plain");
+        setCoachLine("PDF export stub downloaded.");
+      });
+    }
+    if (el.meetingDeckPrint) {
+      el.meetingDeckPrint.addEventListener("click", function () {
+        window.print();
       });
     }
     if (el.tier1PackBtn) {
@@ -4395,6 +4634,26 @@
   void loadIllustrativeMathMapData();
   initNumeracyCurriculumSelectors();
   document.addEventListener("keydown", function (event) {
+    if (el.meetingDeckModal && !el.meetingDeckModal.classList.contains("hidden")) {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        state.meetingDeckIndex = Math.max(0, Number(state.meetingDeckIndex || 0) - 1);
+        renderMeetingDeckSlide();
+        return;
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        var max = Math.max(0, (Array.isArray(state.meetingDeck) ? state.meetingDeck.length : 1) - 1);
+        state.meetingDeckIndex = Math.min(max, Number(state.meetingDeckIndex || 0) + 1);
+        renderMeetingDeckSlide();
+        return;
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMeetingDeckMode();
+        return;
+      }
+    }
     if (event.key === "H" && event.shiftKey) {
       var tag = event.target && event.target.tagName ? String(event.target.tagName).toLowerCase() : "";
       if (tag === "input" || tag === "textarea" || (event.target && event.target.isContentEditable)) return;
