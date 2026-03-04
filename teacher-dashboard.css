@@ -297,7 +297,7 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .dashboard-focus {
-  flex: 0 0 48%;
+  flex: 1 1 52%;
   min-height: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -337,6 +337,7 @@ body.cs-has-nav-shell .td-shell {
 
 .focus-card {
   height: 100%;
+  min-height: clamp(320px, 48vh, 560px);
   padding: 18px;
   display: flex;
   flex-direction: column;
@@ -521,9 +522,9 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .focus-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
-  justify-content: space-between;
   gap: 10px;
 }
 
@@ -561,6 +562,7 @@ body.cs-has-nav-shell .td-shell {
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: stroke var(--motion-fast) var(--motion-ease), stroke-dashoffset 800ms var(--ease-out);
 }
 
 .focus-delta {
@@ -575,11 +577,13 @@ body.cs-has-nav-shell .td-shell {
   color: var(--text-secondary);
   background: color-mix(in oklab, var(--surface-elev-2) 84%, #deebfa 16%);
   border: 1px solid color-mix(in oklab, var(--surface-border) 68%, transparent);
+  transition: color var(--motion-fast) var(--motion-ease), background-color var(--motion-fast) var(--motion-ease), filter 1200ms var(--ease-out);
 }
 
 .focus-delta-up {
   color: color-mix(in oklab, #2f9e44 70%, var(--text-secondary) 30%);
   background: color-mix(in oklab, #e0f4e7 76%, var(--surface-elev-2) 24%);
+  filter: saturate(1.15);
 }
 
 .focus-delta-steady {
@@ -589,6 +593,7 @@ body.cs-has-nav-shell .td-shell {
 .focus-delta-down {
   color: color-mix(in oklab, #b4534a 70%, var(--text-secondary) 30%);
   background: color-mix(in oklab, #f7e4e1 78%, var(--surface-elev-2) 22%);
+  filter: saturate(0.82);
 }
 
 .focus-right-signals {
@@ -624,7 +629,7 @@ body.cs-has-nav-shell .td-shell {
   stroke-linecap: round;
   stroke-dasharray: 100;
   stroke-dashoffset: 28;
-  transition: stroke-dashoffset 180ms ease-in-out;
+  transition: stroke-dashoffset 760ms var(--ease-out);
 }
 
 .focus-confidence-score {
@@ -686,6 +691,35 @@ body.cs-has-nav-shell .td-shell {
   margin: 0;
   font-size: var(--fs-1);
   color: var(--text-secondary);
+}
+
+.focus-signal-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.focus-signal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 22px;
+  padding: 2px 8px;
+  border-radius: var(--radius-round);
+  border: 1px solid color-mix(in oklab, var(--surface-border) 68%, transparent);
+  background: color-mix(in oklab, var(--surface-elev-2) 82%, transparent);
+  color: var(--text-secondary);
+  font-size: var(--fs-0);
+  line-height: 1.15;
+  font-weight: var(--fw-medium);
+}
+
+.focus-signal-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-round);
+  background: color-mix(in oklab, var(--accent) 70%, var(--surface-elev-2) 30%);
+  display: inline-block;
 }
 
 .focus-fidelity-line.fidelity-good {
@@ -768,6 +802,10 @@ body.cs-has-nav-shell .td-shell {
   transition: transform 200ms ease-in-out, box-shadow 200ms ease-in-out, filter 200ms ease-in-out;
 }
 
+body.td-daily-mode .focus-start:not(.is-launching):not(.is-cta-rest) {
+  animation: tdFocusCtaBreath 3000ms var(--motion-ease) infinite;
+}
+
 .focus-start::after {
   content: "";
   position: absolute;
@@ -798,6 +836,11 @@ body.cs-has-nav-shell .td-shell {
   box-shadow: 0 14px 30px rgba(38, 70, 112, 0.18);
 }
 
+.focus-card.is-switching {
+  opacity: 0.92;
+  transform: translateY(4px);
+}
+
 .focus-engine-cue {
   margin: 0;
   font-size: var(--fs-sm);
@@ -809,6 +852,11 @@ body.cs-has-nav-shell .td-shell {
 @keyframes tdLaunchShimmer {
   from { transform: translateX(-130%); }
   to { transform: translateX(130%); }
+}
+
+@keyframes tdFocusCtaBreath {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.015); }
 }
 
 .dashboard-queue,
@@ -844,6 +892,7 @@ body.td-daily-mode .dashboard-eval {
 
 body.td-daily-mode .dashboard-focus {
   grid-template-columns: 1fr;
+  flex: 1 1 auto;
 }
 
 body.td-daily-mode #td-new-session {
@@ -1205,6 +1254,17 @@ body.td-page .td-modal-card {
   transition: opacity var(--dur-2) ease-in-out, transform var(--dur-2) ease-in-out, box-shadow var(--dur-2) ease-in-out, background-color var(--dur-2) ease-in-out;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .focus-start,
+  .focus-trend-spark path,
+  .focus-confidence-progress,
+  .focus-delta,
+  .focus-card {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
 @media (max-width: 1200px) {
   .queue-list,
   .launch-row {
@@ -1233,6 +1293,10 @@ body.td-page .td-modal-card {
 
   .focus-trend-spark {
     width: 118px;
+  }
+
+  .focus-signal-strip {
+    gap: 5px;
   }
 
   .numeracy-meta-grid {

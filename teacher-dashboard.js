@@ -88,12 +88,15 @@
     meetingDeckConcernMode: false,
     workspaceTab: "summary",
     executiveProfile: null,
-    executivePlan: null
+    executivePlan: null,
+    focusVisualStudentId: "",
+    focusCtaRestTimer: null
   };
   var skillStoreLogged = false;
 
   var LAST_ACTIVITY_KEY = "cs.lastActivityByStudent.v1";
   var DASHBOARD_RUNTIME_KEY = "cs.dashboard.runtime.v1";
+  var FOCUS_RING_RADIUS = 16;
   var appState = DashboardState && typeof DashboardState.create === "function"
     ? DashboardState.create()
     : {
@@ -948,11 +951,44 @@
     }
   }
 
+  function prefersReducedMotion() {
+    try {
+      return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function setFocusCtaRest(ms) {
+    if (!el.focusStartBtn) return;
+    el.focusStartBtn.classList.add("is-cta-rest");
+    if (state.focusCtaRestTimer) {
+      clearTimeout(state.focusCtaRestTimer);
+      state.focusCtaRestTimer = null;
+    }
+    var wait = Math.max(220, Number(ms || 1200));
+    state.focusCtaRestTimer = setTimeout(function () {
+      if (el.focusStartBtn) el.focusStartBtn.classList.remove("is-cta-rest");
+      state.focusCtaRestTimer = null;
+    }, wait);
+  }
+
+  function syncFocusCtaBreathing(mode) {
+    if (!el.focusStartBtn) return;
+    var next = String(mode || "daily").toLowerCase();
+    if (next === "daily") {
+      if (!state.focusCtaRestTimer) el.focusStartBtn.classList.remove("is-cta-rest");
+    } else {
+      setFocusCtaRest(8000);
+    }
+  }
+
   function setDashboardMode(mode) {
     var next = DashboardUI && typeof DashboardUI.applyMode === "function"
       ? DashboardUI.applyMode(mode, el)
       : String(mode || "daily").toLowerCase();
     appState.set({ mode: next });
+    syncFocusCtaBreathing(next);
   }
 
   function applyRoleBasedSimplification() {
@@ -1431,11 +1467,47 @@
     }).join(" ");
   }
 
+  function animateFocusCardSwitch() {
+    if (!el.focusCard || prefersReducedMotion()) return;
+    el.focusCard.classList.remove("is-switching");
+    void el.focusCard.offsetWidth;
+    el.focusCard.classList.add("is-switching");
+    setTimeout(function () {
+      if (el.focusCard) el.focusCard.classList.remove("is-switching");
+    }, 220);
+  }
+
+  function animateFocusSparklineDraw(studentId) {
+    if (!el.focusTrendPath || prefersReducedMotion()) return;
+    var sid = String(studentId || "");
+    if (!sid || sid === state.focusVisualStudentId) return;
+    var path = el.focusTrendPath;
+    var length = 0;
+    try {
+      length = Number(path.getTotalLength ? path.getTotalLength() : 0);
+    } catch (_e) {
+      length = 0;
+    }
+    if (!Number.isFinite(length) || length <= 0) return;
+    path.style.strokeDasharray = String(length.toFixed(2));
+    path.style.strokeDashoffset = String(length.toFixed(2));
+    void path.getBoundingClientRect();
+    path.style.strokeDashoffset = "0";
+    setTimeout(function () {
+      if (!el.focusTrendPath) return;
+      el.focusTrendPath.style.strokeDasharray = "";
+      el.focusTrendPath.style.strokeDashoffset = "";
+    }, 850);
+  }
+
   function renderFocusSignalVisuals(row, signal) {
+    var studentId = row && row.student ? String(row.student.id || "") : "";
+    if (!studentId) state.focusVisualStudentId = "";
     var points = buildFocusSparkline(row, signal);
     if (el.focusTrendPath) {
       el.focusTrendPath.setAttribute("d", buildFocusSparkPath(points));
     }
+    animateFocusSparklineDraw(studentId);
     var first = Number(points[0] || 0);
     var last = Number(points[points.length - 1] || first);
     var delta = last - first;
@@ -1464,11 +1536,20 @@
     var confidenceScore = clamp(Math.round(recent - (goalGap * 0.3) - needPenalty + fidelityBoost + 28), 42, 97);
     if (el.focusConfidenceScore) el.focusConfidenceScore.textContent = String(confidenceScore) + "%";
     if (el.focusConfidenceProgress) {
-      var circumference = 2 * Math.PI * 16;
+      var circumference = 2 * Math.PI * FOCUS_RING_RADIUS;
       var offset = circumference * (1 - (confidenceScore / 100));
       el.focusConfidenceProgress.style.strokeDasharray = String(circumference.toFixed(2));
-      el.focusConfidenceProgress.style.strokeDashoffset = String(offset.toFixed(2));
+      if (prefersReducedMotion()) {
+        el.focusConfidenceProgress.style.transition = "none";
+      } else {
+        el.focusConfidenceProgress.style.transition = "stroke-dashoffset 760ms var(--ease-out)";
+      }
+      requestAnimationFrame(function () {
+        if (!el.focusConfidenceProgress) return;
+        el.focusConfidenceProgress.style.strokeDashoffset = String(offset.toFixed(2));
+      });
     }
+    if (studentId) state.focusVisualStudentId = studentId;
   }
 
   function focusWhyLineFromSignal(signal, row) {
@@ -1501,6 +1582,7 @@
   function renderSurgicalDashboard(rows) {
     var list = Array.isArray(rows) ? rows.slice(0, 3) : [];
     if (!list.length) {
+      state.focusVisualStudentId = "";
       if (el.focusStudentName) el.focusStudentName.textContent = "Select a student";
       if (el.focusTierLine) el.focusTierLine.textContent = "Tier 2 focus";
       setFocusInsight("Search a student to activate a clear next move.");
@@ -1529,6 +1611,11 @@
       : null;
     var tierSignal = computeTierSignalForRow(focus);
     var focusTier = String(tierSignal.tierLevel || "Tier 2");
+    var focusStudentId = String(focusStudent.id || "");
+    if (focusStudentId && focusStudentId !== state.focusVisualStudentId) {
+      animateFocusCardSwitch();
+      setFocusCtaRest(1300);
+    }
 
     if (el.focusStudentName) el.focusStudentName.textContent = String(focusStudent.name || "Select a student");
     if (el.focusTierLine) el.focusTierLine.textContent = focusTier + " focus";
@@ -1551,6 +1638,7 @@
         if (!sid) return;
         selectStudent(sid);
         var href = pickLaunchHrefForRow(focus);
+        setFocusCtaRest(5000);
         el.focusStartBtn.classList.add("is-launching");
         if (el.focusCard) el.focusCard.classList.add("is-engine-active");
         if (el.focusEngineCue) el.focusEngineCue.classList.remove("hidden");
