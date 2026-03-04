@@ -12,6 +12,19 @@
 
   const byId = (id) => document.getElementById(id);
 
+  function setNavHoverNote(el, note) {
+    if (!el) return;
+    const text = String(note || '').replace(/\s+/g, ' ').trim();
+    if (!text) {
+      el.removeAttribute('data-hover-note');
+      el.removeAttribute('title');
+      return;
+    }
+    el.setAttribute('data-hover-note', text);
+    // Avoid native browser tooltip + app hover-note showing conflicting messages.
+    el.removeAttribute('title');
+  }
+
   function getThemeOrder() {
     if (window.WQTheme && typeof window.WQTheme.getOrder === 'function') {
       return window.WQTheme.getOrder();
@@ -74,11 +87,17 @@
 
     if (label) label.textContent = getThemeLabel(current);
     if (labelBtn) {
-      labelBtn.title = `${getThemeLabel(current)} (use arrows to change)`;
       labelBtn.setAttribute('aria-label', `Current style: ${getThemeLabel(current)}. Use arrows to change.`);
+      setNavHoverNote(labelBtn, `${getThemeLabel(current)} (use arrows to change)`);
     }
-    if (prevBtn) prevBtn.title = getThemeLabel(prev);
-    if (nextBtn) nextBtn.title = getThemeLabel(next);
+    if (prevBtn) {
+      prevBtn.setAttribute('aria-label', `Previous style: ${getThemeLabel(prev)}`);
+      setNavHoverNote(prevBtn, `Previous style: ${getThemeLabel(prev)}`);
+    }
+    if (nextBtn) {
+      nextBtn.setAttribute('aria-label', `Next style: ${getThemeLabel(next)}`);
+      setNavHoverNote(nextBtn, `Next style: ${getThemeLabel(next)}`);
+    }
   }
 
   function syncThemeQuickSelectOptions() {

@@ -53,8 +53,22 @@
     barbie: 'poppink'
   });
 
-  var ORDER = Object.freeze(THEME_REGISTRY.map(function toId(theme) {
-    return theme.id;
+  // Curated active list for the current K-8 rollout cohort.
+  var ACTIVE_THEME_IDS = Object.freeze([
+    'coffee',         // 1. Coffeehouse Green
+    'matrix',         // 2. Emerald Grid
+    'seahawks',       // 3. Pacific Flight
+    'huskies',        // 4. Purple Gold Pride
+    'superman',       // 5. Hero Blue-Red
+    'minecraft',      // 6. Pixel Block World
+    'mario',          // 7. Mushroom Sprint
+    'rainbowfriends', // 9. Neon Squad
+    'amongus',        // 10. Cosmic Crew
+    'harrypotter'     // 11. Wizard House
+  ]);
+
+  var ORDER = Object.freeze(ACTIVE_THEME_IDS.filter(function onlyKnownTheme(id) {
+    return themeById.has(id);
   }));
 
   function normalizeTheme(theme, fallback) {
@@ -73,14 +87,17 @@
 
   function renderThemeOptions(select, currentValue) {
     if (!(select instanceof HTMLSelectElement)) return;
-    var preserved = normalizeTheme(currentValue || select.value, DEFAULT_BY_MODE.calm);
+    var fallback = ORDER[0] || DEFAULT_BY_MODE.calm;
+    var preserved = normalizeTheme(currentValue || select.value, fallback);
+    var allowed = new Set(ORDER);
+    if (!allowed.has(preserved) && ORDER.length) preserved = ORDER[0];
     select.innerHTML = '';
 
     FAMILY_ORDER.forEach(function appendFamily(family) {
       var group = document.createElement('optgroup');
       group.label = FAMILY_LABELS[family] || family;
       THEME_REGISTRY.forEach(function appendTheme(theme) {
-        if (theme.family !== family) return;
+        if (theme.family !== family || !allowed.has(theme.id)) return;
         var option = document.createElement('option');
         option.value = theme.id;
         option.textContent = theme.label;
