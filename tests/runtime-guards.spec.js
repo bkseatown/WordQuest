@@ -77,4 +77,49 @@ test.describe('Runtime guardrails', () => {
 
     await context.close();
   });
+
+  test('teacher dashboard enforces single-modal visibility', async ({ page, baseURL }) => {
+    const normalizedBase = String(baseURL || '').endsWith('/') ? String(baseURL) : `${baseURL}/`;
+    const url = new URL('teacher-dashboard.html?audit=1', normalizedBase).toString();
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#td-shell')).toBeVisible();
+
+    await page.waitForSelector('#td-caseload-list [data-student-id]', { state: 'attached', timeout: 5000 });
+    await page.evaluate(() => {
+      const first = document.querySelector('#td-caseload-list [data-student-id]');
+      if (first instanceof HTMLElement) first.click();
+    });
+
+    const visibleModalIds = async () => page.evaluate(() => {
+      return Array.from(document.querySelectorAll('.td-modal'))
+        .filter((node) => !node.classList.contains('hidden'))
+        .map((node) => node.id);
+    });
+
+    const expectOnlyModal = async (expectedId) => {
+      await page.waitForFunction((id) => {
+        const visible = Array.from(document.querySelectorAll('.td-modal'))
+          .filter((node) => !node.classList.contains('hidden'))
+          .map((node) => node.id);
+        return visible.length === 1 && visible[0] === id;
+      }, expectedId, { timeout: 5000 });
+      const ids = await visibleModalIds();
+      expect(ids, `Expected only ${expectedId} visible`).toEqual([expectedId]);
+    };
+
+    await page.click('#td-meeting-workspace');
+    await expectOnlyModal('td-meeting-modal');
+
+    await page.evaluate(() => {
+      const btn = document.getElementById('td-sas-library-btn');
+      if (btn instanceof HTMLElement) btn.click();
+    });
+    await expectOnlyModal('td-sas-library-modal');
+
+    await page.evaluate(() => {
+      const btn = document.getElementById('td-share-summary');
+      if (btn instanceof HTMLElement) btn.click();
+    });
+    await expectOnlyModal('td-share-modal');
+  });
 });

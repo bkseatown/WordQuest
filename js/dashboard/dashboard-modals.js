@@ -5,11 +5,33 @@
     var registry = {};
     var activeName = "";
 
-    function syncBodyState() {
-      var hasVisible = Object.keys(registry).some(function (name) {
+    function listVisibleNames() {
+      return Object.keys(registry).filter(function (name) {
         var entry = registry[name];
         return !!(entry && entry.modal && !entry.modal.classList.contains("hidden"));
       });
+    }
+
+    function enforceSingleVisible() {
+      var visible = listVisibleNames();
+      if (visible.length <= 1) {
+        if (!visible.length) activeName = "";
+        return;
+      }
+      var keep = visible.indexOf(activeName) >= 0 ? activeName : visible[visible.length - 1];
+      visible.forEach(function (name) {
+        if (name === keep) return;
+        var entry = registry[name];
+        if (!entry || !entry.modal) return;
+        entry.modal.classList.add("hidden");
+        if (entry.onClose) entry.onClose();
+      });
+      activeName = keep;
+    }
+
+    function syncBodyState() {
+      enforceSingleVisible();
+      var hasVisible = listVisibleNames().length > 0;
       document.body.classList.toggle("td-modal-open", hasVisible);
     }
 
@@ -79,6 +101,7 @@
       hide: hide,
       hideAll: hideAll,
       getActive: function () { return activeName; },
+      getVisibleNames: listVisibleNames,
       bindBackdropClose: bindBackdropClose,
       closeOnEscape: closeOnEscape
     };

@@ -46,6 +46,7 @@
   var DashboardSupportView = window.CSDashboardSupportView;
   var DashboardInstitutional = window.CSDashboardInstitutional;
   var DashboardDrawer = window.CSDashboardDrawer;
+  var DashboardBindings = window.CSDashboardBindings;
   var DashboardMeeting = window.CSDashboardMeeting;
   var DashboardModals = window.CSDashboardModals;
   var SupportStore = window.CSSupportStore;
@@ -288,6 +289,7 @@
   var supportViewController = null;
   var institutionalController = null;
   var drawerController = null;
+  var bindingsController = null;
   var bootContext = (function readBootContext() {
     try {
       var params = new URLSearchParams(window.location.search || "");
@@ -2863,6 +2865,50 @@
     });
   }
 
+  function initBindingsController() {
+    if (!DashboardBindings || typeof DashboardBindings.create !== "function") return;
+    bindingsController = DashboardBindings.create({
+      state: state,
+      el: el,
+      hooks: {
+        stopMeetingRecognition: stopMeetingRecognition,
+        filterCaseload: filterCaseload,
+        handleImportExport: handleImportExport,
+        addStudentQuick: addStudentQuick,
+        setCoachLine: setCoachLine,
+        appendStudentParam: appendStudentParam,
+        renderTodayPlan: renderTodayPlan,
+        renderProgressNote: renderProgressNote,
+        renderSupportHub: renderSupportHub,
+        renderInstructionalSequencer: renderInstructionalSequencer,
+        renderDrawer: renderDrawer,
+        openMeetingModal: openMeetingModal,
+        setDashboardMode: setDashboardMode,
+        updateAccommodationButtons: updateAccommodationButtons,
+        download: download,
+        recordLastActivity: recordLastActivity,
+        currentStudentParam: currentStudentParam,
+        buildTodayPlan: buildTodayPlan,
+        renderTodayEngine: renderTodayEngine,
+        updateAuditMarkers: updateAuditMarkers,
+        renderFlexGroups: renderFlexGroups,
+        syncNumeracyCurriculumSelectors: syncNumeracyCurriculumSelectors,
+        refreshNumeracyPanelFromSelection: refreshNumeracyPanelFromSelection,
+        renderNumeracyAlignmentLine: renderNumeracyAlignmentLine,
+        ensureDemoCaseload: ensureDemoCaseload,
+        refreshCaseload: refreshCaseload
+      },
+      deps: {
+        modalController: modalController,
+        meetingController: meetingController,
+        supportController: supportController,
+        Evidence: Evidence,
+        FidelityEngine: FidelityEngine,
+        SupportStore: SupportStore
+      }
+    });
+  }
+
   function getSelectedStudentGradeBand() {
     if (supportController && typeof supportController.getSelectedStudentGradeBand === "function") {
       return supportController.getSelectedStudentGradeBand();
@@ -3033,6 +3079,10 @@
   }
 
   function bindEvents() {
+    if (bindingsController && typeof bindingsController.bindEvents === "function") {
+      bindingsController.bindEvents();
+      return;
+    }
     if (modalController) {
       modalController.register("share", el.shareModal);
       modalController.register("meeting", el.meetingModal, stopMeetingRecognition);
@@ -3042,264 +3092,6 @@
       modalController.bindBackdropClose("sas-library");
       modalController.closeOnEscape();
     }
-
-    el.search.addEventListener("input", function () { filterCaseload(el.search.value || ""); });
-    el.importExport.addEventListener("click", handleImportExport);
-    el.addStudent.addEventListener("click", addStudentQuick);
-    el.settings.addEventListener("click", function () {
-      var panel = document.getElementById("settings-panel");
-      if (panel) {
-        panel.classList.toggle("hidden");
-        setCoachLine(panel.classList.contains("hidden") ? "Settings closed." : "Settings opened.");
-        return;
-      }
-      if (window.CSBuildBadge && typeof window.CSBuildBadge.open === "function") {
-        window.CSBuildBadge.open();
-        setCoachLine("Build controls opened. Use Force update for stale clients.");
-        return;
-      }
-      setCoachLine("Build controls unavailable. Reload this page.");
-    });
-
-    if (el.homeBtn) {
-      el.homeBtn.addEventListener("click", function () {
-        window.location.href = appendStudentParam("./index.html");
-      });
-    }
-    if (el.brandHome) {
-      el.brandHome.setAttribute("href", appendStudentParam("./index.html"));
-    }
-
-    if (el.activitySelect) {
-      el.activitySelect.addEventListener("change", function () {
-        var target = String(el.activitySelect.value || "").trim();
-        if (!target) return;
-        window.location.href = appendStudentParam("./" + target);
-      });
-    }
-
-    el.planTabs.forEach(function (button) {
-      button.addEventListener("click", function () {
-        state.activePlanTab = String(button.getAttribute("data-plan-tab") || "ten");
-        renderTodayPlan(state.plan);
-      });
-    });
-
-    el.noteTabs.forEach(function (button) {
-      button.addEventListener("click", function () {
-        state.activeNoteTab = String(button.getAttribute("data-note-tab") || "teacher");
-        if (!state.selectedId) return;
-        var summary = Evidence.getStudentSummary(state.selectedId);
-        renderProgressNote(state.plan, summary.student);
-      });
-    });
-
-    if (el.copyNote) {
-      el.copyNote.addEventListener("click", function () {
-        if (!el.noteText) return;
-        var text = String(el.noteText.textContent || "").trim();
-        if (!text) return;
-        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
-        setCoachLine("Copied progress note.");
-      });
-    }
-
-    if (meetingController && typeof meetingController.bindEvents === "function") {
-      meetingController.bindEvents();
-    }
-    if (supportController && typeof supportController.bindEvents === "function") {
-      supportController.bindEvents();
-    }
-
-    if (Array.isArray(el.supportTabs)) {
-      el.supportTabs.forEach(function (tab) {
-        tab.addEventListener("click", function () {
-          state.activeSupportTab = String(tab.getAttribute("data-support-tab") || "snapshot");
-          renderSupportHub(state.selectedId);
-        });
-      });
-    }
-
-    if (el.showAlignment) {
-      el.showAlignment.addEventListener("change", function () {
-        renderInstructionalSequencer(state.selectedId);
-      });
-    }
-
-    if (el.openStudentDrawer) {
-      el.openStudentDrawer.addEventListener("click", function () {
-        if (!state.selectedId || !el.drawer) return;
-        el.drawer.classList.remove("hidden");
-        renderDrawer(state.selectedId);
-      });
-    }
-    if (el.drawerClose) {
-      el.drawerClose.addEventListener("click", function () {
-        if (el.drawer) el.drawer.classList.add("hidden");
-      });
-    }
-    if (Array.isArray(el.drawerTabs)) {
-      el.drawerTabs.forEach(function (tab) {
-        tab.addEventListener("click", function () {
-          state.activeDrawerTab = String(tab.getAttribute("data-drawer-tab") || "snapshot");
-          renderDrawer(state.selectedId);
-        });
-      });
-    }
-    if (el.meetingWorkspaceBtn) {
-      el.meetingWorkspaceBtn.addEventListener("click", function () {
-        if (!state.selectedId) return;
-        openMeetingModal();
-        setDashboardMode("reports");
-      });
-    }
-    if (el.focusViewDetailsBtn) {
-      el.focusViewDetailsBtn.addEventListener("click", function () {
-        setDashboardMode("advanced");
-      });
-    }
-    if (el.modeDaily) {
-      el.modeDaily.addEventListener("click", function () { setDashboardMode("daily"); });
-    }
-    if (el.modeAdvanced) {
-      el.modeAdvanced.addEventListener("click", function () { setDashboardMode("advanced"); });
-    }
-    if (el.modeReports) {
-      el.modeReports.addEventListener("click", function () {
-        setDashboardMode("reports");
-        if (state.selectedId) openMeetingModal();
-      });
-    }
-    if (el.modeClassroom) {
-      el.modeClassroom.addEventListener("click", function () { setDashboardMode("classroom"); });
-    }
-    function bindAccommodationQuickLog(button, supportType, successLine) {
-      if (!button) return;
-      button.addEventListener("click", function () {
-        if (!FidelityEngine || typeof FidelityEngine.logAccommodationSupport !== "function") return;
-        var sid = state.selectedId || "demo";
-        FidelityEngine.logAccommodationSupport({
-          studentId: sid,
-          supportType: supportType
-        });
-        updateAccommodationButtons(sid);
-        setCoachLine(successLine);
-      });
-    }
-    bindAccommodationQuickLog(el.accExtendedTimeBtn, "extended_time", "Extended time log captured.");
-    bindAccommodationQuickLog(el.accVisualSupportsBtn, "visual_supports", "Visual supports log captured.");
-    bindAccommodationQuickLog(el.accCheckInsBtn, "check_ins", "Check-ins log captured.");
-    bindAccommodationQuickLog(el.accTaskChunkingBtn, "task_chunking", "Task chunking log captured.");
-    if (el.tier1PackBtn) {
-      el.tier1PackBtn.addEventListener("click", function () {
-        if (!state.selectedId || !SupportStore) return;
-        var concerns = window.prompt("Concern area(s) comma-separated", "Reading, Writing");
-        var duration = window.prompt("Intervention duration", "6 weeks");
-        var frequency = window.prompt("Frequency", "3x/week");
-        var notes = window.prompt("Tier 1 notes", "");
-        var packet = SupportStore.buildTier1EvidencePack(state.selectedId, {
-          domains: String(concerns || "Reading").split(",").map(function (s) { return s.trim(); }).filter(Boolean),
-          duration: duration || "6 weeks",
-          frequency: frequency || "3x/week",
-          notes: notes || ""
-        });
-        download("tier1-evidence-pack-" + state.selectedId + ".html", packet.html, "text/html");
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(packet.text || ("Tier 1 Evidence Pack ready for " + state.selectedId + ".")).catch(function () {});
-        }
-        setCoachLine("Tier 1 Evidence Pack exported.");
-      });
-    }
-
-    el.quickLaunchButtons.forEach(function (button) {
-      button.addEventListener("click", function () {
-        var target = String(button.getAttribute("data-quick") || "").trim();
-        if (!target) return;
-        recordLastActivity(currentStudentParam(), target);
-        window.location.href = appendStudentParam("./" + target + ".html");
-      });
-    });
-
-    if (el.todayRefresh) {
-      el.todayRefresh.addEventListener("click", function () {
-        state.todayPlan = buildTodayPlan();
-        renderTodayEngine(state.todayPlan);
-        updateAuditMarkers();
-        setCoachLine("Today plan refreshed.");
-      });
-    }
-
-    if (el.priorityReview) {
-      el.priorityReview.addEventListener("click", function () {
-        if (el.todayRoot && typeof el.todayRoot.scrollIntoView === "function") {
-          el.todayRoot.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      });
-    }
-
-    if (el.viewAllStudents) {
-      el.viewAllStudents.addEventListener("click", function () {
-        if (el.list && typeof el.list.scrollIntoView === "function") {
-          el.list.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      });
-    }
-
-    if (el.todayGroupOpen) {
-      el.todayGroupOpen.addEventListener("click", function () {
-        if (el.todayGroupBuild) el.todayGroupBuild.disabled = false;
-        if (el.groupPanel) el.groupPanel.open = true;
-        renderFlexGroups(state.todayPlan && state.todayPlan.students ? state.todayPlan.students : []);
-        setCoachLine("Group selection ready. Pick 2-4 students, then build the shared plan.");
-      });
-    }
-
-    if (el.todayGroupBuild) {
-      el.todayGroupBuild.addEventListener("click", function () {
-        renderFlexGroups(state.todayPlan && state.todayPlan.students ? state.todayPlan.students : []);
-        setCoachLine("Group plan v1 generated from shared skills and cadence signals.");
-      });
-    }
-
-    if (el.numGradeSelect) {
-      el.numGradeSelect.addEventListener("change", function () {
-        if (el.numUnitSelect) el.numUnitSelect.value = "";
-        if (el.numLessonSelect) el.numLessonSelect.value = "";
-        syncNumeracyCurriculumSelectors();
-        refreshNumeracyPanelFromSelection();
-      });
-    }
-    if (el.numUnitSelect) {
-      el.numUnitSelect.addEventListener("change", function () {
-        if (el.numLessonSelect) el.numLessonSelect.value = "";
-        syncNumeracyCurriculumSelectors();
-        refreshNumeracyPanelFromSelection();
-      });
-    }
-    if (el.numLessonSelect) {
-      el.numLessonSelect.addEventListener("change", function () {
-        renderNumeracyAlignmentLine();
-        refreshNumeracyPanelFromSelection();
-      });
-    }
-    if (el.numeracyPracticeMode) {
-      el.numeracyPracticeMode.addEventListener("change", function () {
-        refreshNumeracyPanelFromSelection();
-      });
-    }
-
-    el.emptyActions.forEach(function (button) {
-      button.addEventListener("click", function () {
-        var action = button.getAttribute("data-empty-action");
-        if (action === "add") return addStudentQuick();
-        if (action === "import") return handleImportExport();
-        if (action === "demo") {
-          ensureDemoCaseload();
-          refreshCaseload();
-          return;
-        }
-      });
-    });
   }
 
   Evidence.init();
@@ -3318,6 +3110,7 @@
   initSupportController();
   initSupportViewController();
   initDrawerController();
+  initBindingsController();
   bindEvents();
   void loadIllustrativeMathMapData();
   initNumeracyCurriculumSelectors();
