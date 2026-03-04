@@ -43,6 +43,16 @@
     "guard:runtime:firefox": "BASE_URL=http://127.0.0.1:4173 playwright test tests/runtime-guards.spec.js --project=firefox --reporter=line",
     "guard:runtime:live": "BASE_URL=https://bkseatown.github.io/WordQuest playwright test tests/runtime-guards.spec.js --project=chromium --reporter=line",
     "guard:runtime:live:firefox": "BASE_URL=https://bkseatown.github.io/WordQuest playwright test tests/runtime-guards.spec.js --project=firefox --reporter=line",
+    "audit:a11y": "BASE_URL=http://127.0.0.1:4173 playwright test tests/a11y-audit.spec.js --project=chromium --reporter=line",
+    "audit:a11y:html": "BASE_URL=http://127.0.0.1:4173 playwright test tests/a11y-audit.spec.js --project=chromium --reporter=html",
+    "audit:a11y:firefox": "BASE_URL=http://127.0.0.1:4173 playwright test tests/a11y-audit.spec.js --project=firefox --reporter=line",
+    "audit:a11y:webkit": "BASE_URL=http://127.0.0.1:4173 playwright test tests/a11y-audit.spec.js --project=webkit --reporter=line",
+    "audit:performance": "BASE_URL=http://127.0.0.1:4173 playwright test tests/perf-web-vitals.spec.js --project=chromium --reporter=line",
+    "audit:performance:html": "BASE_URL=http://127.0.0.1:4173 playwright test tests/perf-web-vitals.spec.js --project=chromium --reporter=html",
+    "test:visual:regression": "BASE_URL=http://127.0.0.1:4173 playwright test tests/visual-regression.spec.js --project=chromium --reporter=line",
+    "test:visual:update": "BASE_URL=http://127.0.0.1:4173 playwright test tests/visual-regression.spec.js --project=chromium --reporter=line --update-snapshots",
+    "audit:matrix": "BASE_URL=http://127.0.0.1:4173 playwright test tests/runtime-guards.spec.js tests/a11y-audit.spec.js --project=chromium --project=firefox --project=webkit --reporter=line",
+    "audit:industry": "npm run audit:ui && npm run guard:runtime && npm run audit:a11y && npm run audit:performance && npm run test:visual:regression",
     "guard:prepush": "npm run audit:ui && npm run guard:runtime",
     "guard:deploy:ready": "node scripts/check-live-build-ready.js",
     "check:live": "node scripts/check-live.js",
@@ -64,7 +74,9 @@
     "sas:verify": "node scripts/sas/verify-sas-alignment-pack.js"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@playwright/test": "^1.58.2",
+    "axe-core": "^4.11.1",
     "playwright": "^1.58.2"
   }
 }

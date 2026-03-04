@@ -5,6 +5,7 @@ const USE_LOCAL_SERVER = /^https?:\/\/127\.0\.0\.1:4173\/?$/.test(BASE_URL) && p
 
 module.exports = defineConfig({
   testDir: './tests',
+  snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{arg}{ext}',
   timeout: 45000,
   retries: 0,
   reporter: 'line',
