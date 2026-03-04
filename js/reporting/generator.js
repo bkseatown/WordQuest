@@ -163,6 +163,10 @@
     if (target === "en") return report;
     var labelMap = {
       zh: "Mandarin",
+      ms: "Bahasa Melayu",
+      ta: "Tamil",
+      tl: "Tagalog",
+      other: "Other language",
       es: "Spanish",
       hi: "Hindi"
     };

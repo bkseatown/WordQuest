@@ -95,6 +95,37 @@
     return new Date().toISOString();
   }
 
+  function normalizeFlag(value) {
+    return String(value == null ? "" : value).trim().toLowerCase();
+  }
+
+  function readCurriculumMapStats() {
+    var stats = { grades: 0, units: 0, lessons: 0 };
+    try {
+      var api = window.CSCurriculumMap;
+      if (!api || typeof api.getIllustrativeMap !== "function") return stats;
+      var map = api.getIllustrativeMap();
+      if (!map || typeof map !== "object" || Array.isArray(map)) return stats;
+      var gradeKeys = Object.keys(map);
+      stats.grades = gradeKeys.length;
+      gradeKeys.forEach(function (gradeKey) {
+        var gradeNode = map[gradeKey];
+        if (!gradeNode || typeof gradeNode !== "object") return;
+        var unitKeys = Object.keys(gradeNode);
+        stats.units += unitKeys.length;
+        unitKeys.forEach(function (unitKey) {
+          var unitNode = gradeNode[unitKey];
+          if (!unitNode || typeof unitNode !== "object") return;
+          var lessons = unitNode.lessons && typeof unitNode.lessons === "object" ? Object.keys(unitNode.lessons) : [];
+          stats.lessons += lessons.length;
+        });
+      });
+    } catch (_e) {
+      return stats;
+    }
+    return stats;
+  }
+
   function buildAggregate() {
     var wowRows = readRows(STORAGE_KEYS.wow);
     var usabilityRows = readRows(STORAGE_KEYS.usability);
@@ -132,6 +163,12 @@
 
     var firstClickAvgMs = avg(firstClickRows.map(function (row) { return Number(row.elapsedMs); }));
     var ctaRisk = firstClickAvgMs != null && firstClickAvgMs > 15000;
+    var curriculumMapStats = readCurriculumMapStats();
+    var curriculumMappedCount = usabilityRows.filter(function (row) {
+      return normalizeFlag(row.curriculumMapped) === "yes";
+    }).length;
+    var curriculumUnmappedCount = Math.max(0, usabilityRows.length - curriculumMappedCount);
+    var curriculumCoverageRate = usabilityRows.length ? (curriculumMappedCount / usabilityRows.length) * 100 : null;
 
     var readiness = "Not ready";
     if (wowIndex != null) {
@@ -160,7 +197,11 @@
       wowIndex: wowIndex,
       readiness: readiness,
       firstClickAvgMs: firstClickAvgMs,
-      ctaClarityRisk: ctaRisk
+      ctaClarityRisk: ctaRisk,
+      curriculumMappedCount: curriculumMappedCount,
+      curriculumUnmappedCount: curriculumUnmappedCount,
+      curriculumCoverageRate: curriculumCoverageRate,
+      curriculumMapStats: curriculumMapStats
     };
   }
 
@@ -172,12 +213,16 @@
     var cognitive = data.cognitiveLoad10 == null ? "--" : (Math.round(data.cognitiveLoad10 * 10) / 10).toFixed(1);
     var adoption = data.adoptionConfidenceIndex == null ? "--" : (Math.round(data.adoptionConfidenceIndex * 10) / 10).toFixed(1);
     var firstClick = data.firstClickAvgMs == null ? "--" : (Math.round(data.firstClickAvgMs / 100) / 10).toFixed(1) + "s";
+    var curriculumCoverage = data.curriculumCoverageRate == null
+      ? "--"
+      : (Math.round(data.curriculumCoverageRate * 10) / 10).toFixed(1) + "% (" + data.curriculumMappedCount + "/" + data.usabilityRows.length + ")";
     summaryEl.innerHTML = [
       "<strong>WOW Index:</strong> " + wowIndex + " / 100",
       " | <strong>Mean clarity:</strong> " + clarity,
       " | <strong>Mean cognitive load:</strong> " + cognitive,
       " | <strong>Adoption confidence index:</strong> " + adoption,
       " | <strong>First CTA click:</strong> " + firstClick,
+      " | <strong>Curriculum mapped in-session:</strong> " + curriculumCoverage,
       data.ctaClarityRisk ? ' | <strong>Flag:</strong> CTA clarity risk' : ""
     ].join("");
     if (chipEl) chipEl.textContent = "Readiness: " + data.readiness;
@@ -198,7 +243,18 @@
         adoptionConfidenceIndex: aggregate.adoptionConfidenceIndex,
         emotionalEmpowermentScore: aggregate.emotionalEmpowermentScore,
         firstClickAvgMs: aggregate.firstClickAvgMs,
-        ctaClarityRisk: aggregate.ctaClarityRisk
+        ctaClarityRisk: aggregate.ctaClarityRisk,
+        curriculumCoverageRate: aggregate.curriculumCoverageRate,
+        curriculumMappedCount: aggregate.curriculumMappedCount,
+        curriculumUnmappedCount: aggregate.curriculumUnmappedCount
+      },
+      curriculumCoverage: {
+        mapGrades: aggregate.curriculumMapStats.grades,
+        mapUnits: aggregate.curriculumMapStats.units,
+        mapLessons: aggregate.curriculumMapStats.lessons,
+        mappedResponses: aggregate.curriculumMappedCount,
+        unmappedResponses: aggregate.curriculumUnmappedCount,
+        coverageRatePercent: aggregate.curriculumCoverageRate
       },
       cognitiveLoadMetrics: {
         meanMentalEffort: aggregate.mentalEffort10,
@@ -238,7 +294,11 @@
       line("Emotional Empowerment Score", m.emotionalEmpowermentScore),
       line("First CTA Click Avg (ms)", m.firstClickAvgMs),
       line("CTA Clarity Risk", m.ctaClarityRisk ? "Yes" : "No"),
+      line("Curriculum Coverage (%)", m.curriculumCoverageRate),
+      line("Curriculum Responses Mapped", m.curriculumMappedCount),
+      line("Curriculum Responses Unmapped", m.curriculumUnmappedCount),
       "</table>",
+      "<h2>Curriculum Coverage</h2><pre>" + JSON.stringify(packet.curriculumCoverage || {}, null, 2) + "</pre>",
       "<h2>Usability Responses</h2><pre>" + JSON.stringify(packet.usabilityResponses || [], null, 2) + "</pre>",
       "<h2>WOW Responses</h2><pre>" + JSON.stringify(packet.wowResponses || [], null, 2) + "</pre>",
       "<h2>Emotional Distribution</h2><pre>" + JSON.stringify(packet.emotionalDistribution || [], null, 2) + "</pre>",
@@ -263,6 +323,7 @@
     var summaryEl = byId("td-eval-metrics");
     var reportEl = byId("td-eval-report");
     var readinessChip = byId("td-eval-readiness-chip");
+    var curriculumLineEl = byId("td-num-curriculum-line");
 
     function numValue(input) {
       var n = Number(input && input.value);
@@ -281,6 +342,8 @@
       if (!(overwhelm >= 1 && overwhelm <= 10)) return;
       if (!(confidence >= 1 && confidence <= 10)) return;
       if (!adoption || !institutional) return;
+      var curriculumLine = curriculumLineEl ? String(curriculumLineEl.textContent || "").trim() : "";
+      var curriculumMapped = curriculumLineEl && !curriculumLineEl.classList.contains("hidden") && !!curriculumLine;
       appendRow(STORAGE_KEYS.usability, {
         timestamp: nowIso(),
         clarityOfNextAction: clarity,
@@ -291,7 +354,9 @@
         productFeel: institutional,
         notes: String(notesInput && notesInput.value || "").trim(),
         cognitiveLoadScore: Math.round(((effort + overwhelm) / 2) * 10) / 10,
-        page: "teacher-dashboard"
+        page: "teacher-dashboard",
+        curriculumMapped: curriculumMapped ? "yes" : "no",
+        curriculumLine: curriculumLine
       });
       renderSummary(summaryEl, readinessChip);
       if (notesInput) notesInput.value = "";
