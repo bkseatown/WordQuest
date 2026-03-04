@@ -44,6 +44,8 @@
   var DashboardFocus = window.CSDashboardFocus;
   var DashboardSupport = window.CSDashboardSupport;
   var DashboardSupportView = window.CSDashboardSupportView;
+  var DashboardInstitutional = window.CSDashboardInstitutional;
+  var DashboardDrawer = window.CSDashboardDrawer;
   var DashboardMeeting = window.CSDashboardMeeting;
   var DashboardModals = window.CSDashboardModals;
   var SupportStore = window.CSSupportStore;
@@ -284,6 +286,8 @@
   var meetingController = null;
   var supportController = null;
   var supportViewController = null;
+  var institutionalController = null;
+  var drawerController = null;
   var bootContext = (function readBootContext() {
     try {
       var params = new URLSearchParams(window.location.search || "");
@@ -2140,156 +2144,15 @@
   }
 
   function renderDrawer(studentId) {
-    if (!el.drawerBody || !el.drawerTitle) return;
-    if (!studentId) {
-      el.drawerTitle.textContent = "Student Drawer";
-      el.drawerBody.innerHTML = '<div class="td-support-item"><p>Select a student to open the drawer.</p></div>';
+    if (drawerController && typeof drawerController.renderDrawer === "function") {
+      drawerController.renderDrawer(studentId);
       return;
     }
-    var summary = Evidence.getStudentSummary(studentId);
-    var support = SupportStore && typeof SupportStore.getStudent === "function"
-      ? SupportStore.getStudent(studentId)
-      : { goals: [], interventions: [] };
-    el.drawerTitle.textContent = String(summary.student.name || "Student") + " • " + String(summary.student.id || studentId);
-    if (state.activeDrawerTab === "snapshot") {
-      var drawerAnchorPanel = renderInstitutionalAnchorPanel(studentId, true);
-      var efRow = SupportStore && typeof SupportStore.getExecutiveFunction === "function"
-        ? SupportStore.getExecutiveFunction(studentId)
-        : { upcomingTasks: [] };
-      var upcomingTasks = Array.isArray(efRow.upcomingTasks) ? efRow.upcomingTasks.slice(0, 3) : [];
-      var assignmentSnapshot = '<div class="td-support-item"><h4>Upcoming Tasks</h4>' + (
-        upcomingTasks.length
-          ? upcomingTasks.map(function (task) {
-              return '<p>' + escAttr(task.name || "Task") + ' • ' + escAttr(task.dueDate || "No due date") + ' • ' + escAttr(task.status || "Not Started") + '</p>';
-            }).join("")
-          : '<p>No upcoming tasks yet.</p>'
-      ) + '</div>';
-      el.drawerBody.innerHTML = [
-        '<div class="td-support-item"><h4>Last 7 Days Minutes</h4><p>Derived from recent sessions and quick checks.</p></div>',
-        '<div class="td-support-item"><h4>Top Signals</h4><p>' + (summary.evidenceChips || []).slice(0, 5).map(function (c) { return c.label + " " + c.value; }).join(" • ") + '</p></div>',
-        '<div class="td-support-item"><h4>Next Best Activity</h4><p>' + summary.nextMove.line + '</p><button class="td-top-btn" type="button" data-drawer-launch="' + summary.nextMove.quickHref + '">Launch</button></div>',
-        assignmentSnapshot,
-        drawerAnchorPanel
-      ].join("");
-      bindInstitutionalAnchorActions(studentId, el.drawerBody, true);
-    } else if (state.activeDrawerTab === "goals") {
-      var goalsList = (support.goals || []).length
-        ? support.goals.slice(0, 6).map(function (g) {
-            return '<div class="td-support-item"><h4>' + (g.skill || g.domain || "Goal") + '</h4><p>' + (g.baseline || "--") + ' → ' + (g.target || "--") + ' • updated ' + (g.updatedAt || g.createdAt || "") + '</p></div>';
-          }).join("")
-        : '<div class="td-support-item"><p>No goals yet. Use Meeting Notes → Convert to Goals.</p></div>';
-      el.drawerBody.innerHTML = '<div class="td-support-item"><h4>SMART Goal Builder</h4><p>Quick add one baseline-to-target goal from today\'s discussion.</p><button class="td-top-btn" type="button" data-drawer-action="add-goal">Add Goal</button></div>' + goalsList;
-    } else if (state.activeDrawerTab === "interventions") {
-      var interventionList = (support.interventions || []).length
-        ? support.interventions.slice(0, 8).map(function (i) {
-            var view = formatTier1Intervention(i);
-            return '<div class="td-support-item"><h4>Tier ' + (i.tier || 1) + ' • ' + (i.domain || "") + '</h4><p>' + (i.strategy || i.focus || "") + ' • ' + (i.frequency || "") + ' • ' + (i.durationMinutes || i.durationMin || "--") + ' min</p><div class="td-plan-tabs"><span class="td-chip">' + view.readinessLabel + '</span><span class="td-chip">Datapoints ' + view.datapointsCount + '</span></div></div>';
-          }).join("")
-        : '<div class="td-support-item"><p>No intervention entries yet.</p></div>';
-      el.drawerBody.innerHTML = '<div class="td-support-item"><h4>Tier 1/2/3 Quick Log</h4><p>3-click entry for what/when/how long.</p><div class="td-plan-tabs"><button class="td-top-btn" type="button" data-drawer-action="start-tier1">Start Tier 1 Plan</button><button class="td-top-btn" type="button" data-drawer-action="add-intervention">Quick Log</button><button class="td-top-btn" type="button" data-drawer-action="add-datapoint">Log Datapoint</button></div></div>' + interventionList;
-    } else if (state.activeDrawerTab === "evidence") {
-      el.drawerBody.innerHTML = '<div class="td-support-item"><h4>Evidence (filterable)</h4><p>' + (summary.evidenceChips || []).map(function (c) { return c.label + ": " + c.value; }).join(" • ") + '</p></div>';
-    } else {
-      el.drawerBody.innerHTML = [
-        '<div class="td-support-item"><h4>Share</h4><p>Generate meeting-ready outputs in one click.</p></div>',
-        '<div class="td-support-item"><button id="td-drawer-share-now" class="td-top-btn" type="button">Open Share Summary</button></div>',
-        '<div class="td-support-item"><button class="td-top-btn" type="button" data-drawer-action="meeting-summary">Meeting Summary (printable)</button></div>',
-        '<div class="td-support-item"><button class="td-top-btn" type="button" data-drawer-action="tier1-pack">Tier 1 Evidence Pack</button></div>',
-        '<div class="td-support-item"><button class="td-top-btn" type="button" data-drawer-action="mdt-export">Export for MDT (JSON + CSV)</button></div>'
-      ].join("");
-    }
-    Array.prototype.forEach.call(el.drawerBody.querySelectorAll("[data-drawer-launch]"), function (button) {
-      button.addEventListener("click", function () {
-        var href = String(button.getAttribute("data-drawer-launch") || "word-quest.html?quick=1");
-        window.location.href = appendStudentParam("./" + href.replace(/^\.\//, ""));
-      });
-    });
-    var shareBtn = document.getElementById("td-drawer-share-now");
-    if (shareBtn) {
-      shareBtn.addEventListener("click", function () { openShareModal(studentId); });
-    }
-    Array.prototype.forEach.call(el.drawerBody.querySelectorAll("[data-drawer-action]"), function (button) {
-      button.addEventListener("click", function () {
-        var action = String(button.getAttribute("data-drawer-action") || "");
-        if (!SupportStore) return;
-        if (action === "add-goal") {
-          SupportStore.addGoal(studentId, {
-            domain: "literacy",
-            skill: "Decoding strategy",
-            baseline: "Current classroom baseline",
-            target: "Target growth in 6 weeks",
-            metric: "Session evidence + class sample",
-            method: "Weekly check",
-            schedule: "3x/week",
-            reviewEveryDays: 14
-          });
-          renderDrawer(studentId);
-          return;
-        }
-        if (action === "add-intervention") {
-          SupportStore.addIntervention(studentId, {
-            tier: 1,
-            domain: "Reading",
-            focus: "Decoding",
-            startAt: new Date().toISOString(),
-            frequency: "3x/week",
-            durationMin: 20,
-            strategy: "Phonics routine + guided decoding",
-            fidelityChecklist: ["Modeled", "Prompted", "Checked for transfer"]
-          });
-          renderDrawer(studentId);
-          return;
-        }
-        if (action === "start-tier1") {
-          if (typeof SupportStore.startTier1Plan === "function") {
-            SupportStore.startTier1Plan(studentId, {
-              domain: "Reading",
-              strategy: "Tier 1 classroom support",
-              frequency: "3x/week",
-              durationMinutes: 20,
-              progressMetric: "MAP"
-            });
-            setCoachLine("Tier 1 plan started.");
-            renderDrawer(studentId);
-            renderSupportHub(studentId);
-          }
-          return;
-        }
-        if (action === "add-datapoint") {
-          var tier1 = (SupportStore.getStudent(studentId).interventions || []).find(function (row) { return Number(row.tier || 1) === 1; });
-          if (!tier1 || typeof SupportStore.addInterventionDatapoint !== "function") return;
-          var value = Number(window.prompt("Datapoint value", "70") || 0);
-          var note = window.prompt("Datapoint note", "") || "";
-          SupportStore.addInterventionDatapoint(studentId, tier1.id, { date: new Date().toISOString().slice(0, 10), value: value, note: note });
-          setCoachLine("Datapoint logged.");
-          renderDrawer(studentId);
-          renderSupportHub(studentId);
-          return;
-        }
-        if (action === "meeting-summary") {
-          var meeting = SupportStore.buildMeetingSummary(studentId, {});
-          download("meeting-summary-" + studentId + ".html", meeting.html, "text/html");
-          if (navigator.clipboard) navigator.clipboard.writeText(meeting.text).catch(function () {});
-          setCoachLine("Meeting Summary exported + copied.");
-          return;
-        }
-        if (action === "tier1-pack") {
-          var pack = SupportStore.buildTier1EvidencePack(studentId, { domains: ["Reading", "Writing"] });
-          download("tier1-evidence-pack-" + studentId + ".html", pack.html, "text/html");
-          if (navigator.clipboard) navigator.clipboard.writeText(pack.text).catch(function () {});
-          setCoachLine("Tier 1 Evidence Pack exported + copied.");
-          return;
-        }
-        if (action === "mdt-export") {
-          if (typeof SupportStore.buildMdtExport !== "function") return;
-          var bundle = SupportStore.buildMdtExport(studentId, {});
-          download("mdt-export-" + studentId + ".json", JSON.stringify(bundle.json, null, 2), "application/json");
-          download("mdt-export-" + studentId + ".csv", bundle.csv, "text/csv");
-          if (navigator.clipboard) navigator.clipboard.writeText(bundle.csv).catch(function () {});
-          setCoachLine("MDT export generated (JSON + CSV).");
-        }
-      });
-    });
+    if (!el.drawerBody || !el.drawerTitle) return;
+    el.drawerTitle.textContent = studentId ? String(studentId) : "Student Drawer";
+    el.drawerBody.innerHTML = studentId
+      ? '<div class="td-support-item"><p>Drawer loading…</p></div>'
+      : '<div class="td-support-item"><p>Select a student to open the drawer.</p></div>';
   }
 
   function renderRecommendedPlan(studentId) {
@@ -2344,205 +2207,39 @@
     return "word-quest.html?play=1";
   }
 
-  function parseGradeLevel(raw) {
-    var text = String(raw || "").toUpperCase();
-    var match = text.match(/(\d{1,2})/);
-    if (match && Number.isFinite(Number(match[1]))) return Number(match[1]);
-    return null;
-  }
-
-  function readingMapThreshold(gradeLevel) {
-    if (!Number.isFinite(gradeLevel)) return 190;
-    if (gradeLevel <= 1) return 175;
-    if (gradeLevel <= 2) return 185;
-    if (gradeLevel <= 3) return 195;
-    if (gradeLevel <= 5) return 205;
-    if (gradeLevel <= 8) return 215;
-    return 225;
-  }
-
-  function isLowBenchmarkText(value) {
-    var text = String(value || "").toLowerCase();
-    if (!text) return false;
-    return (
-      text.indexOf("below") >= 0 ||
-      text.indexOf("risk") >= 0 ||
-      text.indexOf("intensive") >= 0 ||
-      text.indexOf("low") >= 0 ||
-      text.indexOf("strategic") >= 0
-    );
-  }
-
-  function isEarlyWordsTheirWayStage(value) {
-    var text = String(value || "").toLowerCase();
-    if (!text) return false;
-    return (
-      text.indexOf("psi") >= 0 ||
-      text.indexOf("early") >= 0 ||
-      text.indexOf("letter") >= 0 ||
-      text.indexOf("within word pattern") >= 0
-    );
-  }
-
-  function isWeakGlossStage(value) {
-    var text = String(value || "").toLowerCase();
-    if (!text) return false;
-    return (
-      text.indexOf("early") >= 0 ||
-      text.indexOf("emerging") >= 0 ||
-      text.indexOf("limited") >= 0 ||
-      text.indexOf("additive") >= 0
-    );
-  }
-
-  function rankWeightFromAnchor(studentId, row, anchors) {
-    var score = (4 - Math.max(1, Math.min(3, Number(row.rank || 3)))) * 10;
-    var contexts = [];
-    var student = (state.caseload || []).find(function (s) { return String(s && s.id || "") === String(studentId || ""); }) || null;
-    var gradeLevel = parseGradeLevel(student && student.gradeBand ? student.gradeBand : "");
-    var moduleName = String(row.module || "");
-    var skillId = String(row.skillId || "").toUpperCase();
-
-    var readingMap = anchors && anchors.reading ? Number(anchors.reading.mapRIT) : NaN;
-    if (Number.isFinite(readingMap) && readingMap < readingMapThreshold(gradeLevel)) {
-      if (moduleName === "WordQuest" || moduleName === "PrecisionPlay" || moduleName === "ReadingLab" || skillId.indexOf("LIT.") === 0) {
-        score += 22;
-        contexts.push("MAP RIT below benchmark; reinforcing literacy foundations.");
-      }
-    }
-    if (anchors && anchors.reading && isLowBenchmarkText(anchors.reading.corePhonicsBenchmark)) {
-      if (moduleName === "WordQuest") {
-        score += 28;
-        contexts.push("Core Phonics benchmark indicates support need; prioritizing decoding.");
-      }
-    }
-    if (anchors && anchors.reading && isEarlyWordsTheirWayStage(anchors.reading.wordsTheirWayStage)) {
-      if (moduleName === "WordQuest" || moduleName === "PrecisionPlay") {
-        score += 16;
-        contexts.push("Words Their Way stage is early; reinforcing morphology/decoding patterns.");
-      }
-    }
-    if (anchors && anchors.math && isWeakGlossStage(anchors.math.glossStage)) {
-      if (moduleName.indexOf("Numeracy") === 0 || skillId.indexOf("MATH") >= 0 || skillId.indexOf("NUM") >= 0) {
-        score += 20;
-        contexts.push("GLOSS stage suggests weak strategy use; reinforcing conceptual numeracy.");
-      }
-    }
-    var writingRubric = anchors && anchors.writing ? Number(anchors.writing.onDemandRubricScore) : NaN;
-    if (Number.isFinite(writingRubric) && writingRubric < 2.5) {
-      if (moduleName === "WritingStudio" || skillId.indexOf("WRITE") >= 0) {
-        score += 24;
-        contexts.push("Writing rubric score is low; increasing paragraph structure reinforcement.");
-      }
-    }
-
-    return {
-      score: score,
-      context: contexts[0] || ""
-    };
-  }
-
   function applyInstitutionalAnchorOverlay(studentId, rows) {
-    if (!Array.isArray(rows) || !rows.length) return [];
-    if (!SupportStore || typeof SupportStore.getInstitutionalAnchors !== "function") return rows.slice(0, 3);
-    var anchors = SupportStore.getInstitutionalAnchors(studentId);
-    var ranked = rows.slice(0, 3).map(function (row) {
-      var weight = rankWeightFromAnchor(studentId, row, anchors);
-      return Object.assign({}, row, {
-        _anchorScore: weight.score,
-        anchorContext: weight.context
-      });
-    });
-    ranked.sort(function (a, b) {
-      if (Number(b._anchorScore || 0) !== Number(a._anchorScore || 0)) return Number(b._anchorScore || 0) - Number(a._anchorScore || 0);
-      return Number(a.rank || 3) - Number(b.rank || 3);
-    });
-    return ranked.slice(0, 3).map(function (row, idx) {
-      return Object.assign({}, row, { rank: idx + 1 });
-    });
+    if (institutionalController && typeof institutionalController.applyInstitutionalAnchorOverlay === "function") {
+      return institutionalController.applyInstitutionalAnchorOverlay(studentId, rows);
+    }
+    return Array.isArray(rows) ? rows.slice(0, 3) : [];
   }
 
   function formatAlignmentLine(alignment) {
-    if (!alignment) return "";
-    var standard = "";
-    if (Array.isArray(alignment.fishTank) && alignment.fishTank.length) standard = String(alignment.fishTank[0]);
-    if (!standard && Array.isArray(alignment.illustrativeMath) && alignment.illustrativeMath.length) standard = String(alignment.illustrativeMath[0]);
-    var strand = String(alignment.sasStrand || "");
-    var category = String(alignment.mtssCategory || "");
-    var lines = [];
-    if (standard || strand) lines.push("Aligned to: " + [standard, strand].filter(Boolean).join(" - "));
-    if (category) lines.push("MTSS Category: " + category);
-    return lines.map(function (line) {
-      return '<p class="td-sequencer-alignment">' + line + '</p>';
-    }).join("");
+    if (institutionalController && typeof institutionalController.formatAlignmentLine === "function") {
+      return institutionalController.formatAlignmentLine(alignment);
+    }
+    return "";
   }
 
   function formatAnchorContextLine(contextLine) {
+    if (institutionalController && typeof institutionalController.formatAnchorContextLine === "function") {
+      return institutionalController.formatAnchorContextLine(contextLine);
+    }
     var line = String(contextLine || "").trim();
-    if (!line) return "";
-    return '<p class="td-sequencer-alignment">Context: ' + line + '</p>';
+    return line ? '<p class="td-sequencer-alignment">Context: ' + line + '</p>' : "";
   }
 
   function renderInstitutionalAnchorPanel(studentId, compact) {
-    var isCompact = !!compact;
-    if (!studentId || !SupportStore || typeof SupportStore.getInstitutionalAnchors !== "function") {
-      return '<div class="td-support-item"><h4>Institutional Data Anchors</h4><p>Select a student to enter MAP/Aimsweb/Core Phonics/Writing/Math anchors.</p></div>';
+    if (institutionalController && typeof institutionalController.renderInstitutionalAnchorPanel === "function") {
+      return institutionalController.renderInstitutionalAnchorPanel(studentId, compact);
     }
-    var a = SupportStore.getInstitutionalAnchors(studentId);
-    var cls = isCompact ? "td-anchor-grid is-compact" : "td-anchor-grid";
-    return [
-      '<div class="td-support-item td-anchor-panel">',
-      '<h4>Institutional Data Anchors</h4>',
-      '<div class="' + cls + '">',
-      '<section class="td-anchor-group"><h5>Reading</h5>',
-      '<label>MAP RIT<input class="td-anchor-input" data-anchor-path="reading.mapRIT" type="number" value="' + escAttr(a.reading.mapRIT == null ? "" : a.reading.mapRIT) + '" /></label>',
-      '<label>Aimsweb Percentile<input class="td-anchor-input" data-anchor-path="reading.aimswebPercentile" type="number" min="0" max="99" value="' + escAttr(a.reading.aimswebPercentile == null ? "" : a.reading.aimswebPercentile) + '" /></label>',
-      '<label>Core Phonics<input class="td-anchor-input" data-anchor-path="reading.corePhonicsBenchmark" type="text" value="' + escAttr(a.reading.corePhonicsBenchmark || "") + '" /></label>',
-      '<label>Words Their Way Stage<input class="td-anchor-input" data-anchor-path="reading.wordsTheirWayStage" type="text" value="' + escAttr(a.reading.wordsTheirWayStage || "") + '" /></label>',
-      '<label>Fundations Unit<input class="td-anchor-input" data-anchor-path="reading.fundationsUnit" type="text" value="' + escAttr(a.reading.fundationsUnit || "") + '" /></label>',
-      '</section>',
-      '<section class="td-anchor-group"><h5>Writing</h5>',
-      '<label>On-Demand Rubric<input class="td-anchor-input" data-anchor-path="writing.onDemandRubricScore" type="number" step="0.1" value="' + escAttr(a.writing.onDemandRubricScore == null ? "" : a.writing.onDemandRubricScore) + '" /></label>',
-      '<label>Current Goal<input class="td-anchor-input" data-anchor-path="writing.currentWritingGoal" type="text" value="' + escAttr(a.writing.currentWritingGoal || "") + '" /></label>',
-      '</section>',
-      '<section class="td-anchor-group"><h5>Math</h5>',
-      '<label>MAP RIT<input class="td-anchor-input" data-anchor-path="math.mapRIT" type="number" value="' + escAttr(a.math.mapRIT == null ? "" : a.math.mapRIT) + '" /></label>',
-      '<label>Bridges Unit Score<input class="td-anchor-input" data-anchor-path="math.bridgesUnitScore" type="number" step="0.1" value="' + escAttr(a.math.bridgesUnitScore == null ? "" : a.math.bridgesUnitScore) + '" /></label>',
-      '<label>GLOSS Stage<input class="td-anchor-input" data-anchor-path="math.glossStage" type="text" value="' + escAttr(a.math.glossStage || "") + '" /></label>',
-      '<label>Illustrative Checkpoint<input class="td-anchor-input" data-anchor-path="math.illustrativeCheckpoint" type="text" value="' + escAttr(a.math.illustrativeCheckpoint || "") + '" /></label>',
-      '</section>',
-      '</div>',
-      '<div class="td-plan-tabs"><button class="td-top-btn" type="button" data-anchor-save="1">Save Anchors</button></div>',
-      '</div>'
-    ].join("");
+    return '<div class="td-support-item"><h4>Institutional Data Anchors</h4><p>Select a student to enter MAP/Aimsweb/Core Phonics/Writing/Math anchors.</p></div>';
   }
 
   function bindInstitutionalAnchorActions(studentId, rootEl, refreshDrawer) {
-    var container = rootEl || document;
-    var saveBtn = container.querySelector("[data-anchor-save='1']");
-    if (!saveBtn || !SupportStore || typeof SupportStore.setInstitutionalAnchors !== "function") return;
-    saveBtn.addEventListener("click", function () {
-      var inputs = container.querySelectorAll(".td-anchor-input[data-anchor-path]");
-      var patch = { reading: {}, writing: {}, math: {} };
-      Array.prototype.forEach.call(inputs, function (input) {
-        var path = String(input.getAttribute("data-anchor-path") || "");
-        var value = String(input.value || "").trim();
-        var parts = path.split(".");
-        if (parts.length !== 2) return;
-        var group = parts[0];
-        var key = parts[1];
-        if (!patch[group]) patch[group] = {};
-        patch[group][key] = value;
-      });
-      SupportStore.setInstitutionalAnchors(studentId, patch);
-      setCoachLine("Institutional anchors saved.");
-      renderInstructionalSequencer(studentId);
-      if (refreshDrawer) {
-        renderDrawer(studentId);
-      } else {
-        renderSupportHub(studentId);
-      }
-    });
+    if (institutionalController && typeof institutionalController.bindInstitutionalAnchorActions === "function") {
+      institutionalController.bindInstitutionalAnchorActions(studentId, rootEl, refreshDrawer);
+    }
   }
 
   function renderInstructionalSequencer(studentId) {
@@ -3126,6 +2823,46 @@
     });
   }
 
+  function initInstitutionalController() {
+    if (!DashboardInstitutional || typeof DashboardInstitutional.create !== "function") return;
+    institutionalController = DashboardInstitutional.create({
+      state: state,
+      deps: {
+        SupportStore: SupportStore
+      },
+      hooks: {
+        escAttr: escAttr,
+        setCoachLine: setCoachLine,
+        renderInstructionalSequencer: renderInstructionalSequencer,
+        renderDrawer: renderDrawer,
+        renderSupportHub: renderSupportHub
+      }
+    });
+  }
+
+  function initDrawerController() {
+    if (!DashboardDrawer || typeof DashboardDrawer.create !== "function") return;
+    drawerController = DashboardDrawer.create({
+      state: state,
+      el: el,
+      hooks: {
+        escAttr: escAttr,
+        renderInstitutionalAnchorPanel: renderInstitutionalAnchorPanel,
+        bindInstitutionalAnchorActions: bindInstitutionalAnchorActions,
+        formatTier1Intervention: formatTier1Intervention,
+        openShareModal: openShareModal,
+        appendStudentParam: appendStudentParam,
+        download: download,
+        setCoachLine: setCoachLine,
+        renderSupportHub: renderSupportHub
+      },
+      deps: {
+        Evidence: Evidence,
+        SupportStore: SupportStore
+      }
+    });
+  }
+
   function getSelectedStudentGradeBand() {
     if (supportController && typeof supportController.getSelectedStudentGradeBand === "function") {
       return supportController.getSelectedStudentGradeBand();
@@ -3575,10 +3312,12 @@
   seedFromCaseloadStore();
   ensureDemoCaseload();
   primeDemoMetrics();
+  initInstitutionalController();
   refreshCaseload();
   initMeetingController();
   initSupportController();
   initSupportViewController();
+  initDrawerController();
   bindEvents();
   void loadIllustrativeMathMapData();
   initNumeracyCurriculumSelectors();
