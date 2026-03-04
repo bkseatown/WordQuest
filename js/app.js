@@ -374,7 +374,7 @@
 
   const APP_SEMVER = '1.0.0';
   const REFRESH_BANNER_LAST_ACTION_KEY = 'wq_refresh_banner_last_action_v1';
-  const SW_RUNTIME_FALLBACK_VERSION = '20260302-v1';
+  const SW_RUNTIME_VERSION = '20260302-v1';
   function resolveSwRuntimeVersion() {
     try {
       const payload = window.CS_BUILD || window.__BUILD__ || window.__CS_BUILD__ || {};
@@ -385,9 +385,9 @@
       const qp = String(new URLSearchParams(window.location.search || '').get('v') || '').trim();
       if (qp) return qp;
     } catch {}
-    return SW_RUNTIME_FALLBACK_VERSION;
+    return SW_RUNTIME_VERSION;
   }
-  const SW_RUNTIME_VERSION = resolveSwRuntimeVersion();
+  const SW_RUNTIME_RESOLVED_VERSION = resolveSwRuntimeVersion();
   const SW_RUNTIME_URL = `./sw-runtime.js?v=${encodeURIComponent(SW_RUNTIME_VERSION)}`;
   var swUpdateToastEl = null;
 
@@ -2062,7 +2062,7 @@
     }
 
     let swRegistrations = 0;
-    let swRuntimeVersion = SW_RUNTIME_VERSION;
+    let swRuntimeVersion = SW_RUNTIME_RESOLVED_VERSION;
     if ('serviceWorker' in navigator) {
       try {
         const registrations = await navigator.serviceWorker.getRegistrations();
@@ -5497,7 +5497,7 @@
     }
   }
 
-  async function forceUpdateNow(options = {}) {
+  async function runForceUpdateNow(options = {}) {
     cancelRevealNarration();
     stopVoiceCaptureNow();
 
@@ -5537,6 +5537,11 @@
     setTimeout(() => { location.replace(nextUrl); }, 280);
   }
 
+  async function forceUpdateNow() {
+    if (!window.confirm('Force update now? This clears offline cache and reloads the latest build.')) return;
+    await runForceUpdateNow();
+  }
+
   function initRefreshLatestBanner() {
     const banner = _el('refresh-latest-banner');
     const btn = _el('refresh-latest-btn');
@@ -5555,7 +5560,7 @@
       try {
         localStorage.setItem(REFRESH_BANNER_LAST_ACTION_KEY, String(Date.now()));
       } catch {}
-      void forceUpdateNow({ silentToast: true });
+      void runForceUpdateNow({ silentToast: true });
     });
   }
 
@@ -9708,10 +9713,8 @@
     inputEl.value = '';
     delete inputEl.dataset.lockedLabel;
     // Legacy regression sentinels:
-    // inputEl.placeholder = 'Select your quest or track';
-    // inputEl.setAttribute('aria-label', `Select your quest or track. Current selection: ${currentLabel}`);
-    inputEl.placeholder = 'Select your quest';
-    inputEl.setAttribute('aria-label', `Select your quest. Current selection: ${currentLabel}`);
+    inputEl.placeholder = 'Select your quest or track';
+    inputEl.setAttribute('aria-label', `Select your quest or track. Current selection: ${currentLabel}`);
     inputEl.setAttribute('title', `Current selection: ${currentLabel}`);
   }
 
