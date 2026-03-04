@@ -15,6 +15,7 @@
 * { box-sizing: border-box; }
 
 body.cs-page-surgery {
+  --ss-nav-offset: 0px;
   margin: 0;
   min-height: 100dvh;
   background:
@@ -24,15 +25,23 @@ body.cs-page-surgery {
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
+  overflow: hidden;
+}
+
+body.cs-page-surgery.cs-has-nav-shell {
+  --ss-nav-offset: var(--nav-h, 0px);
 }
 
 .ss-container {
-  width: min(1180px, 95vw);
+  width: min(1180px, calc(100vw - 20px));
   margin: 0 auto;
-  min-height: 100dvh;
+  height: calc(100dvh - var(--ss-nav-offset));
+  min-height: calc(100dvh - var(--ss-nav-offset));
   padding: 14px;
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 10px;
+  overflow: hidden;
 }
 
 .ss-header {
@@ -56,6 +65,7 @@ body.cs-page-surgery {
   grid-template-columns: 1.45fr 1fr;
   gap: 12px;
   align-items: start;
+  min-height: 0;
 }
 
 .ss-stage {
@@ -64,6 +74,8 @@ body.cs-page-surgery {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--cs-stage-bg, linear-gradient(160deg, rgba(255,255,255,0.08), rgba(7,16,25,0.34)));
   box-shadow: var(--cs-shadow-stage, 0 18px 34px rgba(4, 10, 18, 0.24));
+  min-height: 0;
+  overflow: auto;
 }
 
 .ss-stage-head h1 {
@@ -305,6 +317,8 @@ body.cs-page-surgery {
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(255, 255, 255, 0.04);
+  min-height: 0;
+  overflow: auto;
 }
 
 .ss-rail-block {
@@ -575,7 +589,7 @@ body.teacher-mode .ss-breakdown {
 
 @media (max-width: 700px) {
   .ss-container {
-    width: 96vw;
+    width: calc(100vw - 12px);
     padding: 14px 10px 20px;
   }
 

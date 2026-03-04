@@ -55,10 +55,10 @@ body.td-page.cs-has-nav-shell {
   height: 100dvh;
   max-height: 100dvh;
   margin: 0 auto;
-  padding: 10px 0;
+  padding: 8px 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   overflow: hidden;
 }
 
@@ -72,9 +72,9 @@ body.cs-has-nav-shell .td-shell {
 
 .td-surface {
   border-radius: var(--radius-4);
-  border: 1px solid var(--surface-border);
+  border: 0;
   background: color-mix(in oklab, var(--surface-1) 92%, #f3f7fc 8%);
-  box-shadow: var(--shadow-medium);
+  box-shadow: 0 8px 20px rgba(26, 44, 70, 0.08);
   backdrop-filter: none;
   transition: border-color var(--dur-2) ease-in-out, background-color var(--dur-2) ease-in-out, box-shadow var(--dur-2) ease-in-out, transform var(--dur-2) ease-in-out;
 }
@@ -84,7 +84,7 @@ body.cs-has-nav-shell .td-shell {
   grid-template-columns: minmax(220px, auto) minmax(360px, 1fr) auto;
   gap: var(--sp-3);
   align-items: center;
-  padding: 14px 16px;
+  padding: 12px 16px;
   position: sticky;
   top: 0;
   z-index: 9;
@@ -92,8 +92,7 @@ body.cs-has-nav-shell .td-shell {
 
 .td-top.td-surface {
   background: color-mix(in oklab, var(--surface-elev-1) 90%, #edf4ff 10%);
-  border-color: color-mix(in oklab, var(--surface-border) 68%, #a8bbd6 32%);
-  box-shadow: var(--shadow-medium);
+  box-shadow: 0 10px 24px rgba(29, 47, 72, 0.09);
 }
 
 .td-wordmark strong {
@@ -155,13 +154,13 @@ body.cs-has-nav-shell .td-shell {
 #td-search-input {
   width: 100%;
   border-radius: var(--radius-3);
-  border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--border-soft) 70%);
+  border: 0;
   background: var(--surface-elev-1);
   color: var(--text-primary);
   padding: 12px 14px;
   font: inherit;
   font-size: var(--fs-2);
-  box-shadow: none;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 24%, transparent);
 }
 
 #td-search-input::placeholder {
@@ -170,8 +169,7 @@ body.cs-has-nav-shell .td-shell {
 
 #td-search-input:focus-visible {
   outline: none;
-  border-color: color-mix(in oklab, var(--accent) 76%, white 24%);
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 66%, transparent), 0 0 0 2px color-mix(in oklab, var(--accent) 22%, transparent);
 }
 
 .td-top-actions {
@@ -187,7 +185,7 @@ body.cs-has-nav-shell .td-shell {
 }
 .td-top-btn {
   border-radius: var(--radius-2);
-  border: 1px solid var(--surface-border);
+  border: 0;
   background: var(--surface-1);
   color: var(--text-primary);
   padding: 7px 10px;
@@ -198,7 +196,8 @@ body.cs-has-nav-shell .td-shell {
   transition: background-color var(--dur-1) ease-in-out, border-color var(--dur-1) ease-in-out, color var(--dur-1) ease-in-out, transform var(--dur-1) ease-in-out, box-shadow var(--dur-1) ease-in-out;
 }
 .td-top-btn:focus-visible {
-  border-color: color-mix(in oklab, var(--accent) 62%, var(--border-subtle) 38%);
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 30%, transparent);
 }
 #td-new-session {
   background: var(--action-primary);
@@ -282,8 +281,8 @@ body.cs-has-nav-shell .td-shell {
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: 16px;
-  padding: 14px 20px 18px;
+  gap: 12px;
+  padding: 12px 18px 16px;
   overflow: hidden;
 }
 
@@ -291,10 +290,10 @@ body.cs-has-nav-shell .td-shell {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding: 7px 10px;
+  padding: 6px 10px;
   background: color-mix(in oklab, var(--surface-elev-2) 74%, var(--surface-1));
-  border: 1px solid color-mix(in oklab, var(--surface-border) 72%, transparent);
-  box-shadow: var(--shadow-soft);
+  border: 0;
+  box-shadow: 0 2px 8px rgba(22, 40, 66, 0.08);
 }
 
 .dashboard-focus {
@@ -338,20 +337,20 @@ body.cs-has-nav-shell .td-shell {
 
 .focus-card {
   height: 100%;
-  padding: 20px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 16px;
-  border: 1px solid var(--surface-border);
-  box-shadow: var(--shadow-medium);
+  gap: 14px;
+  border: 0;
+  box-shadow: 0 8px 20px rgba(25, 44, 71, 0.09);
   position: relative;
 }
 
 .dashboard-focus > .focus-card:first-child {
-  background: color-mix(in oklab, var(--surface-elev-1) 88%, #eaf2fe 12%);
-  border-color: color-mix(in oklab, var(--surface-border) 64%, #9fb5d8 36%);
-  gap: 16px;
+  background: color-mix(in oklab, var(--surface-elev-1) 84%, #e4efff 16%);
+  box-shadow: 0 12px 28px rgba(30, 56, 90, 0.14);
+  gap: 14px;
 }
 
 .focus-card::before {
@@ -360,7 +359,7 @@ body.cs-has-nav-shell .td-shell {
   left: 0;
   top: 0;
   width: 100%;
-  height: 4px;
+  height: 5px;
   border-radius: 14px 14px 0 0;
   background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 72%, #92b3e2 28%), color-mix(in oklab, var(--accent-2) 64%, #dbe7f7 36%));
 }
@@ -373,13 +372,14 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .numeracy-focus-card {
-  border: 1px solid var(--surface-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 0;
+  background: color-mix(in oklab, var(--surface-elev-1) 86%, #edf3fd 14%);
+  box-shadow: 0 8px 20px rgba(27, 44, 68, 0.1);
 }
 
 .numeracy-title {
   margin: 0;
-  font-size: clamp(1.18rem, 1.6vw, 1.35rem);
+  font-size: clamp(1.25rem, 1.75vw, 1.45rem);
   line-height: 1.2;
   color: var(--text-strong);
 }
@@ -395,8 +395,9 @@ body.cs-has-nav-shell .td-shell {
   gap: 4px;
   padding: 8px 10px;
   border-radius: var(--radius-2);
-  border: 1px solid color-mix(in oklab, var(--border-subtle) 66%, transparent);
+  border: 0;
   background: var(--surface-elev-2);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 60%, transparent);
 }
 
 .numeracy-meta-label {
@@ -443,7 +444,7 @@ body.cs-has-nav-shell .td-shell {
   align-self: center;
   white-space: nowrap;
   border-radius: var(--radius-round);
-  border: 1px solid color-mix(in oklab, var(--accent-2) 36%, var(--border-subtle));
+  border: 0;
   background: color-mix(in oklab, var(--accent-2) 14%, var(--surface-elev-2));
   color: var(--text-secondary);
   padding: 4px 10px;
@@ -461,10 +462,11 @@ body.cs-has-nav-shell .td-shell {
 .numeracy-practice-panel {
   display: grid;
   gap: 10px;
-  border: 1px solid color-mix(in oklab, var(--border-subtle) 66%, transparent);
+  border: 0;
   border-radius: var(--radius-2);
   background: color-mix(in oklab, var(--surface-elev-2) 84%, transparent);
   padding: 10px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 55%, transparent);
 }
 
 .numeracy-practice-grid {
@@ -474,12 +476,13 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .numeracy-practice-block {
-  border: 1px solid color-mix(in oklab, var(--border-subtle) 70%, transparent);
+  border: 0;
   border-radius: var(--radius-2);
   background: var(--surface-1);
   padding: 8px 10px;
   display: grid;
   gap: 4px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 52%, transparent);
 }
 
 .numeracy-practice-block-wide {
@@ -521,26 +524,26 @@ body.cs-has-nav-shell .td-shell {
   display: flex;
   align-items: start;
   justify-content: space-between;
-  gap: var(--sp-3);
+  gap: 10px;
 }
 
 .focus-student-name {
   margin: 0;
-  font-size: clamp(2.15rem, 3.4vw, 2.65rem);
+  font-size: clamp(2.35rem, 3.9vw, 2.95rem);
   line-height: var(--lh-tight);
   letter-spacing: var(--ls-tight);
   color: var(--text-strong);
-  font-weight: 650;
+  font-weight: 700;
 }
 
 .focus-tier {
   border-radius: var(--radius-round);
-  border: 1px solid var(--border-subtle);
+  border: 0;
   background: var(--surface-elev-2);
   color: var(--text-secondary);
-  font-size: var(--fs-0);
+  font-size: 0.72rem;
   font-weight: var(--fw-semibold);
-  padding: 4px 8px;
+  padding: 3px 7px;
   white-space: nowrap;
 }
 
@@ -582,19 +585,21 @@ body.cs-has-nav-shell .td-shell {
   min-height: 22px;
   padding: 2px 9px;
   border-radius: 999px;
-  border: 1px solid color-mix(in oklab, var(--surface-border) 76%, transparent);
+  border: 0;
   background: color-mix(in oklab, var(--surface-elev-2) 82%, transparent);
   color: var(--text-secondary);
   font-size: var(--fs-0);
   line-height: 1.2;
   font-weight: var(--fw-regular);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 55%, transparent);
 }
 
 .td-explainability {
-  border: 1px solid color-mix(in oklab, var(--border-subtle) 68%, transparent);
+  border: 0;
   border-radius: var(--radius-2);
   background: color-mix(in oklab, var(--surface-elev-2) 78%, transparent);
   padding: 8px 10px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 56%, transparent);
 }
 
 .td-explainability summary {
@@ -627,23 +632,43 @@ body.cs-has-nav-shell .td-shell {
   padding-inline: var(--sp-4);
   font-size: var(--fs-3);
   font-weight: var(--fw-semibold);
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 92%, white 8%), color-mix(in oklab, var(--accent) 82%, black 18%));
-  border-color: color-mix(in oklab, var(--accent) 84%, black 16%);
   color: #ffffff;
-  box-shadow: 0 8px 18px rgba(43, 93, 168, 0.24);
+  box-shadow: 0 10px 22px rgba(43, 93, 168, 0.26);
   transform: translateZ(0);
-  transition: transform var(--dur-1) ease-in-out, box-shadow var(--dur-1) ease-in-out, filter var(--dur-1) ease-in-out;
+  transition: transform 200ms ease-in-out, box-shadow 200ms ease-in-out, filter 200ms ease-in-out;
+}
+
+.focus-start::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 15%, rgba(255, 255, 255, 0.22) 50%, transparent 85%);
+  transform: translateX(-130%);
+  pointer-events: none;
 }
 
 .focus-start:hover {
   background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 88%, white 12%), color-mix(in oklab, var(--accent) 78%, black 22%));
   transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(43, 93, 168, 0.28);
+  box-shadow: 0 12px 26px rgba(43, 93, 168, 0.3);
 }
 
 .focus-start.is-launching {
-  transform: translateY(-1px) scale(0.992);
-  filter: saturate(1.05);
+  transform: translateY(0) scale(0.992);
+  box-shadow: 0 6px 14px rgba(43, 93, 168, 0.24);
+  filter: saturate(1.03);
+}
+
+.focus-start.is-launching::after {
+  animation: tdLaunchShimmer 200ms ease-in-out 1;
+}
+
+@keyframes tdLaunchShimmer {
+  from { transform: translateX(-130%); }
+  to { transform: translateX(130%); }
 }
 
 .dashboard-queue,
@@ -656,12 +681,12 @@ body.cs-has-nav-shell .td-shell {
 
 .dashboard-queue {
   flex: 1 1 auto;
-  background: var(--surface-elev-2);
+  background: color-mix(in oklab, var(--surface-elev-2) 82%, #f4f8fd 18%);
 }
 
 .dashboard-launch {
   flex: 0 0 auto;
-  background: var(--surface-elev-2);
+  background: color-mix(in oklab, var(--surface-elev-2) 84%, #f4f8fd 16%);
 }
 
 .dashboard-confidence {
@@ -908,9 +933,9 @@ body.td-wow-eval-active .td-shell {
 .queue-card {
   padding: 16px;
   border-radius: var(--radius-2);
-  border: 1px solid var(--surface-border);
+  border: 0;
   background: var(--surface-1);
-  box-shadow: none;
+  box-shadow: 0 1px 4px rgba(26, 42, 62, 0.08);
   display: grid;
   gap: var(--space-2);
 }
@@ -925,7 +950,7 @@ body.td-wow-eval-active .td-shell {
 .queue-tier {
   justify-self: start;
   border-radius: var(--radius-round);
-  border: 1px solid var(--border-subtle);
+  border: 0;
   background: var(--surface-elev-1);
   color: var(--text-secondary);
   font-size: var(--fs-0);
@@ -962,7 +987,8 @@ body.td-wow-eval-active .td-shell {
   border-radius: var(--radius-2);
   background: var(--surface-1);
   color: var(--text-primary);
-  border: 1px solid color-mix(in oklab, var(--border-subtle) 64%, transparent);
+  border: 0;
+  box-shadow: 0 1px 4px rgba(26, 42, 62, 0.08);
 }
 
 .launch-card:hover {
@@ -980,7 +1006,6 @@ body.td-wow-eval-active .td-shell {
 .dashboard-mode-strip #td-mode-classroom {
   color: var(--text-secondary);
   background: color-mix(in oklab, var(--surface-elev-2) 84%, transparent);
-  border-color: color-mix(in oklab, var(--surface-border) 70%, transparent);
 }
 
 .dashboard-mode-strip .td-top-btn.is-active {
