@@ -3,6 +3,15 @@
 
   function create() {
     var registry = {};
+    var activeName = "";
+
+    function syncBodyState() {
+      var hasVisible = Object.keys(registry).some(function (name) {
+        var entry = registry[name];
+        return !!(entry && entry.modal && !entry.modal.classList.contains("hidden"));
+      });
+      document.body.classList.toggle("td-modal-open", hasVisible);
+    }
 
     function register(name, modal, onClose) {
       if (!name || !modal) return;
@@ -17,7 +26,9 @@
       var entry = registry[key];
       if (!entry || !entry.modal) return;
       entry.modal.classList.add("hidden");
+      if (activeName === key) activeName = "";
       if (entry.onClose) entry.onClose();
+      syncBodyState();
     }
 
     function hideAll(exceptName) {
@@ -26,6 +37,8 @@
         if (name === except) return;
         hide(name);
       });
+      if (!except) activeName = "";
+      syncBodyState();
     }
 
     function show(name, options) {
@@ -35,11 +48,13 @@
       hideAll(key);
       if (options && options.openingClass) entry.modal.classList.add(String(options.openingClass));
       entry.modal.classList.remove("hidden");
+      activeName = key;
       if (options && options.openingClass && Number(options.openingMs) > 0) {
         setTimeout(function () {
           if (entry.modal) entry.modal.classList.remove(String(options.openingClass));
         }, Number(options.openingMs));
       }
+      syncBodyState();
     }
 
     function bindBackdropClose(name) {
@@ -63,6 +78,7 @@
       show: show,
       hide: hide,
       hideAll: hideAll,
+      getActive: function () { return activeName; },
       bindBackdropClose: bindBackdropClose,
       closeOnEscape: closeOnEscape
     };
