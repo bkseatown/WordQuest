@@ -1306,8 +1306,41 @@
         '  </button>',
         '</div>',
 
+        /* Phase 11 — Progress Notes */
+        (function () {
+          var planIntel = hubState.get().intelligence;
+          var drawerPlan = planIntel && planIntel.plan;
+          var tmpl = drawerPlan && drawerPlan.progressNoteTemplate;
+          var noteTeacher = (tmpl && tmpl.teacher) ? String(tmpl.teacher) : "No note available yet.";
+          if (!tmpl) return "";
+          return [
+            '<div class="th2-drawer-section">',
+            '  <h4 class="th2-drawer-section-head">Progress Notes <span class="th2-auto-badge">Auto-generated</span></h4>',
+            '  <div class="th2-drawer-note-tabs">',
+            '    <button class="th2-note-tab is-active" data-note-target="teacher">Teacher</button>',
+            '    <button class="th2-note-tab" data-note-target="family">Parent</button>',
+            '    <button class="th2-note-tab" data-note-target="team">Team</button>',
+            '  </div>',
+            '  <pre class="th2-note-text" id="th2-note-text">' + escapeHtml(noteTeacher) + '</pre>',
+            '  <button class="th2-btn-log" id="th2-copy-note" data-note-target="teacher" type="button">&#x2398; Copy to clipboard</button>',
+            '</div>'
+          ].join("\n");
+        })(),
+
+        /* Phase 11 — IM Cool-Down Score */
         '<div class="th2-drawer-section">',
-        '  <h4 class="th2-drawer-section-head">Share &amp; Export</h4>',
+        '  <h4 class="th2-drawer-section-head">IM Cool-Down Score</h4>',
+        '  <p class="th2-drawer-note-sub">Log today\'s score (0\u20134) to get an instant grouping suggestion.</p>',
+        '  <div class="th2-cooldown-row">',
+        '    <label class="th2-cooldown-label" for="th2-cooldown-score">Score</label>',
+        '    <input class="th2-cooldown-input" id="th2-cooldown-score" type="number" min="0" max="4" step="1" placeholder="\u2014">',
+        '    <button class="th2-btn-log" id="th2-cooldown-save" type="button">Log &amp; Group</button>',
+        '  </div>',
+        '  <div id="th2-cooldown-group-hint" class="th2-cooldown-hint"></div>',
+        '</div>',
+
+        '<div class="th2-drawer-section">',
+        '  <h4 class="th2-drawer-section-head">Export</h4>',
         '  <div class="th2-export-row">',
         '    <button class="th2-export-btn" id="th2-copy-summary" type="button">&#x2398; Copy Summary</button>',
         '    <button class="th2-export-btn" id="th2-export-json" type="button">&#x21e9; JSON</button>',
@@ -1506,6 +1539,48 @@
         safe(function () { Evidence.upsertStudent(s); });
       }
     });
+
+    /* Seed realistic session data (runs once per demo session) */
+    var SEED_KEY = "cs.hub.demo.sessions.v2";
+    if (!localStorage.getItem(SEED_KEY) && Evidence && typeof Evidence.appendSession === "function") {
+      var DAY = 86400000;
+      var now  = Date.now();
+      /* Ava M. — reading lab sessions, improving fluency */
+      safe(function () {
+        Evidence.appendSession("demo-ava", "reading_lab", { accuracy: 0.72, wpmProxy: 54, selfCorrects: 2 }, now - 12 * DAY);
+        Evidence.appendSession("demo-ava", "reading_lab", { accuracy: 0.75, wpmProxy: 58, selfCorrects: 3 }, now - 8  * DAY);
+        Evidence.appendSession("demo-ava", "reading_lab", { accuracy: 0.78, wpmProxy: 61, selfCorrects: 2 }, now - 4  * DAY);
+        Evidence.appendSession("demo-ava", "reading_lab", { accuracy: 0.81, wpmProxy: 64, selfCorrects: 4 }, now - 1  * DAY);
+      });
+      /* Liam T. — word quest phonics, struggling */
+      safe(function () {
+        Evidence.appendSession("demo-liam", "wordquest", { misplaceRate: 0.38, absentRate: 0.12, vowelSwapCount: 4 }, now - 14 * DAY);
+        Evidence.appendSession("demo-liam", "wordquest", { misplaceRate: 0.35, absentRate: 0.10, vowelSwapCount: 3 }, now - 9  * DAY);
+        Evidence.appendSession("demo-liam", "wordquest", { misplaceRate: 0.40, absentRate: 0.14, vowelSwapCount: 5 }, now - 4  * DAY);
+        Evidence.appendSession("demo-liam", "wordquest", { misplaceRate: 0.37, absentRate: 0.11, vowelSwapCount: 4 }, now - 2  * DAY);
+      });
+      /* Maya R. — reading lab, strong ORF */
+      safe(function () {
+        Evidence.appendSession("demo-maya", "reading_lab", { accuracy: 0.88, wpmProxy: 87, selfCorrects: 1 }, now - 10 * DAY);
+        Evidence.appendSession("demo-maya", "reading_lab", { accuracy: 0.90, wpmProxy: 91, selfCorrects: 2 }, now - 6  * DAY);
+        Evidence.appendSession("demo-maya", "reading_lab", { accuracy: 0.92, wpmProxy: 94, selfCorrects: 1 }, now - 3  * DAY);
+        Evidence.appendSession("demo-maya", "reading_lab", { accuracy: 0.93, wpmProxy: 97, selfCorrects: 2 }, now - 1  * DAY);
+      });
+      /* Noah K. — numeracy, moderate */
+      safe(function () {
+        Evidence.appendSession("demo-noah", "numeracy", { accuracy: 0.68, speedProxy: 42, hints: 3 }, now - 11 * DAY);
+        Evidence.appendSession("demo-noah", "numeracy", { accuracy: 0.71, speedProxy: 45, hints: 2 }, now - 7  * DAY);
+        Evidence.appendSession("demo-noah", "numeracy", { accuracy: 0.69, speedProxy: 44, hints: 3 }, now - 3  * DAY);
+        Evidence.appendSession("demo-noah", "numeracy", { accuracy: 0.73, speedProxy: 48, hints: 2 }, now - 1  * DAY);
+      });
+      /* Zoe W. — word quest phonics, early stage */
+      safe(function () {
+        Evidence.appendSession("demo-zoe", "wordquest", { misplaceRate: 0.28, absentRate: 0.08, vowelSwapCount: 2 }, now - 9  * DAY);
+        Evidence.appendSession("demo-zoe", "wordquest", { misplaceRate: 0.25, absentRate: 0.07, vowelSwapCount: 1 }, now - 5  * DAY);
+        Evidence.appendSession("demo-zoe", "wordquest", { misplaceRate: 0.22, absentRate: 0.06, vowelSwapCount: 1 }, now - 2  * DAY);
+      });
+      localStorage.setItem(SEED_KEY, "1");
+    }
   }
 
   /* ── Filtering ─────────────────────────────────────────── */
@@ -1568,6 +1643,149 @@
     // Write to HubState → HubContext auto-computes intelligence
     hubState.set({ context: { studentId: studentId } });
     renderStudentList(); // refresh active state in list
+  }
+
+  /* ── Phase 9: Live signal helpers ───────────────────────── */
+
+  /** Evidence chip row — accuracy, ORF, vowel confusion etc. */
+  function buildEvidenceChips(summary) {
+    var chips = Array.isArray(summary && summary.evidenceChips) ? summary.evidenceChips : [];
+    if (!chips.length) return "";
+    var inner = chips.slice(0, 5).map(function (c) {
+      return (
+        '<span class="th2-ev-chip">' +
+        '<span class="th2-ev-chip-label">' + escapeHtml(String(c.label || "")) + '</span>' +
+        '<span class="th2-ev-chip-val">'   + escapeHtml(String(c.value || "")) + '</span>' +
+        '</span>'
+      );
+    }).join("");
+    return '<div class="th2-ev-chips">' + inner + '</div>';
+  }
+
+  /** Live signal pills — MTSS decision + reason, last session, accuracy, ORF */
+  function buildLiveSignalPills(studentId, summary, plan) {
+    var pills = [];
+
+    /* 1 — MTSS decision pill with inline reason */
+    var trendDecision = "HOLD";
+    var trendReason   = "";
+    var EE = window.CSEvidenceEngine;
+    if (EE && typeof EE.computeMtssTrendDecision === "function") {
+      var mtss = safe(function () { return EE.computeMtssTrendDecision(studentId, null); });
+      if (mtss && mtss.status && mtss.status !== "INSUFFICIENT") {
+        trendDecision = String(mtss.status);
+        trendReason   = String(mtss.reason || "");
+      }
+    }
+    if (trendDecision === "HOLD" && plan) {
+      trendDecision = String(
+        (plan.tierSignal && plan.tierSignal.trendDecision) ||
+        (plan.trendDecision) || "HOLD"
+      );
+    }
+    var reasonShort = trendReason.length > 40 ? trendReason.slice(0, 38) + "\u2026" : trendReason;
+    pills.push(
+      '<span class="th2-signal" data-decision="' + escapeHtml(trendDecision) +
+      '" title="' + escapeHtml(trendReason) + '">' +
+      escapeHtml(trendDecision) +
+      (reasonShort ? ' <span class="th2-signal-reason">\u2014 ' + escapeHtml(reasonShort) + '</span>' : '') +
+      '</span>'
+    );
+
+    /* 2 — Last session timestamp */
+    var lastStr = (summary && summary.lastSession && summary.lastSession.timestamp)
+      ? relativeDate(summary.lastSession.timestamp)
+      : "No session yet";
+    pills.push('<span class="th2-signal th2-signal--meta">\u23F1 ' + escapeHtml(lastStr) + '</span>');
+
+    /* 3 & 4 — Accuracy + ORF from evidence store */
+    var evChips = Array.isArray(summary && summary.evidenceChips) ? summary.evidenceChips : [];
+    var accChip = null, orfChip = null;
+    evChips.forEach(function (c) {
+      if (c.label === "Accuracy") accChip = c;
+      if (c.label === "ORF")      orfChip = c;
+    });
+    if (accChip) {
+      pills.push('<span class="th2-signal th2-signal--acc">\u2714 ' + escapeHtml(accChip.value) + '</span>');
+    }
+    if (orfChip) {
+      pills.push('<span class="th2-signal th2-signal--orf">\u25B6 ' + escapeHtml(orfChip.value) + '</span>');
+    }
+
+    return pills.join("\n");
+  }
+
+  /** Progress note copy buttons — teacher / parent / team */
+  function buildProgressNoteActions(plan) {
+    if (!plan || !plan.progressNoteTemplate) return "";
+    return [
+      '<div class="th2-note-actions">',
+      '  <span class="th2-note-actions-label">Copy note</span>',
+      '  <button class="th2-note-btn" data-note-type="teacher" type="button">&#x1F4CB; Teacher</button>',
+      '  <button class="th2-note-btn" data-note-type="family"  type="button">&#x2709; Parent</button>',
+      '  <button class="th2-note-btn" data-note-type="team"    type="button">&#x1F91D; Team</button>',
+      '</div>'
+    ].join("\n");
+  }
+
+  /* ── Phase 10: Caseload health bar ─────────────────────── */
+
+  function buildCaseloadHealthBar(ranked) {
+    var high = 0, mod = 0, stable = 0;
+    ranked.forEach(function (r) {
+      if (r.tier >= 3 || r.daysSince >= 7)      high++;
+      else if (r.tier === 2 || r.daysSince >= 4) mod++;
+      else                                        stable++;
+    });
+    var total = ranked.length;
+    if (!total) return "";
+    var hp = Math.round(high / total * 100);
+    var mp = Math.round(mod  / total * 100);
+    var sp = 100 - hp - mp;
+    return [
+      '<div class="th2-health-wrap">',
+      '  <div class="th2-health-bar" title="Caseload health distribution">',
+      (hp      ? '<div class="th2-health-seg th2-health-seg--high"   style="width:' + hp + '%"></div>' : ''),
+      (mp      ? '<div class="th2-health-seg th2-health-seg--mod"    style="width:' + mp + '%"></div>' : ''),
+      (sp > 0  ? '<div class="th2-health-seg th2-health-seg--stable" style="width:' + sp + '%"></div>' : ''),
+      '  </div>',
+      '  <div class="th2-health-legend">',
+      (high   ? '<span class="th2-health-dot th2-health-dot--high">'   + high   + ' high risk</span>'  : ''),
+      (mod    ? '<span class="th2-health-dot th2-health-dot--mod">'    + mod    + ' developing</span>' : ''),
+      (stable ? '<span class="th2-health-dot th2-health-dot--stable">' + stable + ' stable</span>'     : ''),
+      '  </div>',
+      '</div>'
+    ].join("\n");
+  }
+
+  /* ── Phase 12: Onboarding (first-use, empty caseload) ───── */
+
+  function renderOnboarding() {
+    if (!el.emptyState) return;
+    el.emptyState.innerHTML = [
+      '<div class="th2-onboarding">',
+      '  <div class="th2-onboarding-icon">&#x1F4DA;</div>',
+      '  <h2 class="th2-onboarding-title">Welcome to Cornerstone MTSS</h2>',
+      '  <p class="th2-onboarding-sub">Your intelligence-powered command hub for reading &amp; math intervention.</p>',
+      '  <ol class="th2-onboarding-steps">',
+      '    <li class="th2-onboarding-step">',
+      '      <span class="th2-step-num">1</span>',
+      '      <div><strong>Add students</strong><p>Click <em>+ Add Student</em> to build your caseload.</p></div>',
+      '    </li>',
+      '    <li class="th2-onboarding-step">',
+      '      <span class="th2-step-num">2</span>',
+      '      <div><strong>Log sessions</strong><p>After each session, log results to unlock live intelligence.</p></div>',
+      '    </li>',
+      '    <li class="th2-onboarding-step">',
+      '      <span class="th2-step-num">3</span>',
+      '      <div><strong>Get recommendations</strong><p>Cornerstone surfaces MTSS decisions, goals &amp; next steps automatically.</p></div>',
+      '    </li>',
+      '  </ol>',
+      '  <button class="th2-btn th2-btn-primary th2-onboarding-cta" id="th2-onboarding-add" type="button">+ Add your first student</button>',
+      '</div>'
+    ].join("\n");
+    var addBtn = el.emptyState.querySelector("#th2-onboarding-add");
+    if (addBtn) addBtn.addEventListener("click", openAddDrawer);
   }
 
   /* ── Focus card rendering ──────────────────────────────── */
@@ -1646,6 +1864,7 @@
       '  <p class="th2-rec-kicker">Recommended session</p>',
       '  <p class="th2-rec-title">' + escapeHtml(recTitle) + '</p>',
       '  <p class="th2-rec-reason">' + escapeHtml(recReason) + '</p>',
+      buildEvidenceChips(summary),
       '</div>',
 
       /* Curriculum alignment — mapped from recommendation.
@@ -1657,12 +1876,9 @@
         student.gradeBand || student.grade || ""
       ),
 
-      /* Signal pills */
+      /* Signal pills — live data from evidence + plan engines */
       '<div class="th2-signals">',
-      '  <span class="th2-signal" data-decision="' + trendDecision + '">' + trendDecision + '</span>',
-      '  <span class="th2-signal">Fidelity tracking</span>',
-      '  <span class="th2-signal">Curriculum mapped</span>',
-      '  <span class="th2-signal">Guardrails passed</span>',
+      buildLiveSignalPills(studentId, summary, plan),
       '</div>',
 
       /* Actions */
@@ -1670,6 +1886,7 @@
       '  <a class="th2-btn th2-btn-primary" href="' + escapeHtml(activityHref) + '">Start Recommended Session</a>',
       '  <button class="th2-btn th2-btn-quiet" id="th2-view-details">View Details</button>',
       '</div>',
+      buildProgressNoteActions(plan),
 
       /* Support panel — auto-surfaces below actions */
       renderSupportPanel(studentId)
@@ -1776,6 +1993,7 @@
       '  <p class="th2-morning-greeting">' + greetingWord() + '</p>',
       '  <p class="th2-morning-date">' + todayDateStr() + '</p>',
       '  <p class="th2-morning-sub">' + escapeHtml(subText) + '</p>',
+      buildCaseloadHealthBar(ranked),
       heroHtml,
       (cardsHtml ? '<div class="th2-brief-list">' + cardsHtml + '</div>' : ''),
       '</div>'
@@ -1805,7 +2023,8 @@
     if (el.focusCard)  { el.focusCard.classList.add("hidden"); el.focusCard.setAttribute("aria-hidden", "true"); }
     var mode = hubState.get().context.mode;
     if (mode === "class") { renderClassSnapshot(); return; }
-    if (caseload.length) renderMorningBrief();
+    if (!caseload.length) { renderOnboarding(); return; }
+    renderMorningBrief();
   }
 
   function showFocusCard() {
@@ -2272,6 +2491,107 @@
     if (e.target && e.target.id === "th2-add-student-btn") openAddDrawer();
   });
 
+  // Phase 9: Progress note copy buttons (focus card)
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest("[data-note-type]");
+    if (!btn || !btn.classList.contains("th2-note-btn")) return;
+    var noteType = btn.getAttribute("data-note-type") || "teacher";
+    var state = hubState.get();
+    var plan  = state.intelligence && state.intelligence.plan;
+    var tmpl  = plan && plan.progressNoteTemplate;
+    if (!tmpl) { showToast("No note available yet.", "info"); return; }
+    var text = String(tmpl[noteType] || tmpl.teacher || "");
+    if (!text) { showToast("No note for that type.", "info"); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        showToast("Note copied to clipboard \u2713", "success");
+        btn.textContent = "\u2714 Copied!";
+        setTimeout(function () {
+          var label = noteType === "teacher" ? "&#x1F4CB; Teacher"
+                    : noteType === "family"  ? "&#x2709; Parent"
+                    : "&#x1F91D; Team";
+          btn.innerHTML = label;
+        }, 1800);
+      }).catch(function () {
+        window.prompt("Copy this note:", text);
+      });
+    } else {
+      window.prompt("Copy this note:", text);
+    }
+  });
+
+  // Phase 11: Drawer progress note tabs + copy
+  document.addEventListener("click", function (e) {
+    var tab = e.target.closest && e.target.closest(".th2-note-tab");
+    if (!tab) return;
+    var drawerBody = document.getElementById("th2-drawer-body");
+    if (!drawerBody) return;
+    var target = tab.getAttribute("data-note-target") || "teacher";
+    drawerBody.querySelectorAll(".th2-note-tab").forEach(function (t) {
+      t.classList.toggle("is-active", t.getAttribute("data-note-target") === target);
+    });
+    var noteText = drawerBody.querySelector("#th2-note-text");
+    if (noteText) {
+      var state = hubState.get();
+      var plan  = state.intelligence && state.intelligence.plan;
+      var tmpl  = plan && plan.progressNoteTemplate;
+      noteText.textContent = (tmpl && tmpl[target]) ? String(tmpl[target]) : "No note available.";
+      var copyBtn = drawerBody.querySelector("#th2-copy-note");
+      if (copyBtn) copyBtn.setAttribute("data-note-target", target);
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest("#th2-copy-note");
+    if (!btn) return;
+    var noteText = document.querySelector("#th2-note-text");
+    var text = noteText ? noteText.textContent : "";
+    if (!text) { showToast("No note to copy.", "info"); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        showToast("Note copied to clipboard \u2713", "success");
+        btn.textContent = "\u2714 Copied!";
+        setTimeout(function () { btn.textContent = "\u2398 Copy to clipboard"; }, 1800);
+      }).catch(function () { window.prompt("Copy:", text); });
+    } else {
+      window.prompt("Copy:", text);
+    }
+  });
+
+  // Phase 11: IM Cool-Down save
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest("#th2-cooldown-save");
+    if (!btn) return;
+    var input = document.getElementById("th2-cooldown-score");
+    if (!input) return;
+    var val = parseInt(input.value, 10);
+    if (isNaN(val) || val < 0 || val > 4) {
+      showToast("Enter a score 0\u20134.", "info");
+      return;
+    }
+    var studentId = hubState.get().context.studentId || "";
+    if (studentId) {
+      safe(function () {
+        Evidence.appendSession(studentId, "im_cooldown", {
+          source: "hub-v2-cooldown",
+          timestamp: Date.now(),
+          signals: { cooldownScore: val }
+        });
+      });
+    }
+    var hint = document.getElementById("th2-cooldown-group-hint");
+    if (hint) {
+      var group = val <= 1 ? "Small-group pull-out (intensive)"
+                : val === 2 ? "Partner/guided group"
+                : val === 3 ? "Independent + extension"
+                : "Extension challenge";
+      hint.innerHTML = '<span class="th2-cooldown-group">' + escapeHtml(group) + '</span>';
+    }
+    btn.textContent = "Saved \u2713";
+    btn.disabled = true;
+    showToast("Cool-down score logged.", "success");
+  });
+
   // Add Student drawer close button
   document.addEventListener("click", function (e) {
     if (e.target && e.target.id === "th2-add-drawer-close") closeAddDrawer();
@@ -2289,11 +2609,13 @@
     // Load caseload
     loadCaseload();
 
-    // If a student was passed via URL, select them; otherwise show morning brief
+    // If a student was passed via URL, select them; otherwise morning brief or onboarding
     if (initialStudentId && caseload.some(function (s) { return s.id === initialStudentId; })) {
       selectStudent(initialStudentId);
-    } else {
+    } else if (caseload.length) {
       renderMorningBrief();
+    } else {
+      renderOnboarding();
     }
   }
 

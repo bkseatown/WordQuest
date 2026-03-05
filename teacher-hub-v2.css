@@ -1982,3 +1982,377 @@ body.th2-page {
   border-radius: 10px;
   margin-top: 2px;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 9 — Live Signal Surfaces
+   ═══════════════════════════════════════════════════════════ */
+
+/* Signal pills — extended styles for live data variants */
+.th2-signal-reason {
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.78;
+  letter-spacing: 0;
+}
+.th2-signal--meta { background: var(--surface-2, #f5f4f1); color: var(--text-secondary, #6b6860); }
+.th2-signal--acc  { background: #d1fae5; color: #065f46; }
+.th2-signal--orf  { background: #dbeafe; color: #1e3a5f; }
+
+/* Evidence data chips row */
+.th2-ev-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.th2-ev-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  background: var(--surface-2, #f5f4f1);
+  border: 1px solid var(--border-subtle, #e8e5e0);
+  border-radius: 20px;
+  font-size: 11px;
+  color: var(--text-secondary, #6b6860);
+}
+.th2-ev-chip-label {
+  font-weight: 500;
+  color: var(--text-primary, #1c1a18);
+}
+.th2-ev-chip-val {
+  font-weight: 700;
+  color: var(--accent-main, #c84b31);
+}
+
+/* Progress note copy row */
+.th2-note-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--surface-2, #f5f4f1);
+  border-top: 1px solid var(--border-subtle, #e8e5e0);
+  flex-wrap: wrap;
+}
+.th2-note-actions-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary, #6b6860);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-right: 2px;
+}
+.th2-note-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--border-subtle, #e8e5e0);
+  border-radius: 20px;
+  background: var(--surface-1, #fff);
+  color: var(--text-primary, #1c1a18);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.th2-note-btn:hover {
+  border-color: var(--accent-main, #c84b31);
+  color: var(--accent-main, #c84b31);
+  background: #fff5f2;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 10 — Caseload Health Bar
+   ═══════════════════════════════════════════════════════════ */
+
+.th2-health-wrap {
+  margin: 12px 0 14px;
+  animation: th2-brief-in .35s ease both;
+}
+.th2-health-bar {
+  display: flex;
+  height: 7px;
+  border-radius: 4px;
+  overflow: hidden;
+  gap: 2px;
+  background: var(--border-subtle, #e8e5e0);
+}
+.th2-health-seg {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+  min-width: 4px;
+}
+.th2-health-seg--high   { background: var(--status-risk, #e03d28); }
+.th2-health-seg--mod    { background: var(--status-developing, #f59e0b); }
+.th2-health-seg--stable { background: var(--status-secure, #16a34a); }
+.th2-health-legend {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+.th2-health-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary, #6b6860);
+}
+.th2-health-dot::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.th2-health-dot--high::before   { background: var(--status-risk, #e03d28); }
+.th2-health-dot--mod::before    { background: var(--status-developing, #f59e0b); }
+.th2-health-dot--stable::before { background: var(--status-secure, #16a34a); }
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 11 — Drawer: Progress Notes + IM Cool-Down
+   ═══════════════════════════════════════════════════════════ */
+
+/* Auto-generated badge inline with section head */
+.th2-auto-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  border-radius: 10px;
+  vertical-align: middle;
+}
+.th2-drawer-note-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.th2-note-tab {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--border-subtle, #e8e5e0);
+  border-radius: 20px;
+  background: none;
+  color: var(--text-secondary, #6b6860);
+  cursor: pointer;
+  transition: all .15s;
+}
+.th2-note-tab.is-active,
+.th2-note-tab:hover {
+  background: var(--accent-main, #c84b31);
+  color: #fff;
+  border-color: var(--accent-main, #c84b31);
+}
+.th2-note-text {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-primary, #1c1a18);
+  background: var(--surface-2, #f5f4f1);
+  border: 1px solid var(--border-subtle, #e8e5e0);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 0 0 10px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+.th2-drawer-note-sub {
+  font-size: 12px;
+  color: var(--text-secondary, #6b6860);
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+
+/* IM Cool-Down */
+.th2-cooldown-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.th2-cooldown-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary, #6b6860);
+  white-space: nowrap;
+}
+.th2-cooldown-input {
+  width: 60px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  border: 1.5px solid var(--border-subtle, #e8e5e0);
+  border-radius: 8px;
+  background: var(--surface-1, #fff);
+  color: var(--text-primary, #1c1a18);
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.th2-cooldown-input:focus {
+  border-color: var(--accent-main, #c84b31);
+  outline: none;
+}
+.th2-cooldown-hint {
+  margin-top: 10px;
+  min-height: 28px;
+}
+.th2-cooldown-group {
+  display: inline-block;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: #fff;
+  border-radius: 20px;
+  animation: th2-toast-in .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 12 — Onboarding (first-use empty state)
+   ═══════════════════════════════════════════════════════════ */
+
+.th2-onboarding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 32px 40px;
+  max-width: 440px;
+  margin: 0 auto;
+  animation: th2-onboard-in .5s cubic-bezier(.34,1.4,.64,1) both;
+}
+@keyframes th2-onboard-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+.th2-onboarding-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  line-height: 1;
+  animation: th2-onboard-in .5s .1s cubic-bezier(.34,1.4,.64,1) both;
+}
+.th2-onboarding-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary, #1c1a18);
+  margin: 0 0 8px;
+  letter-spacing: -.02em;
+}
+.th2-onboarding-sub {
+  font-size: 14px;
+  color: var(--text-secondary, #6b6860);
+  margin: 0 0 28px;
+  line-height: 1.5;
+}
+.th2-onboarding-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.th2-onboarding-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface-2, #f5f4f1);
+  border: 1px solid var(--border-subtle, #e8e5e0);
+  border-radius: 12px;
+  animation: th2-onboard-in .4s both;
+}
+.th2-onboarding-step:nth-child(1) { animation-delay: .15s; }
+.th2-onboarding-step:nth-child(2) { animation-delay: .25s; }
+.th2-onboarding-step:nth-child(3) { animation-delay: .35s; }
+.th2-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  background: var(--accent-main, #c84b31);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 50%;
+}
+.th2-onboarding-step strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary, #1c1a18);
+  margin-bottom: 2px;
+}
+.th2-onboarding-step p {
+  font-size: 12px;
+  color: var(--text-secondary, #6b6860);
+  margin: 0;
+  line-height: 1.45;
+}
+.th2-onboarding-cta {
+  animation: th2-onboard-in .4s .45s both;
+  font-size: 15px;
+  padding: 13px 28px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 12 — Mobile responsive polish
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .th2-shell {
+    flex-direction: column;
+  }
+  .th2-sidebar {
+    width: 100%;
+    min-height: 0;
+    max-height: 220px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle, #e8e5e0);
+    overflow-y: auto;
+  }
+  .th2-main {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .th2-focus-head {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .th2-focus-trend {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .th2-actions {
+    flex-direction: column;
+  }
+  .th2-note-actions {
+    gap: 5px;
+  }
+  .th2-drawer {
+    width: 100%;
+    max-width: 100%;
+  }
+  .th2-signals {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .th2-onboarding {
+    padding: 32px 16px 24px;
+  }
+}
