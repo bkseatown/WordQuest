@@ -4,14 +4,24 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* ── Color-scheme lock: always render in light mode regardless of OS setting ── */
+html {
+  color-scheme: only light;
+  margin: 0;
+  height: 100%;
+  /* Warm parchment base — locked, never shifts in dark mode */
+  background: #eeece7;
+}
+
 html, body {
   margin: 0;
   height: 100%;
 }
 
 body.th2-page {
-  background: var(--surface-base-gradient);
-  color: var(--text-primary);
+  /* Pinned warm off-white gradient — identical in light and dark OS mode */
+  background: linear-gradient(160deg, #ebebef 0%, #eeece7 48%, #f1efe9 100%);
+  color: #1c1a18;
   font-family: var(--font-ui, system-ui, -apple-system, sans-serif);
   font-size: 15px;
   line-height: 1.5;
@@ -33,8 +43,9 @@ body.th2-page {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--surface-elev-1);
-  border-right: 1px solid var(--border-subtle);
+  /* Pinned: warm white — never shifts in dark OS mode */
+  background: #fefcfa;
+  border-right: 1px solid #dedad4;
 }
 
 /* ── Sidebar header ────────────────────────────────────── */
@@ -433,8 +444,8 @@ body.th2-page {
 /* ── Recommendation block ──────────────────────────────── */
 
 .th2-rec {
-  background: var(--surface-elev-1);
-  border: 1px solid var(--border-subtle);
+  background: #fefcfa;
+  border: 1px solid #dedad4;
   border-radius: 12px;
   padding: 20px;
   display: flex;
@@ -861,8 +872,9 @@ body.th2-page {
   bottom: 0;
   width: 380px;
   max-width: 92vw;
-  background: var(--surface-elev-1);
-  border-left: 1px solid var(--border-subtle);
+  /* Pinned warm white — never shifts in dark OS mode */
+  background: #fefcfa;
+  border-left: 1px solid #dedad4;
   box-shadow: -6px 0 32px rgba(0, 0, 0, 0.1);
   z-index: 50;
   transform: translateX(100%);
@@ -952,8 +964,8 @@ body.th2-page {
 /* ── Curriculum alignment section ──────────────────────── */
 
 .th2-curriculum {
-  background: color-mix(in oklab, var(--accent, #2b5da8) 5%, var(--surface-elev-1));
-  border: 1px solid color-mix(in oklab, var(--accent, #2b5da8) 18%, transparent);
+  background: #eef3fb;
+  border: 1px solid #c5d5ef;
   border-radius: 12px;
   padding: 14px 16px;
 }
