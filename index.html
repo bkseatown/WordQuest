@@ -6,87 +6,35 @@
   <base href="./">
   <title>Cornerstone MTSS</title>
   <link rel="icon" href="./favicon.ico" sizes="any">
-  <link rel="stylesheet" href="./style/tokens.css?v=20260302b">
-  <link rel="stylesheet" href="./style/typography.css?v=20260302b">
-  <link rel="stylesheet" href="./home-v3.css?v=20260302b">
+  <link rel="stylesheet" href="./style/tokens.css?v=20260305a">
+  <link rel="stylesheet" href="./style/typography.css?v=20260305a">
+  <link rel="stylesheet" href="./home-v3.css?v=20260305a">
 </head>
 <body class="cs-home-page">
-  <main id="cs-home-root" class="cs-home-root" aria-label="Cornerstone MTSS home">
-    <select id="s-theme" aria-hidden="true" tabindex="-1" style="display:none;"></select>
-    <section class="home-shell" aria-label="Homepage layout">
-      <article class="home-card home-sequencer" aria-labelledby="home-next-move-title">
-        <div class="home-sequencer-layout">
-          <div class="home-sequencer-left">
-            <header class="home-head">
-              <p class="home-kicker">Cornerstone MTSS</p>
-              <h1 id="home-next-move-title">Choose Role</h1>
-              <p class="home-sub">Teacher workflow: Select -> Snapshot -> Start -> Log -> Done.</p>
-              <div class="home-signal-chips" role="list" aria-label="Core intelligence signals">
-                <span role="listitem">Tier-aware recommendations</span>
-                <span role="listitem">Curriculum mapped moves</span>
-                <span role="listitem">Meeting-ready evidence</span>
-              </div>
-            </header>
-            <div class="home-sequencer-actions">
-              <a id="home-dashboard-link" class="home-btn home-btn-primary" href="./teacher-dashboard.html">Teacher</a>
-              <a id="home-open-wordquest" class="home-btn home-btn-quiet" href="./cornerstone-mtss.html?play=1#wordquest">Student</a>
-            </div>
-          </div>
-          <aside class="home-sequencer-right" aria-label="Live system preview">
-            <section class="home-live-preview" aria-label="Live Preview">
-              <header class="home-live-preview-head">
-                <p class="home-kicker">Live Preview</p>
-                <h2>Teacher Snapshot</h2>
-              </header>
-              <article class="home-live-preview-card" aria-label="Simulated student recommendation card">
-                <div class="home-live-student-top">
-                  <strong class="home-live-student-name">Maya R.</strong>
-                  <span class="home-live-tier">Tier 2</span>
-                </div>
-                <div class="home-live-signal-row">
-                  <svg class="home-live-sparkline" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-                    <path d="M0 22 L16 20 L32 17 L48 14 L64 12 L80 10 L100 8"></path>
-                  </svg>
-                  <span class="home-live-delta home-live-delta-up">↑ improving</span>
-                </div>
-                <p class="home-live-label">Recommended Session</p>
-                <p class="home-live-action">Word Connections • Targeted • 12 min</p>
-                <p class="home-live-rationale"><strong>Insight:</strong> Confidence 84% from stable decoding + vocabulary growth.</p>
-              </article>
-            </section>
-            <div id="home-wordquest-demo" class="home-wordquest-demo"></div>
-          </aside>
-        </div>
-      </article>
-
-      <section class="home-domain-row" aria-label="Domain branching">
-        <article class="home-card home-domain home-domain-literacy" id="home-literacy-card">
-          <div class="home-domain-head">
-            <span class="home-domain-icon" aria-hidden="true">🧠</span>
-            <h2>Literacy Engine</h2>
-          </div>
-          <p class="home-domain-descriptor">Decode, reason, and compose.</p>
-          <p class="home-domain-map">Mapped: Fish Tank • UFLI • Fundations</p>
-          <a class="home-btn home-btn-primary" href="./literacy.html">Open Literacy Engine</a>
-        </article>
-        <article class="home-card home-domain home-domain-numeracy" id="home-numeracy-card">
-          <div class="home-domain-head">
-            <span class="home-domain-icon" aria-hidden="true">∑</span>
-            <h2>Numeracy Engine</h2>
-          </div>
-          <p class="home-domain-descriptor">Concept-first strategy progression.</p>
-          <p class="home-domain-map">Mapped: Illustrative Math • Bridges</p>
-          <a class="home-btn home-btn-primary" href="./numeracy.html">Open Numeracy Engine</a>
-        </article>
-      </section>
-    </section>
+  <main id="cs-home-root" class="cs-home-root" aria-label="Cornerstone MTSS">
+    <div class="home-entry">
+      <header class="home-entry-brand">
+        <p class="home-entry-wordmark">Cornerstone MTSS</p>
+        <h1 class="home-entry-tagline">Who is using the system today?</h1>
+      </header>
+      <nav class="home-entry-roles" aria-label="Role selection">
+        <a class="home-role-btn" href="./teacher-dashboard.html">
+          <span class="home-role-label">Teacher</span>
+          <span class="home-role-sub">Dashboard, planning &amp; intervention</span>
+        </a>
+        <a class="home-role-btn" href="./word-quest.html?play=1">
+          <span class="home-role-label">Student</span>
+          <span class="home-role-sub">Activities &amp; practice</span>
+        </a>
+        <a class="home-role-btn home-role-btn--secondary" href="./teacher-dashboard.html?role=admin">
+          <span class="home-role-label">Admin &nbsp;/&nbsp; Specialist</span>
+          <span class="home-role-sub">Caseload review &amp; reports</span>
+        </a>
+      </nav>
+    </div>
   </main>
-
-  <script src="./js/instructional-sequencer.js?v=20260302b"></script>
-  <script src="./word-quest-preview.js?v=20260302b"></script>
-  <script src="./home-v3.js?v=20260302b"></script>
-  <script src="./build-stamp.js?v=20260302b"></script>
-  <script src="./js/build-badge.js?v=20260302b"></script>
+  <script src="./build-stamp.js?v=20260305a"></script>
+  <script src="./js/build-badge.js?v=20260305a"></script>
   <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
 </body>
 </html>

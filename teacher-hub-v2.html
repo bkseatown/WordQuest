@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-page="teacher-hub-v2">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <base href="./">
+  <title>Cornerstone MTSS — Command Hub</title>
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="stylesheet" href="./style/tokens.css?v=20260305a">
+  <link rel="stylesheet" href="./style/typography.css?v=20260305a">
+  <link rel="stylesheet" href="./teacher-hub-v2.css?v=20260305a">
+</head>
+<body class="th2-page">
+
+  <div id="th2-shell" class="th2-shell" aria-label="Cornerstone MTSS Command Hub">
+
+    <!-- ── Left: Caseload panel ─────────────────────────── -->
+    <aside id="th2-sidebar" class="th2-sidebar" aria-label="Student caseload">
+
+      <div id="th2-sidebar-context" class="th2-sidebar-context" aria-live="polite"></div>
+
+      <div class="th2-sidebar-head">
+        <a href="./index.html" class="th2-brand" aria-label="Back to home">
+          <span class="th2-brand-word">Cornerstone</span>
+          <span class="th2-brand-sep">·</span>
+          <span class="th2-brand-mtss">MTSS</span>
+        </a>
+
+        <div class="th2-search-wrap">
+          <input
+            id="th2-search"
+            type="search"
+            class="th2-search"
+            placeholder="Search students…"
+            autocomplete="off"
+            aria-label="Search students"
+          >
+        </div>
+
+        <div class="th2-mode-row" role="tablist" aria-label="Context mode">
+          <button class="th2-mode-tab is-active" data-mode="caseload" role="tab" aria-selected="true">
+            My Caseload
+          </button>
+          <button class="th2-mode-tab" data-mode="class" role="tab" aria-selected="false">
+            Today's Classes
+          </button>
+        </div>
+      </div>
+
+      <div id="th2-list" class="th2-list" role="list" aria-label="Students"></div>
+
+      <p id="th2-list-empty" class="th2-list-empty hidden" role="status">
+        No students found.
+      </p>
+
+      <p id="th2-list-none" class="th2-list-empty hidden" role="status">
+        No students in caseload. Add a student to get started.
+      </p>
+
+    </aside>
+
+    <!-- ── Center: Intelligence surface ─────────────────── -->
+    <main id="th2-main" class="th2-main" aria-live="polite">
+
+      <div id="th2-empty-state" class="th2-empty-state" aria-hidden="false">
+        <div class="th2-empty-inner">
+          <p class="th2-empty-label">Select a student</p>
+          <p class="th2-empty-sub">Intelligence surfaces automatically.</p>
+        </div>
+      </div>
+
+      <div id="th2-focus-card" class="th2-focus-card hidden" aria-hidden="true">
+        <!-- Populated by teacher-hub-v2.js -->
+      </div>
+
+    </main>
+
+  </div><!-- /#th2-shell -->
+
+  <!-- ── Overlay (drawer backdrop) ───────────────────── -->
+  <div id="th2-overlay" class="th2-overlay hidden" aria-hidden="true"></div>
+
+  <!-- ── Drawer (View Details panel) ─────────────────── -->
+  <div id="th2-drawer" class="th2-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="th2-drawer-title">
+    <div class="th2-drawer-head">
+      <h2 id="th2-drawer-title" class="th2-drawer-title">Student</h2>
+      <button id="th2-drawer-close" class="th2-drawer-close" aria-label="Close details panel">&#x2715;</button>
+    </div>
+    <div id="th2-drawer-body" class="th2-drawer-body"></div>
+  </div>
+
+  <!-- ── Demo badge (hidden unless demo mode) ─────────── -->
+  <div id="th2-demo-badge" class="th2-demo-badge hidden" aria-hidden="true">
+    Demo Mode
+  </div>
+
+  <!-- ── Core infrastructure ───────────────────────────── -->
+  <script src="./config.js?v=20260305a"></script>
+  <script src="./storage-schema.js?v=20260305a"></script>
+
+  <!-- ── Core engines ──────────────────────────────────── -->
+  <script src="./js/core/tier-engine.js?v=20260305a"></script>
+  <script src="./js/core/fidelity.js?v=20260305a"></script>
+  <script src="./js/core/framework-registry.js?v=20260305a"></script>
+
+  <!-- ── Executive engines ─────────────────────────────── -->
+  <script src="./js/executive/executive-profile.js?v=20260305a"></script>
+  <script src="./js/executive/support-engine.js?v=20260305a"></script>
+
+  <!-- ── Data layer ────────────────────────────────────── -->
+  <script src="./js/caseload-store.js?v=20260305a"></script>
+  <script src="./js/skill-taxonomy.js?v=20260305a"></script>
+  <script src="./js/skill-mapper.js?v=20260305a"></script>
+  <script src="./js/skill-store.js?v=20260305a"></script>
+  <script src="./js/skill-labels.js?v=20260305a"></script>
+  <script src="./js/skill-resolver.js?v=20260305a"></script>
+  <script src="./js/support-store.js?v=20260305a"></script>
+  <script src="./js/evidence-store.js?v=20260305a"></script>
+
+  <!-- ── Engine layer ──────────────────────────────────── -->
+  <script src="./js/evidence-engine.js?v=20260305a"></script>
+  <script src="./js/risk-bands.js?v=20260305a"></script>
+  <script src="./js/growth-engine.js?v=20260305a"></script>
+  <script src="./js/plan-engine.js?v=20260305a"></script>
+
+  <!-- ── Hub foundation ────────────────────────────────── -->
+  <script src="./js/dashboard/hub-state.js?v=20260305a"></script>
+  <script src="./js/dashboard/hub-context.js?v=20260305a"></script>
+
+  <!-- ── AI planner (Azure OpenAI) ──────────────────────── -->
+  <!-- Enable: create js/ai-config.js → window.CSAIConfig = { endpoint, apiKey, deployment } -->
+  <script src="./js/ai-config.js" onerror="0"></script>
+  <script src="./js/ai-planner.js?v=20260305a"></script>
+
+  <!-- ── Application ───────────────────────────────────── -->
+  <script src="./teacher-hub-v2.js?v=20260305a"></script>
+
+  <!-- ── Build infrastructure ──────────────────────────── -->
+  <script src="./build-stamp.js?v=20260305a"></script>
+  <script src="./js/build-badge.js?v=20260305a"></script>
+  <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
+
+</body>
+</html>
