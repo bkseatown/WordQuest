@@ -459,6 +459,84 @@
     return '<button class="th2-fp-badge" data-fp-student="' + escapeHtml(studentId) + '" title="F&P Reading Level — click to update" type="button">F&amp;P ' + escapeHtml(level) + '</button>';
   }
 
+  /* ── Tool badges (Words Their Way · Read Naturally · Lexia) ─
+   * Stored in localStorage["cs.hub.{tool}.{studentId}"]
+   * WtW:   stage abbreviation — E / LNA / WWP / SA / DR
+   * RN:    WPM string           e.g. "67"
+   * Lexia: level string         e.g. "12"
+   */
+  var WTW_STAGES = ["E", "LNA", "WWP", "SA", "DR"];
+  var WTW_DEMO   = { "demo-zoe": "LNA", "demo-liam": "WWP" };
+  var RN_DEMO    = { "demo-maya": "94", "demo-noah": "71" };
+
+  function getToolBadge(studentId, tool) {
+    var lsKey = "cs.hub." + tool + "." + studentId;
+    var stored = localStorage.getItem(lsKey);
+    if (stored !== null) return stored || null;
+    // Seed demo values once
+    var demo = (tool === "wtw" ? WTW_DEMO : tool === "rn" ? RN_DEMO : {})[studentId] || null;
+    if (demo) localStorage.setItem(lsKey, demo);
+    return demo;
+  }
+
+  function setToolBadge(studentId, tool, value) {
+    if (value) localStorage.setItem("cs.hub." + tool + "." + studentId, String(value));
+    else        localStorage.removeItem("cs.hub." + tool + "." + studentId);
+  }
+
+  function renderToolBadges(studentId) {
+    var wtw   = getToolBadge(studentId, "wtw");
+    var rn    = getToolBadge(studentId, "rn");
+    var lexia = getToolBadge(studentId, "lexia");
+    var parts = [];
+    if (wtw)   parts.push('<button class="th2-tool-badge th2-tool-badge--wtw" data-tool-badge="wtw" data-tool-student="' + escapeHtml(studentId) + '" title="Words Their Way stage — click to update" type="button">WtW ' + escapeHtml(wtw) + '</button>');
+    if (rn)    parts.push('<button class="th2-tool-badge th2-tool-badge--rn" data-tool-badge="rn" data-tool-student="' + escapeHtml(studentId) + '" title="Read Naturally WPM — click to update" type="button">RN ' + escapeHtml(rn) + ' wpm</button>');
+    if (lexia) parts.push('<button class="th2-tool-badge th2-tool-badge--lexia" data-tool-badge="lexia" data-tool-student="' + escapeHtml(studentId) + '" title="Lexia level — click to update" type="button">Lexia ' + escapeHtml(lexia) + '</button>');
+    parts.push('<button class="th2-tool-add" data-tool-add-student="' + escapeHtml(studentId) + '" title="Set tool levels (WtW · RN · Lexia)" type="button" aria-label="Set tool levels">+</button>');
+    return parts.join("");
+  }
+
+  /* ── UDL accommodation strip ────────────────────────────────
+   * Stored in localStorage["cs.hub.udl.{studentId}"] as JSON
+   * array of active chip IDs.
+   */
+  var UDL_CHIPS = [
+    { id: "ext_time",    label: "Extended time" },
+    { id: "pref_seat",   label: "Pref. seating" },
+    { id: "visual",      label: "Visual supports" },
+    { id: "sent_frames", label: "Sentence frames" },
+    { id: "reduced",     label: "Reduced load" },
+    { id: "manipul",     label: "Manipulatives" },
+    { id: "read_aloud",  label: "Read aloud" },
+    { id: "calculator",  label: "Calculator" }
+  ];
+
+  function getUdlActive(studentId) {
+    try { return JSON.parse(localStorage.getItem("cs.hub.udl." + studentId) || "[]"); }
+    catch (_) { return []; }
+  }
+
+  function setUdlActive(studentId, ids) {
+    localStorage.setItem("cs.hub.udl." + studentId, JSON.stringify(ids));
+  }
+
+  function renderUdlStrip(studentId) {
+    var active = getUdlActive(studentId);
+    var html = '<div class="th2-udl-strip" data-udl-student="' + escapeHtml(studentId) + '">';
+    // Render active chips
+    UDL_CHIPS.forEach(function (c) {
+      if (active.indexOf(c.id) !== -1) {
+        html += '<button class="th2-udl-chip is-active" data-udl-id="' + c.id +
+                '" type="button">' + escapeHtml(c.label) + '</button>';
+      }
+    });
+    // Toggle button
+    html += '<button class="th2-udl-toggle" data-udl-toggle="' + escapeHtml(studentId) +
+            '" type="button">' + (active.length ? '✎ Accommodations' : '+ Accommodations') + '</button>';
+    html += '</div>';
+    return html;
+  }
+
   var FISHTANK_GRADES = {
     "K":  { label: "Kindergarten", slug: "kindergarten",
             units: [
@@ -1549,8 +1627,10 @@
       '        <h2 class="th2-focus-name">' + escapeHtml(student.name || "Student") + '</h2>',
       '        <span class="th2-focus-tier" data-tier="' + tier + '">Tier ' + tier + '</span>',
       renderFpBadge(studentId),
+      renderToolBadges(studentId),
       '      </div>',
       (nameMeta ? '      <span class="th2-focus-name-meta">' + nameMeta + '</span>' : ''),
+      renderUdlStrip(studentId),
       '    </div>',
       '  </div>',
       '  <div class="th2-focus-trend">',
@@ -2043,6 +2123,127 @@
     badge.textContent = level ? "F&P " + level : "";
     if (!level) badge.style.display = "none";
     showToast(level ? "F&P updated to " + level + "." : "F&P level cleared.", "info");
+  });
+
+  // Tool badge — click to update (individual badge)
+  document.addEventListener("click", function (e) {
+    var badge = e.target.closest && e.target.closest("[data-tool-badge]");
+    if (!badge) return;
+    var tool = badge.getAttribute("data-tool-badge");
+    var sid  = badge.getAttribute("data-tool-student") || "";
+    if (!sid || !tool) return;
+    var current = getToolBadge(sid, tool) || "";
+    var promptText = tool === "wtw"
+      ? "Words Their Way stage (E / LNA / WWP / SA / DR) — leave blank to clear:"
+      : tool === "rn" ? "Read Naturally WPM (e.g. 67) — leave blank to clear:"
+      : "Lexia level (e.g. 12) — leave blank to clear:";
+    var raw = window.prompt(promptText, current);
+    if (raw === null) return;
+    var val = String(raw).trim();
+    if (tool === "wtw" && val) {
+      val = val.toUpperCase();
+      if (WTW_STAGES.indexOf(val) === -1) {
+        window.alert("WtW stage must be one of: E, LNA, WWP, SA, DR");
+        return;
+      }
+    }
+    setToolBadge(sid, tool, val);
+    var newLabel = tool === "wtw"   ? (val ? "WtW "   + val        : "")
+                 : tool === "rn"    ? (val ? "RN "    + val + " wpm": "")
+                 :                    (val ? "Lexia "  + val        : "");
+    if (newLabel) { badge.textContent = newLabel; }
+    else          { badge.remove(); }
+    showToast(val ? "Tool level saved." : "Tool level cleared.", val ? "success" : "info");
+  });
+
+  // Tool add button — prompt for all three levels sequentially
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest("[data-tool-add-student]");
+    if (!btn) return;
+    var sid = btn.getAttribute("data-tool-add-student") || "";
+    if (!sid) return;
+    var wtw   = window.prompt("Words Their Way stage (E / LNA / WWP / SA / DR) — blank to skip:", getToolBadge(sid, "wtw") || "");
+    if (wtw === null) return;
+    var rn    = window.prompt("Read Naturally WPM — blank to skip:", getToolBadge(sid, "rn") || "");
+    if (rn === null) return;
+    var lexia = window.prompt("Lexia level — blank to skip:", getToolBadge(sid, "lexia") || "");
+    if (lexia === null) return;
+    var wtwVal = String(wtw).trim().toUpperCase();
+    if (wtwVal && WTW_STAGES.indexOf(wtwVal) === -1) {
+      window.alert("WtW stage must be one of: E, LNA, WWP, SA, DR");
+      return;
+    }
+    setToolBadge(sid, "wtw",   wtwVal);
+    setToolBadge(sid, "rn",    String(rn).trim());
+    setToolBadge(sid, "lexia", String(lexia).trim());
+    // Re-render focus card to show updated badges
+    var state = hubState.get();
+    if (state.context.studentId === sid && state.intelligence && state.intelligence.plan) {
+      renderFocusCard(state);
+    }
+    showToast("Tool levels saved.", "success");
+  });
+
+  // UDL toggle — open/close the chip picker
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest("[data-udl-toggle]");
+    if (!btn) return;
+    var sid   = btn.getAttribute("data-udl-toggle") || "";
+    var strip = btn.closest(".th2-udl-strip");
+    if (!sid || !strip) return;
+    var existing = strip.querySelector(".th2-udl-picker");
+    if (existing) { existing.remove(); return; }
+    var active  = getUdlActive(sid);
+    var picker  = document.createElement("div");
+    picker.className = "th2-udl-picker";
+    UDL_CHIPS.forEach(function (c) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "th2-udl-chip" + (active.indexOf(c.id) !== -1 ? " is-active" : "");
+      chip.textContent = c.label;
+      chip.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        var idx = active.indexOf(c.id);
+        if (idx === -1) { active.push(c.id);      chip.classList.add("is-active"); }
+        else            { active.splice(idx, 1);   chip.classList.remove("is-active"); }
+        setUdlActive(sid, active);
+        // Sync the visible active chips above the toggle
+        strip.querySelectorAll(".th2-udl-chip[data-udl-id]").forEach(function (el) { el.remove(); });
+        UDL_CHIPS.forEach(function (x) {
+          if (active.indexOf(x.id) === -1) return;
+          var ac = document.createElement("button");
+          ac.type = "button";
+          ac.className = "th2-udl-chip is-active";
+          ac.setAttribute("data-udl-id", x.id);
+          ac.textContent = x.label;
+          strip.insertBefore(ac, btn);
+        });
+        btn.textContent = active.length ? "✎ Accommodations" : "+ Accommodations";
+      });
+      picker.appendChild(chip);
+    });
+    strip.appendChild(picker);
+  });
+
+  // UDL active chip — click active chip to remove it quickly
+  document.addEventListener("click", function (e) {
+    var chip = e.target.closest && e.target.closest(".th2-udl-chip[data-udl-id]");
+    if (!chip) return;
+    var strip = chip.closest(".th2-udl-strip");
+    if (!strip) return;
+    var sid = strip.getAttribute("data-udl-student") || "";
+    var id  = chip.getAttribute("data-udl-id") || "";
+    if (!sid || !id) return;
+    var active = getUdlActive(sid);
+    var idx = active.indexOf(id);
+    if (idx !== -1) {
+      active.splice(idx, 1);
+      setUdlActive(sid, active);
+      chip.remove();
+      var tgl = strip.querySelector("[data-udl-toggle]");
+      if (tgl) tgl.textContent = active.length ? "✎ Accommodations" : "+ Accommodations";
+      showToast("Accommodation removed.", "info");
+    }
   });
 
   // Drawer close button

@@ -1853,3 +1853,132 @@ body.th2-page {
   font: 600 13px/1.3 var(--font-ui, system-ui);
   color: var(--text-primary);
 }
+
+/* ════════════════════════════════════════════════════════════
+   Phase 8 — Tool badges (WtW · RN · Lexia) + UDL strip
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Tool badges ──────────────────────────────────────────── */
+.th2-tool-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 99px;
+  font: 600 10.5px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: opacity 0.13s, transform 0.1s;
+  vertical-align: middle;
+}
+.th2-tool-badge:hover { opacity: 0.78; transform: scale(1.04); }
+
+/* Words Their Way — violet */
+.th2-tool-badge--wtw {
+  background: color-mix(in oklab, #7048e8 11%, transparent);
+  border-color: color-mix(in oklab, #7048e8 26%, transparent);
+  color: #5a32d1;
+}
+/* Read Naturally — teal */
+.th2-tool-badge--rn {
+  background: color-mix(in oklab, #2b8a78 11%, transparent);
+  border-color: color-mix(in oklab, #2b8a78 26%, transparent);
+  color: #1f6b5d;
+}
+/* Lexia — amber */
+.th2-tool-badge--lexia {
+  background: color-mix(in oklab, #b58a45 11%, transparent);
+  border-color: color-mix(in oklab, #b58a45 26%, transparent);
+  color: #8a6527;
+}
+
+/* ⊕ add button */
+.th2-tool-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--border, #d5d2cc);
+  background: transparent;
+  color: var(--text-muted);
+  font: 600 13px/1 var(--font-ui, system-ui);
+  cursor: pointer;
+  padding: 0;
+  vertical-align: middle;
+  margin-left: 1px;
+  transition: border-color 0.13s, color 0.13s;
+}
+.th2-tool-add:hover {
+  border-color: var(--accent, #2b5da8);
+  color: var(--accent, #2b5da8);
+}
+
+/* ── UDL accommodation strip ──────────────────────────────── */
+.th2-udl-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  position: relative;
+}
+
+.th2-udl-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 99px;
+  font: 500 11px/1 var(--font-ui, system-ui);
+  border: 1.5px solid var(--border, #d5d2cc);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.th2-udl-chip.is-active {
+  background: color-mix(in oklab, #7c3aed 9%, transparent);
+  border-color: color-mix(in oklab, #7c3aed 28%, transparent);
+  color: #6229c9;
+  font-weight: 600;
+}
+.th2-udl-chip.is-active:hover {
+  background: color-mix(in oklab, #7c3aed 16%, transparent);
+}
+.th2-udl-chip:not(.is-active):hover {
+  border-color: color-mix(in oklab, #7c3aed 28%, transparent);
+  color: #6229c9;
+}
+
+/* toggle button */
+.th2-udl-toggle {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 99px;
+  font: 500 11px/1 var(--font-ui, system-ui);
+  border: 1.5px dashed var(--border, #d5d2cc);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.12s, color 0.12s;
+}
+.th2-udl-toggle:hover { border-color: #7c3aed; color: #7c3aed; }
+
+/* inline chip picker */
+.th2-udl-picker {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 10px 12px;
+  background: var(--surface-2, #f5f4f1);
+  border: 1px solid var(--border-subtle, #e8e5e0);
+  border-radius: 10px;
+  margin-top: 2px;
+}
