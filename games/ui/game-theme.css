@@ -1,54 +1,238 @@
+/* =====================================================
+   Game Platform — Theme System
+   Themes selected via data-game-theme on body
+   Kid-friendly · Bold · Exploding Kittens energy
+   ===================================================== */
+
+/* ── Shared structure tokens (no colors) ── */
 :root {
-  --cg-bg: #efe8dc;
-  --cg-bg-deep: #d7d0c3;
-  --cg-panel: rgba(255, 252, 246, 0.82);
-  --cg-panel-strong: rgba(255, 253, 249, 0.94);
-  --cg-panel-elevated: rgba(255, 255, 255, 0.98);
-  --cg-ink: #142233;
-  --cg-muted: #5d6a79;
-  --cg-muted-strong: #415162;
-  --cg-border: rgba(20, 34, 51, 0.12);
-  --cg-border-strong: rgba(20, 34, 51, 0.2);
-  --cg-shadow: 0 20px 64px rgba(18, 31, 50, 0.14);
-  --cg-shadow-soft: 0 10px 28px rgba(18, 31, 50, 0.08);
-  --cg-shadow-glow: 0 0 0 1px rgba(24, 162, 168, 0.08), 0 22px 60px rgba(13, 94, 102, 0.16);
-  --cg-primary: #0d5e66;
-  --cg-primary-2: #18a2a8;
-  --cg-primary-soft: rgba(13, 94, 102, 0.12);
-  --cg-accent: #d98038;
-  --cg-accent-soft: rgba(217, 128, 56, 0.14);
-  --cg-positive: #16795e;
-  --cg-positive-soft: rgba(22, 121, 94, 0.12);
-  --cg-negative: #9a3b37;
-  --cg-negative-soft: rgba(154, 59, 55, 0.12);
-  --cg-warning: #aa6b1f;
-  --cg-warning-soft: rgba(170, 107, 31, 0.12);
   --cg-font-display: "Avenir Next Condensed", "Arial Narrow", "Franklin Gothic Medium", sans-serif;
-  --cg-font-body: "Avenir Next", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
-  --cg-radius-2xl: 32px;
-  --cg-radius-xl: 24px;
-  --cg-radius-lg: 20px;
-  --cg-radius-md: 14px;
-  --cg-radius-sm: 10px;
-  --cg-tap: 48px;
+  --cg-font-body:    "Avenir Next", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  --cg-radius-2xl: 28px;
+  --cg-radius-xl:  22px;
+  --cg-radius-lg:  18px;
+  --cg-radius-md:  14px;
+  --cg-radius-sm:  10px;
+  --cg-tap:        52px;
 }
 
 html[data-view-mode="projector"] {
-  --cg-radius-2xl: 36px;
-  --cg-radius-xl: 30px;
-  --cg-radius-lg: 24px;
-  --cg-radius-md: 18px;
-  --cg-tap: 58px;
+  --cg-radius-2xl: 34px;
+  --cg-radius-xl:  28px;
+  --cg-radius-lg:  22px;
+  --cg-radius-md:  18px;
+  --cg-tap:        62px;
 }
 
+/* ═══════════════════════════════════════════════════
+   THEME: DARK QUEST  (default)
+   Deep navy · electric blue · vivid orange
+   ═══════════════════════════════════════════════════ */
+body.game-platform-page,
+body.game-platform-page[data-game-theme="dark"] {
+  --cg-bg:            #1a1f3d;
+  --cg-bg-deep:       #13172e;
+  --cg-panel:         rgba(30, 37, 70, 0.96);
+  --cg-panel-strong:  rgba(36, 44, 82, 0.98);
+  --cg-ink:           #f0f4ff;
+  --cg-muted:         #8fa4c8;
+  --cg-muted-strong:  #b4c6e0;
+  --cg-border:        rgba(140, 170, 255, 0.14);
+  --cg-border-strong: rgba(140, 170, 255, 0.28);
+  --cg-shadow:        0 6px 0 rgba(0,0,0,0.5), 0 14px 36px rgba(0,0,0,0.45);
+  --cg-shadow-soft:   0 3px 0 rgba(0,0,0,0.35), 0 8px 20px rgba(0,0,0,0.3);
+  --cg-shadow-glow:   0 0 0 2px rgba(99,179,237,0.4), 0 6px 0 rgba(0,0,0,0.5), 0 20px 48px rgba(0,0,0,0.5);
+  --cg-primary:       #2563eb;
+  --cg-primary-2:     #60a5fa;
+  --cg-primary-soft:  rgba(37, 99, 235, 0.2);
+  --cg-accent:        #f97316;
+  --cg-accent-2:      #fb923c;
+  --cg-accent-soft:   rgba(249, 115, 22, 0.2);
+  --cg-positive:      #22c55e;
+  --cg-positive-soft: rgba(34, 197, 94, 0.18);
+  --cg-negative:      #f87171;
+  --cg-negative-soft: rgba(248, 113, 113, 0.18);
+  --cg-warning:       #fbbf24;
+  --cg-warning-soft:  rgba(251, 191, 36, 0.18);
+  --cg-page-gradient:
+    radial-gradient(ellipse at 15% 10%, rgba(99,102,241,0.22) 0%, transparent 38%),
+    radial-gradient(ellipse at 85% 8%,  rgba(249,115,22,0.18)  0%, transparent 32%),
+    radial-gradient(ellipse at 50% 95%, rgba(37,99,235,0.14)   0%, transparent 40%),
+    linear-gradient(175deg, #1e2348 0%, #1a1f3d 45%, #141829 100%);
+  --cg-texture: radial-gradient(circle, rgba(255,255,255,0.045) 1px, transparent 1px);
+  --cg-texture-size: 28px 28px;
+  --cg-btn-press-shadow: 0 2px 0 rgba(0,0,0,0.45), 0 4px 10px rgba(0,0,0,0.3);
+  --cg-primary-btn-shadow: 0 4px 0 #b45309, 0 8px 20px rgba(249,115,22,0.4);
+  --cg-primary-btn-press:  0 2px 0 #b45309, 0 4px 10px rgba(249,115,22,0.35);
+}
+
+/* ═══════════════════════════════════════════════════
+   THEME: OCEAN  — teal / cyan / white
+   ═══════════════════════════════════════════════════ */
+body.game-platform-page[data-game-theme="ocean"] {
+  --cg-bg:            #0c2a3f;
+  --cg-bg-deep:       #071c2b;
+  --cg-panel:         rgba(14, 42, 62, 0.96);
+  --cg-panel-strong:  rgba(17, 54, 78, 0.98);
+  --cg-ink:           #e0f7ff;
+  --cg-muted:         #7fb8d0;
+  --cg-muted-strong:  #a8d4e6;
+  --cg-border:        rgba(110, 220, 255, 0.14);
+  --cg-border-strong: rgba(110, 220, 255, 0.3);
+  --cg-shadow:        0 6px 0 rgba(0,0,0,0.5), 0 14px 36px rgba(0,30,60,0.5);
+  --cg-shadow-soft:   0 3px 0 rgba(0,0,0,0.35), 0 8px 20px rgba(0,30,60,0.3);
+  --cg-shadow-glow:   0 0 0 2px rgba(6,182,212,0.5), 0 6px 0 rgba(0,0,0,0.5), 0 20px 48px rgba(6,182,212,0.2);
+  --cg-primary:       #06b6d4;
+  --cg-primary-2:     #67e8f9;
+  --cg-primary-soft:  rgba(6, 182, 212, 0.2);
+  --cg-accent:        #f0ab00;
+  --cg-accent-2:      #fbbf24;
+  --cg-accent-soft:   rgba(240, 171, 0, 0.2);
+  --cg-positive:      #34d399;
+  --cg-positive-soft: rgba(52, 211, 153, 0.18);
+  --cg-negative:      #f87171;
+  --cg-negative-soft: rgba(248, 113, 113, 0.18);
+  --cg-warning:       #fbbf24;
+  --cg-warning-soft:  rgba(251, 191, 36, 0.18);
+  --cg-page-gradient:
+    radial-gradient(ellipse at 20% 15%, rgba(6,182,212,0.25) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 10%, rgba(240,171,0,0.18)  0%, transparent 32%),
+    radial-gradient(ellipse at 50% 90%, rgba(6,182,212,0.12)  0%, transparent 40%),
+    linear-gradient(175deg, #0f2d42 0%, #0c2a3f 45%, #071c2b 100%);
+  --cg-texture: radial-gradient(circle, rgba(6,182,212,0.06) 1px, transparent 1px);
+  --cg-texture-size: 28px 28px;
+  --cg-btn-press-shadow: 0 2px 0 rgba(0,0,0,0.45), 0 4px 10px rgba(0,30,60,0.3);
+  --cg-primary-btn-shadow: 0 4px 0 #0891b2, 0 8px 20px rgba(6,182,212,0.4);
+  --cg-primary-btn-press:  0 2px 0 #0891b2, 0 4px 10px rgba(6,182,212,0.35);
+}
+
+/* ═══════════════════════════════════════════════════
+   THEME: SUNSET  — warm purple / coral / gold
+   ═══════════════════════════════════════════════════ */
+body.game-platform-page[data-game-theme="sunset"] {
+  --cg-bg:            #2d1b3d;
+  --cg-bg-deep:       #1e1028;
+  --cg-panel:         rgba(50, 28, 66, 0.96);
+  --cg-panel-strong:  rgba(62, 35, 82, 0.98);
+  --cg-ink:           #fff0f8;
+  --cg-muted:         #c89ab5;
+  --cg-muted-strong:  #e0b8d0;
+  --cg-border:        rgba(255, 160, 220, 0.14);
+  --cg-border-strong: rgba(255, 160, 220, 0.3);
+  --cg-shadow:        0 6px 0 rgba(0,0,0,0.5), 0 14px 36px rgba(50,10,40,0.5);
+  --cg-shadow-soft:   0 3px 0 rgba(0,0,0,0.35), 0 8px 20px rgba(50,10,40,0.3);
+  --cg-shadow-glow:   0 0 0 2px rgba(244,114,182,0.5), 0 6px 0 rgba(0,0,0,0.5), 0 20px 48px rgba(244,114,182,0.2);
+  --cg-primary:       #f472b6;
+  --cg-primary-2:     #f9a8d4;
+  --cg-primary-soft:  rgba(244, 114, 182, 0.2);
+  --cg-accent:        #fb923c;
+  --cg-accent-2:      #fbbf24;
+  --cg-accent-soft:   rgba(251, 146, 60, 0.2);
+  --cg-positive:      #a3e635;
+  --cg-positive-soft: rgba(163, 230, 53, 0.18);
+  --cg-negative:      #f87171;
+  --cg-negative-soft: rgba(248, 113, 113, 0.18);
+  --cg-warning:       #fbbf24;
+  --cg-warning-soft:  rgba(251, 191, 36, 0.18);
+  --cg-page-gradient:
+    radial-gradient(ellipse at 10% 5%,  rgba(244,114,182,0.28) 0%, transparent 40%),
+    radial-gradient(ellipse at 90% 8%,  rgba(251,146,60,0.22)  0%, transparent 35%),
+    radial-gradient(ellipse at 50% 92%, rgba(163,230,53,0.10)  0%, transparent 40%),
+    linear-gradient(175deg, #351848 0%, #2d1b3d 45%, #1e1028 100%);
+  --cg-texture: radial-gradient(circle, rgba(244,114,182,0.05) 1px, transparent 1px);
+  --cg-texture-size: 28px 28px;
+  --cg-btn-press-shadow: 0 2px 0 rgba(0,0,0,0.45), 0 4px 10px rgba(50,10,40,0.3);
+  --cg-primary-btn-shadow: 0 4px 0 #be185d, 0 8px 20px rgba(244,114,182,0.4);
+  --cg-primary-btn-press:  0 2px 0 #be185d, 0 4px 10px rgba(244,114,182,0.35);
+}
+
+/* ═══════════════════════════════════════════════════
+   THEME: FOREST  — deep green / lime / amber
+   ═══════════════════════════════════════════════════ */
+body.game-platform-page[data-game-theme="forest"] {
+  --cg-bg:            #0d2318;
+  --cg-bg-deep:       #081510;
+  --cg-panel:         rgba(15, 36, 25, 0.96);
+  --cg-panel-strong:  rgba(20, 46, 32, 0.98);
+  --cg-ink:           #ecfdf5;
+  --cg-muted:         #6abf88;
+  --cg-muted-strong:  #9dd9b4;
+  --cg-border:        rgba(110, 231, 155, 0.14);
+  --cg-border-strong: rgba(110, 231, 155, 0.3);
+  --cg-shadow:        0 6px 0 rgba(0,0,0,0.5), 0 14px 36px rgba(0,20,10,0.5);
+  --cg-shadow-soft:   0 3px 0 rgba(0,0,0,0.35), 0 8px 20px rgba(0,20,10,0.3);
+  --cg-shadow-glow:   0 0 0 2px rgba(74,222,128,0.5), 0 6px 0 rgba(0,0,0,0.5), 0 20px 48px rgba(74,222,128,0.2);
+  --cg-primary:       #4ade80;
+  --cg-primary-2:     #86efac;
+  --cg-primary-soft:  rgba(74, 222, 128, 0.2);
+  --cg-accent:        #facc15;
+  --cg-accent-2:      #fde047;
+  --cg-accent-soft:   rgba(250, 204, 21, 0.2);
+  --cg-positive:      #4ade80;
+  --cg-positive-soft: rgba(74, 222, 128, 0.18);
+  --cg-negative:      #f87171;
+  --cg-negative-soft: rgba(248, 113, 113, 0.18);
+  --cg-warning:       #facc15;
+  --cg-warning-soft:  rgba(250, 204, 21, 0.18);
+  --cg-page-gradient:
+    radial-gradient(ellipse at 15% 10%, rgba(74,222,128,0.22) 0%, transparent 38%),
+    radial-gradient(ellipse at 85% 8%,  rgba(250,204,21,0.16)  0%, transparent 32%),
+    radial-gradient(ellipse at 50% 95%, rgba(74,222,128,0.10)  0%, transparent 40%),
+    linear-gradient(175deg, #102a1c 0%, #0d2318 45%, #081510 100%);
+  --cg-texture: radial-gradient(circle, rgba(74,222,128,0.05) 1px, transparent 1px);
+  --cg-texture-size: 28px 28px;
+  --cg-btn-press-shadow: 0 2px 0 rgba(0,0,0,0.45), 0 4px 10px rgba(0,20,10,0.3);
+  --cg-primary-btn-shadow: 0 4px 0 #15803d, 0 8px 20px rgba(74,222,128,0.4);
+  --cg-primary-btn-press:  0 2px 0 #15803d, 0 4px 10px rgba(74,222,128,0.35);
+}
+
+/* ═══════════════════════════════════════════════════
+   THEME: CLASSIC  — warm parchment (light, fun)
+   ═══════════════════════════════════════════════════ */
+body.game-platform-page[data-game-theme="classic"] {
+  --cg-bg:            #efe8dc;
+  --cg-bg-deep:       #d7d0c3;
+  --cg-panel:         rgba(255, 252, 246, 0.92);
+  --cg-panel-strong:  rgba(255, 253, 249, 0.97);
+  --cg-ink:           #142233;
+  --cg-muted:         #5d6a79;
+  --cg-muted-strong:  #415162;
+  --cg-border:        rgba(20, 34, 51, 0.12);
+  --cg-border-strong: rgba(20, 34, 51, 0.22);
+  --cg-shadow:        0 5px 0 rgba(100,80,40,0.3), 0 12px 30px rgba(0,0,0,0.12);
+  --cg-shadow-soft:   0 3px 0 rgba(100,80,40,0.2), 0 6px 16px rgba(0,0,0,0.08);
+  --cg-shadow-glow:   0 0 0 2px rgba(13,94,102,0.3), 0 5px 0 rgba(100,80,40,0.3), 0 16px 36px rgba(13,94,102,0.16);
+  --cg-primary:       #0d5e66;
+  --cg-primary-2:     #18a2a8;
+  --cg-primary-soft:  rgba(13, 94, 102, 0.12);
+  --cg-accent:        #d98038;
+  --cg-accent-2:      #e8943f;
+  --cg-accent-soft:   rgba(217, 128, 56, 0.14);
+  --cg-positive:      #16795e;
+  --cg-positive-soft: rgba(22, 121, 94, 0.12);
+  --cg-negative:      #9a3b37;
+  --cg-negative-soft: rgba(154, 59, 55, 0.12);
+  --cg-warning:       #aa6b1f;
+  --cg-warning-soft:  rgba(170, 107, 31, 0.12);
+  --cg-page-gradient:
+    radial-gradient(circle at 0% 0%, rgba(24,162,168,0.18), transparent 24%),
+    radial-gradient(circle at 100% 0%, rgba(217,128,56,0.18), transparent 22%),
+    radial-gradient(circle at 50% 100%, rgba(13,94,102,0.08), transparent 28%),
+    linear-gradient(180deg, #f7f2e8 0%, #efe8dc 34%, #d7d0c3 100%);
+  --cg-texture:
+    linear-gradient(120deg, rgba(255,255,255,0.26), transparent 18%, transparent 82%, rgba(255,255,255,0.18)),
+    repeating-linear-gradient(135deg, rgba(20,34,51,0.012) 0 2px, transparent 2px 12px);
+  --cg-texture-size: auto;
+  --cg-btn-press-shadow: 0 2px 0 rgba(100,80,40,0.3), 0 4px 10px rgba(0,0,0,0.1);
+  --cg-primary-btn-shadow: 0 4px 0 #0a4a52, 0 8px 20px rgba(13,94,102,0.3);
+  --cg-primary-btn-press:  0 2px 0 #0a4a52, 0 4px 10px rgba(13,94,102,0.2);
+}
+
+/* ── Apply page background from theme vars ── */
 body.game-platform-page {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(24, 162, 168, 0.18), transparent 24%),
-    radial-gradient(circle at 100% 0%, rgba(217, 128, 56, 0.18), transparent 22%),
-    radial-gradient(circle at 50% 100%, rgba(13, 94, 102, 0.08), transparent 28%),
-    linear-gradient(180deg, #f7f2e8 0%, var(--cg-bg) 34%, var(--cg-bg-deep) 100%);
+  background: var(--cg-page-gradient);
   color: var(--cg-ink);
   font-family: var(--cg-font-body);
 }
@@ -58,12 +242,12 @@ body.game-platform-page::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background:
-    linear-gradient(120deg, rgba(255, 255, 255, 0.26), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.18)),
-    repeating-linear-gradient(135deg, rgba(20, 34, 51, 0.012) 0 2px, transparent 2px 12px);
-  opacity: 0.8;
+  background: var(--cg-texture);
+  background-size: var(--cg-texture-size);
+  opacity: 1;
 }
 
+/* ── Shell ── */
 .cg-shell {
   position: relative;
   z-index: 1;
@@ -71,14 +255,16 @@ body.game-platform-page::before {
   padding: 24px;
 }
 
+/* ── Surface ── */
 .cg-surface {
   background: var(--cg-panel);
-  border: 1px solid var(--cg-border);
+  border: 1.5px solid var(--cg-border-strong);
   border-radius: var(--cg-radius-2xl);
   box-shadow: var(--cg-shadow);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(12px);
 }
 
+/* ── Labels ── */
 .cg-kicker,
 .cg-micro-label {
   margin: 0;

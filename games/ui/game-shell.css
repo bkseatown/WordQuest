@@ -627,6 +627,270 @@ html[data-view-mode="projector"] .cg-stat-value {
   font-size: 38px;
 }
 
+/* =====================================================
+   Card-Game Theme Overrides — ALL THEMES
+   All colors come from CSS vars set in game-theme.css.
+   Themes: dark (default), ocean, sunset, forest, classic
+   Kid-friendly · Bold · Exploding Kittens energy
+   ===================================================== */
+
+body.game-platform-page {
+  color: var(--cg-ink);
+}
+
+/* ── Brand bar ── */
+body.game-platform-page .cg-brand-copy h1 {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--cg-ink);
+}
+body.game-platform-page .cg-brand-copy p { color: var(--cg-muted); }
+body.game-platform-page .cg-brand-mark {
+  background: linear-gradient(135deg, var(--cg-accent), var(--cg-accent-2));
+  box-shadow: var(--cg-shadow-soft);
+  border-radius: 20px;
+}
+
+/* ── Surface ── */
+body.game-platform-page .cg-surface {
+  background: var(--cg-panel);
+  border: 1.5px solid var(--cg-border);
+  box-shadow: var(--cg-shadow);
+}
+
+/* ── Game cards (catalog) — physical card feel ── */
+body.game-platform-page .cg-game-card {
+  background: var(--cg-panel-strong);
+  border: 1.5px solid var(--cg-border);
+  box-shadow: var(--cg-shadow-soft);
+  color: var(--cg-ink);
+  border-radius: var(--cg-radius-xl);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+body.game-platform-page .cg-game-card:hover {
+  border-color: var(--cg-primary-2);
+  box-shadow: var(--cg-shadow);
+  transform: translateY(-3px) scale(1.01);
+}
+body.game-platform-page .cg-game-card.is-active {
+  border-color: var(--cg-accent);
+  box-shadow: 0 0 0 2px var(--cg-accent), var(--cg-shadow);
+  background: var(--cg-panel-elevated);
+}
+body.game-platform-page .cg-game-card h3 { font-size: 17px; font-weight: 800; color: var(--cg-ink); }
+body.game-platform-page .cg-game-card p  { color: var(--cg-muted); }
+
+/* ── Game icon ── */
+body.game-platform-page .cg-game-icon {
+  background: linear-gradient(135deg, var(--cg-accent), var(--cg-accent-2));
+  box-shadow: var(--cg-shadow-soft);
+  border-radius: 16px;
+}
+
+/* ── All buttons — bold card style with press effect ── */
+body.game-platform-page .cg-action {
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: var(--cg-ink);
+  background: var(--cg-panel-strong);
+  border: 1.5px solid var(--cg-border-strong);
+  box-shadow: var(--cg-shadow-soft);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+body.game-platform-page .cg-action:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cg-shadow);
+}
+body.game-platform-page .cg-action:active {
+  transform: translateY(3px);
+  box-shadow: var(--cg-btn-press-shadow);
+}
+body.game-platform-page .cg-action-primary {
+  background: linear-gradient(135deg, var(--cg-accent), var(--cg-accent-2));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: var(--cg-primary-btn-shadow);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+body.game-platform-page .cg-action-primary:hover {
+  box-shadow: var(--cg-shadow-glow);
+}
+body.game-platform-page .cg-action-primary:active {
+  transform: translateY(3px);
+  box-shadow: var(--cg-primary-btn-press);
+}
+body.game-platform-page .cg-action-quiet {
+  background: var(--cg-primary-soft);
+  border-color: var(--cg-border);
+  color: var(--cg-muted-strong);
+}
+body.game-platform-page .cg-action-quiet:hover {
+  background: var(--cg-panel-elevated);
+  color: var(--cg-ink);
+}
+
+/* ── Rail / main cards ── */
+body.game-platform-page .cg-rail-card,
+body.game-platform-page .cg-main-card {
+  background: var(--cg-panel);
+  border: 1.5px solid var(--cg-border);
+  box-shadow: var(--cg-shadow-soft);
+  color: var(--cg-ink);
+  border-radius: var(--cg-radius-xl);
+}
+body.game-platform-page .cg-rail-card h2,
+body.game-platform-page .cg-rail-card h3,
+body.game-platform-page .cg-main-card h2,
+body.game-platform-page .cg-main-card h3 { color: var(--cg-ink); }
+body.game-platform-page .cg-rail-card p,
+body.game-platform-page .cg-main-card p  { color: var(--cg-muted); }
+
+/* ── Mission / prompt / focus cards ── */
+body.game-platform-page .cg-mission-card {
+  background: var(--cg-primary-soft);
+  border: 1.5px solid var(--cg-border-strong);
+  box-shadow: var(--cg-shadow-soft);
+}
+body.game-platform-page .cg-focus-panel,
+body.game-platform-page .cg-prompt-card,
+body.game-platform-page .cg-work-card {
+  background: var(--cg-panel-strong);
+  border: 1.5px solid var(--cg-border);
+  box-shadow: var(--cg-shadow-soft);
+  color: var(--cg-ink);
+}
+body.game-platform-page .cg-prompt-title  { color: var(--cg-ink); }
+body.game-platform-page .cg-focus-line,
+body.game-platform-page .cg-mission-line  { color: var(--cg-muted-strong); }
+body.game-platform-page .cg-stage-head h2 { color: var(--cg-ink); }
+body.game-platform-page .cg-stage-head p  { color: var(--cg-muted); }
+
+/* ── Answer choices — big tactile press buttons ── */
+body.game-platform-page .cg-choice {
+  background: var(--cg-panel-strong);
+  border: 1.5px solid var(--cg-border);
+  box-shadow: var(--cg-shadow-soft);
+  color: var(--cg-ink);
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 20px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+body.game-platform-page .cg-choice:hover {
+  border-color: var(--cg-primary-2);
+  box-shadow: var(--cg-shadow);
+  transform: translateY(-2px);
+}
+body.game-platform-page .cg-choice:active {
+  transform: translateY(3px);
+  box-shadow: var(--cg-btn-press-shadow);
+}
+body.game-platform-page .cg-choice.is-selected {
+  border-color: var(--cg-primary-2);
+  box-shadow: 0 0 0 2px var(--cg-primary-2), var(--cg-shadow-soft);
+  background: var(--cg-primary-soft);
+}
+
+/* ── Morphology tiles — big chunky card tiles ── */
+body.game-platform-page .cg-tile {
+  background: var(--cg-panel-elevated);
+  border: 1.5px solid var(--cg-border-strong);
+  box-shadow: var(--cg-shadow-soft);
+  color: var(--cg-ink);
+  font-weight: 800;
+  border-radius: 18px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+body.game-platform-page .cg-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--cg-shadow);
+  border-color: var(--cg-accent);
+}
+body.game-platform-page .cg-tile:active {
+  transform: translateY(3px);
+  box-shadow: var(--cg-btn-press-shadow);
+}
+body.game-platform-page .cg-tile.is-selected {
+  background: var(--cg-accent-soft);
+  border-color: var(--cg-accent);
+  box-shadow: 0 0 0 2px var(--cg-accent), var(--cg-shadow-soft);
+}
+body.game-platform-page .cg-word-slot {
+  background: var(--cg-primary-soft);
+  border: 1.5px dashed var(--cg-border-strong);
+  color: var(--cg-muted);
+  box-shadow: none;
+  border-radius: 18px;
+}
+body.game-platform-page .cg-word-slot.is-filled {
+  background: var(--cg-primary-soft);
+  border: 1.5px solid var(--cg-primary-2);
+  color: var(--cg-ink);
+  box-shadow: var(--cg-shadow-soft);
+}
+
+/* ── Stat cards ── */
+body.game-platform-page .cg-stat {
+  background: var(--cg-panel-strong);
+  border: 1.5px solid var(--cg-border);
+  box-shadow: var(--cg-shadow-soft);
+  color: var(--cg-ink);
+}
+body.game-platform-page .cg-stat-value { color: var(--cg-ink); }
+body.game-platform-page .cg-stat-label,
+body.game-platform-page .cg-stat-note  { color: var(--cg-muted); }
+
+/* ── Progress ── */
+body.game-platform-page .cg-progress           { background: var(--cg-border); }
+body.game-platform-page .cg-progress > span    { background: linear-gradient(90deg, var(--cg-primary-2), var(--cg-accent)); }
+body.game-platform-page .cg-progress-step      { background: var(--cg-border); }
+body.game-platform-page .cg-progress-step.is-complete { background: linear-gradient(90deg, var(--cg-primary-2), var(--cg-accent)); }
+body.game-platform-page .cg-progress-step.is-active   { background: var(--cg-primary-soft); }
+
+/* ── Chips ── */
+body.game-platform-page .cg-chip { background: var(--cg-primary-soft); border-color: var(--cg-border); color: var(--cg-muted-strong); }
+body.game-platform-page .cg-chip[data-tone="positive"] { color: var(--cg-positive); border-color: var(--cg-positive); background: var(--cg-positive-soft); }
+body.game-platform-page .cg-chip[data-tone="warning"]  { color: var(--cg-warning);  border-color: var(--cg-warning);  background: var(--cg-warning-soft); }
+body.game-platform-page .cg-chip[data-tone="focus"]    { color: var(--cg-primary-2); border-color: var(--cg-primary-2); background: var(--cg-primary-soft); }
+body.game-platform-page .cg-chip[data-tone="negative"] { color: var(--cg-negative); border-color: var(--cg-negative); background: var(--cg-negative-soft); }
+
+/* ── Summary / context ── */
+body.game-platform-page .cg-summary-item { background: var(--cg-panel); border-color: var(--cg-border); color: var(--cg-ink); }
+body.game-platform-page .cg-legacy-card  { background: var(--cg-primary-soft); border: 1.5px solid var(--cg-border-strong); }
+
+/* ── Letter boxes ── */
+body.game-platform-page .cg-letter-box              { background: var(--cg-primary-soft); color: var(--cg-ink); }
+body.game-platform-page .cg-letter-box[data-state="correct"] { background: var(--cg-positive-soft); color: var(--cg-positive); }
+body.game-platform-page .cg-letter-box[data-state="present"] { background: var(--cg-warning-soft);  color: var(--cg-warning); }
+body.game-platform-page .cg-letter-box[data-state="absent"]  { background: var(--cg-border);        color: var(--cg-muted); }
+
+/* ── Forms ── */
+body.game-platform-page .cg-action,
+body.game-platform-page .cg-select,
+body.game-platform-page .cg-input,
+body.game-platform-page .cg-textarea { color: var(--cg-ink); }
+body.game-platform-page .cg-select,
+body.game-platform-page .cg-input,
+body.game-platform-page .cg-textarea { background: var(--cg-panel); border-color: var(--cg-border-strong); }
+
+/* ── Context / misc ── */
+body.game-platform-page .cg-context-list strong { color: var(--cg-muted); }
+body.game-platform-page .cg-context-list span   { color: var(--cg-ink); }
+body.game-platform-page .cg-ring-track          { stroke: var(--cg-border); }
+body.game-platform-page .cg-ring-label          { fill: var(--cg-ink); }
+body.game-platform-page .cg-kicker,
+body.game-platform-page .cg-micro-label         { color: var(--cg-muted); }
+
+/* ── Focus rings ── */
+body.game-platform-page .cg-action:focus-visible,
+body.game-platform-page .cg-choice:focus-visible,
+body.game-platform-page .cg-tile:focus-visible  { outline: 2px solid var(--cg-accent); outline-offset: 2px; }
+
+/* ── Word Quest link ── */
+body.game-platform-page a.cg-action { display: inline-flex; align-items: center; justify-content: center; }
+
 html[data-view-mode="projector"] .cg-brand-copy h1 {
   font-size: 38px;
 }

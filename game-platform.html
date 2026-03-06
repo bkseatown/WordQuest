@@ -9,10 +9,10 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
   <link rel="stylesheet" href="./style/typography.css?v=20260306h">
-  <link rel="stylesheet" href="./games/ui/game-theme.css?v=20260306b">
-  <link rel="stylesheet" href="./games/ui/game-motion.css?v=20260306b">
-  <link rel="stylesheet" href="./games/ui/game-feedback.css?v=20260306b">
-  <link rel="stylesheet" href="./games/ui/game-shell.css?v=20260306b">
+  <link rel="stylesheet" href="./games/ui/game-theme.css?v=20260306r">
+  <link rel="stylesheet" href="./games/ui/game-motion.css?v=20260306r">
+  <link rel="stylesheet" href="./games/ui/game-feedback.css?v=20260306r">
+  <link rel="stylesheet" href="./games/ui/game-shell.css?v=20260306r">
 </head>
 <style>
   /* ── Class Mode (projector) ─────────────────────────── */
@@ -70,6 +70,51 @@
     Class Mode
   </button>
 
+  <!-- Theme picker -->
+  <div id="cg-theme-picker" aria-label="Choose game theme" role="group">
+    <button class="cg-theme-swatch" data-theme="dark"    title="Dark Quest"   aria-pressed="true"  style="background:linear-gradient(135deg,#1a1f3d,#2563eb)"></button>
+    <button class="cg-theme-swatch" data-theme="ocean"   title="Ocean"        aria-pressed="false" style="background:linear-gradient(135deg,#0c2a3f,#06b6d4)"></button>
+    <button class="cg-theme-swatch" data-theme="sunset"  title="Sunset"       aria-pressed="false" style="background:linear-gradient(135deg,#2d1b3d,#f472b6)"></button>
+    <button class="cg-theme-swatch" data-theme="forest"  title="Forest"       aria-pressed="false" style="background:linear-gradient(135deg,#0d2318,#4ade80)"></button>
+    <button class="cg-theme-swatch" data-theme="classic" title="Classic"      aria-pressed="false" style="background:linear-gradient(135deg,#efe8dc,#d98038)"></button>
+  </div>
+
+  <style>
+    #cg-theme-picker {
+      position: fixed;
+      bottom: 18px;
+      right: 142px;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .cg-theme-swatch {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      padding: 0;
+    }
+    .cg-theme-swatch:hover {
+      transform: scale(1.18);
+    }
+    .cg-theme-swatch[aria-pressed="true"] {
+      border-color: #fff;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.5), 0 2px 8px rgba(0,0,0,0.4);
+      transform: scale(1.1);
+    }
+  </style>
+
   <script>
     (function() {
       var btn = document.getElementById("cg-class-mode-btn");
@@ -78,6 +123,26 @@
         var active = document.body.classList.toggle("class-mode");
         btn.setAttribute("aria-pressed", active ? "true" : "false");
         btn.childNodes[btn.childNodes.length - 1].textContent = active ? " Exit Class Mode" : " Class Mode";
+      });
+    })();
+
+    // Theme switcher
+    (function() {
+      var STORAGE_KEY = "cs.game.theme";
+      var swatches = document.querySelectorAll(".cg-theme-swatch");
+      function applyTheme(theme) {
+        document.body.setAttribute("data-game-theme", theme);
+        try { localStorage.setItem(STORAGE_KEY, theme); } catch(e) {}
+        swatches.forEach(function(s) {
+          s.setAttribute("aria-pressed", s.getAttribute("data-theme") === theme ? "true" : "false");
+        });
+      }
+      // Restore saved theme
+      var saved = "";
+      try { saved = localStorage.getItem(STORAGE_KEY) || "dark"; } catch(e) { saved = "dark"; }
+      applyTheme(saved);
+      swatches.forEach(function(s) {
+        s.addEventListener("click", function() { applyTheme(s.getAttribute("data-theme")); });
       });
     })();
   </script>
@@ -103,8 +168,8 @@
   <script src="./games/content/game-content-generator.js?v=20260306a"></script>
   <script src="./games/content/game-content-registry.js?v=20260306a"></script>
 
-  <script src="./games/ui/game-components.js?v=20260306b"></script>
-  <script src="./games/ui/game-shell.js?v=20260306b"></script>
+  <script src="./games/ui/game-components.js?v=20260306r"></script>
+  <script src="./games/ui/game-shell.js?v=20260306r"></script>
   <script>
     window.CSGameShell && window.CSGameShell.init && window.CSGameShell.init();
   </script>
