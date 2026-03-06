@@ -40,11 +40,13 @@ assert(dashboardHtml.includes('js/teacher-runtime-state.js'), 'Teacher Workspace
 assert(dashboardHtml.includes('js/dashboard/workspace-caseload.js'), 'Teacher Workspace must load caseload workspace module', failures);
 assert(dashboardHtml.includes('js/dashboard/workspace-focus-shell.js'), 'Teacher Workspace must load focus shell workspace module', failures);
 assert(dashboardHtml.includes('js/dashboard/workspace-recommendations.js'), 'Teacher Workspace must load recommendations workspace module', failures);
+assert(dashboardHtml.includes('js/dashboard/workspace-support-ops.js'), 'Teacher Workspace must load support ops workspace module', failures);
 
 assert(dashboardJs.includes('initRuntimeState();'), 'App state initialization missing at boot', failures);
 assert(dashboardJs.includes('WorkspaceCaseload'), 'Teacher Workspace must route caseload rendering through workspace module', failures);
 assert(dashboardJs.includes('WorkspaceFocusShell'), 'Teacher Workspace must route focus shell rendering through workspace module', failures);
 assert(dashboardJs.includes('WorkspaceRecommendations'), 'Teacher Workspace must route recommendation rendering through workspace module', failures);
+assert(dashboardJs.includes('WorkspaceSupportOps'), 'Teacher Workspace must route implementation/executive support through workspace module', failures);
 assert(dashboardJs.includes('appState.set({ mode: next })'), 'Centralized mode state write missing', failures);
 assert(dashboardJs.includes('DashboardFocus.setSelectedStudent(appState, state.selectedId)'), 'Centralized selected student state write missing', failures);
 assert(dashboardJs.includes('openMeetingModal();'), 'Meeting generation path missing', failures);
