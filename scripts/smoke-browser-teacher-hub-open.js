@@ -11,6 +11,7 @@ const hubSource = fs.readFileSync(path.join(root, 'teacher-hub-v2.js'), 'utf8');
 const dashboardHtml = fs.readFileSync(path.join(root, 'teacher-dashboard.html'), 'utf8');
 const runtimeState = fs.readFileSync(path.join(root, 'js/teacher-runtime-state.js'), 'utf8');
 const searchIndex = fs.readFileSync(path.join(root, 'js/search/teacher-search-index.js'), 'utf8');
+const searchService = fs.readFileSync(path.join(root, 'js/search/teacher-search-service.js'), 'utf8');
 const teacherSelectors = fs.readFileSync(path.join(root, 'js/teacher/teacher-selectors.js'), 'utf8');
 const teacherIntelligence = fs.readFileSync(path.join(root, 'js/teacher/teacher-intelligence.js'), 'utf8');
 const storageSource = fs.readFileSync(path.join(root, 'js/teacher/teacher-storage.js'), 'utf8');
@@ -25,6 +26,7 @@ requireText(hubHtml, /id="th2-empty-state"/, 'Teacher Hub empty state container 
 requireText(hubHtml, /js\/teacher\/teacher-storage\.js/, 'Teacher storage helper is not loaded by teacher-hub-v2.html.');
 requireText(hubHtml, /js\/teacher-runtime-state\.js/, 'Unified teacher runtime state is not loaded by teacher-hub-v2.html.');
 requireText(hubHtml, /js\/search\/teacher-search-index\.js/, 'Teacher search index is not loaded by teacher-hub-v2.html.');
+requireText(hubHtml, /js\/search\/teacher-search-service\.js/, 'Teacher search service is not loaded by teacher-hub-v2.html.');
 requireText(hubHtml, /js\/teacher\/teacher-selectors\.js/, 'Shared teacher selectors are not loaded by teacher-hub-v2.html.');
 requireText(hubHtml, /js\/teacher\/teacher-intelligence\.js/, 'Shared teacher intelligence service is not loaded by teacher-hub-v2.html.');
 requireText(dashboardHtml, /Teacher Workspace/, 'Teacher Workspace labeling is missing from teacher-dashboard.html.');
@@ -49,6 +51,11 @@ requireText(
 );
 requireText(
   hubSource,
+  /TeacherSearchService/,
+  'Teacher Hub search does not use the teacher search service.'
+);
+requireText(
+  hubSource,
   /TeacherIntelligence/,
   'Teacher Hub does not use the shared teacher intelligence service.'
 );
@@ -61,6 +68,11 @@ requireText(
   searchIndex,
   /CSTeacherSearchIndex/,
   'Teacher search index module is missing.'
+);
+requireText(
+  searchService,
+  /CSTeacherSearchService/,
+  'Teacher search service module is missing.'
 );
 requireText(
   teacherSelectors,

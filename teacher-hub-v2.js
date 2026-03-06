@@ -22,6 +22,7 @@
   var SupportStore         = window.CSSupportStore;
   var TeacherRuntimeState  = window.CSTeacherRuntimeState;
   var TeacherSearchIndex   = window.CSTeacherSearchIndex;
+  var TeacherSearchService = window.CSTeacherSearchService;
   var TeacherSelectors     = window.CSTeacherSelectors;
   var TeacherIntelligence  = window.CSTeacherIntelligence;
   var HubContext           = window.CSHubContext;
@@ -62,7 +63,7 @@
   var caseload = [];
   var filtered = [];
   var searchResults = null;
-  var searchIndex = null;
+  var searchService = null;
 
   /* ── DOM refs ──────────────────────────────────────────── */
 
@@ -375,32 +376,36 @@
     { id: "tool-workspace", kind: "resource", label: "Teacher Workspace", subtitle: "Reports, meetings, notes, and history", href: "teacher-dashboard.html" }
   ];
 
+  function ensureSearchService() {
+    if (searchService) return searchService;
+    if (!TeacherSearchService || typeof TeacherSearchService.create !== "function") return null;
+    searchService = TeacherSearchService.create({
+      TeacherSearchIndex: TeacherSearchIndex,
+      getStudentsStore: function () {
+        return TeacherStorage && typeof TeacherStorage.loadStudentsStore === "function"
+          ? TeacherStorage.loadStudentsStore()
+          : {};
+      },
+      getCaseload: function () {
+        return caseload.slice();
+      },
+      getBlocks: function () {
+        return getTodayLessonBlocks();
+      },
+      getResources: function () {
+        return HUB_SEARCH_RESOURCES.slice();
+      }
+    });
+    return searchService;
+  }
+
   function buildSearchResults(query) {
     var q = String(query || "").trim();
-    if (!q || !TeacherSearchIndex || typeof TeacherSearchIndex.create !== "function") return null;
-    var studentStore = TeacherStorage && typeof TeacherStorage.loadStudentsStore === "function"
-      ? TeacherStorage.loadStudentsStore()
-      : {};
-    var seenStudents = {};
-    var studentRows = [];
-    Object.keys(studentStore || {}).forEach(function (studentId) {
-      if (!studentStore[studentId]) return;
-      seenStudents[studentId] = true;
-      studentRows.push(studentStore[studentId]);
-    });
-    caseload.forEach(function (student) {
-      if (!student || !student.id || seenStudents[student.id]) return;
-      seenStudents[student.id] = true;
-      studentRows.push(student);
-    });
-    searchIndex = TeacherSearchIndex.create({
-      students: studentRows,
-      blocks: getTodayLessonBlocks(),
-      resources: HUB_SEARCH_RESOURCES
-    });
+    var service = ensureSearchService();
+    if (!q || !service) return null;
     return {
       query: String(q).toLowerCase(),
-      groups: searchIndex.group(q)
+      groups: service.group(q)
     };
   }
 
@@ -2085,6 +2090,7 @@
     caseload = TeacherSelectors && typeof TeacherSelectors.loadCaseload === "function"
       ? TeacherSelectors.loadCaseload({ TeacherStorage: TeacherStorage, Evidence: Evidence })
       : [];
+    searchService = null;
     hubState.set({ schedule_blocks: getTodayLessonBlocks() });
 
     if (el.listNone) el.listNone.classList.toggle("hidden", caseload.length > 0);
