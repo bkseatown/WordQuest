@@ -30,8 +30,5 @@ CODEX_PHASE_*.txt
 .claire/
 .claude/
 
-# Google auth config (contains OAuth Client ID — user-created, not committed)
-js/google-auth-config.js
-
 # AI config (contains Azure API key — user-created, not committed)
 js/ai-config.js
