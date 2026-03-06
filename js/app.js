@@ -52,8 +52,8 @@
     if (!params || params.get('from') !== 'teacher') return;
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.textContent = 'Back to Dashboard';
-    btn.setAttribute('aria-label', 'Back to Dashboard');
+    btn.textContent = 'Back to Hub';
+    btn.setAttribute('aria-label', 'Back to Hub');
     btn.style.position = 'fixed';
     btn.style.top = '10px';
     btn.style.left = '10px';
@@ -66,7 +66,7 @@
     btn.style.fontWeight = '700';
     btn.style.cursor = 'pointer';
     btn.addEventListener('click', () => {
-      window.location.href = withAppBase('teacher-dashboard.html');
+      window.location.href = withAppBase('teacher-hub-v2.html');
     });
     document.body.appendChild(btn);
   }
@@ -6664,8 +6664,8 @@
       return;
     }
     if (route === 'dashboard' || route === 'admin-demo') {
-      setActivityLabel('Teacher Dashboard');
-      const url = new URL(withAppBase('teacher-dashboard.html'), window.location.origin);
+      setActivityLabel('Teacher Hub');
+      const url = new URL(withAppBase('teacher-hub-v2.html'), window.location.origin);
       if (route === 'admin-demo') url.hash = '#admin-demo';
       window.location.href = url.toString();
       return;
@@ -7002,7 +7002,7 @@
   }
 
   function openTeacherDashboardPage() {
-    const url = new URL(withAppBase('teacher-dashboard.html'), window.location.origin);
+    const url = new URL(withAppBase('teacher-hub-v2.html'), window.location.origin);
     try {
       const params = new URLSearchParams(window.location.search || '');
       if (params.get('demo') === '1') url.searchParams.set('demo', '1');

@@ -984,14 +984,14 @@
     el.backHome.addEventListener("click", function () {
       var params = new URLSearchParams(window.location.search || "");
       if (params.get("from") === "teacher") {
-        window.location.href = withAppBase("teacher-dashboard.html");
+        window.location.href = withAppBase("teacher-hub-v2.html");
         return;
       }
       window.location.href = withAppBase("index.html");
     });
     try {
       var fromTeacher = new URLSearchParams(window.location.search || "").get("from") === "teacher";
-      if (fromTeacher) el.backHome.textContent = "Back to Dashboard";
+      if (fromTeacher) el.backHome.textContent = "Back to Hub";
     } catch (_e) {}
 
     Array.prototype.forEach.call(document.querySelectorAll(".rl-mark-btn"), function (btn) {

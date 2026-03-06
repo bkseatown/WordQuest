@@ -34,7 +34,7 @@
   function buildLinks() {
     var links = [
       { href: withBase("index.html"), label: "Home", pages: ["", "/", "index.html"] },
-      { href: withBase("teacher-dashboard.html"), label: "Teacher Dashboard", pages: ["teacher-dashboard.html"] },
+      { href: withBase("teacher-hub-v2.html"), label: "Teacher Hub", pages: ["teacher-hub-v2.html"] },
       { href: withBase("word-quest.html?play=1#wordquest"), label: "Word Quest", pages: ["word-quest.html"] },
       { href: withBase("reading-lab.html"), label: "Reading Lab", pages: ["reading-lab.html"] },
       { href: withBase("sentence-surgery.html"), label: "Sentence Studio", pages: ["sentence-surgery.html"] },
