@@ -29,7 +29,8 @@
       gameId: String(params.get("game") || "").trim(),
       gradeBand: String(params.get("gradeBand") || params.get("grade") || "").trim(),
       lessonTitle: String(params.get("lesson") || "").trim(),
-      skillFocus: String(params.get("skillFocus") || "").trim()
+      skillFocus: String(params.get("skillFocus") || "").trim(),
+      contentMode: String(params.get("contentMode") || "").trim()
     };
   }
 
@@ -42,7 +43,8 @@
       programId: params.programId,
       lessonTitle: params.lessonTitle,
       skillFocus: params.skillFocus,
-      vocabularyFocus: params.skillFocus
+      vocabularyFocus: params.skillFocus,
+      contentMode: params.contentMode || "lesson"
     };
     var TeacherSelectors = runtimeRoot.CSTeacherSelectors || null;
     if (TeacherSelectors && typeof TeacherSelectors.loadCaseload === "function" && params.studentId) {
@@ -106,6 +108,15 @@
     var registry = runtimeRoot.CSGameContentRegistry;
     var wordConnectionsEngine = runtimeRoot.CSWordConnectionsEngine;
 
+    function roundContext(input) {
+      return Object.assign({}, input.context || {}, {
+        customWordSet: input.settings && input.settings.customWordSet || "",
+        contentMode: input.settings && input.settings.contentMode || input.context && input.context.contentMode || "lesson",
+        difficulty: input.settings && input.settings.difficulty || "core",
+        viewMode: input.settings && input.settings.viewMode || "individual"
+      });
+    }
+
     return {
       "word-quest": {
         id: "word-quest",
@@ -116,7 +127,7 @@
         baseTimerSeconds: 75,
         roundTarget: 6,
         createRound: function (input) {
-          var row = registry.pickRound("word-quest", input.context, input.history) || {};
+          var row = registry.pickRound("word-quest", roundContext(input), input.history) || {};
           return {
             id: row.id || ("wq-" + Date.now()),
             promptLabel: "Solve the target word from the clue.",
@@ -155,11 +166,12 @@
         baseTimerSeconds: 60,
         roundTarget: 6,
         createRound: function (input) {
-          var row = registry.pickRound("word-connections", input.context, input.history) || {};
+          var currentContext = roundContext(input);
+          var row = registry.pickRound("word-connections", currentContext, input.history) || {};
           var generated = wordConnectionsEngine && typeof wordConnectionsEngine.generateWordConnectionsRound === "function"
             ? wordConnectionsEngine.generateWordConnectionsRound({
                 mode: String(input.settings.difficulty || "core").toUpperCase() === "STRETCH" ? "INTERVENTION" : "TARGETED",
-                skillNode: input.context.skillFocus || row.skillTag || "LIT.VOC.ACAD",
+                skillNode: currentContext.skillFocus || row.skillTag || "LIT.VOC.ACAD",
                 tierLevel: input.settings.viewMode === "projector" ? "Tier 2" : "Tier 3",
                 selectedCard: row
               })
@@ -206,7 +218,7 @@
         baseTimerSeconds: 70,
         roundTarget: 6,
         createRound: function (input) {
-          var row = registry.pickRound("morphology-builder", input.context, input.history) || {};
+          var row = registry.pickRound("morphology-builder", roundContext(input), input.history) || {};
           return {
             id: row.id || ("mb-" + Date.now()),
             promptLabel: row.prompt || "Build the word.",
@@ -246,7 +258,7 @@
         baseTimerSeconds: 55,
         roundTarget: 6,
         createRound: function (input) {
-          var row = registry.pickRound("concept-ladder", input.context, input.history) || {};
+          var row = registry.pickRound("concept-ladder", roundContext(input), input.history) || {};
           return {
             id: row.id || ("ladder-" + Date.now()),
             promptLabel: row.prompt || "Solve the concept.",
@@ -281,7 +293,7 @@
         baseTimerSeconds: 65,
         roundTarget: 6,
         createRound: function (input) {
-          var row = registry.pickRound("error-detective", input.context, input.history) || {};
+          var row = registry.pickRound("error-detective", roundContext(input), input.history) || {};
           return {
             id: row.id || ("error-" + Date.now()),
             promptLabel: row.prompt || "Find the correction.",
@@ -313,7 +325,7 @@
         baseTimerSeconds: 40,
         roundTarget: 5,
         createRound: function (input) {
-          var row = registry.pickRound("rapid-category", input.context, input.history) || {};
+          var row = registry.pickRound("rapid-category", roundContext(input), input.history) || {};
           return {
             id: row.id || ("category-" + Date.now()),
             promptLabel: row.prompt || "Generate category words.",
@@ -359,7 +371,7 @@
         baseTimerSeconds: 75,
         roundTarget: 6,
         createRound: function (input) {
-          var row = registry.pickRound("sentence-builder", input.context, input.history) || {};
+          var row = registry.pickRound("sentence-builder", roundContext(input), input.history) || {};
           return {
             id: row.id || ("sentence-" + Date.now()),
             promptLabel: row.prompt || "Build the sentence.",
@@ -460,6 +472,14 @@
     return subject + " · " + mode + " · " + (context.lessonTitle || context.classLabel || "Context-aware set");
   }
 
+  function contentSetLabel(value) {
+    var key = String(value || "lesson").toLowerCase();
+    if (key === "subject") return "Broader subject bank";
+    if (key === "morphology") return "Morphology family";
+    if (key === "custom") return "Custom word lock";
+    return "Lesson-aligned";
+  }
+
   function resultTone(outcome) {
     if (!outcome) return "calm";
     if (outcome.correct || outcome.teacherOverride) return "positive";
@@ -538,6 +558,7 @@
       settings: {
         viewMode: "individual",
         difficulty: "core",
+        contentMode: context.contentMode || "lesson",
         timerEnabled: true,
         hintsEnabled: true,
         soundEnabled: false,
@@ -604,6 +625,7 @@
         '        <div><strong>Subject</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.subject || "ELA") + "</span></div>",
         '        <div><strong>Program</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.programId || "General") + "</span></div>",
         '        <div><strong>Grade Band</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.gradeBand || "3-5") + "</span></div>",
+        '        <div><strong>Content Set</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(contentSetLabel(state.settings.contentMode || context.contentMode || "lesson")) + "</span></div>",
         "      </div>",
         '      <div class="cg-context-chips">',
         '        <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + runtimeRoot.CSGameComponents.escapeHtml(supportLine(context, state)) + "</span>",
@@ -661,6 +683,7 @@
         '        <div class="cg-field"><label for="cg-difficulty">Difficulty</label><select id="cg-difficulty" class="cg-select"><option value="scaffolded">Scaffolded</option><option value="core">Core</option><option value="stretch">Stretch</option></select></div>',
         '        <div class="cg-field"><label for="cg-subject">Subject</label><select id="cg-subject" class="cg-select"><option value="ELA">ELA</option><option value="Intervention">Intervention</option><option value="Writing">Writing</option><option value="Math">Math</option><option value="Science">Science</option></select></div>',
         '        <div class="cg-field"><label for="cg-grade-band">Grade Band</label><select id="cg-grade-band" class="cg-select"><option value="K-2">K-2</option><option value="3-5">3-5</option><option value="6-8">6-8</option><option value="9-12">9-12</option></select></div>',
+        '        <div class="cg-field"><label for="cg-content-mode">Content Set</label><select id="cg-content-mode" class="cg-select"><option value="lesson">Lesson-aligned</option><option value="subject">Broader subject bank</option><option value="morphology">Morphology family</option><option value="custom">Custom word lock</option></select></div>',
         '        <div class="cg-field"><label for="cg-skill-focus">Skill Focus</label><input id="cg-skill-focus" class="cg-input" type="text" value="' + runtimeRoot.CSGameComponents.escapeHtml(context.skillFocus || "") + '" placeholder="LIT.MOR.ROOT"></div>',
         '        <div class="cg-field"><label for="cg-custom-word-set">Custom Word Set / Lesson Lock</label><input id="cg-custom-word-set" class="cg-input" type="text" value="' + runtimeRoot.CSGameComponents.escapeHtml(state.settings.customWordSet || "") + '" placeholder="prefix, claim, ratio"></div>',
         '        <label class="cg-checkbox"><input id="cg-toggle-timer" type="checkbox"' + (state.settings.timerEnabled ? " checked" : "") + '>Timer enabled</label>',
@@ -806,7 +829,8 @@
         "cg-view-mode": state.settings.viewMode,
         "cg-difficulty": state.settings.difficulty,
         "cg-subject": context.subject,
-        "cg-grade-band": context.gradeBand
+        "cg-grade-band": context.gradeBand,
+        "cg-content-mode": state.settings.contentMode || context.contentMode || "lesson"
       };
       Object.keys(map).forEach(function (id) {
         var element = document.getElementById(id);
@@ -928,15 +952,33 @@
         engine.restartGame();
       });
 
+      var contentMode = document.getElementById("cg-content-mode");
+      if (contentMode) contentMode.addEventListener("change", function () {
+        context.contentMode = contentMode.value;
+        engine.updateContext({ contentMode: contentMode.value });
+        engine.updateSettings({ contentMode: contentMode.value });
+        resetRoundUi();
+        engine.restartGame();
+      });
+
       var skillFocus = document.getElementById("cg-skill-focus");
       if (skillFocus) skillFocus.addEventListener("change", function () {
         context.skillFocus = skillFocus.value;
         engine.updateContext({ skillFocus: skillFocus.value, vocabularyFocus: skillFocus.value });
+        resetRoundUi();
+        engine.restartGame();
       });
 
       var custom = document.getElementById("cg-custom-word-set");
       if (custom) custom.addEventListener("change", function () {
+        if (custom.value) {
+          context.contentMode = "custom";
+          engine.updateContext({ contentMode: "custom" });
+          engine.updateSettings({ contentMode: "custom" });
+        }
         engine.updateSettings({ customWordSet: custom.value });
+        resetRoundUi();
+        engine.restartGame();
       });
 
       var timerToggle = document.getElementById("cg-toggle-timer");

@@ -163,6 +163,13 @@
           run("setDashboardMode", "reports");
         });
       }
+      if (el.weeklyInsightsBtn) {
+        el.weeklyInsightsBtn.addEventListener("click", function () {
+          if (!state.selectedId) return;
+          if (el.shareSummary) el.shareSummary.click();
+          run("setDashboardMode", "reports");
+        });
+      }
       if (el.focusViewDetailsBtn) {
         el.focusViewDetailsBtn.addEventListener("click", function () {
           run("setDashboardMode", "advanced");

@@ -52,7 +52,7 @@
       <a class="td-wordmark td-brand-home" href="./index.html" aria-label="Home">
         <strong>Cornerstone MTSS</strong>
         <span>Teacher Workspace</span>
-        <p class="td-top-description">Weekly insights, meeting prep, family communication, and progress history.</p>
+        <p class="td-top-description">Weekly insights, meeting prep, family communication, and progress review.</p>
         <small id="td-buildline" class="td-buildline">Build: checking...</small>
       </a>
 
@@ -65,12 +65,13 @@
         <a id="td-hub-cta" class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html" aria-label="Open Teacher Hub">
           Teacher Hub
         </a>
-        <button id="td-lesson-brief" class="td-top-btn" type="button">Lesson Brief</button>
+        <button id="td-weekly-insights" class="td-top-btn" type="button">Weekly Insight</button>
         <button id="td-meeting-workspace" class="td-top-btn" type="button">Meeting Prep</button>
         <div class="td-top-overflow">
           <button id="td-top-overflow-toggle" class="td-top-btn" type="button" aria-expanded="false" aria-controls="td-top-overflow-menu">More</button>
           <div id="td-top-overflow-menu" class="td-top-overflow-menu hidden">
             <button id="td-home-btn" class="td-top-btn td-nav-btn" type="button">Home</button>
+            <button id="td-lesson-brief" class="td-top-btn" type="button">Lesson Brief</button>
             <button id="td-add-student" class="td-top-btn" type="button">Add Student</button>
             <button id="td-new-session" class="td-top-btn" type="button">New Session</button>
             <button id="td-settings" class="td-top-btn" type="button">Settings</button>
@@ -103,9 +104,9 @@
       <main class="dashboard cs-stage" aria-label="Dashboard decision layer">
         <section class="dashboard-mode-strip card td-surface" aria-label="Workflow mode">
           <button id="td-mode-daily" class="td-top-btn is-active" type="button">Daily</button>
-          <button id="td-mode-advanced" class="td-top-btn" type="button">Advanced</button>
           <button id="td-mode-reports" class="td-top-btn" type="button">Reports</button>
-          <button id="td-mode-classroom" class="td-top-btn" type="button">Classroom Mode</button>
+          <button id="td-mode-advanced" class="td-top-btn hidden" type="button" tabindex="-1" aria-hidden="true">Advanced</button>
+          <button id="td-mode-classroom" class="td-top-btn hidden" type="button" tabindex="-1" aria-hidden="true">Classroom Mode</button>
         </section>
         <section class="dashboard-focus">
           <article id="td-focus-card" class="focus-card card td-surface">
