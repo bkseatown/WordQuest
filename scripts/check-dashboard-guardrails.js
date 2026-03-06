@@ -50,6 +50,7 @@ assert(dashboardHtml.includes('js/dashboard/workspace-student-intelligence.js'),
 assert(dashboardHtml.includes('js/dashboard/workspace-selection.js'), 'Teacher Workspace must load selection workspace module', failures);
 assert(dashboardHtml.includes('js/dashboard/workspace-meeting-content.js'), 'Teacher Workspace must load meeting content workspace module', failures);
 assert(dashboardHtml.includes('js/dashboard/workspace-support-content.js'), 'Teacher Workspace must load support content workspace module', failures);
+assert(dashboardHtml.includes('js/dashboard/workspace-drawer-content.js'), 'Teacher Workspace must load drawer content workspace module', failures);
 assert(dashboardHtml.includes('js/dashboard/workspace-recommendations.js'), 'Teacher Workspace must load recommendations workspace module', failures);
 assert(dashboardHtml.includes('js/dashboard/workspace-support-ops.js'), 'Teacher Workspace must load support ops workspace module', failures);
 
@@ -60,6 +61,7 @@ assert(dashboardJs.includes('WorkspaceStudentIntelligence'), 'Teacher Workspace 
 assert(dashboardJs.includes('WorkspaceSelection'), 'Teacher Workspace must route student selection orchestration through workspace module', failures);
 assert(dashboardJs.includes('WorkspaceMeetingContent'), 'Teacher Workspace must route meeting content through workspace module', failures);
 assert(dashboardJs.includes('WorkspaceSupportContent'), 'Teacher Workspace must route support content through workspace module', failures);
+assert(dashboardJs.includes('WorkspaceDrawerContent'), 'Teacher Workspace must route drawer content through workspace module', failures);
 assert(dashboardJs.includes('WorkspaceRecommendations'), 'Teacher Workspace must route recommendation rendering through workspace module', failures);
 assert(dashboardJs.includes('WorkspaceSupportOps'), 'Teacher Workspace must route implementation/executive support through workspace module', failures);
 assert(dashboardJs.includes('TeacherIntelligence'), 'Teacher Workspace must use shared teacher intelligence service', failures);
