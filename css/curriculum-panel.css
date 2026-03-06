@@ -1,0 +1,943 @@
+/* curriculum-panel.css — Curriculum Quick-Reference Panel
+   Tabs: Resources · Assessments · Videos
+   ─────────────────────────────────────────────────────── */
+
+/* ── Panel container ────────────────────────────────────── */
+#cs-cur-panel {
+  position: fixed;
+  top: 0;
+  right: -520px;
+  width: 520px;
+  height: 100vh;
+  background: #ffffff;
+  border-left: 1px solid #8fa3bd;
+  box-shadow: -4px 0 24px rgba(43,93,168,.14);
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.28s cubic-bezier(.34,1.2,.64,1);
+  overflow: hidden;
+  color: #0d1117;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+#cs-cur-panel.is-open {
+  right: 0;
+}
+
+/* ── Panel header ───────────────────────────────────────── */
+.cs-cur-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #c5d5ea;
+  background: linear-gradient(135deg, #2b5da8 0%, #1e4a8a 100%);
+  flex-shrink: 0;
+}
+
+.cs-cur-head-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  flex: 1;
+}
+
+.cs-cur-head-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,.7);
+  margin: 0;
+}
+
+.cs-cur-close {
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  color: #fff;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.14s;
+  flex-shrink: 0;
+}
+
+.cs-cur-close:hover { background: rgba(255,255,255,.28); }
+
+/* ── Tab navigation ─────────────────────────────────────── */
+.cs-cur-tabs {
+  display: flex;
+  border-bottom: 1px solid #c5d5ea;
+  background: #f0f4fb;
+  flex-shrink: 0;
+}
+
+.cs-cur-tab {
+  flex: 1;
+  padding: 11px 8px;
+  border: none;
+  background: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #3d4559;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.14s;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.cs-cur-tab:hover { background: #e0e9f8; color: #2b5da8; }
+
+.cs-cur-tab.is-active {
+  color: #2b5da8;
+  border-bottom-color: #2b5da8;
+  background: #fff;
+}
+
+/* ── Grade filter strip ─────────────────────────────────── */
+.cs-cur-grade-strip {
+  display: flex;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #f7f9fc;
+  border-bottom: 1px solid #e0e9f8;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.cs-cur-grade-btn {
+  padding: 4px 12px;
+  border-radius: 99px;
+  border: 1.5px solid #8fa3bd;
+  background: #fff;
+  color: #3d4559;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.14s;
+}
+
+.cs-cur-grade-btn:hover { border-color: #2b5da8; color: #2b5da8; }
+
+.cs-cur-grade-btn.is-active {
+  background: #2b5da8;
+  border-color: #2b5da8;
+  color: #fff;
+}
+
+/* ── Scrollable body ────────────────────────────────────── */
+.cs-cur-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Section headers ────────────────────────────────────── */
+.cs-cur-section-head {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #2b5da8;
+  padding: 4px 0;
+  border-bottom: 2px solid #e0e9f8;
+  margin: 4px 0 8px 0;
+}
+
+/* ── Curriculum program cards ───────────────────────────── */
+.cs-cur-card {
+  border: 1px solid #c5d5ea;
+  border-radius: 10px;
+  padding: 14px 16px;
+  background: #fff;
+  transition: all 0.16s ease;
+  cursor: default;
+}
+
+.cs-cur-card:hover {
+  box-shadow: 0 4px 14px rgba(43,93,168,.1);
+  border-color: #8fa3bd;
+  transform: translateY(-1px);
+}
+
+.cs-cur-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cs-cur-card-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.cs-cur-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0d1117;
+  flex: 1;
+}
+
+.cs-cur-card-grades {
+  font-size: 11px;
+  color: #6b7591;
+  font-weight: 600;
+  background: #f0f4fb;
+  padding: 2px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.cs-cur-card-access {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cs-cur-card-access.open { background: #dcfce7; color: #166534; }
+.cs-cur-card-access.login { background: #fef3c7; color: #92400e; }
+.cs-cur-card-access.purchase { background: #fee2e2; color: #991b1b; }
+
+.cs-cur-card-summary {
+  font-size: 13px;
+  color: #3d4559;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.cs-cur-card-tips {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cs-cur-card-tips li {
+  font-size: 12px;
+  color: #3d4559;
+  padding-left: 16px;
+  position: relative;
+}
+
+.cs-cur-card-tips li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #2b5da8;
+}
+
+.cs-cur-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cs-cur-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.14s;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+}
+
+.cs-cur-link-btn.primary {
+  background: linear-gradient(135deg, #2b5da8 0%, #1e4a8a 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+.cs-cur-link-btn.primary:hover { box-shadow: 0 4px 12px rgba(43,93,168,.3); transform: translateY(-1px); }
+
+.cs-cur-link-btn.secondary {
+  background: #f0f4fb;
+  color: #2b5da8;
+  border-color: #8fa3bd;
+}
+
+.cs-cur-link-btn.secondary:hover { background: #e0e9f8; border-color: #2b5da8; }
+
+/* ── Fish Tank unit rows ─────────────────────────────────── */
+.cs-unit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cs-unit-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #e0e9f8;
+  border-radius: 8px;
+  background: #fafbfe;
+  cursor: pointer;
+  transition: all 0.14s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cs-unit-row:hover {
+  border-color: #2b5da8;
+  background: #f0f4fb;
+  transform: translateX(2px);
+}
+
+.cs-unit-row-grade {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2b5da8;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cs-unit-row-info { flex: 1; min-width: 0; }
+
+.cs-unit-row-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0d1117;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cs-unit-row-meta {
+  font-size: 11px;
+  color: #6b7591;
+}
+
+.cs-unit-row-domain {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.domain-narrative { background: #e0f2fe; color: #0369a1; }
+.domain-informational { background: #fef3c7; color: #92400e; }
+.domain-argument { background: #f3e8ff; color: #7e22ce; }
+
+/* ── Assessment cards ───────────────────────────────────── */
+.cs-assess-card {
+  border: 1px solid #c5d5ea;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.cs-assess-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #f0f4fb 0%, #e8eef8 100%);
+  border-bottom: 1px solid #c5d5ea;
+  cursor: pointer;
+}
+
+.cs-assess-head:hover { background: #e0e9f8; }
+
+.cs-assess-title { font-size: 13px; font-weight: 700; color: #0d1117; flex: 1; }
+
+.cs-assess-meta { font-size: 11px; color: #6b7591; }
+
+.cs-assess-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cs-assess-text-block {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #0d1117;
+  background: #fafbfe;
+  border: 1px solid #e0e9f8;
+  border-radius: 8px;
+  padding: 14px 16px;
+  position: relative;
+}
+
+.cs-assess-lexile {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 10px;
+  font-family: system-ui, sans-serif;
+  color: #6b7591;
+  background: #e8eef8;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 700;
+}
+
+/* Timer button */
+.cs-assess-timer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cs-assess-timer-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #2b5da8 0%, #1e4a8a 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s cubic-bezier(.34,1.2,.64,1);
+}
+
+.cs-assess-timer-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(43,93,168,.3); }
+
+.cs-assess-timer-display {
+  font-size: 22px;
+  font-weight: 800;
+  color: #2b5da8;
+  font-family: 'Monaco', 'Courier New', monospace;
+  min-width: 60px;
+}
+
+.cs-assess-timer-display.running { color: #ef4444; }
+.cs-assess-timer-display.done { color: #16a34a; }
+
+/* Benchmark bands */
+.cs-benchmark-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.cs-benchmark-table th {
+  background: #f0f4fb;
+  padding: 6px 10px;
+  text-align: left;
+  font-weight: 700;
+  color: #3d4559;
+  border: 1px solid #e0e9f8;
+}
+
+.cs-benchmark-table td {
+  padding: 6px 10px;
+  border: 1px solid #e0e9f8;
+  color: #0d1117;
+}
+
+.cs-benchmark-table tr:nth-child(even) td { background: #fafbfe; }
+
+.cs-benchmark-label { font-size: 11px; color: #6b7591; }
+
+.band-benchmark { color: #16a34a; font-weight: 700; }
+.band-some { color: #d97706; font-weight: 700; }
+.band-low  { color: #ef4444; font-weight: 700; }
+
+/* Research citation */
+.cs-research-cite {
+  font-size: 11px;
+  color: #6b7591;
+  font-style: italic;
+  padding: 8px 12px;
+  background: #fafbfe;
+  border-left: 3px solid #8fa3bd;
+  border-radius: 0 4px 4px 0;
+  line-height: 1.5;
+}
+
+/* ── Number talk cards ──────────────────────────────────── */
+.cs-nt-card {
+  border: 1px solid #c5d5ea;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.cs-nt-head {
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-bottom: 1px solid #bbf7d0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cs-nt-title { font-size: 13px; font-weight: 700; color: #15803d; flex: 1; }
+
+.cs-nt-sequence {
+  font-size: 10px;
+  background: #16a34a;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 700;
+}
+
+.cs-nt-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+
+.cs-nt-problem {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0d1117;
+  text-align: center;
+  padding: 16px;
+  background: #f7f9fc;
+  border-radius: 8px;
+  border: 2px dashed #bbf7d0;
+  letter-spacing: 0.04em;
+}
+
+.cs-nt-script-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #15803d;
+  margin-bottom: 4px;
+}
+
+.cs-nt-script {
+  font-size: 13px;
+  color: #3d4559;
+  line-height: 1.6;
+  background: #f0fdf4;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border-left: 3px solid #16a34a;
+}
+
+.cs-nt-strategies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cs-nt-strategy-pill {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 600;
+}
+
+.cs-nt-connect {
+  font-size: 12px;
+  color: #6b7591;
+  font-style: italic;
+}
+
+/* ── Screener cards ─────────────────────────────────────── */
+.cs-scr-card {
+  border: 1px solid #c5d5ea;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.cs-scr-head {
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-bottom: 1px solid #fcd34d;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cs-scr-title { font-size: 13px; font-weight: 700; color: #92400e; flex: 1; }
+
+.cs-scr-time {
+  font-size: 11px;
+  background: #d97706;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 700;
+}
+
+.cs-scr-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+.cs-scr-admin {
+  font-size: 12px;
+  color: #0d1117;
+  background: #fffbeb;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border-left: 3px solid #d97706;
+  line-height: 1.6;
+}
+
+.cs-scr-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cs-scr-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #fafbfe;
+  border: 1px solid #e0e9f8;
+  border-radius: 6px;
+}
+
+.cs-scr-word {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0d1117;
+  min-width: 80px;
+  font-family: 'Georgia', serif;
+}
+
+.cs-scr-phonemes {
+  font-size: 13px;
+  color: #3d4559;
+  flex: 1;
+}
+
+.cs-scr-count {
+  font-size: 11px;
+  background: #e0e9f8;
+  color: #2b5da8;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 700;
+}
+
+.cs-scr-score-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.cs-scr-score-input {
+  width: 80px;
+  padding: 8px 12px;
+  border: 2px solid #8fa3bd;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  color: #0d1117;
+}
+
+.cs-scr-score-input:focus { outline: none; border-color: #2b5da8; }
+
+.cs-scr-score-band {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+/* ── Video chips ────────────────────────────────────────── */
+.cs-video-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.cs-video-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid #c5d5ea;
+  border-radius: 10px;
+  background: #fff;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.16s;
+}
+
+.cs-video-chip:hover {
+  border-color: #ef4444;
+  box-shadow: 0 4px 12px rgba(239,68,68,.12);
+  transform: translateY(-2px);
+}
+
+.cs-video-thumb {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #f0f4fb;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  overflow: hidden;
+}
+
+.cs-video-chip-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0d1117;
+  line-height: 1.4;
+}
+
+.cs-video-chip-channel {
+  font-size: 11px;
+  color: #6b7591;
+}
+
+.cs-video-yt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #ef4444;
+  font-weight: 700;
+}
+
+/* ── Auth prompt (shown when not signed in to Google) ───── */
+.cs-auth-prompt {
+  padding: 20px;
+  text-align: center;
+  border: 1px solid #c5d5ea;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f0f4fb 0%, #e8eef8 100%);
+}
+
+.cs-auth-prompt-icon { font-size: 32px; margin-bottom: 10px; }
+.cs-auth-prompt-title { font-size: 15px; font-weight: 700; color: #0d1117; margin-bottom: 6px; }
+.cs-auth-prompt-sub { font-size: 13px; color: #3d4559; margin-bottom: 16px; line-height: 1.5; }
+
+.cs-google-signin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: #fff;
+  border: 2px solid #e0e9f8;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0d1117;
+  cursor: pointer;
+  transition: all 0.16s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.08);
+}
+
+.cs-google-signin-btn:hover {
+  border-color: #2b5da8;
+  box-shadow: 0 4px 14px rgba(43,93,168,.15);
+  transform: translateY(-1px);
+}
+
+.cs-google-logo {
+  width: 20px;
+  height: 20px;
+}
+
+/* ── Classroom sync panel ───────────────────────────────── */
+.cs-classroom-panel {
+  border: 1px solid #c5d5ea;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.cs-classroom-head {
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #f0f4fb 0%, #e8eef8 100%);
+  border-bottom: 1px solid #c5d5ea;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cs-classroom-title { font-size: 13px; font-weight: 700; color: #0d1117; flex: 1; }
+.cs-classroom-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+
+.cs-classroom-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid #8fa3bd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #0d1117;
+  background: #fff;
+  font-family: inherit;
+}
+
+.cs-classroom-select:focus { outline: none; border-color: #2b5da8; }
+
+.cs-classroom-sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, #2b5da8 0%, #1e4a8a 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s cubic-bezier(.34,1.2,.64,1);
+}
+
+.cs-classroom-sync-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(43,93,168,.3); }
+.cs-classroom-sync-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* ── User auth chip in hub sidebar ─────────────────────── */
+.cs-auth-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.2);
+  cursor: pointer;
+  transition: background 0.14s;
+  text-decoration: none;
+}
+
+.cs-auth-chip:hover { background: rgba(255,255,255,.22); }
+
+.cs-auth-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.cs-auth-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.cs-auth-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+
+.cs-auth-domain {
+  font-size: 10px;
+  color: rgba(255,255,255,.6);
+  white-space: nowrap;
+}
+
+/* Sign-in prompt (small, in sidebar) */
+.cs-auth-signin-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 99px;
+  border: 1px solid rgba(255,255,255,.3);
+  color: rgba(255,255,255,.8);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(255,255,255,.1);
+  transition: all 0.14s;
+}
+
+.cs-auth-signin-pill:hover { background: rgba(255,255,255,.2); color: #fff; }
+
+/* ── Curriculum panel trigger button ────────────────────── */
+#cs-cur-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(255,255,255,.3);
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.14s;
+  white-space: nowrap;
+}
+
+#cs-cur-btn:hover { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.5); }
+
+/* ── Loading / empty states ─────────────────────────────── */
+.cs-panel-loading {
+  padding: 40px 20px;
+  text-align: center;
+  color: #6b7591;
+  font-size: 14px;
+}
+
+.cs-panel-loading-spin {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e0e9f8;
+  border-top-color: #2b5da8;
+  border-radius: 50%;
+  animation: cs-spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+
+@keyframes cs-spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+  #cs-cur-panel {
+    width: 100vw;
+    right: -100vw;
+  }
+  .cs-video-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Print safety ───────────────────────────────────────── */
+@media print {
+  #cs-cur-panel { position: static; width: 100%; box-shadow: none; }
+  .cs-cur-tabs, .cs-cur-close, #cs-cur-btn, .cs-cur-head { display: none; }
+}

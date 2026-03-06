@@ -1,0 +1,415 @@
+{
+  "version": "cs.lesson-briefs.v1",
+  "generatedAt": "2026-03-06",
+  "recentLimit": 6,
+  "fishtank": {
+    "domains": {
+      "narrative": {
+        "launch": {
+          "phaseLabel": "Launch the unit",
+          "summaryTemplate": "Students are entering {unitTitle} and building background around {anchor}. Support works best when you keep students close to characters, setting, and the first big problem in the text.",
+          "objectiveTemplate": "Students launch {unitTitle} by building background and noticing how {skill1} and {skill2} first appear in the text.",
+          "coreConceptTemplate": "Early narrative lessons help students name who matters, what the character wants, and which moments start the conflict that the unit keeps returning to.",
+          "workedExampleTemplate": "Use {textReference} to model one short turn-and-talk: What does the character say or do here, and what does that show us already?"
+        },
+        "build": {
+          "phaseLabel": "Build understanding",
+          "summaryTemplate": "Students are now doing the heavy reading work in {unitTitle}. The main support job is helping them connect evidence to {skill1}, {skill2}, and the larger theme of {anchor}.",
+          "objectiveTemplate": "Students deepen understanding of {unitTitle} by tracing {skill1} and {skill2} across key moments in the text.",
+          "coreConceptTemplate": "Middle lessons in a narrative unit usually move from retelling into interpretation: students explain how actions, language, or structure build meaning.",
+          "workedExampleTemplate": "Model a quick evidence move with {textReference}: point to one line, paraphrase it, then finish the sentence This matters because..."
+        },
+        "synthesize": {
+          "phaseLabel": "Synthesize and transfer",
+          "summaryTemplate": "Students are near the end of {unitTitle}. They are likely pulling ideas together into discussion or writing, so support should help them explain a claim clearly and back it with evidence.",
+          "objectiveTemplate": "Students synthesize learning from {unitTitle} and use evidence to explain {skill1}, {skill2}, and the larger ideas tied to {anchor}.",
+          "coreConceptTemplate": "Late narrative lessons ask students to move from noticing details to explaining a bigger idea such as theme, character change, or author message.",
+          "workedExampleTemplate": "Prompt with {textReference}: What changed from the beginning to now, and which piece of evidence best proves that change?"
+        },
+        "likelyConfusions": [
+          "Retelling the scene instead of explaining why it matters.",
+          "Naming a character trait without pointing to evidence.",
+          "Mixing up topic, theme, and main event."
+        ],
+        "supportMoves": [
+          "Keep students in one short passage before widening to the whole text.",
+          "Ask what changed, what stayed the same, and what that tells us.",
+          "Use sentence stems that force evidence: I think ___ because the text shows ___."
+        ],
+        "lookFors": [
+          "Student points to a concrete line or moment in the text.",
+          "Student explains why the evidence matters, not just what happened.",
+          "Student uses vocabulary from the lesson objective."
+        ],
+        "prompts": [
+          "What does this moment show us about the character?",
+          "Which sentence is the best evidence for your idea?",
+          "How is this scene connected to the bigger message?"
+        ]
+      },
+      "informational": {
+        "launch": {
+          "phaseLabel": "Launch the unit",
+          "summaryTemplate": "Students are entering {unitTitle} and building background knowledge about {anchor}. Support should help them hold onto the main topic, new vocabulary, and how the text is organized.",
+          "objectiveTemplate": "Students launch {unitTitle} by building background knowledge and noticing how {skill1} and {skill2} organize the information.",
+          "coreConceptTemplate": "Early informational lessons are about schema and structure: students need to know what the text is mostly about and how key details are grouped.",
+          "workedExampleTemplate": "Use {textReference} to model a think-aloud: This section is mostly teaching me about ___, and these details fit because ___."
+        },
+        "build": {
+          "phaseLabel": "Build understanding",
+          "summaryTemplate": "Students are in the core knowledge-building stretch of {unitTitle}. The main support move is helping them connect details, vocabulary, and text features back to {anchor}.",
+          "objectiveTemplate": "Students deepen understanding of {unitTitle} by using {skill1} and {skill2} to explain important ideas in the text.",
+          "coreConceptTemplate": "Middle informational lessons usually require students to sort important details, explain relationships, and use academic vocabulary more precisely.",
+          "workedExampleTemplate": "Model one short explanation with {textReference}: The author includes this detail to help us understand ___."
+        },
+        "synthesize": {
+          "phaseLabel": "Synthesize and transfer",
+          "summaryTemplate": "Students are close to a writing or synthesis task in {unitTitle}. Support should help them combine details into a clear explanation, claim, or comparison.",
+          "objectiveTemplate": "Students synthesize learning from {unitTitle} and use {skill1} and {skill2} to explain the most important ideas about {anchor}.",
+          "coreConceptTemplate": "Late informational lessons shift from gathering facts to deciding which facts matter most and how they support a larger explanation or argument.",
+          "workedExampleTemplate": "Prompt with {textReference}: Which two details belong together, and what do they teach us when we read them side by side?"
+        },
+        "likelyConfusions": [
+          "Treating every detail as equally important.",
+          "Using vocabulary words without understanding them in context.",
+          "Reading captions, headings, or diagrams separately from the main idea."
+        ],
+        "supportMoves": [
+          "Restate the main topic before asking students about details.",
+          "Have students match one text feature to one idea it clarifies.",
+          "Ask students to say the idea in plain language before writing it academically."
+        ],
+        "lookFors": [
+          "Student can state the main topic or claim in one sentence.",
+          "Student uses a detail to support an explanation, not as a disconnected fact.",
+          "Student uses domain vocabulary accurately enough to show understanding."
+        ],
+        "prompts": [
+          "What is this section mostly teaching us?",
+          "Which detail matters most here and why?",
+          "How does this text feature help the reader understand the idea?"
+        ]
+      },
+      "argument": {
+        "launch": {
+          "phaseLabel": "Launch the unit",
+          "summaryTemplate": "Students are entering {unitTitle} and building background around {anchor}. Support should help them notice the issue, possible positions, and what counts as a strong reason.",
+          "objectiveTemplate": "Students launch {unitTitle} by building background knowledge and noticing how {skill1} and {skill2} matter to a strong argument.",
+          "coreConceptTemplate": "Early argument lessons help students separate the topic from the claim and begin collecting reasons and evidence.",
+          "workedExampleTemplate": "Use {textReference} to model a quick claim frame: I think ___ because one important reason is ___."
+        },
+        "build": {
+          "phaseLabel": "Build understanding",
+          "summaryTemplate": "Students are in the middle of the argument work for {unitTitle}. The main support move is connecting claims, reasons, and evidence without letting students drift back into summary.",
+          "objectiveTemplate": "Students deepen argument work in {unitTitle} by using {skill1} and {skill2} to connect a claim to strong reasons and evidence.",
+          "coreConceptTemplate": "Middle argument lessons usually ask students to evaluate evidence, weigh reasons, and explain why one idea is more convincing than another.",
+          "workedExampleTemplate": "Model with {textReference}: This detail is evidence for the claim because it proves ___."
+        },
+        "synthesize": {
+          "phaseLabel": "Synthesize and transfer",
+          "summaryTemplate": "Students are close to a discussion, essay, or final product in {unitTitle}. Support should help them state a clear claim, choose the strongest evidence, and explain it directly.",
+          "objectiveTemplate": "Students synthesize learning from {unitTitle} and use {skill1} and {skill2} to make and support a clear claim about {anchor}.",
+          "coreConceptTemplate": "Late argument lessons ask students to move from collecting ideas to defending one position with coherence and precision.",
+          "workedExampleTemplate": "Prompt with {textReference}: Which piece of evidence is strongest, and how would you explain its importance in one sentence?"
+        },
+        "likelyConfusions": [
+          "Giving an opinion without a reason.",
+          "Listing evidence without explaining how it supports the claim.",
+          "Confusing evidence with an example that is not actually proving the point."
+        ],
+        "supportMoves": [
+          "Have students say the claim aloud before writing anything else.",
+          "Use a claim - reason - evidence oral rehearsal before independent work.",
+          "Push students to finish the sentence This evidence matters because..."
+        ],
+        "lookFors": [
+          "Student can state a clear position.",
+          "Student picks evidence that actually matches the claim.",
+          "Student explains evidence instead of dropping in a quote or fact."
+        ],
+        "prompts": [
+          "What is the claim in one clear sentence?",
+          "Which reason is strongest here?",
+          "How does this evidence prove the point?"
+        ]
+      }
+    }
+  },
+  "elEducation": {
+    "grades": {
+      "6": {
+        "modules": [
+          {
+            "id": "g6m1",
+            "title": "Grade 6 Module 1: Greek Mythology",
+            "units": [
+              {
+                "id": "g6m1u1",
+                "title": "Unit 1: Build Background Knowledge - Greek Mythology",
+                "summary": "Students build background knowledge about Greek mythology while launching The Lightning Thief and tracking how myths explain power, conflict, and human behavior.",
+                "mainConcept": "Myths are stories that carry beliefs, values, and explanations about the world. Students need help connecting myth elements to character and conflict in the anchor text.",
+                "workedExample": "Use one short scene from The Lightning Thief to ask: What does Percy do, and how does that connect to a Greek myth idea such as power, fate, or conflict?",
+                "likelyConfusions": [
+                  "Treating mythology as random fantasy instead of a belief system with patterns.",
+                  "Retelling the chapter without connecting it to a myth idea.",
+                  "Missing how a god, symbol, or event shapes character choices."
+                ],
+                "supportMoves": [
+                  "Anchor discussion in one myth element at a time: god, trait, symbol, conflict.",
+                  "Use a quick compare prompt: This event in the novel is similar to myth ___ because ___.",
+                  "Pre-teach two or three mythology terms before discussion."
+                ],
+                "lookFors": [
+                  "Student can name a myth element and connect it to the text.",
+                  "Student moves beyond summary into explanation.",
+                  "Student uses content vocabulary accurately enough to show understanding."
+                ],
+                "prompts": [
+                  "What myth idea is showing up in this part of the text?",
+                  "Which detail from the chapter proves that connection?",
+                  "How does this moment help us understand Percy more deeply?"
+                ]
+              },
+              {
+                "id": "g6m1u2",
+                "title": "Unit 2: Write to Inform - Compare and Contrast Text and Film",
+                "summary": "Students compare and contrast how The Lightning Thief is presented in print and on screen, then explain which differences matter most.",
+                "mainConcept": "Strong compare-contrast work does more than list differences. Students explain how a change in character, event, or tone shapes meaning for the audience.",
+                "workedExample": "Model one comparison sentence: In the novel Percy seems ___, but in the film he seems ___, which changes how the audience sees ___.",
+                "likelyConfusions": [
+                  "Listing differences without explaining why they matter.",
+                  "Choosing tiny details instead of meaningful changes.",
+                  "Writing two summaries instead of a comparison."
+                ],
+                "supportMoves": [
+                  "Keep students on one category at a time: character, setting, event, tone.",
+                  "Use a because sentence after every comparison.",
+                  "Color-code novel evidence and film evidence before writing."
+                ],
+                "lookFors": [
+                  "Student names both versions clearly.",
+                  "Student explains significance, not just difference.",
+                  "Student uses evidence from the text and the film."
+                ],
+                "prompts": [
+                  "What changed from book to film?",
+                  "Why does that change matter to the audience?",
+                  "Which version develops the idea more strongly and how do you know?"
+                ]
+              },
+              {
+                "id": "g6m1u3",
+                "title": "Unit 3: Research to Create a New Character and Write a Narrative",
+                "summary": "Students research a Greek god, build a new character inspired by that mythological figure, and write a narrative scene that shows the character in action.",
+                "mainConcept": "Narrative writing in this unit depends on transfer: students use research details from mythology to build believable traits, motivations, and conflicts in an original character.",
+                "workedExample": "Model a quick planning move: If the character is inspired by Athena, what trait, conflict, and decision in the scene would show wisdom under pressure?",
+                "likelyConfusions": [
+                  "Copying plot from the anchor text instead of creating a new character and situation.",
+                  "Adding myth details decoratively instead of using them to shape the character.",
+                  "Describing a trait without showing it through action."
+                ],
+                "supportMoves": [
+                  "Keep one planning row visible: trait, conflict, action, evidence from research.",
+                  "Ask students what the character does when the pressure rises.",
+                  "Push showing over telling in one short paragraph before drafting longer."
+                ],
+                "lookFors": [
+                  "Student uses myth research to drive choices in the story.",
+                  "Character traits are shown through action and dialogue.",
+                  "The narrative conflict fits the chosen mythological inspiration."
+                ],
+                "prompts": [
+                  "Which research detail shaped this character choice?",
+                  "How can you show the trait instead of naming it?",
+                  "What is the key decision in this scene?"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "7": {
+        "modules": [
+          {
+            "id": "g7m1",
+            "title": "Grade 7 Module 1: The Lost Children of Sudan",
+            "units": [
+              {
+                "id": "g7m1u1",
+                "title": "Unit 1: Build Background Knowledge - The Lost Boys of Sudan",
+                "summary": "Students build historical background for A Long Walk to Water and connect survival, conflict, and perspective to the experiences of the Lost Boys of Sudan.",
+                "mainConcept": "Students need to connect history to narrative. The goal is not only to know the facts, but to use them to better understand what the characters face and why those experiences matter.",
+                "workedExample": "Pause after one challenging event and ask: What does the historical context help us understand about this choice or danger?",
+                "likelyConfusions": [
+                  "Separating history from the story instead of using one to interpret the other.",
+                  "Summarizing hardship without naming cause, effect, or perspective.",
+                  "Losing track of whose point of view is centered."
+                ],
+                "supportMoves": [
+                  "Pair one historical fact with one narrative moment.",
+                  "Use cause and effect talk before written response.",
+                  "Ask students whose perspective we are following and what that changes."
+                ],
+                "lookFors": [
+                  "Student connects background knowledge to the text.",
+                  "Student explains impact, not just event sequence.",
+                  "Student can name perspective clearly."
+                ],
+                "prompts": [
+                  "What background knowledge matters most here?",
+                  "How does that context change how we understand this event?",
+                  "Whose perspective is centered in this section?"
+                ]
+              },
+              {
+                "id": "g7m1u2",
+                "title": "Unit 2: Write to Inform - The Lost Children of South Sudan",
+                "summary": "Students shift into informational writing and explain the experiences of the Lost Children of South Sudan using evidence from texts and notes.",
+                "mainConcept": "Strong informational writing in this unit depends on organizing ideas clearly and explaining evidence, not just collecting it.",
+                "workedExample": "Model one paragraph frame: The text shows ___ through the example of ___. This matters because ___.",
+                "likelyConfusions": [
+                  "Collecting evidence without organizing it under a main idea.",
+                  "Using quotes or facts without explanation.",
+                  "Writing emotionally without staying anchored in the evidence."
+                ],
+                "supportMoves": [
+                  "Help students name the subtopic before drafting details.",
+                  "Use one note-catcher section at a time.",
+                  "Have students rehearse an explanation orally before writing."
+                ],
+                "lookFors": [
+                  "Student has a clear subtopic or focus sentence.",
+                  "Evidence is explained directly.",
+                  "Details stay aligned to the paragraph idea."
+                ],
+                "prompts": [
+                  "What is this paragraph mostly teaching?",
+                  "Which evidence best fits that idea?",
+                  "How can you explain the evidence in your own words?"
+                ]
+              },
+              {
+                "id": "g7m1u3",
+                "title": "Unit 3: Write to Raise Awareness - A Long Walk to Water",
+                "summary": "Students use reading, research, and discussion to raise awareness about the issues in A Long Walk to Water and communicate why those issues matter today.",
+                "mainConcept": "Students move from understanding a text to communicating urgency. The support move is helping them connect evidence, audience, and purpose clearly.",
+                "workedExample": "Prompt students to state the issue in one sentence, choose one piece of evidence, and explain why a reader should care now.",
+                "likelyConfusions": [
+                  "Using emotion without grounding it in evidence.",
+                  "Explaining the issue but not the audience or purpose.",
+                  "Listing facts instead of building a clear message."
+                ],
+                "supportMoves": [
+                  "Have students name audience, purpose, and message before drafting.",
+                  "Keep one strongest piece of evidence visible during planning.",
+                  "Use a call-to-action sentence frame."
+                ],
+                "lookFors": [
+                  "Student communicates a clear message.",
+                  "Evidence supports awareness, not just information dumping.",
+                  "Audience and purpose are visible in the final product."
+                ],
+                "prompts": [
+                  "What issue are you raising awareness about?",
+                  "What should the audience understand after reading or listening?",
+                  "Which evidence makes that message strongest?"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "8": {
+        "modules": [
+          {
+            "id": "g8m1",
+            "title": "Grade 8 Module 1: Folklore of Latin America",
+            "units": [
+              {
+                "id": "g8m1u1",
+                "title": "Unit 1: Read and Analyze Summer of the Mariposas",
+                "summary": "Students read and analyze Summer of the Mariposas while tracking folklore, character perspective, and how the text draws on Latin American storytelling traditions.",
+                "mainConcept": "Students need help connecting literary analysis to folklore features. The goal is to show how a character journey and a cultural story tradition work together.",
+                "workedExample": "Ask students to identify one event in the novel that feels folkloric and explain which detail signals that tradition.",
+                "likelyConfusions": [
+                  "Treating folklore as a setting detail rather than a structural influence.",
+                  "Retelling events without analyzing their purpose.",
+                  "Missing how culture shapes the story's choices and symbols."
+                ],
+                "supportMoves": [
+                  "Anchor one folklore feature at a time: quest, symbol, moral, supernatural help.",
+                  "Use compare language: This scene echoes folklore because ___.",
+                  "Pair theme talk with one concrete event from the text."
+                ],
+                "lookFors": [
+                  "Student identifies a folklore feature accurately.",
+                  "Student links that feature to meaning in the novel.",
+                  "Student uses text evidence instead of broad summary."
+                ],
+                "prompts": [
+                  "Which folklore feature is strongest in this scene?",
+                  "How does that feature shape the meaning of the chapter?",
+                  "What evidence shows the cultural influence clearly?"
+                ]
+              },
+              {
+                "id": "g8m1u2",
+                "title": "Unit 2: Theme and Summary in Summer of the Mariposas - Narrative Writing",
+                "summary": "Students trace theme and summary work in Summer of the Mariposas and use that analysis to strengthen narrative thinking and writing.",
+                "mainConcept": "Students need to distinguish summary from theme. A good support move is to help them move from What happened to What idea does the text develop through what happened?",
+                "workedExample": "Model the shift: The sisters cross the river is summary; the scene develops courage and responsibility is theme work.",
+                "likelyConfusions": [
+                  "Writing plot summary when asked for theme.",
+                  "Naming a broad topic instead of a message or insight.",
+                  "Explaining theme without evidence from a key scene."
+                ],
+                "supportMoves": [
+                  "Keep summary to one sentence before asking for interpretation.",
+                  "Use theme stems such as The text suggests that ___.",
+                  "Ask for one scene that best proves the theme."
+                ],
+                "lookFors": [
+                  "Student can separate event from message.",
+                  "Student supports a theme statement with text evidence.",
+                  "Student can explain how a scene develops the idea."
+                ],
+                "prompts": [
+                  "What happened in one sentence?",
+                  "What bigger idea does that event help develop?",
+                  "Which scene proves your theme best?"
+                ]
+              },
+              {
+                "id": "g8m1u3",
+                "title": "Unit 3: Compare and Contrast Essay - Summer of the Mariposas and Latin American Folklore",
+                "summary": "Students compare Summer of the Mariposas with Latin American folklore and build an essay explaining meaningful similarities and differences.",
+                "mainConcept": "Comparison only matters when students explain significance. The key support move is helping them connect a similarity or difference to theme, structure, or cultural meaning.",
+                "workedExample": "Model one sentence pair: Both texts use ___, but in Summer of the Mariposas it develops ___ while in the folklore text it emphasizes ___.",
+                "likelyConfusions": [
+                  "Listing similarities and differences without analysis.",
+                  "Choosing weak comparisons that do not affect meaning.",
+                  "Writing about one text much more than the other."
+                ],
+                "supportMoves": [
+                  "Use one comparison category at a time: character, structure, symbol, lesson.",
+                  "Require a significance sentence after every comparison.",
+                  "Check that both texts are represented in each paragraph."
+                ],
+                "lookFors": [
+                  "Student names both texts clearly.",
+                  "Comparison is tied to meaning, not just surface detail.",
+                  "Evidence from both texts appears in balanced ways."
+                ],
+                "prompts": [
+                  "What is one meaningful similarity?",
+                  "Why does that similarity matter?",
+                  "How does each text use that element differently?"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

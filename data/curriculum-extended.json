@@ -1,0 +1,222 @@
+{
+  "version": "cs.curriculum-extended.v1",
+  "generatedAt": "2026-03-05",
+  "note": "Extended curriculum database for Cornerstone MTSS Command Hub curriculum panel. Includes all 54 Fishtank ELA units K-5 plus 8 curriculum programs.",
+
+  "curricula": [
+    {
+      "id": "fishtank-ela",
+      "name": "Fishtank ELA",
+      "publisher": "Fishtank Learning",
+      "subjects": ["ELA"],
+      "grades": "K–5",
+      "type": "core",
+      "access": "open",
+      "url": "https://www.fishtanklearning.org/curriculum/ela/",
+      "summary": "Knowledge-building ELA curriculum organized around rich anchor texts and disciplinary themes. Each unit builds background knowledge while teaching literary analysis, vocabulary, and writing.",
+      "quickTips": [
+        "Pre-teach key vocabulary from the anchor text before reading aloud",
+        "Use the Fishtank lesson materials as the anchor — supplement with decodable texts for small groups",
+        "The 'Knowledge Strand' unit themes connect across grades — reference prior units when building schema",
+        "Lesson objectives are visible on every lesson page — use them to write IEP goals"
+      ],
+      "sasContext": "Core ELA program K–5 at Singapore American School (new this year). All students receive Fishtank as their primary literacy block.",
+      "logoColor": "#1a56db"
+    },
+    {
+      "id": "illustrative-math",
+      "name": "Illustrative Mathematics (IM) K–5",
+      "publisher": "Kendall Hunt / Illustrative Mathematics",
+      "subjects": ["Math"],
+      "grades": "K–5",
+      "type": "core",
+      "access": "open",
+      "url": "https://im.kendallhunt.com/K5/",
+      "summary": "Problem-based math curriculum built around coherent progressions. Each lesson opens with a warm-up (number talk or estimation), then an activity, synthesis, and cool-down.",
+      "quickTips": [
+        "The 'Five Practices' launch (monitor, select, sequence, connect) works for Tier 2 small groups",
+        "Use the Unit Overview to see the learning arc before diving into lessons",
+        "Cool-downs are mini-exit tickets — use them as formative data for next-day grouping",
+        "Warm-up number talks in IM are Pam Harris-aligned — extend them in intervention"
+      ],
+      "sasContext": "Core math program K–5 at SAS. Deeply aligned with IM K–5 scope and sequence.",
+      "logoColor": "#047857"
+    },
+    {
+      "id": "ufli",
+      "name": "UFLI Foundations",
+      "publisher": "University of Florida Literacy Institute",
+      "subjects": ["ELA"],
+      "grades": "K–2",
+      "type": "supplement",
+      "access": "open",
+      "url": "https://ufli.education.ufl.edu/foundations/",
+      "summary": "Systematic, explicit phonics supplement for K–2. 141 lesson sequence covers all major phonics patterns from simple CVC to complex multisyllabic words. Free teacher manual and student decodables.",
+      "quickTips": [
+        "Use the scope and sequence to find exactly where a student is — don't start from Lesson 1 for older students",
+        "Each lesson has a review section — spend 5 minutes here before introducing new content",
+        "The 'word work' component (sound boxes, magnetic letters) is ideal for Tier 2 groups",
+        "Student decodable readers are free to download and print — high-frequency words are embedded"
+      ],
+      "sasContext": "Primary Tier 2/3 phonics intervention for K–2 students below grade level in decoding.",
+      "logoColor": "#7c3aed"
+    },
+    {
+      "id": "fundations",
+      "name": "Wilson Fundations",
+      "publisher": "Wilson Language Training",
+      "subjects": ["ELA"],
+      "grades": "K–3",
+      "type": "supplement",
+      "access": "licensed",
+      "url": "https://www.wilsonlanguage.com/programs/fundations/",
+      "summary": "Structured literacy phonics program for K–3. Teaches phonemic awareness, phonics, spelling, and handwriting in a multi-sensory approach. Uses the Wilson Reading System's Fundations methodology.",
+      "quickTips": [
+        "The 'tapping' routine (phoneme segmentation) is ideal for Tier 3 — practice 3-5 minutes daily",
+        "Echo/mirror technique: teacher models, students repeat with the same materials",
+        "Fundations sound cards are color-coded — use them for rapid drill in intervention",
+        "Levels K, 1, 2 have different scope — confirm which level matches student's phonics placement"
+      ],
+      "sasContext": "Used as Tier 2 supplement for Grades 1–3 students with persistent decoding difficulties.",
+      "logoColor": "#dc2626"
+    },
+    {
+      "id": "just-words",
+      "name": "Wilson Just Words",
+      "publisher": "Wilson Language Training",
+      "subjects": ["ELA"],
+      "grades": "4–8",
+      "type": "intervention",
+      "access": "licensed",
+      "url": "https://www.wilsonlanguage.com/programs/just-words/",
+      "summary": "Tier 2/3 decoding and spelling intervention for Grades 4–8. Accelerated Fundations for older students — covers multisyllabic word reading, advanced phonics patterns, and morphology in 30-minute sessions.",
+      "quickTips": [
+        "Just Words works best in groups of 2–6 students at similar phonics levels",
+        "The 'Wordlist' component (daily review of 10 words) builds automaticity quickly",
+        "Use with students who plateau in Fundations Level 2 — Just Words accelerates pace",
+        "Monthly progress monitoring: have students read the Unit word list (timed) and track WCPM"
+      ],
+      "sasContext": "Primary Tier 2/3 intervention for Grades 4–5 students with decoding deficits not resolved at lower grades.",
+      "logoColor": "#b45309"
+    },
+    {
+      "id": "bridges-math",
+      "name": "Bridges in Mathematics",
+      "publisher": "Math Learning Center",
+      "subjects": ["Math"],
+      "grades": "K–5",
+      "type": "supplement",
+      "access": "licensed",
+      "url": "https://www.mathlearningcenter.org/bridges",
+      "summary": "Blended math curriculum with visual models (number lines, area models, ratio tables) and work places (math centers). Strong emphasis on number sense, problem-solving, and mathematical discourse.",
+      "quickTips": [
+        "Work Places (math centers) are self-differentiating — struggling students often need explicit pre-teaching before independent work",
+        "The 'Problems & Investigations' strand builds conceptual understanding before procedures",
+        "Bridges Assessment Guide includes 'Intervention Suggestions' for each benchmark — use these directly",
+        "Daily Number Corner is a 10-minute warm-up that previews upcoming concepts — great for Tier 2 preview"
+      ],
+      "sasContext": "Sometimes used as supplemental resource alongside IM K–5 for visual model support.",
+      "logoColor": "#0284c7"
+    },
+    {
+      "id": "haggerty",
+      "name": "Haggerty Phonemic Awareness",
+      "publisher": "Phyllis Haggerty",
+      "subjects": ["ELA"],
+      "grades": "K–2",
+      "type": "supplement",
+      "access": "licensed",
+      "url": "https://www.schoolspecialty.com/haggerty",
+      "summary": "Scripted phonemic awareness curriculum for K–2. Book 1 covers segmenting/blending, Book 2 covers phoneme manipulation. 10-15 minute lessons designed for whole-class or small group delivery.",
+      "quickTips": [
+        "Haggerty is oral only — no letters/print. Pure PA. Use it before or alongside phonics instruction",
+        "Book 1 Lesson sequence: blending syllables → onset-rime → phoneme blending → phoneme segmentation",
+        "Use with Elkonin boxes (physical or drawn) to reinforce segmentation",
+        "Progress monitoring: DIBELS Phoneme Segmentation Fluency (PSF) — aim for 35+ correct by end of K"
+      ],
+      "sasContext": "Used in K–1 Tier 2 groups for students whose PA screening falls below benchmark.",
+      "logoColor": "#0891b2"
+    },
+    {
+      "id": "read-naturally",
+      "name": "Read Naturally",
+      "publisher": "Read Naturally Inc.",
+      "subjects": ["ELA"],
+      "grades": "1–8",
+      "type": "intervention",
+      "access": "licensed",
+      "url": "https://www.readnaturally.com/",
+      "summary": "Research-validated fluency intervention using the 'Read Naturally Strategy': read along with audio model, practice repeatedly, then read cold with one-minute timing. Passages are leveled from PP to 8+.",
+      "quickTips": [
+        "The cold read timing is critical diagnostic data — keep records for every passage",
+        "Hot read goal should be ~10-15 WCPM above student's benchmark band",
+        "Students self-graph their progress — this builds motivation and self-monitoring skills",
+        "STARS (Read Naturally computer program) collects data automatically — export monthly for IEP progress"
+      ],
+      "sasContext": "Used for fluency-focused Tier 2/3 intervention for students below grade-level WCPM norms (Hasbrouck & Tindal 2017).",
+      "logoColor": "#059669"
+    }
+  ],
+
+  "fishtankUnits": [
+    { "id": "K-1",  "grade": "K",  "seq": 1,  "gradeSlug": "kindergarten", "slug": "welcome-to-school",              "title": "Welcome to School",               "anchor": "Community & Belonging",     "domain": "narrative",      "lessonCount": 17, "keySkills": ["listening comprehension","story elements","retelling"] },
+    { "id": "K-2",  "grade": "K",  "seq": 2,  "gradeSlug": "kindergarten", "slug": "noticing-patterns-in-stories",   "title": "Noticing Patterns in Stories",    "anchor": "Literary Analysis",         "domain": "narrative",      "lessonCount": 15, "keySkills": ["story structure","pattern recognition","vocabulary"] },
+    { "id": "K-3",  "grade": "K",  "seq": 3,  "gradeSlug": "kindergarten", "slug": "celebrating-fall",               "title": "Celebrating Fall",                "anchor": "Science / Seasons",         "domain": "informational",  "lessonCount": 14, "keySkills": ["main topic","key details","informational text features"] },
+    { "id": "K-4",  "grade": "K",  "seq": 4,  "gradeSlug": "kindergarten", "slug": "falling-in-love-with-authors",   "title": "Falling in Love with Authors",   "anchor": "Author Study",              "domain": "narrative",      "lessonCount": 15, "keySkills": ["author's craft","character","compare-contrast"] },
+    { "id": "K-5",  "grade": "K",  "seq": 5,  "gradeSlug": "kindergarten", "slug": "winter-wonderland",              "title": "Winter Wonderland",               "anchor": "Seasons / Informational",   "domain": "informational",  "lessonCount": 12, "keySkills": ["vocabulary","asking questions","main idea"] },
+    { "id": "K-6",  "grade": "K",  "seq": 6,  "gradeSlug": "kindergarten", "slug": "what-is-justice",                "title": "What Is Justice?",               "anchor": "Civics / Social Studies",   "domain": "informational",  "lessonCount": 16, "keySkills": ["opinion","fairness","evidence from text"] },
+    { "id": "K-7",  "grade": "K",  "seq": 7,  "gradeSlug": "kindergarten", "slug": "exploring-life-cycles",          "title": "Exploring Life Cycles",          "anchor": "Science / Biology",         "domain": "informational",  "lessonCount": 18, "keySkills": ["sequence","scientific vocabulary","text and illustration"] },
+    { "id": "K-8",  "grade": "K",  "seq": 8,  "gradeSlug": "kindergarten", "slug": "reduce-reuse-recycle",           "title": "Reduce, Reuse, Recycle",         "anchor": "Environment / Argument",    "domain": "argument",       "lessonCount": 14, "keySkills": ["opinion writing","reasons","environmental awareness"] },
+
+    { "id": "1-1",  "grade": "1",  "seq": 1,  "gradeSlug": "1st-grade",    "slug": "being-a-good-friend",            "title": "Being a Good Friend",            "anchor": "Social Skills / Narrative", "domain": "narrative",      "lessonCount": 20, "keySkills": ["character traits","story structure","narrative writing"] },
+    { "id": "1-2",  "grade": "1",  "seq": 2,  "gradeSlug": "1st-grade",    "slug": "the-seven-continents",           "title": "The Seven Continents",           "anchor": "Social Studies",            "domain": "informational",  "lessonCount": 18, "keySkills": ["geography vocabulary","compare-contrast","main idea"] },
+    { "id": "1-3",  "grade": "1",  "seq": 3,  "gradeSlug": "1st-grade",    "slug": "folktales-around-the-world",     "title": "Folktales Around the World",     "anchor": "Literary Analysis",         "domain": "narrative",      "lessonCount": 22, "keySkills": ["theme","character lessons","retelling","cultural awareness"] },
+    { "id": "1-4",  "grade": "1",  "seq": 4,  "gradeSlug": "1st-grade",    "slug": "amazing-animals",                "title": "Amazing Animals",                "anchor": "Science / Informational",   "domain": "informational",  "lessonCount": 20, "keySkills": ["text features","domain vocabulary","compare-contrast"] },
+    { "id": "1-5",  "grade": "1",  "seq": 5,  "gradeSlug": "1st-grade",    "slug": "love-makes-a-family",            "title": "Love Makes a Family",            "anchor": "Community / Narrative",     "domain": "narrative",      "lessonCount": 16, "keySkills": ["family structures","character relationships","personal narrative"] },
+    { "id": "1-6",  "grade": "1",  "seq": 6,  "gradeSlug": "1st-grade",    "slug": "inspiring-artists-and-musicians","title": "Inspiring Artists and Musicians","anchor": "Arts / Biography",          "domain": "informational",  "lessonCount": 18, "keySkills": ["biography","chronological order","research writing"] },
+    { "id": "1-7",  "grade": "1",  "seq": 7,  "gradeSlug": "1st-grade",    "slug": "making-old-stories-new",         "title": "Making Old Stories New",         "anchor": "Narrative / Retelling",     "domain": "narrative",      "lessonCount": 20, "keySkills": ["fractured fairytales","author's purpose","story adaptation"] },
+    { "id": "1-8",  "grade": "1",  "seq": 8,  "gradeSlug": "1st-grade",    "slug": "movements-for-equality",         "title": "Movements for Equality",         "anchor": "Civil Rights / History",    "domain": "informational",  "lessonCount": 18, "keySkills": ["cause and effect","historical figures","opinion writing"] },
+    { "id": "1-9",  "grade": "1",  "seq": 9,  "gradeSlug": "1st-grade",    "slug": "the-power-of-reading",           "title": "The Power of Reading",           "anchor": "Literacy / Narrative",      "domain": "narrative",      "lessonCount": 16, "keySkills": ["love of reading","book recommendations","reading response"] },
+    { "id": "1-10", "grade": "1",  "seq": 10, "gradeSlug": "1st-grade",    "slug": "ancient-egypt",                  "title": "Ancient Egypt",                  "anchor": "History / Informational",   "domain": "informational",  "lessonCount": 20, "keySkills": ["ancient civilizations","text structure","domain vocabulary"] },
+
+    { "id": "2-1",  "grade": "2",  "seq": 1,  "gradeSlug": "2nd-grade",    "slug": "exploring-habitats",             "title": "Exploring Habitats",             "anchor": "Science / Ecosystems",      "domain": "informational",  "lessonCount": 22, "keySkills": ["text features","compare-contrast","research writing"] },
+    { "id": "2-2",  "grade": "2",  "seq": 2,  "gradeSlug": "2nd-grade",    "slug": "awesome-insects",                "title": "Awesome Insects",                "anchor": "Science / Informational",   "domain": "informational",  "lessonCount": 20, "keySkills": ["scientific vocabulary","main idea & details","expository writing"] },
+    { "id": "2-3",  "grade": "2",  "seq": 3,  "gradeSlug": "2nd-grade",    "slug": "stories-of-immigration",         "title": "Stories of Immigration",         "anchor": "Social Studies / Narrative","domain": "narrative",      "lessonCount": 24, "keySkills": ["character motivation","perspective","personal narrative"] },
+    { "id": "2-4",  "grade": "2",  "seq": 4,  "gradeSlug": "2nd-grade",    "slug": "people-who-changed-the-world",   "title": "People Who Changed the World",   "anchor": "Biography / History",       "domain": "informational",  "lessonCount": 20, "keySkills": ["biography","chronological order","main idea"] },
+    { "id": "2-5",  "grade": "2",  "seq": 5,  "gradeSlug": "2nd-grade",    "slug": "inside-the-human-body",          "title": "Inside the Human Body",          "anchor": "Science / Health",          "domain": "informational",  "lessonCount": 22, "keySkills": ["body systems","cause-effect","research writing"] },
+    { "id": "2-6",  "grade": "2",  "seq": 6,  "gradeSlug": "2nd-grade",    "slug": "tall-tales",                     "title": "Tall Tales",                     "anchor": "Folklore / Narrative",      "domain": "narrative",      "lessonCount": 18, "keySkills": ["exaggeration","character","narrative writing"] },
+    { "id": "2-7",  "grade": "2",  "seq": 7,  "gradeSlug": "2nd-grade",    "slug": "weather-and-water",              "title": "Weather and Water",              "anchor": "Science / Earth",           "domain": "informational",  "lessonCount": 20, "keySkills": ["cause-effect","text features","scientific writing"] },
+    { "id": "2-8",  "grade": "2",  "seq": 8,  "gradeSlug": "2nd-grade",    "slug": "poems-about-us",                 "title": "Poems About Us",                 "anchor": "Poetry / Narrative",        "domain": "narrative",      "lessonCount": 16, "keySkills": ["poetry analysis","imagery","opinion writing"] },
+    { "id": "2-9",  "grade": "2",  "seq": 9,  "gradeSlug": "2nd-grade",    "slug": "voting-and-elections",           "title": "Voting and Elections",           "anchor": "Civics / Social Studies",   "domain": "informational",  "lessonCount": 18, "keySkills": ["opinion","civic vocabulary","argument writing"] },
+
+    { "id": "3-1",  "grade": "3",  "seq": 1,  "gradeSlug": "3rd-grade",    "slug": "garveys-choice",                 "title": "Garvey's Choice",                "anchor": "Identity / Novel Study",    "domain": "narrative",      "lessonCount": 26, "coreText": "Garvey's Choice (N. Charles)", "keySkills": ["theme","character change","free verse poetry"] },
+    { "id": "3-2",  "grade": "3",  "seq": 2,  "gradeSlug": "3rd-grade",    "slug": "charlottes-web",                 "title": "Charlotte's Web",                "anchor": "Friendship / Novel Study",  "domain": "narrative",      "lessonCount": 30, "coreText": "Charlotte's Web (E.B. White)", "keySkills": ["character relationships","author's craft","literary essay"] },
+    { "id": "3-3",  "grade": "3",  "seq": 3,  "gradeSlug": "3rd-grade",    "slug": "dyamonde-daniel",                "title": "Dyamonde Daniel",                "anchor": "Community / Novel Study",   "domain": "narrative",      "lessonCount": 24, "coreText": "Dyamonde Daniel series (N. Grimes)", "keySkills": ["character traits","perspective","narrative writing"] },
+    { "id": "3-4",  "grade": "3",  "seq": 4,  "gradeSlug": "3rd-grade",    "slug": "ecosystems",                     "title": "Ecosystems",                     "anchor": "Science / Informational",   "domain": "informational",  "lessonCount": 20, "keySkills": ["food webs","cause-effect","research report"] },
+    { "id": "3-5",  "grade": "3",  "seq": 5,  "gradeSlug": "3rd-grade",    "slug": "american-indians",               "title": "American Indians",               "anchor": "History / Social Studies",  "domain": "informational",  "lessonCount": 22, "keySkills": ["cultural awareness","compare-contrast","informational writing"] },
+    { "id": "3-6",  "grade": "3",  "seq": 6,  "gradeSlug": "3rd-grade",    "slug": "the-one-and-only-ivan",          "title": "The One and Only Ivan",          "anchor": "Justice / Novel Study",     "domain": "narrative",      "lessonCount": 28, "coreText": "The One and Only Ivan (K.A. Applegate)", "keySkills": ["point of view","theme","literary essay"] },
+    { "id": "3-7",  "grade": "3",  "seq": 7,  "gradeSlug": "3rd-grade",    "slug": "famous-inventors",               "title": "Famous Inventors",               "anchor": "Biography / STEM",          "domain": "informational",  "lessonCount": 18, "keySkills": ["biography","problem-solution","research writing"] },
+    { "id": "3-8",  "grade": "3",  "seq": 8,  "gradeSlug": "3rd-grade",    "slug": "natural-disasters",              "title": "Natural Disasters",              "anchor": "Earth Science",             "domain": "informational",  "lessonCount": 20, "keySkills": ["cause-effect","text structure","argument writing"] },
+    { "id": "3-9",  "grade": "3",  "seq": 9,  "gradeSlug": "3rd-grade",    "slug": "picture-books-and-politics",     "title": "Picture Books and Politics",     "anchor": "Civics / Argument",         "domain": "argument",       "lessonCount": 16, "keySkills": ["author's perspective","claim & evidence","opinion writing"] },
+    { "id": "3-10", "grade": "3",  "seq": 10, "gradeSlug": "3rd-grade",    "slug": "water-and-weather",              "title": "Water and Weather",              "anchor": "Earth Science",             "domain": "informational",  "lessonCount": 18, "keySkills": ["text features","main idea","scientific vocabulary"] },
+
+    { "id": "4-1",  "grade": "4",  "seq": 1,  "gradeSlug": "4th-grade",    "slug": "taking-a-stand",                 "title": "Taking a Stand",                 "anchor": "Character / Novel Study",   "domain": "narrative",      "lessonCount": 27, "coreText": "Shiloh (P.R. Naylor)", "keySkills": ["moral dilemma","theme","literary essay"] },
+    { "id": "4-2",  "grade": "4",  "seq": 2,  "gradeSlug": "4th-grade",    "slug": "finding-fortune",                "title": "Finding Fortune",                "anchor": "Adventure / Mythology",     "domain": "narrative",      "lessonCount": 26, "coreText": "Where the Mountain Meets the Moon (G. Lin)", "keySkills": ["quest narrative","folktale elements","author's craft"] },
+    { "id": "4-3",  "grade": "4",  "seq": 3,  "gradeSlug": "4th-grade",    "slug": "believing-in-yourself",          "title": "Believing in Yourself",          "anchor": "Resilience / Advocacy",     "domain": "narrative",      "lessonCount": 24, "coreText": "The Wild Book (J. Engle)", "keySkills": ["character growth","theme","personal essay"] },
+    { "id": "4-4",  "grade": "4",  "seq": 4,  "gradeSlug": "4th-grade",    "slug": "interpreting-perspectives",      "title": "Interpreting Perspectives",      "anchor": "Mythology / Multiple POV",  "domain": "narrative",      "lessonCount": 22, "coreText": "Greek Myths", "keySkills": ["multiple perspectives","myth structure","literary analysis"] },
+    { "id": "4-5",  "grade": "4",  "seq": 5,  "gradeSlug": "4th-grade",    "slug": "learning-differently",           "title": "Learning Differently",           "anchor": "LD Awareness / Novel",      "domain": "narrative",      "lessonCount": 24, "coreText": "Joey Pigza Swallowed the Key (J. Gantos)", "keySkills": ["character empathy","perspective","informational writing"] },
+    { "id": "4-6",  "grade": "4",  "seq": 6,  "gradeSlug": "4th-grade",    "slug": "discovering-self",               "title": "Discovering Self",               "anchor": "Identity / Novel Study",    "domain": "narrative",      "lessonCount": 26, "coreText": "Bud, Not Buddy (C.P. Curtis)", "keySkills": ["historical fiction","theme","literary essay"] },
+    { "id": "4-7",  "grade": "4",  "seq": 7,  "gradeSlug": "4th-grade",    "slug": "american-revolution",            "title": "American Revolution",            "anchor": "History / Informational",   "domain": "informational",  "lessonCount": 22, "keySkills": ["primary sources","argument","research writing"] },
+    { "id": "4-8",  "grade": "4",  "seq": 8,  "gradeSlug": "4th-grade",    "slug": "extreme-earth",                  "title": "Extreme Earth",                  "anchor": "Earth Science / Argument",  "domain": "argument",       "lessonCount": 18, "keySkills": ["claim & evidence","scientific argument","text structure"] },
+    { "id": "4-9",  "grade": "4",  "seq": 9,  "gradeSlug": "4th-grade",    "slug": "power-of-words",                 "title": "Power of Words",                 "anchor": "Poetry / Language",         "domain": "narrative",      "lessonCount": 16, "keySkills": ["figurative language","poetry analysis","author's craft"] },
+    { "id": "4-10", "grade": "4",  "seq": 10, "gradeSlug": "4th-grade",    "slug": "ancient-civilizations",          "title": "Ancient Civilizations",          "anchor": "World History",             "domain": "informational",  "lessonCount": 20, "keySkills": ["compare-contrast","research","informational essay"] },
+
+    { "id": "5-1",  "grade": "5",  "seq": 1,  "gradeSlug": "5th-grade",    "slug": "building-community",             "title": "Building Community",             "anchor": "Community / Novel Study",   "domain": "narrative",      "lessonCount": 24, "coreText": "Seedfolks (P. Fleischman)", "keySkills": ["multiple perspectives","theme","literary essay"] },
+    { "id": "5-2",  "grade": "5",  "seq": 2,  "gradeSlug": "5th-grade",    "slug": "exploring-human-rights",         "title": "Exploring Human Rights",         "anchor": "Global Issues / Novel",     "domain": "narrative",      "lessonCount": 28, "coreText": "The Breadwinner (D. Ellis)", "keySkills": ["historical context","theme","argument essay"] },
+    { "id": "5-3",  "grade": "5",  "seq": 3,  "gradeSlug": "5th-grade",    "slug": "protecting-the-earth",           "title": "Protecting the Earth",           "anchor": "Environment / Argument",    "domain": "argument",       "lessonCount": 20, "keySkills": ["environmental argument","research","persuasive essay"] },
+    { "id": "5-4",  "grade": "5",  "seq": 4,  "gradeSlug": "5th-grade",    "slug": "young-heroes",                   "title": "Young Heroes",                   "anchor": "Civil Rights / History",    "domain": "informational",  "lessonCount": 22, "keySkills": ["historical biography","cause-effect","research report"] },
+    { "id": "5-5",  "grade": "5",  "seq": 5,  "gradeSlug": "5th-grade",    "slug": "friendship-across-boundaries",   "title": "Friendship Across Boundaries",   "anchor": "Identity / Novel Study",    "domain": "narrative",      "lessonCount": 24, "coreText": "Return to Sender (J. Alvarez)", "keySkills": ["immigration themes","multiple POV","literary essay"] },
+    { "id": "5-6",  "grade": "5",  "seq": 6,  "gradeSlug": "5th-grade",    "slug": "civil-war",                      "title": "The Civil War",                  "anchor": "History / Informational",   "domain": "informational",  "lessonCount": 24, "keySkills": ["primary sources","historical argument","research writing"] },
+    { "id": "5-7",  "grade": "5",  "seq": 7,  "gradeSlug": "5th-grade",    "slug": "technology-and-society",         "title": "Technology and Society",         "anchor": "Social Studies / Argument", "domain": "argument",       "lessonCount": 20, "keySkills": ["argument writing","digital citizenship","evidence evaluation"] }
+  ]
+}

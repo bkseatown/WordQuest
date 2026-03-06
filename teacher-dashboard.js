@@ -76,8 +76,6 @@
     generatedPlanner: null,
     efTimer: null,
     efSecondsLeft: 0,
-    fidelitySeeded: {},
-    numeracyPracticeSeeded: {},
     meetingFormat: "sas",
     meetingLanguage: "en",
     liveTranslate: false,
@@ -96,7 +94,41 @@
 
   var LAST_ACTIVITY_KEY = "cs.lastActivityByStudent.v1";
   var DASHBOARD_RUNTIME_KEY = "cs.dashboard.runtime.v1";
+  var FIDELITY_SEEDED_KEY = "cs.fidelity-seeded.v1";
+  var NUMERACY_SEEDED_KEY = "cs.numeracy-seeded.v1";
   var FOCUS_RING_RADIUS = 16;
+
+  function readSeededSet(lsKey) {
+    try {
+      var raw = localStorage.getItem(lsKey);
+      var parsed = raw ? JSON.parse(raw) : {};
+      return (parsed && typeof parsed === "object" && !Array.isArray(parsed)) ? parsed : {};
+    } catch (_e) { return {}; }
+  }
+
+  function writeSeededSet(lsKey, set) {
+    try { localStorage.setItem(lsKey, JSON.stringify(set)); } catch (_e) {}
+  }
+
+  function isFidelitySeeded(sid) {
+    return !!readSeededSet(FIDELITY_SEEDED_KEY)[sid];
+  }
+
+  function markFidelitySeeded(sid) {
+    var set = readSeededSet(FIDELITY_SEEDED_KEY);
+    set[sid] = true;
+    writeSeededSet(FIDELITY_SEEDED_KEY, set);
+  }
+
+  function isNumeracySeeded(key) {
+    return !!readSeededSet(NUMERACY_SEEDED_KEY)[key];
+  }
+
+  function markNumeracySeeded(key) {
+    var set = readSeededSet(NUMERACY_SEEDED_KEY);
+    set[key] = true;
+    writeSeededSet(NUMERACY_SEEDED_KEY, set);
+  }
   var appState = DashboardState && typeof DashboardState.create === "function"
     ? DashboardState.create()
     : {
@@ -127,6 +159,7 @@
     last7Summary: document.getElementById("td-last7-summary"),
     quickCheck: document.getElementById("td-quick-check"),
     startIntervention: document.getElementById("td-start-intervention"),
+    lessonBriefBtn: document.getElementById("td-lesson-brief"),
     meetingWorkspaceBtn: document.getElementById("td-meeting-workspace"),
     tier1PackBtn: document.getElementById("td-tier1-pack"),
     openStudentDrawer: document.getElementById("td-open-student-drawer"),
@@ -565,7 +598,7 @@
       String(recommendation && recommendation.strategyStage || ""),
       mode
     ].join("|");
-    if (state.numeracyPracticeSeeded[key]) return;
+    if (isNumeracySeeded(key)) return;
     var attempts = Array.isArray(practice && practice.problemSet) ? practice.problemSet.length : 4;
     var timePerProblem = mode === "Skill Sprint" ? 18 : (mode === "Quick Check" ? 25 : 38);
     NumeracyPracticeEngine.recordPracticeSession({
@@ -576,7 +609,7 @@
       modeUsed: mode,
       timeSpentSeconds: attempts * timePerProblem
     });
-    state.numeracyPracticeSeeded[key] = true;
+    markNumeracySeeded(key);
   }
 
   function toPct(value) {
@@ -604,7 +637,7 @@
     var stableCount = recentAccuracy >= goalAccuracy ? 3 : (recentAccuracy >= goalAccuracy - 0.08 ? 2 : 1);
     var weeksInIntervention = recentAccuracy < goalAccuracy ? 8 : 4;
     var sid = row && row.student ? String(row.student.id || "") : "";
-    if (sid && FidelityEngine && typeof FidelityEngine.logInterventionSession === "function" && !state.fidelitySeeded[sid]) {
+    if (sid && FidelityEngine && typeof FidelityEngine.logInterventionSession === "function" && !isFidelitySeeded(sid)) {
       FidelityEngine.logInterventionSession({
         studentId: sid,
         minutesDelivered: 20,
@@ -647,7 +680,7 @@
         mode: "1:1",
         interventionType: "Literacy"
       });
-      state.fidelitySeeded[sid] = true;
+      markFidelitySeeded(sid);
     }
     var fidelitySummary = FidelityEngine && typeof FidelityEngine.getFidelitySummary === "function"
       ? FidelityEngine.getFidelitySummary(sid, "Literacy")
@@ -2038,6 +2071,9 @@
       renderProgressNote(null, null);
       updateAuditMarkers();
       setCoachLine("Search or pick a student and I will suggest the next best move.");
+      window.dispatchEvent(new CustomEvent("cs-student-selected", {
+        detail: { studentId: "", studentName: "", grade: "" }
+      }));
       return;
     }
 
@@ -2061,6 +2097,14 @@
 
     el.focusTitle.textContent = tierLabel + " - Strategic Reinforcement Recommended";
     el.recoLine.textContent = summary.nextMove.line;
+    window.dispatchEvent(new CustomEvent("cs-student-selected", {
+      detail: {
+        studentId: state.selectedId,
+        studentName: summary && summary.student && summary.student.name || "",
+        grade: summary && summary.student && (summary.student.grade || summary.student.gradeBand) || "",
+        caseload: state.caseload.slice()
+      }
+    }));
     el.last7Summary.textContent = "Last 7 sessions · " + summary.last7Sparkline.join(" / ");
     el.sparkline.innerHTML = '<path d="' + buildSparkPath(summary.last7Sparkline) + '" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>';
     if (el.metricAccuracy) el.metricAccuracy.textContent = (delta >= 0 ? "+" : "") + delta.toFixed(1) + "%";
@@ -3302,6 +3346,37 @@
     }
   }
 
+  function currentLessonBriefContext() {
+    var student = (state.caseload || []).find(function (row) { return row.id === state.selectedId; }) || null;
+    return {
+      caseload: state.caseload.slice(),
+      studentId: state.selectedId || "",
+      studentName: student && student.name || "",
+      grade: student && (student.grade || student.gradeBand || "") || ""
+    };
+  }
+
+  function initLessonBriefPanel() {
+    var Panel = window.CSLessonBriefPanel;
+    if (!Panel || !el.lessonBriefBtn) return;
+
+    el.lessonBriefBtn.addEventListener("click", function () {
+      Panel.toggle(currentLessonBriefContext());
+    });
+
+    window.addEventListener("cs-student-selected", function () {
+      if (Panel.setContext) Panel.setContext(currentLessonBriefContext());
+    });
+
+    window.addEventListener("cs-lesson-brief-selected", function (event) {
+      var detail = event && event.detail ? event.detail : null;
+      if (!detail) return;
+      if (detail.studentId && detail.studentId === state.selectedId) {
+        setCoachLine("Lesson context saved: " + (detail.blockLabel || detail.title || "today's block") + ".");
+      }
+    });
+  }
+
   function bindFocusWhyToggle() {
     if (!el.focusWhyToggle || !el.focusWhyLine) return;
     el.focusWhyToggle.addEventListener("click", function () {
@@ -3329,6 +3404,7 @@
   initDrawerController();
   initBindingsController();
   bindEvents();
+  initLessonBriefPanel();
   bindFocusWhyToggle();
   void loadIllustrativeMathMapData();
   initNumeracyCurriculumSelectors();

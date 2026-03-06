@@ -595,13 +595,24 @@
     var wordLast = (student.modules.wordquest && student.modules.wordquest.last) || {};
     var sentLast = (student.modules.sentence_surgery && student.modules.sentence_surgery.last) || {};
     var numLast = (student.modules.numeracy && student.modules.numeracy.last) || {};
-    if (readingLast.accuracy != null) evidenceChips.push({ label: "Accuracy", value: Math.round(Number(readingLast.accuracy || 0)) + "%" });
+    /* accuracy is stored 0–1; display as percentage */
+    if (readingLast.accuracy != null) evidenceChips.push({ label: "Accuracy", value: Math.round(Number(readingLast.accuracy || 0) * 100) + "%" });
     if (readingLast.wpmProxy != null) evidenceChips.push({ label: "ORF", value: Math.round(Number(readingLast.wpmProxy || 0)) + " wpm" });
     if (readingLast.selfCorrects != null) evidenceChips.push({ label: "Self-correct", value: String(readingLast.selfCorrects) });
     if (wordLast.vowelConfusionProxy != null) evidenceChips.push({ label: "Vowel confusion", value: Math.round(Number(wordLast.vowelConfusionProxy || 0) * 100) + "%" });
     if (wordLast.idleEvents != null) evidenceChips.push({ label: "Idle events", value: String(wordLast.idleEvents) });
     if (sentLast.reasoningAdded != null) evidenceChips.push({ label: "Reasoning", value: sentLast.reasoningAdded ? "Added" : "Missing" });
-    if (numLast.accuracy != null) evidenceChips.push({ label: "Numeracy", value: Math.round(Number(numLast.accuracy || 0)) + "%" });
+    if (numLast.accuracy != null) evidenceChips.push({ label: "Numeracy", value: Math.round(Number(numLast.accuracy || 0) * 100) + "%" });
+
+    /* lastSession — derive from the most-recently updated module */
+    var lastSessionTs = Number(student.updatedAt || 0);
+    var lastSessionModule = null;
+    Object.keys(student.modules).forEach(function (mod) {
+      var modTs = Number(student.modules[mod].updatedAt || 0);
+      if (modTs > lastSessionTs) { lastSessionTs = modTs; lastSessionModule = mod; }
+    });
+    if (!lastSessionTs && student.updatedAt) lastSessionTs = Number(student.updatedAt);
+    var lastSession = lastSessionTs ? { timestamp: lastSessionTs, module: lastSessionModule } : null;
 
     return {
       student: student,
@@ -610,7 +621,8 @@
       last7Sparkline: weakest.spark,
       evidenceChips: evidenceChips.slice(0, 8),
       nextMove: move,
-      summaryRows: rows
+      summaryRows: rows,
+      lastSession: lastSession
     };
   }
 

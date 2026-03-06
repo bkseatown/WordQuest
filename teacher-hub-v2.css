@@ -1,0 +1,3820 @@
+/* teacher-hub-v2.css — Context-first Command Hub
+   Phase 2: Caseload panel + Intelligence surface
+   ─────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ══════════════════════════════════════════════════════════
+   CORNERSTONE PALETTE — pinned, immune to OS dark mode
+   Three-layer depth: bg-slate → panel-white → card-white
+   ══════════════════════════════════════════════════════════ */
+html {
+  color-scheme: only light;
+  margin: 0;
+  height: 100%;
+  background: #bec5d2; /* fallback for body scroll overshoot — visible slate */
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+body.th2-page {
+  /*
+   * Layer 1 — main background: light cool-gray gradient.
+   * Professional, bright, and easy on the eyes.
+   * White cards float clearly on top without feeling dark/heavy.
+   */
+  background: linear-gradient(155deg, #c8cdd8 0%, #bec5d2 48%, #b6beca 100%);
+
+  /*
+   * Token overrides — redefine for the Cornerstone palette.
+   * These cascade to every var() usage inside .th2-page without
+   * touching tokens.css (which the rest of the app uses).
+   */
+  --text-primary:   #0d1117;   /* near-black — max legibility on white cards */
+  --text-secondary: #3d4559;   /* dark slate — readable secondary labels     */
+  --text-muted:     #6b7591;   /* mid-slate  — placeholders, tertiary info   */
+  --surface-elev-1: #ffffff;   /* Layer 3 — cards float pure-white           */
+  --surface-elev-2: #e8edf4;   /* tinted bg for inputs, hover, chips         */
+  --border-subtle:  #c5cfe0;   /* soft blue-tinted border                   */
+  --accent:         #2b5da8;   /* brand blue — unchanged                     */
+  --accent-main:    #c84b31;   /* terracotta — used for urgent/active states  */
+
+  color: #0d1117;
+  font-family: var(--font-ui, system-ui, -apple-system, sans-serif);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+/* ── Shell: two-panel grid ─────────────────────────────── */
+
+.th2-shell {
+  display: grid;
+  grid-template-columns: 272px 1fr;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ── Left sidebar ──────────────────────────────────────── */
+
+.th2-sidebar {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Layer 2 — soft panel, cards sit white above it */
+  background: #f0f3f8;
+  border-right: 1px solid var(--border-subtle, #c5cfe0);
+}
+
+/* ── Sidebar header ────────────────────────────────────── */
+
+.th2-sidebar-head {
+  flex-shrink: 0;
+  padding: 16px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.th2-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.85;
+  transition: opacity 0.12s ease;
+  padding: 2px 0;
+}
+
+.th2-brand:hover { opacity: 1; }
+.th2-brand-sep { opacity: 0.5; font-size: 14px; letter-spacing: 0; }
+
+/* ── Search ────────────────────────────────────────────── */
+
+.th2-search-wrap { position: relative; }
+
+.th2-search {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  background: var(--surface-elev-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2, 8px);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.13s ease, background 0.13s ease;
+  appearance: none;
+}
+
+.th2-search::placeholder { color: var(--text-muted); }
+
+.th2-search:focus {
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--surface-elev-2) 85%, var(--accent) 15%);
+}
+
+/* ── Mode tabs ─────────────────────────────────────────── */
+
+.th2-mode-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: var(--surface-elev-2);
+  border-radius: var(--radius-2, 8px);
+  padding: 3px;
+}
+
+.th2-mode-tab {
+  height: 28px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+  white-space: nowrap;
+}
+
+.th2-mode-tab:hover { color: var(--text-primary); }
+
+.th2-mode-tab.is-active {
+  background: var(--surface-elev-1);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-soft);
+}
+
+/* ── Student list ──────────────────────────────────────── */
+
+.th2-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.th2-list-empty {
+  padding: 20px 16px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Student item */
+
+.th2-student {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.11s ease, border-color 0.11s ease;
+}
+
+.th2-student:hover {
+  background: var(--surface-elev-2);
+  border-color: var(--border-subtle);
+}
+
+.th2-student:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.th2-student.is-active {
+  background: color-mix(in oklab, var(--surface-elev-2) 80%, var(--accent) 20%);
+  border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+}
+
+.th2-student-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.th2-student-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.th2-student-meta {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tier chip — right side of student item */
+
+.th2-tier-chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.th2-tier-chip[data-tier="1"] {
+  background: var(--bg-secure, #d8f4e3);
+  color: #1b5c35;
+}
+
+.th2-tier-chip[data-tier="2"] {
+  background: #f3e8ff;   /* Developing — soft lavender */
+  color: #6d28d9;
+}
+
+.th2-tier-chip[data-tier="3"] {
+  background: #fef9e7;   /* Emerging — warm amber (strength-based, not alarming) */
+  color: #92400e;
+}
+
+/* Trend indicator */
+.th2-trend-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.th2-trend-dot[data-trend="up"]     { background: var(--status-secure, #22c55e); }
+.th2-trend-dot[data-trend="stable"] { background: var(--text-muted, #94a3b8); }
+.th2-trend-dot[data-trend="down"]   { background: var(--status-risk, #ef4444); }
+
+/* ── Center: main content ──────────────────────────────── */
+
+.th2-main {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 32px 40px;
+  /* height is determined by grid cell — no min-height needed */
+}
+
+/* ── Empty state ───────────────────────────────────────── */
+
+.th2-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%; /* prevent shrink-to-content inside flex column — morning brief needs full width */
+}
+
+.th2-empty-inner {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.th2-empty-label {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.th2-empty-sub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ── Focus card ────────────────────────────────────────── */
+
+.th2-focus-card {
+  width: 100%;
+  max-width: 660px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: th2-reveal 0.22s ease-out;
+  position: relative;
+  padding-left: 20px;
+}
+
+.th2-focus-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  border-radius: 99px;
+  background: var(--th2-tier-color, var(--accent));
+  transition: background 0.3s ease;
+}
+
+.th2-focus-card[data-tier="1"] { --th2-tier-color: var(--status-secure, #4e8d6a); }
+.th2-focus-card[data-tier="2"] { --th2-tier-color: #7c3aed; }  /* Developing — purple */
+.th2-focus-card[data-tier="3"] { --th2-tier-color: #d97706; }  /* Emerging  — amber  */
+
+@keyframes th2-reveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes th2-brief-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes th2-toast-in {
+  from { opacity: 0; transform: scale(0.8) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Focus card: student header */
+
+.th2-focus-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.th2-focus-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.th2-focus-name-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.th2-focus-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.th2-focus-name-meta {
+  font: 400 12px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+}
+
+.th2-focus-name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.th2-focus-tier {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.th2-focus-tier[data-tier="1"] {
+  background: var(--bg-secure, #d8f4e3);
+  color: #1b5c35;
+}
+.th2-focus-tier[data-tier="2"] {
+  background: #f3e8ff;   /* Developing — soft lavender */
+  color: #6d28d9;
+}
+.th2-focus-tier[data-tier="3"] {
+  background: #fef9e7;   /* Emerging — warm amber */
+  color: #92400e;
+}
+
+/* Sparkline + trend delta */
+
+.th2-focus-trend {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.th2-sparkline {
+  width: 90px;
+  height: 26px;
+  display: block;
+  overflow: visible;
+}
+
+.th2-spark-path {
+  fill: none;
+  stroke: color-mix(in oklab, var(--accent) 75%, #9bb8e4 25%);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1000 1000;
+  stroke-dashoffset: 0;
+}
+
+@keyframes th2-spark-draw {
+  from { stroke-dashoffset: 1000; opacity: 0.3; }
+  to   { stroke-dashoffset: 0;    opacity: 1; }
+}
+
+.th2-sparkline.is-animating .th2-spark-path {
+  animation: th2-spark-draw 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.th2-delta {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.th2-delta-up     { color: #1b5c35; background: var(--bg-secure, #d8f4e3); }
+.th2-delta-stable { color: var(--text-secondary); background: var(--surface-elev-2); }
+.th2-delta-down   { color: #8b1a1a; background: var(--bg-intensify, #fee2e2); }
+
+/* ── Recommendation block ──────────────────────────────── */
+
+.th2-rec {
+  background: var(--surface-elev-1, #ffffff);
+  border: 1px solid var(--border-subtle, #c8d4e8);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.th2-rec::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg,
+    color-mix(in oklab, var(--accent) 70%, #9bb8e4 30%),
+    color-mix(in oklab, var(--accent-2, var(--accent)) 60%, transparent 40%)
+  );
+}
+
+.th2-rec-kicker {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.th2-rec-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.th2-rec-reason {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ── Signal pills ──────────────────────────────────────── */
+
+.th2-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.th2-signal {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--surface-elev-2);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.th2-signal[data-decision="FADE"]      { background: var(--bg-secure, #d8f4e3); color: #1b5c35; }
+.th2-signal[data-decision="HOLD"]      { background: var(--bg-developing, #fef3c7); color: #7c5000; }
+.th2-signal[data-decision="INTENSIFY"] { background: var(--bg-intensify, #fee2e2); color: #8b1a1a; }
+
+/* ── Action buttons ────────────────────────────────────── */
+
+.th2-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.th2-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: background 0.12s ease, transform 0.08s ease, box-shadow 0.12s ease;
+  white-space: nowrap;
+}
+
+.th2-btn:active { transform: scale(0.98); }
+
+.th2-btn-primary {
+  background: var(--action-primary);
+  color: #fff;
+  border-color: var(--action-primary);
+  box-shadow: 0 4px 12px rgba(43, 93, 168, 0.22);
+}
+
+.th2-btn-primary:hover {
+  background: var(--action-primary-hover);
+  border-color: var(--action-primary-hover);
+  box-shadow: 0 6px 16px rgba(43, 93, 168, 0.28);
+}
+
+.th2-btn-quiet {
+  background: var(--surface-elev-2);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.th2-btn-quiet:hover { background: var(--surface-elev-3, var(--surface-elev-2)); }
+
+/* ── Demo badge ────────────────────────────────────────── */
+
+.th2-demo-badge {
+  position: fixed;
+  top: 10px;
+  right: 12px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--warn, #f59e0b) 18%, transparent);
+  border: 1px solid color-mix(in oklab, var(--warn, #f59e0b) 50%, transparent);
+  color: var(--warn, #f59e0b);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* ── Avatar ────────────────────────────────────────────── */
+
+.th2-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font: 700 15px/1 var(--font-ui, system-ui);
+  color: #fff;
+  flex-shrink: 0;
+  user-select: none;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+
+.th2-avatar--sm {
+  width: 30px;
+  height: 30px;
+  font-size: 11px;
+  box-shadow: none;
+}
+
+/* ── Sidebar context strip ─────────────────────────────── */
+
+.th2-sidebar-context {
+  padding: 8px 14px 4px;
+  flex-shrink: 0;
+}
+
+.th2-sidebar-date {
+  font: 400 11px/1.3 var(--font-ui, system-ui);
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.th2-sidebar-urgency {
+  font: 600 12px/1.5 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+}
+
+.th2-urgency-count {
+  color: var(--status-risk, #b25e5e);
+}
+
+/* ── Morning brief (empty state) ───────────────────────── */
+
+/* When the morning brief is rendered inside the empty state,
+   align content to the top instead of center */
+.th2-empty-state:has(.th2-morning) {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 8px;
+}
+
+.th2-morning {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /* Glass-morphism card to visually anchor the morning brief */
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 28px 28px 22px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.th2-morning-greeting {
+  margin: 0;
+  font: 700 30px/1.2 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+}
+
+.th2-morning-date {
+  margin: 0;
+  font: 400 13px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+}
+
+.th2-morning-sub {
+  margin: 4px 0 18px;
+  font: 400 14px/1.5 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+}
+
+.th2-brief-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.th2-brief-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--surface-elev-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: border-color 0.14s ease, box-shadow 0.14s ease, transform 0.1s ease;
+}
+
+.th2-brief-card:hover {
+  border-color: color-mix(in oklab, var(--accent) 35%, transparent);
+  box-shadow: 0 3px 14px rgba(43, 93, 168, 0.1);
+  transform: translateY(-1px);
+}
+
+.th2-brief-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.th2-brief-card-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.th2-brief-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.th2-brief-card-name {
+  font: 600 14px/1.2 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.th2-brief-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: 400 11.5px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+}
+
+.th2-brief-card-rec {
+  font: 400 12px/1.3 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.th2-brief-status {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 10px/1 var(--font-ui, system-ui);
+}
+
+.th2-brief-status[data-status="today"]   { background: var(--bg-secure,    #e6f4ea); color: var(--status-secure,    #4e8d6a); }
+.th2-brief-status[data-status="recent"]  { background: var(--bg-developing, #fff3d8); color: var(--status-developing,#b58a45); }
+.th2-brief-status[data-status="overdue"] { background: var(--bg-risk,       #ffe3e3); color: var(--status-risk,      #b25e5e); }
+.th2-brief-status[data-status="none"]    { background: var(--surface-elev-2);          color: var(--text-muted); }
+
+/* ── Utilities ─────────────────────────────────────────── */
+
+.hidden { display: none !important; }
+
+/* ── Responsive ────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* ── Shell: single scrollable column on mobile ── */
+  .th2-shell {
+    display: flex;
+    flex-direction: column;
+    height: auto;            /* NOT 100dvh — page flows naturally */
+    min-height: 100dvh;
+    overflow: visible;       /* single page scroll, no dual panels */
+  }
+
+  /* ── Sidebar: stacks naturally at top, no fixed height ── */
+  .th2-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: auto;            /* content-height, NOT 42dvh */
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  /* Compact brand bar — search/tabs/add-student hidden on mobile */
+  .th2-sidebar-head {
+    overflow: hidden;
+    padding: 8px 14px 6px;
+    gap: 0;
+    flex-shrink: 0;
+  }
+
+  /* Hide search, mode tabs, add-student, and auth rows on mobile.
+     !important needed: .th2-add-student-btn { display:flex } appears
+     after this block and would otherwise win the cascade. */
+  .th2-search-wrap,
+  .th2-mode-row,
+  .th2-add-student-btn,
+  .th2-classroom-sync-row,
+  .th2-google-signin-row {
+    display: none !important;
+  }
+
+  /* Context strip: compact padding + reset browser <p> default margins */
+  .th2-sidebar-context {
+    padding: 4px 14px 4px;
+  }
+
+  .th2-sidebar-context p {
+    margin: 2px 0; /* browser default is 1em top/bottom — collapse it */
+  }
+
+  /* Student list: flows naturally, no separate scroll.
+     Desktop sets flex:1 1 0% (shrink-to-fill), which collapses the list
+     in an auto-height parent. Override to auto so it sizes to content. */
+  .th2-list {
+    flex: 0 0 auto;       /* natural content height — not flex-compressed */
+    overflow-y: visible;
+    min-height: 0;
+  }
+
+  .th2-list-empty,
+  .th2-list-none {
+    padding: 10px 14px;
+  }
+
+  /* Main content: flows naturally below sidebar */
+  .th2-main {
+    padding: 16px 14px;
+    overflow-y: visible;
+    min-height: 0;
+    flex: 1;
+  }
+
+  /* ── Footer: single compact flex row (Curriculum | Tour | Analytics) ──
+     The component definitions for .th2-sidebar-footer, .th2-cur-btn, and
+     .th2-footer-icon-btn all appear later in the CSS file (lines 3050+),
+     so their defaults would otherwise win the cascade. !important used
+     only on layout-critical properties to guarantee the mobile override. */
+  .th2-sidebar-footer {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 10px 8px !important;
+    flex-shrink: 0;
+  }
+
+  .th2-cur-btn {
+    flex: 1;
+    width: auto !important;
+    padding: 8px 10px !important;
+    font-size: 11.5px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .th2-sidebar-footer-row {
+    flex-shrink: 0;
+    gap: 6px;
+  }
+
+  .th2-footer-icon-btn {
+    padding: 7px 8px !important;
+    font-size: 11px;
+  }
+
+  /* ── Focus card ── */
+  .th2-focus-card {
+    max-width: 100%;
+    border-radius: 14px;
+  }
+
+  /* Plan card title: slightly larger for readability */
+  .th2-rec-title {
+    font-size: 18px;
+  }
+
+  /* ── Content grid stacking ── */
+  .th2-support-grid,
+  .th2-snapshot-grid,
+  .th2-brief-grid,
+  .th2-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .th2-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .th2-action-btn {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .th2-signals {
+    flex-wrap: wrap;
+  }
+
+  /* Drawer: spring transition feels natural on touch */
+  .th2-drawer {
+    transition: all 0.24s cubic-bezier(.34, 1.2, .64, 1);
+  }
+
+  /* Curriculum panel: slide up as bottom sheet on mobile */
+  #cs-cur-panel {
+    width: 100vw;
+    right: -100vw;
+    border-radius: 20px 20px 0 0;
+    top: auto;
+    bottom: 0;
+    height: 85dvh;
+  }
+
+  #cs-cur-panel.cs-cur-open {
+    right: 0;
+    top: auto;
+  }
+}
+
+/* ── Support panel ─────────────────────────────────────── */
+
+.th2-support {
+  margin-top: 24px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 20px;
+}
+
+.th2-support-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.th2-support-kicker {
+  font: 500 11px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.th2-need-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.th2-need-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 400 13px/1.4 var(--font-ui, system-ui);
+  color: var(--text-primary);
+}
+
+.th2-need-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.th2-fidelity-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.th2-btn-log {
+  font: 500 12px/1 var(--font-ui, system-ui);
+  background: none;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 7px 14px;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: background 0.1s;
+}
+
+.th2-btn-log:hover { background: var(--surface-elev-2); }
+
+.th2-btn-log.is-logged {
+  border-color: #4caf50;
+  color: #2e7d32;
+}
+
+.th2-log-status {
+  font: 400 12px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+}
+
+/* ── Overlay ───────────────────────────────────────────── */
+
+.th2-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.28);
+  z-index: 40;
+  opacity: 0;
+  transition: opacity 0.22s;
+}
+
+.th2-overlay.is-open { opacity: 1; }
+
+/* ── Drawer ────────────────────────────────────────────── */
+
+.th2-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 380px;
+  max-width: 92vw;
+  background: var(--surface-elev-2, #c5d5e8);
+  border-left: 1px solid var(--border-subtle, #8fa3bd);
+  box-shadow: -6px 0 32px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  transform: translateX(100%);
+  transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.th2-drawer.is-open { transform: translateX(0); }
+
+.th2-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.th2-drawer-title {
+  font: 600 15px/1.2 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.th2-drawer-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.th2-drawer-close:hover { background: var(--surface-elev-2); }
+
+.th2-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.th2-drawer-section { margin-bottom: 24px; }
+
+.th2-drawer-section-head {
+  font: 600 11px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
+.th2-drawer-row {
+  font: 400 13px/1.5 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--surface-elev-2);
+}
+
+.th2-drawer-row:last-child { border-bottom: none; }
+
+.th2-drawer-row strong {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.th2-drawer-empty {
+  font: 400 13px/1.5 var(--font-ui, system-ui);
+  color: var(--text-muted);
+}
+
+.th2-drawer-link {
+  font: 500 13px/1 var(--font-ui, system-ui);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ── Curriculum alignment section ──────────────────────── */
+
+.th2-curriculum {
+  background: #ffffff;
+  border: 1px solid #c8d4e8;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.th2-curriculum-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 9px;
+  gap: 8px;
+}
+
+.th2-curriculum-kicker {
+  font: 500 10.5px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent, #2b5da8);
+}
+
+.th2-curriculum-tags {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.th2-curriculum-tag {
+  font: 600 10px/1 var(--font-ui, system-ui);
+  padding: 2px 7px;
+  border-radius: 99px;
+  background: color-mix(in oklab, var(--accent, #2b5da8) 12%, transparent);
+  color: var(--accent, #2b5da8);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.th2-curriculum-tag--domain {
+  background: color-mix(in oklab, var(--status-secure, #4e8d6a) 14%, transparent);
+  color: var(--status-secure, #4e8d6a);
+}
+
+.th2-curriculum-skill {
+  margin: 0 0 5px;
+  font: 600 13px/1.3 var(--font-ui, system-ui);
+  color: var(--text-primary);
+}
+
+.th2-curriculum-smart {
+  margin: 0 0 8px;
+  font: 400 12px/1.55 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+}
+
+.th2-curriculum-monitor {
+  margin: 0;
+  font: 400 11.5px/1.4 var(--font-ui, system-ui);
+  color: var(--text-muted);
+}
+
+.th2-curriculum-monitor-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ── Fishtank ELA unit row ─────────────────────────────── */
+
+.th2-curriculum-fishtank {
+  margin-top: 11px;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in oklab, var(--accent, #2b5da8) 16%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.th2-curriculum-fishtank-label {
+  font: 600 9.5px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent, #2b5da8);
+  opacity: 0.72;
+}
+
+.th2-curriculum-fishtank-unit {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.th2-curriculum-fishtank-link {
+  font: 600 12.5px/1.3 var(--font-ui, system-ui);
+  color: var(--accent, #2b5da8);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.th2-curriculum-fishtank-link:hover { text-decoration: underline; }
+
+.th2-curriculum-fishtank-text {
+  font-weight: 400;
+  font-style: italic;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.th2-curriculum-fishtank-anchor {
+  font: 400 11px/1.3 var(--font-ui, system-ui);
+  color: var(--text-muted);
+}
+
+/* ── Export / copy summary ─────────────────────────────── */
+
+.th2-export-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.th2-export-btn {
+  font: 500 11.5px/1 var(--font-ui, system-ui);
+  background: none;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: background 0.12s, color 0.12s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.th2-export-btn:hover {
+  background: var(--surface-elev-2);
+  color: var(--text-primary);
+}
+
+.th2-drawer-link:hover { text-decoration: underline; }
+
+/* ════════════════════════════════════════════════════════
+   Lesson Navigator widget (.th2-lnav)
+   ════════════════════════════════════════════════════════ */
+
+.th2-lnav {
+  margin-top: 11px;
+  padding: 10px 12px 9px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--accent, #2b5da8) 18%, transparent);
+  background: color-mix(in oklab, var(--accent, #2b5da8) 4%, var(--surface-elev-1));
+}
+
+.th2-lnav + .th2-lnav {
+  margin-top: 8px;
+}
+
+/* IS Word Study variant — teal accent */
+.th2-lnav--isws {
+  border-color: color-mix(in oklab, var(--status-writing, #2b8a78) 22%, transparent);
+  background: color-mix(in oklab, var(--status-writing, #2b8a78) 4%, var(--surface-elev-1));
+}
+
+/* ── Header row ─────────────────────────────────────────── */
+.th2-lnav-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 7px;
+}
+
+.th2-lnav-badge {
+  font: 700 8.5px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.th2-lnav-badge--fishtank {
+  background: color-mix(in oklab, var(--accent, #2b5da8) 14%, transparent);
+  color: var(--accent, #2b5da8);
+}
+
+.th2-lnav-badge--isws {
+  background: color-mix(in oklab, var(--status-writing, #2b8a78) 15%, transparent);
+  color: var(--status-writing, #2b8a78);
+}
+
+.th2-lnav-grade {
+  font: 500 11px/1 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Unit / semester sub-nav */
+.th2-lnav-unit-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  overflow: hidden;
+  max-width: 200px;
+}
+
+.th2-lnav-unit-label {
+  font: 500 11px/1.25 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.th2-lnav-unit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1;
+  padding: 1px 3px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: color 0.12s, background 0.12s;
+}
+
+.th2-lnav-unit-btn:hover:not(:disabled) {
+  color: var(--text-primary);
+  background: var(--surface-elev-2);
+}
+
+.th2-lnav-unit-btn:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+/* ── Lesson row ─────────────────────────────────────────── */
+.th2-lnav-body {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.th2-lnav-btn {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-elev-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text-secondary);
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.th2-lnav-btn:hover:not(:disabled) {
+  background: var(--surface-elev-2);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.th2-lnav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.th2-lnav-lesson {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.th2-lnav-lesson-link {
+  font: 600 12.5px/1.3 var(--font-ui, system-ui);
+  color: var(--accent, #2b5da8);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.12s;
+}
+
+.th2-lnav--isws .th2-lnav-lesson-link {
+  color: var(--status-writing, #2b8a78);
+  white-space: normal;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.th2-lnav-lesson-link:hover { text-decoration: underline; }
+
+.th2-lnav-lesson-of {
+  font: 400 11px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.th2-lnav-lesson-num {
+  font: 600 11px/1 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.th2-lnav-lesson-nohref {
+  font: 500 11.5px/1.3 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+}
+
+/* ── Footer link row ─────────────────────────────────────── */
+.th2-lnav-unit-link-row {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.th2-lnav-unit-link {
+  font: 400 10.5px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.th2-lnav-unit-link:hover { text-decoration: underline; color: var(--text-secondary); }
+
+/* ── UFLI & IM badge colors ──────────────────────────────── */
+.th2-lnav-badge--ufli {
+  background: color-mix(in oklab, #b45309 14%, transparent);
+  color: #92400e;
+}
+
+.th2-lnav-badge--im {
+  background: color-mix(in oklab, #16a34a 14%, transparent);
+  color: #166534;
+}
+
+/* ── UFLI & IM card accents ──────────────────────────────── */
+.th2-lnav--ufli {
+  border-left: 3px solid color-mix(in oklab, #b45309 55%, transparent);
+}
+
+.th2-lnav--im {
+  border-left: 3px solid color-mix(in oklab, #16a34a 55%, transparent);
+}
+
+/* ── UFLI lesson focus text ──────────────────────────────── */
+.th2-lnav-lesson-focus {
+  font: 400 10px/1.3 var(--font-ui, system-ui);
+  color: var(--text-muted);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+  margin-right: auto;
+}
+
+/* ── Set-position button ─────────────────────────────────── */
+.th2-lnav-setpos-btn {
+  font: 400 10px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background 0.12s, color 0.12s;
+  flex-shrink: 0;
+}
+.th2-lnav-setpos-btn:hover {
+  background: var(--surface-2, #f1f0ee);
+  color: var(--text-secondary);
+}
+
+/* ── Set-position inline form ────────────────────────────── */
+.th2-lnav-setpos-form {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+  width: 100%;
+}
+
+.th2-lnav-setpos-label {
+  font: 500 10px/1 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.th2-lnav-setpos-select {
+  font: 400 11px/1.2 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  background: var(--surface-1, #fff);
+  border: 1px solid var(--border, #d5d2cc);
+  border-radius: 4px;
+  padding: 2px 4px;
+  max-width: 180px;
+  cursor: pointer;
+}
+
+.th2-lnav-setpos-num {
+  font: 400 11px/1.2 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  background: var(--surface-1, #fff);
+  border: 1px solid var(--border, #d5d2cc);
+  border-radius: 4px;
+  padding: 2px 4px;
+  width: 52px;
+  text-align: center;
+}
+
+.th2-lnav-setpos-save {
+  font: 600 10.5px/1 var(--font-ui, system-ui);
+  color: #fff;
+  background: var(--accent, #2b5da8);
+  border: none;
+  border-radius: 4px;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: opacity 0.12s;
+}
+.th2-lnav-setpos-save:hover { opacity: 0.88; }
+
+.th2-lnav-setpos-cancel {
+  font: 400 11px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background 0.12s;
+}
+.th2-lnav-setpos-cancel:hover { background: var(--surface-2, #f1f0ee); }
+
+/* ── F&P reading level badge ─────────────────────────────── */
+.th2-fp-badge {
+  display: inline-flex;
+  align-items: center;
+  font: 700 9.5px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #7c3aed;
+  background: color-mix(in oklab, #7c3aed 12%, transparent);
+  border: 1px solid color-mix(in oklab, #7c3aed 30%, transparent);
+  border-radius: 4px;
+  padding: 2px 5px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.th2-fp-badge:hover {
+  background: color-mix(in oklab, #7c3aed 20%, transparent);
+  border-color: color-mix(in oklab, #7c3aed 50%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PHASE 7 — Toast · Today's Classes · Add Student · Morning Hero
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Toast notification ─────────────────────────────────── */
+.th2-toast-host {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1002; /* above cost dashboard (1000) and overlay (100) */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.th2-toast {
+  min-width: 220px;
+  max-width: 340px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font: 500 13px/1.4 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  background: var(--surface-elev-1, #fff);
+  border: 1px solid var(--border-subtle, #e0ddd8);
+  box-shadow: 0 4px 20px rgba(0,0,0,.12), 0 1px 4px rgba(0,0,0,.06);
+  opacity: 0;
+  transform: translateY(10px) scale(0.97);
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.th2-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.th2-toast--success {
+  border-left: 3px solid var(--status-secure, #4e8d6a);
+  background: color-mix(in oklab, var(--status-secure, #4e8d6a) 6%, var(--surface-elev-1, #fff));
+}
+
+.th2-toast--warn {
+  border-left: 3px solid var(--status-developing, #b58a45);
+  background: color-mix(in oklab, var(--status-developing, #b58a45) 6%, var(--surface-elev-1, #fff));
+}
+
+.th2-toast--info {
+  border-left: 3px solid var(--accent, #2b5da8);
+  background: color-mix(in oklab, var(--accent, #2b5da8) 6%, var(--surface-elev-1, #fff));
+}
+
+/* ── Add Student button ──────────────────────────────────── */
+.th2-add-student-btn {
+  width: 100%;
+  height: 32px;
+  border: 1px dashed color-mix(in oklab, var(--accent, #2b5da8) 40%, var(--border-subtle, #e0ddd8));
+  border-radius: 8px;
+  background: transparent;
+  color: var(--accent, #2b5da8);
+  font: 500 12px/1 var(--font-ui, system-ui);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: background 0.13s, border-color 0.13s;
+  margin-top: 6px;
+}
+.th2-add-student-btn:hover {
+  background: color-mix(in oklab, var(--accent, #2b5da8) 8%, transparent);
+  border-color: color-mix(in oklab, var(--accent, #2b5da8) 55%, transparent);
+}
+
+/* ── Add Student drawer ──────────────────────────────────── */
+.th2-add-drawer { right: 0; }
+
+.th2-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.th2-add-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.th2-add-label {
+  margin: 0;
+  font: 600 11.5px/1 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.th2-add-label-opt {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.th2-add-input {
+  height: 40px;
+  padding: 0 12px;
+  background: var(--surface-2, #f5f4f1);
+  border: 1.5px solid var(--border, #d5d2cc);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font: 400 14px/1 var(--font-ui, system-ui);
+  outline: none;
+  transition: border-color 0.13s, box-shadow 0.13s;
+}
+.th2-add-input:focus {
+  border-color: var(--accent, #2b5da8);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent, #2b5da8) 16%, transparent);
+}
+
+.th2-add-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.th2-add-chip {
+  height: 32px;
+  padding: 0 14px;
+  border: 1.5px solid var(--border, #d5d2cc);
+  border-radius: 99px;
+  background: var(--surface-2, #f5f4f1);
+  color: var(--text-secondary);
+  font: 500 12px/1 var(--font-ui, system-ui);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.th2-add-chip:hover {
+  background: color-mix(in oklab, var(--accent, #2b5da8) 8%, var(--surface-2, #f5f4f1));
+  border-color: color-mix(in oklab, var(--accent, #2b5da8) 35%, transparent);
+}
+.th2-add-chip.is-selected {
+  background: var(--accent, #2b5da8);
+  border-color: var(--accent, #2b5da8);
+  color: #fff;
+}
+
+/* F&P 26-letter grid */
+.th2-add-fp-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.th2-add-fp-btn {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--border, #d5d2cc);
+  border-radius: 6px;
+  background: var(--surface-2, #f5f4f1);
+  color: var(--text-secondary);
+  font: 600 12px/1 var(--font-ui, system-ui);
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.th2-add-fp-btn:hover {
+  border-color: #7c3aed;
+  color: #7c3aed;
+  background: color-mix(in oklab, #7c3aed 8%, var(--surface-2, #f5f4f1));
+}
+.th2-add-fp-btn.is-selected {
+  background: color-mix(in oklab, #7c3aed 16%, transparent);
+  border-color: #7c3aed;
+  color: #7c3aed;
+  font-weight: 700;
+}
+
+.th2-add-fp-selected {
+  margin: 4px 0 0;
+  font: 400 11.5px/1.4 var(--font-ui, system-ui);
+  color: var(--text-muted);
+}
+
+.th2-add-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+/* Add-student drawer: context-specific button tweaks only */
+.th2-add-drawer .th2-btn { height: 38px; border-radius: 8px; font-size: 13px; }
+.th2-add-drawer .th2-btn-primary { flex: 1; }
+.th2-add-drawer .th2-btn-quiet {
+  background: var(--surface-2, #f5f4f1);
+  border-color: var(--border, #d5d2cc);
+}
+
+.th2-add-error {
+  margin: 0;
+  font: 400 12.5px/1.4 var(--font-ui, system-ui);
+  color: var(--status-risk, #b25e5e);
+  padding: 8px 12px;
+  background: color-mix(in oklab, var(--status-risk, #b25e5e) 8%, transparent);
+  border-radius: 6px;
+}
+
+/* Phase 16: Subject Performance Levels + Confidential Plan Types */
+.th2-add-level-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.th2-add-level-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.th2-add-level-label {
+  flex: 1;
+  font: 500 13px/1 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+}
+
+.th2-add-level-sel {
+  flex: 0 0 140px;
+  height: 32px;
+  padding: 0 10px;
+  background: var(--surface-2, #f5f4f1);
+  border: 1.5px solid var(--border, #d5d2cc);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font: 400 12px/1 var(--font-ui, system-ui);
+  cursor: pointer;
+  transition: border-color 0.13s;
+}
+.th2-add-level-sel:focus {
+  outline: none;
+  border-color: var(--accent, #2b5da8);
+}
+
+.th2-add-field--confidential {
+  padding: 12px;
+  background: color-mix(in oklab, #dc2626 4%, transparent);
+  border-left: 3px solid color-mix(in oklab, #dc2626 45%, transparent);
+  border-radius: 6px;
+}
+
+.th2-add-chip--plan.is-selected {
+  background: color-mix(in oklab, #dc2626 25%, transparent);
+  border-color: #dc2626;
+  color: #7f1d1d;
+}
+
+/* Goals section in drawer */
+.th2-dg-domain {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.th2-dg-domain-label {
+  font: 600 12px/1 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 4px;
+}
+
+.th2-dg-goal-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle, #e5e7eb);
+}
+
+.th2-dg-goal-skill {
+  flex: 1;
+  font: 400 12px/1.4 var(--font-ui, system-ui);
+  color: var(--text-primary);
+}
+
+.th2-level-chip {
+  flex-shrink: 0;
+  min-width: 52px;
+  padding: 4px 8px;
+  text-align: center;
+  border-radius: 4px;
+  font: 600 11px/1 var(--font-ui, system-ui);
+  color: #fff;
+}
+.th2-level-chip[data-level="4"] {
+  background: #10b981; /* Exemplary — green */
+}
+.th2-level-chip[data-level="3"] {
+  background: #3b82f6; /* Meeting — blue */
+}
+.th2-level-chip[data-level="2"] {
+  background: #f59e0b; /* Approaching — amber */
+}
+.th2-level-chip[data-level="1"] {
+  background: #ef4444; /* Emerging — red */
+}
+
+.th2-dg-remove {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.12s;
+}
+.th2-dg-remove:hover {
+  color: #ef4444;
+}
+
+.th2-dg-add-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px;
+  background: #f3f4f6;
+  border-radius: 6px;
+}
+
+.th2-dg-skill-input {
+  flex: 1;
+  height: 28px;
+  padding: 0 8px;
+  background: #fff;
+  border: 1px solid var(--border, #d5d2cc);
+  border-radius: 4px;
+  font: 400 12px/1 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.12s;
+}
+.th2-dg-skill-input:focus {
+  border-color: var(--accent, #2b5da8);
+}
+
+.th2-dg-level-select {
+  width: 80px;
+  height: 28px;
+  padding: 0 6px;
+  background: #fff;
+  border: 1px solid var(--border, #d5d2cc);
+  border-radius: 4px;
+  font: 400 12px/1 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.12s;
+}
+.th2-dg-level-select:focus {
+  border-color: var(--accent, #2b5da8);
+}
+
+.th2-dg-add-btn {
+  flex-shrink: 0;
+  width: 60px;
+  height: 28px;
+  padding: 0 10px;
+  background: var(--accent, #2b5da8);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font: 600 11px/1 var(--font-ui, system-ui);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.th2-dg-add-btn:hover {
+  background: color-mix(in oklab, var(--accent, #2b5da8) 110%, transparent);
+}
+
+/* Focus card domain goals section */
+.th2-domain-section {
+  margin: 16px 0;
+}
+
+.th2-domain-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.th2-domain-group-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.th2-domain-group-label {
+  font: 600 11px/1 var(--font-ui, system-ui);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  flex: 1;
+}
+
+.th2-domain-title {
+  font: 500 12px/1 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+}
+
+.th2-domain-empty {
+  font: 400 12px/1.3 var(--font-ui, system-ui);
+  color: var(--text-muted);
+  padding: 4px 0;
+  font-style: italic;
+}
+
+.th2-goal-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.th2-goal-skill {
+  flex: 1;
+  font: 400 12px/1 var(--font-ui, system-ui);
+  color: var(--text-primary);
+}
+
+/* Plan section in drawer */
+.th2-plan-section {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: color-mix(in oklab, #dc2626 2%, transparent);
+  border-radius: 8px;
+}
+
+.th2-plan-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font: 600 12px/1 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+  text-align: left;
+}
+.th2-plan-toggle:hover {
+  color: var(--text-primary);
+}
+
+.th2-plan-toggle.is-expanded {
+  color: #dc2626;
+}
+
+.th2-plan-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+}
+.th2-plan-details.is-expanded {
+  max-height: 500px;
+}
+
+.th2-plan-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+  background: #fff;
+  border-radius: 6px;
+}
+
+.th2-plan-chip {
+  padding: 6px 10px;
+  border: 1.5px solid #dc2626;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #7f1d1d;
+  font: 500 11px/1 var(--font-ui, system-ui);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.th2-plan-chip.is-selected {
+  background: #dc2626;
+  color: #fff;
+}
+.th2-plan-chip:hover {
+  background: color-mix(in oklab, #dc2626 15%, transparent);
+}
+
+.th2-plan-save-note {
+  margin: 8px 8px 0;
+  font: 400 11px/1.3 var(--font-ui, system-ui);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── Today's Classes snapshot ──────────────────────────── */
+.th2-today-panel {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  animation: th2-reveal 0.22s ease-out;
+}
+
+.th2-today-head { margin-bottom: 4px; }
+
+.th2-today-title {
+  margin: 0;
+  font: 700 26px/1.2 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+}
+
+.th2-today-sub {
+  margin: 5px 0 0;
+  font: 400 13px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+}
+
+.th2-snapshot-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.th2-snapshot-group-label {
+  margin: 0;
+  font: 600 10.5px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--border-subtle, #e8e5e0);
+}
+
+.th2-snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px;
+}
+
+.th2-snapshot-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--surface-elev-1, #fff);
+  border: 1px solid var(--border-subtle, #e8e5e0);
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: border-color 0.14s, box-shadow 0.14s, transform 0.1s;
+}
+.th2-snapshot-card:hover {
+  border-color: color-mix(in oklab, var(--accent, #2b5da8) 35%, transparent);
+  box-shadow: 0 2px 12px rgba(43,93,168,.1);
+  transform: translateY(-1px);
+}
+
+.th2-snapshot-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.th2-snapshot-card-name {
+  font: 600 13px/1.2 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.th2-snapshot-card-meta {
+  font: 400 11px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.th2-snapshot-card-signals {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.th2-snapshot-trend {
+  font: 700 13px/1 var(--font-ui, system-ui);
+  width: 18px;
+  text-align: center;
+}
+.th2-snapshot-trend[data-trend="up"]   { color: var(--status-secure,    #4e8d6a); }
+.th2-snapshot-trend[data-trend="down"] { color: var(--status-risk,       #b25e5e); }
+.th2-snapshot-trend[data-trend="stable"] { color: var(--text-muted); }
+
+/* ── Morning brief hero card ────────────────────────────── */
+@keyframes th2-brief-slide {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.th2-morning--entered > * {
+  animation: th2-brief-slide 0.32s ease-out both;
+}
+.th2-morning--entered > *:nth-child(1) { animation-delay: 0.00s; }
+.th2-morning--entered > *:nth-child(2) { animation-delay: 0.04s; }
+.th2-morning--entered > *:nth-child(3) { animation-delay: 0.08s; }
+.th2-morning--entered > *:nth-child(4) { animation-delay: 0.13s; }
+.th2-morning--entered > *:nth-child(5) { animation-delay: 0.19s; }
+
+.th2-hero-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px;
+  background: var(--surface-elev-1, #fff);
+  border: 1px solid var(--border-subtle, #e8e5e0);
+  border-radius: 16px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: box-shadow 0.16s ease, transform 0.12s ease;
+  margin-bottom: 4px;
+}
+.th2-hero-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(43,93,168,.13);
+}
+
+.th2-hero-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.th2-hero-card--t3 {
+  border-left: 4px solid #d97706;   /* Emerging — amber */
+  background: color-mix(in oklab, #d97706 4%, var(--surface-elev-1, #fff));
+}
+.th2-hero-card--t2 {
+  border-left: 4px solid #7c3aed;   /* Developing — purple */
+  background: color-mix(in oklab, #7c3aed 4%, var(--surface-elev-1, #fff));
+}
+.th2-hero-card--t1 {
+  border-left: 4px solid var(--status-secure, #4e8d6a);
+  background: color-mix(in oklab, var(--status-secure, #4e8d6a) 4%, var(--surface-elev-1, #fff));
+}
+
+.th2-hero-card-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.th2-hero-card-identity {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.th2-hero-card-name {
+  font: 700 18px/1.2 var(--font-ui, system-ui);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+.th2-hero-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.th2-hero-card-grade, .th2-hero-card-last {
+  font: 400 12px/1 var(--font-ui, system-ui);
+  color: var(--text-muted);
+}
+.th2-hero-priority-badge {
+  flex-shrink: 0;
+  font: 700 9px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 99px;
+  background: color-mix(in oklab, var(--status-risk, #b25e5e) 14%, transparent);
+  color: var(--status-risk, #b25e5e);
+  border: 1px solid color-mix(in oklab, var(--status-risk, #b25e5e) 30%, transparent);
+}
+.th2-hero-card-rec {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 11px 14px;
+  background: color-mix(in oklab, var(--accent, #2b5da8) 5%, var(--surface-2, #f5f4f1));
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--accent, #2b5da8) 14%, transparent);
+}
+.th2-hero-rec-label {
+  font: 500 9.5px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent, #2b5da8);
+  opacity: 0.8;
+}
+.th2-hero-rec-title {
+  font: 600 13px/1.3 var(--font-ui, system-ui);
+  color: var(--text-primary);
+}
+
+/* ════════════════════════════════════════════════════════════
+   Phase 8 — Tool badges (WtW · RN · Lexia) + UDL strip
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Tool badges ──────────────────────────────────────────── */
+.th2-tool-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 99px;
+  font: 600 10.5px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: opacity 0.13s, transform 0.1s;
+  vertical-align: middle;
+}
+.th2-tool-badge:hover { opacity: 0.78; transform: scale(1.04); }
+
+/* Words Their Way — violet */
+.th2-tool-badge--wtw {
+  background: color-mix(in oklab, #7048e8 11%, transparent);
+  border-color: color-mix(in oklab, #7048e8 26%, transparent);
+  color: #5a32d1;
+}
+/* Read Naturally — teal */
+.th2-tool-badge--rn {
+  background: color-mix(in oklab, #2b8a78 11%, transparent);
+  border-color: color-mix(in oklab, #2b8a78 26%, transparent);
+  color: #1f6b5d;
+}
+/* Lexia — amber */
+.th2-tool-badge--lexia {
+  background: color-mix(in oklab, #b58a45 11%, transparent);
+  border-color: color-mix(in oklab, #b58a45 26%, transparent);
+  color: #8a6527;
+}
+
+/* ⊕ add button */
+.th2-tool-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--border, #d5d2cc);
+  background: transparent;
+  color: var(--text-muted);
+  font: 600 13px/1 var(--font-ui, system-ui);
+  cursor: pointer;
+  padding: 0;
+  vertical-align: middle;
+  margin-left: 1px;
+  transition: border-color 0.13s, color 0.13s;
+}
+.th2-tool-add:hover {
+  border-color: var(--accent, #2b5da8);
+  color: var(--accent, #2b5da8);
+}
+
+/* ── UDL accommodation strip ──────────────────────────────── */
+.th2-udl-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  position: relative;
+}
+
+.th2-udl-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 99px;
+  font: 500 11px/1 var(--font-ui, system-ui);
+  border: 1.5px solid var(--border, #d5d2cc);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.th2-udl-chip.is-active {
+  background: color-mix(in oklab, #7c3aed 9%, transparent);
+  border-color: color-mix(in oklab, #7c3aed 28%, transparent);
+  color: #6229c9;
+  font-weight: 600;
+}
+.th2-udl-chip.is-active:hover {
+  background: color-mix(in oklab, #7c3aed 16%, transparent);
+}
+.th2-udl-chip:not(.is-active):hover {
+  border-color: color-mix(in oklab, #7c3aed 28%, transparent);
+  color: #6229c9;
+}
+
+/* toggle button */
+.th2-udl-toggle {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 99px;
+  font: 500 11px/1 var(--font-ui, system-ui);
+  border: 1.5px dashed var(--border, #d5d2cc);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.12s, color 0.12s;
+}
+.th2-udl-toggle:hover { border-color: #7c3aed; color: #7c3aed; }
+
+/* inline chip picker */
+.th2-udl-picker {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 10px 12px;
+  background: var(--surface-2, #f5f4f1);
+  border: 1px solid var(--border-subtle, #e8e5e0);
+  border-radius: 10px;
+  margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 9 — Live Signal Surfaces
+   ═══════════════════════════════════════════════════════════ */
+
+/* Signal pills — extended styles for live data variants */
+.th2-signal-reason {
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.78;
+  letter-spacing: 0;
+}
+.th2-signal--meta { background: var(--surface-2, #f5f4f1); color: var(--text-secondary, #6b6860); }
+.th2-signal--acc  { background: #d1fae5; color: #065f46; }
+.th2-signal--orf  { background: #dbeafe; color: #1e3a5f; }
+
+/* Evidence data chips row */
+.th2-ev-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.th2-ev-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  background: var(--surface-2, #f5f4f1);
+  border: 1px solid var(--border-subtle, #e8e5e0);
+  border-radius: 20px;
+  font-size: 11px;
+  color: var(--text-secondary, #6b6860);
+}
+.th2-ev-chip-label {
+  font-weight: 500;
+  color: var(--text-primary, #1c1a18);
+}
+.th2-ev-chip-val {
+  font-weight: 700;
+  color: var(--accent-main, #c84b31);
+}
+
+/* Progress note copy row */
+.th2-note-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--surface-2, #f5f4f1);
+  border-top: 1px solid var(--border-subtle, #e8e5e0);
+  flex-wrap: wrap;
+}
+.th2-note-actions-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary, #6b6860);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-right: 2px;
+}
+.th2-note-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--border-subtle, #e8e5e0);
+  border-radius: 20px;
+  background: var(--surface-1, #fff);
+  color: var(--text-primary, #1c1a18);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.th2-note-btn:hover {
+  border-color: var(--accent-main, #c84b31);
+  color: var(--accent-main, #c84b31);
+  background: #fff5f2;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 10 — Caseload Health Bar
+   ═══════════════════════════════════════════════════════════ */
+
+.th2-health-wrap {
+  /* Card container so the bar reads as a data summary, not an error state */
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 12px;
+  padding: 11px 14px 12px;
+  margin: 8px 0 10px;
+  animation: th2-brief-in .35s ease both;
+}
+.th2-health-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 4px;
+  overflow: hidden;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.08);
+}
+.th2-health-seg {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+  min-width: 4px;
+}
+/* Use consistent tier colors that match tier chips */
+.th2-health-seg--high   { background: #c0392b; }
+.th2-health-seg--mod    { background: #d4820a; }
+.th2-health-seg--stable { background: #2e7d52; }
+.th2-health-legend {
+  display: flex;
+  gap: 14px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.th2-health-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.th2-health-dot::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.th2-health-dot--high::before   { background: #c0392b; }
+.th2-health-dot--mod::before    { background: #d4820a; }
+.th2-health-dot--stable::before { background: #2e7d52; }
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 11 — Drawer: Progress Notes + IM Cool-Down
+   ═══════════════════════════════════════════════════════════ */
+
+/* Auto-generated badge inline with section head */
+.th2-auto-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  border-radius: 10px;
+  vertical-align: middle;
+}
+.th2-drawer-note-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.th2-note-tab {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--border-subtle, #e8e5e0);
+  border-radius: 20px;
+  background: none;
+  color: var(--text-secondary, #6b6860);
+  cursor: pointer;
+  transition: all .15s;
+}
+.th2-note-tab.is-active,
+.th2-note-tab:hover {
+  background: var(--accent-main, #c84b31);
+  color: #fff;
+  border-color: var(--accent-main, #c84b31);
+}
+.th2-note-text {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-primary, #1c1a18);
+  background: var(--surface-2, #f5f4f1);
+  border: 1px solid var(--border-subtle, #e8e5e0);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 0 0 10px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+.th2-drawer-note-sub {
+  font-size: 12px;
+  color: var(--text-secondary, #6b6860);
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+
+/* IM Cool-Down */
+.th2-cooldown-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.th2-cooldown-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary, #6b6860);
+  white-space: nowrap;
+}
+.th2-cooldown-input {
+  width: 60px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  border: 1.5px solid var(--border-subtle, #e8e5e0);
+  border-radius: 8px;
+  background: var(--surface-1, #fff);
+  color: var(--text-primary, #1c1a18);
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.th2-cooldown-input:focus {
+  border-color: var(--accent-main, #c84b31);
+  outline: none;
+}
+.th2-cooldown-hint {
+  margin-top: 10px;
+  min-height: 28px;
+}
+.th2-cooldown-group {
+  display: inline-block;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: #fff;
+  border-radius: 20px;
+  animation: th2-toast-in .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 12 — Onboarding (first-use empty state)
+   ═══════════════════════════════════════════════════════════ */
+
+.th2-onboarding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 32px 40px;
+  max-width: 440px;
+  margin: 0 auto;
+  animation: th2-onboard-in .5s cubic-bezier(.34,1.4,.64,1) both;
+}
+@keyframes th2-onboard-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+.th2-onboarding-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  line-height: 1;
+  animation: th2-onboard-in .5s .1s cubic-bezier(.34,1.4,.64,1) both;
+}
+.th2-onboarding-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary, #1c1a18);
+  margin: 0 0 8px;
+  letter-spacing: -.02em;
+}
+.th2-onboarding-sub {
+  font-size: 14px;
+  color: var(--text-secondary, #6b6860);
+  margin: 0 0 28px;
+  line-height: 1.5;
+}
+.th2-onboarding-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.th2-onboarding-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface-2, #f5f4f1);
+  border: 1px solid var(--border-subtle, #e8e5e0);
+  border-radius: 12px;
+  animation: th2-onboard-in .4s both;
+}
+.th2-onboarding-step:nth-child(1) { animation-delay: .15s; }
+.th2-onboarding-step:nth-child(2) { animation-delay: .25s; }
+.th2-onboarding-step:nth-child(3) { animation-delay: .35s; }
+.th2-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  background: var(--accent-main, #c84b31);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 50%;
+}
+.th2-onboarding-step strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary, #1c1a18);
+  margin-bottom: 2px;
+}
+.th2-onboarding-step p {
+  font-size: 12px;
+  color: var(--text-secondary, #6b6860);
+  margin: 0;
+  line-height: 1.45;
+}
+.th2-onboarding-cta {
+  animation: th2-onboard-in .4s .45s both;
+  font-size: 15px;
+  padding: 13px 28px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 12 — Mobile responsive polish
+   (Shell/sidebar/main layout handled by the ≤768px block above;
+    only component-level overrides remain here.)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  /* Sidebar head: hide auth rows to reclaim vertical space */
+  .th2-classroom-sync-row,
+  .th2-google-signin-row {
+    display: none;
+  }
+
+  /* Tighten sidebar head padding on very small screens */
+  .th2-sidebar-head {
+    padding: 10px 12px 6px;
+    gap: 6px;
+  }
+
+  .th2-focus-head {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .th2-focus-trend {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .th2-actions {
+    flex-direction: column;
+  }
+  .th2-note-actions {
+    gap: 5px;
+  }
+  .th2-drawer {
+    width: 100%;
+    max-width: 100%;
+  }
+  .th2-signals {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .th2-onboarding {
+    padding: 32px 16px 24px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 13 — Engagement & Micro-interactions (WOW edition)
+   ═══════════════════════════════════════════════════════════ */
+
+/* Keyframe animations for depth, motion, and engagement */
+@keyframes th2-card-lift {
+  from { transform: translateY(0); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  to   { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(43,93,168,.16); }
+}
+@keyframes th2-glow-pulse {
+  0%   { filter: drop-shadow(0 0 0px rgba(43,93,168,0)); }
+  50%  { filter: drop-shadow(0 0 8px rgba(43,93,168,.3)); }
+  100% { filter: drop-shadow(0 0 0px rgba(43,93,168,0)); }
+}
+@keyframes th2-tab-pulse {
+  0%   { box-shadow: inset 0 0 0 2px rgba(43,93,168,0); }
+  50%  { box-shadow: inset 0 0 0 2px rgba(43,93,168,.4); }
+  100% { box-shadow: inset 0 0 0 2px rgba(43,93,168,0); }
+}
+@keyframes th2-signal-bounce {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+@keyframes th2-glass-shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+@keyframes th2-fade-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Enhanced card interactions ─────────────────────────── */
+.th2-brief-card,
+.th2-hero-card,
+.th2-snapshot-card {
+  position: relative;
+  transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
+}
+
+.th2-brief-card:hover,
+.th2-hero-card:hover,
+.th2-snapshot-card:hover {
+  animation: th2-card-lift 0.28s ease-out forwards;
+}
+
+/* Tier stripe glow on focus card */
+.th2-focus-card::before {
+  animation: th2-glow-pulse 2.4s ease-in-out infinite;
+  animation-delay: 0.4s;
+}
+
+/* ── Mode tabs: pulse + spring ─────────────────────────── */
+.th2-mode-tab {
+  position: relative;
+  transition: all 0.18s cubic-bezier(.34,1.2,.64,1);
+}
+
+.th2-mode-tab:hover {
+  transform: scale(1.02);
+}
+
+.th2-mode-tab.is-active {
+  animation: th2-tab-pulse 1.8s ease-in-out infinite;
+  animation-delay: 0.1s;
+}
+
+/* ── Signal pills: spring bounce on render ─────────────── */
+.th2-signal {
+  animation: th2-signal-bounce 0.5s cubic-bezier(.68,-.55,.27,1.55) both;
+}
+.th2-signal:nth-child(1) { animation-delay: 0ms; }
+.th2-signal:nth-child(2) { animation-delay: 80ms; }
+.th2-signal:nth-child(3) { animation-delay: 160ms; }
+.th2-signal:nth-child(4) { animation-delay: 240ms; }
+
+/* ── Sidebar context: glass morphism effect ────────────── */
+.th2-sidebar-ctx {
+  background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.08) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-top: 8px;
+  animation: th2-fade-in-up 0.4s ease-out;
+}
+
+/* ── Urgency count — inline number in urgency text ──────── */
+.th2-urgency-count {
+  font-weight: 700;
+  color: #c0392b;
+}
+
+/* ── Evidence timeline sparkle ────────────────────────── */
+.th2-session-row {
+  display: flex;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(43,93,168,.04);
+  border-left: 3px solid #2b5da8;
+  animation: th2-fade-in-up 0.3s ease-out;
+  transition: all 0.14s ease;
+}
+.th2-session-row:hover {
+  background: rgba(43,93,168,.08);
+  transform: translateX(2px);
+}
+
+.th2-session-date {
+  font-size: 11px;
+  font-weight: 700;
+  color: #3d4559;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  min-width: 70px;
+}
+
+.th2-session-score {
+  font-weight: 700;
+  color: #0d1117;
+  font-size: 14px;
+  flex: 1;
+}
+
+.th2-session-slope {
+  font-size: 12px;
+  padding: 2px 8px;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: #fff;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* ── Quick-log drawer (new session entry) ────────────── */
+.th2-quick-log-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(43,93,168,.02) 0%, rgba(43,93,168,.01) 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(43,93,168,.12);
+}
+
+.th2-log-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #3d4559;
+}
+
+.th2-log-input {
+  padding: 10px 14px;
+  border: 1.5px solid #8fa3bd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #ffffff;
+  color: #0d1117;
+  transition: all 0.18s ease;
+  font-family: inherit;
+}
+
+.th2-log-input:focus {
+  outline: none;
+  border-color: #2b5da8;
+  box-shadow: 0 0 0 3px rgba(43,93,168,.1);
+  transform: scale(1.01);
+}
+
+.th2-log-note {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 160px;
+}
+
+.th2-log-save {
+  padding: 11px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  background: linear-gradient(135deg, #2b5da8 0%, #1e4a8a 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(.34,1.2,.64,1);
+  box-shadow: 0 4px 12px rgba(43,93,168,.2);
+}
+
+.th2-log-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(43,93,168,.3);
+}
+
+.th2-log-save:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(43,93,168,.15);
+}
+
+/* ── Empty state warmth ─────────────────────────────── */
+.th2-empty-state {
+  animation: th2-fade-in-up 0.5s ease-out;
+}
+
+/* ── Drawer entry animation ────────────────────────── */
+.th2-drawer.is-open {
+  animation: th2-drawer-slide-in 0.28s cubic-bezier(.34,1.2,.64,1) forwards;
+}
+
+@keyframes th2-drawer-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ── Overlay fade-in ────────────────────────────────── */
+#th2-overlay {
+  animation: th2-overlay-fade 0.2s ease-out forwards;
+}
+
+@keyframes th2-overlay-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Button hover lift throughout ──────────────────── */
+button[class*="th2-btn"],
+.th2-export-btn,
+.th2-btn-log {
+  transition: all 0.18s cubic-bezier(.34,1.2,.64,1);
+  position: relative;
+}
+
+button[class*="th2-btn"]:hover:not(:disabled),
+.th2-export-btn:hover:not(:disabled),
+.th2-btn-log:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.12) !important;
+}
+
+button[class*="th2-btn"]:active:not(:disabled),
+.th2-export-btn:active:not(:disabled),
+.th2-btn-log:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* ── Focus ring enhancement ────────────────────────── */
+:focus-visible {
+  outline: 2px solid #2b5da8;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Input placeholder styling ─────────────────────── */
+input::placeholder,
+textarea::placeholder {
+  color: #6b7591;
+  font-weight: 400;
+}
+
+/* ── Smooth list transitions ───────────────────────── */
+.th2-brief-list,
+.th2-snapshot-group {
+  animation: th2-fade-in-up 0.4s ease-out;
+}
+
+/* (mobile touch-target block removed — consolidated into main @media (max-width: 768px) block above) */
+
+/* ── Tablet optimizations ──────────────────────────── */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .th2-sidebar {
+    width: 240px;
+  }
+
+  .th2-focus-card {
+    max-width: 100%;
+  }
+}
+
+/* ── Print styles (if printed to PDF) ──────────────── */
+@media print {
+  .th2-sidebar,
+  .th2-drawer,
+  #th2-overlay {
+    display: none;
+  }
+
+  .th2-main {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .th2-focus-card {
+    break-inside: avoid;
+  }
+}
+
+/* ── Cost dashboard panel ──────────────────────────── */
+.th2-cost-dashboard {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 280px;
+  background: #ffffff;
+  border: 1px solid #8fa3bd;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  font-size: 13px;
+  color: #0d1117;
+  z-index: 1000;
+  animation: th2-fade-in-up 0.3s ease-out;
+}
+
+.th2-cost-dashboard.hidden {
+  display: none;
+}
+
+.th2-cost-dashboard-title {
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #3d4559;
+  margin: 0 0 12px 0;
+  border-bottom: 1px solid #8fa3bd;
+  padding-bottom: 8px;
+}
+
+.th2-cost-dashboard-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e5f0;
+}
+
+.th2-cost-dashboard-row:last-child {
+  border-bottom: none;
+}
+
+.th2-cost-dashboard-label {
+  font-weight: 500;
+  color: #3d4559;
+}
+
+.th2-cost-dashboard-value {
+  font-weight: 700;
+  color: #2b5da8;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+}
+
+.th2-cost-dashboard-progress {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #8fa3bd;
+}
+
+.th2-cost-dashboard-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e0e5f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.th2-cost-dashboard-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4ade80 0%, #fbbf24 80%, #ef4444 100%);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.th2-cost-dashboard-warning {
+  margin-top: 12px;
+  padding: 10px;
+  background: #fef3c7;
+  border-left: 3px solid #f59e0b;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #92400e;
+  display: none;
+}
+
+.th2-cost-dashboard-warning.active {
+  display: block;
+}
+
+.th2-cost-dashboard-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7591;
+  font-size: 16px;
+  padding: 4px;
+  transition: color 0.14s;
+}
+
+.th2-cost-dashboard-close:hover {
+  color: #0d1117;
+}
+
+/* Mobile adjustment */
+@media (max-width: 600px) {
+  .th2-cost-dashboard {
+    bottom: 10px;
+    right: 10px;
+    width: 240px;
+    font-size: 12px;
+  }
+}
+
+/* ── Phase 15: Auth chip + Classroom sync + Curriculum btn ── */
+
+/* Top row that holds brand + auth chip side by side */
+.th2-sidebar-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Google auth chip (small, in sidebar header) */
+.th2-auth-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 32px;
+  padding: 3px 10px 3px 4px;
+  flex-shrink: 0;
+  max-width: 140px;
+}
+
+.th2-auth-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e5e9f5;
+  flex-shrink: 0;
+}
+
+.th2-auth-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary, #1a1f3d);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+/* Classroom sync row */
+.th2-classroom-sync-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.th2-classroom-sync-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #1a56db;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  flex: 1;
+  transition: background 0.15s;
+}
+
+.th2-classroom-sync-btn:hover { background: #1447c0; }
+.th2-classroom-sync-btn:disabled { opacity: 0.6; cursor: wait; }
+
+.th2-google-signout-btn {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.15);
+  color: var(--text-secondary, #6b7591);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.th2-google-signout-btn:hover { background: rgba(0,0,0,0.06); }
+
+/* Sign-in row (shown when logged out but auth configured) */
+.th2-google-signin-row { margin-top: 8px; }
+
+.th2-google-signin-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  transition: box-shadow 0.15s;
+}
+
+.th2-google-signin-btn:hover { box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+
+/* Sidebar footer with curriculum button */
+.th2-sidebar-footer {
+  padding: 12px 16px 16px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  margin-top: auto;
+}
+
+.th2-cur-btn {
+  width: 100%;
+  background: rgba(255,255,255,0.82);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-primary, #1a1f3d);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.14s, border-color 0.14s;
+  backdrop-filter: blur(6px);
+  margin-bottom: 8px;
+}
+
+.th2-cur-btn:hover {
+  background: rgba(255,255,255,0.96);
+  border-color: rgba(0,0,0,0.18);
+}
+
+/* Footer secondary row — Tour + Analytics */
+.th2-sidebar-footer-row {
+  display: flex;
+  gap: 6px;
+}
+
+.th2-footer-icon-btn {
+  flex: 1;
+  background: rgba(255,255,255,0.68);
+  border: 1px solid rgba(0,0,0,0.09);
+  border-radius: 8px;
+  padding: 7px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-secondary, #3d4559);
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.14s, color 0.14s;
+}
+
+.th2-footer-icon-btn:hover {
+  background: rgba(255,255,255,0.92);
+  color: var(--text-primary, #1a1f3d);
+}
+
+/* Google Classroom course picker modal */
+.th2-classroom-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+
+.th2-classroom-modal.hidden { display: none; }
+
+.th2-classroom-modal-inner {
+  background: #fff;
+  border-radius: 16px;
+  width: min(420px, calc(100vw - 32px));
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+}
+
+.th2-classroom-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid #e8eaf0;
+}
+
+.th2-classroom-modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  color: #1a1f3d;
+}
+
+.th2-classroom-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.th2-classroom-modal-loading {
+  color: #6b7591;
+  font-size: 13px;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.th2-classroom-course-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid #e8eaf0;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.th2-classroom-course-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1f3d;
+}
+
+.th2-classroom-course-section {
+  font-size: 12px;
+  color: #6b7591;
+  margin-top: 2px;
+}
+
+.th2-classroom-sync-course-btn {
+  background: #1a56db;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.14s;
+  flex-shrink: 0;
+}
+
+.th2-classroom-sync-course-btn:hover { background: #1447c0; }
+.th2-classroom-sync-course-btn:disabled { opacity: 0.6; cursor: wait; }
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 16A — iPad / Mobile Responsive Pass
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Tablet landscape (1025–1280px): narrow sidebar ─────── */
+@media (max-width: 1280px) and (min-width: 1025px) {
+  .th2-shell { grid-template-columns: 240px 1fr; }
+  .th2-sidebar-head { padding: 14px 12px 10px; }
+  .th2-brand-word { font-size: 14px; }
+}
+
+/* ── iPad (portrait + landscape up to 1024px) ───────────── */
+/* Tablet only (769px–1024px): two-column layout with narrower sidebar.
+   min-width: 769px prevents this from overriding the single-column
+   mobile layout defined in @media (max-width: 768px) above. */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .th2-shell {
+    grid-template-columns: 220px 1fr;
+  }
+
+  .th2-main {
+    padding: 16px 14px;
+  }
+
+  .th2-focus-card {
+    max-width: 100%;
+  }
+
+  /* Larger touch targets for finger navigation */
+  .th2-list-item {
+    min-height: 52px;
+    padding: 10px 12px;
+  }
+
+  .th2-action-btn,
+  .th2-tab-btn {
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+
+  .th2-cur-btn {
+    min-height: 44px;
+    padding: 12px 14px;
+  }
+
+  .th2-classroom-sync-btn,
+  .th2-google-signin-btn {
+    min-height: 44px;
+  }
+
+  /* Drawers take up more width on iPad */
+  .th2-drawer { width: min(420px, calc(100vw - 24px)); }
+
+  /* Curriculum panel slightly narrower */
+  #cs-cur-panel { width: min(460px, calc(100vw - 16px)); }
+}
+
+/* ── iPad portrait (768px) ──────────────────────────────── */
+/* (duplicate @media (max-width: 768px) block removed — consolidated into main block above) */
+
+/* ── Small phones (<480px) ──────────────────────────────── */
+@media (max-width: 480px) {
+  .th2-sidebar { max-height: 40dvh; }
+
+  .th2-focus-name { font-size: 18px; }
+
+  .th2-quick-log-drawer,
+  .th2-drawer { width: 100vw; max-width: 100vw; border-radius: 20px 20px 0 0; bottom: 0; right: 0; top: auto; }
+
+  /* Stack sidebar auth rows */
+  .th2-classroom-sync-row { flex-direction: column; }
+  .th2-classroom-sync-btn { flex: unset; width: 100%; }
+}
+
+/* ── Touch device: remove hover states that don't apply ─── */
+@media (hover: none) and (pointer: coarse) {
+  .th2-list-item:hover { background: transparent; transform: none; }
+  .th2-action-btn:hover { transform: none; }
+  .th2-brief-card:hover { transform: none; }
+
+  /* Larger tap feedback via active state */
+  .th2-list-item:active  { background: rgba(255,255,255,0.35); }
+  .th2-action-btn:active { opacity: 0.75; }
+  .th2-brief-card:active { transform: scale(0.98); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phase 16B — Analytics Admin Panel
+   ═══════════════════════════════════════════════════════════ */
+
+.cs-analytics-panel {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 17, 35, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
+  padding: 16px;
+}
+
+.cs-analytics-inner {
+  background: #fff;
+  border-radius: 18px;
+  width: min(540px, 100%);
+  max-height: 85dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 72px rgba(0,0,0,0.28);
+}
+
+.cs-analytics-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid #e8eaf0;
+  flex-shrink: 0;
+}
+
+.cs-analytics-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1a1f3d;
+  margin: 0;
+}
+
+.cs-analytics-close {
+  background: #f0f2f9;
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #6b7591;
+  transition: background 0.14s;
+}
+
+.cs-analytics-close:hover { background: #e3e7f4; color: #1a1f3d; }
+
+/* Stats strip */
+.cs-analytics-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: #e8eaf0;
+  border-bottom: 1px solid #e8eaf0;
+  flex-shrink: 0;
+}
+
+.cs-analytics-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px;
+  background: #fafbff;
+  gap: 4px;
+}
+
+.cs-analytics-stat-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1a56db;
+  line-height: 1;
+}
+
+.cs-analytics-stat-label {
+  font-size: 11px;
+  color: #6b7591;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Data range */
+.cs-analytics-range {
+  font-size: 12px;
+  color: #6b7591;
+  margin: 0;
+  padding: 10px 22px;
+  border-bottom: 1px solid #f0f2f9;
+  flex-shrink: 0;
+}
+
+/* Event table */
+.cs-analytics-table {
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cs-analytics-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f5f7ff;
+  padding: 8px 22px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7591;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+  border-bottom: 1px solid #e8eaf0;
+}
+
+.cs-analytics-table tbody tr:hover { background: #f9faff; }
+
+.cs-analytics-ev-name {
+  padding: 9px 22px;
+  font-size: 13px;
+  color: #1a1f3d;
+  font-family: ui-monospace, monospace;
+}
+
+.cs-analytics-ev-count {
+  padding: 9px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a56db;
+  text-align: right;
+  width: 80px;
+}
+
+.cs-analytics-empty {
+  padding: 24px;
+  text-align: center;
+  color: #8b93b0;
+  font-size: 13px;
+}
+
+/* Actions footer */
+.cs-analytics-actions {
+  display: flex;
+  gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid #e8eaf0;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.cs-analytics-btn {
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.14s, opacity 0.14s;
+  white-space: nowrap;
+  min-width: 100px;
+}
+
+.cs-analytics-btn-export-json { background: #1a56db; color: #fff; }
+.cs-analytics-btn-export-json:hover { background: #1447c0; }
+
+.cs-analytics-btn-export-csv { background: #059669; color: #fff; }
+.cs-analytics-btn-export-csv:hover { background: #047857; }
+
+.cs-analytics-btn-clear { background: #f0f2f9; color: #6b7591; }
+.cs-analytics-btn-clear:hover { background: #fee2e2; color: #b91c1c; }
+
+.cs-analytics-note {
+  font-size: 11px;
+  color: #a0a9c8;
+  text-align: center;
+  margin: 0;
+  padding: 8px 22px 14px;
+  flex-shrink: 0;
+}

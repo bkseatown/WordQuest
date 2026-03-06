@@ -4,26 +4,41 @@
    ================================================================== */
 
 :root {
-  /* ===== Core Academic Surface System ===== */
-  --surface-base: #f5f7fa;
-  --surface-base-top: #edf3fb;
-  --surface-base-mid: #f4f7fb;
-  --surface-base-bottom: #f8f6f1;
-  --surface-base-gradient: linear-gradient(180deg, var(--surface-base-top) 0%, var(--surface-base-mid) 52%, var(--surface-base-bottom) 100%);
-  --surface-elev-1: #ffffff;
-  --surface-elev-2: #edf2f7;
-  --surface-elev-3: #e6edf5;
-  --surface-focus: #edf2f7;
-  --bg-900: #f5f7fa;
-  --bg-850: #edf2f7;
-  --surface-0: #ffffff;
-  --surface-1: #ffffff;
-  --surface-2: #edf2f7;
-  --surface-3: #e6edf5;
-  --surface-border: rgba(25, 45, 70, 0.12);
-  --border-subtle: rgba(0, 0, 0, 0.06);
-  --border-strong: rgba(0, 0, 0, 0.12);
-  --border-soft: rgba(0, 0, 0, 0.08);
+  /* ===== Core Academic Surface System — Warm Neutral ===== */
+  /*
+   * Design intent: warm paper-like neutrals — neither harsh white nor blue-tinted.
+   * Background reads as "quality surface", cards feel elevated but inviting.
+   * Single balanced mode — works in bright offices and home environments.
+   */
+  --surface-base: #efede8;
+  --surface-base-top: #eceae4;
+  --surface-base-mid: #efede8;
+  --surface-base-bottom: #f2f0ea;
+  --surface-base-gradient: linear-gradient(160deg, #ebebef 0%, #eeece7 48%, #f1efe9 100%);
+
+  /* ===== Page Background: Professional, Light-Safe, Dark-Mode Compatible ===== */
+  /* Uses warm neutrals that remain readable in light mode and adapt gracefully in dark mode.
+     Gradient flows diagonally (155deg) creating visual interest without harsh transitions.
+     Applied globally to html/body — all pages inherit this unified aesthetic. */
+  --page-bg-primary: #e8edf4;
+  --page-bg-secondary: #dce4ee;
+  --page-bg-tertiary: #d1dae8;
+  --page-bg-gradient: linear-gradient(155deg, #e8edf4 0%, #dce4ee 48%, #d1dae8 100%);
+
+  --surface-elev-1: #fefcfa;
+  --surface-elev-2: #e9e6df;
+  --surface-elev-3: #e1ddd6;
+  --surface-focus: #e9e6df;
+  --bg-900: #efede8;
+  --bg-850: #e9e6df;
+  --surface-0: #fefcfa;
+  --surface-1: #fefcfa;
+  --surface-2: #e9e6df;
+  --surface-3: #e1ddd6;
+  --surface-border: rgba(48, 38, 20, 0.10);
+  --border-subtle: rgba(48, 38, 20, 0.07);
+  --border-strong: rgba(48, 38, 20, 0.13);
+  --border-soft: rgba(48, 38, 20, 0.09);
 
   /* ===== Typography ===== */
   --text-primary: #1c2733;

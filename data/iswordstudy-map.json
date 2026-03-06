@@ -1,0 +1,232 @@
+{
+  "version": "iswordstudy.SAS.G3-5.v1",
+  "source": "https://iswordstudy.wordpress.com/",
+  "license": "SAS-authored — Singapore American School Intermediate Division",
+  "note": "SAS's own inquiry-based word study curriculum for G3–5. Lessons are .doc downloads from semester pages. Navigator links to the semester page; lesson-level download URLs are included for reference.",
+  "gradeUrlPattern": "https://iswordstudy.wordpress.com/grade-{gradeNum}/",
+  "semesterUrlMap": {
+    "G3-S1": "https://iswordstudy.wordpress.com/grade-3/quarter-1/",
+    "G3-S2": "https://iswordstudy.wordpress.com/grade-3/quarter-3/",
+    "G4-S1": "https://iswordstudy.wordpress.com/grade-4/quarter-1-2/",
+    "G4-S2": "https://iswordstudy.wordpress.com/grade-4/quarter-3/",
+    "G5-S1": "https://iswordstudy.wordpress.com/grade-5/quarter-1/",
+    "G5-S2": "https://iswordstudy.wordpress.com/grade-5/quarter-3/"
+  },
+  "grades": {
+    "3": {
+      "label": "Grade 3",
+      "gradeNum": 3,
+      "semesters": [
+        {
+          "id": "G3-S1",
+          "seq": 1,
+          "label": "Semester 1",
+          "pageUrl": "https://iswordstudy.wordpress.com/grade-3/quarter-1/",
+          "lessonCount": 13,
+          "units": [
+            {
+              "id": "G3-S1-U1",
+              "title": "Word Origins",
+              "focus": "Etymology — origins of English, word webs",
+              "lessons": [
+                { "n": 1,  "title": "Word Origins 1 – The Story of English",           "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-origins-1-the-story-of-english3.doc" },
+                { "n": 2,  "title": "Word Origins 2 – Word Webs",                      "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-origins-2-word-webs3.doc" }
+              ]
+            },
+            {
+              "id": "G3-S1-U2",
+              "title": "Vowels and Consonants",
+              "focus": "Phonology — vowel patterns, digraphs, homophones",
+              "lessons": [
+                { "n": 3,  "title": "Vowels & Consonants 1 – Vowels",                  "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-1-vowels4.doc" },
+                { "n": 4,  "title": "Vowels & Consonants 2 – Long and Short Vowels",   "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-2-long-and-short-vowels3.doc" },
+                { "n": 5,  "title": "Vowels & Consonants 3 – Making Long Vowels",      "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-3-making-long-vowels2.doc" },
+                { "n": 6,  "title": "Vowels & Consonants 4 – Jobs of the Silent -e",   "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-4-jobs-the-silent-e2.doc" },
+                { "n": 7,  "title": "Vowels & Consonants 5 – More Long Vowels",        "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-5-more-long-vowels2.doc" },
+                { "n": 8,  "title": "Vowels & Consonants 6 – k, ck, ch, or tch",      "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-6-c-ck-ch-or-tch2.doc" },
+                { "n": 9,  "title": "Vowels & Consonants 7 – wh Words & them/they/their", "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-7-wh-words-and-the-words-them-they-and-their4.doc" },
+                { "n": 10, "title": "Vowels & Consonants 8 & 9 – Homophones",          "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-8-and-9-homophones2.doc" },
+                { "n": 12, "title": "Vowels & Consonants 10 – Base Words Ending in f, l, s", "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-10-base-words-ending-in-f-l-s2.doc" }
+              ]
+            },
+            {
+              "id": "G3-S1-Assessment",
+              "title": "Assessment",
+              "focus": "Semester 1 review",
+              "lessons": [
+                { "n": 13, "title": "Semester 1 – Review Assessment",                  "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/semester-1-review-assessment.docx", "isAssessment": true }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "G3-S2",
+          "seq": 2,
+          "label": "Semester 2",
+          "pageUrl": "https://iswordstudy.wordpress.com/grade-3/quarter-3/",
+          "lessonCount": 14,
+          "units": [
+            {
+              "id": "G3-S2-U1",
+              "title": "Building Words",
+              "focus": "Morphology — prefixes, suffixes, compounds, matrices",
+              "lessons": [
+                { "n": 1,  "title": "Building Words 1 – The Basic Blocks",             "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/semester-2-1-building-blocks.doc" },
+                { "n": 2,  "title": "Building Words 2 – Spelling Out",                 "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-2-spelling-out1.doc" },
+                { "n": 3,  "title": "Building Words 3 – A Closer Look at Prefixes",    "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-3-a-closer-look-at-prefixes1.doc" },
+                { "n": 4,  "title": "Building Words 4 – A Closer Look at Suffixes",    "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-4-a-closer-look-at-suffixes1.doc" },
+                { "n": 5,  "title": "Building Words 5 – The Vowel Suffix -ing",        "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-5-the-scoop-on-the-vowel-suffix-ing2.doc" },
+                { "n": 6,  "title": "Building Words 6 – The Suffix -ed",               "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-6-the-suffix-ed3.doc" },
+                { "n": 7,  "title": "Building Words 7 – Compound Words",               "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-7-compound-words1.doc" },
+                { "n": 8,  "title": "Building Words 8 – Base Words Ending in y",       "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-8-base-words-ending-in-y1.doc" },
+                { "n": 9,  "title": "Building Words 9 – Plurals",                      "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-9-plurals1.doc" },
+                { "n": 10, "title": "Building Words 10 – Suffixes -est or -ist",       "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-10-suffiixes-est-or-ist2.doc" },
+                { "n": 11, "title": "Building Words 11 – w and x",                     "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-11-w-and-x1.doc" },
+                { "n": 12, "title": "Building Words 12 – Using a Matrix",              "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-12-using-a-matrix1.doc" },
+                { "n": 13, "title": "Building Words 13 – Using Matrices",              "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-13-using-matrices3.doc" },
+                { "n": 14, "title": "Building Words 14 – Assessment & Review",         "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/assessment-reveiw2.docx", "isAssessment": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    "4": {
+      "label": "Grade 4",
+      "gradeNum": 4,
+      "semesters": [
+        {
+          "id": "G4-S1",
+          "seq": 1,
+          "label": "Semester 1",
+          "pageUrl": "https://iswordstudy.wordpress.com/grade-4/quarter-1-2/",
+          "lessonCount": 13,
+          "units": [
+            {
+              "id": "G4-S1-U1",
+              "title": "Word Origins",
+              "focus": "Etymology — history of English, word webs",
+              "lessons": [
+                { "n": 1,  "title": "Word Origins 1 & 2 – The Story of English",        "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-orgins-1-and-2-the-story-of-english1.doc" },
+                { "n": 3,  "title": "Word Origins 3 – Word Webs",                       "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-orgins-3-word-webs1.doc" }
+              ]
+            },
+            {
+              "id": "G4-S1-U2",
+              "title": "Vowels and Consonants",
+              "focus": "Phonology — vowel patterns, digraphs, homophones, schwa",
+              "lessons": [
+                { "n": 4,  "title": "Vowels & Consonants 1 – Vowels",                   "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-1-vowels-1.doc" },
+                { "n": 5,  "title": "Vowels & Consonants 2 – Long Vowels",              "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-2-long-vowels.doc" },
+                { "n": 6,  "title": "Vowels & Consonants 3 – Long and Short ea",        "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-3-long-and-short-ea.doc" },
+                { "n": 7,  "title": "Vowels & Consonants 4 – dge or ge",                "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowel-and-consonants-4-dge-or-ge.doc" },
+                { "n": 8,  "title": "Vowels & Consonants 5 – Phonology of -f",          "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowel-and-consonants-5-phonology-of-f.doc" },
+                { "n": 9,  "title": "Vowels & Consonants 6 & 7 – Homophones",           "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-6-7-homophones.doc" },
+                { "n": 11, "title": "Vowels & Consonants 8 & 9 – Schwa",                "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-8-9-schwa.doc" },
+                { "n": 13, "title": "Vowels & Consonants Review",                        "docUrl": null, "note": "In-class review, no download" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "G4-S2",
+          "seq": 2,
+          "label": "Semester 2",
+          "pageUrl": "https://iswordstudy.wordpress.com/grade-4/quarter-3/",
+          "lessonCount": 14,
+          "units": [
+            {
+              "id": "G4-S2-U1",
+              "title": "Building Words",
+              "focus": "Morphology — suffixing, prefixes, polysyllables, matrices",
+              "lessons": [
+                { "n": 1,  "title": "Building Words 1 – The Building Blocks",           "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-1-the-building-blocks.doc" },
+                { "n": 2,  "title": "Building Words 2 – Building with Consonant Suffixes", "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-2-building-with-consonant-suffixes1.doc" },
+                { "n": 3,  "title": "Building Words 3 – Building with Prefixes",        "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-3-building-with-prefixes1.doc" },
+                { "n": 4,  "title": "Building Words 4 – Building with Vowel Suffixes",  "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-4-building-with-vowel-suffixes3.doc" },
+                { "n": 5,  "title": "Building Words 5 – Using a Matrix",                "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-5-using-a-matrix.doc" },
+                { "n": 6,  "title": "Building Words 6 – Base Words Ending in Y & Suffix Checker", "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-6-base-words-ending-in-y-and-learning-to-use-a-suffix-checker.doc" },
+                { "n": 7,  "title": "Building Words 7 – Suffixing to Polysyllables",    "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-7-suffixing-to-polysyllables.doc" },
+                { "n": 8,  "title": "Building Words 8 – Vowel Suffixes -ion, -ian, -ity", "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-8-suffixes-ion-ian-ity1.doc" },
+                { "n": 9,  "title": "Building Words 9 – Compound Words",                "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-9-compound-words.doc" },
+                { "n": 10, "title": "Building Words 10 & 11 – Plurals 1 and 2",         "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-10-11-plurals-1-and-2.doc" },
+                { "n": 12, "title": "Building Words 12 – Suffix -t instead of -ed",     "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words12-when-to-use-suffix-t-instead-of-ed.doc" },
+                { "n": 13, "title": "Building Words 13 – Learning from the Prefix dis-", "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-13-learning-from-the-prefix-dis.docx" },
+                { "n": 14, "title": "Building Words 14 – Assessment & Review",           "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/building-words-14-assessments-review.docx", "isAssessment": true }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    "5": {
+      "label": "Grade 5",
+      "gradeNum": 5,
+      "semesters": [
+        {
+          "id": "G5-S1",
+          "seq": 1,
+          "label": "Semester 1",
+          "pageUrl": "https://iswordstudy.wordpress.com/grade-5/quarter-1/",
+          "lessonCount": 13,
+          "units": [
+            {
+              "id": "G5-S1-U1",
+              "title": "Word Origins",
+              "focus": "Etymology — English origins, new words, word webs, matrices, word ladders",
+              "lessons": [
+                { "n": 1,  "title": "Word Origins 1 – Origins of the English Language",  "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-origins-1-origins-of-english-language.doc" },
+                { "n": 2,  "title": "Word Origins 2 – Origins of the English Language",  "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-origins-2-origins-of-english-language.doc" },
+                { "n": 3,  "title": "Word Origins 3 – New Words",                         "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-origins-3-new-words1.doc" },
+                { "n": 4,  "title": "Word Origins 4 – Word Webs and Matrices",            "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-origins-4-word-webs-and-matrices.doc" },
+                { "n": 5,  "title": "Word Origins 5 – Word Ladders",                      "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-origins-5-word-ladders.doc" }
+              ]
+            },
+            {
+              "id": "G5-S1-U2",
+              "title": "Vowels and Consonants",
+              "focus": "Phonology — vowel review, schwa, homophones, homographs, portmanteau",
+              "lessons": [
+                { "n": 6,  "title": "Vowels & Consonants 1 – Vowel Review",               "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-1-vowel-review.doc" },
+                { "n": 7,  "title": "Vowels & Consonants 2 – Long Vowels Review",         "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-2-long-vowels-review.doc" },
+                { "n": 8,  "title": "Vowels & Consonants 3 & 4 – Schwa",                  "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-3-4-schwa.doc" },
+                { "n": 10, "title": "Vowels & Consonants 5 – Homophones",                 "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-5-homophones1.doc" },
+                { "n": 11, "title": "Vowels & Consonants 6 – Homographs",                 "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-6-homographs.doc" },
+                { "n": 12, "title": "Vowels & Consonants 7 – Portmanteau Words",          "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/vowels-and-consonants-7-portmanteau-words-gr-5.doc" },
+                { "n": 13, "title": "Semester 1 – Review Assessment",                     "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/semester-1-end-of-unit-assessment.docx", "isAssessment": true }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "G5-S2",
+          "seq": 2,
+          "label": "Semester 2",
+          "pageUrl": "https://iswordstudy.wordpress.com/grade-5/quarter-3/",
+          "lessonCount": 14,
+          "units": [
+            {
+              "id": "G5-S2-U1",
+              "title": "Word Building",
+              "focus": "Morphology — matrices, prefixes, polysyllables, suffixes, plurals",
+              "lessons": [
+                { "n": 1,  "title": "Word Building 1 & 2 – The Building Blocks",          "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-1-2-the-building-blocks.doc" },
+                { "n": 3,  "title": "Word Building 3 – Using a Matrix",                   "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-3-using-a-matrix.doc" },
+                { "n": 4,  "title": "Word Building 4, 5 & 6 – Prefixes",                  "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-45-6-prefixes1.docx" },
+                { "n": 7,  "title": "Word Building 7 – Suffixing to a Polysyllabic Base", "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-7-suffixing-to-a-polysyllabic-base.doc" },
+                { "n": 8,  "title": "Word Building 8 – Base Ending in -y & Suffix Checker", "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-8-ending-in-y-and-learning-to-use-a-suffix-checker.doc" },
+                { "n": 9,  "title": "Word Building 9 – Suffix -or vs. -er",               "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-9-when-to-use-the-suffix-or-instead-of-er.doc" },
+                { "n": 10, "title": "Word Building 10 – Suffix -able or -ible",            "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-10-when-to-use-the-suffix-able-or-ible.doc" },
+                { "n": 11, "title": "Word Building 11 – Plurals",                         "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-11-plurals.doc" },
+                { "n": 12, "title": "Word Building 12 – Plurals 2",                       "docUrl": "https://iswordstudy.wordpress.com/wp-content/uploads/2011/01/word-building-12-plurals-2.doc" },
+                { "n": 13, "title": "Assessment & Review",                                  "docUrl": null, "isAssessment": true, "note": "In-class assessment" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "version": "fishtank.ela.K5.v2",
+  "source": "https://www.fishtanklearning.org/curriculum/ela/",
+  "license": "CC BY-NC-SA 4.0 — Fishtank Learning",
+  "note": "Singapore American School uses Fishtank ELA K-5 as its core ELA program (new this year in ES). Units include URL slugs for lesson-level deep linking.",
+  "lessonUrlPattern": "https://www.fishtanklearning.org/curriculum/ela/{gradeSlug}/{unitSlug}/lesson-{n}/",
+  "unitUrlPattern":   "https://www.fishtanklearning.org/curriculum/ela/{gradeSlug}/{unitSlug}/",
+  "grades": {
+    "K": {
+      "label": "Kindergarten",
+      "urlSlug": "kindergarten",
+      "units": [
+        { "id": "K-1", "seq": 1, "slug": "welcome-to-school",              "title": "Welcome to School",                 "anchor": "Community & Belonging",     "domain": "narrative",      "lessonCount": 17 },
+        { "id": "K-2", "seq": 2, "slug": "noticing-patterns-in-stories",   "title": "Noticing Patterns in Stories",      "anchor": "Literary Analysis",         "domain": "narrative",      "lessonCount": 15 },
+        { "id": "K-3", "seq": 3, "slug": "celebrating-fall",               "title": "Celebrating Fall",                  "anchor": "Informational / Science",   "domain": "informational",  "lessonCount": 14 },
+        { "id": "K-4", "seq": 4, "slug": "falling-in-love-with-authors",   "title": "Falling in Love with Authors",      "anchor": "Author Study",              "domain": "narrative",      "lessonCount": 15 },
+        { "id": "K-5", "seq": 5, "slug": "winter-wonderland",              "title": "Winter Wonderland",                 "anchor": "Informational / Seasons",   "domain": "informational",  "lessonCount": 12 },
+        { "id": "K-6", "seq": 6, "slug": "what-is-justice",                "title": "What is Justice?",                  "anchor": "Social Studies / Civics",   "domain": "informational",  "lessonCount": 16 },
+        { "id": "K-7", "seq": 7, "slug": "exploring-life-cycles",          "title": "Exploring Life Cycles",             "anchor": "Science / Informational",   "domain": "informational",  "lessonCount": 18 },
+        { "id": "K-8", "seq": 8, "slug": "reduce-reuse-recycle",           "title": "Reduce, Reuse, Recycle",            "anchor": "Environment / Argument",    "domain": "argument",       "lessonCount": 14 }
+      ]
+    },
+    "1": {
+      "label": "Grade 1",
+      "urlSlug": "1st-grade",
+      "units": [
+        { "id": "1-1",  "seq": 1,  "slug": "being-a-good-friend",           "title": "Being a Good Friend",              "anchor": "Social Skills / Narrative", "domain": "narrative",      "lessonCount": 20 },
+        { "id": "1-2",  "seq": 2,  "slug": "the-seven-continents",          "title": "The Seven Continents",             "anchor": "Social Studies / Info",     "domain": "informational",  "lessonCount": 18 },
+        { "id": "1-3",  "seq": 3,  "slug": "folktales-around-the-world",    "title": "Folktales Around the World",       "anchor": "Literary Analysis",         "domain": "narrative",      "lessonCount": 22 },
+        { "id": "1-4",  "seq": 4,  "slug": "amazing-animals",               "title": "Amazing Animals",                  "anchor": "Science / Informational",   "domain": "informational",  "lessonCount": 20 },
+        { "id": "1-5",  "seq": 5,  "slug": "love-makes-a-family",           "title": "Love Makes a Family",              "anchor": "Community / Narrative",     "domain": "narrative",      "lessonCount": 16 },
+        { "id": "1-6",  "seq": 6,  "slug": "inspiring-artists-and-musicians","title": "Inspiring Artists & Musicians",   "anchor": "Arts / Biography",          "domain": "informational",  "lessonCount": 18 },
+        { "id": "1-7",  "seq": 7,  "slug": "making-old-stories-new",        "title": "Making Old Stories New",           "anchor": "Narrative / Retelling",     "domain": "narrative",      "lessonCount": 20 },
+        { "id": "1-8",  "seq": 8,  "slug": "movements-for-equality",        "title": "Movements for Equality",           "anchor": "Social Studies / Civics",   "domain": "informational",  "lessonCount": 18 },
+        { "id": "1-9",  "seq": 9,  "slug": "the-power-of-reading",          "title": "The Power of Reading",             "anchor": "Literacy / Narrative",      "domain": "narrative",      "lessonCount": 16 },
+        { "id": "1-10", "seq": 10, "slug": "ancient-egypt",                 "title": "Ancient Egypt",                    "anchor": "History / Informational",   "domain": "informational",  "lessonCount": 20 }
+      ]
+    },
+    "2": {
+      "label": "Grade 2",
+      "urlSlug": "2nd-grade",
+      "units": [
+        { "id": "2-1", "seq": 1, "slug": "exploring-habitats",              "title": "Exploring Habitats",               "anchor": "Science / Informational",   "domain": "informational",  "lessonCount": 22 },
+        { "id": "2-2", "seq": 2, "slug": "awesome-insects",                 "title": "Awesome Insects",                  "anchor": "Science / Informational",   "domain": "informational",  "lessonCount": 20 },
+        { "id": "2-3", "seq": 3, "slug": "stories-of-immigration",          "title": "Stories of Immigration",           "anchor": "Social Studies / Narrative","domain": "narrative",      "lessonCount": 24 },
+        { "id": "2-4", "seq": 4, "slug": "people-who-changed-the-world",    "title": "People Who Changed the World",     "anchor": "Biography / History",       "domain": "informational",  "lessonCount": 20 },
+        { "id": "2-5", "seq": 5, "slug": "inside-the-human-body",           "title": "Inside the Human Body",            "anchor": "Science / Informational",   "domain": "informational",  "lessonCount": 22 }
+      ]
+    },
+    "3": {
+      "label": "Grade 3",
+      "urlSlug": "3rd-grade",
+      "units": [
+        { "id": "3-1", "seq": 1, "slug": "garveys-choice",                  "title": "Garvey's Choice",                  "anchor": "Identity / Novel Study",    "domain": "narrative",      "lessonCount": 26, "coreText": "Garvey's Choice" },
+        { "id": "3-2", "seq": 2, "slug": "charlottes-web",                  "title": "Charlotte's Web",                  "anchor": "Friendship / Novel Study",  "domain": "narrative",      "lessonCount": 30, "coreText": "Charlotte's Web" },
+        { "id": "3-3", "seq": 3, "slug": "dyamonde-daniel",                 "title": "Dyamonde Daniel",                  "anchor": "Community / Novel Study",   "domain": "narrative",      "lessonCount": 24, "coreText": "Dyamonde Daniel series" },
+        { "id": "3-4", "seq": 4, "slug": "ecosystems",                      "title": "Ecosystems",                        "anchor": "Science / Informational",   "domain": "informational",  "lessonCount": 20 },
+        { "id": "3-5", "seq": 5, "slug": "american-indians",                "title": "American Indians",                  "anchor": "History / Informational",   "domain": "informational",  "lessonCount": 22 }
+      ]
+    },
+    "4": {
+      "label": "Grade 4",
+      "urlSlug": "4th-grade",
+      "units": [
+        { "id": "4-1", "seq": 1, "slug": "taking-a-stand",                  "title": "Taking a Stand",                   "anchor": "Character / Novel Study",   "domain": "narrative",      "lessonCount": 27, "coreText": "Shiloh" },
+        { "id": "4-2", "seq": 2, "slug": "finding-fortune",                 "title": "Finding Fortune",                  "anchor": "Adventure / Novel Study",   "domain": "narrative",      "lessonCount": 26, "coreText": "Where the Mountain Meets the Moon" },
+        { "id": "4-3", "seq": 3, "slug": "believing-in-yourself",           "title": "Believing in Yourself",            "anchor": "Resilience / Novel Study",  "domain": "narrative",      "lessonCount": 24, "coreText": "The Wild Book" },
+        { "id": "4-4", "seq": 4, "slug": "interpreting-perspectives",       "title": "Interpreting Perspectives",        "anchor": "Mythology / Analysis",      "domain": "narrative",      "lessonCount": 22, "coreText": "Greek Myths" },
+        { "id": "4-5", "seq": 5, "slug": "learning-differently",            "title": "Learning Differently",             "anchor": "LD Awareness / Novel",      "domain": "narrative",      "lessonCount": 24, "coreText": "Joey Pigza Swallowed the Key" },
+        { "id": "4-6", "seq": 6, "slug": "discovering-self",                "title": "Discovering Self",                 "anchor": "Identity / Novel Study",    "domain": "narrative",      "lessonCount": 26, "coreText": "Bud, Not Buddy" }
+      ]
+    },
+    "5": {
+      "label": "Grade 5",
+      "urlSlug": "5th-grade",
+      "units": [
+        { "id": "5-1", "seq": 1, "slug": "building-community",              "title": "Building Community",               "anchor": "Community / Novel Study",   "domain": "narrative",      "lessonCount": 24, "coreText": "Seedfolks" },
+        { "id": "5-2", "seq": 2, "slug": "exploring-human-rights",          "title": "Exploring Human Rights",           "anchor": "Global Issues / Novel",     "domain": "narrative",      "lessonCount": 28, "coreText": "The Breadwinner" },
+        { "id": "5-3", "seq": 3, "slug": "protecting-the-earth",            "title": "Protecting the Earth",             "anchor": "Environment / Argument",    "domain": "argument",       "lessonCount": 20, "coreText": "Plastic Pollution" },
+        { "id": "5-4", "seq": 4, "slug": "young-heroes",                    "title": "Young Heroes",                     "anchor": "Civil Rights / History",    "domain": "informational",  "lessonCount": 22, "coreText": "Children of the Civil Rights Movement" },
+        { "id": "5-5", "seq": 5, "slug": "friendship-across-boundaries",    "title": "Friendship Across Boundaries",     "anchor": "Identity / Novel Study",    "domain": "narrative",      "lessonCount": 24, "coreText": "Return to Sender" }
+      ]
+    }
+  },
+  "skillDomainMap": {
+    "literacy.decoding":       ["K","1","2"],
+    "literacy.fluency":        ["2","3","4","5"],
+    "literacy.comprehension":  ["1","2","3","4","5"],
+    "literacy.spelling":       ["2","3","4","5"],
+    "literacy.vocabulary":     ["1","2","3","4","5"],
+    "literacy.writing":        ["2","3","4","5"],
+    "literacy.narrative":      ["1","2","3","4","5"],
+    "literacy.informational":  ["2","3","4","5"],
+    "literacy.argument":       ["3","4","5"]
+  }
+}

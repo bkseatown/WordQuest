@@ -130,15 +130,81 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 - Runtime behavior:
   - File tracks are used first (by mode), with synth fallback if catalog/load/playback fails.
 
-## Teacher Workflow
-1. Open [teacher-dashboard.html](/Users/robertwilliamknaus/Desktop/WordQuest/teacher-dashboard.html) and search/select a student first.
-2. Review the single “Today’s Move” recommendation and tier/confidence snapshot.
-3. Click `Run 90-second Probe` or `Run 10-min session` to launch [session-runner.html](/Users/robertwilliamknaus/Desktop/WordQuest/session-runner.html).
-4. Complete the session blocks, then end session to auto-generate teacher and parent notes.
-5. Save the session to the selected student and confirm trend updates in the dashboard.
-6. Export progress as CSV/JSON for admin, family, or MTSS documentation.
+## Phase 15: Bug Fixes & Visual Polish (March 2026)
 
-Screenshot placeholders:
-- `[Screenshot: Search-first dashboard view]`
-- `[Screenshot: Session runner in progress]`
-- `[Screenshot: Auto-generated summary + export]`
+### Critical Fixes
+1. **JS IIFE Syntax Error (Line 2889)**
+   - **Issue:** Straight double-quotes (`””`) used in a `.showToast()` call where curly quotes were intended
+   - **Effect:** Entire `teacher-hub-v2.js` module failed to parse silently; hub did not initialize
+   - **Fix:** Replaced `””` with escaped single quotes `’` in the Classroom sync toast message
+   - **Impact:** Hub now boots correctly, morning brief renders, students populate sidebar
+
+2. **Tour Auto-Launch Blocking Content**
+   - **Issue:** `CSTour.init()` ran automatically with 600ms delay on every page load, triggering popup overlays that blocked the main interface
+   - **Fix:** Removed auto-launch; tour now initializes lazily only when user clicks “Tour” button
+   - **Impact:** Landing page and hub load cleanly without blocking popups
+
+3. **Mobile Layout: Double Scroll & Footer Overlap**
+   - **Issue:** Shell was `height: 100dvh; overflow: hidden` with two independent scroll regions (sidebar @ 42dvh, main @ remainder), causing two separate scroll bars. Footer (Curriculum/Tour/Analytics) overlapped between student list items.
+   - **Root Cause:** `.th2-list { flex: 1 1 0% }` from desktop (shrink-to-fill) was collapsing list to 148px in an auto-height parent on mobile.
+   - **Fixes:**
+     - Changed shell to `height: auto; min-height: 100dvh; overflow: visible` for single-page scroll
+     - Override list to `flex: 0 0 auto` on mobile so it sizes to natural content height (all 5 students visible)
+   - **Impact:** Single unified scroll on mobile, no overlapping footer, all students visible before footer
+
+4. **Azure Cost Dashboard Auto-Show**
+   - **Issue:** Cost tracking dashboard auto-showed on localhost, blocking content
+   - **Fix:** Removed auto-show logic; dashboard stays hidden until user explicitly opens it
+   - **Impact:** Cleaner developer experience, no content blocked
+
+5. **Browser Cache Preventing Updates**
+   - **Issue:** Cache busters in HTML (`v=20260305a`) were static; edits to .js/.css files returned 304 Not Modified
+   - **Fix:** Bumped all 33 cache buster references from `v=20260305a` → `v=20260306a`
+   - **Impact:** Fresh file loads immediately in browser
+
+### Visual Improvements
+
+6. **Dark Background → Light Cool Gray**
+   - **Before:** Dark slate gradient `#8fa3bd → #7d94b0 → #6f8ba5` (hard on eyes, high contrast)
+   - **After:** Light cool gray gradient `#e8edf4 → #dce4ee → #d1dae8` (soft, calming, accessible)
+   - **Sidebar:** Updated to `#f0f3f8` with `#c5cfe0` subtle borders
+   - **Impact:** Better readability, reduces eye strain, professional appearance
+
+7. **Build Badge Too Prominent**
+   - **Before:** Dark pill background, green status dot, z-index 2147483600, high opacity, 11px font
+   - **After:** Ghost style with opacity 0.5, 9px font, no dot, subtle gray text
+   - **Impact:** Badge no longer distracts from main content while remaining available for debugging
+
+### Browser/Cache Considerations
+
+- **serve strips query params on redirects** — demo flag persisted to `localStorage[“cs.hub.demo”]`
+- All files now properly cache-busted to force fresh loads after edits
+- CSS media queries reorganized to prevent duplicate blocks (removed stale 600px duplicates)
+
+### Testing Completed
+
+✅ Desktop (1280px): Two-column layout, light background, all UI elements visible, no overlapping
+✅ Mobile (375px): Single-page scroll, footer properly positioned below all students, no double scroll
+✅ Tour: Launches only on button click, no auto-popups blocking content
+✅ Cache: All files load fresh; edits immediately reflected in browser
+
+---
+
+## Teacher Workflow (Command Hub)
+1. Open [teacher-hub-v2.html](/Users/robertwilliamknaus/Desktop/WordQuest/teacher-hub-v2.html) — the new Command Hub (Phase 15)
+2. **Sign in with Google** (optional) to sync roster from Google Classroom
+3. View your caseload with urgency-ranked students in sidebar
+4. **Morning Brief:** Rich intelligence surface showing tier distributions, top priority students, and recommended next steps
+5. Click a student to see **Focus Card** with plan recommendations, support strategies, and evidence snapshots
+6. Use **Curriculum panel** (📚 button) to quick-reference all 54 Fish Tank units, assessment batteries, and YouTube resources
+7. Track usage with optional **Analytics panel** (📊 button)
+8. Optional: Configure Azure OpenAI for AI-powered coaching narration and sub-plan generation
+
+### Legacy Workflow (Teacher Dashboard v1)
+1. Open [teacher-dashboard.html](/Users/robertwilliamknaus/Desktop/WordQuest/teacher-dashboard.html) — the original dashboard
+2. Search/select a student
+3. Review tier and confidence snapshot
+4. Click `Run 90-second Probe` or `Run 10-min session` to launch [session-runner.html](/Users/robertwilliamknaus/Desktop/WordQuest/session-runner.html)
+5. Complete session blocks; auto-generate teacher notes
+6. Save session and confirm trend updates
+7. Export progress as CSV/JSON

@@ -6,87 +6,146 @@
   <base href="./">
   <title>Cornerstone MTSS</title>
   <link rel="icon" href="./favicon.ico" sizes="any">
-  <link rel="stylesheet" href="./style/tokens.css?v=20260302b">
-  <link rel="stylesheet" href="./style/typography.css?v=20260302b">
-  <link rel="stylesheet" href="./home-v3.css?v=20260302b">
+  <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
+  <link rel="stylesheet" href="./style/typography.css?v=20260306h">
+  <link rel="stylesheet" href="./home-v3.css?v=20260306h">
 </head>
 <body class="cs-home-page">
-  <main id="cs-home-root" class="cs-home-root" aria-label="Cornerstone MTSS home">
+  <main id="cs-home-root" class="cs-home-root" aria-label="Cornerstone MTSS">
     <select id="s-theme" aria-hidden="true" tabindex="-1" style="display:none;"></select>
-    <section class="home-shell" aria-label="Homepage layout">
-      <article class="home-card home-sequencer" aria-labelledby="home-next-move-title">
-        <div class="home-sequencer-layout">
-          <div class="home-sequencer-left">
-            <header class="home-head">
-              <p class="home-kicker">Cornerstone MTSS</p>
-              <h1 id="home-next-move-title">Choose Role</h1>
-              <p class="home-sub">Teacher workflow: Select -> Snapshot -> Start -> Log -> Done.</p>
-              <div class="home-signal-chips" role="list" aria-label="Core intelligence signals">
-                <span role="listitem">Tier-aware recommendations</span>
-                <span role="listitem">Curriculum mapped moves</span>
-                <span role="listitem">Meeting-ready evidence</span>
-              </div>
-            </header>
-            <div class="home-sequencer-actions">
-              <a id="home-dashboard-link" class="home-btn home-btn-primary" href="./teacher-dashboard.html">Teacher</a>
-              <a id="home-open-wordquest" class="home-btn home-btn-quiet" href="./cornerstone-mtss.html?play=1#wordquest">Student</a>
-            </div>
-          </div>
-          <aside class="home-sequencer-right" aria-label="Live system preview">
-            <section class="home-live-preview" aria-label="Live Preview">
-              <header class="home-live-preview-head">
-                <p class="home-kicker">Live Preview</p>
-                <h2>Teacher Snapshot</h2>
-              </header>
-              <article class="home-live-preview-card" aria-label="Simulated student recommendation card">
-                <div class="home-live-student-top">
-                  <strong class="home-live-student-name">Maya R.</strong>
-                  <span class="home-live-tier">Tier 2</span>
-                </div>
-                <div class="home-live-signal-row">
-                  <svg class="home-live-sparkline" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-                    <path d="M0 22 L16 20 L32 17 L48 14 L64 12 L80 10 L100 8"></path>
-                  </svg>
-                  <span class="home-live-delta home-live-delta-up">↑ improving</span>
-                </div>
-                <p class="home-live-label">Recommended Session</p>
-                <p class="home-live-action">Word Connections • Targeted • 12 min</p>
-                <p class="home-live-rationale"><strong>Insight:</strong> Confidence 84% from stable decoding + vocabulary growth.</p>
-              </article>
-            </section>
-            <div id="home-wordquest-demo" class="home-wordquest-demo"></div>
-          </aside>
-        </div>
-      </article>
+    <div class="home-entry">
+      <header class="home-entry-brand">
+        <p class="home-entry-wordmark">Cornerstone MTSS</p>
+        <h1 class="home-entry-tagline">Who is using the system today?</h1>
+      </header>
+      <nav class="home-entry-roles" aria-label="Role selection">
+        <a class="home-role-btn" href="./teacher-hub-v2.html">
+          <span class="home-role-label">✦ Command Hub</span>
+          <span class="home-role-sub">Caseload &amp; intelligence surface</span>
+        </a>
+        <a class="home-role-btn" href="./teacher-dashboard.html">
+          <span class="home-role-label">Teacher Dashboard</span>
+          <span class="home-role-sub">Planning &amp; intervention sequences</span>
+        </a>
+        <a class="home-role-btn" href="./word-quest.html?play=1">
+          <span class="home-role-label">Student</span>
+          <span class="home-role-sub">Activities &amp; practice</span>
+        </a>
+        <a class="home-role-btn home-role-btn--secondary" href="./teacher-dashboard.html">
+          <span class="home-role-label">Admin &nbsp;/&nbsp; Specialist</span>
+          <span class="home-role-sub">Caseload review &amp; reports</span>
+        </a>
+      </nav>
 
-      <section class="home-domain-row" aria-label="Domain branching">
-        <article class="home-card home-domain home-domain-literacy" id="home-literacy-card">
-          <div class="home-domain-head">
-            <span class="home-domain-icon" aria-hidden="true">🧠</span>
-            <h2>Literacy Engine</h2>
+      <!-- ── Google auth section ─────────────────────────── -->
+      <div id="home-auth-section" class="home-auth-section">
+        <!-- Signed-out state -->
+        <div id="home-auth-signedout" class="home-auth-signedout">
+          <p class="home-auth-hint">Sign in with Google to sync your class roster from Google Classroom</p>
+          <button id="home-google-signin" class="home-google-btn" type="button" aria-label="Sign in with Google">
+            <svg class="home-google-logo" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Sign in with Google
+          </button>
+          <p id="home-auth-setup-hint" class="home-auth-setup-hint hidden">
+            Google sign-in requires a one-time setup. <a href="./setup-guide.html" class="home-auth-link">See setup guide →</a>
+          </p>
+        </div>
+
+        <!-- Signed-in state -->
+        <div id="home-auth-signedin" class="home-auth-signedin hidden">
+          <div class="home-auth-chip">
+            <img id="home-auth-avatar" class="home-auth-avatar" src="" alt="" aria-hidden="true">
+            <div class="home-auth-info">
+              <span id="home-auth-name" class="home-auth-name"></span>
+              <span id="home-auth-email" class="home-auth-email"></span>
+            </div>
+            <button id="home-google-signout" class="home-auth-signout-btn" type="button" aria-label="Sign out">Sign out</button>
           </div>
-          <p class="home-domain-descriptor">Decode, reason, and compose.</p>
-          <p class="home-domain-map">Mapped: Fish Tank • UFLI • Fundations</p>
-          <a class="home-btn home-btn-primary" href="./literacy.html">Open Literacy Engine</a>
-        </article>
-        <article class="home-card home-domain home-domain-numeracy" id="home-numeracy-card">
-          <div class="home-domain-head">
-            <span class="home-domain-icon" aria-hidden="true">∑</span>
-            <h2>Numeracy Engine</h2>
-          </div>
-          <p class="home-domain-descriptor">Concept-first strategy progression.</p>
-          <p class="home-domain-map">Mapped: Illustrative Math • Bridges</p>
-          <a class="home-btn home-btn-primary" href="./numeracy.html">Open Numeracy Engine</a>
-        </article>
-      </section>
-    </section>
+        </div>
+      </div>
+      <!-- ── /Google auth section ────────────────────────── -->
+
+    </div>
   </main>
 
-  <script src="./js/instructional-sequencer.js?v=20260302b"></script>
-  <script src="./word-quest-preview.js?v=20260302b"></script>
-  <script src="./home-v3.js?v=20260302b"></script>
-  <script src="./build-stamp.js?v=20260302b"></script>
-  <script src="./js/build-badge.js?v=20260302b"></script>
+  <!-- ── Google auth scripts ──────────────────────────── -->
+  <!-- User must create js/google-auth-config.js — see js/auth/google-auth.js for setup instructions -->
+  <script src="./js/google-auth-config.js" onerror="0"></script>
+  <script src="./js/auth/google-auth.js?v=20260306h"></script>
+
+  <!-- ── Home auth UI ──────────────────────────────────── -->
+  <script>
+  (function () {
+    "use strict";
+    var signInBtn  = document.getElementById("home-google-signin");
+    var signOutBtn = document.getElementById("home-google-signout");
+    var signedOut  = document.getElementById("home-auth-signedout");
+    var signedIn   = document.getElementById("home-auth-signedin");
+    var setupHint  = document.getElementById("home-auth-setup-hint");
+    var avatarEl   = document.getElementById("home-auth-avatar");
+    var nameEl     = document.getElementById("home-auth-name");
+    var emailEl    = document.getElementById("home-auth-email");
+
+    function renderAuth(user) {
+      if (user) {
+        signedOut.classList.add("hidden");
+        signedIn.classList.remove("hidden");
+        nameEl.textContent  = user.name  || "";
+        emailEl.textContent = user.email || "";
+        if (user.picture) {
+          avatarEl.src = user.picture;
+          avatarEl.alt = user.name || "Google account";
+        } else {
+          avatarEl.src = "";
+          avatarEl.alt = "";
+        }
+      } else {
+        signedOut.classList.remove("hidden");
+        signedIn.classList.add("hidden");
+        /* Show setup hint if auth module not configured */
+        if (window.CSGoogleAuth && !window.CSGoogleAuth.isConfigured()) {
+          setupHint && setupHint.classList.remove("hidden");
+        }
+      }
+    }
+
+    /* Wait for DOM + auth module */
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!window.CSGoogleAuth) {
+        /* Auth module not loaded — show setup hint */
+        setupHint && setupHint.classList.remove("hidden");
+        return;
+      }
+      CSGoogleAuth.init();
+      CSGoogleAuth.onAuthChange(renderAuth);
+
+      if (signInBtn) {
+        signInBtn.addEventListener("click", function () {
+          signInBtn.textContent = "Signing in…";
+          signInBtn.disabled = true;
+          CSGoogleAuth.signIn().catch(function (err) {
+            signInBtn.innerHTML = '<svg class="home-google-logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Sign in with Google';
+            signInBtn.disabled = false;
+          });
+        });
+      }
+
+      if (signOutBtn) {
+        signOutBtn.addEventListener("click", function () {
+          CSGoogleAuth.signOut();
+        });
+      }
+    });
+  })();
+  </script>
+
+  <script src="./build-stamp.js?v=20260306h"></script>
+  <script src="./js/build-badge.js?v=20260306h"></script>
   <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
 </body>
 </html>

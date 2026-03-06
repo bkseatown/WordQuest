@@ -10,7 +10,41 @@
   <link rel="stylesheet" href="./style/tokens.css?v=20260301y">
   <link rel="stylesheet" href="./style/typography.css?v=20260301y">
   <link rel="stylesheet" href="./style/nav-shell.css?v=20260301y">
-  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260301y">
+  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260306h">
+  <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306h">
+  <style>
+    /* ── Command Hub CTA ─────────────────────────────── */
+    .td-hub-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      background: linear-gradient(135deg,
+        color-mix(in oklab, var(--accent, #2b5da8) 14%, transparent),
+        color-mix(in oklab, var(--accent, #2b5da8) 8%, transparent));
+      border: 1px solid color-mix(in oklab, var(--accent, #2b5da8) 32%, transparent);
+      color: var(--accent, #2b5da8);
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+    .td-hub-cta:hover {
+      background: color-mix(in oklab, var(--accent, #2b5da8) 15%, transparent);
+      border-color: color-mix(in oklab, var(--accent, #2b5da8) 50%, transparent);
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent, #2b5da8) 12%, transparent);
+    }
+    .td-hub-cta-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 5px;
+      border-radius: 99px;
+      background: var(--accent, #2b5da8);
+      color: #fff;
+      line-height: 1;
+    }
+  </style>
 </head>
 <body class="teacher-dashboard td-page">
   <main class="td-shell" id="td-shell">
@@ -27,6 +61,12 @@
       </label>
 
       <div class="td-top-actions">
+        <!-- Command Hub entry point — links to new parallel hub -->
+        <a id="td-hub-cta" class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html" aria-label="Try Command Hub — new experience">
+          ✦ Command Hub
+          <span class="td-hub-cta-badge">New</span>
+        </a>
+        <button id="td-lesson-brief" class="td-top-btn" type="button">Lesson Brief</button>
         <button id="td-add-student" class="td-top-btn" type="button">Add Student</button>
         <button id="td-new-session" class="td-top-btn" type="button">New Session</button>
         <button id="td-settings" class="td-top-btn" type="button">Settings</button>
@@ -508,66 +548,67 @@
     <button id="td-coach-mute" type="button" aria-label="Mute coach">🔈</button>
   </div>
 
-  <script src="./js/nav-shell.js?v=20260301y"></script>
-  <script src="./js/core/tier-engine.js?v=20260303a" defer></script>
-  <script src="./js/core/fidelity.js?v=20260303a" defer></script>
-  <script src="./js/core/framework-registry.js?v=20260303a" defer></script>
-  <script src="./js/executive/executive-profile.js?v=20260304a" defer></script>
-  <script src="./js/executive/support-engine.js?v=20260304a" defer></script>
-  <script src="./js/executive/task-breakdown.js?v=20260304a" defer></script>
-  <script src="./js/numeracy/sequencer.js?v=20260303a" defer></script>
-  <script src="./js/numeracy/curriculum-map.js?v=20260303b" defer></script>
-  <script src="./js/numeracy/practice-engine.js?v=20260304a" defer></script>
-  <script src="./build-stamp.js?v=20260301y"></script>
-  <script src="./js/build-badge.js?v=20260301y"></script>
+  <script src="./js/nav-shell.js?v=20260306h"></script>
+  <script src="./js/core/tier-engine.js?v=20260306h" defer></script>
+  <script src="./js/core/fidelity.js?v=20260306h" defer></script>
+  <script src="./js/core/framework-registry.js?v=20260306h" defer></script>
+  <script src="./js/executive/executive-profile.js?v=20260306h" defer></script>
+  <script src="./js/executive/support-engine.js?v=20260306h" defer></script>
+  <script src="./js/executive/task-breakdown.js?v=20260306h" defer></script>
+  <script src="./js/numeracy/sequencer.js?v=20260306h" defer></script>
+  <script src="./js/numeracy/curriculum-map.js?v=20260306h" defer></script>
+  <script src="./js/numeracy/practice-engine.js?v=20260306h" defer></script>
+  <script src="./build-stamp.js?v=20260306h"></script>
+  <script src="./js/build-badge.js?v=20260306h"></script>
   <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
-  <script src="./storage-schema.js?v=20260301y" defer></script>
-  <script src="./js/caseload-store.js?v=20260301y" defer></script>
-  <script src="./js/skill-taxonomy.js?v=20260301y" defer></script>
-  <script src="./js/skill-mapper.js?v=20260301y" defer></script>
-  <script src="./js/support-store.js?v=20260301y" defer></script>
-  <script src="./js/evidence-store.js?v=20260301y" defer></script>
-  <script src="./js/intervention-planner.js?v=20260301y" defer></script>
-  <script src="./js/data-registry.js?v=20260301y" defer></script>
-  <script src="./js/skill-store.js?v=20260301y" defer></script>
-  <script src="./js/skill-resolver.js?v=20260302b" defer></script>
-  <script src="./js/evidence-engine.js?v=20260301y" defer></script>
-  <script src="./js/risk-bands.js?v=20260301y" defer></script>
-  <script src="./js/skill-labels.js?v=20260301y" defer></script>
-  <script src="./js/celebrations.js?v=20260301y" defer></script>
-  <script src="./js/mastery-labels.js?v=20260301y" defer></script>
-  <script src="./js/mastery-engine.js?v=20260302d" defer></script>
-  <script src="./js/caseload-health.js?v=20260301y" defer></script>
-  <script src="./js/export-notes.js?v=20260301y" defer></script>
-  <script src="./js/flex-group-engine.v2.js?v=20260301y" defer></script>
-  <script src="./js/flex-group-engine.js?v=20260301y" defer></script>
-  <script src="./js/progress-summary.js?v=20260301y" defer></script>
-  <script src="./js/pathway-engine.js?v=20260301y" defer></script>
-  <script src="./js/growth-engine.js?v=20260301y" defer></script>
-  <script src="./js/plan-engine.js?v=20260301y" defer></script>
-  <script src="./js/session-planner.js?v=20260301y" defer></script>
-  <script src="./js/instructional-sequencer.js?v=20260302a" defer></script>
-  <script src="./js/alignment-loader.js?v=20260302a" defer></script>
-  <script src="./js/share-summary.js?v=20260301y" defer></script>
-  <script src="./js/reporting/generator.js?v=20260303a" defer></script>
-  <script src="./js/reporting/meeting-generator.js?v=20260304a" defer></script>
-  <script src="./js/meeting-notes.js?v=20260301y" defer></script>
-  <script src="./js/meeting-translation.js?v=20260302b" defer></script>
-  <script src="./js/sas-alignment-library.js?v=20260302a" defer></script>
-  <script src="./js/dashboard/utils/dashboard-utils.js?v=20260304b" defer></script>
-  <script src="./js/dashboard/dashboard-state.js?v=20260304b" defer></script>
-  <script src="./js/dashboard/dashboard-role.js?v=20260304b" defer></script>
-  <script src="./js/dashboard/dashboard-ui.js?v=20260304b" defer></script>
-  <script src="./js/dashboard/dashboard-focus.js?v=20260304b" defer></script>
-  <script src="./js/dashboard/dashboard-support.js?v=20260304b" defer></script>
-  <script src="./js/dashboard/dashboard-support-view.js?v=20260304e" defer></script>
-  <script src="./js/dashboard/dashboard-institutional.js?v=20260304g" defer></script>
-  <script src="./js/dashboard/dashboard-drawer.js?v=20260304f" defer></script>
-  <script src="./js/dashboard/dashboard-bindings.js?v=20260304h" defer></script>
-  <script src="./js/dashboard/dashboard-meeting.js?v=20260304b" defer></script>
-  <script src="./js/dashboard/dashboard-modals.js?v=20260304c" defer></script>
-  <script src="./js/evaluation/wow-evaluator.js?v=20260304d" defer></script>
-  <script src="./js/evaluation/evaluation-summary.js?v=20260304d" defer></script>
-  <script src="./teacher-dashboard.js?v=20260304b" defer></script>
+  <script src="./storage-schema.js?v=20260306h" defer></script>
+  <script src="./js/caseload-store.js?v=20260306h" defer></script>
+  <script src="./js/skill-taxonomy.js?v=20260306h" defer></script>
+  <script src="./js/skill-mapper.js?v=20260306h" defer></script>
+  <script src="./js/support-store.js?v=20260306h" defer></script>
+  <script src="./js/evidence-store.js?v=20260306h" defer></script>
+  <script src="./js/intervention-planner.js?v=20260306h" defer></script>
+  <script src="./js/data-registry.js?v=20260306h" defer></script>
+  <script src="./js/skill-store.js?v=20260306h" defer></script>
+  <script src="./js/skill-resolver.js?v=20260306h" defer></script>
+  <script src="./js/evidence-engine.js?v=20260306h" defer></script>
+  <script src="./js/risk-bands.js?v=20260306h" defer></script>
+  <script src="./js/skill-labels.js?v=20260306h" defer></script>
+  <script src="./js/celebrations.js?v=20260306h" defer></script>
+  <script src="./js/mastery-labels.js?v=20260306h" defer></script>
+  <script src="./js/mastery-engine.js?v=20260306h" defer></script>
+  <script src="./js/caseload-health.js?v=20260306h" defer></script>
+  <script src="./js/export-notes.js?v=20260306h" defer></script>
+  <script src="./js/flex-group-engine.v2.js?v=20260306h" defer></script>
+  <script src="./js/flex-group-engine.js?v=20260306h" defer></script>
+  <script src="./js/progress-summary.js?v=20260306h" defer></script>
+  <script src="./js/pathway-engine.js?v=20260306h" defer></script>
+  <script src="./js/growth-engine.js?v=20260306h" defer></script>
+  <script src="./js/plan-engine.js?v=20260306h" defer></script>
+  <script src="./js/session-planner.js?v=20260306h" defer></script>
+  <script src="./js/instructional-sequencer.js?v=20260306h" defer></script>
+  <script src="./js/alignment-loader.js?v=20260306h" defer></script>
+  <script src="./js/share-summary.js?v=20260306h" defer></script>
+  <script src="./js/reporting/generator.js?v=20260306h" defer></script>
+  <script src="./js/reporting/meeting-generator.js?v=20260306h" defer></script>
+  <script src="./js/meeting-notes.js?v=20260306h" defer></script>
+  <script src="./js/meeting-translation.js?v=20260306h" defer></script>
+  <script src="./js/sas-alignment-library.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/utils/dashboard-utils.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-state.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-role.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-ui.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-focus.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-support.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-support-view.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-institutional.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-drawer.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-bindings.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-meeting.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-modals.js?v=20260306h" defer></script>
+  <script src="./js/evaluation/wow-evaluator.js?v=20260306h" defer></script>
+  <script src="./js/evaluation/evaluation-summary.js?v=20260306h" defer></script>
+  <script src="./js/lesson-brief-panel.js?v=20260306h" defer></script>
+  <script src="./teacher-dashboard.js?v=20260306h" defer></script>
 </body>
 </html>

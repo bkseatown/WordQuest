@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" data-page="teacher-hub-v2">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="only light">
+  <base href="./">
+  <title>Cornerstone MTSS — Command Hub</title>
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
+  <link rel="stylesheet" href="./style/typography.css?v=20260306h">
+  <link rel="stylesheet" href="./teacher-hub-v2.css?v=20260306h">
+  <link rel="stylesheet" href="./css/curriculum-panel.css?v=20260306h">
+  <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306h">
+  <link rel="stylesheet" href="./css/onboarding-tour.css?v=20260306h">
+</head>
+<body class="th2-page">
+
+  <div id="th2-shell" class="th2-shell" aria-label="Cornerstone MTSS Command Hub">
+
+    <!-- ── Left: Caseload panel ─────────────────────────── -->
+    <aside id="th2-sidebar" class="th2-sidebar" aria-label="Student caseload">
+
+      <div class="th2-sidebar-head">
+        <div class="th2-sidebar-top-row">
+          <a href="./index.html" class="th2-brand" aria-label="Back to home">
+            <span class="th2-brand-word">Cornerstone</span>
+            <span class="th2-brand-sep">·</span>
+            <span class="th2-brand-mtss">MTSS</span>
+          </a>
+          <!-- Auth chip (shown when signed in to Google) -->
+          <div id="th2-auth-chip" class="th2-auth-chip hidden" aria-label="Google account">
+            <img id="th2-auth-avatar" class="th2-auth-avatar" src="" alt="" aria-hidden="true">
+            <div id="th2-auth-info" class="th2-auth-info">
+              <span id="th2-auth-name" class="th2-auth-name"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Google Classroom sync button (shown when signed in) -->
+        <div id="th2-classroom-sync-row" class="th2-classroom-sync-row hidden">
+          <button id="th2-classroom-sync-btn" class="th2-classroom-sync-btn" type="button" aria-label="Sync roster from Google Classroom">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Sync from Classroom
+          </button>
+          <button id="th2-google-signout-btn" class="th2-google-signout-btn" type="button" aria-label="Sign out of Google">Sign out</button>
+        </div>
+
+        <!-- Google sign-in button (shown when signed out, auth configured) -->
+        <div id="th2-google-signin-row" class="th2-google-signin-row hidden">
+          <button id="th2-google-signin-btn" class="th2-google-signin-btn" type="button" aria-label="Sign in with Google">
+            <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Sign in with Google
+          </button>
+        </div>
+
+        <div class="th2-search-wrap">
+          <input
+            id="th2-search"
+            type="search"
+            class="th2-search"
+            placeholder="Search students…"
+            autocomplete="off"
+            aria-label="Search students"
+          >
+        </div>
+
+        <div class="th2-mode-row" role="tablist" aria-label="Context mode">
+          <button class="th2-mode-tab is-active" data-mode="caseload" role="tab" aria-selected="true">
+            My Caseload
+          </button>
+          <button class="th2-mode-tab" data-mode="class" role="tab" aria-selected="false">
+            Today's Classes
+          </button>
+        </div>
+
+        <button id="th2-add-student-btn" class="th2-add-student-btn" type="button" aria-label="Add a student to caseload">
+          + Add Student
+        </button>
+      </div>
+
+      <!-- Context strip: date + urgency — sits between tabs and student list -->
+      <div id="th2-sidebar-context" class="th2-sidebar-context" aria-live="polite"></div>
+
+      <div id="th2-list" class="th2-list" role="list" aria-label="Students"></div>
+
+      <p id="th2-list-empty" class="th2-list-empty hidden" role="status">
+        No students found.
+      </p>
+
+      <p id="th2-list-none" class="th2-list-empty hidden" role="status">
+        No students in caseload. Add a student to get started.
+      </p>
+
+      <!-- ── Sidebar footer: Curriculum + Help + Analytics ── -->
+      <div class="th2-sidebar-footer">
+        <button id="th2-brief-btn" class="th2-cur-btn th2-brief-btn" type="button" aria-label="Open lesson brief">
+          Lesson Brief
+        </button>
+        <button id="th2-cur-btn" class="th2-cur-btn" type="button" aria-label="Open curriculum quick reference">
+          📚 Curriculum
+        </button>
+        <div class="th2-sidebar-footer-row">
+          <button id="th2-tour-btn" class="th2-footer-icon-btn" type="button" aria-label="Replay tour / help" title="Replay tour">
+            🧭 Tour
+          </button>
+          <button id="th2-analytics-btn" class="th2-footer-icon-btn" type="button" aria-label="Open usage analytics" title="Usage analytics">
+            📊 Analytics
+          </button>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ── Center: Intelligence surface ─────────────────── -->
+    <main id="th2-main" class="th2-main" aria-live="polite">
+
+      <div id="th2-empty-state" class="th2-empty-state" aria-hidden="false">
+        <div class="th2-empty-inner">
+          <p class="th2-empty-label">Select a student</p>
+          <p class="th2-empty-sub">Intelligence surfaces automatically.</p>
+        </div>
+      </div>
+
+      <div id="th2-focus-card" class="th2-focus-card hidden" aria-hidden="true">
+        <!-- Populated by teacher-hub-v2.js -->
+      </div>
+
+    </main>
+
+  </div><!-- /#th2-shell -->
+
+  <!-- ── Overlay (drawer backdrop) ───────────────────── -->
+  <div id="th2-overlay" class="th2-overlay hidden" aria-hidden="true"></div>
+
+  <!-- ── Drawer (View Details panel) ─────────────────── -->
+  <div id="th2-drawer" class="th2-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="th2-drawer-title">
+    <div class="th2-drawer-head">
+      <h2 id="th2-drawer-title" class="th2-drawer-title">Student</h2>
+      <button id="th2-drawer-close" class="th2-drawer-close" aria-label="Close details panel">&#x2715;</button>
+    </div>
+    <div id="th2-drawer-body" class="th2-drawer-body"></div>
+  </div>
+
+  <!-- ── Add Student drawer ───────────────────────────── -->
+  <div id="th2-add-drawer" class="th2-drawer th2-add-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="th2-add-drawer-title">
+    <div class="th2-drawer-head">
+      <h2 id="th2-add-drawer-title" class="th2-drawer-title">Add Student</h2>
+      <button id="th2-add-drawer-close" class="th2-drawer-close" aria-label="Close add student panel">&#x2715;</button>
+    </div>
+    <div id="th2-add-body" class="th2-drawer-body"></div>
+  </div>
+
+  <!-- ── Curriculum panel ─────────────────────────────── -->
+  <div id="cs-cur-panel" class="cs-cur-panel" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Curriculum quick reference">
+    <!-- Panel content injected by curriculum-panel.js -->
+  </div>
+  <div id="cs-cur-overlay" class="cs-cur-overlay hidden" aria-hidden="true"></div>
+
+  <!-- ── Google Classroom course picker ───────────────── -->
+  <div id="th2-classroom-modal" class="th2-classroom-modal hidden" role="dialog" aria-modal="true" aria-labelledby="th2-classroom-modal-title">
+    <div class="th2-classroom-modal-inner">
+      <div class="th2-classroom-modal-head">
+        <h3 id="th2-classroom-modal-title" class="th2-classroom-modal-title">Choose a Google Classroom Course</h3>
+        <button id="th2-classroom-modal-close" class="th2-drawer-close" aria-label="Close">&#x2715;</button>
+      </div>
+      <div id="th2-classroom-modal-body" class="th2-classroom-modal-body">
+        <p class="th2-classroom-modal-loading">Loading your courses…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast host ───────────────────────────────────── -->
+  <div id="th2-toast-host" class="th2-toast-host" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- ── Demo badge (hidden unless demo mode) ─────────── -->
+  <div id="th2-demo-badge" class="th2-demo-badge hidden" aria-hidden="true">
+    Demo Mode
+  </div>
+
+  <!-- ── Cost dashboard (Azure API monitoring) ──────── -->
+  <div id="th2-cost-dashboard" class="th2-cost-dashboard hidden" aria-label="Azure API cost tracker" role="status">
+    <button id="th2-cost-dashboard-close" class="th2-cost-dashboard-close" type="button" aria-label="Close cost dashboard">×</button>
+    <h3 class="th2-cost-dashboard-title">💰 Azure Usage</h3>
+    <div class="th2-cost-dashboard-row">
+      <span class="th2-cost-dashboard-label">This month:</span>
+      <span class="th2-cost-dashboard-value" id="th2-cost-monthly">$0.00</span>
+    </div>
+    <div class="th2-cost-dashboard-row">
+      <span class="th2-cost-dashboard-label">API calls:</span>
+      <span class="th2-cost-dashboard-value" id="th2-cost-calls">0</span>
+    </div>
+    <div class="th2-cost-dashboard-row">
+      <span class="th2-cost-dashboard-label">Budget:</span>
+      <span class="th2-cost-dashboard-value" id="th2-cost-budget">$5.00</span>
+    </div>
+    <div class="th2-cost-dashboard-progress">
+      <p style="margin: 0 0 6px 0; font-size: 12px; font-weight: 500;">Budget usage:</p>
+      <div class="th2-cost-dashboard-progress-bar">
+        <div id="th2-cost-progress-fill" class="th2-cost-dashboard-progress-fill" style="width: 0%;"></div>
+      </div>
+      <p id="th2-cost-progress-label" style="margin: 6px 0 0 0; font-size: 11px; color: #6b7591;">0% of budget</p>
+    </div>
+    <div id="th2-cost-warning" class="th2-cost-dashboard-warning">
+      ⚠️ Monthly budget exceeded! Consider reviewing usage.
+    </div>
+  </div>
+
+  <!-- ── Core infrastructure ───────────────────────────── -->
+  <script src="./config.js?v=20260306h"></script>
+  <script src="./storage-schema.js?v=20260306h"></script>
+
+  <!-- ── Core engines ──────────────────────────────────── -->
+  <script src="./js/core/tier-engine.js?v=20260306h"></script>
+  <script src="./js/core/fidelity.js?v=20260306h"></script>
+  <script src="./js/core/framework-registry.js?v=20260306h"></script>
+
+  <!-- ── Executive engines ─────────────────────────────── -->
+  <script src="./js/executive/executive-profile.js?v=20260306h"></script>
+  <script src="./js/executive/support-engine.js?v=20260306h"></script>
+
+  <!-- ── Data layer ────────────────────────────────────── -->
+  <script src="./js/caseload-store.js?v=20260306h"></script>
+  <script src="./js/skill-taxonomy.js?v=20260306h"></script>
+  <script src="./js/skill-mapper.js?v=20260306h"></script>
+  <script src="./js/skill-store.js?v=20260306h"></script>
+  <script src="./js/skill-labels.js?v=20260306h"></script>
+  <script src="./js/skill-resolver.js?v=20260306h"></script>
+  <script src="./js/support-store.js?v=20260306h"></script>
+  <script src="./js/evidence-store.js?v=20260306h"></script>
+
+  <!-- ── Engine layer ──────────────────────────────────── -->
+  <script src="./js/evidence-engine.js?v=20260306h"></script>
+  <script src="./js/risk-bands.js?v=20260306h"></script>
+  <script src="./js/growth-engine.js?v=20260306h"></script>
+  <script src="./js/plan-engine.js?v=20260306h"></script>
+
+  <!-- ── Hub foundation ────────────────────────────────── -->
+  <script src="./js/dashboard/hub-state.js?v=20260306h"></script>
+  <script src="./js/dashboard/hub-context.js?v=20260306h"></script>
+
+  <!-- ── AI planner (Azure OpenAI) ──────────────────────── -->
+  <!-- Enable: create js/ai-config.js → window.CSAIConfig = { endpoint, apiKey, deployment } -->
+  <script src="./js/ai-config.js" onerror="0"></script>
+  <script src="./js/ai-planner.js?v=20260306h"></script>
+
+  <!-- ── Cost tracking (Azure API monitoring) ───────────── -->
+  <script src="./js/cost-tracker.js?v=20260306h"></script>
+
+  <!-- ── Google Auth (optional — requires js/google-auth-config.js) ── -->
+  <script src="./js/google-auth-config.js" onerror="0"></script>
+  <script src="./js/auth/google-auth.js?v=20260306h" onerror="0"></script>
+  <script src="./js/auth/google-classroom.js?v=20260306h" onerror="0"></script>
+
+  <!-- ── Curriculum panel ──────────────────────────────── -->
+  <script src="./js/curriculum-panel.js?v=20260306h"></script>
+  <script src="./js/lesson-brief-panel.js?v=20260306h"></script>
+
+  <!-- ── Analytics (local, no server) ─────────────────── -->
+  <script src="./js/analytics-local.js?v=20260306h"></script>
+
+  <!-- ── Onboarding tour ───────────────────────────────── -->
+  <script src="./js/onboarding-tour.js?v=20260306h"></script>
+
+  <!-- ── Application ───────────────────────────────────── -->
+  <script src="./teacher-hub-v2.js?v=20260306h"></script>
+
+  <!-- ── Build infrastructure ──────────────────────────── -->
+  <script src="./build-stamp.js?v=20260306h"></script>
+  <script src="./js/build-badge.js?v=20260306h"></script>
+  <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
+
+</body>
+</html>

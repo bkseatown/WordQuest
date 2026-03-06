@@ -1,0 +1,204 @@
+{
+  "version": "cs.curriculum-registry.v1",
+  "note": "Master registry of all SAS curricula — used by Command Hub for lesson-level alignment and deep linking.",
+  "curricula": [
+
+    {
+      "id": "fishtank-ela",
+      "name": "Fishtank ELA",
+      "publisher": "Fishtank Learning",
+      "subjects": ["ELA"],
+      "domains": ["literacy.decoding","literacy.fluency","literacy.comprehension","literacy.vocabulary","literacy.writing","literacy.narrative","literacy.informational"],
+      "grades": ["K","1","2","3","4","5"],
+      "type": "core",
+      "access": "open",
+      "sasContext": "Core ELA program in Elementary School (ES) — new this year K–5",
+      "baseUrl": "https://www.fishtanklearning.org/curriculum/ela/",
+      "unitUrlPattern": "https://www.fishtanklearning.org/curriculum/ela/{gradeSlug}/{unitSlug}/",
+      "lessonUrlPattern": "https://www.fishtanklearning.org/curriculum/ela/{gradeSlug}/{unitSlug}/lesson-{lesson}/",
+      "lessonUrlVerified": true,
+      "logoColor": "#1a56db"
+    },
+
+    {
+      "id": "illustrative-math",
+      "name": "Illustrative Mathematics (IM) K–5",
+      "publisher": "Kendall Hunt / Illustrative Mathematics",
+      "subjects": ["Math"],
+      "domains": ["numeracy.counting","numeracy.operations","numeracy.reasoning","numeracy.geometry","numeracy.fractions"],
+      "grades": ["K","1","2","3","4","5"],
+      "type": "core",
+      "access": "open",
+      "sasContext": "Core math program",
+      "baseUrl": "https://im.kendallhunt.com/K5/",
+      "unitUrlPattern": "https://im.kendallhunt.com/K5/teachers/{gradeNum}/{unit}/index.html",
+      "lessonUrlPattern": "https://im.kendallhunt.com/K5/teachers/{gradeNum}/{unit}/{lesson}/index.html",
+      "lessonUrlVerified": false,
+      "gradeNumMap": { "K":0, "1":1, "2":2, "3":3, "4":4, "5":5 },
+      "logoColor": "#047857"
+    },
+
+    {
+      "id": "bridges-math",
+      "name": "Bridges in Mathematics",
+      "publisher": "Math Learning Center",
+      "subjects": ["Math"],
+      "domains": ["numeracy.counting","numeracy.operations","numeracy.reasoning"],
+      "grades": ["K","1","2","3","4","5"],
+      "type": "supplemental",
+      "access": "login-required",
+      "sasContext": "Math supplemental / small-group support",
+      "baseUrl": "https://bridges.mathlearningcenter.org/",
+      "lessonUrlPattern": null,
+      "loginNote": "Access requires teacher account at mathlearningcenter.org",
+      "logoColor": "#d97706"
+    },
+
+    {
+      "id": "ufli-foundations",
+      "name": "UFLI Foundations",
+      "publisher": "University of Florida Literacy Institute",
+      "subjects": ["ELA", "Phonics"],
+      "domains": ["literacy.decoding","literacy.phonics","literacy.phonological"],
+      "grades": ["K","1","2"],
+      "type": "supplemental",
+      "access": "open",
+      "sasContext": "Structured literacy / phonics supplemental (Tier 2 decoding support)",
+      "baseUrl": "https://ufli.education.ufl.edu/foundations/",
+      "toolboxUrl": "https://ufli.education.ufl.edu/foundations/toolbox/",
+      "scopeSequenceUrl": "https://ufli.education.ufl.edu/foundations-materials/",
+      "lessonUrlPattern": "https://ufli.education.ufl.edu/foundations/toolbox/",
+      "lessonUrlNote": "Toolbox groups lessons — navigate to unit group from toolbox page",
+      "logoColor": "#7c3aed"
+    },
+
+    {
+      "id": "fundations",
+      "name": "Fundations (Wilson)",
+      "publisher": "Wilson Language Training",
+      "subjects": ["ELA", "Phonics", "Spelling"],
+      "domains": ["literacy.decoding","literacy.spelling","literacy.phonics"],
+      "grades": ["K","1","2","3"],
+      "type": "supplemental",
+      "access": "login-required",
+      "sasContext": "Tier 2/3 structured literacy phonics — Wilson K–3",
+      "baseUrl": "https://www.wilsonlanguage.com/programs/fundations/",
+      "lessonUrlPattern": null,
+      "loginNote": "Physical teacher manual + WRS Online portal",
+      "levels": [
+        { "level": 1, "grades": ["K","1"], "label": "Level 1 — CVC, blends, digraphs, trick words" },
+        { "level": 2, "grades": ["2"],     "label": "Level 2 — vowel teams, CVCe, prefixes/suffixes" },
+        { "level": 3, "grades": ["3"],     "label": "Level 3 — advanced patterns, morphology" }
+      ],
+      "logoColor": "#dc2626"
+    },
+
+    {
+      "id": "just-words",
+      "name": "Just Words (Wilson)",
+      "publisher": "Wilson Language Training",
+      "subjects": ["ELA", "Decoding", "Spelling"],
+      "domains": ["literacy.decoding","literacy.spelling","literacy.morphology"],
+      "grades": ["4","5","6","7","8"],
+      "type": "intervention",
+      "access": "login-required",
+      "sasContext": "Tier 2 intervention for students who need structured word study above G3",
+      "baseUrl": "https://www.wilsonlanguage.com/programs/just-words/",
+      "lessonUrlPattern": null,
+      "loginNote": "Physical teacher manual + WRS Online portal",
+      "unitsTotal": 18,
+      "logoColor": "#dc2626"
+    },
+
+    {
+      "id": "wilson-reading",
+      "name": "Wilson Reading System (WRS)",
+      "publisher": "Wilson Language Training",
+      "subjects": ["ELA", "Decoding", "Encoding"],
+      "domains": ["literacy.decoding","literacy.spelling","literacy.phonics"],
+      "grades": ["2","3","4","5","6","7","8"],
+      "type": "intervention",
+      "access": "login-required",
+      "sasContext": "Tier 3 intensive intervention — certified WRS teacher required",
+      "baseUrl": "https://www.wilsonlanguage.com/programs/wilson-reading-system/",
+      "lessonUrlPattern": null,
+      "loginNote": "Requires WRS certification; 12-step program with physical materials",
+      "steps": [
+        { "step": 1,  "focus": "CVC words, simple phoneme segmentation" },
+        { "step": 2,  "focus": "Blends, digraphs, trick words" },
+        { "step": 3,  "focus": "Digraphs, welded sounds" },
+        { "step": 4,  "focus": "Long vowels, VCe" },
+        { "step": 5,  "focus": "Vowel teams" },
+        { "step": 6,  "focus": "r-controlled vowels" },
+        { "step": 7,  "focus": "Advanced vowels, diphthongs" },
+        { "step": 8,  "focus": "Syllabication rules" },
+        { "step": 9,  "focus": "Advanced concepts, schwa" },
+        { "step": 10, "focus": "Latin and Greek roots" },
+        { "step": 11, "focus": "Advanced word analysis" },
+        { "step": 12, "focus": "Mastery and independence" }
+      ],
+      "logoColor": "#dc2626"
+    },
+
+    {
+      "id": "step-up-writing",
+      "name": "Step Up to Writing",
+      "publisher": "Voyager Sopris Learning",
+      "subjects": ["Writing"],
+      "domains": ["literacy.writing","literacy.argument","literacy.informational"],
+      "grades": ["K","1","2","3","4","5","6","7","8"],
+      "type": "supplemental",
+      "access": "login-required",
+      "sasContext": "Writing instruction framework — embedded in Fishtank units at SAS",
+      "baseUrl": "https://www.voyagersopris.com/literacy/step-up-to-writing",
+      "lessonUrlPattern": null,
+      "loginNote": "Teacher edition + online teacher center with login",
+      "logoColor": "#0369a1"
+    },
+
+    {
+      "id": "lli-bas",
+      "name": "LLI / F&P BAS",
+      "publisher": "Fountas & Pinnell / Heinemann",
+      "subjects": ["ELA", "Reading"],
+      "domains": ["literacy.fluency","literacy.comprehension"],
+      "grades": ["K","1","2","3","4","5","6"],
+      "type": "intervention",
+      "access": "physical",
+      "sasContext": "Reading level assessment (BAS) + LLI small-group intervention kits",
+      "baseUrl": "https://www.fountasandpinnell.com/",
+      "basUrl": "https://www.fountasandpinnell.com/bas/",
+      "lliUrl": "https://www.fountasandpinnell.com/lli/",
+      "lessonUrlPattern": null,
+      "readingLevels": ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
+      "gradeLevelBands": {
+        "K":  ["A","B","C"],
+        "1":  ["D","E","F","G","H","I","J"],
+        "2":  ["J","K","L","M"],
+        "3":  ["N","O","P"],
+        "4":  ["Q","R","S"],
+        "5":  ["S","T","U","V"],
+        "6":  ["V","W","X","Y","Z"]
+      },
+      "logoColor": "#be185d"
+    },
+
+    {
+      "id": "iswordstudy",
+      "name": "IS Word Study (SAS)",
+      "publisher": "Singapore American School — Intermediate Division",
+      "subjects": ["ELA", "Word Study", "Morphology"],
+      "domains": ["literacy.spelling","literacy.morphology","literacy.vocabulary"],
+      "grades": ["3","4","5"],
+      "type": "supplemental",
+      "access": "open",
+      "sasContext": "SAS-authored word study curriculum — phonics → morphology → etymology for IS grades",
+      "baseUrl": "https://iswordstudy.wordpress.com/",
+      "quarterUrlPattern": "https://iswordstudy.wordpress.com/grade-{gradeNum}/quarter-{quarter}/",
+      "lessonUrlPattern": "https://iswordstudy.wordpress.com/grade-{gradeNum}/quarter-{quarter}/",
+      "lessonUrlNote": "Individual lessons are .doc downloads from the quarter page",
+      "logoColor": "#be185d"
+    }
+
+  ]
+}
