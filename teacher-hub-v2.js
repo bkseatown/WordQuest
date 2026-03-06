@@ -23,6 +23,7 @@
   var TeacherRuntimeState  = window.CSTeacherRuntimeState;
   var TeacherSearchIndex   = window.CSTeacherSearchIndex;
   var TeacherSelectors     = window.CSTeacherSelectors;
+  var TeacherIntelligence  = window.CSTeacherIntelligence;
   var HubContext           = window.CSHubContext;
   var TeacherStorage       = window.CSTeacherStorage;
 
@@ -83,6 +84,34 @@
 
   function safe(fn) {
     try { return fn(); } catch (_e) { return null; }
+  }
+
+  function getStudentSummaryForHub(studentId, fallbackStudent) {
+    return TeacherIntelligence && typeof TeacherIntelligence.getStudentSummary === "function"
+      ? TeacherIntelligence.getStudentSummary(studentId, fallbackStudent, {
+          Evidence: Evidence,
+          TeacherSelectors: TeacherSelectors
+        })
+      : safe(function () { return Evidence.getStudentSummary(studentId); });
+  }
+
+  function buildStudentContextForHub(student) {
+    return TeacherIntelligence && typeof TeacherIntelligence.buildStudentContext === "function"
+      ? TeacherIntelligence.buildStudentContext(student, {
+          Evidence: Evidence,
+          PlanEngine: PlanEngine,
+          TeacherSelectors: TeacherSelectors
+        })
+      : {
+          student: student,
+          summary: safe(function () { return Evidence.getStudentSummary(student.id); }),
+          snapshot: safe(function () {
+            return typeof Evidence.computeStudentSnapshot === "function"
+              ? Evidence.computeStudentSnapshot(student.id) : null;
+          }),
+          plan: null,
+          priority: null
+        };
   }
 
   /* ── Performance level rubric (Phase 16+) ───────────────── */
@@ -547,21 +576,7 @@
   function buildTodayPlanForHub() {
     var students = caseload.length ? caseload : [];
     var rows = students.map(function (student) {
-      var summary = safe(function () { return Evidence.getStudentSummary(student.id); });
-      var snapshot = safe(function () {
-        return typeof Evidence.computeStudentSnapshot === "function"
-          ? Evidence.computeStudentSnapshot(student.id) : null;
-      });
-      var plan = PlanEngine && typeof PlanEngine.buildPlan === "function"
-        ? safe(function () {
-            return PlanEngine.buildPlan({
-              student: summary && summary.student ? summary.student : student,
-              snapshot: snapshot || { needs: [] }
-            });
-          })
-        : null;
-      var priority = plan && plan.priority ? plan.priority : null;
-      return { student: student, summary: summary, snapshot: snapshot, plan: plan, priority: priority };
+      return buildStudentContextForHub(student);
     });
     return { students: rows };
   }
@@ -1703,7 +1718,7 @@
       : {};
     var goals = Array.isArray(studentSupport.goals) ? studentSupport.goals : [];
     var accs  = Array.isArray(studentSupport.accommodations) ? studentSupport.accommodations : [];
-    var summary = safe(function () { return Evidence.getStudentSummary(studentId); });
+    var summary = getStudentSummaryForHub(studentId, student);
 
     var drawerBody = document.getElementById("th2-drawer-body");
     if (drawerBody) {
@@ -2208,7 +2223,7 @@
     var selectedId = hubState.get().context.studentId || "";
 
     el.list.innerHTML = filtered.map(function (student) {
-      var summary = safe(function () { return Evidence.getStudentSummary(student.id); });
+      var summary = getStudentSummaryForHub(student.id, student);
       var tier    = quickTier(summary);
       var trend   = quickTrend(summary);
       var last    = summary && summary.lastSession ? relativeDate(summary.lastSession.timestamp) : "";
@@ -2420,7 +2435,7 @@
       return;
     }
 
-    var summary = safe(function () { return Evidence.getStudentSummary(studentId); });
+    var summary = getStudentSummaryForHub(studentId, caseload.find(function (s) { return s.id === studentId; }) || { id: studentId });
     var student = (summary && summary.student) || caseload.find(function (s) { return s.id === studentId; }) || {};
     var spark = Array.isArray(summary && summary.last7Sparkline) ? summary.last7Sparkline : [];
     var tier = quickTier(summary);
@@ -2559,17 +2574,13 @@
     }
 
     var ranked = caseload.map(function (student) {
-      var summary = safe(function () { return Evidence.getStudentSummary(student.id); });
+      var context = buildStudentContextForHub(student);
+      var summary = context.summary;
       var tier = quickTier(summary);
       var status = lastSeenStatus(summary);
       var ts = summary && summary.lastSession && summary.lastSession.timestamp;
       var daysSince = ts ? Math.floor((Date.now() - Number(ts)) / 86400000) : 999;
-      var plan = safe(function () {
-        var snap = Evidence.computeStudentSnapshot ? Evidence.computeStudentSnapshot(student.id) : null;
-        return PlanEngine && PlanEngine.buildPlan
-          ? PlanEngine.buildPlan({ student: student, snapshot: snap || { needs: [] } })
-          : null;
-      });
+      var plan = context.plan;
       var recTitle = plan && plan.plans && plan.plans.tenMin && plan.plans.tenMin[0]
         ? String(plan.plans.tenMin[0].title || "")
         : (plan && plan.recommendedMove ? String(plan.recommendedMove) : "");
@@ -2779,7 +2790,7 @@
 
   /* ── Today's Classes snapshot ─────────────────────────── */
   function buildSnapshotCard(student) {
-    var summary  = safe(function () { return Evidence.getStudentSummary(student.id); });
+    var summary  = getStudentSummaryForHub(student.id, student);
     var tier     = quickTier(summary);
     var gradeStr = escapeHtml(student.grade || student.gradeBand || "");
     return [
@@ -2898,7 +2909,7 @@
     }
     var byTier = { "3": [], "2": [], "1": [] };
     caseload.forEach(function (s) {
-      var summary = safe(function () { return Evidence.getStudentSummary(s.id); });
+      var summary = getStudentSummaryForHub(s.id, s);
       var tier    = quickTier(summary);
       var key     = String(tier);
       if (!byTier[key]) byTier[key] = [];

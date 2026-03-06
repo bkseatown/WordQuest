@@ -65,6 +65,7 @@
   var CaseloadStore = window.CSCaseloadStore;
   var TeacherStorage = window.CSTeacherStorage;
   var TeacherSelectors = window.CSTeacherSelectors;
+  var TeacherIntelligence = window.CSTeacherIntelligence;
   if (!Evidence) return;
 
   var state = {
@@ -103,7 +104,6 @@
   };
   var skillStoreLogged = false;
 
-  var LAST_ACTIVITY_KEY = "cs.lastActivityByStudent.v1";
   var DASHBOARD_RUNTIME_KEY = "cs.dashboard.runtime.v1";
   var FIDELITY_SEEDED_KEY = "cs.fidelity-seeded.v1";
   var NUMERACY_SEEDED_KEY = "cs.numeracy-seeded.v1";
@@ -898,7 +898,10 @@
   }
 
   function buildReportingContext(row) {
-    var summary = Evidence && typeof Evidence.getStudentSummary === "function" ? Evidence.getStudentSummary(state.selectedId) : null;
+    var selectedStudent = state.caseload.filter(function (student) { return student.id === state.selectedId; })[0] || { id: state.selectedId };
+    var summary = TeacherIntelligence && typeof TeacherIntelligence.getStudentSummary === "function"
+      ? TeacherIntelligence.getStudentSummary(state.selectedId, selectedStudent, { Evidence: Evidence, TeacherSelectors: TeacherSelectors })
+      : (Evidence && typeof Evidence.getStudentSummary === "function" ? Evidence.getStudentSummary(state.selectedId) : null);
     var numeracy = latestNumeracyRecommendation(row);
     var executive = buildExecutiveProfileAndPlan(row || null);
     var tierSignal = computeTierSignalForRow(row);
@@ -1037,27 +1040,15 @@
       .replace(/>/g, "&gt;");
   }
 
-  function getLastActivityMap() {
-    var parsed = safeJsonParse(localStorage.getItem(LAST_ACTIVITY_KEY), {});
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
-    return parsed;
-  }
-
-  function setLastActivityMap(map) {
-    localStorage.setItem(LAST_ACTIVITY_KEY, JSON.stringify(map || {}));
-  }
-
   function getLastActivity(studentId) {
-    if (!studentId) return null;
-    var map = getLastActivityMap();
-    return map[String(studentId)] || null;
+    return TeacherIntelligence && typeof TeacherIntelligence.getLastActivity === "function"
+      ? TeacherIntelligence.getLastActivity(studentId)
+      : null;
   }
 
   function recordLastActivity(studentId, moduleKey) {
-    if (!studentId || !moduleKey) return;
-    var map = getLastActivityMap();
-    map[String(studentId)] = { module: String(moduleKey), ts: Date.now() };
-    setLastActivityMap(map);
+    if (!TeacherIntelligence || typeof TeacherIntelligence.recordLastActivity !== "function") return;
+    TeacherIntelligence.recordLastActivity(studentId, moduleKey);
   }
 
   function ageDays(ts) {
@@ -1095,16 +1086,9 @@
   }
 
   function focusFromSnapshot(snapshot) {
-    if (snapshot && Array.isArray(snapshot.topSkills) && snapshot.topSkills.length) {
-      var skillIds = snapshot.topSkills.slice(0, 3).map(function (skill) { return String(skill.skillId || ""); });
-      if (SkillLabels && typeof SkillLabels.getPrettyTargets === "function") {
-        return SkillLabels.getPrettyTargets(skillIds);
-      }
-      return skillIds.filter(Boolean);
-    }
-    var needs = snapshot && Array.isArray(snapshot.needs) ? snapshot.needs : [];
-    if (needs.length) return needs.slice(0, 2).map(function (need) { return String(need.label || "Need"); });
-    return ["Collect baseline"];
+    return TeacherIntelligence && typeof TeacherIntelligence.focusFromSnapshot === "function"
+      ? TeacherIntelligence.focusFromSnapshot(snapshot, { SkillLabels: SkillLabels })
+      : ["Collect baseline"];
   }
 
   function formatSkillBreadcrumb(skillId) {
@@ -1299,99 +1283,22 @@
     return "Family Update\\nStudent: " + student.name + "\\nFocus: " + skillLabel + "\\nNext: " + nextStep;
   }
 
-  function scoreStudent(student) {
-    var sid = String(student && student.id || "");
-    var snapshot = getStudentEvidence(sid) || {};
-    var computed = safeComputePriority(sid);
-    if (computed && computed.ok && computed.priority) {
-      return Number(computed.priority.overallPriority || 0);
-    }
-    var last = getLastActivity(sid);
-    var trend = snapshot.trends && snapshot.trends.wordquest;
-    var lastPoint = trend && Array.isArray(trend.last7) && trend.last7.length ? trend.last7[trend.last7.length - 1] : null;
-    var score = 0;
-
-    if (!lastPoint) score += 35;
-    if (lastPoint && Number(lastPoint.score || 0) < 65) score += 25;
-    if (snapshot.needs && snapshot.needs.length) {
-      score += snapshot.needs.reduce(function (sum, need) {
-        return sum + (Number(need.severity || 1) * Number(need.confidence || 0.5) * 3);
-      }, 0);
-    }
-    if (snapshot.updatedAt) score += Math.min(20, ageDays(Date.parse(snapshot.updatedAt)) * 2);
-    score += Math.min(20, ageDays(last && last.ts) * 2);
-    return score;
-  }
-
-  function heuristicScore(student, snapshot) {
-    var sid = String(student && student.id || "");
-    var snap = snapshot || {};
-    var last = getLastActivity(sid);
-    var trend = snap.trends && snap.trends.wordquest;
-    var lastPoint = trend && Array.isArray(trend.last7) && trend.last7.length ? trend.last7[trend.last7.length - 1] : null;
-    var score = 0;
-    if (!lastPoint) score += 35;
-    if (lastPoint && Number(lastPoint.score || 0) < 65) score += 25;
-    if (snap.needs && snap.needs.length) {
-      score += snap.needs.reduce(function (sum, need) {
-        return sum + (Number(need.severity || 1) * Number(need.confidence || 0.5) * 3);
-      }, 0);
-    }
-    if (snap.updatedAt) score += Math.min(20, ageDays(Date.parse(snap.updatedAt)) * 2);
-    score += Math.min(20, ageDays(last && last.ts) * 2);
-    return score;
-  }
-
   function safeComputePriority(studentId) {
-    if (!EvidenceEngine || typeof EvidenceEngine.computePriority !== "function") {
-      return { ok: false, priority: null, reason: "missing-engine" };
-    }
-    try {
-      var priority = EvidenceEngine.computePriority(String(studentId || ""));
-      return { ok: true, priority: priority || null, reason: "" };
-    } catch (_err) {
-      return { ok: false, priority: null, reason: "compute-failed" };
-    }
+    return TeacherIntelligence && typeof TeacherIntelligence.safeComputePriority === "function"
+      ? TeacherIntelligence.safeComputePriority(studentId, { EvidenceEngine: EvidenceEngine })
+      : { ok: false, priority: null, reason: "missing-service" };
   }
 
   function buildTodayPlan() {
-    var allRows = getCaseload()
-      .map(function (student) {
-        var sid = String(student.id || "");
-        var snapshot = getStudentEvidence(sid) || null;
-        var computed = safeComputePriority(sid);
-        var priority = computed.ok ? computed.priority : null;
-        var fallbackScore = heuristicScore(student, snapshot || {});
-        return {
-          student: student,
-          snapshot: snapshot,
-          priority: priority,
-          priorityFallback: !computed.ok,
-          focus: focusFromSnapshot(priority && priority.topSkills && priority.topSkills.length ? priority : snapshot),
-          lastActivity: getLastActivity(sid),
-          score: computed.ok ? Number(priority && priority.overallPriority || 0) : fallbackScore
-        };
-      });
-    var ranked = allRows.slice().sort(function (a, b) { return b.score - a.score; }).slice(0, 3);
-
-    if (!ranked.length) {
-      ranked = [
-        { id: "demo-a", name: "Demo Student A", grade: "G5" },
-        { id: "demo-b", name: "Demo Student B", grade: "G4" },
-        { id: "demo-c", name: "Demo Student C", grade: "G6" }
-      ].map(function (student) {
-        return {
-          student: student,
-          snapshot: null,
-          priority: null,
-          focus: ["Collect baseline"],
-          lastActivity: getLastActivity(student.id),
-          score: 0
-        };
-      });
-    }
-
-    return { students: ranked, allStudents: allRows };
+    return TeacherIntelligence && typeof TeacherIntelligence.buildTodayPlan === "function"
+      ? TeacherIntelligence.buildTodayPlan(getCaseload(), {
+          Evidence: Evidence,
+          EvidenceEngine: EvidenceEngine,
+          PlanEngine: PlanEngine,
+          TeacherSelectors: TeacherSelectors,
+          SkillLabels: SkillLabels
+        })
+      : { students: [], allStudents: [] };
   }
 
   function pickLaunchHrefForRow(row) {
@@ -2009,13 +1916,25 @@
       return;
     }
 
-    var summary = Evidence.getStudentSummary(state.selectedId);
-    state.snapshot = typeof Evidence.computeStudentSnapshot === "function"
-      ? Evidence.computeStudentSnapshot(state.selectedId)
+    var selectedStudent = state.caseload.filter(function (student) { return student.id === state.selectedId; })[0] || { id: state.selectedId };
+    var studentContext = TeacherIntelligence && typeof TeacherIntelligence.buildStudentContextById === "function"
+      ? TeacherIntelligence.buildStudentContextById(state.selectedId, selectedStudent, {
+          Evidence: Evidence,
+          EvidenceEngine: EvidenceEngine,
+          PlanEngine: PlanEngine,
+          TeacherSelectors: TeacherSelectors,
+          SkillLabels: SkillLabels
+        })
       : null;
-    state.plan = PlanEngine && typeof PlanEngine.buildPlan === "function"
-      ? PlanEngine.buildPlan({ student: summary.student, snapshot: state.snapshot || { needs: [] } })
-      : null;
+    var summary = studentContext && studentContext.summary ? studentContext.summary : Evidence.getStudentSummary(state.selectedId);
+    state.snapshot = studentContext && Object.prototype.hasOwnProperty.call(studentContext, "snapshot")
+      ? studentContext.snapshot
+      : (typeof Evidence.computeStudentSnapshot === "function" ? Evidence.computeStudentSnapshot(state.selectedId) : null);
+    state.plan = studentContext && Object.prototype.hasOwnProperty.call(studentContext, "plan")
+      ? studentContext.plan
+      : (PlanEngine && typeof PlanEngine.buildPlan === "function"
+        ? PlanEngine.buildPlan({ student: summary.student, snapshot: state.snapshot || { needs: [] } })
+        : null);
     var focusView = WorkspaceFocusShell && typeof WorkspaceFocusShell.renderSelectedState === "function"
       ? WorkspaceFocusShell.renderSelectedState({
           el: el,
