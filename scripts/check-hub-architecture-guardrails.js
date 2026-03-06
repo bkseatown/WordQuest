@@ -19,15 +19,18 @@ const hubHtml = read('teacher-hub-v2.html');
 const hubJs = read('teacher-hub-v2.js');
 const lessonBriefJs = read('js/lesson-brief-panel.js');
 const storageJs = read('js/teacher/teacher-storage.js');
+const selectorsJs = read('js/teacher/teacher-selectors.js');
 const landingHtml = read('index.html');
 
 assert(hubHtml.includes('id="th2-search"'), 'Hub search input missing.', failures);
 assert(hubHtml.includes('placeholder="Search student, class, curriculum, resource, or tool'), 'Hub search placeholder not refocused.', failures);
 assert(hubHtml.includes('id="th2-empty-state"'), 'Hub empty-state container missing.', failures);
 assert(hubHtml.includes('./js/teacher/teacher-storage.js'), 'Teacher storage helper not loaded in hub HTML.', failures);
+assert(hubHtml.includes('./js/teacher/teacher-selectors.js'), 'Teacher selector helper not loaded in hub HTML.', failures);
 
 assert(hubJs.includes('Global Search'), 'Hub search surface copy missing.', failures);
 assert(hubJs.includes('TeacherStorage.loadScheduleBlocks'), 'Hub does not read canonical schedule blocks.', failures);
+assert(hubJs.includes('TeacherSelectors.loadScheduleBlocks'), 'Hub is not reading schedule blocks through shared teacher selectors.', failures);
 assert(hubJs.includes('classLessonSummary'), 'Class intelligence lesson context helper missing.', failures);
 assert(hubJs.includes('classLanguageDemands'), 'Class intelligence language demand helper missing.', failures);
 assert(hubJs.includes('classConceptFocus'), 'Class intelligence concept focus helper missing.', failures);
@@ -43,6 +46,8 @@ assert(storageJs.includes('migrateLessonBriefBlocks'), 'Schedule migration helpe
 assert(storageJs.includes('teacherProfile'), 'Teacher profile storage key missing.', failures);
 assert(storageJs.includes('classContexts'), 'Class context storage key missing.', failures);
 assert(storageJs.includes('lessonContext'), 'Lesson context storage key missing.', failures);
+assert(selectorsJs.includes('CSTeacherSelectors'), 'Shared teacher selector module missing.', failures);
+assert(selectorsJs.includes('buildClassContext'), 'Shared teacher selector class-context helper missing.', failures);
 
 assert(landingHtml.includes('href="./teacher-hub-v2.html"'), 'Landing page does not route Teacher to the Hub.', failures);
 

@@ -11,6 +11,7 @@ const hubSource = fs.readFileSync(path.join(root, 'teacher-hub-v2.js'), 'utf8');
 const dashboardHtml = fs.readFileSync(path.join(root, 'teacher-dashboard.html'), 'utf8');
 const runtimeState = fs.readFileSync(path.join(root, 'js/teacher-runtime-state.js'), 'utf8');
 const searchIndex = fs.readFileSync(path.join(root, 'js/search/teacher-search-index.js'), 'utf8');
+const teacherSelectors = fs.readFileSync(path.join(root, 'js/teacher/teacher-selectors.js'), 'utf8');
 const storageSource = fs.readFileSync(path.join(root, 'js/teacher/teacher-storage.js'), 'utf8');
 
 function requireText(source, pattern, message) {
@@ -23,8 +24,10 @@ requireText(hubHtml, /id="th2-empty-state"/, 'Teacher Hub empty state container 
 requireText(hubHtml, /js\/teacher\/teacher-storage\.js/, 'Teacher storage helper is not loaded by teacher-hub-v2.html.');
 requireText(hubHtml, /js\/teacher-runtime-state\.js/, 'Unified teacher runtime state is not loaded by teacher-hub-v2.html.');
 requireText(hubHtml, /js\/search\/teacher-search-index\.js/, 'Teacher search index is not loaded by teacher-hub-v2.html.');
+requireText(hubHtml, /js\/teacher\/teacher-selectors\.js/, 'Shared teacher selectors are not loaded by teacher-hub-v2.html.');
 requireText(dashboardHtml, /Teacher Workspace/, 'Teacher Workspace labeling is missing from teacher-dashboard.html.');
 requireText(dashboardHtml, /href="\.\/teacher-hub-v2\.html"/, 'Teacher Workspace must retain a route back to teacher-hub-v2.html.');
+requireText(dashboardHtml, /js\/teacher\/teacher-selectors\.js/, 'Shared teacher selectors are not loaded by teacher-dashboard.html.');
 
 requireText(
   hubSource,
@@ -50,6 +53,11 @@ requireText(
   searchIndex,
   /CSTeacherSearchIndex/,
   'Teacher search index module is missing.'
+);
+requireText(
+  teacherSelectors,
+  /CSTeacherSelectors/,
+  'Shared teacher selector module is missing.'
 );
 requireText(
   storageSource,

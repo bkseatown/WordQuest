@@ -22,6 +22,7 @@
   var SupportStore         = window.CSSupportStore;
   var TeacherRuntimeState  = window.CSTeacherRuntimeState;
   var TeacherSearchIndex   = window.CSTeacherSearchIndex;
+  var TeacherSelectors     = window.CSTeacherSelectors;
   var HubContext           = window.CSHubContext;
   var TeacherStorage       = window.CSTeacherStorage;
 
@@ -236,9 +237,11 @@
     if (TeacherStorage && typeof TeacherStorage.migrateLessonBriefBlocks === "function") {
       TeacherStorage.migrateLessonBriefBlocks();
     }
-    var rows = TeacherStorage && typeof TeacherStorage.loadScheduleBlocks === "function"
-      ? TeacherStorage.loadScheduleBlocks(todayKey())
-      : [];
+    var rows = TeacherSelectors && typeof TeacherSelectors.loadScheduleBlocks === "function"
+      ? TeacherSelectors.loadScheduleBlocks(todayKey(), { TeacherStorage: TeacherStorage })
+      : (TeacherStorage && typeof TeacherStorage.loadScheduleBlocks === "function"
+        ? TeacherStorage.loadScheduleBlocks(todayKey())
+        : []);
     return rows.map(function (row) {
       return {
         id: String(row && row.id || ""),
@@ -2064,13 +2067,9 @@
   /* ── Caseload loading ──────────────────────────────────── */
 
   function loadCaseload() {
-    var raw = [];
-    if (typeof Evidence.listCaseload === "function") {
-      raw = safe(function () { return Evidence.listCaseload(); }) || [];
-    } else if (typeof Evidence.getStudents === "function") {
-      raw = safe(function () { return Evidence.getStudents(); }) || [];
-    }
-    caseload = Array.isArray(raw) ? raw : [];
+    caseload = TeacherSelectors && typeof TeacherSelectors.loadCaseload === "function"
+      ? TeacherSelectors.loadCaseload({ TeacherStorage: TeacherStorage, Evidence: Evidence })
+      : [];
     hubState.set({ schedule_blocks: getTodayLessonBlocks() });
 
     if (el.listNone) el.listNone.classList.toggle("hidden", caseload.length > 0);
@@ -2244,10 +2243,17 @@
 
   function selectStudent(studentId) {
     // Write to HubState → HubContext auto-computes intelligence
-    hubState.set({ context: { studentId: studentId } });
+    var student = caseload.find(function (s) { return s.id === studentId; }) || null;
+    hubState.set({
+      context: { studentId: studentId },
+      active_student_context: {
+        studentId: String(studentId || ""),
+        studentName: student && student.name || "",
+        grade: student && (student.gradeBand || student.grade || "") || ""
+      }
+    });
     renderStudentList(); // refresh active state in list
     /* Notify curriculum panel of selected student grade */
-    var student = caseload.find(function (s) { return s.id === studentId; });
     if (student) {
       window.dispatchEvent(new CustomEvent("cs-student-selected", {
         detail: {
@@ -2648,7 +2654,18 @@
     el.emptyState.querySelectorAll("[data-open-block]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var blockId = btn.getAttribute("data-open-block") || "";
-        hubState.set({ context: { mode: "class", classId: blockId } });
+        var blockContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
+          ? TeacherSelectors.buildClassContext(TeacherSelectors.getBlockById(blockId, todayKey(), { TeacherStorage: TeacherStorage }), { TeacherStorage: TeacherStorage })
+          : null;
+        hubState.set({
+          context: { mode: "class", classId: blockId },
+          active_class_context: {
+            classId: blockId,
+            label: blockContext && blockContext.label || "",
+            supportType: blockContext && blockContext.supportType || "",
+            lessonContextId: blockContext && blockContext.lessonContextId || ""
+          }
+        });
       });
     });
 
@@ -2693,7 +2710,18 @@
             tab.classList.toggle("is-active", active);
             tab.setAttribute("aria-selected", active ? "true" : "false");
           });
-          hubState.set({ context: { mode: "class", classId: id, studentId: "" } });
+          var classContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
+            ? TeacherSelectors.buildClassContext(TeacherSelectors.getBlockById(id, todayKey(), { TeacherStorage: TeacherStorage }), { TeacherStorage: TeacherStorage })
+            : null;
+          hubState.set({
+            context: { mode: "class", classId: id, studentId: "" },
+            active_class_context: {
+              classId: id,
+              label: classContext && classContext.label || "",
+              supportType: classContext && classContext.supportType || "",
+              lessonContextId: classContext && classContext.lessonContextId || ""
+            }
+          });
           return;
         }
         if (kind === "curriculum" && id) {
@@ -2701,7 +2729,18 @@
             return row && row.id === id;
           })[0] || null;
           if (curriculumItem && curriculumItem.payload && curriculumItem.payload.id) {
-            hubState.set({ context: { mode: "class", classId: curriculumItem.payload.id, studentId: "" } });
+            var curriculumContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
+              ? TeacherSelectors.buildClassContext(curriculumItem.payload, { TeacherStorage: TeacherStorage })
+              : null;
+            hubState.set({
+              context: { mode: "class", classId: curriculumItem.payload.id, studentId: "" },
+              active_class_context: {
+                classId: curriculumItem.payload.id,
+                label: curriculumContext && curriculumContext.label || "",
+                supportType: curriculumContext && curriculumContext.supportType || "",
+                lessonContextId: curriculumContext && curriculumContext.lessonContextId || ""
+              }
+            });
             return;
           }
         }
@@ -2760,6 +2799,9 @@
     var selectedBlockId = hubState.get().context.classId || "";
     var activeBlock = blocks.filter(function (block) { return block.id === selectedBlockId; })[0] || blocks[0] || null;
     if (blocks.length && activeBlock) {
+      var activeContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
+        ? TeacherSelectors.buildClassContext(activeBlock, { TeacherStorage: TeacherStorage })
+        : null;
       var blockButtons = blocks.map(function (block) {
         var count = block.studentIds.length;
         return '<button class="th2-class-block-chip' + (activeBlock && activeBlock.id === block.id ? " is-active" : "") + '" data-class-block="' + escapeHtml(block.id) + '" type="button">' +
@@ -2794,14 +2836,14 @@
         '<div class="th2-class-block-row">' + blockButtons + '</div>' +
         '<div class="th2-class-detail-card">' +
         '  <div class="th2-class-detail-head">' +
-        '    <div><p class="th2-today-title">' + escapeHtml(activeBlock.label) + '</p><p class="th2-today-sub">' + escapeHtml((activeBlock.timeLabel ? activeBlock.timeLabel + ' · ' : '') + (activeBlock.subject || areaLabel(activeBlock.area)) + ' · ' + activeBlock.supportType) + '</p></div>' +
+        '    <div><p class="th2-today-title">' + escapeHtml(activeContext && activeContext.label || activeBlock.label) + '</p><p class="th2-today-sub">' + escapeHtml((activeContext && activeContext.timeLabel ? activeContext.timeLabel + ' · ' : activeBlock.timeLabel ? activeBlock.timeLabel + ' · ' : '') + (activeContext && activeContext.subject || activeBlock.subject || areaLabel(activeBlock.area)) + ' · ' + (activeContext && activeContext.supportType || activeBlock.supportType)) + '</p></div>' +
         '    <button class="th2-cur-btn" data-open-brief="1" type="button">Lesson Brief</button>' +
         "  </div>" +
         '  <div class="th2-class-intelligence-grid">' +
-        '    <div class="th2-class-intelligence-item"><span>Lesson context</span><strong>' + escapeHtml(classLessonSummary(activeBlock)) + '</strong></div>' +
-        '    <div class="th2-class-intelligence-item"><span>Language demands</span><strong>' + escapeHtml(classLanguageDemands(activeBlock)) + '</strong></div>' +
-        '    <div class="th2-class-intelligence-item"><span>Concept focus</span><strong>' + escapeHtml(classConceptFocus(activeBlock)) + '</strong></div>' +
-        '    <div class="th2-class-intelligence-item"><span>Teacher</span><strong>' + escapeHtml(activeBlock.teacher || 'Not set yet') + '</strong></div>' +
+        '    <div class="th2-class-intelligence-item"><span>Lesson context</span><strong>' + escapeHtml(activeContext && activeContext.lesson || classLessonSummary(activeBlock)) + '</strong></div>' +
+        '    <div class="th2-class-intelligence-item"><span>Language demands</span><strong>' + escapeHtml(activeContext && activeContext.languageDemands || classLanguageDemands(activeBlock)) + '</strong></div>' +
+        '    <div class="th2-class-intelligence-item"><span>Concept focus</span><strong>' + escapeHtml(activeContext && activeContext.conceptFocus || classConceptFocus(activeBlock)) + '</strong></div>' +
+        '    <div class="th2-class-intelligence-item"><span>Teacher</span><strong>' + escapeHtml(activeContext && activeContext.teacher || activeBlock.teacher || 'Not set yet') + '</strong></div>' +
         '  </div>' +
         (studentRows || '<p class="th2-today-sub">No students assigned to this block yet.</p>') +
         "</div>" +
@@ -2809,7 +2851,18 @@
       el.emptyState.querySelectorAll("[data-class-block]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var blockId = btn.getAttribute("data-class-block") || "";
-          hubState.set({ context: { mode: "class", classId: blockId } });
+          var blockContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
+            ? TeacherSelectors.buildClassContext(getTodayLessonBlocks().filter(function (row) { return row.id === blockId; })[0] || null, { TeacherStorage: TeacherStorage })
+            : null;
+          hubState.set({
+            context: { mode: "class", classId: blockId },
+            active_class_context: {
+              classId: blockId,
+              label: blockContext && blockContext.label || "",
+              supportType: blockContext && blockContext.supportType || "",
+              lessonContextId: blockContext && blockContext.lessonContextId || ""
+            }
+          });
         });
       });
       el.emptyState.querySelectorAll(".th2-class-student-row").forEach(function (btn) {
@@ -2821,7 +2874,15 @@
             t.classList.toggle("is-active", active);
             t.setAttribute("aria-selected", active ? "true" : "false");
           });
-          hubState.set({ context: { mode: "caseload", classId: activeBlock.id } });
+          hubState.set({
+            context: { mode: "caseload", classId: activeBlock.id },
+            active_class_context: {
+              classId: activeBlock.id,
+              label: activeContext && activeContext.label || activeBlock.label || "",
+              supportType: activeContext && activeContext.supportType || activeBlock.supportType || "",
+              lessonContextId: activeContext && activeContext.lessonContextId || activeBlock.lessonContextId || ""
+            }
+          });
           selectStudent(sid);
         });
       });
@@ -2876,7 +2937,7 @@
           t.classList.toggle("is-active", active);
           t.setAttribute("aria-selected", active ? "true" : "false");
         });
-        hubState.set({ context: { mode: "caseload" } });
+        hubState.set({ context: { mode: "caseload" }, active_class_context: { classId: "", label: "", supportType: "", lessonContextId: "" } });
         selectStudent(sid);
       });
     });
@@ -3722,7 +3783,9 @@
     var studentId = hubState.get().context.studentId || "";
     var student = caseload.find(function (row) { return row.id === studentId; }) || null;
     var blockId = hubState.get().context.classId || "";
-    var block = getTodayLessonBlocks().filter(function (row) { return row.id === blockId; })[0] || null;
+    var block = TeacherSelectors && typeof TeacherSelectors.getBlockById === "function"
+      ? TeacherSelectors.getBlockById(blockId, todayKey(), { TeacherStorage: TeacherStorage })
+      : (getTodayLessonBlocks().filter(function (row) { return row.id === blockId; })[0] || null);
     return {
       caseload: caseload.slice(),
       blockId: block && block.id || "",
@@ -3782,6 +3845,12 @@
             lessonContextId: detail.lessonContextId || "",
             title: detail.title || ""
           }
+        },
+        active_class_context: {
+          classId: detail.blockId || hubState.get().context.classId || "",
+          label: detail.blockLabel || "",
+          supportType: detail.supportType || "",
+          lessonContextId: detail.lessonContextId || ""
         }
       });
     });

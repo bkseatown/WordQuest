@@ -60,6 +60,7 @@
   var SASLibrary = window.CSSASLibrary;
   var CaseloadStore = window.CSCaseloadStore;
   var TeacherStorage = window.CSTeacherStorage;
+  var TeacherSelectors = window.CSTeacherSelectors;
   if (!Evidence) return;
 
   var state = {
@@ -1072,53 +1073,21 @@
   }
 
   function getCaseload() {
-    if (CaseloadStore && typeof CaseloadStore.getAll === "function") {
-      var rows = CaseloadStore.getAll() || [];
-      if (rows.length) {
-        return rows.map(function (x) {
-          return {
-            id: String(x.id || x.studentId || x.key || x.name || ""),
-            name: String(x.name || x.studentName || x.id || "Student"),
-            grade: String(x.grade || x.gradeLevel || "")
-          };
-        });
-      }
-    }
-    if (Evidence && typeof Evidence.listCaseload === "function") {
-      var caseload = Evidence.listCaseload() || [];
-      if (caseload.length) {
-        return caseload.map(function (row) {
-          return { id: String(row.id), name: String(row.name), grade: String(row.gradeBand || "") };
-        });
-      }
-    }
-    var localRows = safeJsonParse(localStorage.getItem("cs.caseload.v1"), []);
-    if (Array.isArray(localRows) && localRows.length) {
-      return localRows.map(function (x) {
-        return {
-          id: String(x.id || x.studentId || x.name || ""),
-          name: String(x.name || "Student"),
-          grade: String(x.grade || x.gradeLevel || "")
-        };
-      });
-    }
+    var rows = TeacherSelectors && typeof TeacherSelectors.loadCaseload === "function"
+      ? TeacherSelectors.loadCaseload({ TeacherStorage: TeacherStorage, CaseloadStore: CaseloadStore, Evidence: Evidence })
+      : [];
+    if (rows.length) return rows;
     return [
-      { id: "demo-a", name: "Demo Student A", grade: "G5" },
-      { id: "demo-b", name: "Demo Student B", grade: "G4" },
-      { id: "demo-c", name: "Demo Student C", grade: "G6" }
+      { id: "demo-a", name: "Demo Student A", grade: "G5", focus: "", risk: "watch" },
+      { id: "demo-b", name: "Demo Student B", grade: "G4", focus: "", risk: "watch" },
+      { id: "demo-c", name: "Demo Student C", grade: "G6", focus: "", risk: "watch" }
     ];
   }
 
   function getStudentEvidence(studentId) {
-    if (!studentId) return null;
-    if (EvidenceEngine && typeof EvidenceEngine.getStudentSkillSnapshot === "function") {
-      return EvidenceEngine.getStudentSkillSnapshot(studentId);
-    }
-    if (Evidence && typeof Evidence.computeStudentSnapshot === "function") {
-      return Evidence.computeStudentSnapshot(studentId);
-    }
-    var localEvidence = safeJsonParse(localStorage.getItem("cs.evidence.v1"), {});
-    return localEvidence[String(studentId)] || null;
+    return TeacherSelectors && typeof TeacherSelectors.getStudentEvidence === "function"
+      ? TeacherSelectors.getStudentEvidence(studentId, { EvidenceEngine: EvidenceEngine, Evidence: Evidence })
+      : null;
   }
 
   function focusFromSnapshot(snapshot) {
@@ -1965,7 +1934,7 @@
   }
 
   function refreshCaseload() {
-    state.caseload = Evidence.listCaseload();
+    state.caseload = getCaseload();
     filterCaseload(el.search.value || "");
     el.noCaseload.classList.toggle("hidden", state.caseload.length > 0);
     state.todayPlan = buildTodayPlan();
@@ -2023,6 +1992,18 @@
     } else {
       appState.set({ selectedStudentId: state.selectedId });
     }
+    var selectedStudent = state.caseload.filter(function (row) { return String(row.id || "") === state.selectedId; })[0] || null;
+    appState.set({
+      active_student_context: {
+        studentId: state.selectedId,
+        studentName: selectedStudent && selectedStudent.name || "",
+        grade: selectedStudent && (selectedStudent.gradeBand || selectedStudent.grade || "") || ""
+      },
+      workspace_context: {
+        mode: "workspace",
+        tab: state.workspaceTab || "summary"
+      }
+    });
     state.generatedPlanner = null;
     renderCaseload();
     if (!state.selectedId) {
