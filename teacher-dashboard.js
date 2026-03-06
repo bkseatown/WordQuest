@@ -57,6 +57,7 @@
   var WorkspaceSupportOps = window.CSWorkspaceSupportOps;
   var WorkspaceReports = window.CSWorkspaceReports;
   var WorkspaceMeetings = window.CSWorkspaceMeetings;
+  var WorkspaceMeetingContent = window.CSWorkspaceMeetingContent;
   var WorkspaceFamilyCommunication = window.CSWorkspaceFamilyCommunication;
   var WorkspaceHistory = window.CSWorkspaceHistory;
   var WorkspaceFidelity = window.CSWorkspaceFidelity;
@@ -2308,7 +2309,8 @@
         Evidence: Evidence,
         TeacherSupportService: TeacherSupportService,
         TeacherIntelligence: TeacherIntelligence,
-        TeacherSelectors: TeacherSelectors
+        TeacherSelectors: TeacherSelectors,
+        WorkspaceMeetingContent: WorkspaceMeetingContent
       }
     });
   }
