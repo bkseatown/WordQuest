@@ -27,6 +27,8 @@ CODEX_PHASE_*.txt
 
 # Curriculum zip files (large binaries — not tracked in git)
 *.zip
+.claire/
+.claude/
 
 # Google auth config (contains OAuth Client ID — user-created, not committed)
 js/google-auth-config.js
