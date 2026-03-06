@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="./">
-  <title>Cornerstone MTSS - Teacher Dashboard</title>
+  <title>Cornerstone MTSS - Teacher Workspace</title>
   <script src="./config.js?v=20260301y"></script>
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260301y">
   <link rel="stylesheet" href="./style/typography.css?v=20260301y">
   <link rel="stylesheet" href="./style/nav-shell.css?v=20260301y">
   <link rel="stylesheet" href="./teacher-dashboard.css?v=20260306h">
-  <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306i">
+  <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306m">
   <style>
     /* ── Command Hub CTA ─────────────────────────────── */
     .td-hub-cta {
@@ -51,8 +51,8 @@
     <header class="td-top td-surface card">
       <a class="td-wordmark td-brand-home" href="./index.html" aria-label="Home">
         <strong>Cornerstone MTSS</strong>
-        <span>Teacher Dashboard</span>
-        <p class="td-top-description">Tier 2/3 sequencing for literacy and numeracy intervention.</p>
+        <span>Teacher Workspace</span>
+        <p class="td-top-description">Reports, meetings, family communication, fidelity review, history, and student profile depth.</p>
         <small id="td-buildline" class="td-buildline">Build: checking...</small>
       </a>
 
@@ -62,15 +62,15 @@
 
       <div class="td-top-actions">
         <!-- Command Hub entry point — links to new parallel hub -->
-        <a id="td-hub-cta" class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html" aria-label="Try Command Hub — new experience">
-          ✦ Command Hub
+        <a id="td-hub-cta" class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html" aria-label="Open Teacher Hub">
+          ✦ Teacher Hub
           <span class="td-hub-cta-badge">New</span>
         </a>
         <button id="td-lesson-brief" class="td-top-btn" type="button">Lesson Brief</button>
         <button id="td-add-student" class="td-top-btn" type="button">Add Student</button>
         <button id="td-new-session" class="td-top-btn" type="button">New Session</button>
         <button id="td-settings" class="td-top-btn" type="button">Settings</button>
-        <button id="td-meeting-workspace" class="td-top-btn" type="button">Meeting &amp; Reports</button>
+        <button id="td-meeting-workspace" class="td-top-btn" type="button">Meeting Workspace</button>
         <div class="td-top-overflow">
           <button id="td-top-overflow-toggle" class="td-top-btn" type="button" aria-expanded="false" aria-controls="td-top-overflow-menu">More</button>
           <div id="td-top-overflow-menu" class="td-top-overflow-menu hidden">
@@ -563,6 +563,7 @@
   <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
   <script src="./storage-schema.js?v=20260306h" defer></script>
   <script src="./js/caseload-store.js?v=20260306h" defer></script>
+  <script src="./js/teacher/teacher-storage.js?v=20260306l" defer></script>
   <script src="./js/skill-taxonomy.js?v=20260306h" defer></script>
   <script src="./js/skill-mapper.js?v=20260306h" defer></script>
   <script src="./js/support-store.js?v=20260306h" defer></script>
@@ -611,7 +612,7 @@
   <script src="./js/google-auth-config.js?v=20260306i" onerror="0"></script>
   <script src="./js/auth/google-auth.js?v=20260306i" defer onerror="0"></script>
   <script src="./js/auth/google-workspace.js?v=20260306i" defer onerror="0"></script>
-  <script src="./js/lesson-brief-panel.js?v=20260306i" defer></script>
-  <script src="./teacher-dashboard.js?v=20260306h" defer></script>
+  <script src="./js/lesson-brief-panel.js?v=20260306m" defer></script>
+  <script src="./teacher-dashboard.js?v=20260306m" defer></script>
 </body>
 </html>

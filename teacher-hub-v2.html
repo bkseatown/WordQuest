@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="color-scheme" content="only light">
   <base href="./">
-  <title>Cornerstone MTSS — Command Hub</title>
+  <title>Cornerstone MTSS — Teacher Hub</title>
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
   <link rel="stylesheet" href="./style/typography.css?v=20260306h">
-  <link rel="stylesheet" href="./teacher-hub-v2.css?v=20260306k">
+  <link rel="stylesheet" href="./teacher-hub-v2.css?v=20260306m">
   <link rel="stylesheet" href="./css/curriculum-panel.css?v=20260306h">
   <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306i">
   <link rel="stylesheet" href="./css/onboarding-tour.css?v=20260306j">
 </head>
 <body class="th2-page">
 
-  <div id="th2-shell" class="th2-shell" aria-label="Cornerstone MTSS Command Hub">
+  <div id="th2-shell" class="th2-shell" aria-label="Cornerstone MTSS Teacher Hub">
 
     <!-- ── Left: Caseload panel ─────────────────────────── -->
     <aside id="th2-sidebar" class="th2-sidebar" aria-label="Student caseload">
@@ -64,9 +64,9 @@
             id="th2-search"
             type="search"
             class="th2-search"
-            placeholder="Search students…"
+            placeholder="Search student, class, curriculum, resource, or tool…"
             autocomplete="off"
-            aria-label="Search students"
+            aria-label="Global teacher search"
           >
         </div>
 
@@ -226,6 +226,7 @@
 
   <!-- ── Data layer ────────────────────────────────────── -->
   <script src="./js/caseload-store.js?v=20260306h"></script>
+  <script src="./js/teacher/teacher-storage.js?v=20260306l"></script>
   <script src="./js/skill-taxonomy.js?v=20260306h"></script>
   <script src="./js/skill-mapper.js?v=20260306h"></script>
   <script src="./js/skill-store.js?v=20260306h"></script>
@@ -260,7 +261,7 @@
 
   <!-- ── Curriculum panel ──────────────────────────────── -->
   <script src="./js/curriculum-panel.js?v=20260306h"></script>
-  <script src="./js/lesson-brief-panel.js?v=20260306i"></script>
+  <script src="./js/lesson-brief-panel.js?v=20260306m"></script>
 
   <!-- ── Analytics (local, no server) ─────────────────── -->
   <script src="./js/analytics-local.js?v=20260306h"></script>
@@ -269,7 +270,7 @@
   <script src="./js/onboarding-tour.js?v=20260306j"></script>
 
   <!-- ── Application ───────────────────────────────────── -->
-  <script src="./teacher-hub-v2.js?v=20260306k"></script>
+  <script src="./teacher-hub-v2.js?v=20260306m"></script>
 
   <!-- ── Build infrastructure ──────────────────────────── -->
   <script src="./build-stamp.js?v=20260306h"></script>

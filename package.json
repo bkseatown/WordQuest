@@ -28,6 +28,7 @@
     "telemetry:dashboards:check": "node scripts/check-telemetry-dashboard-contract.js",
     "theme:balance:check": "node scripts/check-theme-balance.js",
     "dom:hooks:check": "node scripts/check-dead-dom-hooks.js",
+    "hub:arch:check": "node scripts/check-hub-architecture-guardrails.js",
     "visual:check": "node scripts/check-visual-baseline.js",
     "audit:ui": "BASE_URL=http://127.0.0.1:4173 playwright test tests/audit-pages.spec.js --project=chromium --reporter=line",
     "audit:ui:html": "BASE_URL=http://127.0.0.1:4173 playwright test tests/audit-pages.spec.js --project=chromium --reporter=html",

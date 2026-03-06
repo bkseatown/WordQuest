@@ -54,6 +54,7 @@
   var MeetingTranslation = window.CSMeetingTranslation;
   var SASLibrary = window.CSSASLibrary;
   var CaseloadStore = window.CSCaseloadStore;
+  var TeacherStorage = window.CSTeacherStorage;
   if (!Evidence) return;
 
   var state = {
@@ -3371,6 +3372,20 @@
     window.addEventListener("cs-lesson-brief-selected", function (event) {
       var detail = event && event.detail ? event.detail : null;
       if (!detail) return;
+      if (TeacherStorage && typeof TeacherStorage.saveLessonContext === "function" && detail.lessonContextId) {
+        TeacherStorage.saveLessonContext(detail.lessonContextId, {
+          blockId: detail.blockId || "",
+          blockLabel: detail.blockLabel || "",
+          blockTime: detail.blockTime || "",
+          supportType: detail.supportType || "",
+          studentId: detail.studentId || "",
+          studentName: detail.studentName || "",
+          grade: detail.grade || "",
+          programId: detail.programId || "",
+          title: detail.title || "",
+          updatedAt: new Date().toISOString()
+        });
+      }
       if (detail.studentId && detail.studentId === state.selectedId) {
         setCoachLine("Lesson context saved: " + (detail.blockLabel || detail.title || "today's block") + ".");
       }
