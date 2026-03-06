@@ -8,7 +8,7 @@
   var SELECTION_KEY = "cs.lessonBrief.selection.v2";
   var DAILY_KEY = "cs.lessonBrief.daily.v2";
   var NOTES_KEY = "cs.lessonBrief.notes.v2";
-  var BLOCKS_KEY = "cs.lessonBrief.blocks.v1";
+  var TeacherStorage = root.CSTeacherStorage || null;
 
   var Evidence = root.CSEvidence || null;
   var _data = null;
@@ -430,6 +430,10 @@
   }
 
   function normalizeBlock(block) {
+    var profile = TeacherStorage && typeof TeacherStorage.loadTeacherProfile === "function"
+      ? TeacherStorage.loadTeacherProfile()
+      : { name: "" };
+    var program = programById(String(block && block.programId || ""));
     var next = {
       id: String(block && block.id || "blk-" + Date.now()),
       label: String(block && block.label || "").trim(),
@@ -437,29 +441,41 @@
       supportType: String(block && block.supportType || "push-in"),
       area: String(block && block.area || "ela"),
       programId: String(block && block.programId || ""),
-      studentIds: []
+      subject: String(block && block.subject || block && block.area || "ela").trim(),
+      teacher: String(block && block.teacher || profile.name || "").trim(),
+      curriculum: String(block && block.curriculum || program && program.label || "").trim(),
+      lesson: String(block && block.lesson || "").trim(),
+      classSection: String(block && block.classSection || block && block.label || "").trim(),
+      notes: String(block && block.notes || "").trim(),
+      studentIds: [],
+      rosterRefs: []
     };
     var ids = Array.isArray(block && block.studentIds) ? block.studentIds : [];
     next.studentIds = ids.map(function (value) {
       return String(value || "");
     }).filter(Boolean);
+    next.rosterRefs = next.studentIds.slice();
     return next;
   }
 
-  function getBlocksMap() {
-    return readStorage(BLOCKS_KEY, {});
-  }
-
   function getBlocks() {
-    var map = getBlocksMap();
-    var rows = map && Array.isArray(map[todayStamp()]) ? map[todayStamp()] : [];
+    if (TeacherStorage && typeof TeacherStorage.loadScheduleBlocks === "function") {
+      return TeacherStorage.loadScheduleBlocks(todayStamp()).map(normalizeBlock);
+    }
+    var legacyMap = readStorage("cs.lessonBrief.blocks.v1", {});
+    var rows = legacyMap && Array.isArray(legacyMap[todayStamp()]) ? legacyMap[todayStamp()] : [];
     return rows.map(normalizeBlock);
   }
 
   function saveBlocks(rows) {
-    var map = getBlocksMap();
-    map[todayStamp()] = Array.isArray(rows) ? rows.map(normalizeBlock) : [];
-    writeStorage(BLOCKS_KEY, map);
+    var normalized = Array.isArray(rows) ? rows.map(normalizeBlock) : [];
+    if (TeacherStorage && typeof TeacherStorage.saveScheduleBlocks === "function") {
+      TeacherStorage.saveScheduleBlocks(todayStamp(), normalized);
+      return;
+    }
+    var legacyMap = readStorage("cs.lessonBrief.blocks.v1", {});
+    legacyMap[todayStamp()] = normalized;
+    writeStorage("cs.lessonBrief.blocks.v1", legacyMap);
   }
 
   function saveDailySelection() {
@@ -598,6 +614,7 @@
       if (!_selection.supportType) _selection.supportType = block.supportType;
       if (!_selection.area) _selection.area = block.area;
       if (!_selection.programId) _selection.programId = block.programId;
+      if (!_selection.lessonLabel && block.lesson) _selection.lessonLabel = String(block.lesson);
       if (!_selection.studentId && block.studentIds.length === 1) _selection.studentId = block.studentIds[0];
     }
 
@@ -746,6 +763,9 @@
 
   function open(context) {
     buildPanel();
+    if (TeacherStorage && typeof TeacherStorage.migrateLessonBriefBlocks === "function") {
+      TeacherStorage.migrateLessonBriefBlocks();
+    }
     applyContext(context || null);
     var overlay = el(OVERLAY_ID);
     var panel = el(PANEL_ID);
@@ -1728,6 +1748,35 @@
   }
 
   function notifySelection(brief) {
+    var lessonContextId = [_selection.blockId || "no-block", _selection.programId || "no-program", _selection.lessonLabel || brief.title || "lesson"].join(":");
+    if (TeacherStorage && typeof TeacherStorage.saveLessonContext === "function") {
+      TeacherStorage.saveLessonContext(lessonContextId, {
+        blockId: _selection.blockId,
+        blockLabel: _selection.blockLabel,
+        blockTime: _selection.blockTime,
+        supportType: _selection.supportType,
+        area: _selection.area,
+        programId: _selection.programId,
+        curriculum: currentProgramLabel(),
+        title: brief.title,
+        lesson: _selection.lessonLabel || brief.title || "",
+        updatedAt: new Date().toISOString()
+      });
+    }
+    if (TeacherStorage && typeof TeacherStorage.saveClassContext === "function" && _selection.blockId) {
+      TeacherStorage.saveClassContext(_selection.blockId, {
+        classId: _selection.blockId,
+        label: _selection.blockLabel,
+        timeLabel: _selection.blockTime,
+        supportType: _selection.supportType,
+        area: _selection.area,
+        programId: _selection.programId,
+        curriculum: currentProgramLabel(),
+        lesson: _selection.lessonLabel || brief.title || "",
+        rosterRefs: currentBlockRoster().map(function (row) { return String(row.id || ""); }),
+        updatedAt: new Date().toISOString()
+      });
+    }
     try {
       root.dispatchEvent(new CustomEvent("cs-lesson-brief-selected", {
         detail: {
@@ -1740,6 +1789,7 @@
           grade: _selection.grade,
           programId: _selection.programId,
           title: brief.title,
+          lessonContextId: lessonContextId,
           selection: mergeSelection(defaultSelection(), _selection)
         }
       }));
@@ -1749,6 +1799,10 @@
   function saveOrUpdateBlock() {
     syncLiveFields();
     var rows = getBlocks();
+    var brief = currentBrief();
+    var profile = TeacherStorage && typeof TeacherStorage.loadTeacherProfile === "function"
+      ? TeacherStorage.loadTeacherProfile()
+      : { name: "" };
     var block = normalizeBlock({
       id: _selection.blockId || "blk-" + Date.now(),
       label: _selection.blockLabel,
@@ -1756,6 +1810,12 @@
       supportType: _selection.supportType,
       area: _selection.area,
       programId: _selection.programId,
+      subject: _selection.area,
+      teacher: profile.name || "",
+      curriculum: currentProgramLabel(),
+      lesson: _selection.lessonLabel || (brief && brief.title) || "",
+      classSection: _selection.blockLabel,
+      notes: "",
       studentIds: currentBlock() && currentBlock().studentIds || []
     });
     if (!block.label) return;

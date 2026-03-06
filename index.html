@@ -20,12 +20,8 @@
       </header>
       <nav class="home-entry-roles" aria-label="Role selection">
         <a class="home-role-btn" href="./teacher-hub-v2.html">
-          <span class="home-role-label">✦ Teacher Hub</span>
-          <span class="home-role-sub">Default teacher workspace for today's schedule, roster, and lesson briefing</span>
-        </a>
-        <a class="home-role-btn" href="./teacher-dashboard.html">
-          <span class="home-role-label">Teacher Dashboard</span>
-          <span class="home-role-sub">Deeper planning, intervention sequencing, and reports</span>
+          <span class="home-role-label">Teacher</span>
+          <span class="home-role-sub">Daily schedule, caseload, class context, and lesson briefing</span>
         </a>
         <a class="home-role-btn" href="./word-quest.html?play=1">
           <span class="home-role-label">Student</span>
@@ -33,116 +29,11 @@
         </a>
         <a class="home-role-btn home-role-btn--secondary" href="./teacher-dashboard.html">
           <span class="home-role-label">Admin &nbsp;/&nbsp; Specialist</span>
-          <span class="home-role-sub">Caseload review &amp; reports</span>
+          <span class="home-role-sub">Workspace for reports, review, and case notes</span>
         </a>
       </nav>
-
-      <!-- ── Google auth section ─────────────────────────── -->
-      <div id="home-auth-section" class="home-auth-section">
-        <!-- Signed-out state -->
-        <div id="home-auth-signedout" class="home-auth-signedout">
-          <p class="home-auth-hint">Sign in with Google to sync your class roster from Google Classroom</p>
-          <button id="home-google-signin" class="home-google-btn" type="button" aria-label="Sign in with Google">
-            <svg class="home-google-logo" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            Sign in with Google
-          </button>
-          <p id="home-auth-setup-hint" class="home-auth-setup-hint hidden">
-            Google sign-in requires a one-time setup. <a href="./setup-guide.html" class="home-auth-link">See setup guide →</a>
-          </p>
-        </div>
-
-        <!-- Signed-in state -->
-        <div id="home-auth-signedin" class="home-auth-signedin hidden">
-          <div class="home-auth-chip">
-            <img id="home-auth-avatar" class="home-auth-avatar" src="" alt="" aria-hidden="true">
-            <div class="home-auth-info">
-              <span id="home-auth-name" class="home-auth-name"></span>
-              <span id="home-auth-email" class="home-auth-email"></span>
-            </div>
-            <button id="home-google-signout" class="home-auth-signout-btn" type="button" aria-label="Sign out">Sign out</button>
-          </div>
-        </div>
-      </div>
-      <!-- ── /Google auth section ────────────────────────── -->
-
     </div>
   </main>
-
-  <!-- ── Google auth scripts ──────────────────────────── -->
-  <!-- User must create js/google-auth-config.js — see js/auth/google-auth.js for setup instructions -->
-  <script src="./js/google-auth-config.js?v=20260306i" onerror="0"></script>
-  <script src="./js/auth/google-auth.js?v=20260306i"></script>
-
-  <!-- ── Home auth UI ──────────────────────────────────── -->
-  <script>
-  (function () {
-    "use strict";
-    var signInBtn  = document.getElementById("home-google-signin");
-    var signOutBtn = document.getElementById("home-google-signout");
-    var signedOut  = document.getElementById("home-auth-signedout");
-    var signedIn   = document.getElementById("home-auth-signedin");
-    var setupHint  = document.getElementById("home-auth-setup-hint");
-    var avatarEl   = document.getElementById("home-auth-avatar");
-    var nameEl     = document.getElementById("home-auth-name");
-    var emailEl    = document.getElementById("home-auth-email");
-
-    function renderAuth(user) {
-      if (user) {
-        signedOut.classList.add("hidden");
-        signedIn.classList.remove("hidden");
-        nameEl.textContent  = user.name  || "";
-        emailEl.textContent = user.email || "";
-        if (user.picture) {
-          avatarEl.src = user.picture;
-          avatarEl.alt = user.name || "Google account";
-        } else {
-          avatarEl.src = "";
-          avatarEl.alt = "";
-        }
-      } else {
-        signedOut.classList.remove("hidden");
-        signedIn.classList.add("hidden");
-        /* Show setup hint if auth module not configured */
-        if (window.CSGoogleAuth && !window.CSGoogleAuth.isConfigured()) {
-          setupHint && setupHint.classList.remove("hidden");
-        }
-      }
-    }
-
-    /* Wait for DOM + auth module */
-    document.addEventListener("DOMContentLoaded", function () {
-      if (!window.CSGoogleAuth) {
-        /* Auth module not loaded — show setup hint */
-        setupHint && setupHint.classList.remove("hidden");
-        return;
-      }
-      CSGoogleAuth.init();
-      CSGoogleAuth.onAuthChange(renderAuth);
-
-      if (signInBtn) {
-        signInBtn.addEventListener("click", function () {
-          signInBtn.textContent = "Signing in…";
-          signInBtn.disabled = true;
-          CSGoogleAuth.signIn().catch(function (err) {
-            signInBtn.innerHTML = '<svg class="home-google-logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Sign in with Google';
-            signInBtn.disabled = false;
-          });
-        });
-      }
-
-      if (signOutBtn) {
-        signOutBtn.addEventListener("click", function () {
-          CSGoogleAuth.signOut();
-        });
-      }
-    });
-  })();
-  </script>
 
   <script src="./build-stamp.js?v=20260306h"></script>
   <script src="./js/build-badge.js?v=20260306h"></script>

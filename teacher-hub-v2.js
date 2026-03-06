@@ -1,5 +1,5 @@
 /**
- * teacher-hub-v2.js — Context-first Command Hub, Phase 2
+ * teacher-hub-v2.js — Context-first Teacher Hub runtime
  *
  * Responsibility surface:
  *   - Bootstrap HubState + HubContext
@@ -22,6 +22,7 @@
   var SupportStore         = window.CSSupportStore;
   var HubState             = window.CSHubState;
   var HubContext           = window.CSHubContext;
+  var TeacherStorage       = window.CSTeacherStorage;
 
   if (!Evidence || !HubState) return;
 
@@ -54,6 +55,7 @@
 
   var caseload = [];
   var filtered = [];
+  var searchResults = null;
 
   /* ── DOM refs ──────────────────────────────────────────── */
 
@@ -226,17 +228,28 @@
   }
 
   function getTodayLessonBlocks() {
-    var map = safeJsonParse(localStorage.getItem("cs.lessonBrief.blocks.v1"), {});
-    var rows = map && Array.isArray(map[todayKey()]) ? map[todayKey()] : [];
+    if (TeacherStorage && typeof TeacherStorage.migrateLessonBriefBlocks === "function") {
+      TeacherStorage.migrateLessonBriefBlocks();
+    }
+    var rows = TeacherStorage && typeof TeacherStorage.loadScheduleBlocks === "function"
+      ? TeacherStorage.loadScheduleBlocks(todayKey())
+      : [];
     return rows.map(function (row) {
       return {
         id: String(row && row.id || ""),
         label: String(row && row.label || ""),
         timeLabel: String(row && row.timeLabel || ""),
+        teacher: String(row && row.teacher || ""),
+        subject: String(row && row.subject || areaLabel(row && row.area || "ela")),
+        curriculum: String(row && row.curriculum || ""),
+        lesson: String(row && row.lesson || ""),
+        classSection: String(row && row.classSection || row && row.label || ""),
+        notes: String(row && row.notes || ""),
         supportType: String(row && row.supportType || "push-in"),
         area: String(row && row.area || "ela"),
         programId: String(row && row.programId || ""),
-        studentIds: Array.isArray(row && row.studentIds) ? row.studentIds.map(String) : []
+        studentIds: Array.isArray(row && row.studentIds) ? row.studentIds.map(String) : [],
+        rosterRefs: Array.isArray(row && row.rosterRefs) ? row.rosterRefs.map(String) : []
       };
     }).filter(function (row) { return row.id && row.label; });
   }
@@ -295,6 +308,142 @@
       cross: cross,
       accommodations: accommodations
     };
+  }
+
+  function programLabel(programId) {
+    var value = String(programId || "");
+    if (!value) return "";
+    if (value === "fishtank-ela") return "Fishtank ELA";
+    if (value === "el-education") return "EL Education ELA";
+    if (value === "ufli") return "UFLI Foundations";
+    if (value === "fundations") return "Fundations";
+    if (value === "just-words") return "Just Words";
+    if (value === "haggerty") return "Heggerty";
+    if (value === "bridges-math") return "Bridges Math";
+    if (value === "step-up-writing") return "Step Up to Writing";
+    if (value === "sas-humanities-9") return "SAS Humanities 9";
+    return value;
+  }
+
+  var HUB_SEARCH_RESOURCES = [
+    { id: "tool-wordquest", kind: "tool", label: "Word Quest", subtitle: "Word game activity surface", href: "word-quest.html?play=1" },
+    { id: "tool-reading", kind: "resource", label: "Reading Lab", subtitle: "Literacy activity", href: "reading-lab.html" },
+    { id: "tool-sentence", kind: "resource", label: "Sentence Studio", subtitle: "Sentence support surface", href: "sentence-surgery.html" },
+    { id: "tool-writing", kind: "resource", label: "Writing Studio", subtitle: "Writing support surface", href: "writing-studio.html" },
+    { id: "tool-numeracy", kind: "intervention", label: "Numeracy", subtitle: "Math intervention surface", href: "numeracy.html" },
+    { id: "tool-precision", kind: "intervention", label: "Precision Play", subtitle: "Practice surface", href: "precision-play.html" },
+    { id: "tool-diagnostic", kind: "diagnostic", label: "Decoding Diagnostic", subtitle: "Diagnostic activity", href: "activities/decoding-diagnostic.html" },
+    { id: "tool-brief", kind: "resource", label: "Lesson Brief", subtitle: "Open class lesson briefing", action: "brief" },
+    { id: "tool-curriculum", kind: "resource", label: "Curriculum Quick Reference", subtitle: "Open curriculum supports", action: "curriculum" },
+    { id: "tool-workspace", kind: "resource", label: "Teacher Workspace", subtitle: "Reports, meetings, notes, and history", href: "teacher-dashboard.html" }
+  ];
+
+  function buildSearchResults(query) {
+    var q = String(query || "").trim().toLowerCase();
+    if (!q) return null;
+    var blocks = getTodayLessonBlocks();
+    var students = caseload.filter(function (student) {
+      var hay = [
+        student.name,
+        student.id,
+        student.grade,
+        student.gradeBand
+      ].join(" ").toLowerCase();
+      return hay.indexOf(q) >= 0;
+    }).map(function (student) {
+      return {
+        kind: "student",
+        id: student.id,
+        label: student.name,
+        subtitle: "Student" + (student.grade || student.gradeBand ? " · Grade " + (student.grade || student.gradeBand) : "")
+      };
+    });
+    var blockResults = blocks.filter(function (block) {
+      var hay = [
+        block.label,
+        block.timeLabel,
+        block.subject,
+        block.curriculum,
+        block.lesson,
+        block.classSection,
+        block.teacher,
+        programLabel(block.programId)
+      ].join(" ").toLowerCase();
+      return hay.indexOf(q) >= 0;
+    }).map(function (block) {
+      return {
+        kind: "class",
+        id: block.id,
+        label: block.label,
+        subtitle: [block.timeLabel, block.subject, block.curriculum || programLabel(block.programId), block.lesson].filter(Boolean).join(" · ")
+      };
+    });
+    var resourceResults = HUB_SEARCH_RESOURCES.filter(function (item) {
+      var hay = [item.label, item.subtitle, item.kind].join(" ").toLowerCase();
+      return hay.indexOf(q) >= 0;
+    });
+    return {
+      query: q,
+      students: students.slice(0, 8),
+      classes: blockResults.slice(0, 8),
+      resources: resourceResults.slice(0, 8)
+    };
+  }
+
+  function searchResultCount(results) {
+    if (!results) return 0;
+    return (results.students || []).length + (results.classes || []).length + (results.resources || []).length;
+  }
+
+  function renderSearchSection(title, items, attr) {
+    if (!items || !items.length) return "";
+    return [
+      '<div class="th2-search-section">',
+      '  <p class="th2-search-section-title">' + escapeHtml(title) + "</p>",
+      items.map(function (item) {
+        return '<button class="th2-search-result" data-search-kind="' + escapeHtml(item.kind) + '" ' + attr + '="' + escapeHtml(item.id) + '" type="button">' +
+          '<strong>' + escapeHtml(item.label) + '</strong>' +
+          (item.subtitle ? '<span>' + escapeHtml(item.subtitle) + '</span>' : "") +
+          "</button>";
+      }).join(""),
+      "</div>"
+    ].join("");
+  }
+
+  function classLessonSummary(block) {
+    var label = [block.curriculum || programLabel(block.programId), block.lesson].filter(Boolean).join(" · ");
+    return label || "Lesson context will appear after you confirm the lesson in Lesson Brief.";
+  }
+
+  function classConceptFocus(block) {
+    var subject = String(block && block.subject || "").toLowerCase();
+    if (subject === "math") return "Keep one representation and one explanation path visible while students solve.";
+    if (subject === "writing") return "Anchor students in structure first, then elaboration and sentence clarity.";
+    if (subject === "humanities") return "Keep the claim, evidence, and language demand narrow and explicit.";
+    if (subject === "intervention") return "Prioritize the highest-leverage target skill and skip already-mastered review.";
+    return "Highlight the lesson target, vocabulary, and one support move before the student starts.";
+  }
+
+  function classLanguageDemands(block) {
+    var subject = String(block && block.subject || "").toLowerCase();
+    if (subject === "math") return "Math vocabulary, explanation frames, and precise compare/explain language.";
+    if (subject === "writing") return "Sentence frames, transition words, and verbal rehearsal before writing.";
+    if (subject === "humanities") return "Claim/evidence language, annotation talk, and concise analytical sentences.";
+    if (subject === "intervention") return "Clear oral modeling, repetition, and short response frames.";
+    return "Academic vocabulary, response stems, and text-based explanation language.";
+  }
+
+  function accommodationIcons(accommodations) {
+    var rows = Array.isArray(accommodations) ? accommodations : [];
+    return rows.slice(0, 3).map(function (item) {
+      var text = String(item || "");
+      var glyph = "•";
+      if (/sentence|frame/i.test(text)) glyph = "🗨";
+      else if (/visual|model|graphic/i.test(text)) glyph = "◫";
+      else if (/read|audio|repeat/i.test(text)) glyph = "🔊";
+      else if (/break|check|chunk|timer/i.test(text)) glyph = "⏱";
+      return '<span class="th2-class-accommodation-icon" title="' + escapeHtml(text) + '" aria-label="' + escapeHtml(text) + '">' + glyph + '</span>';
+    }).join("");
   }
 
   /* ── Sparkline ─────────────────────────────────────────── */
@@ -2050,7 +2199,9 @@
       var id   = String(s.id || "").toLowerCase();
       return name.includes(q) || id.includes(q);
     });
+    searchResults = buildSearchResults(q);
     renderStudentList();
+    if (q) showEmptyState();
   }
 
   /* ── Student list rendering ────────────────────────────── */
@@ -2234,7 +2385,7 @@
       '<div class="th2-onboarding">',
       '  <div class="th2-onboarding-icon">&#x1F4DA;</div>',
       '  <h2 class="th2-onboarding-title">Welcome to Cornerstone MTSS</h2>',
-      '  <p class="th2-onboarding-sub">Your intelligence-powered command hub for reading &amp; math intervention.</p>',
+      '  <p class="th2-onboarding-sub">Your context-first teacher hub for the day\'s schedule, caseload, and class support.</p>',
       '  <ol class="th2-onboarding-steps">',
       '    <li class="th2-onboarding-step">',
       '      <span class="th2-step-num">1</span>',
@@ -2401,6 +2552,10 @@
 
   function renderMorningBrief() {
     if (!el.emptyState || !caseload.length) return;
+    if (searchResults && searchResultCount(searchResults)) {
+      renderSearchResults();
+      return;
+    }
 
     var ranked = caseload.map(function (student) {
       var summary = safe(function () { return Evidence.getStudentSummary(student.id); });
@@ -2463,7 +2618,12 @@
     var blockStripHtml = blockStrip.length
       ? '<div class="th2-brief-block-strip">' + blockStrip.map(function (block) {
           return '<button class="th2-brief-block-chip" data-open-block="' + escapeHtml(block.id) + '" type="button">' +
-            escapeHtml((block.timeLabel ? block.timeLabel + " - " : "") + block.label) + "</button>";
+            '<strong>' + escapeHtml(block.timeLabel || block.label) + '</strong>' +
+            '<span>' + escapeHtml(block.subject || areaLabel(block.area)) + '</span>' +
+            '<span>' + escapeHtml(block.curriculum || programLabel(block.programId) || block.label) + '</span>' +
+            (block.lesson ? '<span>' + escapeHtml(block.lesson) + '</span>' : "") +
+            (block.teacher ? '<span>' + escapeHtml("Teacher: " + block.teacher) + '</span>' : "") +
+            "</button>";
         }).join("") + "</div>"
       : "";
 
@@ -2472,10 +2632,13 @@
       '  <p class="th2-morning-greeting">' + greetingWord() + '</p>',
       '  <p class="th2-morning-date">' + todayDateStr() + '</p>',
       '  <p class="th2-morning-sub">' + escapeHtml(subText) + '</p>',
-      (blockStrip.length ? '  <p class="th2-today-sub">Today\'s saved blocks are ready below. Open one to see the roster and class-specific goals.</p>' : ""),
+      '  <p class="th2-section-label">Today\'s Schedule Blocks</p>',
+      (blockStrip.length ? '  <p class="th2-today-sub">Open a block to move directly into class context.</p>' : '<p class="th2-today-sub">No saved blocks yet. Use Lesson Brief to add today\'s classes or pullout time.</p>'),
       blockStripHtml,
+      '  <p class="th2-section-label">My Caseload</p>',
       buildCaseloadHealthBar(ranked),
       heroHtml,
+      (cardsHtml ? '  <p class="th2-section-label">Classes Today</p>' : ""),
       (cardsHtml ? '<div class="th2-brief-list">' + cardsHtml + '</div>' : ''),
       '</div>'
     ].join("\n");
@@ -2505,6 +2668,51 @@
     }
   }
 
+  function renderSearchResults() {
+    if (!el.emptyState || !searchResults) return;
+    el.emptyState.innerHTML = [
+      '<div class="th2-today-panel">',
+      '  <p class="th2-today-title">Global Search</p>',
+      '  <p class="th2-today-sub">Search by student, class, curriculum, resource, diagnostic, or intervention tool. Results open into the right context.</p>',
+      renderSearchSection("Students", searchResults.students, "data-search-id"),
+      renderSearchSection("Classes Today", searchResults.classes, "data-search-id"),
+      renderSearchSection("Resources & Tools", searchResults.resources, "data-search-id"),
+      (!searchResultCount(searchResults) ? '<p class="th2-today-sub">No matches found for this search yet.</p>' : ""),
+      '</div>'
+    ].join("");
+    el.emptyState.querySelectorAll(".th2-search-result").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var kind = btn.getAttribute("data-search-kind") || "";
+        var id = btn.getAttribute("data-search-id") || "";
+        if (kind === "student" && id) {
+          selectStudent(id);
+          return;
+        }
+        if (kind === "class" && id) {
+          el.modeTabs.forEach(function (tab) {
+            var active = tab.getAttribute("data-mode") === "class";
+            tab.classList.toggle("is-active", active);
+            tab.setAttribute("aria-selected", active ? "true" : "false");
+          });
+          hubState.set({ context: { mode: "class", classId: id, studentId: "" } });
+          return;
+        }
+        var item = HUB_SEARCH_RESOURCES.filter(function (row) { return row.id === id; })[0] || null;
+        if (!item) return;
+        if (item.action === "brief" && window.CSLessonBriefPanel && window.CSLessonBriefPanel.toggle) {
+          window.CSLessonBriefPanel.toggle(lessonBriefContext());
+          return;
+        }
+        if (item.action === "curriculum") {
+          var curBtn = document.getElementById("th2-cur-btn");
+          if (curBtn) curBtn.click();
+          return;
+        }
+        if (item.href) window.location.href = item.href;
+      });
+    });
+  }
+
   /* ── Empty / focused state toggle ──────────────────────── */
 
   function showEmptyState() {
@@ -2512,6 +2720,7 @@
     if (el.focusCard)  { el.focusCard.classList.add("hidden"); el.focusCard.setAttribute("aria-hidden", "true"); }
     var mode = hubState.get().context.mode;
     if (mode === "class") { renderClassSnapshot(); return; }
+    if (el.search && String(el.search.value || "").trim()) { renderSearchResults(); return; }
     if (!caseload.length) { renderOnboarding(); return; }
     renderMorningBrief();
   }
@@ -2547,7 +2756,9 @@
         var count = block.studentIds.length;
         return '<button class="th2-class-block-chip' + (activeBlock && activeBlock.id === block.id ? " is-active" : "") + '" data-class-block="' + escapeHtml(block.id) + '" type="button">' +
           '<strong>' + escapeHtml(block.timeLabel || "Block") + '</strong>' +
-          '<span>' + escapeHtml(block.label) + " · " + count + "</span>" +
+          '<span>' + escapeHtml(block.subject || areaLabel(block.area)) + " · " + count + "</span>" +
+          '<span>' + escapeHtml(block.curriculum || programLabel(block.programId) || block.label) + '</span>' +
+          (block.lesson ? '<span>' + escapeHtml(block.lesson) + '</span>' : "") +
           "</button>";
       }).join("");
       var studentRows = activeBlock.studentIds.map(function (studentId) {
@@ -2557,27 +2768,33 @@
         return [
           '<button class="th2-class-student-row" data-id="' + escapeHtml(student.id) + '" type="button">',
           '  <div class="th2-class-student-head">',
-          '    <strong>' + escapeHtml(student.name) + "</strong>",
-          '    <span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(snapshot.primaryChip) + "</span>",
+          '    <div class="th2-class-student-title"><strong>' + escapeHtml(student.name) + '</strong><span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(snapshot.primaryChip) + "</span></div>",
+          '    <div class="th2-class-accommodation-icons">' + accommodationIcons(snapshot.accommodations) + "</div>",
           "  </div>",
           (snapshot.primaryGoal ? '  <p class="th2-class-goal">' + escapeHtml(snapshot.primaryGoal) + "</p>" : '  <p class="th2-class-goal">No class goal saved yet.</p>'),
           (snapshot.cross.length ? '  <div class="th2-class-chip-row">' + snapshot.cross.map(function (chip) {
             return '<span class="th2-class-chip">' + escapeHtml(chip) + "</span>";
           }).join("") + "</div>" : ""),
-          (snapshot.accommodations.length ? '  <p class="th2-class-accommodations">Supports: ' + escapeHtml(snapshot.accommodations.join(" · ")) + "</p>" : ""),
+          (snapshot.accommodations.length ? '  <p class="th2-class-accommodations">' + escapeHtml(snapshot.accommodations.join(" · ")) + "</p>" : ""),
           "</button>"
         ].join("");
       }).join("");
       el.emptyState.innerHTML =
         '<div class="th2-today-panel">' +
-        '<p class="th2-today-title">Today\'s Blocks</p>' +
-        '<p class="th2-today-sub">Open a block to see the roster, the subject-specific goal, and quick supports without leaving the Hub.</p>' +
+        '<p class="th2-today-title">Today\'s Schedule Blocks</p>' +
+        '<p class="th2-today-sub">Open a block to see lesson context, language demands, concept focus, and compact student supports without leaving the Hub.</p>' +
         '<div class="th2-class-block-row">' + blockButtons + '</div>' +
         '<div class="th2-class-detail-card">' +
         '  <div class="th2-class-detail-head">' +
-        '    <div><p class="th2-today-title">' + escapeHtml(activeBlock.label) + '</p><p class="th2-today-sub">' + escapeHtml((activeBlock.timeLabel ? activeBlock.timeLabel + ' · ' : '') + areaLabel(activeBlock.area) + ' · ' + activeBlock.supportType) + '</p></div>' +
+        '    <div><p class="th2-today-title">' + escapeHtml(activeBlock.label) + '</p><p class="th2-today-sub">' + escapeHtml((activeBlock.timeLabel ? activeBlock.timeLabel + ' · ' : '') + (activeBlock.subject || areaLabel(activeBlock.area)) + ' · ' + activeBlock.supportType) + '</p></div>' +
         '    <button class="th2-cur-btn" data-open-brief="1" type="button">Lesson Brief</button>' +
         "  </div>" +
+        '  <div class="th2-class-intelligence-grid">' +
+        '    <div class="th2-class-intelligence-item"><span>Lesson context</span><strong>' + escapeHtml(classLessonSummary(activeBlock)) + '</strong></div>' +
+        '    <div class="th2-class-intelligence-item"><span>Language demands</span><strong>' + escapeHtml(classLanguageDemands(activeBlock)) + '</strong></div>' +
+        '    <div class="th2-class-intelligence-item"><span>Concept focus</span><strong>' + escapeHtml(classConceptFocus(activeBlock)) + '</strong></div>' +
+        '    <div class="th2-class-intelligence-item"><span>Teacher</span><strong>' + escapeHtml(activeBlock.teacher || 'Not set yet') + '</strong></div>' +
+        '  </div>' +
         (studentRows || '<p class="th2-today-sub">No students assigned to this block yet.</p>') +
         "</div>" +
         "</div>";
@@ -3496,8 +3713,16 @@
   function lessonBriefContext() {
     var studentId = hubState.get().context.studentId || "";
     var student = caseload.find(function (row) { return row.id === studentId; }) || null;
+    var blockId = hubState.get().context.classId || "";
+    var block = getTodayLessonBlocks().filter(function (row) { return row.id === blockId; })[0] || null;
     return {
       caseload: caseload.slice(),
+      blockId: block && block.id || "",
+      blockLabel: block && block.label || "",
+      blockTime: block && block.timeLabel || "",
+      supportType: block && block.supportType || "",
+      area: block && block.area || "",
+      programId: block && block.programId || "",
       studentId: studentId,
       studentName: student && student.name || "",
       grade: student && (student.gradeBand || student.grade || "") || ""
@@ -3521,6 +3746,20 @@
     window.addEventListener("cs-lesson-brief-selected", function (event) {
       var detail = event && event.detail ? event.detail : null;
       if (!detail) return;
+      if (TeacherStorage && typeof TeacherStorage.saveLessonContext === "function" && detail.lessonContextId) {
+        TeacherStorage.saveLessonContext(detail.lessonContextId, {
+          blockId: detail.blockId || "",
+          blockLabel: detail.blockLabel || "",
+          blockTime: detail.blockTime || "",
+          supportType: detail.supportType || "",
+          studentId: detail.studentId || "",
+          studentName: detail.studentName || "",
+          grade: detail.grade || "",
+          programId: detail.programId || "",
+          title: detail.title || "",
+          updatedAt: new Date().toISOString()
+        });
+      }
       hubState.set({
         context: {
           lessonContext: {
@@ -3532,6 +3771,7 @@
             studentName: detail.studentName || "",
             grade: detail.grade || "",
             programId: detail.programId || "",
+            lessonContextId: detail.lessonContextId || "",
             title: detail.title || ""
           }
         }
