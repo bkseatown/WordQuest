@@ -22,6 +22,8 @@
     var SASLibrary = deps.SASLibrary || null;
     var TeacherSupportService = deps.TeacherSupportService || null;
     var WorkspaceSupportContent = deps.WorkspaceSupportContent || null;
+    var WeeklyInsightGenerator = deps.WeeklyInsightGenerator || null;
+    var MeetingTranslation = deps.MeetingTranslation || null;
 
     function setCoachLine(text) {
       if (typeof hooks.setCoachLine === "function") hooks.setCoachLine(text);
@@ -128,7 +130,8 @@
       var recommendation = recentSessions[0] && recentSessions[0].signals && window.CSEvidence && typeof window.CSEvidence.recommendNextSteps === "function"
         ? window.CSEvidence.recommendNextSteps(recentSessions[0].signals)
         : { bullets: [summary.nextMove && summary.nextMove.line || "Continue focused support."] };
-      return WorkspaceSupportContent && typeof WorkspaceSupportContent.buildSharePayload === "function"
+      var weeklyInsights = buildWeeklyInsightDraft(studentId, summary, model, recentSessions, teacherNotes);
+      var payload = WorkspaceSupportContent && typeof WorkspaceSupportContent.buildSharePayload === "function"
         ? WorkspaceSupportContent.buildSharePayload({
             studentId: sid,
             summary: summary,
@@ -140,6 +143,102 @@
             ShareSummaryAPI: ShareSummaryAPI
           })
         : { text: "", json: {}, csv: "" };
+      payload.weeklyInsights = weeklyInsights;
+      if (weeklyInsights) {
+        payload.text = [
+          "Teacher Summary",
+          weeklyInsights.teacherSummary || "",
+          "",
+          "Family Summary",
+          weeklyInsights.familySummary || "",
+          "",
+          "Student Reflection",
+          weeklyInsights.studentReflection || ""
+        ].join("\n");
+        if (payload.json && typeof payload.json === "object") {
+          payload.json.weeklyInsights = weeklyInsights;
+        }
+      }
+      return payload;
+    }
+
+    function buildWeeklyInsightDraft(studentId, summary, model, recentSessions, teacherNotes) {
+      if (!WeeklyInsightGenerator || typeof WeeklyInsightGenerator.generateWeeklyInsights !== "function") return null;
+      var supportProfile = SupportStore && typeof SupportStore.getStudent === "function"
+        ? (SupportStore.getStudent(studentId) || {})
+        : {};
+      var lessonContexts = [];
+      if (deps.TeacherSelectors && deps.TeacherStorage && typeof deps.TeacherStorage.loadLessonContexts === "function") {
+        var lessonMap = deps.TeacherStorage.loadLessonContexts();
+        lessonContexts = Object.keys(lessonMap || {}).map(function (key) { return lessonMap[key]; }).slice(0, 3);
+      }
+      var insightData = WeeklyInsightGenerator.generateWeeklyInsights({
+        studentId: studentId,
+        summary: summary,
+        model: model,
+        recentSessions: recentSessions,
+        supportProfile: supportProfile,
+        lessonContexts: lessonContexts,
+        teacherNotes: teacherNotes,
+        subject: summary && summary.focus || "",
+        goalLine: summary && summary.nextMove && summary.nextMove.line || ""
+      });
+      return {
+        data: insightData,
+        teacherSummary: WeeklyInsightGenerator.generateTeacherSummary(insightData),
+        familySummary: WeeklyInsightGenerator.generateFamilySummary(insightData),
+        studentReflection: WeeklyInsightGenerator.generateStudentReflection(insightData)
+      };
+    }
+
+    function populateWeeklyInsightFields(draft) {
+      if (el.weeklyTeacher) el.weeklyTeacher.value = draft && draft.teacherSummary || "";
+      if (el.weeklyFamily) el.weeklyFamily.value = draft && draft.familySummary || "";
+      if (el.weeklyStudent) el.weeklyStudent.value = draft && draft.studentReflection || "";
+      if (el.weeklyFamilyTranslation) {
+        el.weeklyFamilyTranslation.value = "";
+        el.weeklyFamilyTranslation.classList.add("hidden");
+      }
+      if (el.weeklyTranslationBadge) el.weeklyTranslationBadge.classList.add("hidden");
+    }
+
+    function buildCombinedWeeklyPreview() {
+      return [
+        "Teacher Summary",
+        String(el.weeklyTeacher && el.weeklyTeacher.value || ""),
+        "",
+        "Family Summary",
+        String(el.weeklyFamily && el.weeklyFamily.value || ""),
+        "",
+        "Student Reflection",
+        String(el.weeklyStudent && el.weeklyStudent.value || "")
+      ].join("\n");
+    }
+
+    function syncCombinedPreview() {
+      if (el.sharePreview) el.sharePreview.value = buildCombinedWeeklyPreview();
+      if (state.sharePayload) state.sharePayload.text = buildCombinedWeeklyPreview();
+      if (state.sharePayload && state.sharePayload.json && state.sharePayload.json.weeklyInsights) {
+        state.sharePayload.json.weeklyInsights.teacherSummary = String(el.weeklyTeacher && el.weeklyTeacher.value || "");
+        state.sharePayload.json.weeklyInsights.familySummary = String(el.weeklyFamily && el.weeklyFamily.value || "");
+        state.sharePayload.json.weeklyInsights.studentReflection = String(el.weeklyStudent && el.weeklyStudent.value || "");
+      }
+    }
+
+    function translateFamilyDraft() {
+      if (!el.weeklyFamily || !el.weeklyFamilyTranslation || !el.weeklyFamilyLanguage || !MeetingTranslation || typeof MeetingTranslation.translateText !== "function") return;
+      var language = String(el.weeklyFamilyLanguage.value || "en");
+      if (language === "en") {
+        el.weeklyFamilyTranslation.classList.add("hidden");
+        if (el.weeklyTranslationBadge) el.weeklyTranslationBadge.classList.add("hidden");
+        return;
+      }
+      el.weeklyFamilyTranslation.value = MeetingTranslation.translateText(el.weeklyFamily.value || "", language);
+      el.weeklyFamilyTranslation.classList.remove("hidden");
+      if (el.weeklyTranslationBadge) {
+        el.weeklyTranslationBadge.textContent = "Assisted draft translation — review recommended (" + MeetingTranslation.languageLabel(language) + ")";
+        el.weeklyTranslationBadge.classList.remove("hidden");
+      }
     }
 
     function closeShareModal() {
@@ -150,7 +249,9 @@
       if (!el.shareModal || !el.sharePreview || !studentId) return;
       var payload = buildSharePayload(studentId);
       state.sharePayload = payload;
-      el.sharePreview.value = payload.text;
+      state.weeklyInsightDraft = payload.weeklyInsights || null;
+      populateWeeklyInsightFields(state.weeklyInsightDraft);
+      syncCombinedPreview();
       if (modalController) modalController.show("share");
     }
 
@@ -304,12 +405,37 @@
       }
       if (el.shareCopy) {
         el.shareCopy.addEventListener("click", function () {
+          syncCombinedPreview();
           var text = state.sharePayload && state.sharePayload.text ? state.sharePayload.text : "";
           if (!text) return;
           if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
           setCoachLine("Copied share summary.");
         });
       }
+      [el.weeklyTeacher, el.weeklyFamily, el.weeklyStudent].forEach(function (field) {
+        if (!field) return;
+        field.addEventListener("input", syncCombinedPreview);
+      });
+      if (el.weeklyTranslateFamily) {
+        el.weeklyTranslateFamily.addEventListener("click", function () {
+          translateFamilyDraft();
+          setCoachLine("Family translation draft updated.");
+        });
+      }
+      document.addEventListener("click", function (e) {
+        var copyBtn = e.target.closest && e.target.closest("[data-weekly-copy]");
+        if (!copyBtn) return;
+        var channel = copyBtn.getAttribute("data-weekly-copy") || "teacher";
+        var text = channel === "family"
+          ? String(el.weeklyFamily && el.weeklyFamily.value || "")
+          : channel === "student"
+            ? String(el.weeklyStudent && el.weeklyStudent.value || "")
+            : String(el.weeklyTeacher && el.weeklyTeacher.value || "");
+        if (!text) return;
+        copyText(text, function () {
+          setCoachLine("Copied " + channel + " weekly draft.");
+        });
+      });
       if (el.shareDownloadJson) {
         el.shareDownloadJson.addEventListener("click", function () {
           if (!state.sharePayload || !state.sharePayload.json) return;

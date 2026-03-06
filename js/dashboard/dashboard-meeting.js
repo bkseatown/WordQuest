@@ -23,6 +23,23 @@
     var Evidence = deps.Evidence || null;
     var TeacherSupportService = deps.TeacherSupportService || null;
     var WorkspaceMeetingContent = deps.WorkspaceMeetingContent || null;
+    var WeeklyInsightGenerator = deps.WeeklyInsightGenerator || null;
+
+    function buildWeeklyInsight(reportContext) {
+      if (!WeeklyInsightGenerator || typeof WeeklyInsightGenerator.generateWeeklyInsights !== "function") return null;
+      var insight = WeeklyInsightGenerator.generateWeeklyInsights({
+        summary: reportContext && reportContext.summary,
+        studentProfile: reportContext && reportContext.studentProfile,
+        subject: reportContext && reportContext.summary && reportContext.summary.focus,
+        goalLine: reportContext && reportContext.literacyData && reportContext.literacyData.nextStep,
+        suggestedHomeSupport: reportContext && reportContext.reportDraft && reportContext.reportDraft.recommendedNextSteps
+      });
+      return {
+        teacher: WeeklyInsightGenerator.generateTeacherSummary(insight),
+        family: WeeklyInsightGenerator.generateFamilySummary(insight),
+        student: WeeklyInsightGenerator.generateStudentReflection(insight)
+      };
+    }
 
     function escHtml(value) {
       if (typeof hooks.escHtml === "function") return hooks.escHtml(value);
@@ -168,11 +185,20 @@
           report = ReportingGenerator.translateReport(report, lang);
         }
         if (report) {
+          var weeklyInsight = buildWeeklyInsight({
+            summary: state.reportContext && state.reportContext.summary,
+            studentProfile: state.reportContext && state.reportContext.studentProfile,
+            literacyData: state.reportContext && state.reportContext.literacyData,
+            reportDraft: report
+          });
           el.workspaceSummaryPanel.innerHTML = [
             "<section><h3>Executive Summary</h3><p>" + escHtml(report.executiveSummary || "") + "</p></section>",
             "<section><h3>Tier Statement</h3><p>" + escHtml(report.tierStatement || "") + "</p></section>",
             "<section><h3>Executive Function &amp; Organizational Support</h3><p>" + escHtml(report.executiveFunctionSupport || "") + "</p></section>",
-            "<section><h3>Parent Summary</h3><p>" + escHtml(report.parentSummary || "") + "</p></section>"
+            "<section><h3>Parent Summary</h3><p>" + escHtml(report.parentSummary || "") + "</p></section>",
+            (weeklyInsight
+              ? "<section><h3>Weekly Insight Draft</h3><p><strong>Teacher:</strong></p><p>" + escHtml(weeklyInsight.teacher) + "</p><p><strong>Family:</strong></p><p>" + escHtml(weeklyInsight.family) + "</p><p><strong>Student:</strong></p><p>" + escHtml(weeklyInsight.student) + "</p></section>"
+              : "")
           ].join("");
         } else {
           el.workspaceSummaryPanel.innerHTML = "<section><p>Generate report context by selecting a student.</p></section>";
@@ -280,6 +306,7 @@
       var context = buildReportingContext(row);
       if (context && ReportingGenerator && typeof ReportingGenerator.generateStudentReport === "function") {
         state.reportDraft = ReportingGenerator.generateStudentReport(context.studentProfile, context.literacyData, context.numeracyData);
+        state.reportContext = context;
       }
       if (context && MeetingGenerator && typeof MeetingGenerator.generateMeetingDeck === "function") {
         state.meetingDeck = MeetingGenerator.generateMeetingDeck({

@@ -63,6 +63,7 @@
   var WorkspaceFamilyCommunication = window.CSWorkspaceFamilyCommunication;
   var WorkspaceHistory = window.CSWorkspaceHistory;
   var WorkspaceFidelity = window.CSWorkspaceFidelity;
+  var WeeklyInsightGenerator = window.CSWeeklyInsightGenerator;
   var SupportStore = window.CSSupportStore;
   var MeetingNotes = window.CSMeetingNotes;
   var MeetingTranslation = window.CSMeetingTranslation;
@@ -89,6 +90,7 @@
     activeDrawerTab: "snapshot",
     todayPlan: null,
     sharePayload: null,
+    weeklyInsightDraft: null,
     meetingRecognizer: null,
     sasPack: null,
     sasTab: "interventions",
@@ -100,6 +102,7 @@
     meetingLanguage: "en",
     liveTranslate: false,
     reportDraft: null,
+    reportContext: null,
     numeracyMapLoaded: false,
     meetingDeck: [],
     meetingDeckIndex: 0,
@@ -264,6 +267,13 @@
     shareModal: document.getElementById("td-share-modal"),
     shareModalClose: document.getElementById("td-share-modal-close"),
     sharePreview: document.getElementById("td-share-preview"),
+    weeklyTeacher: document.getElementById("td-weekly-teacher"),
+    weeklyFamily: document.getElementById("td-weekly-family"),
+    weeklyStudent: document.getElementById("td-weekly-student"),
+    weeklyFamilyLanguage: document.getElementById("td-weekly-family-language"),
+    weeklyTranslateFamily: document.getElementById("td-weekly-translate-family"),
+    weeklyFamilyTranslation: document.getElementById("td-weekly-family-translation"),
+    weeklyTranslationBadge: document.getElementById("td-weekly-translation-badge"),
     shareCopy: document.getElementById("td-share-copy"),
     shareDownloadJson: document.getElementById("td-share-download-json"),
     shareDownloadCsv: document.getElementById("td-share-download-csv"),
@@ -914,6 +924,21 @@
       .replace(/>/g, "&gt;")
       .replace(/\"/g, "&quot;")
       .replace(/'/g, "&#39;");
+  }
+
+  function buildTinySpark(points) {
+    if (WorkspaceStudentIntelligence && typeof WorkspaceStudentIntelligence.buildTinySpark === "function") {
+      return WorkspaceStudentIntelligence.buildTinySpark(points);
+    }
+    var arr = Array.isArray(points) && points.length ? points : [38, 42, 46, 50];
+    var max = Math.max.apply(Math, arr);
+    var min = Math.min.apply(Math, arr);
+    var span = Math.max(1, max - min);
+    return arr.map(function (value, idx) {
+      var x = Math.round((idx / Math.max(1, arr.length - 1)) * 72);
+      var y = Math.round(22 - ((Number(value || 0) - min) / span) * 18);
+      return (idx ? "L" : "M") + x + " " + y;
+    }).join(" ");
   }
 
   function buildReportingContext(row) {
@@ -2312,7 +2337,8 @@
         TeacherSupportService: TeacherSupportService,
         TeacherIntelligence: TeacherIntelligence,
         TeacherSelectors: TeacherSelectors,
-        WorkspaceMeetingContent: WorkspaceMeetingContent
+        WorkspaceMeetingContent: WorkspaceMeetingContent,
+        WeeklyInsightGenerator: WeeklyInsightGenerator
       }
     });
   }
@@ -2339,7 +2365,10 @@
         TeacherSupportService: TeacherSupportService,
         TeacherIntelligence: TeacherIntelligence,
         TeacherSelectors: TeacherSelectors,
-        WorkspaceSupportContent: WorkspaceSupportContent
+        TeacherStorage: TeacherStorage,
+        WorkspaceSupportContent: WorkspaceSupportContent,
+        WeeklyInsightGenerator: WeeklyInsightGenerator,
+        MeetingTranslation: MeetingTranslation
       }
     });
   }
