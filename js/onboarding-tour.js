@@ -125,6 +125,7 @@
     });
     state.listeners = [];
     if (state.currentEl) {
+      state.currentEl.classList.remove("cs-tour-target");
       state.currentEl.classList.remove("cs-tour-highlight");
       state.currentEl = null;
     }
@@ -256,10 +257,14 @@
       state.spotlight.style.display = "none";
     }
 
-    /* Highlight class */
-    if (state.currentEl) state.currentEl.classList.remove("cs-tour-highlight");
-    if (targetEl && step.highlight) {
-      targetEl.classList.add("cs-tour-highlight");
+    /* Always elevate the target above the backdrop; pulse only when requested. */
+    if (state.currentEl) {
+      state.currentEl.classList.remove("cs-tour-target");
+      state.currentEl.classList.remove("cs-tour-highlight");
+    }
+    if (targetEl) {
+      targetEl.classList.add("cs-tour-target");
+      if (step.highlight) targetEl.classList.add("cs-tour-highlight");
       state.currentEl = targetEl;
     } else {
       state.currentEl = null;
