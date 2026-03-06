@@ -1,0 +1,99 @@
+.cg-feedback {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: var(--cg-radius-xl);
+  border: 1px solid var(--cg-border);
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.cg-feedback-icon,
+.cg-result-banner-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(20, 34, 51, 0.06);
+  color: var(--cg-muted-strong);
+}
+
+.cg-feedback-copy strong,
+.cg-result-banner-copy strong {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 15px;
+}
+
+.cg-feedback-copy span,
+.cg-result-banner-copy span {
+  color: var(--cg-muted);
+  font-size: 13px;
+}
+
+.cg-feedback[data-tone="positive"] {
+  border-color: rgba(22, 121, 94, 0.22);
+  background: linear-gradient(135deg, rgba(22, 121, 94, 0.11), rgba(255, 255, 255, 0.88));
+}
+
+.cg-feedback[data-tone="warning"] {
+  border-color: rgba(170, 107, 31, 0.22);
+  background: linear-gradient(135deg, rgba(170, 107, 31, 0.12), rgba(255, 255, 255, 0.88));
+}
+
+.cg-feedback[data-tone="negative"] {
+  border-color: rgba(154, 59, 55, 0.22);
+  background: linear-gradient(135deg, rgba(154, 59, 55, 0.1), rgba(255, 255, 255, 0.88));
+}
+
+.cg-feedback[data-tone="calm"] {
+  border-color: rgba(13, 94, 102, 0.22);
+  background: linear-gradient(135deg, rgba(13, 94, 102, 0.11), rgba(255, 255, 255, 0.88));
+}
+
+.cg-result-banner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: var(--cg-radius-xl);
+  border: 1px solid var(--cg-border);
+  background: var(--cg-panel-elevated);
+  box-shadow: var(--cg-shadow-soft);
+}
+
+.cg-result-banner[data-tone="positive"] {
+  border-color: rgba(22, 121, 94, 0.2);
+  box-shadow: 0 0 0 1px rgba(22, 121, 94, 0.08), 0 18px 44px rgba(22, 121, 94, 0.1);
+}
+
+.cg-result-banner[data-tone="warning"] {
+  border-color: rgba(170, 107, 31, 0.22);
+}
+
+.cg-result-banner[data-tone="negative"] {
+  border-color: rgba(154, 59, 55, 0.22);
+}
+
+.cg-points-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 74px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--cg-primary), var(--cg-primary-2));
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.cg-feedback-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}

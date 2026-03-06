@@ -1,45 +1,174 @@
-.cg-stage,
+.cg-stage-shell,
 .cg-game-card,
 .cg-rail-card,
+.cg-main-card,
 .cg-tile,
 .cg-chip,
 .cg-stat,
 .cg-action,
 .cg-choice,
-.cg-word-slot {
+.cg-word-slot,
+.cg-letter-box,
+.cg-summary-item,
+.cg-prompt-card,
+.cg-result-banner {
   transition:
-    transform 180ms ease,
-    opacity 180ms ease,
-    box-shadow 180ms ease,
-    border-color 180ms ease,
-    background-color 180ms ease;
+    transform 180ms ease-in-out,
+    opacity 180ms ease-in-out,
+    box-shadow 180ms ease-in-out,
+    border-color 180ms ease-in-out,
+    background-color 180ms ease-in-out,
+    color 180ms ease-in-out;
+  will-change: transform, opacity;
 }
 
 .cg-game-card:hover,
 .cg-rail-card:hover,
-.cg-tile:hover,
 .cg-action:hover,
-.cg-choice:hover {
-  transform: translateY(-2px);
+.cg-choice:hover,
+.cg-tile:hover,
+.cg-word-slot:hover {
+  transform: translate3d(0, -2px, 0);
+}
+
+.cg-stage-shell {
+  animation: cgStageEnter 220ms ease-in-out;
+}
+
+.cg-stage-board > * {
+  animation: cgStageEnter 220ms ease-in-out;
+}
+
+.cg-stat.is-bump,
+.cg-progress-step.is-active {
+  animation: cgMetricBump 220ms ease-in-out;
 }
 
 .cg-feedback[data-tone="positive"],
-.cg-chip[data-tone="positive"] {
-  animation: cgGlow 320ms ease;
+.cg-result-banner[data-tone="positive"] {
+  animation: cgGlowPulse 240ms ease-in-out;
 }
 
-.cg-feedback[data-tone="warning"] {
-  animation: cgPulse 220ms ease;
+.cg-feedback[data-tone="warning"],
+.cg-result-banner[data-tone="warning"] {
+  animation: cgWarningPulse 180ms ease-in-out;
 }
 
-@keyframes cgGlow {
+.cg-result-banner[data-tone="negative"] {
+  animation: cgShake 180ms ease-in-out;
+}
+
+.cg-letter-box.is-revealed {
+  animation: cgTileFlip 220ms ease-in-out both;
+}
+
+.cg-summary-item[data-reveal="true"] {
+  animation: cgRevealCard 220ms ease-in-out both;
+}
+
+.cg-word-slot.is-filled,
+.cg-tile.is-selected {
+  animation: cgAssemble 180ms ease-in-out;
+}
+
+.cg-action:focus-visible,
+.cg-choice:focus-visible,
+.cg-tile:focus-visible,
+.cg-word-slot:focus-visible,
+.cg-input:focus-visible,
+.cg-textarea:focus-visible,
+.cg-select:focus-visible {
+  outline: 2px solid rgba(13, 94, 102, 0.42);
+  outline-offset: 2px;
+}
+
+@keyframes cgStageEnter {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes cgMetricBump {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@keyframes cgGlowPulse {
   0% { box-shadow: 0 0 0 rgba(22, 121, 94, 0); }
   50% { box-shadow: 0 0 0 10px rgba(22, 121, 94, 0.08); }
   100% { box-shadow: 0 0 0 rgba(22, 121, 94, 0); }
 }
 
-@keyframes cgPulse {
+@keyframes cgWarningPulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.01); }
   100% { transform: scale(1); }
+}
+
+@keyframes cgShake {
+  0% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(-4px, 0, 0); }
+  50% { transform: translate3d(4px, 0, 0); }
+  75% { transform: translate3d(-2px, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes cgTileFlip {
+  0% {
+    opacity: 0.25;
+    transform: perspective(400px) rotateX(-90deg);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(400px) rotateX(0deg);
+  }
+}
+
+@keyframes cgRevealCard {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes cgAssemble {
+  0% {
+    transform: translate3d(0, 8px, 0) scale(0.96);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cg-stage-shell,
+  .cg-stage-board > *,
+  .cg-game-card,
+  .cg-rail-card,
+  .cg-main-card,
+  .cg-tile,
+  .cg-chip,
+  .cg-stat,
+  .cg-action,
+  .cg-choice,
+  .cg-word-slot,
+  .cg-letter-box,
+  .cg-summary-item,
+  .cg-prompt-card,
+  .cg-result-banner {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
 }

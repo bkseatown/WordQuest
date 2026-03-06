@@ -1,43 +1,72 @@
 :root {
-  --cg-bg: #f3efe7;
-  --cg-panel: rgba(255, 255, 255, 0.78);
-  --cg-panel-strong: rgba(255, 255, 255, 0.92);
-  --cg-ink: #132033;
-  --cg-muted: #5f6c7d;
-  --cg-border: rgba(19, 32, 51, 0.12);
-  --cg-shadow: 0 18px 60px rgba(18, 31, 50, 0.16);
+  --cg-bg: #efe8dc;
+  --cg-bg-deep: #d7d0c3;
+  --cg-panel: rgba(255, 252, 246, 0.82);
+  --cg-panel-strong: rgba(255, 253, 249, 0.94);
+  --cg-panel-elevated: rgba(255, 255, 255, 0.98);
+  --cg-ink: #142233;
+  --cg-muted: #5d6a79;
+  --cg-muted-strong: #415162;
+  --cg-border: rgba(20, 34, 51, 0.12);
+  --cg-border-strong: rgba(20, 34, 51, 0.2);
+  --cg-shadow: 0 20px 64px rgba(18, 31, 50, 0.14);
+  --cg-shadow-soft: 0 10px 28px rgba(18, 31, 50, 0.08);
+  --cg-shadow-glow: 0 0 0 1px rgba(24, 162, 168, 0.08), 0 22px 60px rgba(13, 94, 102, 0.16);
   --cg-primary: #0d5e66;
   --cg-primary-2: #18a2a8;
+  --cg-primary-soft: rgba(13, 94, 102, 0.12);
   --cg-accent: #d98038;
+  --cg-accent-soft: rgba(217, 128, 56, 0.14);
   --cg-positive: #16795e;
+  --cg-positive-soft: rgba(22, 121, 94, 0.12);
   --cg-negative: #9a3b37;
+  --cg-negative-soft: rgba(154, 59, 55, 0.12);
   --cg-warning: #aa6b1f;
+  --cg-warning-soft: rgba(170, 107, 31, 0.12);
   --cg-font-display: "Avenir Next Condensed", "Arial Narrow", "Franklin Gothic Medium", sans-serif;
   --cg-font-body: "Avenir Next", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
-  --cg-radius-xl: 28px;
+  --cg-radius-2xl: 32px;
+  --cg-radius-xl: 24px;
   --cg-radius-lg: 20px;
   --cg-radius-md: 14px;
   --cg-radius-sm: 10px;
+  --cg-tap: 48px;
 }
 
 html[data-view-mode="projector"] {
-  --cg-radius-xl: 34px;
+  --cg-radius-2xl: 36px;
+  --cg-radius-xl: 30px;
   --cg-radius-lg: 24px;
   --cg-radius-md: 18px;
+  --cg-tap: 58px;
 }
 
 body.game-platform-page {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(24, 162, 168, 0.16), transparent 34%),
-    radial-gradient(circle at top right, rgba(217, 128, 56, 0.18), transparent 28%),
-    linear-gradient(180deg, #f8f4eb 0%, #efe7db 38%, #e7ddd1 100%);
+    radial-gradient(circle at 0% 0%, rgba(24, 162, 168, 0.18), transparent 24%),
+    radial-gradient(circle at 100% 0%, rgba(217, 128, 56, 0.18), transparent 22%),
+    radial-gradient(circle at 50% 100%, rgba(13, 94, 102, 0.08), transparent 28%),
+    linear-gradient(180deg, #f7f2e8 0%, var(--cg-bg) 34%, var(--cg-bg-deep) 100%);
   color: var(--cg-ink);
   font-family: var(--cg-font-body);
 }
 
+body.game-platform-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.26), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.18)),
+    repeating-linear-gradient(135deg, rgba(20, 34, 51, 0.012) 0 2px, transparent 2px 12px);
+  opacity: 0.8;
+}
+
 .cg-shell {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   padding: 24px;
 }
@@ -45,7 +74,7 @@ body.game-platform-page {
 .cg-surface {
   background: var(--cg-panel);
   border: 1px solid var(--cg-border);
-  border-radius: var(--cg-radius-xl);
+  border-radius: var(--cg-radius-2xl);
   box-shadow: var(--cg-shadow);
   backdrop-filter: blur(18px);
 }
@@ -62,4 +91,12 @@ body.game-platform-page {
 .cg-display {
   font-family: var(--cg-font-display);
   letter-spacing: 0.01em;
+}
+
+.cg-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  fill: currentColor;
 }

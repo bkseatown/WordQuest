@@ -131,17 +131,11 @@
         evaluateRound: function (payload) {
           var response = payload.response || {};
           var round = payload.round || {};
-          if (response.teacherOverride) {
-            return { correct: true, teacherOverride: true, message: "Teacher advanced the round." };
-          }
-          if (response.timedOut) {
-            return { correct: false, message: "Time ended. The target was " + String(round.answer || "").toUpperCase() + "." };
-          }
+          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher advanced the round." };
+          if (response.timedOut) return { correct: false, message: "Time ended. The target was " + String(round.answer || "").toUpperCase() + "." };
           var guess = String(response.value || "").trim().toLowerCase();
           if (!guess) return { correct: false, message: "No guess submitted. The target was " + String(round.answer || "").toUpperCase() + "." };
-          if (guess === round.answer) {
-            return { correct: true, message: "Correct. " + String(round.answer || "").toUpperCase() + " is the target." };
-          }
+          if (guess === round.answer) return { correct: true, message: "Correct. " + String(round.answer || "").toUpperCase() + " is the target." };
           var states = guessState(guess, round.answer);
           var hitCount = states.filter(function (value) { return value === "correct" || value === "present"; }).length;
           return {
@@ -186,12 +180,8 @@
         evaluateRound: function (payload) {
           var response = payload.response || {};
           var round = payload.round || {};
-          if (response.teacherOverride) {
-            return { correct: true, teacherOverride: true, message: "Teacher marked the explanation as complete." };
-          }
-          if (response.timedOut) {
-            return { correct: false, message: "Round ended. Recast " + round.targetWord + " with a shorter sentence next time." };
-          }
+          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher marked the explanation as complete." };
+          if (response.timedOut) return { correct: false, message: "Round ended. Recast " + round.targetWord + " with a shorter sentence next time." };
           var text = String(response.value || "").toLowerCase();
           var blocked = (round.forbiddenWords || []).some(function (word) {
             return text.indexOf(String(word || "").toLowerCase()) >= 0;
@@ -409,16 +399,105 @@
     return url.pathname.replace(/^\//, "./") + (url.search || "");
   }
 
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function feedbackTone(feedback) {
+    var type = String(feedback && feedback.type || "").toLowerCase();
+    if (type === "correct") return "positive";
+    if (type === "near-miss") return "warning";
+    if (type === "teacher-override" || type === "reveal") return "calm";
+    if (type === "round-complete") return "positive";
+    return "negative";
+  }
+
+  function feedbackTitle(feedback) {
+    var type = String(feedback && feedback.type || "").toLowerCase();
+    if (type === "correct") return "Correct answer";
+    if (type === "near-miss") return "Near miss";
+    if (type === "teacher-override") return "Teacher override";
+    if (type === "reveal") return "Round ready";
+    return "Keep moving";
+  }
+
+  function renderProgressSteps(state) {
+    var rows = [];
+    for (var i = 0; i < state.roundTarget; i += 1) {
+      var className = "cg-progress-step";
+      if (i < state.roundsCompleted) className += " is-complete";
+      else if (i === state.roundsCompleted) className += " is-active";
+      rows.push('<span class="' + className + '"></span>');
+    }
+    return rows.join("");
+  }
+
+  function buildConfidenceRing(state) {
+    var total = Math.max(1, state.metrics.correct + state.metrics.incorrect + state.metrics.nearMiss);
+    var ratio = clamp((state.metrics.correct + (state.metrics.nearMiss * 0.5)) / total, 0, 1);
+    var radius = 16;
+    var circumference = 2 * Math.PI * radius;
+    var dash = Math.round(circumference * ratio * 1000) / 1000;
+    return [
+      '<svg class="cg-ring" viewBox="0 0 40 40" aria-hidden="true">',
+      '  <circle class="cg-ring-track" cx="20" cy="20" r="' + radius + '"></circle>',
+      '  <circle class="cg-ring-value" cx="20" cy="20" r="' + radius + '" stroke-dasharray="' + dash + " " + circumference + '"></circle>',
+      '  <text class="cg-ring-label" x="20" y="22" text-anchor="middle">' + Math.round(ratio * 100) + "%</text>",
+      "</svg>"
+    ].join("");
+  }
+
+  function momentumLabel(state) {
+    if (state.streak >= 3) return "Momentum high";
+    if (state.metrics.nearMiss > state.metrics.correct) return "Hints close to landing";
+    if (state.roundsCompleted === 0) return "Immediate first action ready";
+    return "Progress steady";
+  }
+
+  function supportLine(context, state) {
+    var subject = context.subject || "ELA";
+    var mode = (runtimeRoot.CSGameModes.VIEW_MODES[state.settings.viewMode] || {}).label || "Individual";
+    return subject + " · " + mode + " · " + (context.lessonTitle || context.classLabel || "Context-aware set");
+  }
+
+  function resultTone(outcome) {
+    if (!outcome) return "calm";
+    if (outcome.correct || outcome.teacherOverride) return "positive";
+    if (outcome.nearMiss) return "warning";
+    return "negative";
+  }
+
+  function renderFeedback(feedback) {
+    if (!feedback) return "";
+    var tone = feedbackTone(feedback);
+    return [
+      '<div class="cg-feedback" data-tone="' + tone + '">',
+      '  <div class="cg-feedback-icon">' + runtimeRoot.CSGameComponents.iconFor(tone === "positive" ? "score" : tone === "warning" ? "hint" : tone === "calm" ? "teacher" : "progress") + "</div>",
+      '  <div class="cg-feedback-copy"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(feedbackTitle(feedback)) + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(feedback.label || "") + "</span></div>",
+      '  <div class="cg-chip" data-tone="' + tone + '">' + runtimeRoot.CSGameComponents.escapeHtml(tone === "positive" ? "On track" : tone === "warning" ? "Close" : tone === "calm" ? "Teacher-led" : "Retry") + "</div>",
+      "</div>"
+    ].join("");
+  }
+
+  function renderResultBanner(state) {
+    if (!state.lastOutcome || (state.status !== "round-complete" && state.status !== "round-summary")) return "";
+    var tone = resultTone(state.lastOutcome);
+    return [
+      '<div class="cg-result-banner" data-tone="' + tone + '">',
+      '  <div class="cg-result-banner-icon">' + runtimeRoot.CSGameComponents.iconFor(tone === "positive" ? "score" : tone === "warning" ? "hint" : "progress") + "</div>",
+      '  <div class="cg-result-banner-copy"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(state.lastOutcome.correct ? "Round complete" : state.lastOutcome.nearMiss ? "Reasoning close" : "Round reset") + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(state.feedback && state.feedback.label || "") + "</span></div>",
+      '  <div class="cg-points-badge">+' + Number(state.lastPoints || 0) + " pts</div>",
+      "</div>"
+    ].join("");
+  }
+
   function renderTileBuilder(round, chosenValues) {
     var chosen = Array.isArray(chosenValues) ? chosenValues : [];
-    var bank = (round.tiles || []).filter(function (_tile, index) {
-      return chosen[index] == null || false;
-    });
     return [
-          '<div class="cg-prompt-card">',
-          '  <p class="cg-micro-label">Prompt</p>',
-          '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</h3>",
-      "  <div class=\"cg-slot-row\">" + (round.solution || []).map(function (_part, index) {
+      '<div class="cg-prompt-card">',
+      '  <p class="cg-micro-label">Action Area</p>',
+      '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</h3>",
+      '  <div class="cg-slot-row">' + (round.solution || []).map(function (_part, index) {
         var value = chosen[index] || "";
         return '<button class="cg-word-slot' + (value ? " is-filled" : "") + '" type="button" data-slot-index="' + index + '">' + runtimeRoot.CSGameComponents.escapeHtml(value || "Tap a tile") + "</button>";
       }).join("") + "</div>",
@@ -426,7 +505,7 @@
         var selected = chosen.indexOf(tile) >= 0;
         return '<button class="cg-tile' + (selected ? " is-selected" : "") + '" type="button" data-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '">' + runtimeRoot.CSGameComponents.escapeHtml(tile) + "</button>";
       }).join("") + "</div>",
-      '</div>'
+      "</div>"
     ].join("");
   }
 
@@ -439,6 +518,18 @@
     var games = createGames(context);
     var live = runtimeRoot.CSGameA11y.createLiveRegion(document.getElementById("cg-live-region"));
     var sound = runtimeRoot.CSGameSound.create({ enabled: false });
+    var shell = document.getElementById("cg-shell");
+    var uiState = {
+      teacherPanelOpen: false,
+      selectedChoice: "",
+      builderSelection: [],
+      revealedClues: 1,
+      previous: { score: 0, streak: 0, rounds: 0 },
+      bumpUntil: { score: 0, streak: 0, rounds: 0 }
+    };
+
+    if (!shell) return;
+
     var engine = runtimeRoot.CSGameEngine.create({
       games: games,
       initialGameId: recommendedGame,
@@ -455,42 +546,58 @@
       }
     });
 
-    var shell = document.getElementById("cg-shell");
-    if (!shell) return;
+    function resetRoundUi() {
+      uiState.selectedChoice = "";
+      uiState.builderSelection = [];
+      uiState.revealedClues = 1;
+    }
+
+    function applyMetricBumps(state) {
+      var now = Date.now();
+      if (state.score > uiState.previous.score) uiState.bumpUntil.score = now + 260;
+      if (state.streak > uiState.previous.streak) uiState.bumpUntil.streak = now + 260;
+      if (state.roundsCompleted > uiState.previous.rounds) uiState.bumpUntil.rounds = now + 260;
+      uiState.previous.score = state.score;
+      uiState.previous.streak = state.streak;
+      uiState.previous.rounds = state.roundsCompleted;
+    }
 
     function render() {
       var state = engine.getState();
       var currentGame = games[state.selectedGameId];
+      var now = Date.now();
       var progressPct = Math.max(0, Math.min(100, Math.round((state.roundsCompleted / Math.max(1, state.roundTarget)) * 100)));
-      document.documentElement.setAttribute("data-view-mode", state.settings.viewMode || "individual");
+      var totalAttempts = Math.max(1, state.metrics.correct + state.metrics.incorrect + state.metrics.nearMiss);
+      var projectorSuggested = state.settings.viewMode === "projector" || state.settings.viewMode === "classroom";
+      runtimeRoot.document.documentElement.setAttribute("data-view-mode", state.settings.viewMode || "individual");
 
       shell.innerHTML = [
         '<div class="cg-brandbar">',
         '  <div class="cg-brand">',
-        '    <div class="cg-brand-mark">' + runtimeRoot.CSGameComponents.iconFor(state.selectedGameId) + "</div>",
+        '    <div class="cg-brand-mark">' + runtimeRoot.CSGameComponents.iconFor(state.selectedGameId, "cg-icon cg-icon--game") + "</div>",
         '    <div class="cg-brand-copy">',
         '      <p class="cg-kicker">Cornerstone MTSS</p>',
         '      <h1 class="cg-display">Game Platform</h1>',
-        '      <p>Reusable runtime for Word Quest, Word Connections, and targeted instructional games.</p>',
+        '      <p>Professional-grade shared shell for instructional games, tuned for live teaching, small groups, and projector play.</p>',
         "    </div>",
         "  </div>",
         '  <div class="cg-toolbar">',
-        '    <a class="cg-action cg-action-quiet" href="./teacher-hub-v2.html">Back to Teacher Hub</a>',
-        '    <button class="cg-action cg-action-quiet" type="button" data-action="toggle-teacher">' + (state.teacherPanelOpen ? "Hide" : "Teacher Controls") + "</button>",
-        '    <button class="cg-action cg-action-quiet" type="button" data-action="hint">Hint</button>',
-        '    <button class="cg-action cg-action-primary" type="button" data-action="restart">Quick Restart</button>',
+        '    <a class="cg-action cg-action-quiet" href="./teacher-hub-v2.html">' + runtimeRoot.CSGameComponents.iconFor("context") + 'Back to Teacher Hub</a>',
+        '    <button class="cg-action cg-action-quiet" type="button" data-action="toggle-teacher">' + runtimeRoot.CSGameComponents.iconFor("teacher") + (uiState.teacherPanelOpen ? "Hide Controls" : "Teacher Controls") + "</button>",
+        '    <button class="cg-action cg-action-quiet" type="button" data-action="hint">' + runtimeRoot.CSGameComponents.iconFor("hint") + "Hint</button>",
+        '    <button class="cg-action cg-action-primary" type="button" data-action="restart">' + runtimeRoot.CSGameComponents.iconFor("progress") + "Quick Restart</button>",
         "  </div>",
         "</div>",
         '<div class="cg-app">',
         '  <aside class="cg-rail cg-rail--left">',
         '    <section class="cg-rail-card cg-surface">',
-        '      <p class="cg-kicker">Games</p>',
+        '      <p class="cg-kicker">Game Header</p>',
         '      <div class="cg-game-grid">' + Object.keys(games).map(function (id) {
           return runtimeRoot.CSGameComponents.renderGameCard(games[id], id === state.selectedGameId);
         }).join("") + "</div>",
         "    </section>",
-        '    <section class="cg-rail-card cg-surface">',
-        '      <p class="cg-kicker">Context</p>',
+        '    <section class="cg-rail-card cg-surface cg-context-card">',
+        '      <p class="cg-kicker">Context Injection</p>',
         '      <div class="cg-context-list">',
         '        <div><strong>Student</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.studentName || context.studentId || "Whole group") + "</span></div>",
         '        <div><strong>Class / Lesson</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.classLabel || context.lessonTitle || "No lesson lock") + "</span></div>",
@@ -498,36 +605,57 @@
         '        <div><strong>Program</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.programId || "General") + "</span></div>",
         '        <div><strong>Grade Band</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.gradeBand || "3-5") + "</span></div>",
         "      </div>",
+        '      <div class="cg-context-chips">',
+        '        <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + runtimeRoot.CSGameComponents.escapeHtml(supportLine(context, state)) + "</span>",
+        (projectorSuggested ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("projector") + 'Projector-safe layout ready</span>' : ""),
+        "      </div>",
         "    </section>",
         "  </aside>",
         '  <main class="cg-main">',
         '    <section class="cg-main-card cg-surface cg-stage-shell">',
-        '      <div class="cg-stage-head">',
-        "        <div>",
-        '          <p class="cg-kicker">Unified Game Loop</p>',
-        '          <h2 class="cg-display">' + runtimeRoot.CSGameComponents.escapeHtml(currentGame.title) + "</h2>",
-        '          <p>' + runtimeRoot.CSGameComponents.escapeHtml(currentGame.subtitle) + "</p>",
+        '      <div class="cg-stage-meta">',
+        '        <div class="cg-stage-head">',
+        "          <div>",
+        '            <p class="cg-kicker">Unified Game Loop</p>',
+        '            <h2 class="cg-display">' + runtimeRoot.CSGameComponents.escapeHtml(currentGame.title) + "</h2>",
+        '            <p>' + runtimeRoot.CSGameComponents.escapeHtml(currentGame.subtitle) + "</p>",
+        "          </div>",
+        '          <div class="cg-stage-toolbar">',
+        '            <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("projector") + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.VIEW_MODES[state.settings.viewMode] || {}).label || "Individual") + "</span>",
+        '            <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("progress") + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.DIFFICULTY[state.settings.difficulty] || {}).label || "Core") + "</span>",
+        '            <span class="cg-chip" data-tone="' + (state.settings.timerEnabled ? "positive" : "warning") + '">' + runtimeRoot.CSGameComponents.iconFor("timer") + (state.settings.timerEnabled ? "Timed" : "Untimed") + "</span>",
+        "          </div>",
         "        </div>",
-        '        <div class="cg-inline-row">',
-        '          <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.VIEW_MODES[state.settings.viewMode] || {}).label || "Individual") + "</span>",
-        '          <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.DIFFICULTY[state.settings.difficulty] || {}).label || "Core") + "</span>",
-        '          <span class="cg-chip" data-tone="' + (state.settings.timerEnabled ? "positive" : "") + '">' + (state.settings.timerEnabled ? "Timed" : "Untimed") + "</span>",
+        '        <div class="cg-mission-card">',
+        '          <div class="cg-mission-grid">',
+        '            <div class="cg-mission-copy">',
+        '              <p class="cg-kicker">Focus Panel</p>',
+        '              <h3 class="cg-display">' + runtimeRoot.CSGameComponents.escapeHtml(state.round && state.round.promptLabel || "Fast entry") + "</h3>",
+        '              <p class="cg-mission-line">' + runtimeRoot.CSGameComponents.escapeHtml(momentumLabel(state)) + "</p>",
+        '              <div class="cg-context-chips">',
+        '                <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(state.round && state.round.hint || "Hint ready on demand") + "</span>",
+        '                <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("teacher") + runtimeRoot.CSGameComponents.escapeHtml(state.settings.hintsEnabled ? "Hints available" : "Hints locked") + "</span>",
+        "              </div>",
+        "            </div>",
+        '            <div class="cg-stat-confidence"><div>' + buildConfidenceRing(state) + '<div class="cg-stat-note">Confidence ring · ' + totalAttempts + " rounds read</div></div></div>",
+        "          </div>",
         "        </div>",
-        "      </div>",
-        '      <div class="cg-stat-grid">',
-        '        <article class="cg-stat"><div class="cg-stat-label">Score</div><div class="cg-stat-value">' + state.score + "</div></article>",
-        '        <article class="cg-stat"><div class="cg-stat-label">Round</div><div class="cg-stat-value">' + (state.roundsCompleted + 1) + "/" + state.roundTarget + "</div></article>",
-        '        <article class="cg-stat"><div class="cg-stat-label">Streak</div><div class="cg-stat-value">' + state.streak + "</div></article>",
-        '        <article class="cg-stat"><div class="cg-stat-label">Timer</div><div class="cg-stat-value">' + (state.settings.timerEnabled ? ((state.timerRemaining || 0) + "s") : "Off") + "</div></article>",
-        "      </div>",
-        (state.feedback ? '<div class="cg-feedback" data-tone="' + runtimeRoot.CSGameComponents.escapeHtml(state.feedback.tone || "neutral") + '">' + runtimeRoot.CSGameComponents.escapeHtml(state.feedback.label) + "</div>" : ""),
-        '      <div class="cg-progress"><span style="width:' + progressPct + '%"></span></div>',
+        renderFeedback(state.feedback),
+        renderResultBanner(state),
+        '        <div class="cg-stat-grid">',
+        '          <article class="cg-stat' + (uiState.bumpUntil.score > now ? " is-bump" : "") + '"><div class="cg-stat-head"><div class="cg-stat-label">' + runtimeRoot.CSGameComponents.iconFor("score") + 'Score</div><span class="cg-chip">' + totalAttempts + ' tracked</span></div><div class="cg-stat-value">' + state.score + '</div><div class="cg-stat-note">Scoreboard update anchors the round.</div></article>',
+        '          <article class="cg-stat' + (uiState.bumpUntil.rounds > now ? " is-bump" : "") + '"><div class="cg-stat-head"><div class="cg-stat-label">' + runtimeRoot.CSGameComponents.iconFor("progress") + 'Round</div><span class="cg-chip">' + (state.roundsCompleted + 1) + "/" + state.roundTarget + '</span></div><div class="cg-stat-value">' + (state.roundsCompleted + 1) + '</div><div class="cg-stat-note">Students always see what comes next.</div></article>',
+        '          <article class="cg-stat' + (uiState.bumpUntil.streak > now ? " is-bump" : "") + '"><div class="cg-stat-head"><div class="cg-stat-label">' + runtimeRoot.CSGameComponents.iconFor("streak") + 'Streak</div><span class="cg-chip" data-tone="' + (state.streak >= 3 ? "positive" : "focus") + '">' + momentumLabel(state) + '</span></div><div class="cg-stat-value">' + state.streak + '</div><div class="cg-stat-note">Challenge meter without noise.</div></article>',
+        '          <article class="cg-stat"><div class="cg-stat-head"><div class="cg-stat-label">' + runtimeRoot.CSGameComponents.iconFor("timer") + 'Timer</div><span class="cg-chip" data-tone="' + (state.timerRemaining <= 10 && state.settings.timerEnabled ? "warning" : "focus") + '">' + (state.settings.timerEnabled ? "Live" : "Off") + '</span></div><div class="cg-stat-value">' + (state.settings.timerEnabled ? ((state.timerRemaining || 0) + "s") : "Off") + '</div><div class="cg-stat-note">120–260ms motion; no layout-heavy effects.</div></article>',
+        "        </div>",
+        '        <div class="cg-progress-shell"><div class="cg-progress"><span style="width:' + progressPct + '%"></span></div><div class="cg-progress-steps">' + renderProgressSteps(state) + "</div></div>",
+        '      </div>',
         '      <div id="cg-stage-board" class="cg-stage-board"></div>',
         "    </section>",
         "  </main>",
         '  <aside class="cg-rail cg-rail--right">',
-        '    <section class="cg-rail-card cg-surface' + (state.teacherPanelOpen ? "" : " cg-hidden") + '" id="cg-teacher-panel">',
-        '      <p class="cg-kicker">Teacher Controls</p>',
+        '    <section class="cg-rail-card cg-surface' + (uiState.teacherPanelOpen ? "" : " cg-hidden") + '" id="cg-teacher-panel">',
+        '      <p class="cg-kicker">Teacher Control Panel</p>',
         '      <div class="cg-control-grid">',
         '        <div class="cg-field"><label for="cg-view-mode">Mode</label><select id="cg-view-mode" class="cg-select"><option value="individual">Individual</option><option value="smallGroup">Small Group</option><option value="classroom">Classroom</option><option value="projector">Projector</option></select></div>',
         '        <div class="cg-field"><label for="cg-difficulty">Difficulty</label><select id="cg-difficulty" class="cg-select"><option value="scaffolded">Scaffolded</option><option value="core">Core</option><option value="stretch">Stretch</option></select></div>',
@@ -537,24 +665,26 @@
         '        <div class="cg-field"><label for="cg-custom-word-set">Custom Word Set / Lesson Lock</label><input id="cg-custom-word-set" class="cg-input" type="text" value="' + runtimeRoot.CSGameComponents.escapeHtml(state.settings.customWordSet || "") + '" placeholder="prefix, claim, ratio"></div>',
         '        <label class="cg-checkbox"><input id="cg-toggle-timer" type="checkbox"' + (state.settings.timerEnabled ? " checked" : "") + '>Timer enabled</label>',
         '        <label class="cg-checkbox"><input id="cg-toggle-hints" type="checkbox"' + (state.settings.hintsEnabled ? " checked" : "") + '>Hints enabled</label>',
-        '        <label class="cg-checkbox"><input id="cg-toggle-sound" type="checkbox"' + (state.settings.soundEnabled ? " checked" : "") + '>Sound layer (off by default)</label>',
-        '        <button class="cg-action cg-action-quiet" type="button" data-action="teacher-override">Teacher Override</button>',
+        '        <label class="cg-checkbox"><input id="cg-toggle-sound" type="checkbox"' + (state.settings.soundEnabled ? " checked" : "") + '>Optional sound layer</label>',
+        '        <button class="cg-action cg-action-quiet" type="button" data-action="teacher-override">' + runtimeRoot.CSGameComponents.iconFor("teacher") + 'Teacher Override</button>',
         "      </div>",
         "    </section>",
-        '    <section class="cg-rail-card cg-surface">',
-        '      <p class="cg-kicker">Round History</p>',
-        '      <div class="cg-summary-list">' + (state.history.length ? state.history.slice().reverse().map(function (row) {
-          return '<div class="cg-summary-item"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(row.label || currentGame.title) + '</strong><div>' + runtimeRoot.CSGameComponents.escapeHtml(row.result) + " · " + row.points + " pts</div></div>";
-        }).join("") : '<div class="cg-summary-item">First round is ready.</div>') + "</div>",
+        '    <section class="cg-rail-card cg-surface cg-support-card">',
+        '      <p class="cg-kicker">Momentum</p>',
+        '      <div class="cg-summary-list">',
+        '        <div class="cg-summary-item"><strong>Correct</strong><div>' + state.metrics.correct + ' rounds landed cleanly.</div></div>',
+        '        <div class="cg-summary-item"><strong>Near Miss</strong><div>' + state.metrics.nearMiss + ' rounds earned guidance without full reset.</div></div>',
+        '        <div class="cg-summary-item"><strong>Next Move</strong><div>' + runtimeRoot.CSGameComponents.escapeHtml(state.settings.hintsEnabled ? "Hint prompt available after any miss." : "Teacher-led support only.") + "</div></div>",
+        "      </div>",
         "    </section>",
         '    <section class="cg-rail-card cg-surface">',
         '      <p class="cg-kicker">Legacy Surfaces</p>',
         '      <div class="cg-legacy-card">',
         '        <strong>Existing standalone pages stay intact.</strong>',
-        '        <p>Launch the current production Word Quest or Word Connections surface with the same context parameters when you need the full original experience.</p>',
+        '        <p>Launch the current production Word Quest or Word Connections surface with the same context parameters when the full original activity is needed.</p>',
         '        <div class="cg-footer-row">',
-        '          <a class="cg-action cg-action-quiet" href="' + launchHref("./word-quest.html?play=1", context) + '">Open Word Quest</a>',
-        '          <a class="cg-action cg-action-quiet" href="' + launchHref("./precision-play.html", context) + '">Open Word Connections</a>',
+        '          <a class="cg-action cg-action-quiet" href="' + launchHref("./word-quest.html?play=1", context) + '">' + runtimeRoot.CSGameComponents.iconFor("word-quest") + 'Open Word Quest</a>',
+        '          <a class="cg-action cg-action-quiet" href="' + launchHref("./precision-play.html", context) + '">' + runtimeRoot.CSGameComponents.iconFor("word-connections") + 'Open Word Connections</a>',
         "        </div>",
         "      </div>",
         "    </section>",
@@ -563,9 +693,7 @@
       ].join("");
 
       var stageBoard = document.getElementById("cg-stage-board");
-      if (stageBoard && state.round) {
-        stageBoard.innerHTML = renderRoundBoard(state, currentGame);
-      }
+      if (stageBoard && state.round) stageBoard.innerHTML = renderRoundBoard(state, currentGame);
       bindInteractions();
       hydrateControls(state);
     }
@@ -574,102 +702,103 @@
       var round = state.round || {};
       if (state.status === "round-summary") {
         return [
-          '<div class="cg-prompt-card">',
-          '  <p class="cg-kicker">Session Summary</p>',
-          '  <h3 class="cg-prompt-title">Round target met.</h3>',
-          '  <p>Correct: ' + state.metrics.correct + ' · Near miss: ' + state.metrics.nearMiss + ' · Incorrect: ' + state.metrics.incorrect + "</p>",
-          '  <div class="cg-footer-row"><button class="cg-action cg-action-primary" type="button" data-action="restart">Start New Session</button><button class="cg-action cg-action-quiet" type="button" data-action="repeat-game">Keep Same Game</button></div>',
+          '<div class="cg-focus-panel">',
+          '  <p class="cg-kicker">End of Round Summary</p>',
+          '  <h3 class="cg-display">Session target met</h3>',
+          '  <p class="cg-focus-line">Correct: ' + state.metrics.correct + ' · Near miss: ' + state.metrics.nearMiss + ' · Incorrect: ' + state.metrics.incorrect + "</p>",
+          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-action="restart">' + runtimeRoot.CSGameComponents.iconFor("progress") + 'Start New Session</button><button class="cg-action cg-action-quiet" type="button" data-action="repeat-game">Keep Same Game</button></div>',
           "</div>"
         ].join("");
       }
 
       if (game.id === "word-quest") {
-        var guess = (state.lastSubmittedGuess || "").toUpperCase();
+        var guess = String(uiState.lastSubmittedGuess || "").toUpperCase();
         var evaluation = state.lastOutcome && state.lastOutcome.evaluation || [];
         return [
-          '<div class="cg-prompt-card">',
-          '  <p class="cg-micro-label">Fast Entry</p>',
+          '<div class="cg-focus-panel">',
+          '  <p class="cg-kicker">Focus Panel</p>',
           '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</h3>",
+          '  <p class="cg-focus-line">Type the answer and watch the tile reveal carry the feedback.</p>',
           '  <div class="cg-input-row">',
           '    <input id="cg-word-guess" class="cg-input" maxlength="' + String(round.answer || "").length + '" placeholder="Type your guess">',
           '    <div class="cg-guess-grid">' + String(round.answer || "").split("").map(function (_letter, index) {
-            return '<div class="cg-letter-box" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(evaluation[index] || "") + '">' + runtimeRoot.CSGameComponents.escapeHtml(guess[index] || "") + "</div>";
+            return '<div class="cg-letter-box' + (evaluation[index] ? ' is-revealed' : '') + '" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(evaluation[index] || "") + '" style="animation-delay:' + (index * 40) + 'ms">' + runtimeRoot.CSGameComponents.escapeHtml(guess[index] || "") + "</div>";
           }).join("") + "</div>",
-          '    <div class="cg-footer-row"><button class="cg-action cg-action-primary" type="button" data-submit="word-quest">Submit Guess</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Skip Round</button></div>',
+          '    <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="word-quest">Submit Guess</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Skip Round</button></div>',
           "  </div>",
-          (state.hintVisible ? '<div class="cg-chip" data-tone="warning">' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</div>" : ""),
+          (state.hintVisible ? '<span class="cg-chip" data-tone="warning">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
           "</div>"
         ].join("");
       }
 
       if (game.id === "word-connections") {
         return [
-          '<div class="cg-prompt-card">',
-          '  <p class="cg-micro-label">Immediate First Action</p>',
-          '  <h3 class="cg-prompt-title">Explain <strong>' + runtimeRoot.CSGameComponents.escapeHtml(round.targetWord) + "</strong> without these words.</h3>",
-          '  <div class="cg-inline-row">' + (round.forbiddenWords || []).map(function (word) {
+          '<div class="cg-focus-panel">',
+          '  <p class="cg-kicker">Focus Panel</p>',
+          '  <h3 class="cg-prompt-title">Explain <strong>' + runtimeRoot.CSGameComponents.escapeHtml(round.targetWord) + "</strong> without these words</h3>",
+          '  <div class="cg-context-chips">' + (round.forbiddenWords || []).map(function (word) {
             return '<span class="cg-chip" data-tone="warning">' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</span>";
           }).join("") + "</div>",
-          '  <p>' + runtimeRoot.CSGameComponents.escapeHtml(round.requiredMove || "") + "</p>",
+          '  <p class="cg-focus-line">' + runtimeRoot.CSGameComponents.escapeHtml(round.requiredMove || "") + "</p>",
           '  <textarea id="cg-word-connections-text" class="cg-textarea" placeholder="Enter the explanation students would say or write."></textarea>',
-          '  <div class="cg-footer-row"><button class="cg-action cg-action-primary" type="button" data-submit="word-connections">Score Round</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Prompt</button></div>',
-          (state.hintVisible ? '<div class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</div>" : ""),
+          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="word-connections">Score Round</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Prompt</button></div>',
+          (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
           "</div>"
         ].join("");
       }
 
       if (game.id === "morphology-builder" || game.id === "sentence-builder") {
         return [
-          renderTileBuilder(round, state.builderSelection || []),
-          '<div class="cg-footer-row"><button class="cg-action cg-action-primary" type="button" data-submit="' + game.id + '">Check Build</button><button class="cg-action cg-action-quiet" type="button" data-action="clear-build">Clear</button></div>',
-          (state.hintVisible ? '<div class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</div>" : "")
+          renderTileBuilder(round, uiState.builderSelection),
+          '<div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="' + game.id + '">Check Build</button><button class="cg-action cg-action-quiet" type="button" data-action="clear-build">Clear</button></div>',
+          (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : "")
         ].join("");
       }
 
       if (game.id === "concept-ladder") {
-        var revealed = Number(state.revealedClues || 1);
         return [
-          '<div class="cg-prompt-card">',
-          '  <p class="cg-micro-label">Reveal Steps</p>',
+          '<div class="cg-focus-panel">',
+          '  <p class="cg-kicker">Progressive Reveal</p>',
           '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</h3>",
-          '  <div class="cg-summary-list">' + (round.clues || []).slice(0, revealed).map(function (clue, index) {
-            return '<div class="cg-summary-item"><strong>Clue ' + (index + 1) + '</strong><div>' + runtimeRoot.CSGameComponents.escapeHtml(clue) + "</div></div>";
+          '  <div class="cg-summary-list">' + (round.clues || []).slice(0, uiState.revealedClues).map(function (clue, index) {
+            return '<div class="cg-summary-item" data-reveal="true" style="animation-delay:' + (index * 50) + 'ms"><strong>Clue ' + (index + 1) + '</strong><div>' + runtimeRoot.CSGameComponents.escapeHtml(clue) + "</div></div>";
           }).join("") + "</div>",
           '  <div class="cg-choice-row">' + (round.options || []).map(function (option) {
-            return '<button class="cg-choice' + (state.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
+            return '<button class="cg-choice' + (uiState.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
           }).join("") + "</div>",
-          '  <div class="cg-footer-row"><button class="cg-action cg-action-primary" type="button" data-submit="concept-ladder">Submit Solve</button><button class="cg-action cg-action-quiet" type="button" data-action="reveal-clue">Reveal Next Clue</button></div>',
+          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="concept-ladder">Submit Solve</button><button class="cg-action cg-action-quiet" type="button" data-action="reveal-clue">Reveal Next Clue</button></div>',
           "</div>"
         ].join("");
       }
 
       if (game.id === "error-detective") {
         return [
-          '<div class="cg-prompt-card">',
-          '  <p class="cg-micro-label">Misconception Focus</p>',
+          '<div class="cg-focus-panel">',
+          '  <p class="cg-kicker">Common Misconception</p>',
           '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(round.incorrectExample) + "</h3>",
           '  <div class="cg-choice-row">' + (round.options || []).map(function (option) {
-            return '<button class="cg-choice' + (state.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
+            return '<button class="cg-choice' + (uiState.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
           }).join("") + "</div>",
-          '  <div class="cg-footer-row"><button class="cg-action cg-action-primary" type="button" data-submit="error-detective">Confirm Correction</button></div>',
-          (state.hintVisible ? '<div class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</div>" : ""),
+          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="error-detective">Confirm Correction</button></div>',
+          (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
           "</div>"
         ].join("");
       }
 
       if (game.id === "rapid-category") {
         return [
-          '<div class="cg-prompt-card">',
-          '  <p class="cg-micro-label">Short Round</p>',
+          '<div class="cg-focus-panel">',
+          '  <p class="cg-kicker">Challenge Meter</p>',
           '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</h3>",
+          '  <p class="cg-focus-line">Enter relevant responses only. Unique ideas score better than repeated ones.</p>',
           '  <textarea id="cg-category-text" class="cg-textarea" placeholder="Enter responses separated by commas or new lines."></textarea>',
-          '  <div class="cg-footer-row"><button class="cg-action cg-action-primary" type="button" data-submit="rapid-category">Score Responses</button></div>',
-          (state.hintVisible ? '<div class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</div>" : ""),
+          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="rapid-category">Score Responses</button></div>',
+          (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
           "</div>"
         ].join("");
       }
 
-      return '<div class="cg-prompt-card">Round ready.</div>';
+      return '<div class="cg-focus-panel">Round ready.</div>';
     }
 
     function hydrateControls(state) {
@@ -689,6 +818,7 @@
       Array.prototype.forEach.call(shell.querySelectorAll("[data-game-id]"), function (button) {
         button.addEventListener("click", function () {
           var gameId = button.getAttribute("data-game-id") || "";
+          resetRoundUi();
           engine.updateContext({
             subject: context.subject,
             gradeBand: context.gradeBand,
@@ -702,10 +832,8 @@
         button.addEventListener("click", function () {
           var action = button.getAttribute("data-action");
           if (action === "toggle-teacher") {
-            var state = engine.getState();
-            engine.updateSettings({});
-            engine.getState().teacherPanelOpen = !state.teacherPanelOpen;
-            renderTeacherToggle(!state.teacherPanelOpen);
+            uiState.teacherPanelOpen = !uiState.teacherPanelOpen;
+            render();
             return;
           }
           if (action === "hint") {
@@ -713,15 +841,18 @@
             return;
           }
           if (action === "restart" || action === "repeat-game") {
+            resetRoundUi();
             engine.restartGame();
             return;
           }
           if (action === "next-round") {
+            resetRoundUi();
             engine.nextRound();
             return;
           }
           if (action === "reveal-clue") {
-            renderClueReveal();
+            uiState.revealedClues = Math.min(uiState.revealedClues + 1, ((engine.getState().round && engine.getState().round.clues) || []).length);
+            render();
             return;
           }
           if (action === "teacher-override") {
@@ -729,7 +860,8 @@
             return;
           }
           if (action === "clear-build") {
-            clearBuilder();
+            uiState.builderSelection = [];
+            render();
           }
         });
       });
@@ -742,29 +874,25 @@
 
       Array.prototype.forEach.call(shell.querySelectorAll("[data-choice]"), function (button) {
         button.addEventListener("click", function () {
-          engine.getState().selectedChoice = button.getAttribute("data-choice") || "";
+          uiState.selectedChoice = button.getAttribute("data-choice") || "";
           render();
         });
       });
 
       Array.prototype.forEach.call(shell.querySelectorAll("[data-tile]"), function (button) {
         button.addEventListener("click", function () {
-          var state = engine.getState();
-          var next = (state.builderSelection || []).slice();
           var tile = button.getAttribute("data-tile") || "";
-          if (next.indexOf(tile) >= 0) return;
-          next.push(tile);
-          state.builderSelection = next;
+          if (uiState.builderSelection.indexOf(tile) >= 0) return;
+          uiState.builderSelection = uiState.builderSelection.concat(tile);
           render();
         });
       });
 
       Array.prototype.forEach.call(shell.querySelectorAll("[data-slot-index]"), function (button) {
         button.addEventListener("click", function () {
-          var state = engine.getState();
-          var next = (state.builderSelection || []).slice();
+          var next = uiState.builderSelection.slice();
           next.splice(Number(button.getAttribute("data-slot-index") || 0), 1);
-          state.builderSelection = next;
+          uiState.builderSelection = next;
           render();
         });
       });
@@ -772,72 +900,68 @@
       var viewMode = document.getElementById("cg-view-mode");
       if (viewMode) viewMode.addEventListener("change", function () {
         engine.updateSettings({ viewMode: viewMode.value });
-        renderTeacherToggle(true);
+        uiState.teacherPanelOpen = true;
+        resetRoundUi();
         engine.restartGame();
       });
+
       var difficulty = document.getElementById("cg-difficulty");
       if (difficulty) difficulty.addEventListener("change", function () {
         engine.updateSettings({ difficulty: difficulty.value });
+        resetRoundUi();
         engine.restartGame();
       });
+
       var subject = document.getElementById("cg-subject");
       if (subject) subject.addEventListener("change", function () {
         context.subject = subject.value;
         engine.updateContext({ subject: subject.value });
+        resetRoundUi();
         engine.restartGame();
       });
+
       var gradeBand = document.getElementById("cg-grade-band");
       if (gradeBand) gradeBand.addEventListener("change", function () {
         context.gradeBand = gradeBand.value;
         engine.updateContext({ gradeBand: gradeBand.value });
+        resetRoundUi();
         engine.restartGame();
       });
+
       var skillFocus = document.getElementById("cg-skill-focus");
       if (skillFocus) skillFocus.addEventListener("change", function () {
         context.skillFocus = skillFocus.value;
         engine.updateContext({ skillFocus: skillFocus.value, vocabularyFocus: skillFocus.value });
       });
+
       var custom = document.getElementById("cg-custom-word-set");
       if (custom) custom.addEventListener("change", function () {
         engine.updateSettings({ customWordSet: custom.value });
       });
+
       var timerToggle = document.getElementById("cg-toggle-timer");
       if (timerToggle) timerToggle.addEventListener("change", function () {
         engine.updateSettings({ timerEnabled: !!timerToggle.checked });
+        resetRoundUi();
         engine.restartGame();
       });
+
       var hintsToggle = document.getElementById("cg-toggle-hints");
       if (hintsToggle) hintsToggle.addEventListener("change", function () {
         engine.updateSettings({ hintsEnabled: !!hintsToggle.checked });
       });
+
       var soundToggle = document.getElementById("cg-toggle-sound");
       if (soundToggle) soundToggle.addEventListener("change", function () {
         engine.updateSettings({ soundEnabled: !!soundToggle.checked });
       });
     }
 
-    function renderTeacherToggle(open) {
-      var state = engine.getState();
-      state.teacherPanelOpen = !!open;
-      render();
-    }
-
-    function clearBuilder() {
-      engine.getState().builderSelection = [];
-      render();
-    }
-
-    function renderClueReveal() {
-      var state = engine.getState();
-      state.revealedClues = Math.min((state.revealedClues || 1) + 1, ((state.round && state.round.clues) || []).length);
-      render();
-    }
-
     function handleSubmit(gameId) {
       if (gameId === "word-quest") {
         var guess = document.getElementById("cg-word-guess");
         var value = guess ? guess.value : "";
-        engine.getState().lastSubmittedGuess = String(value || "").trim();
+        uiState.lastSubmittedGuess = String(value || "").trim();
         engine.submit({ value: value });
         return;
       }
@@ -847,14 +971,14 @@
         return;
       }
       if (gameId === "concept-ladder") {
-        engine.submit({ value: engine.getState().selectedChoice || "", clueCount: engine.getState().revealedClues || 1 });
-        engine.getState().selectedChoice = "";
-        engine.getState().revealedClues = 1;
+        engine.submit({ value: uiState.selectedChoice || "", clueCount: uiState.revealedClues || 1 });
+        uiState.selectedChoice = "";
+        uiState.revealedClues = 1;
         return;
       }
       if (gameId === "error-detective") {
-        engine.submit({ value: engine.getState().selectedChoice || "" });
-        engine.getState().selectedChoice = "";
+        engine.submit({ value: uiState.selectedChoice || "" });
+        uiState.selectedChoice = "";
         return;
       }
       if (gameId === "rapid-category") {
@@ -863,19 +987,18 @@
         return;
       }
       if (gameId === "morphology-builder" || gameId === "sentence-builder") {
-        engine.submit({ value: (engine.getState().builderSelection || []).slice() });
-        engine.getState().builderSelection = [];
+        engine.submit({ value: uiState.builderSelection.slice() });
+        uiState.builderSelection = [];
       }
     }
 
     engine.subscribe(function (state) {
+      applyMetricBumps(state);
       if (state.feedback && state.feedback.label) live.announce(state.feedback.label);
       render();
     });
 
     engine.start();
-    engine.getState().teacherPanelOpen = false;
-    engine.getState().revealedClues = 1;
     render();
   }
 
