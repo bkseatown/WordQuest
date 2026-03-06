@@ -79,11 +79,11 @@
     var bar = document.createElement("div");
     bar.id = "cs-hub-back-bar";
     bar.setAttribute("role", "navigation");
-    bar.setAttribute("aria-label", "Return to Command Hub");
+    bar.setAttribute("aria-label", "Return to Teacher Hub");
 
     bar.innerHTML =
       '<a class="cs-hub-back-link" href="' + hubHref + '">' +
-        '\u2190 Command Hub' +
+        '\u2190 Teacher Hub' +
       '</a>' +
       '<div class="cs-hub-back-sep" aria-hidden="true"></div>' +
       '<span class="cs-hub-back-ctx"></span>' +

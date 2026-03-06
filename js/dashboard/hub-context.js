@@ -1,5 +1,5 @@
 /**
- * hub-context.js — Intelligence auto-derivation layer for the v2 Command Hub.
+ * hub-context.js — Intelligence auto-derivation layer for the v2 Teacher Hub.
  *
  * Watches HubState.context.studentId. When it changes, auto-invokes
  * the engine pipeline and writes results to intelligence.* in a single

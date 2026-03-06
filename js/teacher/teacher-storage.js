@@ -15,7 +15,8 @@
     studentSupport: "cs.student.support.v1",
     lessonContext: "cs.lesson.context.v1",
     sessionLogs: "cs.session.logs.v1",
-    legacyLessonBriefBlocks: "cs.lessonBrief.blocks.v1"
+    legacyLessonBriefBlocks: "cs.lessonBrief.blocks.v1",
+    migrationState: "cs.teacher.migrations.v1"
   };
 
   function safeParse(raw, fallback) {
@@ -184,6 +185,130 @@
     return { migrated: true, changed: changed };
   }
 
+  function loadStudentsStore() {
+    var store = readJson(KEYS.students, {});
+    return store && typeof store === "object" && !Array.isArray(store) ? store : {};
+  }
+
+  function saveStudentsStore(store) {
+    return writeJson(KEYS.students, store && typeof store === "object" ? store : {});
+  }
+
+  function loadStudentSupportStore() {
+    var store = readJson(KEYS.studentSupport, {});
+    return store && typeof store === "object" && !Array.isArray(store) ? store : {};
+  }
+
+  function saveStudentSupportStore(store) {
+    return writeJson(KEYS.studentSupport, store && typeof store === "object" ? store : {});
+  }
+
+  function loadSessionLogs() {
+    var rows = readJson(KEYS.sessionLogs, []);
+    return Array.isArray(rows) ? rows : [];
+  }
+
+  function saveSessionLogs(rows) {
+    return writeJson(KEYS.sessionLogs, Array.isArray(rows) ? rows : []);
+  }
+
+  function migrationState() {
+    var state = readJson(KEYS.migrationState, {});
+    return state && typeof state === "object" && !Array.isArray(state) ? state : {};
+  }
+
+  function markMigration(name) {
+    var state = migrationState();
+    state[String(name || "")] = new Date().toISOString();
+    writeJson(KEYS.migrationState, state);
+  }
+
+  function hasMigration(name) {
+    return !!migrationState()[String(name || "")];
+  }
+
+  function migrateLegacyStudents() {
+    if (hasMigration("students")) return { migrated: false, changed: false };
+    var store = loadStudentsStore();
+    var changed = false;
+    var legacyCaseload = readJson("cs_caseload_v1", null);
+    var legacyRows = [];
+    if (legacyCaseload && Array.isArray(legacyCaseload.students)) legacyRows = legacyCaseload.students.slice();
+    var olderRows = readJson("cs.caseload.v1", []);
+    if (Array.isArray(olderRows)) legacyRows = legacyRows.concat(olderRows);
+    legacyRows.forEach(function (row) {
+      var id = String(row && (row.id || row.studentId || row.name) || "").trim();
+      if (!id) return;
+      if (!store[id]) {
+        store[id] = {
+          id: id,
+          name: String(row.name || "Student"),
+          tier: String(row.tier || ""),
+          grade: String(row.grade || row.gradeBand || row.gradeLevel || ""),
+          updatedAt: new Date().toISOString()
+        };
+        changed = true;
+      }
+    });
+    if (changed) saveStudentsStore(store);
+    markMigration("students");
+    return { migrated: true, changed: changed };
+  }
+
+  function migrateLegacySupportStore() {
+    if (hasMigration("studentSupport")) return { migrated: false, changed: false };
+    var store = loadStudentSupportStore();
+    var changed = false;
+    var legacy = readJson("CS_SUPPORT_STORE_V1", null);
+    var students = legacy && legacy.students && typeof legacy.students === "object" ? legacy.students : {};
+    Object.keys(students).forEach(function (studentId) {
+      if (store[studentId]) return;
+      store[studentId] = students[studentId];
+      changed = true;
+    });
+    if (changed) saveStudentSupportStore(store);
+    markMigration("studentSupport");
+    return { migrated: true, changed: changed };
+  }
+
+  function migrateLegacySessionLogs() {
+    if (hasMigration("sessionLogs")) return { migrated: false, changed: false };
+    var logs = loadSessionLogs();
+    var byId = {};
+    logs.forEach(function (row) {
+      var id = String(row && (row.sessionId || row.id) || "");
+      if (id) byId[id] = row;
+    });
+    var changed = false;
+    var legacyLists = [
+      readJson("cs_sessions_v1", []),
+      readJson("CS_EVIDENCE_V1", null) && readJson("CS_EVIDENCE_V1", null).sessions
+    ];
+    legacyLists.forEach(function (rows) {
+      if (!Array.isArray(rows)) return;
+      rows.forEach(function (row) {
+        var id = String(row && (row.sessionId || row.id) || "");
+        if (!id || byId[id]) return;
+        byId[id] = row;
+        changed = true;
+      });
+    });
+    if (changed) {
+      saveSessionLogs(Object.keys(byId).map(function (id) { return byId[id]; }));
+    }
+    markMigration("sessionLogs");
+    return { migrated: true, changed: changed };
+  }
+
+  function migrateLegacyTeacherData() {
+    return {
+      students: migrateLegacyStudents(),
+      studentSupport: migrateLegacySupportStore(),
+      sessionLogs: migrateLegacySessionLogs(),
+      schedule: migrateLessonBriefBlocks()
+    };
+  }
+
   function loadTeacherProfile() {
     var profile = readJson(KEYS.teacherProfile, {});
     if (!profile || typeof profile !== "object" || Array.isArray(profile)) profile = {};
@@ -243,6 +368,13 @@
     saveClassContext: saveClassContext,
     loadLessonContexts: loadLessonContexts,
     saveLessonContext: saveLessonContext,
+    loadStudentsStore: loadStudentsStore,
+    saveStudentsStore: saveStudentsStore,
+    loadStudentSupportStore: loadStudentSupportStore,
+    saveStudentSupportStore: saveStudentSupportStore,
+    loadSessionLogs: loadSessionLogs,
+    saveSessionLogs: saveSessionLogs,
+    migrateLegacyTeacherData: migrateLegacyTeacherData,
     readJson: readJson,
     writeJson: writeJson
   };

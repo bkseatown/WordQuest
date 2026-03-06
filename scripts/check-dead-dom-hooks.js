@@ -8,6 +8,7 @@ const ROOT = process.cwd();
 const HTML_PATHS = [
   path.join(ROOT, 'index.html'),
   path.join(ROOT, 'teacher-dashboard.html'),
+  path.join(ROOT, 'teacher-hub-v2.html'),
   path.join(ROOT, 'cornerstone-mtss.html'),
   path.join(ROOT, 'word-quest.html')
 ];
@@ -47,6 +48,11 @@ const SELECTOR_PATTERNS = [
   /\bquerySelector\('#([^'"\\s>:+\[]+)'\)/g,
   /\bquerySelectorAll\('#([^'"\\s>:+\[]+)'\)/g
 ];
+
+const REQUIRED_PAGE_IDS = {
+  'teacher-hub-v2.html': ['th2-search', 'th2-main', 'th2-empty-state', 'th2-focus-card', 'th2-list', 'th2-sidebar-context'],
+  'teacher-dashboard.html': ['td-search-input', 'td-focus-card', 'td-meeting-workspace', 'td-hub-cta']
+};
 
 function readIdsFromHtml(filePath) {
   const source = fs.readFileSync(filePath, 'utf8');
@@ -88,6 +94,19 @@ if (!existingHtmlPaths.length) {
 const validIds = readAllIdsFromHtml(existingHtmlPaths);
 const files = CHECK_FILES.filter((filePath) => fs.existsSync(filePath));
 const findings = [];
+
+for (const filePath of existingHtmlPaths) {
+  const basename = path.basename(filePath);
+  const required = REQUIRED_PAGE_IDS[basename];
+  if (!required) continue;
+  const ids = readIdsFromHtml(filePath);
+  const missing = required.filter((id) => !ids.has(id));
+  if (!missing.length) continue;
+  findings.push({
+    file: path.relative(ROOT, filePath),
+    missing
+  });
+}
 
 for (const filePath of files) {
   const missingIds = collectSelectors(filePath, validIds);

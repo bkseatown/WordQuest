@@ -20,11 +20,12 @@
   var ExecutiveProfileEngine = window.CSExecutiveProfile;
   var ExecutiveSupportEngine = window.CSExecutiveSupportEngine;
   var SupportStore         = window.CSSupportStore;
-  var HubState             = window.CSHubState;
+  var TeacherRuntimeState  = window.CSTeacherRuntimeState;
+  var TeacherSearchIndex   = window.CSTeacherSearchIndex;
   var HubContext           = window.CSHubContext;
   var TeacherStorage       = window.CSTeacherStorage;
 
-  if (!Evidence || !HubState) return;
+  if (!Evidence || !TeacherRuntimeState) return;
 
   /* ── URL params ────────────────────────────────────────── */
 
@@ -44,10 +45,13 @@
 
   /* ── Hub state ─────────────────────────────────────────── */
 
-  var hubState = HubState.create({
+  var hubState = TeacherRuntimeState.create({
     session: {
       role: urlParams.get("role") || "teacher",
       demoMode: isDemoMode
+    },
+    workspace_context: {
+      mode: "hub"
     }
   });
 
@@ -56,6 +60,7 @@
   var caseload = [];
   var filtered = [];
   var searchResults = null;
+  var searchIndex = null;
 
   /* ── DOM refs ──────────────────────────────────────────── */
 
@@ -339,60 +344,39 @@
   ];
 
   function buildSearchResults(query) {
-    var q = String(query || "").trim().toLowerCase();
-    if (!q) return null;
-    var blocks = getTodayLessonBlocks();
-    var students = caseload.filter(function (student) {
-      var hay = [
-        student.name,
-        student.id,
-        student.grade,
-        student.gradeBand
-      ].join(" ").toLowerCase();
-      return hay.indexOf(q) >= 0;
-    }).map(function (student) {
-      return {
-        kind: "student",
-        id: student.id,
-        label: student.name,
-        subtitle: "Student" + (student.grade || student.gradeBand ? " · Grade " + (student.grade || student.gradeBand) : "")
-      };
+    var q = String(query || "").trim();
+    if (!q || !TeacherSearchIndex || typeof TeacherSearchIndex.create !== "function") return null;
+    var studentStore = TeacherStorage && typeof TeacherStorage.loadStudentsStore === "function"
+      ? TeacherStorage.loadStudentsStore()
+      : {};
+    var seenStudents = {};
+    var studentRows = [];
+    Object.keys(studentStore || {}).forEach(function (studentId) {
+      if (!studentStore[studentId]) return;
+      seenStudents[studentId] = true;
+      studentRows.push(studentStore[studentId]);
     });
-    var blockResults = blocks.filter(function (block) {
-      var hay = [
-        block.label,
-        block.timeLabel,
-        block.subject,
-        block.curriculum,
-        block.lesson,
-        block.classSection,
-        block.teacher,
-        programLabel(block.programId)
-      ].join(" ").toLowerCase();
-      return hay.indexOf(q) >= 0;
-    }).map(function (block) {
-      return {
-        kind: "class",
-        id: block.id,
-        label: block.label,
-        subtitle: [block.timeLabel, block.subject, block.curriculum || programLabel(block.programId), block.lesson].filter(Boolean).join(" · ")
-      };
+    caseload.forEach(function (student) {
+      if (!student || !student.id || seenStudents[student.id]) return;
+      seenStudents[student.id] = true;
+      studentRows.push(student);
     });
-    var resourceResults = HUB_SEARCH_RESOURCES.filter(function (item) {
-      var hay = [item.label, item.subtitle, item.kind].join(" ").toLowerCase();
-      return hay.indexOf(q) >= 0;
+    searchIndex = TeacherSearchIndex.create({
+      students: studentRows,
+      blocks: getTodayLessonBlocks(),
+      resources: HUB_SEARCH_RESOURCES
     });
     return {
-      query: q,
-      students: students.slice(0, 8),
-      classes: blockResults.slice(0, 8),
-      resources: resourceResults.slice(0, 8)
+      query: String(q).toLowerCase(),
+      groups: searchIndex.group(q)
     };
   }
 
   function searchResultCount(results) {
     if (!results) return 0;
-    return (results.students || []).length + (results.classes || []).length + (results.resources || []).length;
+    return Object.keys(results.groups || {}).reduce(function (count, key) {
+      return count + ((results.groups[key] || []).length);
+    }, 0);
   }
 
   function renderSearchSection(title, items, attr) {
@@ -2087,6 +2071,7 @@
       raw = safe(function () { return Evidence.getStudents(); }) || [];
     }
     caseload = Array.isArray(raw) ? raw : [];
+    hubState.set({ schedule_blocks: getTodayLessonBlocks() });
 
     if (el.listNone) el.listNone.classList.toggle("hidden", caseload.length > 0);
 
@@ -2200,6 +2185,16 @@
       return name.includes(q) || id.includes(q);
     });
     searchResults = buildSearchResults(q);
+    hubState.set({
+      search_context: {
+        query: q,
+        scope: "global",
+        results: searchResults && searchResults.groups ? Object.keys(searchResults.groups).reduce(function (rows, key) {
+          return rows.concat(searchResults.groups[key] || []);
+        }, []) : []
+      },
+      schedule_blocks: getTodayLessonBlocks()
+    });
     renderStudentList();
     if (q) showEmptyState();
   }
@@ -2670,13 +2665,17 @@
 
   function renderSearchResults() {
     if (!el.emptyState || !searchResults) return;
+    var groups = searchResults.groups || {};
     el.emptyState.innerHTML = [
       '<div class="th2-today-panel">',
       '  <p class="th2-today-title">Global Search</p>',
       '  <p class="th2-today-sub">Search by student, class, curriculum, resource, diagnostic, or intervention tool. Results open into the right context.</p>',
-      renderSearchSection("Students", searchResults.students, "data-search-id"),
-      renderSearchSection("Classes Today", searchResults.classes, "data-search-id"),
-      renderSearchSection("Resources & Tools", searchResults.resources, "data-search-id"),
+      renderSearchSection("Students", groups.student, "data-search-id"),
+      renderSearchSection("Classes Today", groups.class, "data-search-id"),
+      renderSearchSection("Curriculum", groups.curriculum, "data-search-id"),
+      renderSearchSection("Resources", groups.resource, "data-search-id"),
+      renderSearchSection("Diagnostics", groups.diagnostic, "data-search-id"),
+      renderSearchSection("Intervention Tools", (groups.intervention || []).concat(groups.tool || []), "data-search-id"),
       (!searchResultCount(searchResults) ? '<p class="th2-today-sub">No matches found for this search yet.</p>' : ""),
       '</div>'
     ].join("");
@@ -2696,6 +2695,15 @@
           });
           hubState.set({ context: { mode: "class", classId: id, studentId: "" } });
           return;
+        }
+        if (kind === "curriculum" && id) {
+          var curriculumItem = (hubState.get().search_context.results || []).filter(function (row) {
+            return row && row.id === id;
+          })[0] || null;
+          if (curriculumItem && curriculumItem.payload && curriculumItem.payload.id) {
+            hubState.set({ context: { mode: "class", classId: curriculumItem.payload.id, studentId: "" } });
+            return;
+          }
         }
         var item = HUB_SEARCH_RESOURCES.filter(function (row) { return row.id === id; })[0] || null;
         if (!item) return;

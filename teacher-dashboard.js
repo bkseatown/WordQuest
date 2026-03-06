@@ -38,7 +38,7 @@
   var AlignmentLoader = window.CSAlignmentLoader;
   var InterventionPlanner = window.CSInterventionPlanner;
   var ShareSummaryAPI = window.CSShareSummary;
-  var DashboardState = window.CSDashboardState;
+  var TeacherRuntimeState = window.CSTeacherRuntimeState;
   var DashboardRole = window.CSDashboardRole;
   var DashboardUI = window.CSDashboardUI;
   var DashboardFocus = window.CSDashboardFocus;
@@ -49,6 +49,11 @@
   var DashboardBindings = window.CSDashboardBindings;
   var DashboardMeeting = window.CSDashboardMeeting;
   var DashboardModals = window.CSDashboardModals;
+  var WorkspaceReports = window.CSWorkspaceReports;
+  var WorkspaceMeetings = window.CSWorkspaceMeetings;
+  var WorkspaceFamilyCommunication = window.CSWorkspaceFamilyCommunication;
+  var WorkspaceHistory = window.CSWorkspaceHistory;
+  var WorkspaceFidelity = window.CSWorkspaceFidelity;
   var SupportStore = window.CSSupportStore;
   var MeetingNotes = window.CSMeetingNotes;
   var MeetingTranslation = window.CSMeetingTranslation;
@@ -130,8 +135,11 @@
     set[key] = true;
     writeSeededSet(NUMERACY_SEEDED_KEY, set);
   }
-  var appState = DashboardState && typeof DashboardState.create === "function"
-    ? DashboardState.create()
+  var appState = TeacherRuntimeState && typeof TeacherRuntimeState.create === "function"
+    ? TeacherRuntimeState.create({
+      workspace_context: { mode: "workspace" },
+      mode: "workspace"
+    })
     : {
       get: function () { return { role: "teacher", mode: "daily", selectedStudentId: "", meetingWorkspace: { open: false, tab: "summary" }, featureFlags: { demoMode: false, adminMode: false } }; },
       set: function () {},
@@ -817,19 +825,17 @@
       var labels = frameworkListFromAlignment(getFrameworkAlignmentSafe(skillNode));
       el.expFrameworks.textContent = labels.length ? labels.join(", ") : "--";
     }
+    var fidelityView = WorkspaceFidelity && typeof WorkspaceFidelity.summarize === "function"
+      ? WorkspaceFidelity.summarize(input)
+      : null;
     if (el.focusFidelityLine) {
-      var fidelitySummary = input.fidelitySummary || {};
-      var fidelityPct = Math.round(Number(input.fidelityPercent || fidelitySummary.fidelityPercent || 0));
-      var totalSessions = Math.max(0, Math.round(Number(fidelitySummary.totalSessions || 0)));
-      el.focusFidelityLine.textContent = "Fidelity: " + fidelityPct + "% over " + totalSessions + " sessions";
+      el.focusFidelityLine.textContent = fidelityView ? fidelityView.line : "Fidelity: 0% over 0 sessions";
       el.focusFidelityLine.classList.remove("fidelity-good", "fidelity-mid", "fidelity-low");
-      if (fidelityPct >= 80) el.focusFidelityLine.classList.add("fidelity-good");
-      else if (fidelityPct >= 60) el.focusFidelityLine.classList.add("fidelity-mid");
-      else el.focusFidelityLine.classList.add("fidelity-low");
+      el.focusFidelityLine.classList.add(fidelityView ? fidelityView.levelClass : "fidelity-low");
     }
     if (el.confidenceLine) {
       var trend = String(s.trendDecision || "HOLD").toUpperCase();
-      var fidelityState = Math.round(Number(input.fidelityPercent || 0)) >= 70 ? "active" : "watch";
+      var fidelityState = fidelityView ? fidelityView.confidenceState : (Math.round(Number(input.fidelityPercent || 0)) >= 70 ? "active" : "watch");
       el.confidenceLine.textContent = "Tier guidance " + (trend === "HOLD" || trend === "FADE" ? "stable" : "active") +
         " • Fidelity tracking " + fidelityState +
         " • Curriculum mapping active • System checks passed";
@@ -888,61 +894,31 @@
 
   function buildReportingContext(row) {
     var summary = Evidence && typeof Evidence.getStudentSummary === "function" ? Evidence.getStudentSummary(state.selectedId) : null;
-    var student = summary && summary.student ? summary.student : {};
     var numeracy = latestNumeracyRecommendation(row);
     var executive = buildExecutiveProfileAndPlan(row || null);
     var tierSignal = computeTierSignalForRow(row);
-    var tierInput = tierSignal.input || {};
     var literacyFrameworks = frameworkListFromAlignment(getFrameworkAlignmentSafe(summary ? summary.focus : "literacy"));
     var numeracyFrameworks = frameworkListFromAlignment(getFrameworkAlignmentSafe(numeracy.contentFocus || "numeracy"));
     var curriculumLine = el.numCurriculumLine ? String(el.numCurriculumLine.textContent || "").trim() : "";
-    var literacyData = {
-      focus: summary ? String(summary.focus || "Foundational literacy") : "Foundational literacy",
-      growth: summary && summary.metrics ? Number(summary.metrics.weekDelta || 0.12) : 0.12,
-      nextStep: summary && summary.nextMove ? String(summary.nextMove.line || "Continue targeted literacy support.") : "Continue targeted literacy support.",
-      tier: String(tierSignal.tierLevel || (summary && summary.metrics ? summary.metrics.tierLabel : "Tier 2")),
-      recentAccuracy: Number(tierInput.recentAccuracy || 0.72),
-      goalAccuracy: Number(tierInput.goalAccuracy || 0.8),
-      stableCount: Number(tierInput.stableCount || 2),
-      weeksInIntervention: Number(tierInput.weeksInIntervention || 6),
-      fidelitySummary: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 },
-      curriculumAlignment: "Literacy sequencing aligned to active instructional pathways.",
-      frameworkAlignment: literacyFrameworks
-    };
-    var numeracyData = {
-      contentFocus: numeracy.contentFocus,
-      strategyStage: numeracy.strategyStage,
-      practiceMode: numeracy.practiceMode,
-      tierSignal: numeracy.tierSignal,
-      recommendedAction: numeracy.recommendedAction,
-      executiveSupport: {
-        primaryBarrier: executive.profile.primaryBarrier,
-        weeklyGoal: executive.plan.weeklyGoal,
-        dailySupportActions: executive.plan.dailySupportActions,
-        progressMetric: executive.plan.progressMetric,
-        parentExplanation: "School is supporting organization and task completion with clear steps, check-ins, and accommodations."
-      },
-      fidelitySummary: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 },
-      curriculumAlignment: curriculumLine || "Numeracy sequencing aligned to active instructional pathways.",
-      frameworkAlignment: numeracyFrameworks
-    };
-    var studentProfile = {
-      id: String(student.id || state.selectedId),
-      name: String(student.name || "Student"),
-      grade: String(student.grade || "G5"),
-      tier: literacyData.tier,
-      recentAccuracy: Number(tierInput.recentAccuracy || 0.72),
-      goalAccuracy: Number(tierInput.goalAccuracy || 0.8),
-      stableCount: Number(tierInput.stableCount || 2),
-      weeksInIntervention: Number(tierInput.weeksInIntervention || 6)
-    };
+    if (WorkspaceReports && typeof WorkspaceReports.buildContext === "function") {
+      return WorkspaceReports.buildContext({
+        selectedId: state.selectedId,
+        summary: summary,
+        numeracy: numeracy,
+        executive: executive,
+        tierSignal: tierSignal,
+        literacyFrameworks: literacyFrameworks,
+        numeracyFrameworks: numeracyFrameworks,
+        curriculumLine: curriculumLine
+      });
+    }
     return {
       summary: summary,
-      studentProfile: studentProfile,
-      literacyData: literacyData,
-      numeracyData: numeracyData,
+      studentProfile: {},
+      literacyData: {},
+      numeracyData: {},
       tierSignal: tierSignal,
-      fidelityData: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 }
+      fidelityData: {}
     };
   }
 
@@ -2954,7 +2930,9 @@
       return;
     }
     var notes = plan.progressNoteTemplate;
-    var key = state.activeNoteTab === "family" ? "family" : (state.activeNoteTab === "team" ? "team" : "teacher");
+    var key = WorkspaceFamilyCommunication && typeof WorkspaceFamilyCommunication.resolveNoteChannel === "function"
+      ? WorkspaceFamilyCommunication.resolveNoteChannel(state.activeNoteTab)
+      : (state.activeNoteTab === "family" ? "family" : (state.activeNoteTab === "team" ? "team" : "teacher"));
     el.noteText.textContent = String(notes[key] || ("Student: " + (student && student.name ? student.name : "Student")));
   }
 
@@ -2962,23 +2940,11 @@
     if (!window.CSEvidence || typeof window.CSEvidence.getRecentSessions !== "function") return;
     var sessions = window.CSEvidence.getRecentSessions(studentId, { limit: 1 });
     var row = sessions[0];
-    if (!row) {
-      if (el.lastSessionTitle) el.lastSessionTitle.textContent = "No recent quick check yet";
-      if (el.lastSessionMeta) el.lastSessionMeta.textContent = "Run a 90-second Word Quest quick check to generate signals.";
-      return;
-    }
-    var sig = row.signals || {};
-    var out = row.outcomes || {};
-    if (el.lastSessionTitle) {
-      el.lastSessionTitle.textContent = (out.solved ? "Solved" : "Not solved yet") + " · " + (out.attemptsUsed || sig.guessCount || 0) + " attempts";
-    }
-    if (el.lastSessionMeta) {
-      var hints = [];
-      if (Number(sig.vowelSwapCount || 0) >= 3) hints.push("Vowel swaps high");
-      if (Number(sig.repeatSameBadSlotCount || 0) >= 2) hints.push("Repeated same slot");
-      if (!hints.length) hints.push("Signals stable");
-      el.lastSessionMeta.textContent = hints.join(" · ") + " · Next: guided quick check";
-    }
+    var historyView = WorkspaceHistory && typeof WorkspaceHistory.summarizeSession === "function"
+      ? WorkspaceHistory.summarizeSession(row)
+      : { title: "No recent quick check yet", meta: "Run a 90-second Word Quest quick check to generate signals." };
+    if (el.lastSessionTitle) el.lastSessionTitle.textContent = historyView.title;
+    if (el.lastSessionMeta) el.lastSessionMeta.textContent = historyView.meta;
   }
 
   function openShareModal(studentId) {
@@ -2987,6 +2953,9 @@
   }
 
   function openMeetingModal() {
+    if (WorkspaceMeetings && typeof WorkspaceMeetings.openMeetingWorkspace === "function") {
+      if (WorkspaceMeetings.openMeetingWorkspace(meetingController)) return;
+    }
     if (!meetingController || typeof meetingController.open !== "function") return;
     meetingController.open();
   }

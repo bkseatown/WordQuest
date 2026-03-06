@@ -165,7 +165,7 @@
     el.innerHTML =
       "<div class='cs-tour-welcome-card'>" +
         "<span class='cs-tour-welcome-emoji'>🧭</span>" +
-        "<h2 class='cs-tour-welcome-title'>Welcome to Command Hub</h2>" +
+        "<h2 class='cs-tour-welcome-title'>Welcome to Teacher Hub</h2>" +
         "<p class='cs-tour-welcome-subtitle'>This 30-second tour will show you the six key features. You can replay it anytime from the Help menu.</p>" +
         "<div class='cs-tour-welcome-actions'>" +
           "<button class='cs-tour-btn-start' data-action='start'>Show me around →</button>" +
