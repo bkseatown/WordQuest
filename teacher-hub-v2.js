@@ -25,6 +25,10 @@
   var TeacherSearchService = window.CSTeacherSearchService;
   var TeacherSelectors     = window.CSTeacherSelectors;
   var TeacherIntelligence  = window.CSTeacherIntelligence;
+  var TeacherContextEngine = window.CSTeacherContextEngine;
+  var LessonCompanion      = window.CSLessonCompanion;
+  var InstantInsight       = window.CSInstantInsightOverlay;
+  var GameContextInjection = window.CSGameContextInjection;
   var HubContext           = window.CSHubContext;
   var TeacherStorage       = window.CSTeacherStorage;
 
@@ -240,6 +244,10 @@
     if (d < 7) return d + " days ago";
     if (d < 30) return Math.floor(d / 7) + "w ago";
     return Math.floor(d / 30) + "mo ago";
+  }
+
+  function firstName(value) {
+    return String(value || "").trim().split(/\s+/)[0] || "Teacher";
   }
 
   function escapeHtml(str) {
@@ -466,6 +474,359 @@
       else if (/break|check|chunk|timer/i.test(text)) glyph = "⏱";
       return '<span class="th2-class-accommodation-icon" title="' + escapeHtml(text) + '" aria-label="' + escapeHtml(text) + '">' + glyph + '</span>';
     }).join("");
+  }
+
+  function accommodationBadges(accommodations) {
+    var rows = Array.isArray(accommodations) ? accommodations : [];
+    return rows.slice(0, 3).map(function (item) {
+      var text = String(item || "");
+      var label = "SUP";
+      if (/sentence|frame/i.test(text)) label = "FR";
+      else if (/visual|model|graphic/i.test(text)) label = "VIS";
+      else if (/read|audio|repeat/i.test(text)) label = "AUD";
+      else if (/break|check|chunk|timer/i.test(text)) label = "CHK";
+      return '<span class="th2-support-badge" title="' + escapeHtml(text) + '">' + escapeHtml(label) + "</span>";
+    }).join("");
+  }
+
+  function countFocusStudents(rows) {
+    return (Array.isArray(rows) ? rows : []).filter(function (row) {
+      return /^T[23]/.test(String(row && row.supportPriority || ""));
+    }).length;
+  }
+
+  function getBlockStudents(block) {
+    var ids = [];
+    if (block && Array.isArray(block.studentIds)) ids = ids.concat(block.studentIds);
+    if (block && Array.isArray(block.rosterRefs)) ids = ids.concat(block.rosterRefs);
+    return ids.reduce(function (list, id) {
+      var sid = String(id || "");
+      if (!sid || list.some(function (row) { return row.id === sid; })) return list;
+      var student = studentById(sid);
+      if (student) list.push(student);
+      return list;
+    }, []);
+  }
+
+  function buildTeacherContextForBlock(block) {
+    if (!block || !TeacherContextEngine || typeof TeacherContextEngine.deriveContext !== "function") return null;
+    var classContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
+      ? TeacherSelectors.buildClassContext(block, { TeacherStorage: TeacherStorage })
+      : null;
+    var lessonContext = classContext && classContext.lessonContextId && TeacherSelectors && typeof TeacherSelectors.getLessonContext === "function"
+      ? TeacherSelectors.getLessonContext(classContext.lessonContextId, { TeacherStorage: TeacherStorage })
+      : null;
+    var source = {
+      block: block,
+      classContext: classContext,
+      lessonContext: lessonContext,
+      students: getBlockStudents(block),
+      studentIds: (block.studentIds || block.rosterRefs || []).slice(),
+      mode: hubState.get().context.mode === "class" ? "small-group" : ""
+    };
+    var derived = TeacherContextEngine.deriveContext(source, {
+      TeacherStorage: TeacherStorage,
+      TeacherSelectors: TeacherSelectors,
+      SupportStore: SupportStore
+    });
+    var companion = LessonCompanion && typeof LessonCompanion.getLessonCompanion === "function"
+      ? LessonCompanion.getLessonCompanion(source, {
+          TeacherStorage: TeacherStorage,
+          TeacherSelectors: TeacherSelectors,
+          SupportStore: SupportStore
+        })
+      : null;
+    var insight = InstantInsight && typeof InstantInsight.getInstantInsight === "function"
+      ? InstantInsight.getInstantInsight(source, {
+          TeacherStorage: TeacherStorage,
+          TeacherSelectors: TeacherSelectors,
+          SupportStore: SupportStore
+        })
+      : null;
+    return {
+      block: block,
+      classContext: classContext,
+      lessonContext: lessonContext,
+      derived: derived,
+      companion: companion,
+      insight: insight
+    };
+  }
+
+  function getRecommendedGameActions(contextData) {
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    var subject = String(derived.subject || "").toLowerCase();
+    var games;
+    if (subject === "math") {
+      games = [
+        { id: "concept-ladder", label: "Launch Concept Ladder" },
+        { id: "error-detective", label: "Launch Error Detective" },
+        { id: "word-connections", label: "Launch Word Connections" }
+      ];
+    } else if (subject === "intervention" || subject === "ela") {
+      games = [
+        { id: "word-quest", label: "Launch Word Quest" },
+        { id: "morphology-builder", label: "Launch Morphology Builder" },
+        { id: "sentence-builder", label: "Launch Sentence Builder" }
+      ];
+    } else if (subject === "writing") {
+      games = [
+        { id: "sentence-builder", label: "Launch Sentence Builder" },
+        { id: "word-connections", label: "Launch Word Connections" },
+        { id: "rapid-category", label: "Launch Rapid Category" }
+      ];
+    } else {
+      games = [
+        { id: "word-quest", label: "Launch Word Quest" },
+        { id: "word-connections", label: "Launch Word Connections" },
+        { id: "concept-ladder", label: "Launch Concept Ladder" }
+      ];
+    }
+    return games.map(function (game) {
+      var payload = GameContextInjection && typeof GameContextInjection.buildGameContext === "function"
+        ? GameContextInjection.buildGameContext({
+            block: contextData.block,
+            classContext: contextData.classContext,
+            lessonContext: contextData.lessonContext,
+            students: getBlockStudents(contextData.block),
+            studentIds: derived.studentIds || []
+          }, {
+            TeacherStorage: TeacherStorage,
+            TeacherSelectors: TeacherSelectors,
+            SupportStore: SupportStore
+          })
+        : {};
+      var recommendation = GameContextInjection && typeof GameContextInjection.getRecommendedGameContent === "function"
+        ? GameContextInjection.getRecommendedGameContent(game.id, payload)
+        : { loadedFocus: derived.targetSkills || [] };
+      return {
+        label: game.label,
+        href: appendContextParamsForBlock("game-platform.html?game=" + encodeURIComponent(game.id), contextData),
+        subtitle: (recommendation.loadedFocus || []).slice(0, 2).join(" • ") || "Context-aligned practice"
+      };
+    });
+  }
+
+  function appendContextParamsForBlock(href, contextData) {
+    try {
+      var url = new URL(String(href || ""), window.location.href);
+      var derived = contextData && contextData.derived ? contextData.derived : {};
+      var block = contextData && contextData.block ? contextData.block : {};
+      if (derived.classId && !url.searchParams.get("classId")) url.searchParams.set("classId", derived.classId);
+      if (derived.subject && !url.searchParams.get("subject")) url.searchParams.set("subject", derived.subject);
+      if (derived.curriculum && !url.searchParams.get("curriculum")) url.searchParams.set("curriculum", derived.curriculum);
+      if (derived.lesson && !url.searchParams.get("lesson")) url.searchParams.set("lesson", derived.lesson);
+      if (contextData.classContext && contextData.classContext.lessonContextId && !url.searchParams.get("lessonContextId")) {
+        url.searchParams.set("lessonContextId", contextData.classContext.lessonContextId);
+      }
+      if (block.teacher && !url.searchParams.get("teacher")) url.searchParams.set("teacher", block.teacher);
+      url.searchParams.set("from", "hub");
+      return url.pathname.replace(/^\//, "") + (url.search || "") + (url.hash || "");
+    } catch (_err) {
+      return appendGameContextParams(href);
+    }
+  }
+
+  function renderCommandHeader(contextData, blocks) {
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    var teacherName = TeacherStorage && typeof TeacherStorage.loadTeacherProfile === "function"
+      ? firstName(TeacherStorage.loadTeacherProfile().name)
+      : "Teacher";
+    var nextBlock = (Array.isArray(blocks) ? blocks : [])[0] || contextData.block || null;
+    var nextLabel = nextBlock
+      ? [nextBlock.timeLabel || nextBlock.label, nextBlock.subject].filter(Boolean).join(" · ")
+      : "No block selected yet";
+    var priority = derived.prioritySignal && derived.prioritySignal.label
+      ? derived.prioritySignal.label
+      : "Select a class block to load lesson context and student priorities.";
+    return [
+      '<section class="th2-command-header">',
+      '  <div class="th2-command-header__copy">',
+      '    <p class="th2-command-header__eyebrow">Teacher Hub</p>',
+      '    <h1 class="th2-command-header__title">' + escapeHtml(greetingWord() + ", " + teacherName) + '</h1>',
+      '    <p class="th2-command-header__date">' + escapeHtml(todayDateStr()) + '</p>',
+      "  </div>",
+      '  <div class="th2-command-header__status">',
+      '    <div class="th2-priority-signal th2-priority-signal--' + escapeHtml((derived.prioritySignal && derived.prioritySignal.level) || "steady") + '">',
+      '      <span class="th2-priority-signal__label">Priority Signal</span>',
+      '      <strong>' + escapeHtml(priority) + '</strong>',
+      "    </div>",
+      '    <p class="th2-command-header__next">Next block: ' + escapeHtml(nextLabel) + "</p>",
+      "  </div>",
+      "</section>"
+    ].join("");
+  }
+
+  function renderDayStrip(blocks, activeBlockId) {
+    var rows = Array.isArray(blocks) ? blocks : [];
+    return [
+      '<section class="th2-day-strip">',
+      '  <div class="th2-day-strip__head">',
+      '    <p class="th2-section-label">My Day</p>',
+      '    <p class="th2-today-sub">Open one block to move into lesson context and student priorities.</p>',
+      "  </div>",
+      '  <div class="th2-day-strip__grid">',
+      rows.map(function (block) {
+        var contextData = buildTeacherContextForBlock(block);
+        var focusCount = countFocusStudents(contextData && contextData.derived && contextData.derived.students);
+        return [
+          '<button class="th2-day-block' + (block.id === activeBlockId ? " is-active" : "") + '" data-open-block="' + escapeHtml(block.id) + '" type="button">',
+          '  <span class="th2-day-block__time">' + escapeHtml(block.timeLabel || block.label) + "</span>",
+          '  <strong class="th2-day-block__subject">' + escapeHtml(block.subject || areaLabel(block.area)) + "</strong>",
+          '  <span class="th2-day-block__teacher">' + escapeHtml(block.teacher || "Teacher") + "</span>",
+          '  <span class="th2-day-block__lesson">' + escapeHtml(block.curriculum || block.lesson || block.label) + "</span>",
+          '  <span class="th2-day-block__meta">' + escapeHtml((block.lesson || "Lesson context loading") + " · " + focusCount + " support") + "</span>",
+          "</button>"
+        ].join("");
+      }).join(""),
+      "  </div>",
+      "</section>"
+    ].join("");
+  }
+
+  function renderLessonContextZone(contextData) {
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    return [
+      '<section class="th2-context-zone th2-context-zone--lesson">',
+      '  <p class="th2-section-label">Lesson Context</p>',
+      '  <div class="th2-mission-card">',
+      '    <p class="th2-mission-card__title">' + escapeHtml((derived.subject || "Subject") + " · " + (derived.curriculum || "Curriculum")) + "</p>",
+      '    <h2 class="th2-mission-card__headline">' + escapeHtml([derived.unit, derived.lesson].filter(Boolean).join(" ") || derived.lessonFocus || "Lesson context loading") + "</h2>",
+      '    <p class="th2-mission-card__sub">' + escapeHtml(derived.mainConcept || "Lesson focus not fully mapped yet.") + "</p>",
+      '    <div class="th2-mission-card__meta">',
+      '      <div><span>Teacher</span><strong>' + escapeHtml((contextData.classContext && contextData.classContext.teacher) || contextData.block.teacher || "Not set") + '</strong></div>',
+      '      <div><span>Support</span><strong>' + escapeHtml(derived.supportType || contextData.block.supportType || "push-in") + '</strong></div>',
+      '      <div><span>Language Demand</span><strong>' + escapeHtml((derived.languageDemands || []).slice(0, 3).join(" • ") || "Explain • compare • justify") + '</strong></div>',
+      "    </div>",
+      "  </div>",
+      "</section>"
+    ].join("");
+  }
+
+  function renderCompanionZone(contextData) {
+    var data = contextData && contextData.companion ? contextData.companion : {};
+    var groups = Array.isArray(data.flexibleGroups) ? data.flexibleGroups : [];
+    return [
+      '<section class="th2-context-zone th2-context-zone--companion">',
+      '  <p class="th2-section-label">Smart Lesson Companion</p>',
+      '  <div class="th2-companion-panel">',
+      '    <div class="th2-companion-panel__top">',
+      '      <h2>' + escapeHtml(data.mainConcept || "Lesson focus not fully mapped yet.") + "</h2>",
+      '      <div class="th2-chip-row">' + (data.languageDemands || []).map(function (item) {
+        return '<span class="th2-chip">' + escapeHtml(item) + "</span>";
+      }).join("") + "</div>",
+      "    </div>",
+      '    <div class="th2-companion-panel__grid">',
+      '      <article><h3>Common Misconceptions</h3><ul>' + (data.misconceptions || []).map(function (item) {
+        return "<li>" + escapeHtml(item) + "</li>";
+      }).join("") + "</ul></article>",
+      '      <article><h3>Suggested Support Moves</h3><ul>' + (data.supportMoves || []).map(function (item) {
+        return "<li>" + escapeHtml(item) + "</li>";
+      }).join("") + "</ul></article>",
+      '      <article><h3>Flexible Groups</h3><div class="th2-group-list">' + groups.map(function (group) {
+        return '<div class="th2-group-card"><strong>' + escapeHtml(group.label || "Suggested Group") + '</strong><p>' + escapeHtml(group.focus || "Teacher observation check") + '</p><span>' + escapeHtml((group.students || []).join(", ") || "Use live observation to confirm.") + "</span></div>";
+      }).join("") + "</div></article>",
+      "    </div>",
+      "  </div>",
+      "</section>"
+    ].join("");
+  }
+
+  function renderStudentPriorityZone(contextData) {
+    var students = contextData && contextData.derived && Array.isArray(contextData.derived.students)
+      ? contextData.derived.students
+      : [];
+    return [
+      '<section class="th2-context-zone th2-context-zone--students">',
+      '  <p class="th2-section-label">Student Priorities</p>',
+      '  <div class="th2-student-priority-list">',
+      (students.length ? students.map(function (student) {
+        return [
+          '<button class="th2-priority-row" data-context-student="' + escapeHtml(student.studentId) + '" type="button">',
+          '  <div class="th2-priority-row__main">',
+          '    <div class="th2-priority-row__title"><strong>' + escapeHtml(student.name) + '</strong><span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(student.supportPriority || "T1") + "</span></div>",
+          '    <p class="th2-priority-row__goal">' + escapeHtml(student.primaryGoal || "Priority still forming from available data.") + "</p>",
+          '    <div class="th2-class-chip-row">' + (student.relatedSupport || []).map(function (item) {
+            return '<span class="th2-class-chip">' + escapeHtml(item) + "</span>";
+          }).join("") + "</div>",
+          "  </div>",
+          '  <div class="th2-priority-row__side">',
+          '    <div class="th2-support-badges">' + accommodationBadges(student.accommodations) + "</div>",
+          '    <span class="th2-priority-row__trend">' + escapeHtml((student.trendSummary && student.trendSummary.label) || "Steady") + "</span>",
+          "  </div>",
+          "</button>"
+        ].join("");
+      }).join("") : '<p class="th2-today-sub">No students assigned to this block yet.</p>'),
+      "  </div>",
+      "</section>"
+    ].join("");
+  }
+
+  function renderQuickAccessRail(contextData) {
+    var actions = getRecommendedGameActions(contextData);
+    return [
+      '<section class="th2-quick-rail">',
+      '  <div class="th2-quick-rail__primary">',
+      '    <p class="th2-section-label">Quick Access</p>',
+      '    <div class="th2-quick-actions">',
+      '      <button class="th2-quick-action th2-quick-action--brief" data-open-brief="1" data-open-brief-block="' + escapeHtml(contextData.block && contextData.block.id || "") + '" type="button"><strong>Open Lesson Brief</strong><span>Update lesson context and supports from this block.</span></button>',
+      actions.map(function (action) {
+        return '<a class="th2-quick-action" href="' + escapeHtml(action.href) + '"><strong>' + escapeHtml(action.label) + '</strong><span>' + escapeHtml(action.subtitle) + "</span></a>";
+      }).join(""),
+      '      <a class="th2-quick-action" href="' + escapeHtml("teacher-dashboard.html") + '"><strong>Open Teacher Workspace</strong><span>Reports, meeting prep, history, and exports.</span></a>',
+      "    </div>",
+      "  </div>",
+      '  <div class="th2-quick-rail__secondary">',
+      '    <p class="th2-section-label">Secondary Quick Access</p>',
+      '    <div class="th2-secondary-grid">',
+      '      <article class="th2-secondary-card"><h3>My Caseload</h3><p>' + escapeHtml(String(caseload.length) + " students in active caseload") + "</p></article>",
+      '      <article class="th2-secondary-card"><h3>Recent Students</h3><p>' + escapeHtml(caseload.slice(0, 3).map(function (row) { return row.name; }).join(", ") || "No recent students yet.") + "</p></article>",
+      '      <article class="th2-secondary-card"><h3>Upcoming Meetings</h3><p>Workspace handles meeting prep and communication drafts.</p></article>',
+      "    </div>",
+      "  </div>",
+      "</section>"
+    ].join("");
+  }
+
+  function renderCommandCenter(activeBlock, options) {
+    if (!el.emptyState) return;
+    var blocks = getTodayLessonBlocks();
+    var block = activeBlock || blocks[0] || null;
+    if (!block) {
+      el.emptyState.innerHTML = [
+        '<div class="th2-command-center">',
+        renderCommandHeader({ block: {}, derived: { prioritySignal: { label: "No schedule blocks saved yet." } } }, []),
+        '<section class="th2-active-context"><p class="th2-today-sub">Add today\'s classes in Lesson Brief to unlock Smart Lesson Companion, student priorities, and contextual game launches.</p></section>',
+        renderQuickAccessRail({ block: {}, classContext: {}, lessonContext: {}, derived: { subject: "", studentIds: [], targetSkills: [] } }),
+        "</div>"
+      ].join("");
+      return;
+    }
+    var contextData = buildTeacherContextForBlock(block);
+    el.emptyState.innerHTML = [
+      '<div class="th2-command-center">',
+      renderCommandHeader(contextData, blocks),
+      renderDayStrip(blocks, block.id),
+      '<section class="th2-active-context">',
+      '  <div class="th2-active-context__grid">',
+      renderLessonContextZone(contextData),
+      renderCompanionZone(contextData),
+      renderStudentPriorityZone(contextData),
+      "  </div>",
+      "</section>",
+      renderQuickAccessRail(contextData),
+      "</div>"
+    ].join("");
+
+    if (el.sidebarCtx) {
+      var signal = contextData.derived && contextData.derived.prioritySignal
+        ? contextData.derived.prioritySignal
+        : { label: "Select a block to load context." };
+      el.sidebarCtx.classList.add("th2-sidebar-ctx");
+      el.sidebarCtx.innerHTML =
+        '<p class="th2-sidebar-date">' + todayDateStr() + '</p>' +
+        '<p class="th2-sidebar-urgency">' + escapeHtml(signal.label) + "</p>";
+    }
   }
 
   /* ── Sparkline ─────────────────────────────────────────── */
@@ -2606,123 +2967,7 @@
       renderSearchResults();
       return;
     }
-
-    var ranked = caseload.map(function (student) {
-      var context = buildStudentContextForHub(student);
-      var summary = context.summary;
-      var tier = quickTier(summary);
-      var status = lastSeenStatus(summary);
-      var ts = summary && summary.lastSession && summary.lastSession.timestamp;
-      var daysSince = ts ? Math.floor((Date.now() - Number(ts)) / 86400000) : 999;
-      var plan = context.plan;
-      var recTitle = plan && plan.plans && plan.plans.tenMin && plan.plans.tenMin[0]
-        ? String(plan.plans.tenMin[0].title || "")
-        : (plan && plan.recommendedMove ? String(plan.recommendedMove) : "");
-      return { student: student, summary: summary, tier: tier, status: status, daysSince: daysSince, recTitle: recTitle };
-    }).sort(function (a, b) {
-      if (a.tier !== b.tier) return b.tier - a.tier;
-      return b.daysSince - a.daysSince;
-    });
-
-    var needCount = ranked.filter(function (r) { return r.tier >= 2 || r.daysSince >= 5; }).length;
-    var subText = needCount === 0
-      ? "All students are on track."
-      : needCount === 1 ? "1 student needs attention today."
-      : needCount + " students need attention today.";
-
-    var urgencyHtml = needCount > 0
-      ? '<span class="th2-urgency-count">' + needCount + '</span>'
-      : "";
-
-    /* Hero = most urgent; rest become compact cards */
-    var heroHtml = buildHeroCard(ranked[0]);
-    var cardsHtml = ranked.slice(1, 5).map(function (r) {
-      var lastStr = r.daysSince === 0 ? "Today" : r.daysSince < 999 ? r.daysSince + "d ago" : "Never";
-      var gradeStr = escapeHtml(r.student.grade || r.student.gradeBand || "");
-      return [
-        '<button class="th2-brief-card" data-id="' + escapeHtml(r.student.id) + '" type="button">',
-        '  <div class="th2-brief-card-left">',
-        '    ' + buildAvatar(r.student.name, r.student.id, true),
-        '    <div class="th2-brief-card-info">',
-        '      <span class="th2-brief-card-name">' + escapeHtml(r.student.name) + '</span>',
-        '      <div class="th2-brief-card-meta">',
-        '        <span class="th2-tier-chip" data-tier="' + r.tier + '">' + tierLabel(r.tier) + '</span>',
-        (gradeStr ? '        <span>' + gradeStr + '</span>' : ''),
-        '        <span>&middot; ' + escapeHtml(lastStr) + '</span>',
-        '      </div>',
-        (r.recTitle ? '      <span class="th2-brief-card-rec">' + escapeHtml(r.recTitle) + '</span>' : ''),
-        '    </div>',
-        '  </div>',
-        '  <span class="th2-brief-status" data-status="' + r.status + '">',
-        (r.status === "overdue" ? "!" : r.status === "today" ? "✓" : ""),
-        '  </span>',
-        '</button>'
-      ].join("\n");
-    }).join("\n");
-
-    var blockStrip = getTodayLessonBlocks();
-    var blockStripHtml = blockStrip.length
-      ? '<div class="th2-brief-block-strip">' + blockStrip.map(function (block) {
-          return '<button class="th2-brief-block-chip" data-open-block="' + escapeHtml(block.id) + '" type="button">' +
-            '<strong>' + escapeHtml(block.timeLabel || block.label) + '</strong>' +
-            '<span>' + escapeHtml(block.subject || areaLabel(block.area)) + '</span>' +
-            '<span>' + escapeHtml(block.curriculum || programLabel(block.programId) || block.label) + '</span>' +
-            (block.lesson ? '<span>' + escapeHtml(block.lesson) + '</span>' : "") +
-            (block.teacher ? '<span>' + escapeHtml("Teacher: " + block.teacher) + '</span>' : "") +
-            "</button>";
-        }).join("") + "</div>"
-      : "";
-
-    el.emptyState.innerHTML = [
-      '<div class="th2-morning th2-morning--entered">',
-      '  <p class="th2-morning-greeting">' + greetingWord() + '</p>',
-      '  <p class="th2-morning-date">' + todayDateStr() + '</p>',
-      '  <p class="th2-morning-sub">' + escapeHtml(subText) + '</p>',
-      '  <p class="th2-section-label">Today\'s Schedule Blocks</p>',
-      (blockStrip.length ? '  <p class="th2-today-sub">Open a block to move directly into class context.</p>' : '<p class="th2-today-sub">No saved blocks yet. Use Lesson Brief to add today\'s classes or pullout time.</p>'),
-      blockStripHtml,
-      '  <p class="th2-section-label">My Caseload</p>',
-      buildCaseloadHealthBar(ranked),
-      heroHtml,
-      (cardsHtml ? '  <p class="th2-section-label">Classes Today</p>' : ""),
-      (cardsHtml ? '<div class="th2-brief-list">' + cardsHtml + '</div>' : ''),
-      '</div>'
-    ].join("\n");
-
-
-    el.emptyState.querySelectorAll(".th2-hero-card,.th2-brief-card").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var sid = btn.getAttribute("data-id") || "";
-        if (sid) selectStudent(sid);
-      });
-    });
-    el.emptyState.querySelectorAll("[data-open-block]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var blockId = btn.getAttribute("data-open-block") || "";
-        var blockContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
-          ? TeacherSelectors.buildClassContext(TeacherSelectors.getBlockById(blockId, todayKey(), { TeacherStorage: TeacherStorage }), { TeacherStorage: TeacherStorage })
-          : null;
-        hubState.set({
-          context: { mode: "class", classId: blockId },
-          active_class_context: {
-            classId: blockId,
-            label: blockContext && blockContext.label || "",
-            supportType: blockContext && blockContext.supportType || "",
-            lessonContextId: blockContext && blockContext.lessonContextId || ""
-          }
-        });
-      });
-    });
-
-    // Update sidebar context with glass morphism styling
-    if (el.sidebarCtx) {
-      el.sidebarCtx.classList.add("th2-sidebar-ctx");
-      el.sidebarCtx.innerHTML =
-        '<p class="th2-sidebar-date">' + todayDateStr() + '</p>' +
-        (needCount > 0
-          ? '<p class="th2-sidebar-urgency">' + urgencyHtml + ' need' + (needCount > 1 ? 's' : '') + ' attention</p>'
-          : '<p class="th2-sidebar-urgency">All on track</p>');
-    }
+    renderCommandCenter(getTodayLessonBlocks()[0] || null, { mode: "caseload" });
   }
 
   function renderSearchResults() {
@@ -2844,101 +3089,7 @@
     var selectedBlockId = hubState.get().context.classId || "";
     var activeBlock = blocks.filter(function (block) { return block.id === selectedBlockId; })[0] || blocks[0] || null;
     if (blocks.length && activeBlock) {
-      var activeContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
-        ? TeacherSelectors.buildClassContext(activeBlock, { TeacherStorage: TeacherStorage })
-        : null;
-      var blockButtons = blocks.map(function (block) {
-        var count = block.studentIds.length;
-        return '<button class="th2-class-block-chip' + (activeBlock && activeBlock.id === block.id ? " is-active" : "") + '" data-class-block="' + escapeHtml(block.id) + '" type="button">' +
-          '<strong>' + escapeHtml(block.timeLabel || "Block") + '</strong>' +
-          '<span>' + escapeHtml(block.subject || areaLabel(block.area)) + " · " + count + "</span>" +
-          '<span>' + escapeHtml(block.curriculum || programLabel(block.programId) || block.label) + '</span>' +
-          (block.lesson ? '<span>' + escapeHtml(block.lesson) + '</span>' : "") +
-          "</button>";
-      }).join("");
-      var studentRows = activeBlock.studentIds.map(function (studentId) {
-        var student = studentById(studentId);
-        if (!student) return "";
-        var snapshot = studentSupportSnapshot(student, activeBlock.area);
-        return [
-          '<button class="th2-class-student-row" data-id="' + escapeHtml(student.id) + '" type="button">',
-          '  <div class="th2-class-student-head">',
-          '    <div class="th2-class-student-title"><strong>' + escapeHtml(student.name) + '</strong><span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(snapshot.primaryChip) + "</span></div>",
-          '    <div class="th2-class-accommodation-icons">' + accommodationIcons(snapshot.accommodations) + "</div>",
-          "  </div>",
-          (snapshot.primaryGoal ? '  <p class="th2-class-goal">' + escapeHtml(snapshot.primaryGoal) + "</p>" : '  <p class="th2-class-goal">No class goal saved yet.</p>'),
-          (snapshot.cross.length ? '  <div class="th2-class-chip-row">' + snapshot.cross.map(function (chip) {
-            return '<span class="th2-class-chip">' + escapeHtml(chip) + "</span>";
-          }).join("") + "</div>" : ""),
-          (snapshot.accommodations.length ? '  <p class="th2-class-accommodations">' + escapeHtml(snapshot.accommodations.join(" · ")) + "</p>" : ""),
-          "</button>"
-        ].join("");
-      }).join("");
-      el.emptyState.innerHTML =
-        '<div class="th2-today-panel">' +
-        '<p class="th2-today-title">Today\'s Schedule Blocks</p>' +
-        '<p class="th2-today-sub">Open a block to see lesson context, language demands, concept focus, and compact student supports without leaving the Hub.</p>' +
-        '<div class="th2-class-block-row">' + blockButtons + '</div>' +
-        '<div class="th2-class-detail-card">' +
-        '  <div class="th2-class-detail-head">' +
-        '    <div><p class="th2-today-title">' + escapeHtml(activeContext && activeContext.label || activeBlock.label) + '</p><p class="th2-today-sub">' + escapeHtml((activeContext && activeContext.timeLabel ? activeContext.timeLabel + ' · ' : activeBlock.timeLabel ? activeBlock.timeLabel + ' · ' : '') + (activeContext && activeContext.subject || activeBlock.subject || areaLabel(activeBlock.area)) + ' · ' + (activeContext && activeContext.supportType || activeBlock.supportType)) + '</p></div>' +
-        '    <button class="th2-cur-btn" data-open-brief="1" type="button">Lesson Brief</button>' +
-        "  </div>" +
-        '  <div class="th2-class-intelligence-grid">' +
-        '    <div class="th2-class-intelligence-item"><span>Lesson context</span><strong>' + escapeHtml(activeContext && activeContext.lesson || classLessonSummary(activeBlock)) + '</strong></div>' +
-        '    <div class="th2-class-intelligence-item"><span>Language demands</span><strong>' + escapeHtml(activeContext && activeContext.languageDemands || classLanguageDemands(activeBlock)) + '</strong></div>' +
-        '    <div class="th2-class-intelligence-item"><span>Concept focus</span><strong>' + escapeHtml(activeContext && activeContext.conceptFocus || classConceptFocus(activeBlock)) + '</strong></div>' +
-        '    <div class="th2-class-intelligence-item"><span>Teacher</span><strong>' + escapeHtml(activeContext && activeContext.teacher || activeBlock.teacher || 'Not set yet') + '</strong></div>' +
-        '  </div>' +
-        (studentRows || '<p class="th2-today-sub">No students assigned to this block yet.</p>') +
-        "</div>" +
-        "</div>";
-      el.emptyState.querySelectorAll("[data-class-block]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var blockId = btn.getAttribute("data-class-block") || "";
-          var blockContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
-            ? TeacherSelectors.buildClassContext(getTodayLessonBlocks().filter(function (row) { return row.id === blockId; })[0] || null, { TeacherStorage: TeacherStorage })
-            : null;
-          hubState.set({
-            context: { mode: "class", classId: blockId },
-            active_class_context: {
-              classId: blockId,
-              label: blockContext && blockContext.label || "",
-              supportType: blockContext && blockContext.supportType || "",
-              lessonContextId: blockContext && blockContext.lessonContextId || ""
-            }
-          });
-        });
-      });
-      el.emptyState.querySelectorAll(".th2-class-student-row").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var sid = btn.getAttribute("data-id") || "";
-          if (!sid) return;
-          el.modeTabs.forEach(function (t) {
-            var active = t.getAttribute("data-mode") === "caseload";
-            t.classList.toggle("is-active", active);
-            t.setAttribute("aria-selected", active ? "true" : "false");
-          });
-          hubState.set({
-            context: { mode: "caseload", classId: activeBlock.id },
-            active_class_context: {
-              classId: activeBlock.id,
-              label: activeContext && activeContext.label || activeBlock.label || "",
-              supportType: activeContext && activeContext.supportType || activeBlock.supportType || "",
-              lessonContextId: activeContext && activeContext.lessonContextId || activeBlock.lessonContextId || ""
-            }
-          });
-          selectStudent(sid);
-        });
-      });
-      var briefBtn = el.emptyState.querySelector("[data-open-brief]");
-      if (briefBtn) {
-        briefBtn.addEventListener("click", function () {
-          if (window.CSLessonBriefPanel && window.CSLessonBriefPanel.toggle) {
-            window.CSLessonBriefPanel.toggle(lessonBriefContext());
-          }
-        });
-      }
+      renderCommandCenter(activeBlock, { mode: "class" });
       return;
     }
     var byTier = { "3": [], "2": [], "1": [] };
@@ -3262,6 +3413,60 @@
     if (e.target && e.target.id === "th2-view-details") {
       var studentId = hubState.get().context.studentId || "";
       if (studentId) openDrawer(studentId);
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    var blockBtn = e.target.closest && e.target.closest("[data-open-block]");
+    if (!blockBtn) return;
+    var blockId = blockBtn.getAttribute("data-open-block") || "";
+    if (!blockId) return;
+    var blockContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
+      ? TeacherSelectors.buildClassContext(TeacherSelectors.getBlockById(blockId, todayKey(), { TeacherStorage: TeacherStorage }), { TeacherStorage: TeacherStorage })
+      : null;
+    hubState.set({
+      context: { mode: "class", classId: blockId, studentId: "" },
+      active_class_context: {
+        classId: blockId,
+        label: blockContext && blockContext.label || "",
+        supportType: blockContext && blockContext.supportType || "",
+        lessonContextId: blockContext && blockContext.lessonContextId || ""
+      }
+    });
+  });
+
+  document.addEventListener("click", function (e) {
+    var studentBtn = e.target.closest && e.target.closest("[data-context-student]");
+    if (!studentBtn) return;
+    var sid = studentBtn.getAttribute("data-context-student") || "";
+    if (!sid) return;
+    el.modeTabs.forEach(function (t) {
+      var active = t.getAttribute("data-mode") === "caseload";
+      t.classList.toggle("is-active", active);
+      t.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    selectStudent(sid);
+  });
+
+  document.addEventListener("click", function (e) {
+    var briefBtn = e.target.closest && e.target.closest("[data-open-brief]");
+    if (!briefBtn) return;
+    var blockId = briefBtn.getAttribute("data-open-brief-block") || "";
+    if (blockId) {
+      var blockContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
+        ? TeacherSelectors.buildClassContext(TeacherSelectors.getBlockById(blockId, todayKey(), { TeacherStorage: TeacherStorage }), { TeacherStorage: TeacherStorage })
+        : null;
+      hubState.set({
+        active_class_context: {
+          classId: blockId,
+          label: blockContext && blockContext.label || "",
+          supportType: blockContext && blockContext.supportType || "",
+          lessonContextId: blockContext && blockContext.lessonContextId || ""
+        }
+      });
+    }
+    if (window.CSLessonBriefPanel && window.CSLessonBriefPanel.toggle) {
+      window.CSLessonBriefPanel.toggle(lessonBriefContext());
     }
   });
 

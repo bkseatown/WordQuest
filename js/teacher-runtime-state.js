@@ -83,7 +83,8 @@
   }
 
   function create(initial) {
-    var TeacherStorage = root.CSTeacherStorage || null;
+    var runtimeRoot = typeof globalThis !== "undefined" ? globalThis : window;
+    var TeacherStorage = runtimeRoot.CSTeacherStorage || null;
     if (TeacherStorage && typeof TeacherStorage.migrateLegacyTeacherData === "function") {
       try { TeacherStorage.migrateLegacyTeacherData(); } catch (_err) {}
     }
