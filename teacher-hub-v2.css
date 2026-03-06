@@ -2243,6 +2243,123 @@ body.th2-page {
 .th2-snapshot-trend[data-trend="down"] { color: var(--status-risk,       #b25e5e); }
 .th2-snapshot-trend[data-trend="stable"] { color: var(--text-muted); }
 
+.th2-brief-block-strip,
+.th2-class-block-row,
+.th2-class-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.th2-brief-block-chip,
+.th2-class-block-chip {
+  border: 1px solid var(--border-subtle, #d6dfeb);
+  background: #f5f8fe;
+  color: #214e91;
+  border-radius: 12px;
+  padding: 8px 11px;
+  font: 600 12px/1.25 var(--font-ui, system-ui);
+  cursor: pointer;
+  text-align: left;
+}
+
+.th2-class-block-chip {
+  display: flex;
+  flex-direction: column;
+  min-width: 152px;
+}
+
+.th2-class-block-chip strong {
+  font-size: 12px;
+}
+
+.th2-class-block-chip span {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.th2-class-block-chip.is-active,
+.th2-brief-block-chip:hover,
+.th2-class-block-chip:hover {
+  background: #214e91;
+  border-color: #214e91;
+  color: #fff;
+}
+
+.th2-class-block-chip.is-active span,
+.th2-class-block-chip:hover span {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.th2-class-detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--border-subtle, #dce5f1);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.th2-class-detail-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.th2-class-student-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border-subtle, #dde5ef);
+  border-radius: 14px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.th2-class-student-row:hover {
+  border-color: color-mix(in oklab, var(--accent, #2b5da8) 32%, transparent);
+  box-shadow: 0 6px 18px rgba(43, 93, 168, 0.08);
+}
+
+.th2-class-student-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.th2-class-student-head strong {
+  font: 700 15px/1.2 var(--font-ui, system-ui);
+  color: var(--text-primary);
+}
+
+.th2-class-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: #edf2fb;
+  color: #45607f;
+  font: 700 11px/1 var(--font-ui, system-ui);
+}
+
+.th2-class-chip--primary {
+  background: #214e91;
+  color: #fff;
+}
+
+.th2-class-goal,
+.th2-class-accommodations {
+  margin: 0;
+  font: 400 13px/1.45 var(--font-ui, system-ui);
+  color: var(--text-secondary);
+}
+
 /* ── Morning brief hero card ────────────────────────────── */
 @keyframes th2-brief-slide {
   from { opacity: 0; transform: translateY(14px); }
