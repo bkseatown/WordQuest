@@ -212,6 +212,91 @@
       .replace(/"/g, "&quot;");
   }
 
+  function safeJsonParse(raw, fallback) {
+    try { return raw ? JSON.parse(raw) : fallback; } catch (_e) { return fallback; }
+  }
+
+  function todayKey() {
+    var d = new Date();
+    return [
+      d.getFullYear(),
+      String(d.getMonth() + 1).padStart(2, "0"),
+      String(d.getDate()).padStart(2, "0")
+    ].join("-");
+  }
+
+  function getTodayLessonBlocks() {
+    var map = safeJsonParse(localStorage.getItem("cs.lessonBrief.blocks.v1"), {});
+    var rows = map && Array.isArray(map[todayKey()]) ? map[todayKey()] : [];
+    return rows.map(function (row) {
+      return {
+        id: String(row && row.id || ""),
+        label: String(row && row.label || ""),
+        timeLabel: String(row && row.timeLabel || ""),
+        supportType: String(row && row.supportType || "push-in"),
+        area: String(row && row.area || "ela"),
+        programId: String(row && row.programId || ""),
+        studentIds: Array.isArray(row && row.studentIds) ? row.studentIds.map(String) : []
+      };
+    }).filter(function (row) { return row.id && row.label; });
+  }
+
+  function areaLabel(area) {
+    if (area === "math") return "Math";
+    if (area === "writing") return "Writing";
+    if (area === "humanities") return "Humanities";
+    if (area === "intervention") return "Intervention";
+    return "ELA";
+  }
+
+  function domainKeyForArea(area) {
+    if (area === "math") return "math";
+    if (area === "writing") return "writing";
+    if (area === "behavior") return "behavior";
+    return "reading";
+  }
+
+  function areaTierLabel(level) {
+    var n = Number(level || 0);
+    if (n <= 1) return "T3";
+    if (n === 2) return "T2";
+    return "T1";
+  }
+
+  function studentById(studentId) {
+    return caseload.find(function (row) { return row.id === studentId; }) || null;
+  }
+
+  function studentSupportSnapshot(student, area) {
+    var domain = domainKeyForArea(area);
+    var goals = getStudentGoals(student && student.id).filter(function (goal) {
+      return String(goal && goal.domain || "") === domain;
+    });
+    var allGoals = getStudentGoals(student && student.id);
+    var primaryLevel = goals.length
+      ? goals.reduce(function (min, goal) { return Math.min(min, Number(goal.level || 4)); }, 4)
+      : 3;
+    var primaryGoal = goals[0] && goals[0].skill ? String(goals[0].skill) : "";
+    var cross = allGoals.filter(function (goal) {
+      return String(goal && goal.domain || "") !== domain && Number(goal && goal.level || 4) <= 2;
+    }).reduce(function (chips, goal) {
+      var label = areaTierLabel(goal.level) + " " + areaLabel(String(goal.domain || ""));
+      if (chips.indexOf(label) < 0) chips.push(label);
+      return chips;
+    }, []).slice(0, 2);
+    var support = SupportStore && typeof SupportStore.getStudent === "function"
+      ? (safe(function () { return SupportStore.getStudent(student.id); }) || {})
+      : {};
+    var accommodations = Array.isArray(support.accommodations) ? support.accommodations.slice(0, 2) : [];
+    return {
+      primaryTier: areaTierLabel(primaryLevel),
+      primaryChip: areaTierLabel(primaryLevel) + " " + areaLabel(area),
+      primaryGoal: primaryGoal,
+      cross: cross,
+      accommodations: accommodations
+    };
+  }
+
   /* ── Sparkline ─────────────────────────────────────────── */
 
   function buildSparkPath(points) {
@@ -2374,11 +2459,21 @@
       ].join("\n");
     }).join("\n");
 
+    var blockStrip = getTodayLessonBlocks();
+    var blockStripHtml = blockStrip.length
+      ? '<div class="th2-brief-block-strip">' + blockStrip.map(function (block) {
+          return '<button class="th2-brief-block-chip" data-open-block="' + escapeHtml(block.id) + '" type="button">' +
+            escapeHtml((block.timeLabel ? block.timeLabel + " - " : "") + block.label) + "</button>";
+        }).join("") + "</div>"
+      : "";
+
     el.emptyState.innerHTML = [
       '<div class="th2-morning th2-morning--entered">',
       '  <p class="th2-morning-greeting">' + greetingWord() + '</p>',
       '  <p class="th2-morning-date">' + todayDateStr() + '</p>',
       '  <p class="th2-morning-sub">' + escapeHtml(subText) + '</p>',
+      (blockStrip.length ? '  <p class="th2-today-sub">Today\'s saved blocks are ready below. Open one to see the roster and class-specific goals.</p>' : ""),
+      blockStripHtml,
       buildCaseloadHealthBar(ranked),
       heroHtml,
       (cardsHtml ? '<div class="th2-brief-list">' + cardsHtml + '</div>' : ''),
@@ -2390,6 +2485,12 @@
       btn.addEventListener("click", function () {
         var sid = btn.getAttribute("data-id") || "";
         if (sid) selectStudent(sid);
+      });
+    });
+    el.emptyState.querySelectorAll("[data-open-block]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var blockId = btn.getAttribute("data-open-block") || "";
+        hubState.set({ context: { mode: "class", classId: blockId } });
       });
     });
 
@@ -2438,6 +2539,77 @@
 
   function renderClassSnapshot() {
     if (!el.emptyState) return;
+    var blocks = getTodayLessonBlocks();
+    var selectedBlockId = hubState.get().context.classId || "";
+    var activeBlock = blocks.filter(function (block) { return block.id === selectedBlockId; })[0] || blocks[0] || null;
+    if (blocks.length && activeBlock) {
+      var blockButtons = blocks.map(function (block) {
+        var count = block.studentIds.length;
+        return '<button class="th2-class-block-chip' + (activeBlock && activeBlock.id === block.id ? " is-active" : "") + '" data-class-block="' + escapeHtml(block.id) + '" type="button">' +
+          '<strong>' + escapeHtml(block.timeLabel || "Block") + '</strong>' +
+          '<span>' + escapeHtml(block.label) + " · " + count + "</span>" +
+          "</button>";
+      }).join("");
+      var studentRows = activeBlock.studentIds.map(function (studentId) {
+        var student = studentById(studentId);
+        if (!student) return "";
+        var snapshot = studentSupportSnapshot(student, activeBlock.area);
+        return [
+          '<button class="th2-class-student-row" data-id="' + escapeHtml(student.id) + '" type="button">',
+          '  <div class="th2-class-student-head">',
+          '    <strong>' + escapeHtml(student.name) + "</strong>",
+          '    <span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(snapshot.primaryChip) + "</span>",
+          "  </div>",
+          (snapshot.primaryGoal ? '  <p class="th2-class-goal">' + escapeHtml(snapshot.primaryGoal) + "</p>" : '  <p class="th2-class-goal">No class goal saved yet.</p>'),
+          (snapshot.cross.length ? '  <div class="th2-class-chip-row">' + snapshot.cross.map(function (chip) {
+            return '<span class="th2-class-chip">' + escapeHtml(chip) + "</span>";
+          }).join("") + "</div>" : ""),
+          (snapshot.accommodations.length ? '  <p class="th2-class-accommodations">Supports: ' + escapeHtml(snapshot.accommodations.join(" · ")) + "</p>" : ""),
+          "</button>"
+        ].join("");
+      }).join("");
+      el.emptyState.innerHTML =
+        '<div class="th2-today-panel">' +
+        '<p class="th2-today-title">Today\'s Blocks</p>' +
+        '<p class="th2-today-sub">Open a block to see the roster, the subject-specific goal, and quick supports without leaving the Hub.</p>' +
+        '<div class="th2-class-block-row">' + blockButtons + '</div>' +
+        '<div class="th2-class-detail-card">' +
+        '  <div class="th2-class-detail-head">' +
+        '    <div><p class="th2-today-title">' + escapeHtml(activeBlock.label) + '</p><p class="th2-today-sub">' + escapeHtml((activeBlock.timeLabel ? activeBlock.timeLabel + ' · ' : '') + areaLabel(activeBlock.area) + ' · ' + activeBlock.supportType) + '</p></div>' +
+        '    <button class="th2-cur-btn" data-open-brief="1" type="button">Lesson Brief</button>' +
+        "  </div>" +
+        (studentRows || '<p class="th2-today-sub">No students assigned to this block yet.</p>') +
+        "</div>" +
+        "</div>";
+      el.emptyState.querySelectorAll("[data-class-block]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var blockId = btn.getAttribute("data-class-block") || "";
+          hubState.set({ context: { mode: "class", classId: blockId } });
+        });
+      });
+      el.emptyState.querySelectorAll(".th2-class-student-row").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var sid = btn.getAttribute("data-id") || "";
+          if (!sid) return;
+          el.modeTabs.forEach(function (t) {
+            var active = t.getAttribute("data-mode") === "caseload";
+            t.classList.toggle("is-active", active);
+            t.setAttribute("aria-selected", active ? "true" : "false");
+          });
+          hubState.set({ context: { mode: "caseload", classId: activeBlock.id } });
+          selectStudent(sid);
+        });
+      });
+      var briefBtn = el.emptyState.querySelector("[data-open-brief]");
+      if (briefBtn) {
+        briefBtn.addEventListener("click", function () {
+          if (window.CSLessonBriefPanel && window.CSLessonBriefPanel.toggle) {
+            window.CSLessonBriefPanel.toggle(lessonBriefContext());
+          }
+        });
+      }
+      return;
+    }
     var byTier = { "3": [], "2": [], "1": [] };
     caseload.forEach(function (s) {
       var summary = safe(function () { return Evidence.getStudentSummary(s.id); });
