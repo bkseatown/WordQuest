@@ -196,6 +196,7 @@
     quickCheck: document.getElementById("td-quick-check"),
     startIntervention: document.getElementById("td-start-intervention"),
     lessonBriefBtn: document.getElementById("td-lesson-brief"),
+    weeklyInsightsBtn: document.getElementById("td-weekly-insights"),
     meetingWorkspaceBtn: document.getElementById("td-meeting-workspace"),
     tier1PackBtn: document.getElementById("td-tier1-pack"),
     openStudentDrawer: document.getElementById("td-open-student-drawer"),

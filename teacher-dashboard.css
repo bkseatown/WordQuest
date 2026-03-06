@@ -205,6 +205,11 @@ body.cs-has-nav-shell .td-shell {
   color: #ffffff;
   font-weight: var(--fw-semibold);
 }
+#td-weekly-insights {
+  background: color-mix(in oklab, var(--surface-1) 82%, #dce8f8 18%);
+  border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent);
+  font-weight: var(--fw-semibold);
+}
 #td-new-session:hover {
   background: var(--action-primary-hover);
   filter: none;

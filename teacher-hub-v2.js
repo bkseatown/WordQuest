@@ -2684,6 +2684,243 @@
       });
       localStorage.setItem(SEED_KEY, "1");
     }
+
+    var SUPPORT_KEY = "cs.hub.demo.support.v1";
+    if (!localStorage.getItem(SUPPORT_KEY) && TeacherStorage) {
+      safe(function () {
+        var supportMap = typeof TeacherStorage.loadStudentSupportStore === "function"
+          ? TeacherStorage.loadStudentSupportStore()
+          : {};
+        var additions = {
+          "demo-ava": {
+            tier: "T2",
+            goals: [
+              { domain: "ELA", skill: "Cite evidence in a complete response", progress: "On track" }
+            ],
+            accommodations: ["sentence frames", "visual scaffold"],
+            interventions: [
+              { domain: "Writing", tier: "T3" }
+            ]
+          },
+          "demo-liam": {
+            tier: "T3",
+            goals: [
+              { domain: "Intervention", skill: "Blend and read closed-syllable words", progress: "Needs repetition" }
+            ],
+            accommodations: ["sound boxes", "visual scaffold"],
+            interventions: [
+              { domain: "Reading", tier: "T2" }
+            ]
+          },
+          "demo-maya": {
+            tier: "T2",
+            goals: [
+              { domain: "ELA", skill: "Compare evidence across two details", progress: "Improving" }
+            ],
+            accommodations: ["sentence frames"],
+            interventions: [
+              { domain: "Writing", tier: "T3" }
+            ]
+          },
+          "demo-noah": {
+            tier: "T2",
+            goals: [
+              { domain: "Math", skill: "Explain fraction comparisons with visual models", progress: "Improving" }
+            ],
+            accommodations: ["visual model", "check-ins"],
+            interventions: [
+              { domain: "Writing", tier: "T3" }
+            ]
+          },
+          "demo-zoe": {
+            tier: "T3",
+            goals: [
+              { domain: "Intervention", skill: "Read and spell words with closed syllables", progress: "Developing" }
+            ],
+            accommodations: ["sound boxes", "chunking"],
+            interventions: [
+              { domain: "Behavior", tier: "T2" }
+            ]
+          }
+        };
+        Object.keys(additions).forEach(function (studentId) {
+          supportMap[studentId] = Object.assign({}, additions[studentId], supportMap[studentId] || {});
+        });
+        if (typeof TeacherStorage.saveStudentSupportStore === "function") {
+          TeacherStorage.saveStudentSupportStore(supportMap);
+        }
+      });
+      localStorage.setItem(SUPPORT_KEY, "1");
+    }
+
+    var CONTEXT_KEY = "cs.hub.demo.context.v1";
+    if (!localStorage.getItem(CONTEXT_KEY) && TeacherStorage) {
+      safe(function () {
+        var today = typeof TeacherStorage.todayStamp === "function" ? TeacherStorage.todayStamp() : todayKey();
+        var existingBlocks = typeof TeacherStorage.loadScheduleBlocks === "function"
+          ? TeacherStorage.loadScheduleBlocks(today)
+          : [];
+        var byId = {};
+        existingBlocks.forEach(function (block) {
+          byId[String(block.id || "")] = block;
+        });
+        [
+          {
+            id: "demo-block-math",
+            timeLabel: "8:15 AM",
+            label: "Block A",
+            classSection: "G4 Math Support",
+            teacher: "Ms. Smith",
+            subject: "Math",
+            curriculum: "Illustrative Math",
+            curriculumId: "illustrative-math",
+            lesson: "Unit 2 · Lesson 7",
+            supportType: "small-group",
+            notes: "Push on fraction comparison language before independent work.",
+            studentIds: ["demo-noah", "demo-ava", "demo-maya"],
+            lessonContextId: "demo-lesson-math"
+          },
+          {
+            id: "demo-block-reading",
+            timeLabel: "10:05 AM",
+            label: "Block B",
+            classSection: "G2 Foundational Reading",
+            teacher: "Ms. Rivera",
+            subject: "Intervention",
+            curriculum: "UFLI Foundations",
+            curriculumId: "ufli-foundations",
+            lesson: "Lesson 42 · Closed Syllables",
+            supportType: "pull-out",
+            notes: "Keep decoding and meaning work tight in the same round.",
+            studentIds: ["demo-liam", "demo-zoe"],
+            lessonContextId: "demo-lesson-reading"
+          },
+          {
+            id: "demo-block-writing",
+            timeLabel: "1:10 PM",
+            label: "Block C",
+            classSection: "G3 Writing Push-In",
+            teacher: "Ms. Patel",
+            subject: "Writing",
+            curriculum: "Core Writing Workshop",
+            curriculumId: "writing-workshop",
+            lesson: "Claim + Evidence Paragraph",
+            supportType: "push-in",
+            notes: "Support oral rehearsal before independent writing.",
+            studentIds: ["demo-ava", "demo-maya"],
+            lessonContextId: "demo-lesson-writing"
+          }
+        ].forEach(function (block) {
+          if (!byId[block.id]) byId[block.id] = block;
+        });
+        if (typeof TeacherStorage.saveScheduleBlocks === "function") {
+          TeacherStorage.saveScheduleBlocks(today, Object.keys(byId).map(function (id) { return byId[id]; }));
+        }
+
+        if (typeof TeacherStorage.saveClassContext === "function") {
+          TeacherStorage.saveClassContext("demo-block-math", {
+            classId: "demo-block-math",
+            label: "Block A",
+            teacher: "Ms. Smith",
+            subject: "Math",
+            curriculum: "Illustrative Math",
+            lesson: "Unit 2 · Lesson 7",
+            supportType: "small-group",
+            conceptFocus: "Compare fractions with unlike denominators using benchmark reasoning.",
+            languageDemands: ["compare", "justify", "explain"],
+            lessonContextId: "demo-lesson-math"
+          });
+          TeacherStorage.saveClassContext("demo-block-reading", {
+            classId: "demo-block-reading",
+            label: "Block B",
+            teacher: "Ms. Rivera",
+            subject: "Intervention",
+            curriculum: "UFLI Foundations",
+            lesson: "Lesson 42 · Closed Syllables",
+            supportType: "pull-out",
+            conceptFocus: "Blend and read closed-syllable words while monitoring meaning.",
+            languageDemands: ["blend", "read", "explain"],
+            lessonContextId: "demo-lesson-reading"
+          });
+          TeacherStorage.saveClassContext("demo-block-writing", {
+            classId: "demo-block-writing",
+            label: "Block C",
+            teacher: "Ms. Patel",
+            subject: "Writing",
+            curriculum: "Core Writing Workshop",
+            lesson: "Claim + Evidence Paragraph",
+            supportType: "push-in",
+            conceptFocus: "Write a claim and support it with one precise piece of evidence.",
+            languageDemands: ["claim", "evidence", "justify"],
+            lessonContextId: "demo-lesson-writing"
+          });
+        }
+
+        if (typeof TeacherStorage.saveLessonContext === "function") {
+          TeacherStorage.saveLessonContext("demo-lesson-math", {
+            lessonContextId: "demo-lesson-math",
+            blockId: "demo-block-math",
+            subject: "Math",
+            programId: "illustrative-math",
+            unit: "Unit 2",
+            title: "Lesson 7",
+            conceptFocus: "Comparing fractions with unlike denominators",
+            languageDemands: ["compare", "justify", "explain"],
+            misconceptions: [
+              "Students compare denominators instead of the size of the fraction.",
+              "Students skip benchmark reasoning and jump to a guess."
+            ],
+            supportMoves: [
+              "Use a number line or area model before asking for a verbal answer.",
+              "Press for the sentence frame: ___ is greater because ___."
+            ],
+            targetSkills: ["fraction comparison", "comparison language", "visual model reasoning"],
+            vocabulary: ["fraction", "benchmark", "greater than", "justify"]
+          });
+          TeacherStorage.saveLessonContext("demo-lesson-reading", {
+            lessonContextId: "demo-lesson-reading",
+            blockId: "demo-block-reading",
+            subject: "Intervention",
+            programId: "ufli-foundations",
+            unit: "Lesson 42",
+            title: "Closed Syllables",
+            conceptFocus: "Read, build, and explain closed-syllable words with automaticity.",
+            languageDemands: ["blend", "segment", "explain"],
+            misconceptions: [
+              "Students omit the medial vowel when blending quickly.",
+              "Students can decode the word but cannot connect it to meaning."
+            ],
+            supportMoves: [
+              "Keep sound boxes visible during the first two rounds.",
+              "After decoding, ask for a meaning clue or sentence."
+            ],
+            targetSkills: ["closed syllables", "phoneme blending", "decoding to meaning"],
+            vocabulary: ["closed syllable", "blend", "segment", "vowel"]
+          });
+          TeacherStorage.saveLessonContext("demo-lesson-writing", {
+            lessonContextId: "demo-lesson-writing",
+            blockId: "demo-block-writing",
+            subject: "Writing",
+            programId: "writing-workshop",
+            unit: "Argument",
+            title: "Claim + Evidence Paragraph",
+            conceptFocus: "Write a claim and support it with clear evidence and reasoning.",
+            languageDemands: ["claim", "cite", "justify"],
+            misconceptions: [
+              "Students restate the topic without making a true claim.",
+              "Students add evidence but do not explain how it supports the claim."
+            ],
+            supportMoves: [
+              "Model one claim-evidence-reasoning example aloud before release.",
+              "Keep transition stems visible during sentence rehearsal."
+            ],
+            targetSkills: ["argument writing", "evidence sentence", "reasoning language"],
+            vocabulary: ["claim", "evidence", "reasoning", "therefore"]
+          });
+        }
+      });
+      localStorage.setItem(CONTEXT_KEY, "1");
+    }
   }
 
   /* ── Filtering ─────────────────────────────────────────── */
@@ -4321,8 +4558,25 @@
       renderStudentList();
       selectStudent(initialStudentId);
     } else if (caseload.length) {
-      // Default to Today's Classes view so teachers see their schedule first
-      showTodaysClasses();
+      var seededBlocks = getTodayLessonBlocks();
+      if (isDemoMode && seededBlocks.length) {
+        var firstBlock = seededBlocks[0];
+        var firstBlockContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
+          ? TeacherSelectors.buildClassContext(firstBlock, { TeacherStorage: TeacherStorage })
+          : null;
+        hubState.set({
+          context: { mode: "class", classId: firstBlock.id, studentId: "" },
+          active_class_context: {
+            classId: firstBlock.id,
+            label: firstBlockContext && firstBlockContext.label || firstBlock.label || "",
+            supportType: firstBlockContext && firstBlockContext.supportType || firstBlock.supportType || "",
+            lessonContextId: firstBlockContext && firstBlockContext.lessonContextId || firstBlock.lessonContextId || ""
+          }
+        });
+      } else {
+        // Default to Today's Classes view so teachers see their schedule first
+        showTodaysClasses();
+      }
     } else if (isDemoMode) {
       /* Demo resilience: dev-servers sometimes strip query params.
          Re-seed and re-render once after a minimal delay. */
