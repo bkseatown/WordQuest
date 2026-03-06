@@ -365,6 +365,7 @@
 
   var HUB_SEARCH_RESOURCES = [
     { id: "tool-wordquest", kind: "tool", label: "Word Quest", subtitle: "Word game activity surface", href: "word-quest.html?play=1" },
+    { id: "tool-platform", kind: "tool", label: "Game Platform", subtitle: "Shared runtime for all game surfaces", href: "game-platform.html" },
     { id: "tool-reading", kind: "resource", label: "Reading Lab", subtitle: "Literacy activity", href: "reading-lab.html" },
     { id: "tool-sentence", kind: "resource", label: "Sentence Studio", subtitle: "Sentence support surface", href: "sentence-surgery.html" },
     { id: "tool-writing", kind: "resource", label: "Writing Studio", subtitle: "Writing support surface", href: "writing-studio.html" },
@@ -527,9 +528,35 @@
       var u = new URL(base, window.location.href);
       if (studentId) u.searchParams.set("student", studentId);
       u.searchParams.set("from", "hub");
-      return u.pathname.replace(/^\//, "") + (u.search || "") + (u.hash || "");
+      return appendGameContextParams(u.pathname.replace(/^\//, "") + (u.search || "") + (u.hash || ""));
     } catch (_e) {
       return base + (studentId ? (base.indexOf("?") >= 0 ? "&" : "?") + "student=" + encodeURIComponent(studentId) : "");
+    }
+  }
+
+  function appendGameContextParams(href) {
+    try {
+      var url = new URL(String(href || ""), window.location.href);
+      var snapshot = hubState && typeof hubState.get === "function" ? hubState.get() : {};
+      var context = snapshot && snapshot.context || {};
+      var classContext = snapshot && snapshot.active_class_context || {};
+      var lessonContext = context.lessonContext || {};
+      var studentId = String(context.studentId || "");
+      var classId = String(context.classId || classContext.classId || "");
+      var lessonContextId = String(classContext.lessonContextId || lessonContext.lessonContextId || "");
+      var subject = String((classContext.subject || lessonContext.subject || "")).trim();
+      var programId = String((lessonContext.programId || classContext.curriculum || "")).trim();
+      var title = String((lessonContext.title || "")).trim();
+      if (studentId && !url.searchParams.get("student")) url.searchParams.set("student", studentId);
+      if (classId && !url.searchParams.get("classId")) url.searchParams.set("classId", classId);
+      if (lessonContextId && !url.searchParams.get("lessonContextId")) url.searchParams.set("lessonContextId", lessonContextId);
+      if (subject && !url.searchParams.get("subject")) url.searchParams.set("subject", subject);
+      if (programId && !url.searchParams.get("programId")) url.searchParams.set("programId", programId);
+      if (title && !url.searchParams.get("lesson")) url.searchParams.set("lesson", title);
+      url.searchParams.set("from", "hub");
+      return url.pathname.replace(/^\//, "") + (url.search || "") + (url.hash || "");
+    } catch (_e) {
+      return href;
     }
   }
 
@@ -2528,6 +2555,7 @@
       /* Actions */
       '<div class="th2-actions">',
       '  <a class="th2-btn th2-btn-primary" href="' + escapeHtml(activityHref) + '">Start Recommended Session</a>',
+      '  <a class="th2-btn th2-btn-quiet" href="' + escapeHtml(appendGameContextParams("game-platform.html")) + '">Open Game Platform</a>',
       '  <button class="th2-btn th2-btn-quiet" id="th2-view-details">View Details</button>',
       '</div>',
       buildProgressNoteActions(plan),
@@ -2772,7 +2800,7 @@
           if (curBtn) curBtn.click();
           return;
         }
-        if (item.href) window.location.href = item.href;
+        if (item.href) window.location.href = appendGameContextParams(item.href);
       });
     });
   }

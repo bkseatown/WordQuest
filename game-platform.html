@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" data-view-mode="individual">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="./">
+  <title>Cornerstone MTSS - Game Platform</title>
+  <script src="./config.js?v=20260306h"></script>
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
+  <link rel="stylesheet" href="./style/typography.css?v=20260306h">
+  <link rel="stylesheet" href="./games/ui/game-theme.css?v=20260306a">
+  <link rel="stylesheet" href="./games/ui/game-motion.css?v=20260306a">
+  <link rel="stylesheet" href="./games/ui/game-shell.css?v=20260306a">
+</head>
+<body class="game-platform-page">
+  <main class="cg-shell">
+    <div id="cg-shell"></div>
+    <div id="cg-live-region" aria-live="polite" aria-atomic="true" class="cg-hidden"></div>
+  </main>
+
+  <script src="./js/teacher/teacher-storage.js?v=20260306o"></script>
+  <script src="./js/teacher/teacher-selectors.js?v=20260306p"></script>
+  <script src="./js/literacy/word-connections-engine.js?v=20260304a"></script>
+
+  <script src="./games/core/game-modes.js?v=20260306a"></script>
+  <script src="./games/core/game-state.js?v=20260306a"></script>
+  <script src="./games/core/game-timer.js?v=20260306a"></script>
+  <script src="./games/core/game-score.js?v=20260306a"></script>
+  <script src="./games/core/game-feedback.js?v=20260306a"></script>
+  <script src="./games/core/game-a11y.js?v=20260306a"></script>
+  <script src="./games/core/game-sound.js?v=20260306a"></script>
+  <script src="./games/core/game-engine.js?v=20260306a"></script>
+
+  <script src="./games/content/morphology-content.js?v=20260306a"></script>
+  <script src="./games/content/ladder-content.js?v=20260306a"></script>
+  <script src="./games/content/error-content.js?v=20260306a"></script>
+  <script src="./games/content/category-content.js?v=20260306a"></script>
+  <script src="./games/content/sentence-content.js?v=20260306a"></script>
+  <script src="./games/content/game-content-generator.js?v=20260306a"></script>
+  <script src="./games/content/game-content-registry.js?v=20260306a"></script>
+
+  <script src="./games/ui/game-components.js?v=20260306a"></script>
+  <script src="./games/ui/game-shell.js?v=20260306a"></script>
+  <script>
+    window.CSGameShell && window.CSGameShell.init && window.CSGameShell.init();
+  </script>
+</body>
+</html>

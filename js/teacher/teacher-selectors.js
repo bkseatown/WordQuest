@@ -7,6 +7,8 @@
 })(typeof globalThis !== "undefined" ? globalThis : window, function createTeacherSelectors() {
   "use strict";
 
+  var runtimeRoot = typeof globalThis !== "undefined" ? globalThis : window;
+
   function safeParse(raw, fallback) {
     try {
       return raw ? JSON.parse(raw) : fallback;
@@ -42,9 +44,9 @@
 
   function loadCaseload(deps) {
     var options = deps && typeof deps === "object" ? deps : {};
-    var TeacherStorage = options.TeacherStorage || root.CSTeacherStorage || null;
-    var CaseloadStore = options.CaseloadStore || root.CSCaseloadStore || null;
-    var Evidence = options.Evidence || root.CSEvidence || null;
+    var TeacherStorage = options.TeacherStorage || runtimeRoot.CSTeacherStorage || null;
+    var CaseloadStore = options.CaseloadStore || runtimeRoot.CSCaseloadStore || null;
+    var Evidence = options.Evidence || runtimeRoot.CSEvidence || null;
     var rows = [];
 
     if (TeacherStorage && typeof TeacherStorage.loadStudentsStore === "function") {
@@ -68,7 +70,7 @@
 
   function loadScheduleBlocks(day, deps) {
     var options = deps && typeof deps === "object" ? deps : {};
-    var TeacherStorage = options.TeacherStorage || root.CSTeacherStorage || null;
+    var TeacherStorage = options.TeacherStorage || runtimeRoot.CSTeacherStorage || null;
     if (!TeacherStorage || typeof TeacherStorage.loadScheduleBlocks !== "function") return [];
     return TeacherStorage.loadScheduleBlocks(day || (TeacherStorage.todayStamp ? TeacherStorage.todayStamp() : ""));
   }
@@ -81,7 +83,7 @@
 
   function getClassContext(blockId, deps) {
     var options = deps && typeof deps === "object" ? deps : {};
-    var TeacherStorage = options.TeacherStorage || root.CSTeacherStorage || null;
+    var TeacherStorage = options.TeacherStorage || runtimeRoot.CSTeacherStorage || null;
     if (!TeacherStorage || typeof TeacherStorage.loadClassContexts !== "function") return null;
     var map = TeacherStorage.loadClassContexts();
     return map && map[String(blockId || "")] ? map[String(blockId || "")] : null;
@@ -89,7 +91,7 @@
 
   function getLessonContext(contextId, deps) {
     var options = deps && typeof deps === "object" ? deps : {};
-    var TeacherStorage = options.TeacherStorage || root.CSTeacherStorage || null;
+    var TeacherStorage = options.TeacherStorage || runtimeRoot.CSTeacherStorage || null;
     if (!TeacherStorage || typeof TeacherStorage.loadLessonContexts !== "function") return null;
     var map = TeacherStorage.loadLessonContexts();
     return map && map[String(contextId || "")] ? map[String(contextId || "")] : null;
@@ -118,8 +120,8 @@
   function getStudentEvidence(studentId, deps) {
     if (!studentId) return null;
     var options = deps && typeof deps === "object" ? deps : {};
-    var EvidenceEngine = options.EvidenceEngine || root.CSEvidenceEngine || null;
-    var Evidence = options.Evidence || root.CSEvidence || null;
+    var EvidenceEngine = options.EvidenceEngine || runtimeRoot.CSEvidenceEngine || null;
+    var Evidence = options.Evidence || runtimeRoot.CSEvidence || null;
     if (EvidenceEngine && typeof EvidenceEngine.getStudentSkillSnapshot === "function") {
       return EvidenceEngine.getStudentSkillSnapshot(studentId);
     }
