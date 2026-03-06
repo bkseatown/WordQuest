@@ -7,6 +7,8 @@
 })(typeof globalThis !== "undefined" ? globalThis : window, function createWorkspaceStudentIntelligence() {
   "use strict";
 
+  var runtimeRoot = typeof globalThis !== "undefined" ? globalThis : window;
+
   function buildTinySpark(points) {
     var arr = Array.isArray(points) && points.length ? points : [38, 42, 46, 50];
     var max = Math.max.apply(Math, arr);
@@ -139,7 +141,7 @@
 
   function buildSkillGraph() {
     var graph = {};
-    var taxonomy = root.__CS_SKILLSTORE__ && root.__CS_SKILLSTORE__.taxonomy;
+    var taxonomy = runtimeRoot.__CS_SKILLSTORE__ && runtimeRoot.__CS_SKILLSTORE__.taxonomy;
     if (taxonomy && Array.isArray(taxonomy.strands)) {
       taxonomy.strands.forEach(function (strand) {
         (strand.skills || []).forEach(function (skill) {
@@ -237,7 +239,7 @@
   function renderLastSessionSummary(options) {
     var config = options && typeof options === "object" ? options : {};
     var el = config.el || {};
-    var Evidence = config.Evidence || root.CSEvidence || null;
+    var Evidence = config.Evidence || runtimeRoot.CSEvidence || null;
     if (!Evidence || typeof Evidence.getRecentSessions !== "function") return;
     var sessions = Evidence.getRecentSessions(config.studentId, { limit: 1 });
     var row = sessions[0];

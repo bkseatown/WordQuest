@@ -437,12 +437,49 @@
   <div id="td-share-modal" class="td-modal hidden" role="dialog" aria-modal="true" aria-labelledby="td-share-modal-title">
     <div class="td-modal-card">
       <div class="td-modal-head">
-        <h2 id="td-share-modal-title" class="td-section-title">Share Summary</h2>
+        <h2 id="td-share-modal-title" class="td-section-title">Weekly Insight Draft</h2>
         <button id="td-share-modal-close" class="td-top-btn" type="button" aria-label="Close share summary">Close</button>
       </div>
+      <div class="td-weekly-draft">
+        <details class="td-weekly-card" open>
+          <summary>Teacher Summary</summary>
+          <div class="td-weekly-card__body">
+            <textarea id="td-weekly-teacher" class="td-share-preview" rows="8" placeholder="Teacher-facing weekly draft"></textarea>
+            <button class="td-top-btn" type="button" data-weekly-copy="teacher">Copy Teacher Summary</button>
+          </div>
+        </details>
+        <details class="td-weekly-card" open>
+          <summary>Family Summary</summary>
+          <div class="td-weekly-card__body">
+            <textarea id="td-weekly-family" class="td-share-preview" rows="8" placeholder="Family-facing weekly draft"></textarea>
+            <div class="td-weekly-translation-row">
+              <label class="td-meeting-label" for="td-weekly-family-language">Assisted translation</label>
+              <select id="td-weekly-family-language" class="td-top-btn">
+                <option value="en">English</option>
+                <option value="zh">Mandarin</option>
+                <option value="ms">Bahasa Melayu</option>
+                <option value="ta">Tamil</option>
+                <option value="tl">Tagalog</option>
+              </select>
+              <button id="td-weekly-translate-family" class="td-top-btn" type="button">Generate Translation</button>
+              <button class="td-top-btn" type="button" data-weekly-copy="family">Copy Family Summary</button>
+            </div>
+            <div id="td-weekly-translation-badge" class="td-meeting-translation-badge hidden">Assisted draft translation — review recommended</div>
+            <textarea id="td-weekly-family-translation" class="td-share-preview hidden" rows="7" placeholder="Assisted draft translation"></textarea>
+          </div>
+        </details>
+        <details class="td-weekly-card" open>
+          <summary>Student Reflection</summary>
+          <div class="td-weekly-card__body">
+            <textarea id="td-weekly-student" class="td-share-preview" rows="7" placeholder="Student-friendly weekly reflection"></textarea>
+            <button class="td-top-btn" type="button" data-weekly-copy="student">Copy Student Reflection</button>
+          </div>
+        </details>
+      </div>
+      <label class="td-weekly-preview-label" for="td-share-preview">Combined export preview</label>
       <textarea id="td-share-preview" class="td-share-preview" readonly></textarea>
       <div class="td-modal-actions">
-        <button id="td-share-copy" class="td-btn td-btn-primary btn btn-quiet" type="button">Copy</button>
+        <button id="td-share-copy" class="td-btn td-btn-primary btn btn-quiet" type="button">Copy Combined Draft</button>
         <button id="td-share-download-json" class="td-btn td-btn-ghost btn btn-quiet" type="button">Download JSON</button>
         <button id="td-share-download-csv" class="td-btn td-btn-ghost btn btn-quiet" type="button">Download CSV</button>
       </div>
@@ -595,6 +632,7 @@
   <script src="./js/instructional-sequencer.js?v=20260306h" defer></script>
   <script src="./js/alignment-loader.js?v=20260306h" defer></script>
   <script src="./js/share-summary.js?v=20260306h" defer></script>
+  <script src="./js/weekly-insight-generator.js?v=20260306q" defer></script>
   <script src="./js/reporting/generator.js?v=20260306h" defer></script>
   <script src="./js/reporting/meeting-generator.js?v=20260306h" defer></script>
   <script src="./js/meeting-notes.js?v=20260306h" defer></script>

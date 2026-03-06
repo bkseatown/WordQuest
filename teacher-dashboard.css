@@ -2293,6 +2293,59 @@ body.td-page .td-modal-card {
   font: 400 var(--fs-base) / var(--lh-normal) var(--font-body);
   overflow: auto;
 }
+
+.td-weekly-draft {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.td-weekly-card {
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  background: var(--surface-elev-2);
+  overflow: hidden;
+}
+
+.td-weekly-card > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 12px 14px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  background: color-mix(in oklab, var(--surface-1) 76%, white 24%);
+}
+
+.td-weekly-card > summary::-webkit-details-marker {
+  display: none;
+}
+
+.td-weekly-card__body {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.td-weekly-card .td-share-preview {
+  min-height: 140px;
+  max-height: 26dvh;
+}
+
+.td-weekly-translation-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.td-weekly-preview-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: var(--fs-xs, 12px);
+  color: color-mix(in oklab, var(--muted) 82%, white 18%);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 #td-meeting-notes,
 #td-meeting-actions {
   min-height: 120px;
