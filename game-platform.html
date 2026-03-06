@@ -9,10 +9,10 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
   <link rel="stylesheet" href="./style/typography.css?v=20260306h">
-  <link rel="stylesheet" href="./games/ui/game-theme.css?v=20260306r">
-  <link rel="stylesheet" href="./games/ui/game-motion.css?v=20260306r">
-  <link rel="stylesheet" href="./games/ui/game-feedback.css?v=20260306r">
-  <link rel="stylesheet" href="./games/ui/game-shell.css?v=20260306r">
+  <link rel="stylesheet" href="./games/ui/game-theme.css?v=20260307k">
+  <link rel="stylesheet" href="./games/ui/game-motion.css?v=20260307k">
+  <link rel="stylesheet" href="./games/ui/game-feedback.css?v=20260307k">
+  <link rel="stylesheet" href="./games/ui/game-shell.css?v=20260307k">
 </head>
 <style>
   /* ── Class Mode (projector) ─────────────────────────── */
@@ -58,8 +58,111 @@
   body.class-mode .cg-option { font-size: 1.25rem !important; min-height: 56px !important; }
   body.class-mode .cg-score-bar,
   body.class-mode .cg-meta { display: none !important; }
+
+  /* ── No-scroll layout fixes ─────────────────────────── */
+
+  /* Shell fills viewport, no page scroll on large displays */
+  html, body { height: 100%; overflow: hidden; }
+  main.cg-shell { height: 100%; overflow: hidden; padding: 0; max-width: none; }
+  #cg-shell { height: 100%; overflow: hidden; }
+
+  /* Hide developer-facing section labels from student view */
+  .cg-rail-card .cg-kicker,
+  .cg-main-card .cg-kicker { display: none !important; }
+
+  /* Responsive: allow scroll on narrow viewports (< 1180px) */
+  @media (max-width: 1180px) {
+    html, body { height: auto; overflow-x: hidden; overflow-y: auto; }
+    main.cg-shell { height: auto; overflow: visible; }
+    #cg-shell { height: auto; overflow: visible; }
+    .cg-app { height: auto !important; overflow: visible !important; }
+    .cg-rail--left, .cg-rail--right { overflow: visible; height: auto; }
+    .cg-main-card { overflow: visible; }
+  }
+
+  /* Brandbar: compact */
+  .cg-brandbar { margin-bottom: 10px; padding: 12px 18px 0; }
+  .cg-brand-mark { width: 40px; height: 40px; border-radius: 12px; }
+  .cg-brand-copy h1 { font-size: 22px; }
+  .cg-brand-copy p  { display: none; }   /* hide subhead to save space */
+
+  /* Three-column layout fills remaining height */
+  .cg-app {
+    height: calc(100vh - 76px);  /* viewport minus compact brandbar */
+    align-items: stretch;
+    overflow: hidden;
+    padding: 0 18px 18px;
+  }
+
+  /* Left rail: compact, internal scroll for game list */
+  .cg-rail--left {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148,170,200,0.3) transparent;
+  }
+
+  /* Compact game cards — name + one-liner only */
+  .cg-game-card {
+    padding: 12px 14px;
+    gap: 6px;
+  }
+  .cg-game-card h3    { font-size: 14px; margin: 4px 0 2px; }
+  .cg-game-card p     { font-size: 12px; margin: 0; line-height: 1.4; }
+  .cg-game-card-head  { margin-bottom: 2px; }
+  .cg-game-icon       { width: 28px; height: 28px; border-radius: 8px; }
+  /* Hide tag chips on game cards */
+  .cg-game-card .cg-inline-row { display: none; }
+
+  /* Hide developer-facing panels */
+  .cg-context-card { display: none !important; }
+  .cg-legacy-card  { display: none !important; }
+
+  /* Right rail: make stats/support visually lighter */
+  .cg-rail--right {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148,170,200,0.3) transparent;
+  }
+  /* Stat cards: reduce visual weight significantly */
+  .cg-stat {
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+  .cg-stat-value { font-size: 22px; }
+  .cg-stat-label { font-size: 9px; }
+  .cg-stat-desc  { display: none; }   /* hide debug descriptions */
+
+  /* Main game card: fills height, slight scroll if needed */
+  .cg-main-card {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148,170,200,0.3) transparent;
+  }
+
+  /* Focus panel: more breathing room */
+  .cg-focus-panel { gap: 14px; }
+  .cg-stage-board  { gap: 14px; }
+
+  /* Make the answer input the hero — bigger, more prominent */
+  .cg-input {
+    font-size: 20px !important;
+    padding: 14px 18px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+  }
+
+  /* Game kicker labels: soften — they're supplementary */
+  .cg-kicker {
+    font-size: 9px;
+    opacity: 0.55;
+    letter-spacing: 0.12em;
+  }
 </style>
 <body class="game-platform-page">
+  <!-- FOUC prevention: apply saved theme before first paint -->
+  <script>(function(){var t="";try{t=localStorage.getItem("cs.game.theme")||"";}catch(e){}if(t)document.body.setAttribute("data-game-theme",t);})();</script>
   <main class="cg-shell">
     <div id="cg-shell"></div>
     <div id="cg-live-region" aria-live="polite" aria-atomic="true" class="cg-hidden"></div>
@@ -72,7 +175,8 @@
 
   <!-- Theme picker -->
   <div id="cg-theme-picker" aria-label="Choose game theme" role="group">
-    <button class="cg-theme-swatch" data-theme="dark"    title="Dark Quest"   aria-pressed="true"  style="background:linear-gradient(135deg,#1a1f3d,#2563eb)"></button>
+    <button class="cg-theme-swatch" data-theme=""        title="Cornerstone Navy (default)" aria-pressed="true"  style="background:linear-gradient(135deg,#1a2238,#69be28)"></button>
+    <button class="cg-theme-swatch" data-theme="dark"    title="Dark Quest"   aria-pressed="false" style="background:linear-gradient(135deg,#1a1f3d,#d97332)"></button>
     <button class="cg-theme-swatch" data-theme="ocean"   title="Ocean"        aria-pressed="false" style="background:linear-gradient(135deg,#0c2a3f,#06b6d4)"></button>
     <button class="cg-theme-swatch" data-theme="sunset"  title="Sunset"       aria-pressed="false" style="background:linear-gradient(135deg,#2d1b3d,#f472b6)"></button>
     <button class="cg-theme-swatch" data-theme="forest"  title="Forest"       aria-pressed="false" style="background:linear-gradient(135deg,#0d2318,#4ade80)"></button>
@@ -126,20 +230,36 @@
       });
     })();
 
+    // Scroll active game into view when a game card is clicked
+    (function() {
+      document.addEventListener("click", function(e) {
+        var card = e.target.closest && e.target.closest("[data-game-id]");
+        if (!card) return;
+        setTimeout(function() {
+          var main = document.querySelector(".cg-main-card") || document.querySelector(".cg-stage-shell");
+          if (main) main.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 80);
+      });
+    })();
+
     // Theme switcher
     (function() {
       var STORAGE_KEY = "cs.game.theme";
       var swatches = document.querySelectorAll(".cg-theme-swatch");
       function applyTheme(theme) {
-        document.body.setAttribute("data-game-theme", theme);
+        if (theme) {
+          document.body.setAttribute("data-game-theme", theme);
+        } else {
+          document.body.removeAttribute("data-game-theme"); /* Cornerstone Navy: no attribute */
+        }
         try { localStorage.setItem(STORAGE_KEY, theme); } catch(e) {}
         swatches.forEach(function(s) {
           s.setAttribute("aria-pressed", s.getAttribute("data-theme") === theme ? "true" : "false");
         });
       }
-      // Restore saved theme
+      // Restore saved theme — default is "" (Cornerstone Navy)
       var saved = "";
-      try { saved = localStorage.getItem(STORAGE_KEY) || "dark"; } catch(e) { saved = "dark"; }
+      try { saved = localStorage.getItem(STORAGE_KEY) || ""; } catch(e) { saved = ""; }
       applyTheme(saved);
       swatches.forEach(function(s) {
         s.addEventListener("click", function() { applyTheme(s.getAttribute("data-theme")); });
@@ -168,8 +288,8 @@
   <script src="./games/content/game-content-generator.js?v=20260306a"></script>
   <script src="./games/content/game-content-registry.js?v=20260306a"></script>
 
-  <script src="./games/ui/game-components.js?v=20260306r"></script>
-  <script src="./games/ui/game-shell.js?v=20260306r"></script>
+  <script src="./games/ui/game-components.js?v=20260307e"></script>
+  <script src="./games/ui/game-shell.js?v=20260307e"></script>
   <script>
     window.CSGameShell && window.CSGameShell.init && window.CSGameShell.init();
   </script>
