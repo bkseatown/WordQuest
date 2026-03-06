@@ -52,6 +52,7 @@
   var WorkspaceCaseload = window.CSWorkspaceCaseload;
   var WorkspaceFocusShell = window.CSWorkspaceFocusShell;
   var WorkspaceStudentIntelligence = window.CSWorkspaceStudentIntelligence;
+  var WorkspaceSelection = window.CSWorkspaceSelection;
   var WorkspaceRecommendations = window.CSWorkspaceRecommendations;
   var WorkspaceSupportOps = window.CSWorkspaceSupportOps;
   var WorkspaceReports = window.CSWorkspaceReports;
@@ -1874,100 +1875,74 @@
   }
 
   function selectStudent(studentId) {
-    state.selectedId = String(studentId || "");
-    if (DashboardFocus && typeof DashboardFocus.setSelectedStudent === "function") {
-      DashboardFocus.setSelectedStudent(appState, state.selectedId);
-    } else {
-      appState.set({ selectedStudentId: state.selectedId });
-    }
-    var selectedStudent = state.caseload.filter(function (row) { return String(row.id || "") === state.selectedId; })[0] || null;
-    appState.set({
-      active_student_context: {
-        studentId: state.selectedId,
-        studentName: selectedStudent && selectedStudent.name || "",
-        grade: selectedStudent && (selectedStudent.gradeBand || selectedStudent.grade || "") || ""
-      },
-      workspace_context: {
-        mode: "workspace",
-        tab: state.workspaceTab || "summary"
-      }
-    });
-    state.generatedPlanner = null;
-    renderCaseload();
-    if (!state.selectedId) {
-      if (WorkspaceFocusShell && typeof WorkspaceFocusShell.renderEmptyState === "function") {
-        WorkspaceFocusShell.renderEmptyState({ el: el });
-      }
-      renderNeeds(null);
-      renderSupportHub("");
-      renderDrawer("");
-      renderRecommendedPlan("");
-      renderInstructionalSequencer("");
-      renderImplementationToday("");
-      renderExecutiveSupport("");
-      renderTodayPlan(null);
-      renderSkillTiles("");
-      renderMasteryUI("");
-      renderProgressNote(null, null);
-      updateAuditMarkers();
-      setCoachLine("Search or pick a student and I will suggest the next best move.");
-      window.dispatchEvent(new CustomEvent("cs-student-selected", {
-        detail: { studentId: "", studentName: "", grade: "" }
-      }));
-      return;
-    }
-
-    var selectedStudent = state.caseload.filter(function (student) { return student.id === state.selectedId; })[0] || { id: state.selectedId };
-    var studentContext = TeacherIntelligence && typeof TeacherIntelligence.buildStudentContextById === "function"
-      ? TeacherIntelligence.buildStudentContextById(state.selectedId, selectedStudent, {
+    if (WorkspaceSelection && typeof WorkspaceSelection.selectStudent === "function") {
+      WorkspaceSelection.selectStudent({
+        studentId: studentId,
+        state: state,
+        appState: appState,
+        el: el,
+        DashboardFocus: DashboardFocus,
+        TeacherIntelligence: TeacherIntelligence,
+        WorkspaceFocusShell: WorkspaceFocusShell,
+        appendStudentParam: appendStudentParam,
+        intelligenceDeps: {
           Evidence: Evidence,
           EvidenceEngine: EvidenceEngine,
           PlanEngine: PlanEngine,
           TeacherSelectors: TeacherSelectors,
           SkillLabels: SkillLabels
-        })
-      : null;
-    var summary = studentContext && studentContext.summary ? studentContext.summary : Evidence.getStudentSummary(state.selectedId);
-    state.snapshot = studentContext && Object.prototype.hasOwnProperty.call(studentContext, "snapshot")
-      ? studentContext.snapshot
-      : (typeof Evidence.computeStudentSnapshot === "function" ? Evidence.computeStudentSnapshot(state.selectedId) : null);
-    state.plan = studentContext && Object.prototype.hasOwnProperty.call(studentContext, "plan")
-      ? studentContext.plan
-      : (PlanEngine && typeof PlanEngine.buildPlan === "function"
-        ? PlanEngine.buildPlan({ student: summary.student, snapshot: state.snapshot || { needs: [] } })
-        : null);
-    var focusView = WorkspaceFocusShell && typeof WorkspaceFocusShell.renderSelectedState === "function"
-      ? WorkspaceFocusShell.renderSelectedState({
-          el: el,
-          summary: summary,
-          plan: state.plan,
-          appendStudentParam: appendStudentParam
-        })
-      : { delta: 0, tierLabel: summary.risk === "risk" ? "Tier 3" : "Tier 2" };
-    window.dispatchEvent(new CustomEvent("cs-student-selected", {
-      detail: {
-        studentId: state.selectedId,
-        studentName: summary && summary.student && summary.student.name || "",
-        grade: summary && summary.student && (summary.student.grade || summary.student.gradeBand) || "",
-        caseload: state.caseload.slice()
-      }
-    }));
-
-    renderEvidenceChips(summary.evidenceChips);
-    renderSkillTiles(state.selectedId);
-    renderMasteryUI(state.selectedId);
-    renderNeeds(state.snapshot);
-    renderSupportHub(state.selectedId);
-    renderDrawer(state.selectedId);
-    renderRecommendedPlan(state.selectedId);
-    renderInstructionalSequencer(state.selectedId);
-    renderImplementationToday(state.selectedId);
-    renderExecutiveSupport(state.selectedId);
-    renderTodayPlan(state.plan);
-    renderProgressNote(state.plan, summary.student);
-    renderLastSessionSummary(state.selectedId);
-    updateAuditMarkers();
-    setCoachLine(summary.nextMove.line || (focusView && focusView.tierLabel ? focusView.tierLabel : ""));
+        },
+        hooks: {
+          renderCaseload: renderCaseload,
+          onEmpty: function () {
+            renderNeeds(null);
+            renderSupportHub("");
+            renderDrawer("");
+            renderRecommendedPlan("");
+            renderInstructionalSequencer("");
+            renderImplementationToday("");
+            renderExecutiveSupport("");
+            renderTodayPlan(null);
+            renderSkillTiles("");
+            renderMasteryUI("");
+            renderProgressNote(null, null);
+            updateAuditMarkers();
+            setCoachLine("Search or pick a student and I will suggest the next best move.");
+            window.dispatchEvent(new CustomEvent("cs-student-selected", {
+              detail: { studentId: "", studentName: "", grade: "" }
+            }));
+          },
+          onSelected: function (payload) {
+            var summary = payload && payload.summary ? payload.summary : {};
+            var focusView = payload && payload.focusView ? payload.focusView : null;
+            window.dispatchEvent(new CustomEvent("cs-student-selected", {
+              detail: {
+                studentId: state.selectedId,
+                studentName: summary && summary.student && summary.student.name || "",
+                grade: summary && summary.student && (summary.student.grade || summary.student.gradeBand) || "",
+                caseload: state.caseload.slice()
+              }
+            }));
+            renderEvidenceChips(summary.evidenceChips);
+            renderSkillTiles(state.selectedId);
+            renderMasteryUI(state.selectedId);
+            renderNeeds(state.snapshot);
+            renderSupportHub(state.selectedId);
+            renderDrawer(state.selectedId);
+            renderRecommendedPlan(state.selectedId);
+            renderInstructionalSequencer(state.selectedId);
+            renderImplementationToday(state.selectedId);
+            renderExecutiveSupport(state.selectedId);
+            renderTodayPlan(state.plan);
+            renderProgressNote(state.plan, summary.student);
+            renderLastSessionSummary(state.selectedId);
+            updateAuditMarkers();
+            setCoachLine(summary.nextMove && summary.nextMove.line || (focusView && focusView.tierLabel ? focusView.tierLabel : ""));
+          }
+        }
+      });
+      return;
+    }
   }
 
   function renderEvidenceChips(chips) {
