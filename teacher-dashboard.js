@@ -69,6 +69,8 @@
   var TeacherSelectors = window.CSTeacherSelectors;
   var TeacherIntelligence = window.CSTeacherIntelligence;
   var TeacherSupportService = window.CSTeacherSupportService;
+  var TeacherSearchIndex = window.CSTeacherSearchIndex;
+  var TeacherSearchService = window.CSTeacherSearchService;
   if (!Evidence) return;
 
   var state = {
@@ -103,7 +105,8 @@
     executiveProfile: null,
     executivePlan: null,
     focusVisualStudentId: "",
-    focusCtaRestTimer: null
+    focusCtaRestTimer: null,
+    workspaceSearchResults: []
   };
   var skillStoreLogged = false;
 
@@ -111,6 +114,16 @@
   var FIDELITY_SEEDED_KEY = "cs.fidelity-seeded.v1";
   var NUMERACY_SEEDED_KEY = "cs.numeracy-seeded.v1";
   var FOCUS_RING_RADIUS = 16;
+  var WORKSPACE_SEARCH_RESOURCES = [
+    { id: "workspace-tool-wordquest", kind: "tool", label: "Word Quest", subtitle: "Word game activity surface", href: "word-quest.html?play=1" },
+    { id: "workspace-tool-reading", kind: "resource", label: "Reading Lab", subtitle: "Literacy activity", href: "reading-lab.html" },
+    { id: "workspace-tool-sentence", kind: "resource", label: "Sentence Studio", subtitle: "Sentence support surface", href: "sentence-surgery.html" },
+    { id: "workspace-tool-writing", kind: "resource", label: "Writing Studio", subtitle: "Writing support surface", href: "writing-studio.html" },
+    { id: "workspace-tool-numeracy", kind: "intervention", label: "Numeracy", subtitle: "Math intervention surface", href: "numeracy.html" },
+    { id: "workspace-tool-diagnostic", kind: "diagnostic", label: "Decoding Diagnostic", subtitle: "Diagnostic activity", href: "activities/decoding-diagnostic.html" },
+    { id: "workspace-tool-hub", kind: "resource", label: "Teacher Hub", subtitle: "Daily operating surface", href: "teacher-hub-v2.html" }
+  ];
+  var workspaceSearchService = null;
 
   function readSeededSet(lsKey) {
     try {
@@ -1849,6 +1862,7 @@
 
   function refreshCaseload() {
     state.caseload = getCaseload();
+    workspaceSearchService = null;
     filterCaseload(el.search.value || "");
     el.noCaseload.classList.toggle("hidden", state.caseload.length > 0);
     state.todayPlan = buildTodayPlan();
@@ -1857,10 +1871,40 @@
   }
 
   function filterCaseload(query) {
+    var q = String(query || "").trim();
+    var service = ensureWorkspaceSearchService();
+    state.workspaceSearchResults = q && service && typeof service.query === "function"
+      ? service.query(q)
+      : [];
     state.filtered = WorkspaceCaseload && typeof WorkspaceCaseload.filterRows === "function"
-      ? WorkspaceCaseload.filterRows(state.caseload, query)
+      ? WorkspaceCaseload.filterRows(state.caseload, q)
       : [];
     renderCaseload();
+  }
+
+  function ensureWorkspaceSearchService() {
+    if (workspaceSearchService) return workspaceSearchService;
+    if (!TeacherSearchService || typeof TeacherSearchService.create !== "function") return null;
+    workspaceSearchService = TeacherSearchService.create({
+      TeacherSearchIndex: TeacherSearchIndex,
+      getStudentsStore: function () {
+        return TeacherStorage && typeof TeacherStorage.loadStudentsStore === "function"
+          ? TeacherStorage.loadStudentsStore()
+          : {};
+      },
+      getCaseload: function () {
+        return state.caseload.slice();
+      },
+      getBlocks: function () {
+        return TeacherSelectors && typeof TeacherSelectors.loadScheduleBlocks === "function"
+          ? TeacherSelectors.loadScheduleBlocks("", { TeacherStorage: TeacherStorage })
+          : [];
+      },
+      getResources: function () {
+        return WORKSPACE_SEARCH_RESOURCES.slice();
+      }
+    });
+    return workspaceSearchService;
   }
 
   function renderCaseload() {
@@ -1869,6 +1913,8 @@
         listEl: el.list,
         rows: state.filtered,
         selectedId: state.selectedId,
+        mode: state.workspaceSearchResults && state.workspaceSearchResults.length ? "search" : "default",
+        results: state.workspaceSearchResults,
         onSelect: selectStudent
       });
       return;

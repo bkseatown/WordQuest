@@ -42,6 +42,8 @@ assert(dashboardHtml.includes('./teacher-hub-v2.html'), 'Teacher Workspace must 
 assert(dashboardHtml.includes('js/teacher-runtime-state.js'), 'Teacher Workspace must load unified teacher runtime state', failures);
 assert(dashboardHtml.includes('js/teacher/teacher-intelligence.js'), 'Teacher Workspace must load shared teacher intelligence service', failures);
 assert(dashboardHtml.includes('js/teacher/teacher-support-service.js'), 'Teacher Workspace must load shared teacher support service', failures);
+assert(dashboardHtml.includes('js/search/teacher-search-index.js'), 'Teacher Workspace must load shared teacher search index', failures);
+assert(dashboardHtml.includes('js/search/teacher-search-service.js'), 'Teacher Workspace must load shared teacher search service', failures);
 assert(dashboardHtml.includes('js/dashboard/workspace-caseload.js'), 'Teacher Workspace must load caseload workspace module', failures);
 assert(dashboardHtml.includes('js/dashboard/workspace-focus-shell.js'), 'Teacher Workspace must load focus shell workspace module', failures);
 assert(dashboardHtml.includes('js/dashboard/workspace-student-intelligence.js'), 'Teacher Workspace must load student intelligence workspace module', failures);
@@ -58,6 +60,8 @@ assert(dashboardJs.includes('WorkspaceRecommendations'), 'Teacher Workspace must
 assert(dashboardJs.includes('WorkspaceSupportOps'), 'Teacher Workspace must route implementation/executive support through workspace module', failures);
 assert(dashboardJs.includes('TeacherIntelligence'), 'Teacher Workspace must use shared teacher intelligence service', failures);
 assert(dashboardJs.includes('TeacherSupportService'), 'Teacher Workspace must use shared teacher support service', failures);
+assert(dashboardJs.includes('TeacherSearchService'), 'Teacher Workspace must use shared teacher search service', failures);
+assert(dashboardJs.includes('ensureWorkspaceSearchService'), 'Teacher Workspace search service bootstrap missing', failures);
 assert(dashboardJs.includes('TeacherIntelligence.buildTodayPlan'), 'Teacher Workspace must route today plan ranking through shared teacher intelligence service', failures);
 assert(dashboardJs.includes('appState.set({ mode: next })'), 'Centralized mode state write missing', failures);
 assert(dashboardJs.includes('WorkspaceSelection.selectStudent'), 'Centralized selected student selection flow missing', failures);

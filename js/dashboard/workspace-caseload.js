@@ -7,6 +7,16 @@
 })(typeof globalThis !== "undefined" ? globalThis : window, function createWorkspaceCaseload() {
   "use strict";
 
+  function filterRowsFromResults(rows, selectedId, searchResults, onSelect) {
+    return {
+      mode: "search",
+      rows: Array.isArray(rows) ? rows : [],
+      selectedId: String(selectedId || ""),
+      results: Array.isArray(searchResults) ? searchResults : [],
+      onSelect: typeof onSelect === "function" ? onSelect : function () {}
+    };
+  }
+
   function filterRows(rows, query) {
     var q = String(query || "").trim().toLowerCase();
     return (Array.isArray(rows) ? rows : []).filter(function (row) {
@@ -17,15 +27,30 @@
     });
   }
 
+  function normalizeResultsToRows(results, fallbackRows) {
+    var map = {};
+    (Array.isArray(fallbackRows) ? fallbackRows : []).forEach(function (row) {
+      if (row && row.id) map[String(row.id)] = row;
+    });
+    return (Array.isArray(results) ? results : []).filter(function (item) {
+      return item && item.kind === "student" && item.payload && item.payload.id;
+    }).map(function (item) {
+      var id = String(item.payload.id || item.id || "");
+      return map[id] || item.payload;
+    });
+  }
+
   function renderList(options) {
     var config = options && typeof options === "object" ? options : {};
-    var rows = Array.isArray(config.rows) ? config.rows : [];
+    var rows = config.mode === "search"
+      ? normalizeResultsToRows(config.results, config.rows)
+      : (Array.isArray(config.rows) ? config.rows : []);
     var listEl = config.listEl || null;
     var selectedId = String(config.selectedId || "");
     var onSelect = typeof config.onSelect === "function" ? config.onSelect : function () {};
     if (!listEl) return;
     if (!rows.length) {
-      listEl.innerHTML = '<div class="td-empty">No matches. Try name, student ID, or focus.</div>';
+      listEl.innerHTML = '<div class="td-empty">No matches. Try student, class, curriculum, resource, or tool.</div>';
       return;
     }
     listEl.innerHTML = rows.map(function (row) {
@@ -46,6 +71,7 @@
   }
 
   return {
+    filterRowsFromResults: filterRowsFromResults,
     filterRows: filterRows,
     renderList: renderList
   };
