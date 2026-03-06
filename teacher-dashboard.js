@@ -50,6 +50,7 @@
   var DashboardMeeting = window.CSDashboardMeeting;
   var DashboardModals = window.CSDashboardModals;
   var WorkspaceCaseload = window.CSWorkspaceCaseload;
+  var WorkspaceFocusShell = window.CSWorkspaceFocusShell;
   var WorkspaceReports = window.CSWorkspaceReports;
   var WorkspaceMeetings = window.CSWorkspaceMeetings;
   var WorkspaceFamilyCommunication = window.CSWorkspaceFamilyCommunication;
@@ -1962,18 +1963,6 @@
     }
   }
 
-  function buildSparkPath(points) {
-    var arr = Array.isArray(points) && points.length ? points : [46, 49, 54, 58, 62, 60, 64];
-    var max = Math.max.apply(Math, arr);
-    var min = Math.min.apply(Math, arr);
-    var span = Math.max(1, max - min);
-    return arr.map(function (value, index) {
-      var x = Math.round((index / Math.max(1, arr.length - 1)) * 180);
-      var y = Math.round(46 - ((value - min) / span) * 40);
-      return (index ? "L" : "M") + x + " " + y;
-    }).join(" ");
-  }
-
   function selectStudent(studentId) {
     state.selectedId = String(studentId || "");
     if (DashboardFocus && typeof DashboardFocus.setSelectedStudent === "function") {
@@ -1996,15 +1985,9 @@
     state.generatedPlanner = null;
     renderCaseload();
     if (!state.selectedId) {
-      el.centerEmpty.classList.remove("hidden");
-      el.centerSelected.classList.add("hidden");
-      el.rightEmpty.classList.remove("hidden");
-      el.rightContent.classList.add("hidden");
-      if (el.metricAccuracy) el.metricAccuracy.textContent = "+0.0%";
-      if (el.metricTier) el.metricTier.textContent = "Tier 2";
-      if (el.metricSubline) el.metricSubline.textContent = "Accuracy +4.2% over last 3 sessions";
-      if (el.lastSessionTitle) el.lastSessionTitle.textContent = "No recent quick check yet";
-      if (el.lastSessionMeta) el.lastSessionMeta.textContent = "Run a 90-second Word Quest quick check to generate signals.";
+      if (WorkspaceFocusShell && typeof WorkspaceFocusShell.renderEmptyState === "function") {
+        WorkspaceFocusShell.renderEmptyState({ el: el });
+      }
       renderNeeds(null);
       renderSupportHub("");
       renderDrawer("");
@@ -2031,19 +2014,14 @@
     state.plan = PlanEngine && typeof PlanEngine.buildPlan === "function"
       ? PlanEngine.buildPlan({ student: summary.student, snapshot: state.snapshot || { needs: [] } })
       : null;
-    el.centerEmpty.classList.add("hidden");
-    el.centerSelected.classList.remove("hidden");
-    el.rightEmpty.classList.add("hidden");
-    el.rightContent.classList.remove("hidden");
-
-    el.studentLabel.textContent = summary.student.name + " · " + summary.student.id;
-    var spark = summary.last7Sparkline || [];
-    var tail = spark.slice(-3);
-    var delta = tail.length > 1 ? (tail[tail.length - 1] - tail[0]) : 0;
-    var tierLabel = summary.risk === "risk" ? "Tier 3" : "Tier 2";
-
-    el.focusTitle.textContent = tierLabel + " - Strategic Reinforcement Recommended";
-    el.recoLine.textContent = summary.nextMove.line;
+    var focusView = WorkspaceFocusShell && typeof WorkspaceFocusShell.renderSelectedState === "function"
+      ? WorkspaceFocusShell.renderSelectedState({
+          el: el,
+          summary: summary,
+          plan: state.plan,
+          appendStudentParam: appendStudentParam
+        })
+      : { delta: 0, tierLabel: summary.risk === "risk" ? "Tier 3" : "Tier 2" };
     window.dispatchEvent(new CustomEvent("cs-student-selected", {
       detail: {
         studentId: state.selectedId,
@@ -2052,32 +2030,6 @@
         caseload: state.caseload.slice()
       }
     }));
-    el.last7Summary.textContent = "Last 7 sessions · " + summary.last7Sparkline.join(" / ");
-    el.sparkline.innerHTML = '<path d="' + buildSparkPath(summary.last7Sparkline) + '" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>';
-    if (el.metricAccuracy) el.metricAccuracy.textContent = (delta >= 0 ? "+" : "") + delta.toFixed(1) + "%";
-    if (el.metricTier) el.metricTier.textContent = tierLabel;
-    if (el.metricSubline) el.metricSubline.textContent = "Accuracy " + (delta >= 0 ? "+" : "") + delta.toFixed(1) + "% over last 3 sessions";
-    if (el.nextTierBadge) {
-      el.nextTierBadge.textContent = tierLabel;
-      el.nextTierBadge.className = "tier-badge " + (tierLabel === "Tier 3" ? "tier-3" : "tier-2");
-    }
-
-    if (el.quickCheck) {
-      el.quickCheck.onclick = function () {
-        var launch = state.plan && state.plan.plans && state.plan.plans.tenMin && state.plan.plans.tenMin[0] && state.plan.plans.tenMin[0].launch;
-        var href = launch && launch.url ? launch.url : "word-quest.html?quick=1";
-        window.location.href = appendStudentParam("./" + href.replace(/^\.\//, ""));
-      };
-    }
-    if (el.startIntervention) {
-      el.startIntervention.onclick = function () {
-        el.startIntervention.classList.add("td-btn-once");
-        setTimeout(function () { el.startIntervention.classList.remove("td-btn-once"); }, 260);
-        var launch = state.plan && state.plan.plans && state.plan.plans.thirtyMin && state.plan.plans.thirtyMin[0] && state.plan.plans.thirtyMin[0].launch;
-        var href = launch && launch.url ? launch.url : "word-quest.html?quick=1";
-        window.location.href = appendStudentParam("./" + href.replace(/^\.\//, ""));
-      };
-    }
 
     renderEvidenceChips(summary.evidenceChips);
     renderSkillTiles(state.selectedId);
@@ -2093,7 +2045,7 @@
     renderProgressNote(state.plan, summary.student);
     renderLastSessionSummary(state.selectedId);
     updateAuditMarkers();
-    setCoachLine(summary.nextMove.line);
+    setCoachLine(summary.nextMove.line || (focusView && focusView.tierLabel ? focusView.tierLabel : ""));
   }
 
   function renderEvidenceChips(chips) {
