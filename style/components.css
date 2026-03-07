@@ -123,6 +123,7 @@ html[data-home-mode="play"] {
   --key-bg: #a8b9c8;
   --key-hover: #bccbda;
   --key-shadow: 0 3px 0 #60778d, 0 8px 16px rgba(10, 18, 28, 0.16);
+  --key-text: #23384d;
   --main-max-width: 600px;
   --focus-max-width: 600px;
   --quest-max-width: 540px;
@@ -1297,7 +1298,7 @@ html[data-home-mode="play"] #home-tools-section {
 html[data-home-mode="play"] .top-control-hub {
   display: block !important;
   width: min(var(--quest-max-width), calc(100vw - 28px));
-  margin-top: 14px;
+  margin-top: 8px;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -1332,7 +1333,7 @@ html[data-home-mode="play"] .header-main-row {
 }
 
 html[data-home-mode="play"] header {
-  padding: 6px 10px;
+  padding: 4px 10px 2px;
   background:
     linear-gradient(
       180deg,
@@ -1412,7 +1413,7 @@ html[data-home-mode="play"] #active-grade-lock-chip {
 html[data-home-mode="play"] .focus-bar {
   min-height: 0;
   gap: 8px;
-  padding: 4px 0 2px;
+  padding: 2px 0 0;
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
@@ -1570,6 +1571,7 @@ html[data-home-mode="play"] .focus-action-btn {
   border: 1px solid color-mix(in oklab, var(--panel-border) 54%, transparent);
   background: color-mix(in oklab, var(--panel-bg) 72%, #ffffff 28%);
   box-shadow: none;
+  color: color-mix(in oklab, var(--text) 90%, #ffffff 10%);
 }
 
 html[data-home-mode="play"] .focus-inline-search {
@@ -3914,12 +3916,12 @@ html[data-home-mode="play"] .quest-next {
 }
 
 html[data-home-mode="play"] .logo {
-  color: color-mix(in oklab, var(--logo-word, var(--text)) 40%, #ffffff 60%);
-  text-shadow: 0 1px 2px rgba(3, 12, 24, 0.48);
+  color: color-mix(in oklab, var(--logo-word, var(--text)) 80%, #ffffff 20%);
+  text-shadow: 0 1px 1px rgba(255,255,255,0.18);
 }
 
 html[data-home-mode="play"] .logo span {
-  color: color-mix(in oklab, var(--logo-quest, var(--accent)) 46%, #ffffff 54%);
+  color: color-mix(in oklab, var(--logo-quest, var(--accent)) 82%, #d7f7a7 18%);
 }
 
 html[data-home-mode="play"][data-theme="seahawks"] .logo span {
@@ -3928,7 +3930,7 @@ html[data-home-mode="play"][data-theme="seahawks"] .logo span {
 }
 
 html[data-home-mode="play"] .icon-btn {
-  color: color-mix(in oklab, var(--text) 78%, #ffffff 22%);
+  color: color-mix(in oklab, var(--text) 90%, #ffffff 10%);
   border-color: color-mix(in oklab, var(--brand) 52%, #ffffff 48%);
   background: color-mix(in oklab, var(--panel-bg) 74%, #ffffff 26%);
 }
@@ -3937,8 +3939,8 @@ html[data-home-mode="play"] #theme-dock-toggle-btn,
 html[data-home-mode="play"] #music-dock-toggle-btn,
 html[data-home-mode="play"] #case-toggle-btn,
 html[data-home-mode="play"] #keyboard-layout-toggle {
-  color: color-mix(in oklab, var(--text) 84%, #ffffff 16%);
-  text-shadow: 0 1px 1px rgba(6, 15, 28, 0.52);
+  color: color-mix(in oklab, var(--text) 92%, #ffffff 8%);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.16);
   font-weight: 900;
 }
 
@@ -3989,6 +3991,10 @@ html[data-home-mode="play"] .hover-note-toast {
 html[data-home-mode="play"] .grade-target-inline {
   border-color: color-mix(in oklab, var(--panel-border) 74%, #ffffff 26%);
   background: color-mix(in oklab, var(--panel-bg) 58%, #ffffff 42%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 html[data-home-mode="play"] #new-game-btn.is-demo-stop {
@@ -4975,7 +4981,8 @@ html[data-home-mode="play"] .key {
       color-mix(in oklab, var(--key-bg) 92%, #eef3f8 8%) 58%,
       color-mix(in oklab, var(--key-bg) 78%, #8ea1b4 22%) 100%
     );
-  color: #f7fbff;
+  color: var(--key-text);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.34);
 }
 
 @media (max-height: 820px) and (min-width: 980px) {
@@ -4986,11 +4993,11 @@ html[data-home-mode="play"] .key {
   }
 
   html[data-home-mode="play"] header {
-    padding: 5px 10px;
+    padding: 4px 10px 2px;
   }
 
   html[data-home-mode="play"] .focus-bar {
-    padding: 2px 0 1px;
+    padding: 1px 0 0;
   }
 
   html[data-home-mode="play"] .board-zone {
