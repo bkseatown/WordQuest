@@ -118,6 +118,12 @@ html[data-home-mode="play"] {
   --main-max-width: 600px;
   --focus-max-width: 600px;
   --quest-max-width: 540px;
+  --tile-size: 70px;
+  --playfield-width: 374px;
+  --key-h: 56px;
+  --key-min-w: 38px;
+  --gap-key: 8px;
+  --gap-tile: 8px;
   --play-header-h: 54px;
 }
 
@@ -5097,9 +5103,12 @@ html[data-home-mode="play"][data-theme="seahawks"] .header-quick-btn {
 
 @media (max-height: 820px) and (min-width: 980px) {
   html[data-home-mode="play"] {
-    --tile-size: 64px;
-    --key-h: 46px;
+    --tile-size: 66px;
+    --playfield-width: 350px;
+    --key-h: 54px;
+    --key-min-w: 36px;
     --gap-key: 7px;
+    --gap-tile: 8px;
   }
 
   html[data-home-mode="play"] header {
