@@ -1165,6 +1165,12 @@ body.game-platform-page[data-shell-view="play"] .cg-play-shell {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 24px 28px;
+  --cg-play-stage: #4e5666;
+  --cg-play-surface: #eef1f5;
+  --cg-play-surface-strong: #ffffff;
+  --cg-play-border: #cfd6df;
+  --cg-play-ink: #1b2435;
+  --cg-play-muted: #586476;
 }
 
 body.game-platform-page[data-shell-view="play"] .cg-brandbar--play {
@@ -1174,6 +1180,110 @@ body.game-platform-page[data-shell-view="play"] .cg-brandbar--play {
 
 body.game-platform-page[data-shell-view="play"] .cg-stage-shell--focused {
   overflow: visible;
+  background: var(--cg-play-stage);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 18px 34px rgba(8, 12, 20, 0.28);
+  backdrop-filter: none;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-surface,
+body.game-platform-page[data-shell-view="play"] .cg-focus-panel,
+body.game-platform-page[data-shell-view="play"] .cg-prompt-card,
+body.game-platform-page[data-shell-view="play"] .cg-work-card,
+body.game-platform-page[data-shell-view="play"] .cg-round-guide,
+body.game-platform-page[data-shell-view="play"] .cg-host-panel,
+body.game-platform-page[data-shell-view="play"] .cg-choice,
+body.game-platform-page[data-shell-view="play"] .cg-word-slot,
+body.game-platform-page[data-shell-view="play"] .cg-tile,
+body.game-platform-page[data-shell-view="play"] .cg-input,
+body.game-platform-page[data-shell-view="play"] .cg-textarea,
+body.game-platform-page[data-shell-view="play"] .cg-chip,
+body.game-platform-page[data-shell-view="play"] .cg-action-quiet {
+  background: var(--cg-play-surface);
+  color: var(--cg-play-ink);
+  border-color: var(--cg-play-border);
+  backdrop-filter: none;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-focus-panel,
+body.game-platform-page[data-shell-view="play"] .cg-prompt-card,
+body.game-platform-page[data-shell-view="play"] .cg-work-card,
+body.game-platform-page[data-shell-view="play"] .cg-round-guide,
+body.game-platform-page[data-shell-view="play"] .cg-host-panel {
+  background: var(--cg-play-surface-strong);
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-brand-copy h1,
+body.game-platform-page[data-shell-view="play"] .cg-brand-copy p,
+body.game-platform-page[data-shell-view="play"] .cg-brand-copy .cg-kicker,
+body.game-platform-page[data-shell-view="play"] .cg-stage-head h2,
+body.game-platform-page[data-shell-view="play"] .cg-stage-head p,
+body.game-platform-page[data-shell-view="play"] .cg-focus-line,
+body.game-platform-page[data-shell-view="play"] .cg-round-guide__row strong,
+body.game-platform-page[data-shell-view="play"] .cg-round-guide__row span,
+body.game-platform-page[data-shell-view="play"] .cg-host-panel__meta,
+body.game-platform-page[data-shell-view="play"] .cg-host-panel__meta strong,
+body.game-platform-page[data-shell-view="play"] .cg-prompt-title,
+body.game-platform-page[data-shell-view="play"] .cg-kicker,
+body.game-platform-page[data-shell-view="play"] .cg-micro-label {
+  color: var(--cg-play-ink);
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-brand-copy p,
+body.game-platform-page[data-shell-view="play"] .cg-brand-copy .cg-kicker,
+body.game-platform-page[data-shell-view="play"] .cg-stage-head p,
+body.game-platform-page[data-shell-view="play"] .cg-focus-line,
+body.game-platform-page[data-shell-view="play"] .cg-round-guide__row strong,
+body.game-platform-page[data-shell-view="play"] .cg-host-panel__meta,
+body.game-platform-page[data-shell-view="play"] .cg-micro-label {
+  color: var(--cg-play-muted);
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout {
+  display: grid;
+  gap: 16px;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--typing .cg-focus-panel {
+  border-top: 6px solid #5a8f2d;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--clue .cg-focus-panel {
+  border-top: 6px solid #d98038;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--builder .cg-prompt-card {
+  border-top: 6px solid #2d74cf;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--ladder .cg-summary-list {
+  border-left: 4px solid #2d74cf;
+  padding-left: 14px;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--detective .cg-focus-panel {
+  border-top: 6px solid #a93f3b;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--rush .cg-focus-panel {
+  border-top: 6px solid #16795e;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--builder .cg-slot-row {
+  margin-bottom: 6px;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--clue .cg-context-chips {
+  padding: 8px 0 2px;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--rush .cg-countdown-bar {
+  background: #dde7ef;
+}
+
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--typing .cg-guess-grid,
+body.game-platform-page[data-shell-view="play"] .cg-game-layout--typing .cg-input-row {
+  gap: 14px;
 }
 
 html[data-view-mode="projector"] body.game-platform-page[data-shell-view="play"] .cg-play-shell {

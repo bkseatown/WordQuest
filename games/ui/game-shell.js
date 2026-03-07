@@ -910,6 +910,7 @@
       var projectorSuggested = state.settings.viewMode === "projector" || state.settings.viewMode === "classroom";
       runtimeRoot.document.documentElement.setAttribute("data-view-mode", state.settings.viewMode || "individual");
       runtimeRoot.document.body.setAttribute("data-shell-view", galleryOnly ? "gallery" : "play");
+      runtimeRoot.document.body.setAttribute("data-game-id", state.selectedGameId || "");
 
       if (galleryOnly) {
         shell.innerHTML = [
@@ -1073,6 +1074,7 @@
       if (game.id === "word-connections") {
         var forbiddenStrike = state.lastOutcome && state.lastOutcome.forbidden;
         return [
+          '<div class="cg-game-layout cg-game-layout--clue">',
           roundGuide(game, state, round),
           renderHostControls(game, state, round),
           '<div class="cg-focus-panel' + (forbiddenStrike ? " cg-focus-panel--forbidden" : "") + '">',
@@ -1085,17 +1087,20 @@
           '  <textarea id="cg-word-connections-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Type the class clue or quick teacher notes for scoring." : "Type the clue students would say or write.") + '"></textarea>',
           '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="word-connections">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Score Clue" : "Check Clue") + '</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Prompt</button></div>',
           (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
+          "</div>",
           "</div>"
         ].join("");
       }
 
       if (game.id === "morphology-builder" || game.id === "sentence-builder") {
         return [
+          '<div class="cg-game-layout cg-game-layout--builder">',
           roundGuide(game, state, round),
           renderHostControls(game, state, round),
           renderTileBuilder(round, uiState.builderSelection),
           '<div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="' + game.id + '">Check Build</button><button class="cg-action cg-action-quiet" type="button" data-action="clear-build">Clear</button></div>',
-          (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : "")
+          (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
+          "</div>"
         ].join("");
       }
 
@@ -1103,6 +1108,7 @@
         var totalClues = (round.clues || []).length;
         var shownClues = Math.min(uiState.revealedClues, totalClues);
         return [
+          '<div class="cg-game-layout cg-game-layout--ladder">',
           roundGuide(game, state, round),
           renderHostControls(game, state, round),
           '<div class="cg-focus-panel">',
@@ -1118,12 +1124,14 @@
             return '<button class="cg-choice' + (uiState.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
           }).join("") + "</div>",
           '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="concept-ladder">Submit Solve</button><button class="cg-action cg-action-quiet" type="button" data-action="reveal-clue">Reveal Next Clue</button></div>',
+          "</div>",
           "</div>"
         ].join("");
       }
 
       if (game.id === "error-detective") {
         return [
+          '<div class="cg-game-layout cg-game-layout--detective">',
           roundGuide(game, state, round),
           renderHostControls(game, state, round),
           '<div class="cg-focus-panel">',
@@ -1134,6 +1142,7 @@
           }).join("") + "</div>",
           '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="error-detective">Confirm Correction</button></div>',
           (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
+          "</div>",
           "</div>"
         ].join("");
       }
@@ -1144,6 +1153,7 @@
         var timerPct = timerSec > 0 ? Math.round((remaining / timerSec) * 100) : 100;
         var timerTone = timerPct > 50 ? "positive" : timerPct > 25 ? "warning" : "danger";
         return [
+          '<div class="cg-game-layout cg-game-layout--rush">',
           roundGuide(game, state, round),
           renderHostControls(game, state, round),
           '<div class="cg-focus-panel">',
@@ -1156,6 +1166,7 @@
           '  <textarea id="cg-category-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Type team responses separated by commas or new lines." : "Enter responses separated by commas or new lines.") + '"></textarea>',
           '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="rapid-category">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Score Round" : "Score Responses") + '</button></div>',
           (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
+          "</div>",
           "</div>"
         ].join("");
       }
@@ -1164,6 +1175,7 @@
         var typed = String(uiState.lastSubmittedGuess || "").toUpperCase();
         var typedEvaluation = state.lastOutcome && state.lastOutcome.evaluation || [];
         return [
+          '<div class="cg-game-layout cg-game-layout--typing">',
           roundGuide(game, state, round),
           renderHostControls(game, state, round),
           '<div class="cg-focus-panel">',
@@ -1179,6 +1191,7 @@
           '    <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="word-typing">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Check Class Typing" : "Check Typing") + '</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Word</button></div>',
           "  </div>",
           (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
+          "</div>",
           "</div>"
         ].join("");
       }
