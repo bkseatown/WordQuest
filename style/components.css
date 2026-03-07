@@ -5002,10 +5002,10 @@ html[data-home-mode="play"] .header-quick-btn {
 
 @media (max-height: 820px) and (min-width: 980px) {
   html[data-home-mode="play"] {
-    --tile-size: 66px;
-    --playfield-width: 350px;
-    --key-h: 54px;
-    --key-min-w: 36px;
+    --tile-size: 64px;
+    --playfield-width: 340px;
+    --key-h: 58px;
+    --key-min-w: 40px;
     --gap-key: 7px;
     --gap-tile: 8px;
   }
