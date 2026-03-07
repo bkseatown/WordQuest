@@ -382,7 +382,7 @@
     { id: "tool-diagnostic", kind: "diagnostic", label: "Decoding Diagnostic", subtitle: "Diagnostic activity", href: "activities/decoding-diagnostic.html" },
     { id: "tool-brief", kind: "resource", label: "Lesson Brief", subtitle: "Open class lesson briefing", action: "brief" },
     { id: "tool-curriculum", kind: "resource", label: "Curriculum Quick Reference", subtitle: "Open curriculum supports", action: "curriculum" },
-    { id: "tool-workspace", kind: "resource", label: "Teacher Workspace", subtitle: "Reports, meetings, notes, and history", href: "teacher-dashboard.html" }
+    { id: "tool-workspace", kind: "resource", label: "Reports & Meetings", subtitle: "Weekly insights, meetings, history, and exports", href: "teacher-dashboard.html" }
   ];
 
   function ensureSearchService() {
@@ -741,8 +741,9 @@
       '  <p class="th2-section-label">Student Priorities</p>',
       '  <div class="th2-student-priority-list">',
       (students.length ? students.map(function (student) {
+        var profileHref = "student-profile.html?student=" + encodeURIComponent(student.studentId || "") + "&from=hub";
         return [
-          '<button class="th2-priority-row" data-context-student="' + escapeHtml(student.studentId) + '" type="button">',
+          '<a class="th2-priority-row" data-context-student="' + escapeHtml(student.studentId) + '" href="' + escapeHtml(profileHref) + '">',
           '  <div class="th2-priority-row__main">',
           '    <div class="th2-priority-row__title"><strong>' + escapeHtml(student.name) + '</strong><span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(student.supportPriority || "T1") + "</span></div>",
           '    <p class="th2-priority-row__goal">' + escapeHtml(student.primaryGoal || "Priority still forming from available data.") + "</p>",
@@ -754,7 +755,7 @@
           '    <div class="th2-support-badges">' + accommodationBadges(student.accommodations) + "</div>",
           '    <span class="th2-priority-row__trend">' + escapeHtml((student.trendSummary && student.trendSummary.label) || "Steady") + "</span>",
           "  </div>",
-          "</button>"
+          "</a>"
         ].join("");
       }).join("") : '<p class="th2-today-sub">No students assigned to this block yet.</p>'),
       "  </div>",
@@ -773,7 +774,7 @@
       actions.map(function (action) {
         return '<a class="th2-quick-action" href="' + escapeHtml(action.href) + '"><strong>' + escapeHtml(action.label) + '</strong><span>' + escapeHtml(action.subtitle) + "</span></a>";
       }).join(""),
-      '      <a class="th2-quick-action" href="' + escapeHtml("teacher-dashboard.html") + '"><strong>Open Teacher Workspace</strong><span>Reports, meeting prep, history, and exports.</span></a>',
+      '      <a class="th2-quick-action" href="' + escapeHtml("teacher-dashboard.html") + '"><strong>Open Reports</strong><span>Weekly insights, meeting prep, history, and exports.</span></a>',
       "    </div>",
       "  </div>",
       '  <div class="th2-quick-rail__secondary">',
@@ -781,7 +782,7 @@
       '    <div class="th2-secondary-grid">',
       '      <article class="th2-secondary-card"><h3>My Caseload</h3><p>' + escapeHtml(String(caseload.length) + " students in active caseload") + "</p></article>",
       '      <article class="th2-secondary-card"><h3>Recent Students</h3><p>' + escapeHtml(caseload.slice(0, 3).map(function (row) { return row.name; }).join(", ") || "No recent students yet.") + "</p></article>",
-      '      <article class="th2-secondary-card"><h3>Upcoming Meetings</h3><p>Workspace handles meeting prep and communication drafts.</p></article>',
+      '      <article class="th2-secondary-card"><h3>Upcoming Meetings</h3><p>Reports &amp; Meetings handles meeting prep and communication drafts.</p></article>',
       "    </div>",
       "  </div>",
       "</section>"
@@ -2316,7 +2317,10 @@
         '<div class="th2-drawer-section">',
         '  <h4 class="th2-drawer-section-head">Meeting Prep</h4>',
         '  <div class="th2-drawer-row">',
-        '    <a class="th2-drawer-link" href="teacher-dashboard.html?student=' + encodeURIComponent(studentId) + '&tab=meeting&from=hub">Open in Meeting Workspace &rarr;</a>',
+        '    <a class="th2-drawer-link" href="student-profile.html?student=' + encodeURIComponent(studentId) + '&from=hub">Open Student Profile &rarr;</a>',
+        '  </div>',
+        '  <div class="th2-drawer-row">',
+        '    <a class="th2-drawer-link" href="teacher-dashboard.html?student=' + encodeURIComponent(studentId) + '&tab=meeting&from=hub">Open Reports &amp; Meetings &rarr;</a>',
         '  </div>',
         '</div>'
       ].join("\n");
@@ -3297,7 +3301,7 @@
       '<div class="th2-actions">',
       '  <a class="th2-btn th2-btn-primary" href="' + escapeHtml(activityHref) + '">Start Recommended Session</a>',
       '  <a class="th2-btn th2-btn-quiet" href="' + escapeHtml(appendGameContextParams("game-platform.html")) + '">Open Game Platform</a>',
-      '  <button class="th2-btn th2-btn-quiet" id="th2-view-details">View Details</button>',
+      '  <a class="th2-btn th2-btn-quiet" href="student-profile.html?student=' + encodeURIComponent(studentId) + '&from=hub">Open Student Profile</a>',
       '</div>',
       buildProgressNoteActions(plan),
 
@@ -3847,14 +3851,8 @@
     if (!studentBtn) return;
     var sid = studentBtn.getAttribute("data-context-student") || "";
     if (!sid) return;
-    el.modeTabs.forEach(function (t) {
-      var active = t.getAttribute("data-mode") === "caseload";
-      t.classList.toggle("is-active", active);
-      t.setAttribute("aria-selected", active ? "true" : "false");
-    });
-    hubState.set({ context: { mode: "caseload" } });
-    renderStudentList();
-    selectStudent(sid);
+    e.preventDefault();
+    window.location.href = "student-profile.html?student=" + encodeURIComponent(sid) + "&from=hub";
   });
 
   document.addEventListener("click", function (e) {

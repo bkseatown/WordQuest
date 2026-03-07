@@ -14,12 +14,14 @@ html, body {
 body.teacher-dashboard {
   margin: 0;
   overflow: hidden;
-  background: var(--surface-base-gradient);
+  background:
+    radial-gradient(circle at top right, rgba(198, 141, 102, 0.08), transparent 28%),
+    linear-gradient(160deg, #d6d9de 0%, #cbd0d8 44%, #c1c8d1 100%);
   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: var(--fs-base);
   line-height: var(--lh-normal);
-  letter-spacing: var(--ls-base);
+  letter-spacing: -0.004em;
   font-variant-numeric: normal;
   font-feature-settings: "zero" 0;
 }
@@ -73,8 +75,8 @@ body.cs-has-nav-shell .td-shell {
 .td-surface {
   border-radius: var(--radius-4);
   border: 0;
-  background: color-mix(in oklab, var(--surface-1) 92%, #f3f7fc 8%);
-  box-shadow: 0 8px 20px rgba(26, 44, 70, 0.08);
+  background: color-mix(in oklab, var(--surface-1) 94%, #f4f2ef 6%);
+  box-shadow: 0 8px 20px rgba(26, 34, 46, 0.08);
   backdrop-filter: none;
   transition: border-color var(--dur-2) ease-in-out, background-color var(--dur-2) ease-in-out, box-shadow var(--dur-2) ease-in-out, transform var(--dur-2) ease-in-out;
 }
@@ -91,8 +93,51 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .td-top.td-surface {
-  background: color-mix(in oklab, var(--surface-elev-1) 90%, #edf4ff 10%);
-  box-shadow: 0 10px 24px rgba(29, 47, 72, 0.09);
+  background: color-mix(in oklab, var(--surface-elev-1) 94%, #f1efeb 6%);
+  box-shadow: 0 10px 24px rgba(29, 37, 50, 0.09);
+}
+
+.td-reports-overview {
+  display: none;
+  padding: 18px 20px;
+}
+
+.td-reports-overview__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+}
+
+.td-reports-overview__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.td-reports-overview__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.td-reports-overview__grid article {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid color-mix(in oklab, var(--border) 84%, white 16%);
+}
+
+.td-reports-overview__grid article strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.td-reports-overview__grid article p {
+  margin: 0;
+  color: color-mix(in oklab, var(--text-primary) 68%, var(--muted) 32%);
 }
 
 .td-wordmark strong {
@@ -139,6 +184,22 @@ body.cs-has-nav-shell .td-shell {
   color: color-mix(in oklab, var(--text-primary) 72%, var(--muted) 28%);
   max-width: 560px;
 }
+
+.td-top-btn,
+.focus-card,
+.launch-card-title,
+.launch-card-desc,
+.focus-reason,
+.focus-why-line,
+.focus-fidelity-line {
+  letter-spacing: -0.004em;
+}
+
+.dashboard-kicker,
+.td-label {
+  letter-spacing: 0.08em;
+  font-weight: var(--fw-semibold);
+}
 .td-buildline {
   display: block;
   margin-top: 3px;
@@ -155,7 +216,7 @@ body.cs-has-nav-shell .td-shell {
   width: 100%;
   border-radius: var(--radius-3);
   border: 0;
-  background: var(--surface-elev-1);
+  background: color-mix(in oklab, var(--surface-elev-1) 86%, #ece8e1 14%);
   color: var(--text-primary);
   padding: 12px 14px;
   font: inherit;
@@ -186,7 +247,7 @@ body.cs-has-nav-shell .td-shell {
 .td-top-btn {
   border-radius: var(--radius-2);
   border: 0;
-  background: var(--surface-1);
+  background: color-mix(in oklab, var(--surface-1) 90%, #ece8e2 10%);
   color: var(--text-primary);
   padding: 7px 10px;
   font: inherit;
@@ -194,6 +255,7 @@ body.cs-has-nav-shell .td-shell {
   font-weight: var(--fw-regular);
   cursor: pointer;
   transition: background-color var(--dur-1) ease-in-out, border-color var(--dur-1) ease-in-out, color var(--dur-1) ease-in-out, transform var(--dur-1) ease-in-out, box-shadow var(--dur-1) ease-in-out;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 48%, transparent);
 }
 .td-top-btn:focus-visible {
   outline: none;
@@ -233,7 +295,7 @@ body.cs-has-nav-shell .td-shell {
   min-height: 34px;
   padding-right: 28px;
 }
-.td-top-btn:hover { background: var(--surface-elev-2); box-shadow: 0 4px 10px rgba(39, 72, 123, 0.14); transform: translateY(-1px); }
+.td-top-btn:hover { background: var(--surface-elev-2); box-shadow: 0 4px 10px rgba(61, 45, 27, 0.14); transform: translateY(-1px); }
 .td-top-btn:active { background: var(--surface-elev-2); box-shadow: none; transform: translateY(0); }
 .td-coach-chip { border-color: color-mix(in oklab, var(--accent) 58%, transparent); }
 .td-coach-chip.is-fresh { animation: none; }
@@ -296,9 +358,9 @@ body.cs-has-nav-shell .td-shell {
   gap: 8px;
   align-items: center;
   padding: 6px 10px;
-  background: color-mix(in oklab, var(--surface-elev-2) 74%, var(--surface-1));
+  background: color-mix(in oklab, var(--surface-elev-2) 82%, #eae5de 18%);
   border: 0;
-  box-shadow: 0 2px 8px rgba(22, 40, 66, 0.08);
+  box-shadow: 0 2px 8px rgba(22, 30, 42, 0.08);
 }
 
 .dashboard-focus {
@@ -349,13 +411,14 @@ body.cs-has-nav-shell .td-shell {
   justify-content: space-between;
   gap: 14px;
   border: 0;
-  box-shadow: 0 8px 20px rgba(25, 44, 71, 0.09);
+  box-shadow: 0 8px 20px rgba(25, 34, 48, 0.09);
   position: relative;
+  border-radius: 18px;
 }
 
 .dashboard-focus > .focus-card:first-child {
-  background: color-mix(in oklab, var(--surface-elev-1) 84%, #e4efff 16%);
-  box-shadow: 0 12px 28px rgba(30, 56, 90, 0.14);
+  background: color-mix(in oklab, var(--surface-elev-1) 86%, #efe8df 14%);
+  box-shadow: 0 12px 28px rgba(30, 39, 55, 0.14);
   gap: 14px;
 }
 
@@ -367,7 +430,7 @@ body.cs-has-nav-shell .td-shell {
   width: 100%;
   height: 5px;
   border-radius: 14px 14px 0 0;
-  background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 72%, #92b3e2 28%), color-mix(in oklab, var(--accent-2) 64%, #dbe7f7 36%));
+  background: linear-gradient(90deg, color-mix(in oklab, #9e6d34 70%, #e2c39d 30%), color-mix(in oklab, #c85a3c 62%, #f0d5c7 38%));
 }
 
 .focus-actions {
@@ -379,8 +442,8 @@ body.cs-has-nav-shell .td-shell {
 
 .numeracy-focus-card {
   border: 0;
-  background: color-mix(in oklab, var(--surface-elev-1) 86%, #edf3fd 14%);
-  box-shadow: 0 8px 20px rgba(27, 44, 68, 0.1);
+  background: color-mix(in oklab, var(--surface-elev-1) 88%, #ece8e2 12%);
+  box-shadow: 0 8px 20px rgba(27, 35, 49, 0.1);
 }
 
 .numeracy-title {
@@ -717,6 +780,14 @@ body.cs-has-nav-shell .td-shell {
   font-size: var(--fs-0);
   line-height: 1.15;
   font-weight: var(--fw-medium);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
+}
+
+.td-plan-tabs .td-top-btn,
+.td-top-overflow-menu .td-top-btn,
+.numeracy-curriculum-field .td-top-btn,
+#td-meeting-modal .td-top-btn {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 56%, transparent);
 }
 
 .focus-signal-dot {
@@ -925,10 +996,18 @@ body.td-advanced-mode .dashboard-eval {
   display: grid;
 }
 
+body.td-reports-mode .td-reports-overview {
+  display: block;
+}
+
+body.td-reports-mode .dashboard-focus {
+  display: none;
+}
+
 body.td-reports-mode .dashboard-queue,
 body.td-reports-mode .dashboard-launch,
 body.td-reports-mode .dashboard-eval {
-  display: none;
+  display: block;
 }
 
 body.td-classroom-mode .dashboard-queue,
@@ -961,9 +1040,19 @@ body.td-classroom-mode #td-top-overflow-toggle {
   color: var(--text-strong);
 }
 
+.dashboard-section-meta {
+  margin: 2px 0 0;
+  max-width: 72ch;
+  font-size: var(--fs-1);
+  line-height: 1.45;
+  color: color-mix(in oklab, var(--text-primary) 74%, var(--muted) 26%);
+}
+
 .dashboard-eval {
   display: none;
   gap: 14px;
+  padding: 18px;
+  background: color-mix(in oklab, var(--surface-elev-2) 84%, #f2ede7 16%);
 }
 
 .dashboard-eval-head {
@@ -1125,13 +1214,13 @@ body.td-wow-eval-active .td-shell {
 }
 
 .queue-card {
-  padding: 16px;
+  padding: 14px;
   border-radius: var(--radius-2);
   border: 0;
   background: var(--surface-1);
-  box-shadow: 0 1px 4px rgba(26, 42, 62, 0.08);
+  box-shadow: 0 1px 4px rgba(26, 42, 62, 0.06), inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 46%, transparent);
   display: grid;
-  gap: var(--space-2);
+  gap: 6px;
 }
 
 .queue-name {
@@ -1172,12 +1261,12 @@ body.td-wow-eval-active .td-shell {
 }
 
 .launch-card {
-  min-height: 114px;
+  min-height: 108px;
   display: grid;
   align-content: center;
   justify-items: start;
   gap: 4px;
-  padding: 10px 12px;
+  padding: 12px 13px;
   text-align: left;
   font-size: var(--fs-sm);
   font-weight: var(--fw-regular);
@@ -1185,11 +1274,12 @@ body.td-wow-eval-active .td-shell {
   background: var(--surface-1);
   color: var(--text-primary);
   border: 0;
-  box-shadow: 0 1px 4px rgba(26, 42, 62, 0.08);
+  box-shadow: 0 1px 4px rgba(26, 42, 62, 0.06), inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 44%, transparent);
 }
 
 .launch-card:hover {
   background: var(--surface-elev-1);
+  transform: translateY(-1px);
 }
 
 .launch-card-icon {
@@ -1246,7 +1336,7 @@ body.td-wow-eval-active .td-shell {
 }
 
 .dashboard-mode-strip .td-top-btn.is-active {
-  box-shadow: 0 2px 6px rgba(43, 93, 168, 0.14);
+  box-shadow: 0 2px 6px rgba(136, 93, 41, 0.18);
 }
 
 body.td-page .dashboard-focus,
@@ -1281,6 +1371,11 @@ body.td-page .td-modal-card {
   .dashboard {
     gap: var(--sp-3);
     padding: var(--sp-3);
+  }
+
+  .td-reports-overview__head,
+  .td-reports-overview__grid {
+    grid-template-columns: 1fr;
   }
 
   .dashboard-focus {
@@ -2265,13 +2360,13 @@ body.td-page .td-modal-card {
 .td-modal-card {
   width: min(760px, calc(100vw - 28px));
   max-height: min(78dvh, 720px);
-  border-radius: 14px;
-  border: 1px solid var(--surface-border);
-  background: var(--surface-1);
-  box-shadow: var(--shadow-strong);
-  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in oklab, var(--surface-border) 74%, transparent);
+  background: color-mix(in oklab, var(--surface-1) 94%, #f4f1ec 6%);
+  box-shadow: 0 18px 38px rgba(18, 26, 39, 0.16);
+  padding: 20px;
   display: grid;
-  gap: 14px;
+  gap: 12px;
   overflow: auto;
 }
 
@@ -2285,40 +2380,87 @@ body.td-page .td-modal-card {
   justify-content: space-between;
   gap: 10px;
 }
+
+.td-modal-title-block {
+  display: grid;
+  gap: 4px;
+}
+
+.td-modal-kicker {
+  margin: 0;
+  color: color-mix(in oklab, var(--muted) 84%, white 16%);
+  font-size: var(--fs-0);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+}
+
+.td-modal-intro {
+  margin: -2px 0 2px;
+  max-width: 72ch;
+  font-size: var(--fs-1);
+  line-height: 1.45;
+  color: color-mix(in oklab, var(--text-primary) 72%, var(--muted) 28%);
+}
+
 .td-share-preview {
   width: 100%;
-  min-height: 220px;
+  min-height: 200px;
   max-height: 48dvh;
   resize: none;
-  border-radius: 10px;
-  border: 1px solid var(--surface-border);
-  background: var(--surface-elev-2);
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--surface-border) 62%, transparent);
+  background: color-mix(in oklab, var(--surface-elev-2) 86%, #f6f3ef 14%);
   color: var(--text-strong);
-  padding: 10px;
+  padding: 12px;
   font: 400 var(--fs-base) / var(--lh-normal) var(--font-body);
   overflow: auto;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.38);
 }
 
 .td-weekly-draft {
   display: grid;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .td-weekly-card {
-  border: 1px solid var(--surface-border);
-  border-radius: 12px;
-  background: var(--surface-elev-2);
+  border: 1px solid color-mix(in oklab, var(--surface-border) 62%, transparent);
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--surface-elev-2) 82%, #f4f1eb 18%);
   overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
 }
 
 .td-weekly-card > summary {
   cursor: pointer;
   list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   padding: 12px 14px;
   font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-  background: color-mix(in oklab, var(--surface-1) 76%, white 24%);
+  color: var(--text-strong);
+  background: color-mix(in oklab, var(--surface-1) 82%, white 18%);
+}
+
+.td-weekly-card > summary::after {
+  content: "Expand";
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--surface-elev-2) 88%, #ece7de 12%);
+  color: var(--text-secondary);
+  font-size: var(--fs-0);
+  font-weight: var(--fw-medium);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 54%, transparent);
+}
+
+.td-weekly-card[open] > summary::after {
+  content: "Expanded";
 }
 
 .td-weekly-card > summary::-webkit-details-marker {
@@ -2360,6 +2502,9 @@ body.td-page .td-modal-card {
   font-size: var(--fs-xs, 12px);
   color: color-mix(in oklab, var(--muted) 82%, white 18%);
   align-self: center;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .td-meeting-live-toggle {
   display: inline-flex;
@@ -2375,16 +2520,17 @@ body.td-page .td-modal-card {
 #td-meeting-modal .td-modal-card {
   width: min(1120px, calc(100vw - 52px));
   max-height: min(90dvh, 940px);
-  background: #ffffff;
-  border: 1px solid var(--surface-border);
-  box-shadow: 0 10px 28px rgba(22, 32, 50, 0.12);
+  background: color-mix(in oklab, #ffffff 94%, #f5f1ea 6%);
+  border: 1px solid color-mix(in oklab, var(--surface-border) 72%, transparent);
+  box-shadow: 0 18px 40px rgba(22, 32, 50, 0.14);
 }
 
 #td-meeting-modal .td-plan-tabs:first-of-type {
   padding: 6px;
-  border-radius: 10px;
-  border: 1px solid var(--surface-border);
-  background: var(--surface-elev-2);
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--surface-border) 66%, transparent);
+  background: color-mix(in oklab, var(--surface-elev-2) 84%, #f2ede7 16%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.32);
 }
 
 #td-meeting-modal .td-plan-tabs:first-of-type .td-top-btn {
@@ -2396,6 +2542,17 @@ body.td-page .td-modal-card {
   background: #ffffff;
   border-color: var(--surface-border);
   font-weight: var(--fw-semibold);
+}
+
+#td-meeting-modal .td-plan-tabs:nth-of-type(2) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, max-content));
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--surface-elev-2) 84%, #f3efe9 16%);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 55%, transparent);
 }
 
 #td-meeting-modal .td-modal-actions {
@@ -2483,9 +2640,9 @@ body.td-page .td-modal-card {
 }
 
 .td-report-preview {
-  border: 1px solid var(--surface-border);
-  border-radius: 10px;
-  background: var(--surface-elev-2);
+  border: 1px solid color-mix(in oklab, var(--surface-border) 62%, transparent);
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--surface-elev-2) 84%, #f6f2ec 16%);
   color: var(--text-strong);
   padding: 14px;
   min-height: 240px;
@@ -2493,7 +2650,8 @@ body.td-page .td-modal-card {
   overflow: auto;
   line-height: 1.55;
   display: grid;
-  gap: 16px;
+  gap: 14px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.36);
 }
 
 .td-report-preview section {
@@ -2529,6 +2687,7 @@ body.td-page .td-modal-card {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  justify-content: flex-end;
 }
 .td-sas-library-card {
   width: min(920px, calc(100vw - 24px));

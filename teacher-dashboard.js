@@ -127,7 +127,7 @@
     { id: "workspace-tool-writing", kind: "resource", label: "Writing Studio", subtitle: "Writing support surface", href: "writing-studio.html" },
     { id: "workspace-tool-numeracy", kind: "intervention", label: "Numeracy", subtitle: "Math intervention surface", href: "numeracy.html" },
     { id: "workspace-tool-diagnostic", kind: "diagnostic", label: "Decoding Diagnostic", subtitle: "Diagnostic activity", href: "activities/decoding-diagnostic.html" },
-    { id: "workspace-tool-hub", kind: "resource", label: "Teacher Hub", subtitle: "Daily operating surface", href: "teacher-hub-v2.html" }
+    { id: "workspace-tool-hub", kind: "resource", label: "Specialist Hub", subtitle: "Daily operating surface", href: "teacher-hub-v2.html" }
   ];
   var workspaceSearchService = null;
 
@@ -1600,7 +1600,7 @@
         '<h3 class="queue-name">' + escAttr(student.name || "Student") + '</h3>',
         '<span class="queue-tier">' + escAttr(tier) + '</span>',
         '<p class="queue-signal">' + escAttr(signalLineForRow(row)) + '</p>',
-        '<button class="td-top-btn queue-open" type="button" data-attn-open="' + escAttr(student.id || "") + '">Open Plan</button>',
+        '<button class="td-top-btn queue-open" type="button" data-attn-open="' + escAttr(student.id || "") + '">Open Student Profile</button>',
         '</article>'
       ].join("");
     }).join("");
@@ -1609,7 +1609,7 @@
       button.addEventListener("click", function () {
         var sid = String(button.getAttribute("data-attn-open") || "");
         if (!sid) return;
-        window.location.href = appendStudentParam("./teacher-dashboard.html#student", sid);
+        window.location.href = appendStudentParam("./student-profile.html", sid);
       });
     });
   }
@@ -2735,7 +2735,7 @@
   bootstrapSkillStore();
   refreshBuildLine();
   applyRoleBasedSimplification();
-  setDashboardMode("daily");
+  setDashboardMode("reports");
   seedFromCaseloadStore();
   ensureDemoCaseload();
   primeDemoMetrics();

@@ -66,14 +66,6 @@
   main.cg-shell { min-height: 100dvh; overflow: visible; padding: 0; max-width: none; }
   #cg-shell { min-height: 100dvh; overflow: visible; }
 
-  /* Responsive: allow scroll on narrow viewports (< 1180px) */
-  @media (max-width: 1180px) {
-    html, body { height: auto; overflow-x: hidden; overflow-y: auto; }
-    main.cg-shell { height: auto; overflow: visible; }
-    #cg-shell { height: auto; overflow: visible; }
-    .cg-app { min-height: 0 !important; height: auto !important; overflow: visible !important; }
-    .cg-rail--left, .cg-rail--right, .cg-main-card { max-height: none !important; overflow: visible; height: auto; }
-  }
 
   /* Brandbar: compact */
   .cg-brandbar { margin-bottom: 10px; padding: 12px 18px 0; }
@@ -81,25 +73,6 @@
   .cg-brand-copy h1 { font-size: 22px; }
   .cg-brand-copy p  { display: none; }   /* hide subhead to save space */
 
-  /* Three-column layout keeps a strong desktop shell without trapping content */
-  .cg-app {
-    min-height: calc(100dvh - 76px);
-    height: auto;
-    align-items: start;
-    overflow: visible;
-    padding: 0 18px 18px;
-  }
-
-  /* Desktop columns can scroll internally, but page scroll is still available as a safety net */
-  .cg-rail--left,
-  .cg-rail--right,
-  .cg-main-card {
-    max-height: calc(100dvh - 120px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(148,170,200,0.3) transparent;
-  }
 
   /* Compact game cards — name + one-liner only */
   .cg-game-card {
@@ -113,14 +86,6 @@
   /* Hide tag chips on game cards */
   .cg-game-card .cg-inline-row { display: none; }
 
-  /* Stat cards: reduce visual weight significantly */
-  .cg-stat {
-    padding: 10px 12px;
-    border-radius: 10px;
-  }
-  .cg-stat-value { font-size: 22px; }
-  .cg-stat-label { font-size: 9px; }
-  .cg-stat-desc  { display: none; }   /* hide debug descriptions */
 
   /* Focus panel: more breathing room */
   .cg-focus-panel { gap: 14px; }
@@ -139,6 +104,15 @@
     font-size: 9px;
     opacity: 0.55;
     letter-spacing: 0.12em;
+  }
+
+  body[data-shell-view="gallery"] #cg-class-mode-btn,
+  body[data-shell-view="gallery"] #cg-theme-picker {
+    display: none !important;
+  }
+
+  body[data-shell-view="gallery"] .cg-shell {
+    padding: 0;
   }
 </style>
 <body class="game-platform-page">
@@ -211,11 +185,12 @@
       });
     })();
 
-    // Scroll active game into view when a game card is clicked
+    // Scroll active game into view when a game card is clicked in play mode
     (function() {
       document.addEventListener("click", function(e) {
         var card = e.target.closest && e.target.closest("[data-game-id]");
         if (!card) return;
+        if (document.body.getAttribute("data-shell-view") === "gallery") return;
         setTimeout(function() {
           var main = document.querySelector(".cg-main-card") || document.querySelector(".cg-stage-shell");
           if (main) main.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -267,6 +242,7 @@
   <script src="./games/content/error-content.js?v=20260306a"></script>
   <script src="./games/content/category-content.js?v=20260306a"></script>
   <script src="./games/content/sentence-content.js?v=20260306a"></script>
+  <script src="./games/content/typing-content.js?v=20260307m"></script>
   <script src="./games/content/game-content-generator.js?v=20260306a"></script>
   <script src="./games/content/game-content-registry.js?v=20260306a"></script>
 

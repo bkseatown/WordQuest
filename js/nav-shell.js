@@ -34,20 +34,29 @@
   function buildLinks() {
     var links = [
       { href: withBase("index.html"), label: "Home", pages: ["", "/", "index.html"] },
-      { href: withBase("teacher-hub-v2.html"), label: "Teacher Hub", pages: ["teacher-hub-v2.html"] },
-      { href: withBase("word-quest.html?play=1#wordquest"), label: "Word Quest", pages: ["word-quest.html"] },
-      { href: withBase("reading-lab.html"), label: "Reading Lab", pages: ["reading-lab.html"] },
-      { href: withBase("sentence-surgery.html"), label: "Sentence Studio", pages: ["sentence-surgery.html"] },
-      { href: withBase("activities/decoding-diagnostic.html"), label: "Decoding Diagnostic", pages: ["decoding-diagnostic.html"] },
-      { href: withBase("writing-studio.html"), label: "Writing Studio", pages: ["writing-studio.html"] },
-      { href: withBase("numeracy.html"), label: "Numeracy", pages: ["numeracy.html"] },
-      { href: withBase("admin-dashboard.html"), label: "Admin Dashboard", pages: ["admin-dashboard.html"] }
+      { href: withBase("teacher-hub-v2.html"), label: "Specialist Hub", pages: ["teacher-hub-v2.html"] },
+      {
+        href: withBase("game-platform.html"),
+        label: "Games",
+        pages: [
+          "game-platform.html",
+          "word-quest.html",
+          "reading-lab.html",
+          "sentence-surgery.html",
+          "writing-studio.html",
+          "numeracy.html",
+          "precision-play.html",
+          "decoding-diagnostic.html"
+        ]
+      },
+      { href: withBase("teacher-dashboard.html"), label: "Reports & Meetings", pages: ["teacher-dashboard.html"] }
     ];
     return links;
   }
 
   function init() {
     if (!document.body || document.getElementById("cs-nav-shell")) return;
+    return;
 
     var current = normalizePage(window.location.pathname);
     var nav = document.createElement("nav");

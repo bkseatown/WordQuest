@@ -21,6 +21,7 @@
   function parseParams() {
     var params = new URLSearchParams(runtimeRoot.location.search || "");
     return {
+      playMode: params.get("play") === "1",
       studentId: String(params.get("student") || "").trim(),
       classId: String(params.get("classId") || params.get("class") || params.get("blockId") || "").trim(),
       lessonContextId: String(params.get("lessonContextId") || "").trim(),
@@ -53,10 +54,10 @@
       })[0] || null);
       if (student) {
         context.studentName = student.name || "";
-        context.gradeBand = normalizeGradeBand(student.gradeBand || student.grade || params.gradeBand || "3-5");
+        context.gradeBand = normalizeGradeBand(student.gradeBand || student.grade || params.gradeBand || "K-2");
       }
     }
-    if (!context.gradeBand) context.gradeBand = normalizeGradeBand(params.gradeBand || "3-5");
+    if (!context.gradeBand) context.gradeBand = normalizeGradeBand(params.gradeBand || "K-2");
     if (TeacherSelectors && typeof TeacherSelectors.getLessonContext === "function" && params.lessonContextId) {
       var lesson = TeacherSelectors.getLessonContext(params.lessonContextId, { TeacherStorage: runtimeRoot.CSTeacherStorage }) || null;
       if (lesson) {
@@ -113,7 +114,8 @@
         customWordSet: input.settings && input.settings.customWordSet || "",
         contentMode: input.settings && input.settings.contentMode || input.context && input.context.contentMode || "lesson",
         difficulty: input.settings && input.settings.difficulty || "core",
-        viewMode: input.settings && input.settings.viewMode || "individual"
+        viewMode: input.settings && input.settings.viewMode || "individual",
+        roundIndex: input.roundIndex || 0
       });
     }
 
@@ -131,7 +133,11 @@
           return {
             id: row.id || ("wq-" + Date.now()),
             promptLabel: "Crack the clue and find the word.",
-            entryLabel: row.clue || "A new clue is on the board.",
+            entryLabel: (input.roundIndex || 0) % 3 === 1
+              ? "Fast start: read the clue and lock one strong guess."
+              : (input.roundIndex || 0) % 3 === 2
+                ? "Think about the meaning before the spelling."
+                : (row.clue || "A new clue is on the board."),
             prompt: row.clue || "New clue ready.",
             answer: String(row.word || "trace").toLowerCase(),
             timerSeconds: 75,
@@ -157,12 +163,57 @@
           };
         }
       },
+      "word-typing": {
+        id: "word-typing",
+        title: "Word Keys",
+        subtitle: "Type the lesson word, lock the spelling pattern, and build keyboard confidence through real literacy practice.",
+        tags: ["Typing + Literacy", "Orthographic Mapping", "Home Row to Full Keyboard"],
+        modeLabel: "Type",
+        baseTimerSeconds: 50,
+        roundTarget: 6,
+        createRound: function (input) {
+          var row = registry.pickRound("word-typing", roundContext(input), input.history) || {};
+          return {
+            id: row.id || ("typing-" + Date.now()),
+            promptLabel: row.prompt || "Type the word.",
+            entryLabel: input.settings.viewMode === "projector" || input.settings.viewMode === "classroom"
+              ? "Model once, then type the word together."
+              : "Eyes on the full word. Type with steady rhythm.",
+            prompt: row.prompt || "Type the word.",
+            target: String(row.target || "said").toLowerCase(),
+            keyboardZone: row.keyboardZone || "home row",
+            orthographyFocus: row.orthographyFocus || "high-frequency pattern",
+            fingerCue: row.fingerCue || "Look across the whole word before you type.",
+            hint: row.meaningHint || "Notice the spelling chunk that stays stable in the word.",
+            timerSeconds: 50,
+            basePoints: 115
+          };
+        },
+        evaluateRound: function (payload) {
+          var response = payload.response || {};
+          var round = payload.round || {};
+          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher moved the class to the next typing word." };
+          if (response.timedOut) return { correct: false, message: "Time ended. The word was " + String(round.target || "").toUpperCase() + "." };
+          var typed = String(response.value || "").trim().toLowerCase();
+          var target = String(round.target || "").toLowerCase();
+          if (!typed) return { correct: false, message: "No word typed. The target was " + target.toUpperCase() + "." };
+          if (typed === target) return { correct: true, message: "Typed cleanly. Pattern locked in." };
+          var states = guessState(typed, target);
+          var hitCount = states.filter(function (value) { return value === "correct" || value === "present"; }).length;
+          return {
+            correct: false,
+            nearMiss: hitCount >= Math.max(1, Math.floor(target.length / 2)),
+            message: hitCount ? "Close. Recheck the spelling chunk and try again." : "Reset the pattern and type it once more.",
+            evaluation: states
+          };
+        }
+      },
       "word-connections": {
         id: "word-connections",
         title: "Say It Another Way",
-        subtitle: "Help your team guess the lesson word without saying the blocked words on the card.",
-        tags: ["Word Play", "Academic Language", "Teacher Scored"],
-        modeLabel: "Describe",
+        subtitle: "Give a smart clue so your team can guess the lesson word without using the blocked words on the card.",
+        tags: ["Team Guessing", "Academic Language", "Projector Ready"],
+        modeLabel: "Clue",
         baseTimerSeconds: 60,
         roundTarget: 6,
         createRound: function (input) {
@@ -178,12 +229,16 @@
             : null;
           return {
             id: row.id || ("wc-" + Date.now()),
-            promptLabel: "Describe the word without using the blocked words.",
-            entryLabel: generated && generated.instructionalFocus || "Give just enough clues so your team can name the word.",
+            promptLabel: "Clue the word without using the blocked words.",
+            entryLabel: generated && generated.instructionalFocus || (input.settings.viewMode === "projector" || input.settings.viewMode === "classroom"
+              ? "One speaker clues. The group locks the guess."
+              : "Give just enough clues so a partner can name the word."),
             targetWord: generated && generated.targetWord || row.target || "analyze",
             forbiddenWords: generated && generated.forbiddenWords || row.forbidden || [],
             scaffolds: generated && generated.scaffolds || row.scaffolds || [],
-            requiredMove: row.requiredMove || "Use a clear clue in one or two complete sentences that would fit the lesson.",
+            requiredMove: row.requiredMove || (input.settings.viewMode === "projector" || input.settings.viewMode === "classroom"
+              ? "Give one clean clue the whole class can build on without saying the blocked words."
+              : "Use a clear clue in one or two complete sentences that fit the lesson."),
             timerSeconds: generated && generated.timerSeconds || 60,
             hint: (generated && generated.scaffolds || row.scaffolds || [])[0] || "Try an example, function, or comparison instead of a definition.",
             basePoints: 100
@@ -262,7 +317,9 @@
           return {
             id: row.id || ("ladder-" + Date.now()),
             promptLabel: row.prompt || "Name the concept.",
-            entryLabel: "Reveal only the clues you need.",
+            entryLabel: input.settings.viewMode === "projector" || input.settings.viewMode === "classroom"
+              ? "Pause after each clue so teams can decide."
+              : "Reveal only the clues you need.",
             prompt: row.prompt || "Name the concept.",
             clues: (row.clues || []).slice(),
             answer: String(row.answer || ""),
@@ -329,7 +386,9 @@
           return {
             id: row.id || ("category-" + Date.now()),
             promptLabel: row.prompt || "Fill the category.",
-            entryLabel: row.category || "Category rush ready.",
+            entryLabel: input.settings.viewMode === "projector" || input.settings.viewMode === "classroom"
+              ? ((row.category || "Category rush") + " · teacher collects the team answers.")
+              : ((input.roundIndex || 0) % 2 === 1 ? "Go for quality before quantity." : (row.category || "Category rush ready.")),
             prompt: row.prompt || "Fill the category.",
             accepted: (row.accepted || []).slice(),
             timerSeconds: 40,
@@ -411,6 +470,11 @@
     return url.pathname.replace(/^\//, "./") + (url.search || "");
   }
 
+  function galleryLaunchHref(gameId, context) {
+    if (gameId === "word-quest") return launchHref("./word-quest.html?play=1", context);
+    return launchHref("./game-platform.html?play=1&game=" + encodeURIComponent(gameId), context);
+  }
+
   function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
   }
@@ -433,43 +497,15 @@
     return "Keep moving";
   }
 
-  function renderProgressSteps(state) {
-    var rows = [];
-    for (var i = 0; i < state.roundTarget; i += 1) {
-      var className = "cg-progress-step";
-      if (i < state.roundsCompleted) className += " is-complete";
-      else if (i === state.roundsCompleted) className += " is-active";
-      rows.push('<span class="' + className + '"></span>');
-    }
-    return rows.join("");
-  }
-
-  function buildConfidenceRing(state) {
-    var total = Math.max(1, state.metrics.correct + state.metrics.incorrect + state.metrics.nearMiss);
-    var ratio = clamp((state.metrics.correct + (state.metrics.nearMiss * 0.5)) / total, 0, 1);
-    var radius = 16;
-    var circumference = 2 * Math.PI * radius;
-    var dash = Math.round(circumference * ratio * 1000) / 1000;
-    return [
-      '<svg class="cg-ring" viewBox="0 0 40 40" aria-hidden="true">',
-      '  <circle class="cg-ring-track" cx="20" cy="20" r="' + radius + '"></circle>',
-      '  <circle class="cg-ring-value" cx="20" cy="20" r="' + radius + '" stroke-dasharray="' + dash + " " + circumference + '"></circle>',
-      '  <text class="cg-ring-label" x="20" y="22" text-anchor="middle">' + Math.round(ratio * 100) + "%</text>",
-      "</svg>"
-    ].join("");
-  }
-
-  function momentumLabel(state) {
-    if (state.streak >= 3) return "Momentum high";
-    if (state.metrics.nearMiss > state.metrics.correct) return "Hints close to landing";
-    if (state.roundsCompleted === 0) return "Immediate first action ready";
-    return "Progress steady";
-  }
-
   function supportLine(context, state) {
     var subject = context.subject || "ELA";
     var mode = (runtimeRoot.CSGameModes.VIEW_MODES[state.settings.viewMode] || {}).label || "Individual";
     return subject + " · " + mode + " · " + (context.lessonTitle || context.classLabel || "Context-aware set");
+  }
+
+  function isGroupView(state) {
+    var mode = String(state && state.settings && state.settings.viewMode || "");
+    return mode === "smallGroup" || mode === "classroom" || mode === "projector";
   }
 
   function contentSetLabel(value) {
@@ -480,11 +516,168 @@
     return "Lesson-aligned";
   }
 
+  function galleryCaption(gameId) {
+    if (gameId === "word-quest") return "Best for: solo, pairs, fast warm-ups";
+    if (gameId === "word-typing") return "Best for: literacy typing, centers, keyboard warm-ups";
+    if (gameId === "word-connections") return "Best for: partners, teams, projector play";
+    if (gameId === "morphology-builder") return "Best for: intervention, word study, pairs";
+    if (gameId === "concept-ladder") return "Best for: lesson launch, teams, projector";
+    if (gameId === "error-detective") return "Best for: small group, discussion, reteach";
+    if (gameId === "rapid-category") return "Best for: teams, projector, retrieval bursts";
+    if (gameId === "sentence-builder") return "Best for: solo, partners, language support";
+    return "Best for: quick lesson-ready practice";
+  }
+
   function resultTone(outcome) {
     if (!outcome) return "calm";
     if (outcome.correct || outcome.teacherOverride) return "positive";
     if (outcome.nearMiss) return "warning";
     return "negative";
+  }
+
+  function roundFocusLabel(game, round) {
+    if (!game || !round) return "";
+    if (game.id === "word-typing") return [round.keyboardZone, round.orthographyFocus].filter(Boolean).join(" · ");
+    if (game.id === "word-quest") return round.answer ? ("Target length · " + String(round.answer).length + " letters") : "";
+    if (game.id === "word-connections") return "Blocked words stay out";
+    if (game.id === "morphology-builder") return round.meaningHint ? "Meaning unlock after build" : "Build from parts";
+    if (game.id === "concept-ladder") return "Earlier solves earn more";
+    if (game.id === "error-detective") return round.misconception || "Misconception repair";
+    if (game.id === "rapid-category") return "Unique answers score stronger";
+    if (game.id === "sentence-builder") return round.requiredToken ? ("Must include " + round.requiredToken) : "Academic language required";
+    return "";
+  }
+
+  function roundGuide(game, state, round) {
+    if (!game || !round) return "";
+    var group = isGroupView(state);
+    var firstMove = "";
+    var turnCue = "";
+    var winCue = "";
+
+    if (game.id === "word-quest") {
+      firstMove = group ? "Read the clue out loud and agree on one class guess." : "Read the clue and type one confident guess.";
+      turnCue = group ? "Teacher chooses when to lock the team answer." : "Use the tile reveal to decide your next move fast.";
+      winCue = "Land the correct word before the timer runs out.";
+    } else if (game.id === "word-typing") {
+      firstMove = group ? "Model the word once, then have the class type it together." : "Look across the whole word, then type it smoothly.";
+      turnCue = group ? "Pause after each word so students notice the spelling chunk before the next round." : "Accuracy comes first. Speed follows once the pattern feels automatic.";
+      winCue = "Type the target word exactly and lock in the keyboard pattern.";
+    } else if (game.id === "word-connections") {
+      firstMove = group ? "One speaker gives the first clue while the team listens for the target word." : "Give one clear clue without using any blocked words.";
+      turnCue = group ? "Rotate speakers each round so every team member gets a clue turn." : "Keep the clue short, useful, and lesson-linked.";
+      winCue = "Help the guesser land the word without saying the blocked words.";
+    } else if (game.id === "morphology-builder") {
+      firstMove = "Tap the parts in the order that builds a real word.";
+      turnCue = group ? "Ask students to explain each morpheme before confirming the build." : "Use the meaning of each chunk to test your build.";
+      winCue = "Build the complete word and unlock the meaning hint.";
+    } else if (game.id === "concept-ladder") {
+      firstMove = "Start with the first clue only.";
+      turnCue = group ? "Pause after every clue so teams can commit before revealing more." : "Only reveal another clue if you really need it.";
+      winCue = "Solve early to earn the strongest round.";
+    } else if (game.id === "error-detective") {
+      firstMove = "Spot what is wrong in the example before choosing a fix.";
+      turnCue = group ? "Let teams explain why a choice repairs the thinking, not just the wording." : "Choose the fix that repairs the reasoning.";
+      winCue = "Close the case with the option that truly fixes the misconception.";
+    } else if (game.id === "rapid-category") {
+      firstMove = group ? "Name fast ideas while one person records only the strongest responses." : "Type as many relevant words as you can before time ends.";
+      turnCue = group ? "Reject repeats and keep only unique answers that fit the category." : "Unique, lesson-fit words beat filler.";
+      winCue = "Collect enough strong responses to clear the round.";
+    } else if (game.id === "sentence-builder") {
+      firstMove = "Rebuild the sentence one tile at a time.";
+      turnCue = group ? "Have partners justify the order before the class locks the sentence." : "Check transition, grammar, and target vocabulary together.";
+      winCue = "Build a sentence that is correct, smooth, and lesson-ready.";
+    }
+
+    return [
+      '<div class="cg-round-guide">',
+      roundFocusLabel(game, round) ? ('  <div class="cg-round-guide__focus">' + runtimeRoot.CSGameComponents.escapeHtml(roundFocusLabel(game, round)) + '</div>') : "",
+      '  <div class="cg-round-guide__row"><strong>First move</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(firstMove) + '</span></div>',
+      '  <div class="cg-round-guide__row"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(group ? "Teacher cue" : "Play cue") + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(turnCue) + '</span></div>',
+      '  <div class="cg-round-guide__row"><strong>Win the round</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(winCue) + "</span></div>",
+      "</div>"
+    ].join("");
+  }
+
+  function nextStepLine(game, outcome) {
+    if (!game || !outcome) return "";
+    if (outcome.correct || outcome.teacherOverride) {
+      if (game.id === "word-typing") return "Next move: add one more word from the same spelling pattern.";
+      if (game.id === "concept-ladder") return "Next move: start the next round with one clue fewer if the class is ready.";
+      if (game.id === "rapid-category") return "Next move: raise the category challenge or switch teams.";
+      return "Next move: take the next round while the pattern is still fresh.";
+    }
+    if (outcome.nearMiss) return "Next move: keep the same round and use the hint before moving on.";
+    if (game.id === "word-connections") return "Next move: try one sharper clue path instead of a full reset.";
+    return "Next move: reset cleanly and try the round again with one stronger first move.";
+  }
+
+  function turnRotationLabel(state) {
+    var roundNumber = Number(state && state.roundIndex || 0) + 1;
+    var seat = (roundNumber % 4) || 4;
+    return "Speaker " + seat;
+  }
+
+  function roundVariationLine(game, state, round) {
+    var step = Number(state && state.roundIndex || 0) % 3;
+    if (!game || !round) return "";
+    if (game.id === "word-quest") {
+      return step === 0 ? "Variation: fast solve round." : step === 1 ? "Variation: justify before you lock the guess." : "Variation: use the clue meaning, not just the first letter.";
+    }
+    if (game.id === "word-typing") {
+      return step === 0 ? "Variation: accuracy first." : step === 1 ? "Variation: say the chunk, then type it." : "Variation: type the whole word without pausing between parts.";
+    }
+    if (game.id === "word-connections") {
+      return step === 0 ? "Variation: example clue." : step === 1 ? "Variation: function clue." : "Variation: compare-and-contrast clue.";
+    }
+    if (game.id === "morphology-builder") {
+      return step === 0 ? "Variation: build by meaning." : step === 1 ? "Variation: build by order." : "Variation: explain each part before confirming.";
+    }
+    if (game.id === "concept-ladder") {
+      return step === 0 ? "Variation: solve early." : step === 1 ? "Variation: justify before the reveal." : "Variation: team vote before the next rung.";
+    }
+    if (game.id === "error-detective") {
+      return step === 0 ? "Variation: name the error first." : step === 1 ? "Variation: compare two possible fixes." : "Variation: explain why the wrong choice fails.";
+    }
+    if (game.id === "rapid-category") {
+      return step === 0 ? "Variation: speed burst." : step === 1 ? "Variation: no repeats." : "Variation: quality over quantity.";
+    }
+    if (game.id === "sentence-builder") {
+      return step === 0 ? "Variation: grammar check." : step === 1 ? "Variation: transition check." : "Variation: target vocabulary check.";
+    }
+    return "";
+  }
+
+  function renderHostControls(game, state, round) {
+    if (!isGroupView(state) || !game || !round) return "";
+    var primaryAction = "";
+    var secondaryAction = "";
+    if (game.id === "concept-ladder") {
+      primaryAction = '<button class="cg-action cg-action-primary" type="button" data-action="reveal-clue">Reveal Next Clue</button>';
+      secondaryAction = '<button class="cg-action cg-action-quiet" type="button" data-action="teacher-override">Award Solve</button>';
+    } else if (game.id === "word-connections") {
+      primaryAction = '<button class="cg-action cg-action-primary" type="button" data-action="teacher-override">Count Team Clue</button>';
+      secondaryAction = '<button class="cg-action cg-action-quiet" type="button" data-action="next-round">Rotate Speaker</button>';
+    } else if (game.id === "rapid-category") {
+      primaryAction = '<button class="cg-action cg-action-primary" type="button" data-action="teacher-override">Count Team Round</button>';
+      secondaryAction = '<button class="cg-action cg-action-quiet" type="button" data-action="next-round">Switch Team</button>';
+    } else if (game.id === "error-detective") {
+      primaryAction = '<button class="cg-action cg-action-primary" type="button" data-action="teacher-override">Accept Fix</button>';
+      secondaryAction = '<button class="cg-action cg-action-quiet" type="button" data-action="next-round">Open Next Case</button>';
+    } else {
+      primaryAction = '<button class="cg-action cg-action-primary" type="button" data-action="teacher-override">Move Class Forward</button>';
+      secondaryAction = '<button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Round</button>';
+    }
+    return [
+      '<div class="cg-host-panel">',
+      '  <div class="cg-host-panel__meta">',
+      '    <span class="cg-host-pill">Projector host controls</span>',
+      '    <strong>' + runtimeRoot.CSGameComponents.escapeHtml(turnRotationLabel(state)) + "</strong>",
+      '    <span>' + runtimeRoot.CSGameComponents.escapeHtml(roundVariationLine(game, state, round)) + "</span>",
+      "  </div>",
+      '  <div class="cg-feedback-actions">' + primaryAction + secondaryAction + "</div>",
+      "</div>"
+    ].join("");
   }
 
   function renderFeedback(feedback) {
@@ -499,13 +692,13 @@
     ].join("");
   }
 
-  function renderResultBanner(state) {
+  function renderResultBanner(state, game) {
     if (!state.lastOutcome || (state.status !== "round-complete" && state.status !== "round-summary")) return "";
     var tone = resultTone(state.lastOutcome);
     return [
       '<div class="cg-result-banner" data-tone="' + tone + '">',
       '  <div class="cg-result-banner-icon">' + runtimeRoot.CSGameComponents.iconFor(tone === "positive" ? "score" : tone === "warning" ? "hint" : "progress") + "</div>",
-      '  <div class="cg-result-banner-copy"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(state.lastOutcome.correct ? "Round complete" : state.lastOutcome.nearMiss ? "Reasoning close" : "Round reset") + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(state.feedback && state.feedback.label || "") + "</span></div>",
+      '  <div class="cg-result-banner-copy"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(state.lastOutcome.correct ? "Round complete" : state.lastOutcome.nearMiss ? "Reasoning close" : "Round reset") + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(state.feedback && state.feedback.label || "") + '</span><small>' + runtimeRoot.CSGameComponents.escapeHtml(nextStepLine(game, state.lastOutcome)) + "</small></div>",
       '  <div class="cg-points-badge">+' + Number(state.lastPoints || 0) + " pts</div>",
       "</div>"
     ].join("");
@@ -531,6 +724,7 @@
 
   function init() {
     var params = parseParams();
+    var galleryOnly = !params.playMode;
     var context = loadTeacherContext(params);
     var recommendedGame = params.gameId || (runtimeRoot.CSGameContentRegistry && runtimeRoot.CSGameContentRegistry.recommendedGame
       ? runtimeRoot.CSGameContentRegistry.recommendedGame(context)
@@ -586,132 +780,93 @@
     function render() {
       var state = engine.getState();
       var currentGame = games[state.selectedGameId];
-      var now = Date.now();
-      var progressPct = Math.max(0, Math.min(100, Math.round((state.roundsCompleted / Math.max(1, state.roundTarget)) * 100)));
-      var totalAttempts = Math.max(1, state.metrics.correct + state.metrics.incorrect + state.metrics.nearMiss);
       var projectorSuggested = state.settings.viewMode === "projector" || state.settings.viewMode === "classroom";
       runtimeRoot.document.documentElement.setAttribute("data-view-mode", state.settings.viewMode || "individual");
+      runtimeRoot.document.body.setAttribute("data-shell-view", galleryOnly ? "gallery" : "play");
+
+      if (galleryOnly) {
+        shell.innerHTML = [
+          '<div class="cg-brandbar cg-brandbar--gallery">',
+          '  <div class="cg-brand">',
+          '    <div class="cg-brand-mark">' + runtimeRoot.CSGameComponents.iconFor(state.selectedGameId, "cg-icon cg-icon--game") + "</div>",
+          '    <div class="cg-brand-copy">',
+          '      <p class="cg-kicker">Cornerstone MTSS</p>',
+          '      <h1 class="cg-display">Choose a Game</h1>',
+          '      <p>Short, lesson-ready games for classroom practice, family play, and student choice.</p>',
+          "    </div>",
+          "  </div>",
+          "</div>",
+          '<section class="cg-gallery-shell">',
+          '  <div class="cg-gallery-grid">' + Object.keys(games).map(function (id) {
+            return runtimeRoot.CSGameComponents.renderGameCard(games[id], false, {
+              href: galleryLaunchHref(id, context),
+              actionLabel: "Open Game",
+              caption: galleryCaption(id)
+            });
+          }).join("") + "</div>",
+          "</section>"
+        ].join("");
+        bindInteractions();
+        return;
+      }
 
       shell.innerHTML = [
-        '<div class="cg-brandbar">',
+        '<div class="cg-brandbar cg-brandbar--play">',
         '  <div class="cg-brand">',
         '    <div class="cg-brand-mark">' + runtimeRoot.CSGameComponents.iconFor(state.selectedGameId, "cg-icon cg-icon--game") + "</div>",
         '    <div class="cg-brand-copy">',
         '      <p class="cg-kicker">Cornerstone MTSS</p>',
-        '      <h1 class="cg-display">Game Platform</h1>',
-        '      <p>Professional-grade shared shell for instructional games, tuned for live teaching, small groups, and projector play.</p>',
+        '      <h1 class="cg-display">' + runtimeRoot.CSGameComponents.escapeHtml(currentGame.title) + "</h1>",
+        '      <p>' + runtimeRoot.CSGameComponents.escapeHtml(currentGame.subtitle) + "</p>",
         "    </div>",
         "  </div>",
         '  <div class="cg-toolbar">',
-        '    <a class="cg-action cg-action-quiet" href="./teacher-hub-v2.html">' + runtimeRoot.CSGameComponents.iconFor("context") + 'Back to Teacher Hub</a>',
+        '    <a class="cg-action cg-action-quiet" href="./game-platform.html">' + runtimeRoot.CSGameComponents.iconFor("context") + 'All Games</a>',
         '    <button class="cg-action cg-action-quiet" type="button" data-action="toggle-teacher">' + runtimeRoot.CSGameComponents.iconFor("teacher") + (uiState.teacherPanelOpen ? "Hide Controls" : "Teacher Controls") + "</button>",
         '    <button class="cg-action cg-action-quiet" type="button" data-action="hint">' + runtimeRoot.CSGameComponents.iconFor("hint") + "Hint</button>",
-        '    <button class="cg-action cg-action-primary" type="button" data-action="restart">' + runtimeRoot.CSGameComponents.iconFor("progress") + "Quick Restart</button>",
+        '    <button class="cg-action cg-action-primary" type="button" data-action="restart">' + runtimeRoot.CSGameComponents.iconFor("progress") + "Restart</button>",
         "  </div>",
         "</div>",
-        '<div class="cg-app">',
-        '  <aside class="cg-rail cg-rail--left">',
-        '    <section class="cg-rail-card cg-surface">',
-        '      <p class="cg-kicker">Game Header</p>',
-        '      <div class="cg-game-grid">' + Object.keys(games).map(function (id) {
-          return runtimeRoot.CSGameComponents.renderGameCard(games[id], id === state.selectedGameId);
-        }).join("") + "</div>",
-        "    </section>",
-        '    <section class="cg-rail-card cg-surface cg-context-card">',
-        '      <p class="cg-kicker">Context Injection</p>',
-        '      <div class="cg-context-list">',
-        '        <div><strong>Student</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.studentName || context.studentId || "Whole group") + "</span></div>",
-        '        <div><strong>Class / Lesson</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.classLabel || context.lessonTitle || "No lesson lock") + "</span></div>",
-        '        <div><strong>Subject</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.subject || "ELA") + "</span></div>",
-        '        <div><strong>Program</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.programId || "General") + "</span></div>",
-        '        <div><strong>Grade Band</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.gradeBand || "3-5") + "</span></div>",
-        '        <div><strong>Content Set</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(contentSetLabel(state.settings.contentMode || context.contentMode || "lesson")) + "</span></div>",
+        '<div class="cg-play-shell">',
+        '  <section class="cg-main-card cg-surface cg-stage-shell cg-stage-shell--focused">',
+        '    <div class="cg-stage-meta">',
+        '      <div class="cg-stage-head">',
+        "        <div>",
+        '          <p class="cg-kicker">Now Playing</p>',
+        '          <h2 class="cg-display">' + runtimeRoot.CSGameComponents.escapeHtml(currentGame.title) + '</h2>',
+        '          <p>' + runtimeRoot.CSGameComponents.escapeHtml(state.round && state.round.promptLabel || currentGame.subtitle) + '</p>',
+        "        </div>",
+        '        <div class="cg-stage-toolbar">',
+        '          <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("projector") + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.VIEW_MODES[state.settings.viewMode] || {}).label || "Individual") + '</span>',
+        '          <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("progress") + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.DIFFICULTY[state.settings.difficulty] || {}).label || "Core") + '</span>',
+        '          <span class="cg-chip" data-tone="' + (state.settings.timerEnabled ? "positive" : "warning") + '">' + runtimeRoot.CSGameComponents.iconFor("timer") + (state.settings.timerEnabled ? "Timed" : "Untimed") + '</span>',
+        "        </div>",
         "      </div>",
         '      <div class="cg-context-chips">',
-        '        <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + runtimeRoot.CSGameComponents.escapeHtml(supportLine(context, state)) + "</span>",
+        '        <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + runtimeRoot.CSGameComponents.escapeHtml(supportLine(context, state)) + '</span>',
         (projectorSuggested ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("projector") + 'Projector-safe layout ready</span>' : ""),
         "      </div>",
-        "    </section>",
-        "  </aside>",
-        '  <main class="cg-main">',
-        '    <section class="cg-main-card cg-surface cg-stage-shell">',
-        '      <div class="cg-stage-meta">',
-        '        <div class="cg-stage-head">',
-        "          <div>",
-        '            <p class="cg-kicker">Unified Game Loop</p>',
-        '            <h2 class="cg-display">' + runtimeRoot.CSGameComponents.escapeHtml(currentGame.title) + "</h2>",
-        '            <p>' + runtimeRoot.CSGameComponents.escapeHtml(currentGame.subtitle) + "</p>",
-        "          </div>",
-        '          <div class="cg-stage-toolbar">',
-        '            <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("projector") + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.VIEW_MODES[state.settings.viewMode] || {}).label || "Individual") + "</span>",
-        '            <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("progress") + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.DIFFICULTY[state.settings.difficulty] || {}).label || "Core") + "</span>",
-        '            <span class="cg-chip" data-tone="' + (state.settings.timerEnabled ? "positive" : "warning") + '">' + runtimeRoot.CSGameComponents.iconFor("timer") + (state.settings.timerEnabled ? "Timed" : "Untimed") + "</span>",
-        "          </div>",
-        "        </div>",
-        '        <div class="cg-mission-card">',
-        '          <div class="cg-mission-grid">',
-        '            <div class="cg-mission-copy">',
-        '              <p class="cg-kicker">Focus Panel</p>',
-        '              <h3 class="cg-display">' + runtimeRoot.CSGameComponents.escapeHtml(state.round && state.round.promptLabel || "Fast entry") + "</h3>",
-        '              <p class="cg-mission-line">' + runtimeRoot.CSGameComponents.escapeHtml(momentumLabel(state)) + "</p>",
-        '              <div class="cg-context-chips">',
-        '                <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(state.round && state.round.hint || "Hint ready on demand") + "</span>",
-        '                <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("teacher") + runtimeRoot.CSGameComponents.escapeHtml(state.settings.hintsEnabled ? "Hints available" : "Hints locked") + "</span>",
-        "              </div>",
-        "            </div>",
-        '            <div class="cg-stat-confidence"><div>' + buildConfidenceRing(state) + '<div class="cg-stat-note">Confidence ring · ' + totalAttempts + " rounds read</div></div></div>",
-        "          </div>",
-        "        </div>",
         renderFeedback(state.feedback),
-        renderResultBanner(state),
-        '        <div class="cg-stat-grid">',
-        '          <article class="cg-stat' + (uiState.bumpUntil.score > now ? " is-bump" : "") + '"><div class="cg-stat-head"><div class="cg-stat-label">' + runtimeRoot.CSGameComponents.iconFor("score") + 'Score</div><span class="cg-chip">' + totalAttempts + ' tracked</span></div><div class="cg-stat-value">' + state.score + '</div><div class="cg-stat-note">Scoreboard update anchors the round.</div></article>',
-        '          <article class="cg-stat' + (uiState.bumpUntil.rounds > now ? " is-bump" : "") + '"><div class="cg-stat-head"><div class="cg-stat-label">' + runtimeRoot.CSGameComponents.iconFor("progress") + 'Round</div><span class="cg-chip">' + (state.roundsCompleted + 1) + "/" + state.roundTarget + '</span></div><div class="cg-stat-value">' + (state.roundsCompleted + 1) + '</div><div class="cg-stat-note">Students always see what comes next.</div></article>',
-        '          <article class="cg-stat' + (uiState.bumpUntil.streak > now ? " is-bump" : "") + '"><div class="cg-stat-head"><div class="cg-stat-label">' + runtimeRoot.CSGameComponents.iconFor("streak") + 'Streak</div><span class="cg-chip" data-tone="' + (state.streak >= 3 ? "positive" : "focus") + '">' + momentumLabel(state) + '</span></div><div class="cg-stat-value">' + state.streak + '</div><div class="cg-stat-note">Challenge meter without noise.</div></article>',
-        '          <article class="cg-stat"><div class="cg-stat-head"><div class="cg-stat-label">' + runtimeRoot.CSGameComponents.iconFor("timer") + 'Timer</div><span class="cg-chip" data-tone="' + (state.timerRemaining <= 10 && state.settings.timerEnabled ? "warning" : "focus") + '">' + (state.settings.timerEnabled ? "Live" : "Off") + '</span></div><div class="cg-stat-value">' + (state.settings.timerEnabled ? ((state.timerRemaining || 0) + "s") : "Off") + '</div><div class="cg-stat-note">120–260ms motion; no layout-heavy effects.</div></article>',
-        "        </div>",
-        '        <div class="cg-progress-shell"><div class="cg-progress"><span style="width:' + progressPct + '%"></span></div><div class="cg-progress-steps">' + renderProgressSteps(state) + "</div></div>",
-        '      </div>',
+        renderResultBanner(state, currentGame),
         '      <div id="cg-stage-board" class="cg-stage-board"></div>',
-        "    </section>",
-        "  </main>",
-        '  <aside class="cg-rail cg-rail--right">',
-        '    <section class="cg-rail-card cg-surface' + (uiState.teacherPanelOpen ? "" : " cg-hidden") + '" id="cg-teacher-panel">',
-        '      <p class="cg-kicker">Teacher Control Panel</p>',
-        '      <div class="cg-control-grid">',
-        '        <div class="cg-field"><label for="cg-view-mode">Mode</label><select id="cg-view-mode" class="cg-select"><option value="individual">Individual</option><option value="smallGroup">Small Group</option><option value="classroom">Classroom</option><option value="projector">Projector</option></select></div>',
-        '        <div class="cg-field"><label for="cg-difficulty">Difficulty</label><select id="cg-difficulty" class="cg-select"><option value="scaffolded">Scaffolded</option><option value="core">Core</option><option value="stretch">Stretch</option></select></div>',
-        '        <div class="cg-field"><label for="cg-subject">Subject</label><select id="cg-subject" class="cg-select"><option value="ELA">ELA</option><option value="Intervention">Intervention</option><option value="Writing">Writing</option><option value="Math">Math</option><option value="Science">Science</option></select></div>',
-        '        <div class="cg-field"><label for="cg-grade-band">Grade Band</label><select id="cg-grade-band" class="cg-select"><option value="K-2">K-2</option><option value="3-5">3-5</option><option value="6-8">6-8</option><option value="9-12">9-12</option></select></div>',
-        '        <div class="cg-field"><label for="cg-content-mode">Content Set</label><select id="cg-content-mode" class="cg-select"><option value="lesson">Lesson-aligned</option><option value="subject">Broader subject bank</option><option value="morphology">Morphology family</option><option value="custom">Custom word lock</option></select></div>',
-        '        <div class="cg-field"><label for="cg-skill-focus">Skill Focus</label><input id="cg-skill-focus" class="cg-input" type="text" value="' + runtimeRoot.CSGameComponents.escapeHtml(context.skillFocus || "") + '" placeholder="LIT.MOR.ROOT"></div>',
-        '        <div class="cg-field"><label for="cg-custom-word-set">Custom Word Set / Lesson Lock</label><input id="cg-custom-word-set" class="cg-input" type="text" value="' + runtimeRoot.CSGameComponents.escapeHtml(state.settings.customWordSet || "") + '" placeholder="prefix, claim, ratio"></div>',
-        '        <label class="cg-checkbox"><input id="cg-toggle-timer" type="checkbox"' + (state.settings.timerEnabled ? " checked" : "") + '>Timer enabled</label>',
-        '        <label class="cg-checkbox"><input id="cg-toggle-hints" type="checkbox"' + (state.settings.hintsEnabled ? " checked" : "") + '>Hints enabled</label>',
-        '        <label class="cg-checkbox"><input id="cg-toggle-sound" type="checkbox"' + (state.settings.soundEnabled ? " checked" : "") + '>Optional sound layer</label>',
-        '        <button class="cg-action cg-action-quiet" type="button" data-action="teacher-override">' + runtimeRoot.CSGameComponents.iconFor("teacher") + 'Teacher Override</button>',
-        "      </div>",
-        "    </section>",
-        '    <section class="cg-rail-card cg-surface cg-support-card">',
-        '      <p class="cg-kicker">Momentum</p>',
-        '      <div class="cg-summary-list">',
-        '        <div class="cg-summary-item"><strong>Correct</strong><div>' + state.metrics.correct + ' rounds landed cleanly.</div></div>',
-        '        <div class="cg-summary-item"><strong>Near Miss</strong><div>' + state.metrics.nearMiss + ' rounds earned guidance without full reset.</div></div>',
-        '        <div class="cg-summary-item"><strong>Next Move</strong><div>' + runtimeRoot.CSGameComponents.escapeHtml(state.settings.hintsEnabled ? "Hint prompt available after any miss." : "Teacher-led support only.") + "</div></div>",
-        "      </div>",
-        "    </section>",
-        '    <section class="cg-rail-card cg-surface">',
-        '      <p class="cg-kicker">Legacy Surfaces</p>',
-        '      <div class="cg-legacy-card">',
-        '        <strong>Existing standalone pages stay intact.</strong>',
-        '        <p>Launch the original production surfaces when you want the classic standalone activities, including the original Word Connections taboo-style round alongside the new Say It Another Way version.</p>',
-        '        <div class="cg-footer-row">',
-        '          <a class="cg-action cg-action-quiet" href="' + launchHref("./word-quest.html?play=1", context) + '">' + runtimeRoot.CSGameComponents.iconFor("word-quest") + 'Open Word Quest</a>',
-        '          <a class="cg-action cg-action-quiet" href="' + launchHref("./precision-play.html", context) + '">' + runtimeRoot.CSGameComponents.iconFor("word-connections") + 'Open Word Connections Classic</a>',
-        "        </div>",
-        "      </div>",
-        "    </section>",
-        "  </aside>",
+        "    </div>",
+        "  </section>",
+        '  <section class="cg-main-card cg-surface' + (uiState.teacherPanelOpen ? "" : " cg-hidden") + '" id="cg-teacher-panel">',
+        '    <p class="cg-kicker">Teacher Control Panel</p>',
+        '    <div class="cg-control-grid">',
+        '      <div class="cg-field"><label for="cg-view-mode">Mode</label><select id="cg-view-mode" class="cg-select"><option value="individual">Individual</option><option value="smallGroup">Small Group</option><option value="classroom">Classroom</option><option value="projector">Projector</option></select></div>',
+        '      <div class="cg-field"><label for="cg-difficulty">Difficulty</label><select id="cg-difficulty" class="cg-select"><option value="scaffolded">Scaffolded</option><option value="core">Core</option><option value="stretch">Stretch</option></select></div>',
+        '      <div class="cg-field"><label for="cg-subject">Subject</label><select id="cg-subject" class="cg-select"><option value="ELA">ELA</option><option value="Intervention">Intervention</option><option value="Writing">Writing</option><option value="Math">Math</option><option value="Science">Science</option></select></div>',
+        '      <div class="cg-field"><label for="cg-grade-band">Grade Band</label><select id="cg-grade-band" class="cg-select"><option value="K-2">K-2</option><option value="3-5">3-5</option><option value="6-8">6-8</option><option value="9-12">9-12</option></select></div>',
+        '      <div class="cg-field"><label for="cg-content-mode">Content Set</label><select id="cg-content-mode" class="cg-select"><option value="lesson">Lesson-aligned</option><option value="subject">Broader subject bank</option><option value="morphology">Morphology family</option><option value="custom">Custom word lock</option></select></div>',
+        '      <div class="cg-field"><label for="cg-skill-focus">Skill Focus</label><input id="cg-skill-focus" class="cg-input" type="text" value="' + runtimeRoot.CSGameComponents.escapeHtml(context.skillFocus || "") + '" placeholder="LIT.MOR.ROOT"></div>',
+        '      <div class="cg-field"><label for="cg-custom-word-set">Custom Word Set / Lesson Lock</label><input id="cg-custom-word-set" class="cg-input" type="text" value="' + runtimeRoot.CSGameComponents.escapeHtml(state.settings.customWordSet || "") + '" placeholder="prefix, claim, ratio"></div>',
+        '      <label class="cg-checkbox"><input id="cg-toggle-timer" type="checkbox"' + (state.settings.timerEnabled ? " checked" : "") + '>Timer enabled</label>',
+        '      <label class="cg-checkbox"><input id="cg-toggle-hints" type="checkbox"' + (state.settings.hintsEnabled ? " checked" : "") + '>Hints enabled</label>',
+        '      <label class="cg-checkbox"><input id="cg-toggle-sound" type="checkbox"' + (state.settings.soundEnabled ? " checked" : "") + '>Optional sound layer</label>',
+        '      <button class="cg-action cg-action-quiet" type="button" data-action="teacher-override">' + runtimeRoot.CSGameComponents.iconFor("teacher") + 'Teacher Override</button>',
+        "    </div>",
+        "  </section>",
         "</div>"
       ].join("");
 
@@ -729,6 +884,7 @@
           '  <p class="cg-kicker">End of Round Summary</p>',
           '  <h3 class="cg-display">Session target met</h3>',
           '  <p class="cg-focus-line">Correct: ' + state.metrics.correct + ' · Near miss: ' + state.metrics.nearMiss + ' · Incorrect: ' + state.metrics.incorrect + "</p>",
+          '  <p class="cg-focus-line">Next move: ' + runtimeRoot.CSGameComponents.escapeHtml(game.id === "word-typing" ? "advance to the next keyboard zone or spelling family." : "keep the same game running while the routine is hot.") + "</p>",
           '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-action="restart">' + runtimeRoot.CSGameComponents.iconFor("progress") + 'Start New Session</button><button class="cg-action cg-action-quiet" type="button" data-action="repeat-game">Keep Same Game</button></div>',
           "</div>"
         ].join("");
@@ -738,12 +894,16 @@
         var guess = String(uiState.lastSubmittedGuess || "").toUpperCase();
         var evaluation = state.lastOutcome && state.lastOutcome.evaluation || [];
         return [
+          roundGuide(game, state, round),
+          renderHostControls(game, state, round),
           '<div class="cg-focus-panel">',
           '  <p class="cg-kicker">Focus Panel</p>',
           '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</h3>",
-          '  <p class="cg-focus-line">Type the answer and watch the tile reveal carry the feedback.</p>',
+          '  <p class="cg-focus-line">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state)
+            ? "Talk through the clue, then lock one class guess and watch the tiles respond."
+            : "Type the answer and watch the tile reveal carry the feedback.") + "</p>",
           '  <div class="cg-input-row">',
-          '    <input id="cg-word-guess" class="cg-input" maxlength="' + String(round.answer || "").length + '" placeholder="Type your guess">',
+          '    <input id="cg-word-guess" class="cg-input" maxlength="' + String(round.answer || "").length + '" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Teacher types the class guess" : "Type your guess") + '">',
           '    <div class="cg-guess-grid">' + String(round.answer || "").split("").map(function (_letter, index) {
             return '<div class="cg-letter-box' + (evaluation[index] ? ' is-revealed' : '') + '" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(evaluation[index] || "") + '" style="animation-delay:' + (index * 40) + 'ms">' + runtimeRoot.CSGameComponents.escapeHtml(guess[index] || "") + "</div>";
           }).join("") + "</div>",
@@ -756,15 +916,17 @@
 
       if (game.id === "word-connections") {
         return [
+          roundGuide(game, state, round),
+          renderHostControls(game, state, round),
           '<div class="cg-focus-panel">',
           '  <p class="cg-kicker">Focus Panel</p>',
-          '  <h3 class="cg-prompt-title">Explain <strong>' + runtimeRoot.CSGameComponents.escapeHtml(round.targetWord) + "</strong> without these words</h3>",
+          '  <h3 class="cg-prompt-title">Clue <strong>' + runtimeRoot.CSGameComponents.escapeHtml(round.targetWord) + "</strong> without these words</h3>",
           '  <div class="cg-context-chips">' + (round.forbiddenWords || []).map(function (word) {
             return '<span class="cg-chip" data-tone="warning">' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</span>";
           }).join("") + "</div>",
           '  <p class="cg-focus-line">' + runtimeRoot.CSGameComponents.escapeHtml(round.requiredMove || "") + "</p>",
-          '  <textarea id="cg-word-connections-text" class="cg-textarea" placeholder="Enter the explanation students would say or write."></textarea>',
-          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="word-connections">Score Round</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Prompt</button></div>',
+          '  <textarea id="cg-word-connections-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Type the class clue or quick teacher notes for scoring." : "Type the clue students would say or write.") + '"></textarea>',
+          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="word-connections">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Score Clue" : "Check Clue") + '</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Prompt</button></div>',
           (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
           "</div>"
         ].join("");
@@ -772,6 +934,8 @@
 
       if (game.id === "morphology-builder" || game.id === "sentence-builder") {
         return [
+          roundGuide(game, state, round),
+          renderHostControls(game, state, round),
           renderTileBuilder(round, uiState.builderSelection),
           '<div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="' + game.id + '">Check Build</button><button class="cg-action cg-action-quiet" type="button" data-action="clear-build">Clear</button></div>',
           (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : "")
@@ -780,9 +944,14 @@
 
       if (game.id === "concept-ladder") {
         return [
+          roundGuide(game, state, round),
+          renderHostControls(game, state, round),
           '<div class="cg-focus-panel">',
           '  <p class="cg-kicker">Progressive Reveal</p>',
           '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</h3>",
+          '  <p class="cg-focus-line">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state)
+            ? "Pause after each rung so partners or teams can commit before you reveal more."
+            : "Reveal only what you need, then solve before the final clue.") + "</p>",
           '  <div class="cg-summary-list">' + (round.clues || []).slice(0, uiState.revealedClues).map(function (clue, index) {
             return '<div class="cg-summary-item" data-reveal="true" style="animation-delay:' + (index * 50) + 'ms"><strong>Clue ' + (index + 1) + '</strong><div>' + runtimeRoot.CSGameComponents.escapeHtml(clue) + "</div></div>";
           }).join("") + "</div>",
@@ -796,6 +965,8 @@
 
       if (game.id === "error-detective") {
         return [
+          roundGuide(game, state, round),
+          renderHostControls(game, state, round),
           '<div class="cg-focus-panel">',
           '  <p class="cg-kicker">Common Misconception</p>',
           '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(round.incorrectExample) + "</h3>",
@@ -810,12 +981,39 @@
 
       if (game.id === "rapid-category") {
         return [
+          roundGuide(game, state, round),
+          renderHostControls(game, state, round),
           '<div class="cg-focus-panel">',
           '  <p class="cg-kicker">Challenge Meter</p>',
           '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</h3>",
-          '  <p class="cg-focus-line">Enter relevant responses only. Unique ideas score better than repeated ones.</p>',
-          '  <textarea id="cg-category-text" class="cg-textarea" placeholder="Enter responses separated by commas or new lines."></textarea>',
-          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="rapid-category">Score Responses</button></div>',
+          '  <p class="cg-focus-line">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state)
+            ? "Teams call out ideas while one person records only the strongest unique responses."
+            : "Enter relevant responses only. Unique ideas score better than repeated ones.") + "</p>",
+          '  <textarea id="cg-category-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Type team responses separated by commas or new lines." : "Enter responses separated by commas or new lines.") + '"></textarea>',
+          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="rapid-category">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Score Round" : "Score Responses") + '</button></div>',
+          (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
+          "</div>"
+        ].join("");
+      }
+
+      if (game.id === "word-typing") {
+        var typed = String(uiState.lastSubmittedGuess || "").toUpperCase();
+        var typedEvaluation = state.lastOutcome && state.lastOutcome.evaluation || [];
+        return [
+          roundGuide(game, state, round),
+          renderHostControls(game, state, round),
+          '<div class="cg-focus-panel">',
+          '  <p class="cg-kicker">Typing Track</p>',
+          '  <h3 class="cg-prompt-title">' + runtimeRoot.CSGameComponents.escapeHtml(String(round.target || "").toUpperCase()) + "</h3>",
+          '  <p class="cg-focus-line">' + runtimeRoot.CSGameComponents.escapeHtml(round.fingerCue || "") + "</p>",
+          '  <div class="cg-context-chips"><span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.escapeHtml(round.keyboardZone || "full keyboard") + '</span><span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(round.orthographyFocus || "typing pattern") + "</span></div>",
+          '  <div class="cg-input-row">',
+          '    <input id="cg-word-typing-input" class="cg-input" maxlength="' + String(round.target || "").length + '" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Teacher types the class word" : "Type the word") + '">',
+          '    <div class="cg-guess-grid">' + String(round.target || "").split("").map(function (_letter, index) {
+            return '<div class="cg-letter-box' + (typedEvaluation[index] ? ' is-revealed' : '') + '" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(typedEvaluation[index] || "") + '" style="animation-delay:' + (index * 40) + 'ms">' + runtimeRoot.CSGameComponents.escapeHtml(typed[index] || "") + "</div>";
+          }).join("") + "</div>",
+          '    <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="word-typing">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Check Class Typing" : "Check Typing") + '</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Word</button></div>',
+          "  </div>",
           (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
           "</div>"
         ].join("");
@@ -842,6 +1040,14 @@
       Array.prototype.forEach.call(shell.querySelectorAll("[data-game-id]"), function (button) {
         button.addEventListener("click", function () {
           var gameId = button.getAttribute("data-game-id") || "";
+          if (!gameId) return;
+          if (galleryOnly) {
+            var href = button.getAttribute("href") || button.getAttribute("data-href") || "";
+            if (href) {
+              runtimeRoot.location.href = href;
+            }
+            return;
+          }
           resetRoundUi();
           engine.updateContext({
             subject: context.subject,
@@ -850,6 +1056,14 @@
           });
           engine.selectGame(gameId);
         });
+        if (galleryOnly && button.getAttribute("role") === "link") {
+          button.addEventListener("keydown", function (event) {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            var href = button.getAttribute("data-href") || "";
+            if (href) runtimeRoot.location.href = href;
+          });
+        }
       });
 
       Array.prototype.forEach.call(shell.querySelectorAll("[data-action]"), function (button) {
@@ -1005,6 +1219,13 @@
         var value = guess ? guess.value : "";
         uiState.lastSubmittedGuess = String(value || "").trim();
         engine.submit({ value: value });
+        return;
+      }
+      if (gameId === "word-typing") {
+        var typedWord = document.getElementById("cg-word-typing-input");
+        var typedValue = typedWord ? typedWord.value : "";
+        uiState.lastSubmittedGuess = String(typedValue || "").trim();
+        engine.submit({ value: typedValue });
         return;
       }
       if (gameId === "word-connections") {

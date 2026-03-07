@@ -1,0 +1,384 @@
+@import url("./style/tokens.css");
+
+* { box-sizing: border-box; }
+
+html, body {
+  min-height: 100%;
+}
+
+body.sp-page {
+  margin: 0;
+  background:
+    radial-gradient(circle at top right, rgba(201, 152, 115, 0.12), transparent 28%),
+    linear-gradient(160deg, #d6d9de 0%, #cad0d8 42%, #c1c8d0 100%);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+}
+
+.sp-shell {
+  width: min(1380px, calc(100vw - 28px));
+  margin: 0 auto;
+  padding: 14px 0 24px;
+}
+
+.sp-header,
+.sp-panel,
+.sp-hero {
+  background: color-mix(in oklab, var(--surface-1) 94%, #f2efeb 6%);
+  border-radius: 24px;
+  box-shadow: 0 12px 26px rgba(24, 33, 45, 0.08);
+}
+
+.sp-header {
+  display: grid;
+  grid-template-columns: minmax(220px, auto) minmax(280px, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 18px;
+}
+
+.sp-brand {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sp-brand strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+  line-height: 1.05;
+}
+
+.sp-brand span {
+  display: block;
+  margin-top: 4px;
+  color: color-mix(in oklab, var(--text-primary) 68%, var(--muted) 32%);
+}
+
+.sp-search input,
+.sp-form input,
+.sp-form select,
+.sp-form textarea {
+  width: 100%;
+  border: 1px solid color-mix(in oklab, var(--border) 82%, white 18%);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--text-primary);
+  font: inherit;
+  padding: 13px 14px;
+}
+
+.sp-search input::placeholder,
+.sp-form input::placeholder,
+.sp-form textarea::placeholder {
+  color: color-mix(in oklab, var(--muted) 84%, white 16%);
+}
+
+.sp-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.sp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid color-mix(in oklab, var(--border) 84%, white 16%);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.66);
+  font-weight: 700;
+}
+
+.sp-btn-primary {
+  background: color-mix(in oklab, var(--accent, #2b5da8) 16%, white 84%);
+  border-color: color-mix(in oklab, var(--accent, #2b5da8) 34%, white 66%);
+}
+
+.sp-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.sp-sidebar {
+  display: grid;
+  gap: 16px;
+  align-self: start;
+  position: sticky;
+  top: 14px;
+}
+
+.sp-panel,
+.sp-hero {
+  padding: 18px;
+}
+
+.sp-panel-ghost {
+  background: color-mix(in oklab, var(--surface-1) 82%, white 18%);
+}
+
+.sp-kicker {
+  margin: 0 0 10px;
+  color: color-mix(in oklab, var(--muted) 82%, white 18%);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.sp-ghost-line {
+  margin: 0;
+  color: color-mix(in oklab, var(--muted) 72%, white 28%);
+  font-style: italic;
+}
+
+.sp-student-list {
+  display: grid;
+  gap: 10px;
+}
+
+.sp-student-link {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border-radius: 18px;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid color-mix(in oklab, var(--border) 82%, white 18%);
+}
+
+.sp-student-link.is-active {
+  border-color: color-mix(in oklab, var(--accent, #2b5da8) 38%, white 62%);
+  background: color-mix(in oklab, var(--accent, #2b5da8) 12%, white 88%);
+}
+
+.sp-student-link strong {
+  font-size: 1rem;
+}
+
+.sp-student-link span {
+  color: color-mix(in oklab, var(--text-primary) 68%, var(--muted) 32%);
+  font-size: 0.92rem;
+}
+
+.sp-empty-state {
+  padding: 48px 28px;
+  text-align: center;
+  border: 1px dashed color-mix(in oklab, var(--border) 72%, white 28%);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.sp-empty-state h1 {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1.02;
+}
+
+.sp-empty-state p {
+  margin: 0;
+  color: color-mix(in oklab, var(--text-primary) 68%, var(--muted) 32%);
+}
+
+.sp-content.hidden {
+  display: none;
+}
+
+.sp-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.8fr);
+  gap: 18px;
+}
+
+.sp-hero h1 {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  line-height: 0.98;
+}
+
+.sp-subline,
+.sp-body-copy {
+  color: color-mix(in oklab, var(--text-primary) 68%, var(--muted) 32%);
+}
+
+.sp-chip-row,
+.sp-reminder-list,
+.sp-meta-grid,
+.sp-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sp-chip,
+.sp-reminder,
+.sp-meta-card {
+  border-radius: 16px;
+  border: 1px solid color-mix(in oklab, var(--border) 84%, white 16%);
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.sp-chip {
+  padding: 8px 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.sp-reminder {
+  padding: 10px 12px;
+  font-size: 0.92rem;
+}
+
+.sp-reminder[data-tone="warn"] {
+  background: color-mix(in oklab, #f5c772 20%, white 80%);
+}
+
+.sp-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sp-meta-card {
+  padding: 14px;
+}
+
+.sp-meta-card span {
+  display: block;
+  color: color-mix(in oklab, var(--muted) 84%, white 16%);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sp-meta-card strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.05rem;
+}
+
+.sp-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.sp-list,
+.sp-timeline {
+  display: grid;
+  gap: 10px;
+}
+
+.sp-list-item,
+.sp-timeline-item,
+.sp-record {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid color-mix(in oklab, var(--border) 84%, white 16%);
+}
+
+.sp-list-item strong,
+.sp-timeline-item strong,
+.sp-record strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.sp-muted,
+.sp-record p,
+.sp-list-item p,
+.sp-timeline-item p {
+  margin: 0;
+  color: color-mix(in oklab, var(--text-primary) 68%, var(--muted) 32%);
+}
+
+.sp-form {
+  display: grid;
+  gap: 12px;
+}
+
+.sp-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sp-form label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+  color: color-mix(in oklab, var(--text-primary) 84%, var(--muted) 16%);
+}
+
+.sp-form label span {
+  font-size: 0.88rem;
+}
+
+.sp-span-2 {
+  grid-column: span 2;
+}
+
+.sp-span-3 {
+  grid-column: span 3;
+}
+
+.sp-google-empty {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px dashed color-mix(in oklab, var(--border) 72%, white 28%);
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 1120px) {
+  .sp-layout,
+  .sp-hero,
+  .sp-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sp-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .sp-shell {
+    width: calc(100vw - 20px);
+    padding-top: 10px;
+  }
+
+  .sp-header {
+    grid-template-columns: 1fr;
+  }
+
+  .sp-header-actions {
+    justify-content: flex-start;
+  }
+
+  .sp-form-grid,
+  .sp-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sp-span-2,
+  .sp-span-3 {
+    grid-column: auto;
+  }
+}

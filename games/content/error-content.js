@@ -9,6 +9,34 @@
 
   return [
     {
+      id: "error-k1",
+      gradeBands: ["K-2"],
+      subjects: ["ELA"],
+      misconception: "sentence meaning",
+      incorrectExample: "The cat ran. That means the cat was sleeping.",
+      prompt: "Which fix makes the sentence make sense?",
+      answer: "The cat ran means the cat was moving fast.",
+      options: [
+        "The cat ran means the cat was moving fast.",
+        "Ran means the cat was sleeping.",
+        "Cat means the sentence is about a dog."
+      ]
+    },
+    {
+      id: "error-k2",
+      gradeBands: ["K-2"],
+      subjects: ["Math"],
+      misconception: "equal groups",
+      incorrectExample: "4 and 4 are not equal because there are two numbers.",
+      prompt: "Choose the fix that repairs the idea.",
+      answer: "4 and 4 are equal because both sides show the same amount.",
+      options: [
+        "4 and 4 are equal because both sides show the same amount.",
+        "4 and 4 are not equal because they are next to each other.",
+        "Only bigger numbers can be equal."
+      ]
+    },
+    {
       id: "error-1",
       gradeBands: ["3-5", "6-8"],
       subjects: ["ELA"],
@@ -51,6 +79,34 @@
         "Subtract 5 first, then divide both sides by 3.",
         "Multiply both sides by 3 first.",
         "There is no way to solve for x."
+      ]
+    },
+    {
+      id: "error-4",
+      gradeBands: ["3-5", "6-8"],
+      subjects: ["Writing", "ELA"],
+      misconception: "evidence vs opinion",
+      incorrectExample: "My claim is strong because I really like it.",
+      prompt: "Which correction strengthens the reasoning?",
+      answer: "A strong claim needs evidence from the text, not just a personal feeling.",
+      options: [
+        "A strong claim needs evidence from the text, not just a personal feeling.",
+        "Claims are better when they sound confident, even without support.",
+        "Opinion and evidence mean the same thing in writing."
+      ]
+    },
+    {
+      id: "error-5",
+      gradeBands: ["K-2", "3-5"],
+      subjects: ["ELA", "Intervention"],
+      misconception: "suffix meaning",
+      incorrectExample: "Jumped means the action will happen tomorrow.",
+      prompt: "Choose the fix that repairs the word meaning.",
+      answer: "Jumped tells that the action already happened.",
+      options: [
+        "Jumped tells that the action already happened.",
+        "Jumped means jump is the person's name.",
+        "The suffix never changes the meaning of a word."
       ]
     }
   ];

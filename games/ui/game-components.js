@@ -15,6 +15,7 @@
     "error-detective": "error-detective",
     "rapid-category": "rapid-category",
     "sentence-builder": "sentence-builder",
+    "word-typing": "word-quest",
     score: "score",
     timer: "timer",
     streak: "streak",
@@ -52,11 +53,11 @@
         '<div class="cg-card-preview" aria-hidden="true">',
         '  <div class="cg-mini-board">',
         '    <div class="cg-mini-row">',
-        '      <span class="cg-mini-letter cg-mini-letter--correct">F</span>',
-        '      <span class="cg-mini-letter cg-mini-letter--present">R</span>',
-        '      <span class="cg-mini-letter">A</span>',
-        '      <span class="cg-mini-letter">C</span>',
-        '      <span class="cg-mini-letter">T</span>',
+        '      <span class="cg-mini-letter cg-mini-letter--correct">W</span>',
+        '      <span class="cg-mini-letter cg-mini-letter--present">O</span>',
+        '      <span class="cg-mini-letter">R</span>',
+        '      <span class="cg-mini-letter cg-mini-letter--correct">D</span>',
+        '      <span class="cg-mini-letter">S</span>',
         '    </div>',
         '    <div class="cg-mini-row cg-mini-row--dim">',
         '      <span class="cg-mini-letter">Q</span>',
@@ -73,7 +74,7 @@
       return [
         '<div class="cg-card-preview" aria-hidden="true">',
         '  <div class="cg-mini-taboo">',
-        '    <div class="cg-mini-taboo-target">DESCRIBE "EVIDENCE"</div>',
+        '    <div class="cg-mini-taboo-target">CLUE "EVIDENCE"</div>',
         '    <ul class="cg-mini-taboo-list">',
         '      <li>proof</li>',
         '      <li>fact</li>',
@@ -143,23 +144,42 @@
         '</div>'
       ].join("");
     }
+    if (gameId === "word-typing") {
+      return [
+        '<div class="cg-card-preview" aria-hidden="true">',
+        '  <div class="cg-mini-typing">',
+        '    <div class="cg-mini-typing-word">said</div>',
+        '    <div class="cg-mini-typing-track">',
+        '      <span class="cg-mini-key cg-mini-key--active">a</span>',
+        '      <span class="cg-mini-key">s</span>',
+        '      <span class="cg-mini-key cg-mini-key--active">d</span>',
+        '      <span class="cg-mini-key">f</span>',
+        '      <span class="cg-mini-key cg-mini-key--focus">j</span>',
+        '      <span class="cg-mini-key">k</span>',
+        '      <span class="cg-mini-key">l</span>',
+        '    </div>',
+        '  </div>',
+        '</div>'
+      ].join("");
+    }
     return "";
   }
 
-  function renderGameCard(game, active) {
+  function renderGameCard(game, active, options) {
+    var config = options || {};
+    var href = config.href ? ' href="' + escapeHtml(config.href) + '"' : "";
+    var caption = config.caption ? '<p class="cg-card-caption">' + escapeHtml(config.caption) + "</p>" : "";
     return [
-      '<button class="cg-game-card' + (active ? " is-active" : "") + '" data-game-id="' + escapeHtml(game.id) + '" type="button">',
+      '<article class="cg-game-card' + (active ? " is-active" : "") + '" data-game-id="' + escapeHtml(game.id) + '"' + (config.href ? ' data-href="' + escapeHtml(config.href) + '"' : "") + ' tabindex="0" role="link">',
       renderPreview(game.id),
       '  <div class="cg-game-card-head">',
       '    <span class="cg-game-icon">' + iconFor(game.id, "cg-icon cg-icon--game") + "</span>",
-      '    <span class="cg-chip">' + escapeHtml(game.modeLabel) + "</span>",
+      '    <a class="cg-card-badge" data-game-id="' + escapeHtml(game.id) + '"' + href + ">" + escapeHtml(game.modeLabel) + "</a>",
       "  </div>",
       '  <h3>' + escapeHtml(game.title) + "</h3>",
       '  <p>' + escapeHtml(game.subtitle) + "</p>",
-      '  <div class="cg-inline-row">' + (game.tags || []).map(function (tag) {
-        return '<span class="cg-chip">' + escapeHtml(tag) + "</span>";
-      }).join("") + "</div>",
-      "</button>"
+      caption,
+      "</article>"
     ].join("");
   }
 

@@ -31,14 +31,6 @@
   transform: translate3d(0, -2px, 0);
 }
 
-.cg-stage-shell {
-  animation: cgStageEnter 220ms ease-in-out;
-}
-
-.cg-stage-board > * {
-  animation: cgStageEnter 220ms ease-in-out;
-}
-
 .cg-stat.is-bump,
 .cg-progress-step.is-active {
   animation: cgMetricBump 220ms ease-in-out;

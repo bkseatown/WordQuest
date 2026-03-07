@@ -7,6 +7,7 @@ body {
   font-family: var(--font-sans, "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
   font-size: var(--fs-body, var(--fs-2));
   line-height: var(--lh-body, 1.5);
+  letter-spacing: -0.005em;
 }
 
 h1, .h1 {
@@ -27,10 +28,22 @@ h3, .h3 {
   font-size: var(--fs-3);
   line-height: 1.28;
   font-weight: var(--fw-medium);
+  letter-spacing: -0.008em;
 }
 
 p {
   line-height: 1.52;
+}
+
+.section-kicker,
+.dashboard-kicker,
+.cg-kicker,
+.th2-section-label {
+  font-size: max(0.75rem, var(--fs-0));
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: var(--fw-semibold);
 }
 
 .kicker {

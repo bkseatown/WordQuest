@@ -9,6 +9,22 @@
 
   return [
     {
+      id: "category-k1",
+      gradeBands: ["K-2"],
+      subjects: ["ELA"],
+      prompt: "Name words that rhyme with cat or hat.",
+      accepted: ["bat", "cat", "hat", "mat", "rat", "sat"],
+      category: "Rhyming words"
+    },
+    {
+      id: "category-k2",
+      gradeBands: ["K-2"],
+      subjects: ["Math"],
+      prompt: "List math words you use when comparing groups or amounts.",
+      accepted: ["more", "less", "equal", "same", "compare", "group"],
+      category: "Compare words"
+    },
+    {
       id: "category-1",
       gradeBands: ["3-5", "6-8"],
       subjects: ["ELA"],
@@ -31,6 +47,22 @@
       prompt: "List words tied to multiplication strategies.",
       accepted: ["groups", "array", "factor", "product", "times", "equal"],
       category: "Math language"
+    },
+    {
+      id: "category-4",
+      gradeBands: ["K-2", "3-5"],
+      subjects: ["ELA", "Intervention"],
+      prompt: "List words with the suffix -ing or -ed.",
+      accepted: ["jumping", "jumped", "playing", "played", "looking", "looked"],
+      category: "Suffix words"
+    },
+    {
+      id: "category-5",
+      gradeBands: ["3-5", "6-8"],
+      subjects: ["Writing", "ELA"],
+      prompt: "List words that help justify or explain thinking.",
+      accepted: ["because", "therefore", "evidence", "reason", "supports", "shows"],
+      category: "Explanation language"
     }
   ];
 });

@@ -9,6 +9,17 @@
 
   return [
     {
+      id: "morph-k1",
+      gradeBands: ["K-2"],
+      subjects: ["ELA", "Intervention"],
+      programs: ["fundations", "just-words", "wilson", "ufli"],
+      prompt: "Build the word for someone who hops again.",
+      solution: ["re", "hop"],
+      tiles: ["re", "hop", "un", "ing"],
+      meaningHint: "'re-' means again, so the action happens one more time.",
+      focus: "prefix"
+    },
+    {
       id: "morph-1",
       gradeBands: ["3-5", "6-8"],
       subjects: ["ELA", "Intervention"],
@@ -51,6 +62,17 @@
       tiles: ["teach", "er", "ing", "pre"],
       meaningHint: "'-er' can name the person doing the action.",
       focus: "suffix"
+    },
+    {
+      id: "morph-k2",
+      gradeBands: ["K-2", "3-5"],
+      subjects: ["ELA", "Intervention"],
+      programs: ["fundations", "ufli", "wilson"],
+      prompt: "Build the longer word that means to look again.",
+      solution: ["re", "view"],
+      tiles: ["re", "view", "er", "ing"],
+      meaningHint: "This is a longer practice word, but 're-' still means again.",
+      focus: "multisyllable"
     }
   ];
 });

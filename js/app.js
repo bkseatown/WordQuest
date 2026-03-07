@@ -4884,7 +4884,7 @@
     const teacherBtn = _el('teacher-panel-btn');
     if (teacherBtn) {
       teacherBtn.innerHTML = '<span class="icon-emoji" aria-hidden="true">👩‍🏫</span>';
-      setHoverNoteForElement(teacherBtn, 'Teacher Hub: class tools, reports, and weekly planning.');
+      setHoverNoteForElement(teacherBtn, 'Specialist tools: class settings, reports, and weekly planning.');
     }
     const themeBtn = _el('theme-dock-toggle-btn');
     if (themeBtn) themeBtn.innerHTML = '<span class="icon-emoji" aria-hidden="true">🎨</span>';
@@ -5262,7 +5262,16 @@
     try { return localStorage.getItem(FIRST_RUN_SETUP_KEY) === 'done'; } catch { return false; }
   }
 
-  const shouldOfferStartupPreset = !hasCompletedFirstRunSetup();
+  function launchedFromGameGallery() {
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      return String(params.get('from') || '').trim().toLowerCase() === 'game-platform';
+    } catch {
+      return false;
+    }
+  }
+
+  const shouldOfferStartupPreset = !hasCompletedFirstRunSetup() && !launchedFromGameGallery();
   firstRunSetupPending = shouldOfferStartupPreset;
 
   function closeFirstRunSetupModal() {
@@ -5544,24 +5553,9 @@
 
   function initRefreshLatestBanner() {
     const banner = _el('refresh-latest-banner');
-    const btn = _el('refresh-latest-btn');
-    if (!banner || !btn) return;
-
-    const label = banner.querySelector('span');
-    banner.classList.remove('hidden');
-    banner.setAttribute('aria-hidden', 'false');
-
-    if (label) label.textContent = 'Please refresh for the latest update.';
-
-    btn.addEventListener('click', () => {
-      btn.disabled = true;
-      btn.textContent = 'Refreshing...';
-      if (label) label.textContent = 'Refreshing to latest build...';
-      try {
-        localStorage.setItem(REFRESH_BANNER_LAST_ACTION_KEY, String(Date.now()));
-      } catch {}
-      void runForceUpdateNow({ silentToast: true });
-    });
+    if (!banner) return;
+    banner.classList.add('hidden');
+    banner.setAttribute('aria-hidden', 'true');
   }
 
   function rerunOnboardingSetup() {
@@ -6664,7 +6658,7 @@
       return;
     }
     if (route === 'dashboard' || route === 'admin-demo') {
-      setActivityLabel('Teacher Hub');
+      setActivityLabel('Specialist Hub');
       const url = new URL(withAppBase('teacher-hub-v2.html'), window.location.origin);
       if (route === 'admin-demo') url.hash = '#admin-demo';
       window.location.href = url.toString();
@@ -8880,6 +8874,7 @@
       document.documentElement.style.setProperty('--keyboard-max-width', `${Math.ceil(maxKeyboardW)}px`);
       document.documentElement.style.setProperty('--keyboard-bottom-gap', `${keyboardBottomGap + listeningBottomGapBoost}px`);
       document.documentElement.style.setProperty('--play-header-h', `${Math.ceil(headerH)}px`);
+      document.documentElement.style.setProperty('--play-focus-h', `${Math.ceil(focusH)}px`);
 
       if (boardPlateEl) {
         boardPlateEl.style.removeProperty('width');
@@ -12223,7 +12218,7 @@
       ? setupDurations.slice().sort((a, b) => a - b)[Math.floor(setupDurations.length / 2)]
       : null;
     const setupSpeed = setupMedian === null
-      ? metric('setup', 'Setup Speed', null, '', 'Open Teacher Hub and apply a target to score setup speed.', false, 0.9)
+      ? metric('setup', 'Setup Speed', null, '', 'Open Specialist Hub and apply a target to score setup speed.', false, 0.9)
       : metric(
           'setup',
           'Setup Speed',
@@ -16926,7 +16921,7 @@
     if (listenHelper) listenHelper.textContent = `${deepDive.helpers.listen || ''} ${scaffold.listen}`.trim();
     if (analyzeHelper) analyzeHelper.textContent = `${deepDive.helpers.analyze || ''} ${scaffold.analyze}`.trim();
     if (createHelper) createHelper.textContent = `${deepDive.helpers.create || ''} ${scaffold.create}`.trim();
-    if (teacherLens) teacherLens.textContent = `${challenge.teacher} Score updates appear in Teacher Hub.`;
+    if (teacherLens) teacherLens.textContent = `${challenge.teacher} Score updates appear in Specialist Hub.`;
 
     renderChallengeChoiceButtons('challenge-pattern-options', 'listen');
     renderChallengeChoiceButtons('challenge-meaning-options', 'analyze');

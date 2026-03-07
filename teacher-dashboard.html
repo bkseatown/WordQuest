@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="./">
-  <title>Cornerstone MTSS - Teacher Workspace</title>
+  <title>Cornerstone MTSS - Reports</title>
   <script src="./config.js?v=20260301y"></script>
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260301y">
@@ -51,8 +51,8 @@
     <header class="td-top td-surface card">
       <a class="td-wordmark td-brand-home" href="./index.html" aria-label="Home">
         <strong>Cornerstone MTSS</strong>
-        <span>Teacher Workspace</span>
-        <p class="td-top-description">Weekly insights, meeting prep, family communication, and progress review.</p>
+        <span>Reports</span>
+        <p class="td-top-description">Aggregate caseload reporting, weekly insight drafts, meeting-ready exports, and evidence review. Use Student Profile for one-student detail.</p>
         <small id="td-buildline" class="td-buildline">Build: checking...</small>
       </a>
 
@@ -63,7 +63,7 @@
       <div class="td-top-actions">
         <!-- Teacher Hub entry point — links to the daily operating surface -->
         <a id="td-hub-cta" class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html" aria-label="Open Teacher Hub">
-          Teacher Hub
+          Back to Hub
         </a>
         <button id="td-weekly-insights" class="td-top-btn" type="button">Weekly Insight</button>
         <button id="td-meeting-workspace" class="td-top-btn" type="button">Meeting Prep</button>
@@ -101,12 +101,39 @@
     </header>
 
     <section class="td-body">
-      <main class="dashboard cs-stage" aria-label="Dashboard decision layer">
+      <main class="dashboard cs-stage" aria-label="Reports and meeting surface">
         <section class="dashboard-mode-strip card td-surface" aria-label="Workflow mode">
-          <button id="td-mode-daily" class="td-top-btn is-active" type="button">Daily</button>
-          <button id="td-mode-reports" class="td-top-btn" type="button">Reports</button>
+          <button id="td-mode-daily" class="td-top-btn" type="button">Meeting Prep</button>
+          <button id="td-mode-reports" class="td-top-btn is-active" type="button">Aggregate Reports</button>
           <button id="td-mode-advanced" class="td-top-btn hidden" type="button" tabindex="-1" aria-hidden="true">Advanced</button>
           <button id="td-mode-classroom" class="td-top-btn hidden" type="button" tabindex="-1" aria-hidden="true">Classroom Mode</button>
+        </section>
+        <section class="td-reports-overview card td-surface" aria-label="Reports overview">
+          <div class="td-reports-overview__head">
+            <div>
+              <p class="dashboard-kicker">Reports Overview</p>
+              <h1 class="td-title">Reports aggregate real support signals across students, blocks, and time.</h1>
+              <p class="dashboard-section-meta">Student-specific data now belongs in Student Profile. This page stays focused on patterns, exports, weekly insight drafts, and meeting-ready summaries.</p>
+            </div>
+            <div class="td-reports-overview__actions">
+              <a class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html">Back to Hub</a>
+              <a class="td-top-btn" href="./student-profile.html">Open Student Profile</a>
+            </div>
+          </div>
+          <div class="td-reports-overview__grid">
+            <article>
+              <strong>Caseload patterns</strong>
+              <p>Review who is missing evidence, due for review, or ready for follow-up.</p>
+            </article>
+            <article>
+              <strong>Meeting-ready outputs</strong>
+              <p>Generate weekly drafts, exports, packets, and follow-up notes from real data.</p>
+            </article>
+            <article>
+              <strong>No fake analytics</strong>
+              <p>Ghost guidance is allowed only for onboarding and disappears on engagement.</p>
+            </article>
+          </div>
         </section>
         <section class="dashboard-focus">
           <article id="td-focus-card" class="focus-card card td-surface">
@@ -270,11 +297,13 @@
 
         <section class="dashboard-queue card td-surface">
           <h2 class="dashboard-section-title">Who Else Needs Attention</h2>
+          <p class="dashboard-section-meta">Keep the queue short, visible, and easy to scan before opening deeper notes.</p>
           <div id="td-surgical-attention-list" class="queue-list" aria-live="polite"></div>
         </section>
 
         <section class="dashboard-launch card td-surface">
           <h2 class="dashboard-section-title">Quick Launch</h2>
+          <p class="dashboard-section-meta">Jump into the next specialist move without rebuilding context.</p>
           <div class="launch-row">
             <button class="launch-card td-top-btn launch-card-engine" data-quick="literacy" type="button">
               <span class="launch-card-icon" aria-hidden="true">🧠</span>
@@ -301,7 +330,7 @@
             <h2 class="dashboard-section-title">Pilot Evaluation</h2>
             <span id="td-eval-readiness-chip" class="td-chip">Readiness: Candidate</span>
           </div>
-          <p class="td-reco-line">Capture usability signals without changing instructional workflows.</p>
+          <p class="dashboard-section-meta">Capture teacher confidence, friction, and adoption signals without interrupting live practice.</p>
           <form id="td-eval-usability-form" class="dashboard-eval-grid">
             <label class="dashboard-eval-field">Clarity of next action (1–10)
               <input id="td-eval-clarity" type="number" min="1" max="10" step="1" required>
@@ -342,9 +371,10 @@
           <div id="td-eval-metrics" class="dashboard-eval-metrics" aria-live="polite"></div>
           <div id="td-eval-report" class="dashboard-eval-report hidden" aria-live="polite"></div>
         </section>
-        <footer class="dashboard-confidence card td-surface" aria-label="System confidence">
-          <h2 class="dashboard-section-title">Today's System Confidence</h2>
-          <p id="td-confidence-line">Tier guidance stable • Fidelity tracking active • Curriculum mapping active • System checks passed</p>
+        <footer class="dashboard-confidence card td-surface" aria-label="Reports guidance">
+          <h2 class="dashboard-section-title">Reports Guidance</h2>
+          <p class="dashboard-section-meta">Keep this page for aggregated signals, packets, and drafts. Use Student Profile for one-student evidence, behavior support, and communication records.</p>
+          <p id="td-confidence-line">Hub for today • Student Profile for one student • Reports for patterns, exports, and meeting-ready summaries</p>
         </footer>
       </main>
 
@@ -437,9 +467,13 @@
   <div id="td-share-modal" class="td-modal hidden" role="dialog" aria-modal="true" aria-labelledby="td-share-modal-title">
     <div class="td-modal-card">
       <div class="td-modal-head">
-        <h2 id="td-share-modal-title" class="td-section-title">Weekly Insight Draft</h2>
+        <div class="td-modal-title-block">
+          <p class="td-modal-kicker">Weekly Insight</p>
+          <h2 id="td-share-modal-title" class="td-section-title">Weekly Insight Draft</h2>
+        </div>
         <button id="td-share-modal-close" class="td-top-btn" type="button" aria-label="Close share summary">Close</button>
       </div>
+      <p class="td-modal-intro">Review and adjust teacher, family, and student drafts before anything is copied or shared.</p>
       <div class="td-weekly-draft">
         <details class="td-weekly-card" open>
           <summary>Teacher Summary</summary>
@@ -489,9 +523,13 @@
   <div id="td-meeting-modal" class="td-modal hidden" role="dialog" aria-modal="true" aria-labelledby="td-meeting-title">
     <div class="td-modal-card">
       <div class="td-modal-head">
-        <h2 id="td-meeting-title" class="td-section-title">Meeting Notes Mode</h2>
+        <div class="td-modal-title-block">
+          <p class="td-modal-kicker">Reports &amp; Meetings</p>
+          <h2 id="td-meeting-title" class="td-section-title">Meeting Notes Mode</h2>
+        </div>
         <button id="td-meeting-close" class="td-top-btn" type="button">Close</button>
       </div>
+      <p class="td-modal-intro">Capture the conversation, keep the summary organized, and export only after review.</p>
       <p class="td-reco-line td-meeting-privacy">Local-only. No recordings uploaded. Confirm meeting consent before device transcription.</p>
       <div class="td-plan-tabs">
         <button id="td-workspace-tab-summary" class="td-top-btn is-active" type="button">Summary</button>
@@ -585,7 +623,7 @@
     <button id="td-coach-mute" type="button" aria-label="Mute coach">🔈</button>
   </div>
 
-  <script src="./js/nav-shell.js?v=20260306h"></script>
+  <script src="./js/nav-shell.js?v=20260307a"></script>
   <script src="./js/core/tier-engine.js?v=20260306h" defer></script>
   <script src="./js/core/fidelity.js?v=20260306h" defer></script>
   <script src="./js/core/framework-registry.js?v=20260306h" defer></script>

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en" data-page="student-profile">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="./">
+  <title>Cornerstone MTSS - Student Profile</title>
+  <script src="./config.js?v=20260307d"></script>
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="stylesheet" href="./style/tokens.css?v=20260307d">
+  <link rel="stylesheet" href="./style/typography.css?v=20260307d">
+  <link rel="stylesheet" href="./student-profile.css?v=20260307d">
+</head>
+<body class="sp-page">
+  <main class="sp-shell">
+    <header class="sp-header">
+      <a class="sp-brand" href="./index.html" aria-label="Home">
+        <strong>Cornerstone MTSS</strong>
+        <span>Student Profile</span>
+      </a>
+      <label class="sp-search" for="sp-search-input">
+        <input id="sp-search-input" type="search" placeholder="Search student, support area, or goal..." autocomplete="off">
+      </label>
+      <div class="sp-header-actions">
+        <a class="sp-btn sp-btn-quiet" href="./teacher-hub-v2.html">Back to Hub</a>
+        <a id="sp-reports-link" class="sp-btn sp-btn-quiet" href="./teacher-dashboard.html">Open Reports</a>
+        <a id="sp-games-link" class="sp-btn sp-btn-primary" href="./game-platform.html">Open Games</a>
+      </div>
+    </header>
+
+    <section class="sp-layout">
+      <aside class="sp-sidebar">
+        <div class="sp-panel">
+          <p class="sp-kicker">Students</p>
+          <div id="sp-student-list" class="sp-student-list"></div>
+        </div>
+        <div class="sp-panel sp-panel-ghost">
+          <p class="sp-kicker">Guided Search</p>
+          <p id="sp-search-ghost" class="sp-ghost-line" aria-live="polite">Try: Maya R.</p>
+        </div>
+      </aside>
+
+      <section class="sp-main">
+        <div id="sp-empty-state" class="sp-empty-state">
+          <p class="sp-kicker">Student Profile</p>
+          <h1>Select a student to open one complete support record.</h1>
+          <p>Use the list or search. Ghost guidance disappears as soon as you start typing.</p>
+        </div>
+
+        <div id="sp-content" class="sp-content hidden">
+          <section id="sp-hero" class="sp-hero"></section>
+          <section class="sp-grid">
+            <article class="sp-panel">
+              <p class="sp-kicker">Support Snapshot</p>
+              <div id="sp-support-snapshot"></div>
+            </article>
+            <article class="sp-panel">
+              <p class="sp-kicker">Goals & Accommodations</p>
+              <div id="sp-goals-panel"></div>
+            </article>
+            <article class="sp-panel">
+              <p class="sp-kicker">Evidence Timeline</p>
+              <div id="sp-evidence-panel"></div>
+            </article>
+            <article class="sp-panel">
+              <p class="sp-kicker">Weekly Insight Draft</p>
+              <div id="sp-weekly-panel"></div>
+            </article>
+            <article class="sp-panel">
+              <p class="sp-kicker">FBA Quick Log</p>
+              <form id="sp-fba-form" class="sp-form">
+                <div class="sp-form-grid">
+                  <label><span>When</span><input name="when" type="text" placeholder="Transition to writing"></label>
+                  <label><span>Setting</span><input name="setting" type="text" placeholder="Small group table"></label>
+                  <label><span>Frequency</span>
+                    <select name="frequency">
+                      <option value="">Select</option>
+                      <option>Rare</option>
+                      <option>Sometimes</option>
+                      <option>Often</option>
+                      <option>Very often</option>
+                    </select>
+                  </label>
+                  <label><span>Intensity</span>
+                    <select name="intensity">
+                      <option value="">Select</option>
+                      <option>Low</option>
+                      <option>Moderate</option>
+                      <option>High</option>
+                    </select>
+                  </label>
+                  <label class="sp-span-2"><span>Antecedent</span><input name="antecedent" type="text" placeholder="Asked to begin independent writing"></label>
+                  <label class="sp-span-2"><span>Behavior</span><input name="behavior" type="text" placeholder="Called out and left seat"></label>
+                  <label class="sp-span-2"><span>Teacher response</span><input name="teacherResponse" type="text" placeholder="Redirected and offered choice"></label>
+                  <label class="sp-span-2"><span>Peer response</span><input name="peerResponse" type="text" placeholder="Peers laughed / peers ignored"></label>
+                  <label><span>Probable function</span><input name="probableFunction" type="text" placeholder="Escape / attention / sensory"></label>
+                  <label class="sp-span-3"><span>Notes</span><textarea name="notes" rows="3" placeholder="Brief context only."></textarea></label>
+                </div>
+                <button class="sp-btn sp-btn-primary" type="submit">Save FBA Entry</button>
+              </form>
+              <div id="sp-fba-list" class="sp-stack"></div>
+            </article>
+            <article class="sp-panel">
+              <p class="sp-kicker">BIP Quick Plan</p>
+              <form id="sp-bip-form" class="sp-form">
+                <div class="sp-form-grid">
+                  <label class="sp-span-2"><span>Target behavior</span><input name="targetBehavior" type="text" placeholder="Leaves seat during writing"></label>
+                  <label class="sp-span-2"><span>Replacement behavior</span><input name="replacementBehavior" type="text" placeholder="Uses break card and returns to task"></label>
+                  <label class="sp-span-2"><span>Prevention moves</span><textarea name="preventionMoves" rows="2" placeholder="Visual model, choice, pre-correction"></textarea></label>
+                  <label class="sp-span-2"><span>Adult response</span><textarea name="adultResponse" rows="2" placeholder="Prompt replacement behavior, reinforce return"></textarea></label>
+                  <label class="sp-span-2"><span>Reinforcement plan</span><textarea name="reinforcementPlan" rows="2" placeholder="Specific praise, earned break, check-in"></textarea></label>
+                  <label><span>Review date</span><input name="reviewDate" type="date"></label>
+                </div>
+                <button class="sp-btn sp-btn-primary" type="submit">Save BIP Plan</button>
+              </form>
+              <div id="sp-bip-view"></div>
+            </article>
+            <article class="sp-panel">
+              <p class="sp-kicker">Stakeholder Check-ins</p>
+              <form id="sp-checkin-form" class="sp-form">
+                <div class="sp-form-grid">
+                  <label><span>Role</span>
+                    <select name="role">
+                      <option>Teacher</option>
+                      <option>Specialist</option>
+                      <option>Coach</option>
+                      <option>Family</option>
+                      <option>Student</option>
+                    </select>
+                  </label>
+                  <label class="sp-span-2"><span>Summary</span><input name="summary" type="text" placeholder="What matters right now"></label>
+                  <label class="sp-span-3"><span>Next step</span><input name="nextStep" type="text" placeholder="What should happen next"></label>
+                </div>
+                <button class="sp-btn sp-btn-primary" type="submit">Save Check-in</button>
+              </form>
+              <div id="sp-checkin-list" class="sp-stack"></div>
+            </article>
+            <article class="sp-panel">
+              <p class="sp-kicker">Calendar & Files</p>
+              <div id="sp-google-panel"></div>
+            </article>
+          </section>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="./storage-schema.js?v=20260307d"></script>
+  <script src="./js/google-auth-config.js?v=20260307d"></script>
+  <script src="./js/auth/google-auth.js?v=20260307d"></script>
+  <script src="./js/auth/google-workspace.js?v=20260307d"></script>
+  <script src="./js/evidence-store.js?v=20260307d"></script>
+  <script src="./js/support-store.js?v=20260307d"></script>
+  <script src="./js/teacher/teacher-selectors.js?v=20260307d"></script>
+  <script src="./js/teacher/teacher-intelligence.js?v=20260307d"></script>
+  <script src="./js/weekly-insight-generator.js?v=20260307d"></script>
+  <script src="./js/student-profile-store.js?v=20260307d"></script>
+  <script src="./student-profile.js?v=20260307d"></script>
+</body>
+</html>

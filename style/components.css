@@ -1281,11 +1281,17 @@ html[data-home-mode="play"] #home-tools-section {
 
 html[data-home-mode="play"] .top-control-hub {
   display: block !important;
+  width: min(var(--quest-max-width), calc(100vw - 28px));
+  margin-top: 14px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 html[data-home-mode="play"] main {
   height: auto;
-  min-height: calc(100dvh - var(--play-header-h));
+  min-height: calc(100dvh - var(--play-header-h) - var(--play-focus-h, 0px));
   padding-top: 0;
   padding-bottom: var(--play-safe-padding);
   overflow: visible;
@@ -1301,9 +1307,12 @@ html[data-home-mode="play"] .gameplay-audio {
 }
 
 html[data-home-mode="play"] .header-main-row {
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  grid-template-areas: 'logo mode icons';
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas: 'logo icons quick';
   align-items: center;
+  column-gap: 10px;
+  row-gap: 0;
+  min-height: 0;
 }
 
 html[data-home-mode="play"] .play-mode-label {
@@ -1311,8 +1320,14 @@ html[data-home-mode="play"] .play-mode-label {
 }
 
 html[data-home-mode="play"] .header-quick-controls {
+  grid-area: quick;
+  justify-self: end;
+  width: auto;
   display: inline-flex !important;
   align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  overflow: visible;
 }
 
 html[data-home-mode="play"] .header-quick-controls > * {
@@ -1327,20 +1342,26 @@ html[data-home-mode="play"] #teacher-dashboard-btn {
   display: inline-flex !important;
 }
 
-html[data-home-mode="play"] .header-icon-controls > * {
-  display: none !important;
-}
-
-html[data-home-mode="play"] #teacher-panel-btn,
-html[data-home-mode="play"] #case-toggle-btn,
-html[data-home-mode="play"] #keyboard-layout-toggle,
-html[data-home-mode="play"] #theme-dock-toggle-btn,
-html[data-home-mode="play"] #music-dock-toggle-btn,
-html[data-home-mode="play"] #settings-btn {
+html[data-home-mode="play"] .header-icon-controls {
   display: inline-flex !important;
+  grid-area: icons;
+  justify-self: end;
+  gap: 4px;
 }
 
 html[data-home-mode="play"] #play-tools-btn.hidden {
+  display: none !important;
+}
+
+html[data-home-mode="play"] #mission-lab-nav-btn,
+html[data-home-mode="play"] #play-tools-btn,
+html[data-home-mode="play"] #sentence-surgery-btn,
+html[data-home-mode="play"] #reading-lab-btn,
+html[data-home-mode="play"] #writing-studio-btn,
+html[data-home-mode="play"] #play-style-toggle,
+html[data-home-mode="play"] #phonics-clue-open-btn,
+html[data-home-mode="play"] #starter-word-open-btn,
+html[data-home-mode="play"] #active-grade-lock-chip {
   display: none !important;
 }
 
@@ -1359,6 +1380,13 @@ html[data-home-mode="play"] #play-tools-btn.hidden {
   position:      relative;
   z-index:       15;
   justify-content: center;
+}
+
+html[data-home-mode="play"] .focus-bar {
+  min-height: 0;
+  gap: 8px;
+  padding: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .focus-search-label {
@@ -1496,6 +1524,41 @@ html[data-home-mode="play"] #play-tools-btn.hidden {
   border-radius: 999px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 72%, transparent);
   background: color-mix(in oklab, var(--panel-bg) 66%, #ffffff 34%);
+}
+
+html[data-home-mode="play"] .focus-inline-wrap {
+  gap: 8px;
+  padding: 0;
+}
+
+html[data-home-mode="play"] .focus-inline-actions {
+  display: inline-flex;
+  gap: 6px;
+}
+
+html[data-home-mode="play"] .focus-action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 54%, transparent);
+  background: color-mix(in oklab, var(--panel-bg) 72%, #ffffff 28%);
+  box-shadow: none;
+}
+
+html[data-home-mode="play"] .focus-inline-search {
+  height: 36px;
+  border-radius: 999px;
+  border-color: color-mix(in oklab, var(--panel-border) 54%, transparent);
+  background: color-mix(in oklab, var(--panel-bg) 70%, #ffffff 30%);
+  box-shadow: none;
+}
+
+html[data-home-mode="play"] .grade-target-inline {
+  min-height: 36px;
+  padding: 0 14px;
+  border-color: color-mix(in oklab, var(--panel-border) 54%, transparent);
+  background: color-mix(in oklab, var(--panel-bg) 68%, #ffffff 32%);
+  box-shadow: none;
 }
 
 .curriculum-main-bar { display: none !important; }

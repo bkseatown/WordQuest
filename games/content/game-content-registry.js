@@ -6,6 +6,7 @@
       require("./error-content"),
       require("./category-content"),
       require("./sentence-content"),
+      require("./typing-content"),
       require("./game-content-generator")
     );
     return;
@@ -16,6 +17,7 @@
     root.CSErrorContent,
     root.CSCategoryContent,
     root.CSSentenceContent,
+    root.CSTypingContent,
     root.CSGameContentGenerator
   );
 })(typeof globalThis !== "undefined" ? globalThis : window, function createGameContentRegistry(
@@ -24,6 +26,7 @@
   errorContent,
   categoryContent,
   sentenceContent,
+  typingContent,
   generator
 ) {
   "use strict";
@@ -43,7 +46,8 @@
     "concept-ladder": true,
     "error-detective": true,
     "rapid-category": true,
-    "sentence-builder": true
+    "sentence-builder": true,
+    "word-typing": true
   };
 
   var WORD_QUEST_PACK = [
@@ -73,6 +77,8 @@
   ];
 
   var WORD_CONNECTIONS_PACK = [
+    { id: "wc-k1", target: "blend", forbidden: ["mix", "sound", "read", "word"], scaffolds: ["Tell what happens when sounds slide together.", "Use a simple reading example."], requiredMove: "Describe blend in a short reading sentence.", skillTag: "LIT.PHONICS.BLEND", gradeBands: ["K-2"], subjects: ["ELA", "Intervention"] },
+    { id: "wc-k2", target: "compare", forbidden: ["same", "look", "see", "tell"], scaffolds: ["Say how two things are alike or different.", "Use one math or reading example."], requiredMove: "Use compare in a sentence about two ideas or objects.", skillTag: "LANG.COMPARE", gradeBands: ["K-2", "3-5"], subjects: ["ELA", "Math"] },
     { id: "wc-1", target: "analyze", forbidden: ["study", "look", "think", "read"], scaffolds: ["Use a precise academic sentence.", "Connect the word to lesson evidence."], requiredMove: "Use analyze in a complete explanation.", skillTag: "LIT.VOC.ACAD", gradeBands: ["6-8", "9-12"], subjects: ["ELA", "Writing"] },
     { id: "wc-2", target: "fraction", forbidden: ["part", "number", "piece", "math"], scaffolds: ["Use a representation or model.", "Describe the relationship between numerator and denominator."], requiredMove: "Explain with math language, not everyday language.", skillTag: "MATH.CONCEPT.PARTWHOLE", gradeBands: ["3-5", "6-8"], subjects: ["Math"] },
     { id: "wc-3", target: "summarize", forbidden: ["copy", "list", "write", "say"], scaffolds: ["Use your own words.", "Include the most important idea and two key details."], requiredMove: "Summarize in 1–2 sentences without looking at the text.", skillTag: "LIT.COMP.SUMMARIZE", gradeBands: ["3-5", "6-8"], subjects: ["ELA"] },
@@ -90,7 +96,8 @@
     "concept-ladder": ladderContent || [],
     "error-detective": errorContent || [],
     "rapid-category": categoryContent || [],
-    "sentence-builder": sentenceContent || []
+    "sentence-builder": sentenceContent || [],
+    "word-typing": typingContent || []
   });
 
   function normalizeGradeBand(value) {
@@ -101,7 +108,7 @@
     if (/^G?4-?6$/.test(raw)) return "3-5";
     if (/^G?6-?8$/.test(raw) || /^G?[678]$/.test(raw)) return "6-8";
     if (/^G?11-?12$/.test(raw) || /^G?9-?12$/.test(raw) || /^G?(9|10|11|12)$/.test(raw)) return "9-12";
-    return "3-5";
+    return "K-2";
   }
 
   function normalizeWordGradeBands(value) {
@@ -225,7 +232,7 @@
     var text = [entry.word, entry.definition, entry.sentence, entry.morphologyFamily, entry.phonics].join(" ").toLowerCase();
     var subject = inferSubject(context);
     var score = subjectMatches(entry, subject) ? 6 : 0;
-    if ((entry.gradeBands || []).indexOf(normalizeGradeBand(context.gradeBand || context.grade || "3-5")) >= 0) score += 3;
+    if ((entry.gradeBands || []).indexOf(normalizeGradeBand(context.gradeBand || context.grade || "K-2")) >= 0) score += 3;
     termState.customWords.forEach(function (term) {
       if (entry.word === term) score += 24;
       else if (text.indexOf(term) >= 0) score += 12;
@@ -259,13 +266,26 @@
     });
   }
 
+  function isAgeSafeWordEntry(entry, gradeBand, contentMode) {
+    var bands = Array.isArray(entry && entry.gradeBands) ? entry.gradeBands : [];
+    var word = String(entry && entry.word || "");
+    if (gradeBand !== "K-2") return true;
+    if (bands.indexOf("K-2") >= 0) return true;
+    if (bands.length) return false;
+    if (String(contentMode || "").toLowerCase() === "morphology") return !!(entry && (entry.morphologyFamily || entry.phonics));
+    if (entry && entry.phonics) return true;
+    if (entry && entry.morphologyFamily && word.length <= 9) return true;
+    return word.length <= 7;
+  }
+
   function selectWordBankEntries(context) {
     var ctx = context && typeof context === "object" ? context : {};
     var subject = inferSubject(ctx);
-    var gradeBand = normalizeGradeBand(ctx.gradeBand || ctx.grade || "3-5");
+    var gradeBand = normalizeGradeBand(ctx.gradeBand || ctx.grade || "K-2");
     var termState = buildContextTerms(ctx);
     var contentMode = String(ctx.contentMode || "lesson").toLowerCase();
     var rows = getWordBankEntries().filter(function (entry) {
+      if (!isAgeSafeWordEntry(entry, gradeBand, contentMode)) return false;
       var gradeOk = !entry.gradeBands.length || entry.gradeBands.indexOf(gradeBand) >= 0;
       if (!gradeOk) return false;
       if (contentMode === "morphology" && !entry.morphologyFamily) return false;
@@ -280,7 +300,7 @@
       return left.entry.word.localeCompare(right.entry.word);
     });
 
-    if (!rows.length && subject !== "ELA") {
+    if (!rows.length && subject !== "ELA" && gradeBand !== "K-2") {
       rows = getWordBankEntries().map(function (entry) {
         return { entry: entry, score: scoreWordEntry(entry, ctx, termState) };
       }).sort(function (left, right) {
@@ -520,6 +540,39 @@
     }).filter(Boolean).slice(0, 14);
   }
 
+  function inferKeyboardZone(word) {
+    var text = String(word || "").toLowerCase();
+    if (!text) return "home row";
+    if (/^[asdfjkl;]+$/.test(text)) return "home row";
+    if (/^[asdfjkl;qwertyuiop]+$/.test(text)) return "home row + top row";
+    if (/^[asdfjkl;zxcvbnm]+$/.test(text)) return "home row + bottom row";
+    return "full keyboard";
+  }
+
+  function buildTypingRows(entries) {
+    return entries.slice(0, 18).map(function (entry, index) {
+      var focus = entry.morphologyFamily
+        ? ("morphology family " + entry.morphologyFamily)
+        : entry.phonics
+          ? entry.phonics
+          : (entry.word.length <= 5 ? "high-frequency pattern" : "multisyllable practice");
+      return {
+        id: "typing-bank-" + entry.word + "-" + index,
+        source: "word-bank",
+        prompt: "Type the lesson word.",
+        target: entry.word,
+        keyboardZone: inferKeyboardZone(entry.word),
+        orthographyFocus: focus,
+        fingerCue: entry.morphologyFamily
+          ? ("Chunk " + entry.word + " by meaning parts before you type it.")
+          : "Look across the whole word, then type with steady rhythm.",
+        meaningHint: meaningClue(entry),
+        gradeBands: entry.gradeBands,
+        subjects: entry.subjects
+      };
+    });
+  }
+
   function buildDynamicRows(gameId, context) {
     if (!STATIC_DYNAMIC_GAMES[gameId]) return [];
     var entries = selectWordBankEntries(context);
@@ -531,12 +584,13 @@
     if (gameId === "error-detective") return buildErrorDetectiveRows(entries);
     if (gameId === "rapid-category") return buildRapidCategoryRows(entries, context);
     if (gameId === "sentence-builder") return buildSentenceRows(entries, context);
+    if (gameId === "word-typing") return buildTypingRows(entries, context);
     return [];
   }
 
   function filterStaticDeck(gameId, context) {
     var ctx = context && typeof context === "object" ? context : {};
-    var gradeBand = normalizeGradeBand(ctx.gradeBand || ctx.grade || "3-5");
+    var gradeBand = normalizeGradeBand(ctx.gradeBand || ctx.grade || "K-2");
     var subject = inferSubject(ctx);
     var programId = String(ctx.programId || "").toLowerCase();
     var rows = (CONTENT[gameId] || []).filter(function (row) {
@@ -552,7 +606,7 @@
       });
       return gradeOk && subjectOk && programOk;
     });
-    return rows.length ? rows : (CONTENT[gameId] || []).slice();
+    return rows.length ? rows : [];
   }
 
   function filterDeck(gameId, context) {

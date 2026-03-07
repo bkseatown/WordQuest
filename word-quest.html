@@ -43,7 +43,7 @@
   <link rel="stylesheet" href="style/typography.css?v=20260303c">
   <link rel="stylesheet" href="style/modes.css?v=20260303c">
   <link rel="stylesheet" href="style/themes.css?v=20260303d">
-  <link rel="stylesheet" href="style/components.css?v=20260303d">
+  <link rel="stylesheet" href="style/components.css?v=20260307c">
   <link rel="stylesheet" href="style/components.deep-dive-plus.css?v=20260303c">
   <link rel="stylesheet" href="style/world-themes.css?v=20260303c">
   <link rel="stylesheet" href="style/wordquest-isolation.css?v=20260303a">
@@ -91,7 +91,7 @@
       <div id="play-mode-label" class="play-mode-label" data-cs-header-title-center aria-live="polite">Cornerstone MTSS</div>
       <div class="header-right">
         <div class="header-icon-controls">
-          <button id="teacher-panel-btn" data-testid="teacher-panel-btn" class="icon-btn" type="button" aria-label="Teacher Hub" title="Teacher Hub">
+          <button id="teacher-panel-btn" data-testid="teacher-panel-btn" class="icon-btn" type="button" aria-label="Specialist tools" title="Specialist tools">
             <span class="icon-emoji" aria-hidden="true">👩‍🏫</span>
           </button>
           <button id="case-toggle-btn" class="icon-btn micro-toggle-btn" type="button" aria-pressed="false" aria-label="Toggle letter case">
@@ -160,8 +160,8 @@
               <path d="M20 19V6a2 2 0 0 0-2-2h-6v17h6a2 2 0 0 0 2-2z"></path>
             </svg>
           </button>
-          <button id="teacher-dashboard-btn" class="header-quick-btn" type="button" title="Back to Teacher Dashboard" aria-label="Back to Teacher Dashboard">
-            <span class="quick-btn-label">Back to Dashboard</span>
+          <button id="teacher-dashboard-btn" class="header-quick-btn" type="button" title="Back to Specialist Hub" aria-label="Back to Specialist Hub">
+            <span class="quick-btn-label">Back to Hub</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <path d="M4 19h16"></path>
               <path d="M6 16V9"></path>
@@ -779,11 +779,11 @@
   </div>
 
   <!-- ── Teacher hub ──────────────────────────────── -->
-  <div id="teacher-panel" class="teacher-panel hidden" role="dialog" aria-modal="true" aria-label="Teacher Hub">
+  <div id="teacher-panel" class="teacher-panel hidden" role="dialog" aria-modal="true" aria-label="Specialist tools">
     <div class="teacher-panel-card">
       <div class="teacher-panel-head">
-        <strong>Teacher Hub</strong>
-        <button id="teacher-panel-close" data-testid="teacher-panel-close" class="close-btn" aria-label="Close teacher hub">✕</button>
+        <strong>Specialist Tools</strong>
+        <button id="teacher-panel-close" data-testid="teacher-panel-close" class="close-btn" aria-label="Close specialist tools">✕</button>
       </div>
       <div class="teacher-panel-body">
         <div class="teacher-panel-grid">
@@ -1042,10 +1042,7 @@
     </div>
   </div>
 
-  <div id="refresh-latest-banner" class="refresh-latest-banner" role="status" aria-live="polite">
-    <span>Please refresh for the latest update.</span>
-    <button id="refresh-latest-btn" type="button">Refresh</button>
-  </div>
+  <div id="refresh-latest-banner" class="hidden" aria-hidden="true"></div>
   <div id="starter-word-card" class="starter-word-card hidden" role="dialog" aria-label="Try these words">
     <div class="starter-word-head">
       <div id="starter-word-title" class="starter-word-title">Try a Starter Word</div>
@@ -1325,7 +1322,7 @@
             <option value="G6-8">Grades 6–8</option>
             <option value="G9-12">Grades 9–12</option>
           </select>
-          <span class="first-run-grade-note">You can change this anytime in Teacher Hub.</span>
+          <span class="first-run-grade-note">You can change this anytime in Specialist Hub.</span>
         </label>
         <div class="first-run-mode-row" role="group" aria-label="Choose game style">
           <button id="first-run-mode-detective" class="first-run-mode-btn" type="button" data-play-style-choice="detective" aria-pressed="false">🔎 Guess &amp; Check</button>
@@ -1451,7 +1448,7 @@
   <script src="js/coach-ribbon.js?v=20260303c"></script>
   <script src="word-quest-preview.js?v=20260303c"></script>
   <script src="hero-v2.js?v=20260303c"></script>
-  <script src="js/app.js?v=20260303e"></script>
+  <script src="js/app.js?v=20260307b"></script>
   <script src="js/deep-dive-plus.js?v=20260303c"></script>
   <script src="js/theme-nav.js?v=20260303d"></script>
   <!-- Hub back-navigation strip (activates only when ?from=hub is in URL) -->
