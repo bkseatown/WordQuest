@@ -149,21 +149,35 @@
 
   function refreshMetaUI() {
     var meta = readMeta();
+    var overdue = false;
+    if (meta.lastBackupAt) {
+      overdue = ((Date.now() - new Date(meta.lastBackupAt).getTime()) / 86400000) >= REMINDER_DAYS;
+    }
     if (ui.lastLine) {
       ui.lastLine.textContent = meta.lastBackupAt
         ? ("Last backup: " + formatDate(meta.lastBackupAt) + (meta.lastBackupKind ? " • " + meta.lastBackupKind : ""))
         : "No backup saved yet on this device.";
     }
     if (ui.reminder) {
-      var overdue = false;
-      if (meta.lastBackupAt) {
-        overdue = ((Date.now() - new Date(meta.lastBackupAt).getTime()) / 86400000) >= REMINDER_DAYS;
-      }
       ui.reminder.textContent = overdue
         ? "Backup reminder: it has been more than 14 days since the last backup."
         : "Local-first reminder: export a backup before switching devices or clearing browser data.";
       ui.reminder.setAttribute("data-state", overdue ? "due" : "ok");
     }
+    document.querySelectorAll("[data-backup-status]").forEach(function (node) {
+      var mode = node.getAttribute("data-backup-status") || "compact";
+      if (!meta.lastBackupAt) {
+        node.textContent = mode === "full"
+          ? "No backup saved yet. Export a backup before changing devices or clearing browser data."
+          : "No backup yet";
+        node.setAttribute("data-state", "empty");
+        return;
+      }
+      node.textContent = overdue
+        ? (mode === "full" ? "Backup recommended now. Your last saved backup is older than 14 days." : "Backup due")
+        : (mode === "full" ? ("Backed up " + formatDate(meta.lastBackupAt)) : "Backed up");
+      node.setAttribute("data-state", overdue ? "due" : "ok");
+    });
   }
 
   function markBackup(kind, destination) {

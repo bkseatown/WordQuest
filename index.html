@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
   <link rel="stylesheet" href="./style/typography.css?v=20260306h">
   <link rel="stylesheet" href="./home-v3.css?v=20260306h">
+  <link rel="stylesheet" href="./css/backup-panel.css?v=20260308a">
 </head>
 <body class="cs-home-page">
   <main id="cs-home-root" class="cs-home-root" aria-label="Cornerstone MTSS">
@@ -30,9 +31,18 @@
           <span class="home-role-sub">Game-based vocabulary and literacy practice — open to students and classroom teachers</span>
         </a>
       </nav>
+      <div class="home-entry-utility">
+        <button class="home-utility-link home-utility-btn" type="button" data-backup-open="1">Backup &amp; Restore</button>
+        <span class="home-backup-status" data-backup-status="compact">No backup yet</span>
+      </div>
     </div>
   </main>
 
+  <script src="./js/google-auth-config.js?v=20260306i" onerror="0"></script>
+  <script src="./js/auth/google-auth.js?v=20260306i" onerror="0"></script>
+  <script src="./js/auth/google-workspace.js?v=20260306i" onerror="0"></script>
+  <script src="./js/backup-manager.js?v=20260308a"></script>
+  <script>window.CSBackupManager&&window.CSBackupManager.init&&window.CSBackupManager.init();</script>
   <script src="./build-stamp.js?v=20260306h"></script>
   <script src="./js/build-badge.js?v=20260306h"></script>
   <script>window.CSBuildBadge && window.CSBuildBadge.init && window.CSBuildBadge.init();</script>
