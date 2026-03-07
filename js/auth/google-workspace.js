@@ -169,6 +169,32 @@
     });
   }
 
+  function uploadMultipartToDrive(name, mimeType, body, description) {
+    return ensureSignedIn().then(function () {
+      var boundary = "cornerstone_" + Date.now().toString(36);
+      var metadata = {
+        name: name,
+        mimeType: mimeType
+      };
+      if (description) metadata.description = description;
+      var payload =
+        "--" + boundary + "\r\n" +
+        "Content-Type: application/json; charset=UTF-8\r\n\r\n" +
+        JSON.stringify(metadata) + "\r\n" +
+        "--" + boundary + "\r\n" +
+        "Content-Type: " + mimeType + "\r\n\r\n" +
+        body + "\r\n" +
+        "--" + boundary + "--";
+      return apiFetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink,webContentLink", {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/related; boundary=" + boundary
+        },
+        body: payload
+      });
+    });
+  }
+
   function searchYouTube(query) {
     return ensureSignedIn().then(function () {
       return apiFetch(YT_BASE + "/search?part=snippet&type=video&maxResults=6&q=" + encodeURIComponent(query))
@@ -242,6 +268,12 @@
 
     createSlideDeck: function (context) {
       return createWorkspaceFile(buildContextTitle(context) + " - Support Slides", "application/vnd.google-apps.presentation");
+    },
+
+    uploadJsonFile: function (name, payload, options) {
+      var fileName = String(name || "cornerstone-backup.json").trim() || "cornerstone-backup.json";
+      var text = JSON.stringify(payload || {}, null, 2);
+      return uploadMultipartToDrive(fileName, "application/json", text, options && options.description);
     },
 
     searchDriveFiles: function (query) {

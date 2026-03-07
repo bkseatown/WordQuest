@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="./style/nav-shell.css?v=20260301y">
   <link rel="stylesheet" href="./teacher-dashboard.css?v=20260307f">
   <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306m">
+  <link rel="stylesheet" href="./css/backup-panel.css?v=20260308a">
   <style>
     /* ── Teacher Hub CTA ─────────────────────────────── */
     .td-hub-cta {
@@ -724,7 +725,9 @@
   <script src="./js/google-auth-config.js?v=20260306i" onerror="0"></script>
   <script src="./js/auth/google-auth.js?v=20260306i" defer onerror="0"></script>
   <script src="./js/auth/google-workspace.js?v=20260306i" defer onerror="0"></script>
+  <script src="./js/backup-manager.js?v=20260308a" defer></script>
   <script src="./js/lesson-brief-panel.js?v=20260306n" defer></script>
   <script src="./teacher-dashboard.js?v=20260307f" defer></script>
+  <script defer>window.addEventListener("DOMContentLoaded",function(){window.CSBackupManager&&window.CSBackupManager.init&&window.CSBackupManager.init();});</script>
 </body>
 </html>

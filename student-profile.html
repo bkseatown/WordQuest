@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="./style/tokens.css?v=20260307d">
   <link rel="stylesheet" href="./style/typography.css?v=20260307d">
   <link rel="stylesheet" href="./student-profile.css?v=20260307g">
+  <link rel="stylesheet" href="./css/backup-panel.css?v=20260308a">
 </head>
 <body class="sp-page">
   <main class="sp-shell">
@@ -24,6 +25,7 @@
       <div class="sp-header-actions">
         <a class="sp-btn sp-btn-quiet" href="./teacher-hub-v2.html">Back to Hub</a>
         <a id="sp-reports-link" class="sp-btn sp-btn-quiet" href="./reports.html">View Reports</a>
+        <button class="sp-btn sp-btn-quiet" type="button" data-backup-open="1">Backup</button>
         <a id="sp-games-link" class="sp-btn sp-btn-primary" href="./game-platform.html">Open Games</a>
       </div>
     </header>
@@ -201,6 +203,8 @@
   <script src="./js/teacher/teacher-intelligence.js?v=20260307d"></script>
   <script src="./js/weekly-insight-generator.js?v=20260307d"></script>
   <script src="./js/student-profile-store.js?v=20260307g"></script>
+  <script src="./js/backup-manager.js?v=20260308a"></script>
   <script src="./student-profile.js?v=20260307g"></script>
+  <script>window.CSBackupManager&&window.CSBackupManager.init&&window.CSBackupManager.init();</script>
 </body>
 </html>

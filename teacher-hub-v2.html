@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="./css/curriculum-panel.css?v=20260306h">
   <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306i">
   <link rel="stylesheet" href="./css/onboarding-tour.css?v=20260306j">
+  <link rel="stylesheet" href="./css/backup-panel.css?v=20260308a">
 </head>
 <body class="th2-page">
 
@@ -108,6 +109,9 @@
         <div class="th2-sidebar-footer-row">
           <button id="th2-sample-btn" class="th2-footer-icon-btn" type="button" aria-label="Load sample class and demo data" title="Load Sample Class">
             Sample Class
+          </button>
+          <button id="th2-backup-btn" class="th2-footer-icon-btn" type="button" data-backup-open="1" aria-label="Open backup and restore" title="Backup & Restore">
+            Backup
           </button>
           <button id="th2-tour-btn" class="th2-footer-icon-btn" type="button" aria-label="Replay tour / help" title="Replay tour">
             Tour
@@ -276,6 +280,7 @@
   <script src="./js/auth/google-auth.js?v=20260306i" onerror="0"></script>
   <script src="./js/auth/google-classroom.js?v=20260306i" onerror="0"></script>
   <script src="./js/auth/google-workspace.js?v=20260306i" onerror="0"></script>
+  <script src="./js/backup-manager.js?v=20260308a"></script>
 
   <!-- ── Curriculum panel ──────────────────────────────── -->
   <script src="./js/curriculum-panel.js?v=20260306h"></script>
@@ -289,6 +294,7 @@
 
   <!-- ── Application ───────────────────────────────────── -->
   <script src="./teacher-hub-v2.js?v=20260308a"></script>
+  <script>window.CSBackupManager && window.CSBackupManager.init && window.CSBackupManager.init();</script>
 
   <!-- ── Build infrastructure ──────────────────────────── -->
   <script src="./build-stamp.js?v=20260306h"></script>
