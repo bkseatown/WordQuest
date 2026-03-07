@@ -47,7 +47,7 @@ jobs:
           PY
 
           echo "Checking teacher-dashboard script markers"
-          dashboard_html="$(curl -sS --fail "${BASE}/teacher-dashboard.html?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")"
+          dashboard_html="$(curl -sS --fail "${BASE}/reports.html?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}")"
           [[ "${dashboard_html}" == *"build-stamp.js"* ]] || { echo "Missing build-stamp include"; exit 1; }
           [[ "${dashboard_html}" == *"js/build-badge.js"* ]] || { echo "Missing build-badge include"; exit 1; }
           [[ "${dashboard_html}" == *"js/nav-shell.js"* ]] || { echo "Missing nav-shell include"; exit 1; }

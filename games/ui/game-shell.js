@@ -85,6 +85,28 @@
     return context;
   }
 
+  function appBasePath() {
+    var path = String((runtimeRoot.location && runtimeRoot.location.pathname) || "");
+    var marker = "/WordQuest/";
+    var idx = path.indexOf(marker);
+    if (idx >= 0) return path.slice(0, idx + marker.length);
+    try {
+      var baseEl = runtimeRoot.document && runtimeRoot.document.querySelector && runtimeRoot.document.querySelector("base[href]");
+      if (baseEl) {
+        var baseUrl = new URL(baseEl.getAttribute("href"), runtimeRoot.location.href);
+        var basePath = String(baseUrl.pathname || "");
+        if (basePath) return basePath.endsWith("/") ? basePath : (basePath + "/");
+      }
+    } catch (_e) {}
+    var dir = path.replace(/[^/]*$/, "");
+    return dir || "/";
+  }
+
+  function withAppBase(path) {
+    var clean = String(path || "").replace(/^\.?\//, "");
+    return new URL(appBasePath() + clean, runtimeRoot.location.origin).toString();
+  }
+
   function guessState(guess, word) {
     var result = Array(word.length).fill("absent");
     var letters = word.split("");
@@ -463,7 +485,7 @@
   }
 
   function launchHref(base, context) {
-    var url = new URL(base, runtimeRoot.location.href);
+    var url = new URL(withAppBase(base));
     if (context.studentId) url.searchParams.set("student", context.studentId);
     if (context.classId) url.searchParams.set("classId", context.classId);
     if (context.lessonContextId) url.searchParams.set("lessonContextId", context.lessonContextId);
@@ -945,7 +967,7 @@
         "    </div>",
         "  </div>",
         '  <div class="cg-toolbar">',
-        '    <a class="cg-action cg-action-quiet" href="./game-platform.html">' + runtimeRoot.CSGameComponents.iconFor("context") + 'All Games</a>',
+        '    <a class="cg-action cg-action-quiet" href="' + runtimeRoot.CSGameComponents.escapeHtml(withAppBase("game-platform.html")) + '">' + runtimeRoot.CSGameComponents.iconFor("context") + 'All Games</a>',
         '    <button class="cg-action cg-action-quiet" type="button" data-action="toggle-teacher">' + runtimeRoot.CSGameComponents.iconFor("teacher") + (uiState.teacherPanelOpen ? "Hide Controls" : "Teacher Controls") + "</button>",
         '    <button class="cg-action cg-action-quiet" type="button" data-action="hint">' + runtimeRoot.CSGameComponents.iconFor("hint") + "Hint</button>",
         '    <button class="cg-action cg-action-primary" type="button" data-action="restart">' + runtimeRoot.CSGameComponents.iconFor("progress") + "Restart</button>",

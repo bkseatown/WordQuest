@@ -65,8 +65,8 @@ jobs:
           )
           grep -q "build-stamp.js" dist/index.html || { echo "index missing build-stamp include"; exit 1; }
           grep -q "js/build-badge.js" dist/index.html || { echo "index missing build-badge include"; exit 1; }
-          grep -q "build-stamp.js" dist/teacher-dashboard.html || { echo "teacher-dashboard missing build-stamp include"; exit 1; }
-          grep -q "js/build-badge.js" dist/teacher-dashboard.html || { echo "teacher-dashboard missing build-badge include"; exit 1; }
+          grep -q "build-stamp.js" dist/reports.html || { echo "reports missing build-stamp include"; exit 1; }
+          grep -q "js/build-badge.js" dist/reports.html || { echo "reports missing build-badge include"; exit 1; }
 
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -108,7 +108,7 @@ jobs:
           for target_entry in "${targets[@]}"; do
             target="${target_entry%%|*}"
             requirement="${target_entry##*|}"
-            dashboard_url="${target%/}/teacher-dashboard.html?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            dashboard_url="${target%/}/reports.html?cb=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
             echo "Smoke checking ${dashboard_url}"
             passed=0
             details="Missing markers after retries."
