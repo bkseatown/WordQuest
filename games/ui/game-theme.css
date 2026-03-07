@@ -228,6 +228,304 @@ body.game-platform-page[data-game-theme="classic"] {
   --cg-primary-btn-press:  0 2px 0 #0a4a52, 0 4px 10px rgba(13,94,102,0.2);
 }
 
+/* ═══════════════════════════════════════════════════
+   EXTENDED THEME LIBRARY
+   Restores the broader Word Quest theme family for all games.
+   ═══════════════════════════════════════════════════ */
+body.game-platform-page[data-game-theme="coffee"] {
+  --cg-bg: #264234;
+  --cg-bg-deep: #1c2d25;
+  --cg-panel: rgba(42, 60, 49, 0.96);
+  --cg-panel-strong: rgba(51, 74, 61, 0.98);
+  --cg-ink: #f6f1e8;
+  --cg-muted: #c0b19f;
+  --cg-muted-strong: #ddcfbb;
+  --cg-border: rgba(211, 177, 126, 0.14);
+  --cg-border-strong: rgba(211, 177, 126, 0.26);
+  --cg-primary: #8ab17d;
+  --cg-primary-2: #b7d39b;
+  --cg-primary-soft: rgba(138, 177, 125, 0.18);
+  --cg-accent: #c48642;
+  --cg-accent-2: #dfad68;
+  --cg-accent-soft: rgba(196, 134, 66, 0.18);
+  --cg-positive: #7fb069;
+  --cg-warning: #dfad68;
+  --cg-negative: #d27d62;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 15% 10%, rgba(196,134,66,0.18) 0%, transparent 36%),
+    radial-gradient(ellipse at 85% 8%, rgba(138,177,125,0.18) 0%, transparent 32%),
+    linear-gradient(180deg, #314d3f 0%, #264234 42%, #1c2d25 100%);
+}
+
+body.game-platform-page[data-game-theme="seahawks"] {
+  --cg-bg: #436c8f;
+  --cg-bg-deep: #2b4e70;
+  --cg-panel: rgba(54, 89, 118, 0.94);
+  --cg-panel-strong: rgba(66, 103, 134, 0.97);
+  --cg-ink: #f4f8fb;
+  --cg-muted: #d7e0e7;
+  --cg-muted-strong: #f3f7fb;
+  --cg-border: rgba(105, 190, 40, 0.18);
+  --cg-border-strong: rgba(105, 190, 40, 0.32);
+  --cg-primary: #69be28;
+  --cg-primary-2: #9ad35f;
+  --cg-primary-soft: rgba(105, 190, 40, 0.18);
+  --cg-accent: #a5acaf;
+  --cg-accent-2: #d1d8db;
+  --cg-accent-soft: rgba(165, 172, 175, 0.18);
+  --cg-positive: #69be28;
+  --cg-warning: #d7dde1;
+  --cg-negative: #f87171;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 18% 10%, rgba(105,190,40,0.18) 0%, transparent 32%),
+    radial-gradient(ellipse at 85% 8%, rgba(165,172,175,0.18) 0%, transparent 28%),
+    linear-gradient(180deg, #5c83a3 0%, #436c8f 40%, #2b4e70 100%);
+}
+
+body.game-platform-page[data-game-theme="huskies"] {
+  --cg-bg: #5b4b88;
+  --cg-bg-deep: #433365;
+  --cg-panel: rgba(89, 72, 130, 0.95);
+  --cg-panel-strong: rgba(101, 82, 145, 0.98);
+  --cg-ink: #fff8ee;
+  --cg-muted: #dacfb2;
+  --cg-muted-strong: #efe3c9;
+  --cg-border: rgba(183, 165, 122, 0.18);
+  --cg-border-strong: rgba(183, 165, 122, 0.34);
+  --cg-primary: #b7a57a;
+  --cg-primary-2: #d8c69b;
+  --cg-primary-soft: rgba(183, 165, 122, 0.18);
+  --cg-accent: #8f7cf4;
+  --cg-accent-2: #b09cff;
+  --cg-accent-soft: rgba(143,124,244,0.18);
+  --cg-positive: #b7a57a;
+  --cg-warning: #f2cf74;
+  --cg-negative: #f87171;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 16% 8%, rgba(183,165,122,0.18) 0%, transparent 32%),
+    radial-gradient(ellipse at 85% 10%, rgba(143,124,244,0.16) 0%, transparent 30%),
+    linear-gradient(180deg, #6a5a9a 0%, #5b4b88 42%, #433365 100%);
+}
+
+body.game-platform-page[data-game-theme="superman"],
+body.game-platform-page[data-game-theme="marvel"] {
+  --cg-bg: #223e75;
+  --cg-bg-deep: #17284b;
+  --cg-panel: rgba(36, 62, 117, 0.95);
+  --cg-panel-strong: rgba(49, 79, 142, 0.98);
+  --cg-ink: #fff6ef;
+  --cg-muted: #d9d7cf;
+  --cg-muted-strong: #f5eee4;
+  --cg-border: rgba(244, 196, 48, 0.18);
+  --cg-border-strong: rgba(244, 196, 48, 0.34);
+  --cg-primary: #e23d3d;
+  --cg-primary-2: #ff6f61;
+  --cg-primary-soft: rgba(226, 61, 61, 0.18);
+  --cg-accent: #f4c430;
+  --cg-accent-2: #ffd861;
+  --cg-accent-soft: rgba(244,196,48,0.18);
+  --cg-positive: #22c55e;
+  --cg-warning: #f4c430;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 14% 10%, rgba(226,61,61,0.22) 0%, transparent 34%),
+    radial-gradient(ellipse at 84% 8%, rgba(244,196,48,0.18) 0%, transparent 28%),
+    linear-gradient(180deg, #2d4e8f 0%, #223e75 42%, #17284b 100%);
+}
+
+body.game-platform-page[data-game-theme="mario"] {
+  --cg-bg: #ba3c33;
+  --cg-bg-deep: #8f2c25;
+  --cg-panel: rgba(191, 72, 58, 0.95);
+  --cg-panel-strong: rgba(210, 92, 75, 0.98);
+  --cg-ink: #fff8ee;
+  --cg-muted: #f0dbc1;
+  --cg-muted-strong: #fff1df;
+  --cg-border: rgba(255, 210, 63, 0.2);
+  --cg-border-strong: rgba(255, 210, 63, 0.36);
+  --cg-primary: #2f74d0;
+  --cg-primary-2: #69a4f0;
+  --cg-accent: #ffd23f;
+  --cg-accent-2: #ffe06e;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 12% 8%, rgba(255,210,63,0.24) 0%, transparent 28%),
+    radial-gradient(ellipse at 82% 10%, rgba(47,116,208,0.18) 0%, transparent 30%),
+    linear-gradient(180deg, #d55546 0%, #ba3c33 42%, #8f2c25 100%);
+}
+
+body.game-platform-page[data-game-theme="rainbowfriends"] {
+  --cg-bg: #b95e8d;
+  --cg-bg-deep: #7c3c61;
+  --cg-panel: rgba(182, 94, 141, 0.95);
+  --cg-panel-strong: rgba(200, 108, 154, 0.98);
+  --cg-ink: #fff7fb;
+  --cg-muted: #f3d8e7;
+  --cg-muted-strong: #ffeaf4;
+  --cg-border: rgba(82, 196, 214, 0.2);
+  --cg-border-strong: rgba(82, 196, 214, 0.34);
+  --cg-primary: #52c4d6;
+  --cg-primary-2: #8ddcea;
+  --cg-primary-soft: rgba(82, 196, 214, 0.18);
+  --cg-accent: #ffd166;
+  --cg-accent-2: #ffe095;
+  --cg-accent-soft: rgba(255, 209, 102, 0.2);
+  --cg-positive: #52c4d6;
+  --cg-warning: #ffd166;
+  --cg-negative: #ff7f9b;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 16% 10%, rgba(255,209,102,0.18) 0%, transparent 30%),
+    radial-gradient(ellipse at 84% 8%, rgba(82,196,214,0.18) 0%, transparent 28%),
+    linear-gradient(180deg, #cf79a4 0%, #b95e8d 42%, #7c3c61 100%);
+}
+
+body.game-platform-page[data-game-theme="zelda"],
+body.game-platform-page[data-game-theme="minecraft"] {
+  --cg-bg: #3f5b3a;
+  --cg-bg-deep: #2b4027;
+  --cg-panel: rgba(66, 92, 61, 0.95);
+  --cg-panel-strong: rgba(80, 108, 73, 0.98);
+  --cg-ink: #f7f3e8;
+  --cg-muted: #d5cfbb;
+  --cg-muted-strong: #ece4d0;
+  --cg-border: rgba(201, 164, 92, 0.18);
+  --cg-border-strong: rgba(201, 164, 92, 0.32);
+  --cg-primary: #7bb661;
+  --cg-primary-2: #a4d07a;
+  --cg-accent: #c9a45c;
+  --cg-accent-2: #e2bf7d;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 18% 10%, rgba(123,182,97,0.18) 0%, transparent 34%),
+    radial-gradient(ellipse at 84% 10%, rgba(201,164,92,0.18) 0%, transparent 28%),
+    linear-gradient(180deg, #506d49 0%, #3f5b3a 42%, #2b4027 100%);
+}
+
+body.game-platform-page[data-game-theme="ironman"] {
+  --cg-bg: #6a2e34;
+  --cg-bg-deep: #4a1d23;
+  --cg-panel: rgba(106, 46, 52, 0.95);
+  --cg-panel-strong: rgba(126, 57, 64, 0.98);
+  --cg-ink: #fff6f0;
+  --cg-muted: #e9d0c1;
+  --cg-muted-strong: #f8e3d6;
+  --cg-border: rgba(217, 180, 76, 0.2);
+  --cg-border-strong: rgba(217, 180, 76, 0.34);
+  --cg-primary: #d9b44c;
+  --cg-primary-2: #efcf7a;
+  --cg-primary-soft: rgba(217, 180, 76, 0.2);
+  --cg-accent: #f2876b;
+  --cg-accent-2: #ffb09a;
+  --cg-accent-soft: rgba(242, 135, 107, 0.18);
+  --cg-positive: #d9b44c;
+  --cg-warning: #efcf7a;
+  --cg-negative: #ff8f7a;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 18% 10%, rgba(217,180,76,0.18) 0%, transparent 32%),
+    radial-gradient(ellipse at 84% 9%, rgba(242,135,107,0.16) 0%, transparent 28%),
+    linear-gradient(180deg, #8a434b 0%, #6a2e34 42%, #4a1d23 100%);
+}
+
+body.game-platform-page[data-game-theme="amongus"],
+body.game-platform-page[data-game-theme="dark"],
+body.game-platform-page[data-game-theme="matrix"] {
+  --cg-bg: #18222d;
+  --cg-bg-deep: #101720;
+  --cg-panel: rgba(28, 40, 52, 0.96);
+  --cg-panel-strong: rgba(37, 51, 66, 0.98);
+  --cg-ink: #eef4f8;
+  --cg-muted: #9cb1bf;
+  --cg-muted-strong: #c9d7e0;
+  --cg-border: rgba(108, 196, 122, 0.18);
+  --cg-border-strong: rgba(108, 196, 122, 0.32);
+  --cg-primary: #54b46b;
+  --cg-primary-2: #7fda90;
+  --cg-accent: #5eb6d8;
+  --cg-accent-2: #8fd7f0;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 18% 10%, rgba(84,180,107,0.16) 0%, transparent 34%),
+    radial-gradient(ellipse at 84% 10%, rgba(94,182,216,0.16) 0%, transparent 28%),
+    linear-gradient(180deg, #223140 0%, #18222d 42%, #101720 100%);
+}
+
+body.game-platform-page[data-game-theme="harleyquinn"],
+body.game-platform-page[data-game-theme="poppink"] {
+  --cg-bg: #b95e8d;
+  --cg-bg-deep: #8a4368;
+  --cg-panel: rgba(193, 104, 150, 0.94);
+  --cg-panel-strong: rgba(212, 123, 168, 0.97);
+  --cg-ink: #fff7fb;
+  --cg-muted: #f4dbe8;
+  --cg-muted-strong: #fff0f6;
+  --cg-border: rgba(82, 196, 214, 0.2);
+  --cg-border-strong: rgba(82, 196, 214, 0.34);
+  --cg-primary: #52c4d6;
+  --cg-primary-2: #8edceb;
+  --cg-accent: #ffd166;
+  --cg-accent-2: #ffe09a;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 14% 10%, rgba(82,196,214,0.2) 0%, transparent 28%),
+    radial-gradient(ellipse at 86% 8%, rgba(255,209,102,0.18) 0%, transparent 24%),
+    linear-gradient(180deg, #cc78a1 0%, #b95e8d 42%, #8a4368 100%);
+}
+
+body.game-platform-page[data-game-theme="kuromi"] {
+  --cg-bg: #332542;
+  --cg-bg-deep: #22182d;
+  --cg-panel: rgba(55, 39, 71, 0.96);
+  --cg-panel-strong: rgba(69, 50, 87, 0.98);
+  --cg-ink: #f8f1fb;
+  --cg-muted: #d8c0e8;
+  --cg-muted-strong: #ecdaf5;
+  --cg-border: rgba(240, 123, 210, 0.18);
+  --cg-border-strong: rgba(240, 123, 210, 0.32);
+  --cg-primary: #d56ac7;
+  --cg-primary-2: #f095e4;
+  --cg-accent: #a7a1ff;
+  --cg-accent-2: #c7c3ff;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 18% 10%, rgba(213,106,199,0.18) 0%, transparent 34%),
+    radial-gradient(ellipse at 84% 8%, rgba(167,161,255,0.16) 0%, transparent 28%),
+    linear-gradient(180deg, #43305a 0%, #332542 42%, #22182d 100%);
+}
+
+body.game-platform-page[data-game-theme="harrypotter"] {
+  --cg-bg: #6a2e34;
+  --cg-bg-deep: #491f24;
+  --cg-panel: rgba(107, 48, 55, 0.95);
+  --cg-panel-strong: rgba(127, 60, 68, 0.98);
+  --cg-ink: #fff8ee;
+  --cg-muted: #ead8bc;
+  --cg-muted-strong: #f7e7cb;
+  --cg-border: rgba(217, 180, 76, 0.2);
+  --cg-border-strong: rgba(217, 180, 76, 0.34);
+  --cg-primary: #d9b44c;
+  --cg-primary-2: #f0cf74;
+  --cg-accent: #8b6bb8;
+  --cg-accent-2: #b39ad9;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 18% 10%, rgba(217,180,76,0.18) 0%, transparent 32%),
+    radial-gradient(ellipse at 84% 8%, rgba(139,107,184,0.16) 0%, transparent 28%),
+    linear-gradient(180deg, #7f3941 0%, #6a2e34 42%, #491f24 100%);
+}
+
+body.game-platform-page[data-game-theme="demonhunter"] {
+  --cg-bg: #27444f;
+  --cg-bg-deep: #193038;
+  --cg-panel: rgba(43, 72, 82, 0.95);
+  --cg-panel-strong: rgba(55, 88, 101, 0.98);
+  --cg-ink: #fff3f6;
+  --cg-muted: #d9ccd4;
+  --cg-muted-strong: #f0e1e8;
+  --cg-border: rgba(236, 111, 154, 0.18);
+  --cg-border-strong: rgba(236, 111, 154, 0.32);
+  --cg-primary: #ec6f9a;
+  --cg-primary-2: #f5a0bb;
+  --cg-accent: #53c5bf;
+  --cg-accent-2: #8de0da;
+  --cg-page-gradient:
+    radial-gradient(ellipse at 16% 10%, rgba(236,111,154,0.18) 0%, transparent 34%),
+    radial-gradient(ellipse at 84% 8%, rgba(83,197,191,0.16) 0%, transparent 28%),
+    linear-gradient(180deg, #335660 0%, #27444f 42%, #193038 100%);
+}
+
 /* ── Apply page background from theme vars ── */
 body.game-platform-page {
   margin: 0;

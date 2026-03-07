@@ -53,19 +53,10 @@
     barbie: 'poppink'
   });
 
-  // Curated active list for the current K-8 rollout cohort.
-  var ACTIVE_THEME_IDS = Object.freeze([
-    'coffee',         // 1. Coffeehouse Green
-    'matrix',         // 2. Emerald Grid
-    'seahawks',       // 3. Pacific Flight
-    'huskies',        // 4. Purple Gold Pride
-    'superman',       // 5. Hero Blue-Red
-    'minecraft',      // 6. Pixel Block World
-    'mario',          // 7. Mushroom Sprint
-    'rainbowfriends', // 9. Neon Squad
-    'amongus',        // 10. Cosmic Crew
-    'harrypotter'     // 11. Wizard House
-  ]);
+  // Restore the full theme library so custom themes remain available in-play.
+  var ACTIVE_THEME_IDS = Object.freeze(THEME_REGISTRY.map(function themeId(theme) {
+    return theme.id;
+  }));
 
   var ORDER = Object.freeze(ACTIVE_THEME_IDS.filter(function onlyKnownTheme(id) {
     return themeById.has(id);

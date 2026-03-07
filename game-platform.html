@@ -9,10 +9,11 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
   <link rel="stylesheet" href="./style/typography.css?v=20260306h">
-  <link rel="stylesheet" href="./games/ui/game-theme.css?v=20260307k">
+  <link rel="stylesheet" href="./games/ui/game-theme.css?v=20260308b">
   <link rel="stylesheet" href="./games/ui/game-motion.css?v=20260307k">
   <link rel="stylesheet" href="./games/ui/game-feedback.css?v=20260307k">
   <link rel="stylesheet" href="./games/ui/game-shell.css?v=20260308c">
+  <script src="./js/theme-registry.js?v=20260308b"></script>
 </head>
 <style>
   /* ── Class Mode (projector) ─────────────────────────── */
@@ -117,7 +118,7 @@
 </style>
 <body class="game-platform-page">
   <!-- FOUC prevention: apply saved theme before first paint -->
-  <script>(function(){var t="";try{t=localStorage.getItem("cs.game.theme")||"";}catch(e){}if(t)document.body.setAttribute("data-game-theme",t);})();</script>
+  <script>(function(){var t="";try{t=localStorage.getItem("cs.game.theme")||"";}catch(e){}if(t&&t!=="default")document.body.setAttribute("data-game-theme",t);})();</script>
   <main class="cg-shell">
     <div id="cg-shell"></div>
     <div id="cg-live-region" aria-live="polite" aria-atomic="true" class="cg-hidden"></div>
@@ -129,14 +130,7 @@
   </button>
 
   <!-- Theme picker -->
-  <div id="cg-theme-picker" aria-label="Choose game theme" role="group">
-    <button class="cg-theme-swatch" data-theme=""        title="Cornerstone Navy (default)" aria-pressed="true"  style="background:linear-gradient(135deg,#1a2238,#69be28)"></button>
-    <button class="cg-theme-swatch" data-theme="dark"    title="Dark Quest"   aria-pressed="false" style="background:linear-gradient(135deg,#1a1f3d,#d97332)"></button>
-    <button class="cg-theme-swatch" data-theme="ocean"   title="Ocean"        aria-pressed="false" style="background:linear-gradient(135deg,#0c2a3f,#06b6d4)"></button>
-    <button class="cg-theme-swatch" data-theme="sunset"  title="Sunset"       aria-pressed="false" style="background:linear-gradient(135deg,#2d1b3d,#f472b6)"></button>
-    <button class="cg-theme-swatch" data-theme="forest"  title="Forest"       aria-pressed="false" style="background:linear-gradient(135deg,#0d2318,#4ade80)"></button>
-    <button class="cg-theme-swatch" data-theme="classic" title="Classic"      aria-pressed="false" style="background:linear-gradient(135deg,#efe8dc,#d98038)"></button>
-  </div>
+  <div id="cg-theme-picker" aria-label="Choose game theme" role="group"></div>
 
   <style>
     #cg-theme-picker {
@@ -201,22 +195,69 @@
     // Theme switcher
     (function() {
       var STORAGE_KEY = "cs.game.theme";
-      var swatches = document.querySelectorAll(".cg-theme-swatch");
+      var picker = document.getElementById("cg-theme-picker");
+      var themeMeta = {
+        "default": "linear-gradient(135deg,#1a2238,#69be28)",
+        "sunset": "linear-gradient(135deg,#2d1b3d,#f472b6)",
+        "ocean": "linear-gradient(135deg,#0c2a3f,#06b6d4)",
+        "coffee": "linear-gradient(135deg,#264234,#c48642)",
+        "seahawks": "linear-gradient(135deg,#436c8f,#69be28)",
+        "huskies": "linear-gradient(135deg,#5b4b88,#b7a57a)",
+        "superman": "linear-gradient(135deg,#223e75,#e23d3d)",
+        "mario": "linear-gradient(135deg,#ba3c33,#ffd23f)",
+        "zelda": "linear-gradient(135deg,#3f5b3a,#c9a45c)",
+        "amongus": "linear-gradient(135deg,#18222d,#5eb6d8)",
+        "rainbowfriends": "linear-gradient(135deg,#b95e8d,#52c4d6)",
+        "minecraft": "linear-gradient(135deg,#3f5b3a,#7bb661)",
+        "marvel": "linear-gradient(135deg,#223e75,#e23d3d)",
+        "ironman": "linear-gradient(135deg,#6a2e34,#d9b44c)",
+        "harleyquinn": "linear-gradient(135deg,#b95e8d,#52c4d6)",
+        "kuromi": "linear-gradient(135deg,#332542,#d56ac7)",
+        "poppink": "linear-gradient(135deg,#cc78a1,#ffd166)",
+        "harrypotter": "linear-gradient(135deg,#6a2e34,#d9b44c)",
+        "demonhunter": "linear-gradient(135deg,#27444f,#ec6f9a)",
+        "dark": "linear-gradient(135deg,#18222d,#54b46b)",
+        "matrix": "linear-gradient(135deg,#101720,#54b46b)",
+        "forest": "linear-gradient(135deg,#0d2318,#4ade80)",
+        "classic": "linear-gradient(135deg,#efe8dc,#d98038)"
+      };
+      var themeOrder = window.WQThemeRegistry && Array.isArray(window.WQThemeRegistry.order) && window.WQThemeRegistry.order.length
+        ? window.WQThemeRegistry.order.slice()
+        : ["default", "sunset", "ocean", "coffee", "seahawks", "huskies", "forest", "classic"];
+
+      function themeLabel(themeId) {
+        if (window.WQThemeRegistry && typeof window.WQThemeRegistry.getLabel === "function") {
+          return window.WQThemeRegistry.getLabel(themeId);
+        }
+        return themeId || "Cornerstone Navy";
+      }
+
+      function renderSwatches() {
+        if (!picker) return;
+        picker.innerHTML = themeOrder.map(function(themeId) {
+          var label = themeLabel(themeId);
+          return '<button class="cg-theme-swatch" data-theme="' + String(themeId).replace(/"/g, '&quot;') + '" title="' + String(label).replace(/"/g, '&quot;') + '" aria-pressed="false" style="background:' + (themeMeta[themeId] || themeMeta.default) + '"></button>';
+        }).join("");
+      }
+
       function applyTheme(theme) {
-        if (theme) {
+        if (theme && theme !== "default") {
           document.body.setAttribute("data-game-theme", theme);
         } else {
           document.body.removeAttribute("data-game-theme"); /* Cornerstone Navy: no attribute */
         }
-        try { localStorage.setItem(STORAGE_KEY, theme); } catch(e) {}
+        try { localStorage.setItem(STORAGE_KEY, theme || "default"); } catch(e) {}
+        var swatches = document.querySelectorAll(".cg-theme-swatch");
         swatches.forEach(function(s) {
-          s.setAttribute("aria-pressed", s.getAttribute("data-theme") === theme ? "true" : "false");
+          var targetTheme = theme || "default";
+          s.setAttribute("aria-pressed", s.getAttribute("data-theme") === targetTheme ? "true" : "false");
         });
       }
-      // Restore saved theme — default is "" (Cornerstone Navy)
-      var saved = "";
-      try { saved = localStorage.getItem(STORAGE_KEY) || ""; } catch(e) { saved = ""; }
+      renderSwatches();
+      var saved = "default";
+      try { saved = localStorage.getItem(STORAGE_KEY) || "default"; } catch(e) { saved = "default"; }
       applyTheme(saved);
+      var swatches = document.querySelectorAll(".cg-theme-swatch");
       swatches.forEach(function(s) {
         s.addEventListener("click", function() { applyTheme(s.getAttribute("data-theme")); });
       });

@@ -107,19 +107,19 @@
    Wolf gray keys (actual brand color), green key shadows = instant ID   */
 [data-theme="seahawks"] {
   /* 60% dominant: College Navy */
-  --page-bg:      #244563;
-  --page-bg2:     #14324d;
+  --page-bg:      #4d7393;
+  --page-bg2:     #2f5678;
   --header-bg:    #002244;
   --brand:        #002244;
   --brand-dk:     #001a34;
   --brand-text:   #f4f8fb;
-  --focusbar-bg:  rgba(7, 31, 55, 0.72);
+  --focusbar-bg:  rgba(37, 72, 103, 0.58);
 
   /* 30% secondary: Wolf Grey / white-tinted structural surfaces */
-  --panel-bg:     #a6b0b8;
-  --panel-border: rgba(222, 229, 235, 0.48);
-  --plate-bg:     rgba(165, 172, 175, 0.20);
-  --plate-border: rgba(189, 198, 204, 0.44);
+  --panel-bg:     #c5d0d7;
+  --panel-border: rgba(235, 241, 245, 0.6);
+  --plate-bg:     rgba(190, 199, 205, 0.34);
+  --plate-border: rgba(208, 217, 223, 0.58);
   --tile-face:    linear-gradient(160deg, #f8fbfd 0%, #e8eef3 100%);
   --tile-border:  #7f94a6;
   --tile-text:    #001833;
@@ -132,7 +132,7 @@
   --key-hover:    #c5cdd1;
   --text:         #10283f;
   --text-muted:   #2d4c67;
-  --modal-bg:     #8fa1b0;
+  --modal-bg:     #b5c5d2;
 
   /* 10% accent: Action Green */
   --accent:       #69be28;
