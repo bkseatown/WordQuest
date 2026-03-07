@@ -115,15 +115,6 @@ html[data-text-size="large"] { --wq-text-size: 18px; }
 }
 
 html[data-home-mode="play"] {
-  --page-bg: #335874;
-  --page-bg2: #254562;
-  --panel-bg: #dbe8f2;
-  --plate-bg: #7f98ad;
-  --plate-border: #5c758b;
-  --key-bg: #a8b9c8;
-  --key-hover: #bccbda;
-  --key-shadow: 0 3px 0 #60778d, 0 8px 16px rgba(10, 18, 28, 0.16);
-  --key-text: #23384d;
   --main-max-width: 600px;
   --focus-max-width: 600px;
   --quest-max-width: 540px;
