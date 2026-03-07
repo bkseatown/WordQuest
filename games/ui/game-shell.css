@@ -934,7 +934,7 @@ body.game-platform-page .cg-input:focus,
 body.game-platform-page .cg-textarea:focus,
 body.game-platform-page .cg-select:focus {
   border-color: var(--cg-cta);
-  box-shadow: 0 0 0 3px var(--cg-cta-glow);
+  box-shadow: 0 0 0 4px var(--cg-cta-glow);
   outline: none;
 }
 /* Classic light theme override */
@@ -1184,12 +1184,21 @@ html[data-view-mode="projector"] body.game-platform-page[data-shell-view="play"]
   padding: 30px;
 }
 
+html[data-view-mode="projector"] body.game-platform-page .cg-stage-head,
+html[data-view-mode="classroom"] body.game-platform-page .cg-stage-head {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
 html[data-view-mode="projector"] body.game-platform-page .cg-stage-head h2 {
-  font-size: 52px;
+  font-size: clamp(40px, 4vw, 52px);
+  line-height: 1.04;
+  max-width: 16ch;
 }
 
 html[data-view-mode="projector"] body.game-platform-page .cg-prompt-title {
-  font-size: 34px;
+  font-size: clamp(28px, 2.9vw, 34px);
+  line-height: 1.12;
 }
 
 html[data-view-mode="projector"] body.game-platform-page .cg-focus-line,
@@ -1202,6 +1211,20 @@ html[data-view-mode="projector"] body.game-platform-page .cg-textarea {
 
 html[data-view-mode="projector"] body.game-platform-page .cg-textarea {
   min-height: 180px;
+}
+
+html[data-view-mode="projector"] body.game-platform-page .cg-stage-toolbar,
+html[data-view-mode="projector"] body.game-platform-page .cg-context-chips,
+html[data-view-mode="classroom"] body.game-platform-page .cg-stage-toolbar,
+html[data-view-mode="classroom"] body.game-platform-page .cg-context-chips {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+html[data-view-mode="projector"] body.game-platform-page .cg-chip,
+html[data-view-mode="classroom"] body.game-platform-page .cg-chip {
+  white-space: normal;
+  line-height: 1.2;
 }
 
 @media (max-width: 1380px) {
@@ -1225,7 +1248,7 @@ html[data-view-mode="projector"] body.game-platform-page .cg-textarea {
 /* ── Focus rings ── */
 body.game-platform-page .cg-action:focus-visible,
 body.game-platform-page .cg-choice:focus-visible,
-body.game-platform-page .cg-tile:focus-visible  { outline: 2px solid var(--cg-cta); outline-offset: 2px; }
+body.game-platform-page .cg-tile:focus-visible  { outline: 4px solid var(--cg-cta); outline-offset: 3px; }
 
 /* ── Word Quest link ── */
 body.game-platform-page a.cg-action { display: inline-flex; align-items: center; justify-content: center; }

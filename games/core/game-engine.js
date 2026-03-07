@@ -195,16 +195,17 @@
 
       if (cfg.sound && outcome.correct) cfg.sound.play("correct");
 
-      /* ── Auto difficulty arc (gate: not on the very first round) ── */
-      if (roundsCompleted > 1 && !finished) {
+      /* ── Auto difficulty arc (wait for a clearer pattern before changing) ── */
+      if (roundsCompleted > 2 && !finished) {
         var curDiff = current.settings.difficulty;
-        var recentHistory = history.slice(-3);
+        var recentHistory = history.slice(-4);
         var recentIncorrect = recentHistory.filter(function (r) { return r.result === "incorrect"; }).length;
+        var recentCorrect = recentHistory.filter(function (r) { return r.result === "correct"; }).length;
         var newDiff = curDiff;
-        if (nextStreak >= 4 && curDiff === "scaffolded") newDiff = "core";
-        else if (nextStreak >= 4 && curDiff === "core") newDiff = "stretch";
-        else if (recentIncorrect >= 2 && curDiff === "stretch") newDiff = "core";
-        else if (recentIncorrect >= 2 && curDiff === "core") newDiff = "scaffolded";
+        if (nextStreak >= 5 && recentCorrect >= 3 && curDiff === "scaffolded") newDiff = "core";
+        else if (nextStreak >= 6 && recentCorrect >= 4 && curDiff === "core") newDiff = "stretch";
+        else if (recentIncorrect >= 3 && curDiff === "stretch") newDiff = "core";
+        else if (recentIncorrect >= 3 && curDiff === "core") newDiff = "scaffolded";
         if (newDiff !== curDiff) {
           var nextSettings = Object.assign({}, current.settings, { difficulty: newDiff });
           state.patch({

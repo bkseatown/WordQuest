@@ -168,8 +168,8 @@
 }
 
 :where(button, [role="button"], input, select, textarea, a):focus-visible {
-  outline: 2px solid color-mix(in oklab, var(--accent) 72%, white 28%);
-  outline-offset: 2px;
+  outline: 4px solid color-mix(in oklab, var(--accent) 72%, white 28%);
+  outline-offset: 3px;
   box-shadow: none;
 }
 

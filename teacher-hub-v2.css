@@ -4168,7 +4168,7 @@ button[class*="th2-btn"]:active:not(:disabled),
 
 /* ── Focus ring enhancement ────────────────────────── */
 :focus-visible {
-  outline: 2px solid #2b5da8;
+  outline: 4px solid #2b5da8;
   outline-offset: 3px;
   border-radius: 4px;
 }

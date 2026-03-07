@@ -287,7 +287,7 @@ body.cs-has-nav-shell .td-shell {
 }
 .td-top-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 30%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 26%, transparent);
 }
 #td-new-session {
   background: var(--action-primary);
