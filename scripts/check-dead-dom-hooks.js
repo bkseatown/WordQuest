@@ -7,7 +7,7 @@ const path = require('path');
 const ROOT = process.cwd();
 const HTML_PATHS = [
   path.join(ROOT, 'index.html'),
-  path.join(ROOT, 'teacher-dashboard.html'),
+  path.join(ROOT, 'reports.html'),
   path.join(ROOT, 'teacher-hub-v2.html'),
   path.join(ROOT, 'cornerstone-mtss.html'),
   path.join(ROOT, 'word-quest.html')
@@ -51,7 +51,7 @@ const SELECTOR_PATTERNS = [
 
 const REQUIRED_PAGE_IDS = {
   'teacher-hub-v2.html': ['th2-search', 'th2-main', 'th2-empty-state', 'th2-focus-card', 'th2-list', 'th2-sidebar-context'],
-  'teacher-dashboard.html': ['td-search-input', 'td-focus-card', 'td-meeting-workspace', 'td-hub-cta']
+  'reports.html': ['td-search-input', 'td-focus-card', 'td-meeting-workspace', 'td-hub-cta']
 };
 
 function readIdsFromHtml(filePath) {

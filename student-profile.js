@@ -178,14 +178,14 @@
       : [];
     return [
       '<div>',
-      '  <p class="sp-kicker">Student-specific support record</p>',
+      '  <p class="sp-kicker">Dedicated support record</p>',
       '  <h1>' + esc(student.name || "Student") + '</h1>',
       '  <p class="sp-subline">' + esc([
         student.gradeBand || student.grade || "Grade not set",
         summary && summary.focus ? summary.focus : "Support focus forming",
         summary && summary.risk ? summary.risk : "steady"
       ].join(" · ")) + '</p>',
-      '  <p class="sp-body-copy">' + esc((summary && summary.nextMove && summary.nextMove.line) || "Use the sections below to review support, evidence, behavior, communication, and next moves in one place.") + '</p>',
+      '  <p class="sp-body-copy">' + esc((summary && summary.nextMove && summary.nextMove.line) || "Review support, evidence, behavior planning, communication, and next steps for this student in one place.") + '</p>',
       '  <div class="sp-chip-row">' +
       [
         goals[0] && ("Goal: " + (goals[0].skill || goals[0].domain || "Goal")),

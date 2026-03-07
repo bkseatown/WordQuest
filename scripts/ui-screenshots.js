@@ -12,7 +12,7 @@ const PAGES = [
   { slug: "play", route: "./?play=1" },
   { slug: "reading-lab", route: "reading-lab.html" },
   { slug: "sentence-surgery", route: "sentence-surgery.html" },
-  { slug: "teacher-dashboard", route: "teacher-dashboard.html" }
+  { slug: "reports", route: "reports.html" }
 ];
 
 const VIEWPORTS = [

@@ -4826,7 +4826,7 @@
   function goBackToWordQuest() {
     var params = new URLSearchParams(window.location.search || "");
     if (params.get("from") === "teacher") {
-      window.location.href = withAppBase("teacher-dashboard.html");
+      window.location.href = withAppBase("reports.html");
       return;
     }
     var current = normalizeTheme(document.documentElement.getAttribute("data-theme") || "default");
@@ -4851,7 +4851,7 @@
   }
 
   function openTeacherDashboard() {
-    var url = new URL(withAppBase("teacher-dashboard.html"), window.location.origin);
+    var url = new URL(withAppBase("reports.html"), window.location.origin);
     var params = new URLSearchParams(window.location.search || "");
     if (params.get("demo") === "1") url.searchParams.set("demo", "1");
     window.location.href = url.toString();
@@ -5045,7 +5045,7 @@
   if (backHomeBtn) {
     try {
       if (new URLSearchParams(window.location.search || "").get("from") === "teacher") {
-        backHomeBtn.textContent = "Back to Dashboard";
+        backHomeBtn.textContent = "Back to Reports";
       }
     } catch (_e) {}
     backHomeBtn.addEventListener("click", goBackToWordQuest);

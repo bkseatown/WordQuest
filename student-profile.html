@@ -9,7 +9,7 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260307d">
   <link rel="stylesheet" href="./style/typography.css?v=20260307d">
-  <link rel="stylesheet" href="./student-profile.css?v=20260307f">
+  <link rel="stylesheet" href="./student-profile.css?v=20260307g">
 </head>
 <body class="sp-page">
   <main class="sp-shell">
@@ -23,7 +23,7 @@
       </label>
       <div class="sp-header-actions">
         <a class="sp-btn sp-btn-quiet" href="./teacher-hub-v2.html">Back to Hub</a>
-        <a id="sp-reports-link" class="sp-btn sp-btn-quiet" href="./reports.html">Open Reports</a>
+        <a id="sp-reports-link" class="sp-btn sp-btn-quiet" href="./reports.html">View Reports</a>
         <a id="sp-games-link" class="sp-btn sp-btn-primary" href="./game-platform.html">Open Games</a>
       </div>
     </header>
@@ -31,11 +31,11 @@
     <section class="sp-layout">
       <aside class="sp-sidebar">
         <div class="sp-panel">
-          <p class="sp-kicker">Students</p>
+          <p class="sp-kicker">Caseload</p>
           <div id="sp-student-list" class="sp-student-list"></div>
         </div>
         <div class="sp-panel sp-panel-ghost">
-          <p class="sp-kicker">Guided Search</p>
+          <p class="sp-kicker">Search Guide</p>
           <p id="sp-search-ghost" class="sp-ghost-line" aria-live="polite">Try: Maya R.</p>
         </div>
       </aside>
@@ -44,29 +44,43 @@
         <div id="sp-empty-state" class="sp-empty-state">
           <p class="sp-kicker">Student Profile</p>
           <h1>Select a student to open one complete support record.</h1>
-          <p>Use the list or search. Ghost guidance disappears as soon as you start typing.</p>
+          <p>Use the caseload list or search. Ghost guidance disappears as soon as you start typing.</p>
         </div>
 
         <div id="sp-content" class="sp-content hidden">
           <section id="sp-hero" class="sp-hero"></section>
-          <section class="sp-grid">
-            <article class="sp-panel">
-              <p class="sp-kicker">Support Snapshot</p>
-              <div id="sp-support-snapshot"></div>
-            </article>
-            <article class="sp-panel">
-              <p class="sp-kicker">Goals & Accommodations</p>
-              <div id="sp-goals-panel"></div>
-            </article>
-            <article class="sp-panel">
-              <p class="sp-kicker">Evidence Timeline</p>
-              <div id="sp-evidence-panel"></div>
-            </article>
-            <article class="sp-panel">
-              <p class="sp-kicker">Weekly Insight Draft</p>
-              <div id="sp-weekly-panel"></div>
-            </article>
-            <article class="sp-panel">
+          <section class="sp-section">
+            <div class="sp-section-head">
+              <div>
+                <p class="sp-kicker">Profile Overview</p>
+                <h2 class="sp-section-title">Current support, goals, and evidence in one view.</h2>
+              </div>
+            </div>
+            <div class="sp-subgrid sp-subgrid-3">
+              <article class="sp-panel">
+                <p class="sp-kicker">Support Snapshot</p>
+                <div id="sp-support-snapshot"></div>
+              </article>
+              <article class="sp-panel">
+                <p class="sp-kicker">Goals & Accommodations</p>
+                <div id="sp-goals-panel"></div>
+              </article>
+              <article class="sp-panel">
+                <p class="sp-kicker">Evidence Timeline</p>
+                <div id="sp-evidence-panel"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="sp-section">
+            <div class="sp-section-head">
+              <div>
+                <p class="sp-kicker">Behavior Support</p>
+                <h2 class="sp-section-title">Capture function-based data and keep the support plan current.</h2>
+              </div>
+            </div>
+            <div class="sp-subgrid sp-subgrid-2">
+              <article class="sp-panel">
               <p class="sp-kicker">FBA Quick Log</p>
               <p class="sp-panel-intro">Capture objective ABC data, context, and a working function hypothesis.</p>
               <form id="sp-fba-form" class="sp-form">
@@ -131,7 +145,22 @@
               </form>
               <div id="sp-bip-view"></div>
             </article>
-            <article class="sp-panel">
+            </div>
+          </section>
+
+          <section class="sp-section">
+            <div class="sp-section-head">
+              <div>
+                <p class="sp-kicker">Communication & Next Steps</p>
+                <h2 class="sp-section-title">Weekly drafts, stakeholder check-ins, and optional files stay tied to this student.</h2>
+              </div>
+            </div>
+            <div class="sp-subgrid sp-subgrid-3">
+              <article class="sp-panel">
+                <p class="sp-kicker">Weekly Insight Draft</p>
+                <div id="sp-weekly-panel"></div>
+              </article>
+              <article class="sp-panel">
               <p class="sp-kicker">Stakeholder Check-ins</p>
               <form id="sp-checkin-form" class="sp-form">
                 <div class="sp-form-grid">
@@ -155,6 +184,7 @@
               <p class="sp-kicker">Calendar & Files</p>
               <div id="sp-google-panel"></div>
             </article>
+            </div>
           </section>
         </div>
       </section>
@@ -170,7 +200,7 @@
   <script src="./js/teacher/teacher-selectors.js?v=20260307d"></script>
   <script src="./js/teacher/teacher-intelligence.js?v=20260307d"></script>
   <script src="./js/weekly-insight-generator.js?v=20260307d"></script>
-  <script src="./js/student-profile-store.js?v=20260307f"></script>
-  <script src="./student-profile.js?v=20260307f"></script>
+  <script src="./js/student-profile-store.js?v=20260307g"></script>
+  <script src="./student-profile.js?v=20260307g"></script>
 </body>
 </html>

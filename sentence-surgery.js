@@ -107,13 +107,13 @@
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "ss-action-btn";
-    btn.textContent = "Back to Dashboard";
+    btn.textContent = "Back to Reports";
     btn.style.position = "fixed";
     btn.style.top = "10px";
     btn.style.left = "10px";
     btn.style.zIndex = "40";
     btn.addEventListener("click", function () {
-      window.location.href = withAppBase("teacher-dashboard.html");
+      window.location.href = withAppBase("reports.html");
     });
     document.body.appendChild(btn);
   })();

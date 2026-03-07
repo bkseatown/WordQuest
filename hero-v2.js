@@ -94,7 +94,7 @@
       window.dispatchEvent(event);
       if (event.defaultPrevented || window.__CS_HOME_ROUTED__ === true) routeHandled = true;
       if (!routeHandled) {
-        window.location.href = withAppBase('teacher-dashboard.html');
+        window.location.href = withAppBase('reports.html');
       }
     });
   }

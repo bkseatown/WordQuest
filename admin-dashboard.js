@@ -78,7 +78,7 @@
 
   function renderClasses(rows) {
     if (!rows.length) {
-      classBarsEl.innerHTML = '<div class="admin-muted">No class aggregates yet. Open Teacher Dashboard and run class snapshots.</div>';
+      classBarsEl.innerHTML = '<div class="admin-muted">No class aggregates yet. Open Reports and run class snapshots.</div>';
       return;
     }
 

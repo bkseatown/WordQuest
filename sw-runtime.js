@@ -19,6 +19,7 @@ const CORE_FILES = [
   './',
   './index.html',
   './teacher-dashboard.html',
+  './reports.html',
   './word-quest.html',
   './reading-lab.html',
   './sentence-surgery.html',

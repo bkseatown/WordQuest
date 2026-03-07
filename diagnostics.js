@@ -208,7 +208,7 @@
     if (path.endsWith("writing-studio.html")) {
       checks.mounts.writingStudio = has("ws-bg") && has("ws-stage");
     }
-    if (path.endsWith("teacher-dashboard.html")) {
+    if (path.endsWith("teacher-dashboard.html") || path.endsWith("reports.html")) {
       checks.mounts.teacherDashboard = has("td-root") && has("td-groups");
     }
     if (path.endsWith("admin-dashboard.html")) {
