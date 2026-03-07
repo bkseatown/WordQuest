@@ -121,48 +121,48 @@
       "word-quest": {
         id: "word-quest",
         title: "Word Quest",
-        subtitle: "Shared-engine version with the same quick, clue-first cadence.",
-        tags: ["Literacy", "Fast Entry", "Timed or Untimed"],
-        modeLabel: "Core Game",
+        subtitle: "Crack the clue, test your guess, and lock in the lesson word before the round ends.",
+        tags: ["Clue Chase", "Fast Entry", "Timed or Untimed"],
+        modeLabel: "Guess",
         baseTimerSeconds: 75,
         roundTarget: 6,
         createRound: function (input) {
           var row = registry.pickRound("word-quest", roundContext(input), input.history) || {};
           return {
             id: row.id || ("wq-" + Date.now()),
-            promptLabel: "Solve the target word from the clue.",
-            entryLabel: row.clue || "New clue ready.",
+            promptLabel: "Crack the clue and find the word.",
+            entryLabel: row.clue || "A new clue is on the board.",
             prompt: row.clue || "New clue ready.",
             answer: String(row.word || "trace").toLowerCase(),
             timerSeconds: 75,
-            hint: "Look for a word tied to " + (input.context.subject || "today's lesson") + ".",
+            hint: "Look for a word tied to " + (input.context.subject || "today's lesson") + ". Try the idea before the exact spelling.",
             basePoints: 110
           };
         },
         evaluateRound: function (payload) {
           var response = payload.response || {};
           var round = payload.round || {};
-          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher advanced the round." };
-          if (response.timedOut) return { correct: false, message: "Time ended. The target was " + String(round.answer || "").toUpperCase() + "." };
+          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher moved the team to the next word." };
+          if (response.timedOut) return { correct: false, message: "Time ended. The word was " + String(round.answer || "").toUpperCase() + "." };
           var guess = String(response.value || "").trim().toLowerCase();
-          if (!guess) return { correct: false, message: "No guess submitted. The target was " + String(round.answer || "").toUpperCase() + "." };
-          if (guess === round.answer) return { correct: true, message: "Correct. " + String(round.answer || "").toUpperCase() + " is the target." };
+          if (!guess) return { correct: false, message: "No guess submitted. The word was " + String(round.answer || "").toUpperCase() + "." };
+          if (guess === round.answer) return { correct: true, message: "Locked in. " + String(round.answer || "").toUpperCase() + " is correct." };
           var states = guessState(guess, round.answer);
           var hitCount = states.filter(function (value) { return value === "correct" || value === "present"; }).length;
           return {
             correct: false,
             nearMiss: hitCount >= Math.max(1, Math.floor(round.answer.length / 2)),
-            message: hitCount ? "Strong partial match. The target was " + String(round.answer || "").toUpperCase() + "." : "Not this round. The target was " + String(round.answer || "").toUpperCase() + ".",
+            message: hitCount ? "Close read. The word was " + String(round.answer || "").toUpperCase() + "." : "Not this round. The word was " + String(round.answer || "").toUpperCase() + ".",
             evaluation: states
           };
         }
       },
       "word-connections": {
         id: "word-connections",
-        title: "Word Connections",
-        subtitle: "Academic language round built on the shared runtime.",
-        tags: ["Vocabulary", "Morphology", "Teacher Guided"],
-        modeLabel: "Shared Practice",
+        title: "Say It Another Way",
+        subtitle: "Help your team guess the lesson word without saying the blocked words on the card.",
+        tags: ["Word Play", "Academic Language", "Teacher Scored"],
+        modeLabel: "Describe",
         baseTimerSeconds: 60,
         roundTarget: 6,
         createRound: function (input) {
@@ -178,55 +178,55 @@
             : null;
           return {
             id: row.id || ("wc-" + Date.now()),
-            promptLabel: "Explain the target without the forbidden words.",
-            entryLabel: generated && generated.instructionalFocus || "Explain with academic precision.",
+            promptLabel: "Describe the word without using the blocked words.",
+            entryLabel: generated && generated.instructionalFocus || "Give just enough clues so your team can name the word.",
             targetWord: generated && generated.targetWord || row.target || "analyze",
             forbiddenWords: generated && generated.forbiddenWords || row.forbidden || [],
             scaffolds: generated && generated.scaffolds || row.scaffolds || [],
-            requiredMove: row.requiredMove || "Use one complete academic sentence.",
+            requiredMove: row.requiredMove || "Use a clear clue in one or two complete sentences that would fit the lesson.",
             timerSeconds: generated && generated.timerSeconds || 60,
-            hint: (generated && generated.scaffolds || row.scaffolds || [])[0] || "Use a classroom example.",
+            hint: (generated && generated.scaffolds || row.scaffolds || [])[0] || "Try an example, function, or comparison instead of a definition.",
             basePoints: 100
           };
         },
         evaluateRound: function (payload) {
           var response = payload.response || {};
           var round = payload.round || {};
-          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher marked the explanation as complete." };
-          if (response.timedOut) return { correct: false, message: "Round ended. Recast " + round.targetWord + " with a shorter sentence next time." };
+          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher counted the clue as a successful round." };
+          if (response.timedOut) return { correct: false, message: "Round ended. Next time, clue " + round.targetWord + " with fewer filler words." };
           var text = String(response.value || "").toLowerCase();
           var blocked = (round.forbiddenWords || []).some(function (word) {
             return text.indexOf(String(word || "").toLowerCase()) >= 0;
           });
           var usesTarget = text.indexOf(String(round.targetWord || "").toLowerCase()) >= 0;
           if (usesTarget && !blocked && text.split(/\s+/).filter(Boolean).length >= 4) {
-            return { correct: true, message: "Clear explanation. Forbidden words stayed out." };
+            return { correct: true, message: "Strong clue. The blocked words stayed out." };
           }
           return {
             correct: false,
             nearMiss: !blocked && text.length > 12,
-            message: blocked ? "A forbidden word slipped in. Tighten the phrasing." : "Add one more precise sentence move."
+            message: blocked ? "A blocked word slipped in. Try another route." : "You are close. Add one more useful clue."
           };
         }
       },
       "morphology-builder": {
         id: "morphology-builder",
-        title: "Morphology Builder",
-        subtitle: "Build words from roots, prefixes, and suffixes with meaning support.",
-        tags: ["Science of Reading", "Tap to Build", "Grade Bands"],
-        modeLabel: "Builder",
+        title: "Word Forge",
+        subtitle: "Snap roots, prefixes, and suffixes together to build a real lesson word and unlock its meaning.",
+        tags: ["Roots and Affixes", "Tap to Build", "Meaning Link"],
+        modeLabel: "Forge",
         baseTimerSeconds: 70,
         roundTarget: 6,
         createRound: function (input) {
           var row = registry.pickRound("morphology-builder", roundContext(input), input.history) || {};
           return {
             id: row.id || ("mb-" + Date.now()),
-            promptLabel: row.prompt || "Build the word.",
-            entryLabel: "Build the target word.",
-            prompt: row.prompt || "Build the target word.",
+            promptLabel: row.prompt || "Forge the word.",
+            entryLabel: "Build the target word from its parts.",
+            prompt: row.prompt || "Forge the word.",
             tiles: (row.tiles || []).slice(),
             solution: (row.solution || []).slice(),
-            hint: row.meaningHint || "Use the meaning of each part.",
+            hint: row.meaningHint || "Use what each part means to test your build.",
             timerSeconds: 70,
             meaningHint: row.meaningHint || "",
             basePoints: 105
@@ -235,40 +235,40 @@
         evaluateRound: function (payload) {
           var response = payload.response || {};
           var round = payload.round || {};
-          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher advanced the morphology round." };
+          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher moved the class to the next build." };
           var built = Array.isArray(response.value) ? response.value : [];
           var target = round.solution || [];
           var exact = built.join("|") === target.join("|");
           var partial = built.filter(function (part, index) { return target[index] === part; }).length;
           return exact
-            ? { correct: true, message: "Word built. " + (round.meaningHint || "Meaning hint ready.") }
+            ? { correct: true, message: "Forged. " + (round.meaningHint || "Meaning hint ready.") }
             : {
                 correct: false,
                 nearMiss: partial >= Math.max(1, target.length - 1),
-                message: partial ? "Parts are close. Recheck the order or affix choice." : "Try another combination from the available morphemes."
+                message: partial ? "Almost built. Recheck the order or the affix choice." : "Try another morpheme combination."
               };
         }
       },
       "concept-ladder": {
         id: "concept-ladder",
-        title: "Concept Ladder",
-        subtitle: "Reveal clues step by step and solve early for more points.",
-        tags: ["Clue Reveal", "Literacy", "Numeracy"],
-        modeLabel: "Reveal",
+        title: "Clue Climb",
+        subtitle: "Take clues one rung at a time and solve the idea before the final reveal appears.",
+        tags: ["Early Solve", "Clue Reveal", "Lesson Concepts"],
+        modeLabel: "Climb",
         baseTimerSeconds: 55,
         roundTarget: 6,
         createRound: function (input) {
           var row = registry.pickRound("concept-ladder", roundContext(input), input.history) || {};
           return {
             id: row.id || ("ladder-" + Date.now()),
-            promptLabel: row.prompt || "Solve the concept.",
-            entryLabel: "Reveal one clue at a time.",
-            prompt: row.prompt || "Solve the concept.",
+            promptLabel: row.prompt || "Name the concept.",
+            entryLabel: "Reveal only the clues you need.",
+            prompt: row.prompt || "Name the concept.",
             clues: (row.clues || []).slice(),
             answer: String(row.answer || ""),
             options: (row.options || []).slice(),
             timerSeconds: 55,
-            hint: "Reveal only what you need.",
+            hint: "Stop early if you already know it. Earlier solves score more.",
             basePoints: 110
           };
         },
@@ -280,28 +280,28 @@
           var value = String(response.value || "").toLowerCase();
           var correct = value === String(round.answer || "").toLowerCase();
           return correct
-            ? { correct: true, basePoints: Math.max(70, 150 - (clueCount * 18)), message: "Solved before the final clue." }
-            : { correct: false, nearMiss: clueCount < (round.clues || []).length, message: "Not the concept yet. Use the next clue or review the pattern." };
+            ? { correct: true, basePoints: Math.max(70, 150 - (clueCount * 18)), message: "Solved on the climb." }
+            : { correct: false, nearMiss: clueCount < (round.clues || []).length, message: "Not yet. Take the next clue or rethink the pattern." };
         }
       },
       "error-detective": {
         id: "error-detective",
-        title: "Error Detective",
-        subtitle: "Spot the misconception and select the strongest correction.",
-        tags: ["Literacy", "Math", "Teacher Focus"],
-        modeLabel: "Correction",
+        title: "Fix-It Detective",
+        subtitle: "Spot the mistake, name what went wrong, and pick the fix that repairs the thinking.",
+        tags: ["Misconceptions", "Literacy or Math", "Teacher Focus"],
+        modeLabel: "Detect",
         baseTimerSeconds: 65,
         roundTarget: 6,
         createRound: function (input) {
           var row = registry.pickRound("error-detective", roundContext(input), input.history) || {};
           return {
             id: row.id || ("error-" + Date.now()),
-            promptLabel: row.prompt || "Find the correction.",
+            promptLabel: row.prompt || "Find the fix.",
             entryLabel: row.misconception ? ("Focus: " + row.misconception) : "Misconception round ready.",
             incorrectExample: row.incorrectExample || "",
             options: (row.options || []).slice(),
             answer: row.answer || "",
-            hint: "Look for the idea that best fixes the reasoning, not just the wording.",
+            hint: "Pick the move that fixes the reasoning, not just the wording.",
             timerSeconds: 65,
             basePoints: 105
           };
@@ -309,38 +309,38 @@
         evaluateRound: function (payload) {
           var response = payload.response || {};
           var round = payload.round || {};
-          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher accepted the correction." };
+          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher accepted the fix." };
           var value = String(response.value || "");
           return value === String(round.answer || "")
-            ? { correct: true, message: "Correction selected. The misconception is repaired." }
-            : { correct: false, nearMiss: !!value, message: "That does not fully repair the misconception." };
+            ? { correct: true, message: "Case closed. That fix repairs the misconception." }
+            : { correct: false, nearMiss: !!value, message: "That choice does not fully fix the thinking." };
         }
       },
       "rapid-category": {
         id: "rapid-category",
-        title: "Rapid Category",
-        subtitle: "Generate relevant vocabulary under pressure with projector-ready pacing.",
+        title: "Category Rush",
+        subtitle: "Race the clock to name as many lesson words as you can in the right category.",
         tags: ["Timed Retrieval", "Projector Ready", "Unique Responses"],
-        modeLabel: "Sprint",
+        modeLabel: "Rush",
         baseTimerSeconds: 40,
         roundTarget: 5,
         createRound: function (input) {
           var row = registry.pickRound("rapid-category", roundContext(input), input.history) || {};
           return {
             id: row.id || ("category-" + Date.now()),
-            promptLabel: row.prompt || "Generate category words.",
-            entryLabel: row.category || "Category sprint ready.",
-            prompt: row.prompt || "Generate category words.",
+            promptLabel: row.prompt || "Fill the category.",
+            entryLabel: row.category || "Category rush ready.",
+            prompt: row.prompt || "Fill the category.",
             accepted: (row.accepted || []).slice(),
             timerSeconds: 40,
-            hint: "Aim for unique, relevant responses only.",
+            hint: "Aim for fast, unique, relevant responses.",
             basePoints: 120
           };
         },
         evaluateRound: function (payload) {
           var response = payload.response || {};
           var round = payload.round || {};
-          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher accepted the category sprint." };
+          if (response.teacherOverride) return { correct: true, teacherOverride: true, message: "Teacher accepted the category rush." };
           var entries = String(response.value || "")
             .split(/[\n,]/)
             .map(function (item) { return item.trim().toLowerCase(); })
@@ -358,16 +358,16 @@
             correct: matches.length >= 3,
             nearMiss: matches.length >= 2,
             basePoints: 80 + (matches.length * 18),
-            message: matches.length + " relevant responses counted."
+            message: matches.length + " strong responses counted."
           };
         }
       },
       "sentence-builder": {
         id: "sentence-builder",
-        title: "Sentence Builder",
-        subtitle: "Assemble academic sentences with transitions, conjunctions, and target vocabulary.",
+        title: "Sentence Sprint",
+        subtitle: "Rebuild the sentence so the ideas flow, the grammar works, and the lesson words stay in place.",
         tags: ["Academic Language", "EAL Support", "Lesson Lock"],
-        modeLabel: "Syntax",
+        modeLabel: "Build",
         baseTimerSeconds: 75,
         roundTarget: 6,
         createRound: function (input) {
@@ -375,13 +375,13 @@
           return {
             id: row.id || ("sentence-" + Date.now()),
             promptLabel: row.prompt || "Build the sentence.",
-            entryLabel: row.scaffold || "Assemble the sentence.",
+            entryLabel: row.scaffold || "Put the sentence back together.",
             prompt: row.prompt || "Build the sentence.",
             requiredToken: row.requiredToken || "",
             tiles: (row.tiles || []).slice(),
             solution: (row.solution || []).slice(),
             timerSeconds: 75,
-            hint: row.scaffold || "Check the transition and verb placement.",
+            hint: row.scaffold || "Check the transition, word order, and verb placement.",
             basePoints: 110
           };
         },
@@ -704,10 +704,10 @@
         '      <p class="cg-kicker">Legacy Surfaces</p>',
         '      <div class="cg-legacy-card">',
         '        <strong>Existing standalone pages stay intact.</strong>',
-        '        <p>Launch the current production Word Quest or Word Connections surface with the same context parameters when the full original activity is needed.</p>',
+        '        <p>Launch the original production surfaces when you want the classic standalone activities, including the original Word Connections taboo-style round alongside the new Say It Another Way version.</p>',
         '        <div class="cg-footer-row">',
         '          <a class="cg-action cg-action-quiet" href="' + launchHref("./word-quest.html?play=1", context) + '">' + runtimeRoot.CSGameComponents.iconFor("word-quest") + 'Open Word Quest</a>',
-        '          <a class="cg-action cg-action-quiet" href="' + launchHref("./precision-play.html", context) + '">' + runtimeRoot.CSGameComponents.iconFor("word-connections") + 'Open Word Connections</a>',
+        '          <a class="cg-action cg-action-quiet" href="' + launchHref("./precision-play.html", context) + '">' + runtimeRoot.CSGameComponents.iconFor("word-connections") + 'Open Word Connections Classic</a>',
         "        </div>",
         "      </div>",
         "    </section>",

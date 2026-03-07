@@ -559,27 +559,27 @@
     var games;
     if (subject === "math") {
       games = [
-        { id: "concept-ladder", label: "Launch Concept Ladder" },
-        { id: "error-detective", label: "Launch Error Detective" },
-        { id: "word-connections", label: "Launch Word Connections" }
+        { id: "concept-ladder", label: "Launch Clue Climb" },
+        { id: "error-detective", label: "Launch Fix-It Detective" },
+        { id: "word-connections", label: "Launch Say It Another Way" }
       ];
     } else if (subject === "intervention" || subject === "ela") {
       games = [
         { id: "word-quest", label: "Launch Word Quest" },
-        { id: "morphology-builder", label: "Launch Morphology Builder" },
-        { id: "sentence-builder", label: "Launch Sentence Builder" }
+        { id: "morphology-builder", label: "Launch Word Forge" },
+        { id: "sentence-builder", label: "Launch Sentence Sprint" }
       ];
     } else if (subject === "writing") {
       games = [
-        { id: "sentence-builder", label: "Launch Sentence Builder" },
-        { id: "word-connections", label: "Launch Word Connections" },
-        { id: "rapid-category", label: "Launch Rapid Category" }
+        { id: "sentence-builder", label: "Launch Sentence Sprint" },
+        { id: "word-connections", label: "Launch Say It Another Way" },
+        { id: "rapid-category", label: "Launch Category Rush" }
       ];
     } else {
       games = [
         { id: "word-quest", label: "Launch Word Quest" },
-        { id: "word-connections", label: "Launch Word Connections" },
-        { id: "concept-ladder", label: "Launch Concept Ladder" }
+        { id: "word-connections", label: "Launch Say It Another Way" },
+        { id: "concept-ladder", label: "Launch Clue Climb" }
       ];
     }
     return games.map(function (game) {
