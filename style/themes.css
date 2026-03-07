@@ -107,41 +107,41 @@
    Wolf gray keys (actual brand color), green key shadows = instant ID   */
 [data-theme="seahawks"] {
   /* 60% dominant: College Navy */
-  --page-bg:      #4d7393;
-  --page-bg2:     #2f5678;
+  --page-bg:      #6d89a0;
+  --page-bg2:     #466884;
   --header-bg:    #002244;
   --brand:        #002244;
   --brand-dk:     #001a34;
   --brand-text:   #f4f8fb;
-  --focusbar-bg:  rgba(37, 72, 103, 0.58);
+  --focusbar-bg:  rgba(215, 223, 229, 0.92);
 
   /* 30% secondary: Wolf Grey / white-tinted structural surfaces */
-  --panel-bg:     #c5d0d7;
-  --panel-border: rgba(235, 241, 245, 0.6);
-  --plate-bg:     rgba(190, 199, 205, 0.34);
-  --plate-border: rgba(208, 217, 223, 0.58);
-  --tile-face:    linear-gradient(160deg, #f8fbfd 0%, #e8eef3 100%);
-  --tile-border:  #7f94a6;
+  --panel-bg:     #d5dde1;
+  --panel-border: rgba(241, 245, 247, 0.72);
+  --plate-bg:     #b8c4cc;
+  --plate-border: #758896;
+  --tile-face:    linear-gradient(160deg, #fcfeff 0%, #ecf1f4 100%);
+  --tile-border:  #72889d;
   --tile-text:    #001833;
   --tile-filled-text: #001433;
-  --tile-shadow:  0 3px 0 #21394f, 0 1px 4px rgba(0,0,0,0.25);
+  --tile-shadow:  0 4px 0 #2a4258, 0 8px 18px rgba(3, 17, 34, 0.22);
   --tile-filled-border: #69be28;
-  --key-bg:       #c8cfd3;
+  --key-bg:       #cfd6db;
   --key-text:     #001a34;
-  --key-shadow:   0 3px 0 #667887, 0 1px 3px rgba(0,0,0,0.2);
-  --key-hover:    #c5cdd1;
-  --text:         #10283f;
-  --text-muted:   #2d4c67;
-  --modal-bg:     #b5c5d2;
+  --key-shadow:   0 4px 0 #738493, 0 8px 16px rgba(3, 17, 34, 0.16);
+  --key-hover:    #dde4e8;
+  --text:         #11283d;
+  --text-muted:   #385066;
+  --modal-bg:     #c5d0d7;
 
   /* 10% accent: Action Green */
   --accent:       #69be28;
   --vowel-accent: #69be28;
-  --header-border: rgba(105, 190, 40, 0.58);
+  --header-border: rgba(105, 190, 40, 0.62);
   --fun-bg:       #122a1a;
   --fun-text:     #69be28;
   --fun-border:   #2a5f12;
-  --panel-shadow: 0 8px 32px rgba(0,0,0,0.44);
+  --panel-shadow: 0 10px 32px rgba(6, 22, 40, 0.28);
   --logo-word:    #f3f9ff;
   --logo-quest:   #69be28;
   --logo-dot:     #69be28;

@@ -3920,6 +3920,29 @@ html[data-home-mode="play"][data-theme="seahawks"] .logo span {
   text-shadow: 0 1px 0 rgba(5, 18, 34, 0.5), 0 0 8px rgba(105, 190, 40, 0.2);
 }
 
+html[data-home-mode="play"][data-theme="seahawks"] header {
+  background:
+    radial-gradient(circle at 10% 18%, rgba(105, 190, 40, 0.15) 0 10%, transparent 28%),
+    linear-gradient(118deg, transparent 0 68%, rgba(165, 172, 175, 0.12) 68% 71%, transparent 71% 100%),
+    linear-gradient(180deg, #0f3152 0%, #002244 58%, #001831 100%);
+  border-color: rgba(105, 190, 40, 0.48);
+  box-shadow: 0 10px 24px rgba(0, 18, 36, 0.22);
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] header::before {
+  content: '';
+  position: absolute;
+  inset: 8px 12px auto auto;
+  width: 180px;
+  height: 42px;
+  border-radius: 999px 0 999px 999px;
+  background:
+    linear-gradient(115deg, transparent 0 44%, rgba(165, 172, 175, 0.14) 44% 52%, transparent 52%),
+    linear-gradient(115deg, transparent 0 64%, rgba(105, 190, 40, 0.18) 64% 69%, transparent 69%);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
 html[data-home-mode="play"] .icon-btn {
   color: color-mix(in oklab, var(--text) 90%, #ffffff 10%);
   border-color: color-mix(in oklab, var(--brand) 52%, #ffffff 48%);
@@ -3986,6 +4009,24 @@ html[data-home-mode="play"] .grade-target-inline {
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .focus-bar {
+  border-top-color: rgba(105, 190, 40, 0.34);
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .focus-search-label span,
+html[data-home-mode="play"][data-theme="seahawks"] .grade-target-inline,
+html[data-home-mode="play"][data-theme="seahawks"] .focus-inline-search,
+html[data-home-mode="play"][data-theme="seahawks"] .curriculum-main-step-field select {
+  border-color: rgba(0, 34, 68, 0.2);
+  background:
+    linear-gradient(180deg, rgba(245, 248, 251, 0.98) 0%, rgba(224, 231, 235, 0.98) 100%);
+  color: #0f2740;
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .focus-search-label span {
+  box-shadow: inset 0 3px 0 rgba(105, 190, 40, 0.58);
 }
 
 html[data-home-mode="play"] #new-game-btn.is-demo-stop {
@@ -4381,6 +4422,50 @@ html[data-theme="seahawks"] .tile.filled:not(.correct):not(.present):not(.absent
     color-mix(in oklab, var(--key-bg) 94%, #1b2d42 6%) 100%
   );
   color: #001433;
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .board-plate {
+  background:
+    linear-gradient(180deg, rgba(232, 238, 242, 0.94) 0%, rgba(184, 196, 204, 0.96) 100%);
+  border-color: rgba(96, 117, 134, 0.84);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.76),
+    inset 0 -3px 0 rgba(3, 17, 34, 0.08),
+    0 6px 0 rgba(74, 92, 108, 0.76),
+    0 18px 28px rgba(8, 22, 38, 0.16);
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .board-plate::before {
+  opacity: 0.46;
+  background:
+    linear-gradient(128deg, transparent 0 66%, rgba(105, 190, 40, 0.14) 66% 69%, transparent 69% 100%),
+    linear-gradient(128deg, transparent 0 76%, rgba(0, 34, 68, 0.12) 76% 79%, transparent 79% 100%),
+    radial-gradient(circle at 12% 20%, rgba(255, 255, 255, 0.46) 0 6%, transparent 24%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.1) 0 2px, transparent 2px 34px);
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .board-plate::after {
+  opacity: 0.34;
+  background:
+    radial-gradient(110px 70px at 8% 12%, rgba(0, 34, 68, 0.16) 0 40%, transparent 58%),
+    radial-gradient(120px 80px at 92% 88%, rgba(105, 190, 40, 0.14) 0 36%, transparent 56%);
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .tile {
+  border-radius: 15px;
+  border-color: #6f8697;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(236, 241, 244, 0.98) 100%);
+  box-shadow:
+    0 4px 0 #31485f,
+    0 10px 18px rgba(8, 18, 34, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.88),
+    inset 0 -2px 0 rgba(0,34,68,0.1);
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .tile::after {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.42) 0%, transparent 100%);
 }
 
 html[data-board-style="soundcard"] .tile {
@@ -4974,6 +5059,40 @@ html[data-home-mode="play"] .key {
     );
   color: var(--key-text);
   text-shadow: 0 1px 0 rgba(255,255,255,0.34);
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .key {
+  border-radius: 14px;
+  border-color: rgba(88, 107, 123, 0.92);
+  background:
+    linear-gradient(180deg, rgba(105, 190, 40, 0.18) 0 10%, transparent 10% 100%),
+    linear-gradient(180deg, rgba(244, 248, 251, 0.98) 0%, rgba(206, 214, 219, 0.98) 62%, rgba(170, 181, 188, 0.98) 100%);
+  color: #0d2439;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.54);
+  box-shadow:
+    0 4px 0 #5f7384,
+    0 10px 18px rgba(8, 18, 34, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.84),
+    inset 0 -1px 0 rgba(0,34,68,0.12);
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .key:hover {
+  background:
+    linear-gradient(180deg, rgba(105, 190, 40, 0.24) 0 10%, transparent 10% 100%),
+    linear-gradient(180deg, rgba(252, 253, 254, 0.98) 0%, rgba(220, 228, 233, 0.98) 62%, rgba(183, 194, 201, 0.98) 100%);
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .key.wide {
+  background:
+    linear-gradient(180deg, rgba(105, 190, 40, 0.2) 0 10%, transparent 10% 100%),
+    linear-gradient(180deg, rgba(237, 242, 246, 0.98) 0%, rgba(191, 202, 210, 0.98) 100%);
+}
+
+html[data-home-mode="play"][data-theme="seahawks"] .icon-btn,
+html[data-home-mode="play"][data-theme="seahawks"] .header-quick-btn {
+  border-color: rgba(105, 190, 40, 0.34);
+  background: linear-gradient(180deg, rgba(244,248,251,0.98) 0%, rgba(214,221,226,0.98) 100%);
+  color: #10283f;
 }
 
 @media (max-height: 820px) and (min-width: 980px) {

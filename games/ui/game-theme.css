@@ -258,28 +258,41 @@ body.game-platform-page[data-game-theme="coffee"] {
 }
 
 body.game-platform-page[data-game-theme="seahawks"] {
-  --cg-bg: #436c8f;
-  --cg-bg-deep: #2b4e70;
-  --cg-panel: rgba(54, 89, 118, 0.94);
-  --cg-panel-strong: rgba(66, 103, 134, 0.97);
-  --cg-ink: #f4f8fb;
-  --cg-muted: #d7e0e7;
-  --cg-muted-strong: #f3f7fb;
+  --cg-bg: #6c88a0;
+  --cg-bg-deep: #40627d;
+  --cg-panel: rgba(211, 219, 224, 0.95);
+  --cg-panel-strong: rgba(232, 238, 242, 0.98);
+  --cg-ink: #11283d;
+  --cg-muted: #49647b;
+  --cg-muted-strong: #244058;
   --cg-border: rgba(105, 190, 40, 0.18);
-  --cg-border-strong: rgba(105, 190, 40, 0.32);
+  --cg-border-strong: rgba(105, 190, 40, 0.34);
   --cg-primary: #69be28;
-  --cg-primary-2: #9ad35f;
+  --cg-primary-2: #95d65a;
   --cg-primary-soft: rgba(105, 190, 40, 0.18);
   --cg-accent: #a5acaf;
-  --cg-accent-2: #d1d8db;
+  --cg-accent-2: #d7dde0;
   --cg-accent-soft: rgba(165, 172, 175, 0.18);
   --cg-positive: #69be28;
   --cg-warning: #d7dde1;
   --cg-negative: #f87171;
+  --cg-shadow: 0 8px 0 rgba(38, 57, 73, 0.38), 0 18px 38px rgba(8, 22, 38, 0.18);
+  --cg-shadow-soft: 0 4px 0 rgba(78, 97, 114, 0.34), 0 10px 24px rgba(8, 22, 38, 0.12);
+  --cg-shadow-glow: 0 0 0 2px rgba(105, 190, 40, 0.28), 0 8px 0 rgba(38, 57, 73, 0.32), 0 18px 42px rgba(8, 22, 38, 0.18);
   --cg-page-gradient:
-    radial-gradient(ellipse at 18% 10%, rgba(105,190,40,0.18) 0%, transparent 32%),
-    radial-gradient(ellipse at 85% 8%, rgba(165,172,175,0.18) 0%, transparent 28%),
-    linear-gradient(180deg, #5c83a3 0%, #436c8f 40%, #2b4e70 100%);
+    radial-gradient(ellipse at 14% 12%, rgba(105,190,40,0.18) 0%, transparent 26%),
+    radial-gradient(ellipse at 84% 10%, rgba(165,172,175,0.18) 0%, transparent 24%),
+    linear-gradient(125deg, transparent 0 70%, rgba(165,172,175,0.08) 70% 73%, transparent 73% 100%),
+    linear-gradient(180deg, #7794aa 0%, #6c88a0 34%, #40627d 100%);
+  --cg-texture:
+    linear-gradient(120deg, transparent 0 74%, rgba(0,34,68,0.05) 74% 76%, transparent 76% 100%),
+    radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  --cg-texture-size: auto, 26px 26px;
+  --cg-cta: #69be28;
+  --cg-cta-2: #98d85f;
+  --cg-cta-glow: rgba(105, 190, 40, 0.18);
+  --cg-cta-shadow: 0 4px 0 #42791b, 0 10px 20px rgba(105, 190, 40, 0.28);
+  --cg-cta-press: 0 2px 0 #42791b, 0 5px 10px rgba(105, 190, 40, 0.22);
 }
 
 body.game-platform-page[data-game-theme="huskies"] {
