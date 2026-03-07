@@ -140,6 +140,34 @@ body.cs-has-nav-shell .td-shell {
   color: color-mix(in oklab, var(--text-primary) 68%, var(--muted) 32%);
 }
 
+.td-priority-hero {
+  display: none;
+  padding: 18px 20px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.td-priority-hero__copy {
+  display: grid;
+  gap: 6px;
+}
+
+.td-priority-hero__copy .dashboard-section-title {
+  margin: 0;
+}
+
+.td-priority-hero__copy .dashboard-section-meta {
+  margin: 0;
+}
+
+.td-priority-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .td-wordmark strong {
   display: block;
   font-family: var(--font-display);
@@ -1000,6 +1028,10 @@ body.td-reports-mode .td-reports-overview {
   display: block;
 }
 
+body.td-reports-mode .td-priority-hero {
+  display: flex;
+}
+
 body.td-reports-mode .dashboard-focus {
   display: none;
 }
@@ -1053,6 +1085,28 @@ body.td-classroom-mode #td-top-overflow-toggle {
   gap: 14px;
   padding: 18px;
   background: color-mix(in oklab, var(--surface-elev-2) 84%, #f2ede7 16%);
+}
+
+.dashboard-eval-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.dashboard-eval-summary::-webkit-details-marker {
+  display: none;
+}
+
+.dashboard-eval-summary__copy {
+  display: grid;
+  gap: 2px;
+}
+
+.dashboard-eval-summary__copy small {
+  color: var(--text-secondary);
 }
 
 .dashboard-eval-head {
@@ -1376,6 +1430,12 @@ body.td-page .td-modal-card {
   .td-reports-overview__head,
   .td-reports-overview__grid {
     grid-template-columns: 1fr;
+  }
+
+  .td-priority-hero,
+  .td-priority-hero__actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .dashboard-focus {

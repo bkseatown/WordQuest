@@ -190,6 +190,82 @@
     return "sess_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
   }
 
+  function showValidationToast(message) {
+    if (typeof document === "undefined" || !document.body) return;
+    var existing = document.getElementById("cs-evidence-toast");
+    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+    var toast = document.createElement("div");
+    toast.id = "cs-evidence-toast";
+    toast.textContent = String(message || "Evidence entry could not be saved.");
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+    toast.style.position = "fixed";
+    toast.style.right = "16px";
+    toast.style.bottom = "16px";
+    toast.style.maxWidth = "320px";
+    toast.style.padding = "10px 14px";
+    toast.style.borderRadius = "14px";
+    toast.style.background = "rgba(39, 52, 74, 0.96)";
+    toast.style.color = "#ffffff";
+    toast.style.boxShadow = "0 16px 36px rgba(17, 24, 39, 0.24)";
+    toast.style.font = "600 14px/1.35 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    toast.style.zIndex = "9999";
+    document.body.appendChild(toast);
+    setTimeout(function () {
+      if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 2600);
+  }
+
+  function isFiniteNumber(value) {
+    return Number.isFinite(Number(value));
+  }
+
+  function validateSessionEnvelope(studentId, sessionEnvelope) {
+    if (!sessionEnvelope || typeof sessionEnvelope !== "object" || Array.isArray(sessionEnvelope)) {
+      return { ok: false, message: "Session data must be a record, not empty text or a list." };
+    }
+    var sid = normalizeStudentId(studentId || sessionEnvelope.studentId);
+    if (!sid) {
+      return { ok: false, message: "Session data needs a student." };
+    }
+    if (sessionEnvelope.createdAt) {
+      var created = Date.parse(String(sessionEnvelope.createdAt));
+      if (!Number.isFinite(created)) {
+        return { ok: false, message: "Session date is invalid." };
+      }
+    }
+    if (sessionEnvelope.activity != null && !String(sessionEnvelope.activity || "").trim()) {
+      return { ok: false, message: "Session activity is missing." };
+    }
+    if (sessionEnvelope.durationSec != null && (!isFiniteNumber(sessionEnvelope.durationSec) || Number(sessionEnvelope.durationSec) < 0)) {
+      return { ok: false, message: "Session duration must be zero or greater." };
+    }
+    if (sessionEnvelope.signals != null && (typeof sessionEnvelope.signals !== "object" || Array.isArray(sessionEnvelope.signals))) {
+      return { ok: false, message: "Session signals must be a record." };
+    }
+    if (sessionEnvelope.outcomes != null && (typeof sessionEnvelope.outcomes !== "object" || Array.isArray(sessionEnvelope.outcomes))) {
+      return { ok: false, message: "Session outcomes must be a record." };
+    }
+    var signals = sessionEnvelope.signals && typeof sessionEnvelope.signals === "object" ? sessionEnvelope.signals : {};
+    var outcomes = sessionEnvelope.outcomes && typeof sessionEnvelope.outcomes === "object" ? sessionEnvelope.outcomes : {};
+    var invalidField = [
+      ["guessCount", signals.guessCount],
+      ["avgGuessLatencyMs", signals.avgGuessLatencyMs],
+      ["misplaceRate", signals.misplaceRate],
+      ["absentRate", signals.absentRate],
+      ["repeatSameBadSlotCount", signals.repeatSameBadSlotCount],
+      ["vowelSwapCount", signals.vowelSwapCount],
+      ["constraintViolations", signals.constraintViolations],
+      ["attemptsUsed", outcomes.attemptsUsed]
+    ].filter(function (entry) {
+      return entry[1] != null && !isFiniteNumber(entry[1]);
+    })[0];
+    if (invalidField) {
+      return { ok: false, message: "Session field \"" + invalidField[0] + "\" must be a number." };
+    }
+    return { ok: true, studentId: sid };
+  }
+
   function normalizeEnvelope(studentId, envelope) {
     var sid = normalizeStudentId(studentId || (envelope && envelope.studentId));
     var src = envelope && typeof envelope === "object" ? envelope : {};
@@ -219,6 +295,16 @@
   }
 
   function addSession(studentId, sessionEnvelope) {
+    var validation = validateSessionEnvelope(studentId, sessionEnvelope);
+    if (!validation.ok) {
+      showValidationToast(validation.message);
+      if (typeof window !== "undefined" && typeof window.dispatchEvent === "function" && typeof window.CustomEvent === "function") {
+        try {
+          window.dispatchEvent(new CustomEvent("cs:evidence-error", { detail: { studentId: normalizeStudentId(studentId), message: validation.message } }));
+        } catch (_err) {}
+      }
+      return null;
+    }
     var state = load();
     var normalized = normalizeEnvelope(studentId, sessionEnvelope);
     var sid = normalizeStudentId(normalized.studentId);
