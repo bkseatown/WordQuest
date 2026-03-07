@@ -129,6 +129,17 @@
             </article>
           </div>
         </section>
+        <section class="td-priority-hero card td-surface" aria-label="Highest priority right now">
+          <div class="td-priority-hero__copy">
+            <p class="dashboard-kicker">Highest Priority Right Now</p>
+            <h2 id="td-priority-title" class="dashboard-section-title">Open one student and take the clearest next step.</h2>
+            <p id="td-priority-line" class="dashboard-section-meta">Reports should reduce decision burden. Start with the one student who needs review first.</p>
+          </div>
+          <div class="td-priority-hero__actions">
+            <button id="td-priority-review" class="td-top-btn btn-primary" type="button">Open Priority Student</button>
+            <a class="td-top-btn" href="./teacher-hub-v2.html">Return to Hub</a>
+          </div>
+        </section>
         <section class="dashboard-focus">
           <article id="td-focus-card" class="focus-card card td-surface">
             <p class="dashboard-kicker">Today's Focus</p>
@@ -258,6 +269,9 @@
               </div>
               <p id="td-num-progression-line" class="numeracy-progression-line">Trend: HOLD • Tier: Tier 2 • Suggested next step: Continue current strategy with one representation switch.</p>
             </section>
+            <div class="focus-actions">
+              <button id="td-num-start-session" class="td-top-btn btn-primary" type="button">Start Numeracy Session</button>
+            </div>
           </article>
           <article class="focus-card card td-surface executive-snapshot-card" aria-labelledby="td-exec-snapshot-title">
             <p class="dashboard-kicker">Executive Snapshot</p>
@@ -285,6 +299,9 @@
               <button class="td-top-btn" id="td-acc-visual-supports" type="button">Visual supports provided</button>
               <button class="td-top-btn" id="td-acc-checkins" type="button">Check-ins completed</button>
               <button class="td-top-btn" id="td-acc-task-chunking" type="button">Task chunking applied</button>
+            </div>
+            <div class="focus-actions">
+              <button id="td-exec-start-session" class="td-top-btn btn-primary" type="button">Open Executive Support</button>
             </div>
           </article>
         </section>
@@ -319,10 +336,16 @@
             </button>
           </div>
         </section>
-        <section id="td-pilot-evaluation" class="dashboard-eval card td-surface" aria-label="Pilot evaluation">
+        <details id="td-pilot-evaluation" class="dashboard-eval card td-surface" aria-label="Pilot evaluation">
+          <summary class="dashboard-eval-summary">
+            <span class="dashboard-eval-summary__copy">
+              <strong>Pilot Evaluation</strong>
+              <small>Optional during pilot only</small>
+            </span>
+            <span id="td-eval-readiness-chip" class="td-chip">Readiness: Candidate</span>
+          </summary>
           <div class="dashboard-eval-head">
             <h2 class="dashboard-section-title">Pilot Evaluation</h2>
-            <span id="td-eval-readiness-chip" class="td-chip">Readiness: Candidate</span>
           </div>
           <p class="dashboard-section-meta">Capture teacher confidence, friction, and adoption signals without interrupting live practice.</p>
           <form id="td-eval-usability-form" class="dashboard-eval-grid">
@@ -364,7 +387,7 @@
           </div>
           <div id="td-eval-metrics" class="dashboard-eval-metrics" aria-live="polite"></div>
           <div id="td-eval-report" class="dashboard-eval-report hidden" aria-live="polite"></div>
-        </section>
+        </details>
         <footer class="dashboard-confidence card td-surface" aria-label="Reports guidance">
           <h2 class="dashboard-section-title">Reports Guidance</h2>
           <p class="dashboard-section-meta">Keep this page for aggregated signals, packets, and drafts. Use Student Profile for one-student evidence, behavior support, and communication records.</p>
@@ -431,7 +454,6 @@
       <div id="td-caseload-snapshot"></div>
       <button id="td-today-refresh" type="button"></button>
       <button id="td-view-all-students" type="button"></button>
-      <button id="td-priority-review" type="button"></button>
       <div id="td-today-group"></div>
       <button id="td-group-open" type="button"></button>
       <button id="td-group-build" type="button"></button>

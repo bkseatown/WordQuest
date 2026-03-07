@@ -725,6 +725,97 @@
     ].join("");
   }
 
+  function evidenceModuleForGame(gameId, context) {
+    var id = String(gameId || "");
+    var subject = String(context && context.subject || "").toLowerCase();
+    if (id === "word-quest" || id === "word-typing" || id === "morphology-builder" || id === "rapid-category") return "wordquest";
+    if (id === "sentence-builder") return "sentence_surgery";
+    if (id === "word-connections") return "writing_studio";
+    if (id === "concept-ladder") return subject === "math" ? "numeracy" : "reading_lab";
+    if (id === "error-detective") return subject === "math" ? "numeracy" : "sentence_surgery";
+    return "wordquest";
+  }
+
+  function buildLegacyMetrics(gameId, state, context) {
+    var rounds = Math.max(1, Number(state && state.roundsCompleted || 0));
+    var metrics = state && state.metrics ? state.metrics : {};
+    var accuracyRatio = Math.max(0, Math.min(1, Number(metrics.correct || 0) / rounds));
+    if (gameId === "word-quest" || gameId === "morphology-builder" || gameId === "rapid-category" || gameId === "word-typing") {
+      return {
+        solveSuccess: (metrics.correct || 0) >= Math.ceil(rounds / 2),
+        totalGuesses: rounds,
+        newInfoPerGuess: Number((0.45 + (accuracyRatio * 0.4)).toFixed(3)),
+        constraintHonorRate: Number((0.5 + (accuracyRatio * 0.35)).toFixed(3)),
+        vowelConfusionProxy: Number((1 - accuracyRatio).toFixed(3)),
+        misplaceRate: Number((1 - accuracyRatio).toFixed(3)),
+        absentRate: Number(Math.max(0, 0.35 - (accuracyRatio * 0.2)).toFixed(3)),
+        vowelSwapCount: Math.max(0, Number(metrics.incorrect || 0))
+      };
+    }
+    if (gameId === "word-connections") {
+      return {
+        paragraphs: Math.max(1, Number(metrics.correct || 0)),
+        revisionCount: Math.max(0, Number(metrics.nearMiss || 0) + Number(metrics.incorrect || 0)),
+        voiceFlatFlag: Number(metrics.incorrect || 0) > Number(metrics.correct || 0)
+      };
+    }
+    if (gameId === "sentence-builder" || gameId === "error-detective") {
+      return {
+        reasoningAdded: Number(metrics.correct || 0) >= Number(metrics.incorrect || 0),
+        runOnFlag: Number(metrics.incorrect || 0) > 0,
+        fragmentFlag: Number(metrics.incorrect || 0) > Number(metrics.correct || 0),
+        editsCount: Number(metrics.correct || 0) + Number(metrics.nearMiss || 0)
+      };
+    }
+    if (gameId === "concept-ladder" && String(context && context.subject || "").toLowerCase() === "math") {
+      return {
+        accuracy: Number((accuracyRatio * 100).toFixed(0)),
+        speedProxy: Math.max(25, 72 - (Number(metrics.incorrect || 0) * 6)),
+        hints: Math.max(0, Number(metrics.nearMiss || 0))
+      };
+    }
+    return {
+      accuracy: Number((accuracyRatio * 100).toFixed(0)),
+      wpmProxy: Math.max(30, 90 - (Number(metrics.incorrect || 0) * 5)),
+      selfCorrects: Number(metrics.nearMiss || 0)
+    };
+  }
+
+  function writeSessionToEvidence(gameId, state, context) {
+    if (!runtimeRoot.CSEvidence || !context || !context.studentId) return false;
+    var metrics = state && state.metrics ? state.metrics : {};
+    var rounds = Math.max(1, Number(state && state.roundsCompleted || 0));
+    var correct = Number(metrics.correct || 0);
+    var accuracyRatio = Math.max(0, Math.min(1, correct / rounds));
+    var module = evidenceModuleForGame(gameId, context);
+    var envelope = {
+      id: "game_" + String(gameId || "activity") + "_" + String(state && state.roundIndex || rounds) + "_" + Date.now().toString(36),
+      studentId: context.studentId,
+      createdAt: new Date().toISOString(),
+      activity: String(gameId || "game"),
+      durationSec: Math.max(0, rounds * 45),
+      signals: {
+        guessCount: rounds,
+        avgGuessLatencyMs: Math.max(600, 2600 - (correct * 180)),
+        misplaceRate: Number((1 - accuracyRatio).toFixed(3)),
+        absentRate: Number(Math.max(0, 0.3 - (accuracyRatio * 0.2)).toFixed(3)),
+        repeatSameBadSlotCount: Math.max(0, Number(metrics.incorrect || 0) - 1),
+        vowelSwapCount: Math.max(0, Number(metrics.nearMiss || 0)),
+        constraintViolations: Math.max(0, Number(metrics.incorrect || 0))
+      },
+      outcomes: {
+        solved: correct >= Math.ceil(rounds / 2),
+        attemptsUsed: rounds
+      }
+    };
+    var session = runtimeRoot.CSEvidence.addSession(context.studentId, envelope);
+    if (!session) return false;
+    if (typeof runtimeRoot.CSEvidence.appendSession === "function") {
+      runtimeRoot.CSEvidence.appendSession(context.studentId, module, buildLegacyMetrics(gameId, state, context), Date.now());
+    }
+    return true;
+  }
+
   function init() {
     var params = parseParams();
     var galleryOnly = !params.playMode;
@@ -751,7 +842,9 @@
       builderSelection: [],
       revealedClues: 1,
       previous: { score: 0, streak: 0, rounds: 0 },
-      bumpUntil: { score: 0, streak: 0, rounds: 0 }
+      bumpUntil: { score: 0, streak: 0, rounds: 0 },
+      lastLoggedSummaryKey: "",
+      lastSubmittedGuess: ""
     };
 
     if (!shell) return;
@@ -1317,6 +1410,21 @@
 
     engine.subscribe(function (state) {
       applyMetricBumps(state);
+      if (state.status === "round-summary") {
+        var sessionKey = [
+          state.selectedGameId,
+          state.roundsCompleted,
+          state.score,
+          state.metrics && state.metrics.correct || 0,
+          state.metrics && state.metrics.incorrect || 0
+        ].join(":");
+        if (uiState.lastLoggedSummaryKey !== sessionKey) {
+          writeSessionToEvidence(state.selectedGameId, state, context);
+          uiState.lastLoggedSummaryKey = sessionKey;
+        }
+      } else if (state.status === "playing" && Number(state.roundsCompleted || 0) === 0) {
+        uiState.lastLoggedSummaryKey = "";
+      }
       if (state.feedback && state.feedback.label) live.announce(state.feedback.label);
       render();
     });

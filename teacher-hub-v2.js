@@ -2927,6 +2927,69 @@
     }
   }
 
+  function resetDemoSeedData() {
+    var demoStudents = {
+      "demo-ava": true,
+      "demo-liam": true,
+      "demo-maya": true,
+      "demo-noah": true,
+      "demo-zoe": true
+    };
+    var demoLessons = {
+      "demo-lesson-math": true,
+      "demo-lesson-reading": true,
+      "demo-lesson-writing": true
+    };
+    try {
+      localStorage.removeItem("cs.hub.demo");
+      localStorage.removeItem("cs.hub.demo.goals.v1");
+      localStorage.removeItem("cs.hub.demo.sessions.v2");
+      localStorage.removeItem("cs.hub.demo.support.v1");
+      localStorage.removeItem("cs.hub.demo.context.v1");
+      var evidenceRaw = localStorage.getItem("CS_EVIDENCE_V1");
+      var evidenceState = evidenceRaw ? JSON.parse(evidenceRaw) : null;
+      if (evidenceState && typeof evidenceState === "object") {
+        var nextStudents = {};
+        Object.keys(evidenceState.students || {}).forEach(function (key) {
+          if (!demoStudents[key]) nextStudents[key] = evidenceState.students[key];
+        });
+        evidenceState.students = nextStudents;
+        evidenceState.sessions = Array.isArray(evidenceState.sessions)
+          ? evidenceState.sessions.filter(function (row) {
+              return row && !demoStudents[String(row.studentId || "")];
+            })
+          : [];
+        localStorage.setItem("CS_EVIDENCE_V1", JSON.stringify(evidenceState));
+      }
+    } catch (_err) {}
+
+    if (TeacherStorage) {
+      try {
+        if (typeof TeacherStorage.loadStudentSupportStore === "function" && typeof TeacherStorage.saveStudentSupportStore === "function") {
+          var supportMap = TeacherStorage.loadStudentSupportStore() || {};
+          Object.keys(demoStudents).forEach(function (id) { delete supportMap[id]; });
+          TeacherStorage.saveStudentSupportStore(supportMap);
+        }
+        if (typeof TeacherStorage.loadScheduleMap === "function" && typeof TeacherStorage.saveScheduleMap === "function") {
+          var scheduleMap = TeacherStorage.loadScheduleMap() || {};
+          Object.keys(scheduleMap).forEach(function (day) {
+            scheduleMap[day] = (scheduleMap[day] || []).filter(function (row) {
+              var rowId = String(row && row.id || "");
+              var lessonContextId = String(row && row.lessonContextId || "");
+              return rowId.indexOf("demo-") !== 0 && !demoLessons[lessonContextId];
+            });
+          });
+          TeacherStorage.saveScheduleMap(scheduleMap);
+        }
+        if (typeof TeacherStorage.loadLessonContexts === "function" && typeof TeacherStorage.writeJson === "function" && TeacherStorage.KEYS && TeacherStorage.KEYS.lessonContext) {
+          var lessonMap = TeacherStorage.loadLessonContexts() || {};
+          Object.keys(demoLessons).forEach(function (id) { delete lessonMap[id]; });
+          TeacherStorage.writeJson(TeacherStorage.KEYS.lessonContext, lessonMap);
+        }
+      } catch (_err2) {}
+    }
+  }
+
   /* ── Filtering ─────────────────────────────────────────── */
 
   function filterCaseload(query) {
@@ -4171,6 +4234,17 @@
   // Add Student button
   document.addEventListener("click", function (e) {
     if (e.target && e.target.id === "th2-add-student-btn") openAddDrawer();
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!(e.target && e.target.id === "th2-sample-btn")) return;
+    resetDemoSeedData();
+    try { localStorage.setItem("cs.hub.demo", "1"); } catch (_err) {}
+    ensureDemoCaseload();
+    loadCaseload();
+    showTodaysClasses();
+    if (el.demoBadge) el.demoBadge.classList.remove("hidden");
+    showToast("Sample class loaded.", "success");
   });
 
   // Phase 9: Progress note copy buttons (focus card)

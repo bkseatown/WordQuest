@@ -296,6 +296,8 @@
     todayList: document.getElementById("td-today-list"),
     caseloadSnapshot: document.getElementById("td-caseload-snapshot"),
     todayRefresh: document.getElementById("td-today-refresh"),
+    priorityTitle: document.getElementById("td-priority-title"),
+    priorityLine: document.getElementById("td-priority-line"),
     modeDaily: document.getElementById("td-mode-daily"),
     modeAdvanced: document.getElementById("td-mode-advanced"),
     modeReports: document.getElementById("td-mode-reports"),
@@ -357,6 +359,8 @@
     executiveWeeklyGoal: document.getElementById("td-exec-weekly-goal"),
     executiveProgressStatus: document.getElementById("td-exec-progress-status"),
     executiveScaffoldLine: document.getElementById("td-exec-scaffold-line"),
+    numeracyStartSession: document.getElementById("td-num-start-session"),
+    executiveStartSession: document.getElementById("td-exec-start-session"),
     accExtendedTimeBtn: document.getElementById("td-acc-extended-time"),
     accVisualSupportsBtn: document.getElementById("td-acc-visual-supports"),
     accCheckInsBtn: document.getElementById("td-acc-checkins"),
@@ -1533,6 +1537,13 @@
       renderExplainability(null, "");
       renderFrameworkBadges(el.litFrameworkBadges, "");
       renderNumeracyRecommendationCard(null);
+      if (el.priorityTitle) el.priorityTitle.textContent = "Open one student and take the clearest next step.";
+      if (el.priorityLine) el.priorityLine.textContent = "Reports should reduce decision burden. Start with the one student who needs review first.";
+      if (el.priorityReview) {
+        el.priorityReview.disabled = true;
+        el.priorityReview.textContent = "Open Priority Student";
+        el.priorityReview.onclick = null;
+      }
       if (el.surgicalAttentionList) {
         el.surgicalAttentionList.innerHTML = '<article class="queue-card"><h3 class="queue-name">No queued students</h3><p class="queue-signal">Add students to generate a focused queue.</p></article>';
       }
@@ -1566,6 +1577,16 @@
     renderExecutiveSnapshot(focus);
     renderFrameworkBadges(el.litFrameworkBadges, focusSkillId);
     renderNumeracyRecommendationCard(focus);
+    if (el.priorityTitle) el.priorityTitle.textContent = String(focusStudent.name || "Priority student") + " needs the next review.";
+    if (el.priorityLine) el.priorityLine.textContent = signalLineForRow(focus);
+    if (el.priorityReview) {
+      el.priorityReview.disabled = !focusStudentId;
+      el.priorityReview.textContent = focusStudentId ? ("Open " + String(focusStudent.name || "Student")) : "Open Priority Student";
+      el.priorityReview.onclick = function () {
+        if (!focusStudentId) return;
+        window.location.href = appendStudentParam("./student-profile.html", focusStudentId);
+      };
+    }
     updateAccommodationButtons(String(focusStudent.id || ""));
     if (el.focusStartBtn) {
       el.focusStartBtn.onclick = function () {
@@ -2675,6 +2696,19 @@
     }
   }
 
+  function bindPersistentActions() {
+    if (el.numeracyStartSession) {
+      el.numeracyStartSession.addEventListener("click", function () {
+        window.location.href = appendStudentParam("./numeracy.html");
+      });
+    }
+    if (el.executiveStartSession) {
+      el.executiveStartSession.addEventListener("click", function () {
+        window.location.href = appendStudentParam("./student-profile.html");
+      });
+    }
+  }
+
   function currentLessonBriefContext() {
     var student = (state.caseload || []).find(function (row) { return row.id === state.selectedId; }) || null;
     return {
@@ -2789,6 +2823,7 @@
   initDrawerController();
   initBindingsController();
   bindEvents();
+  bindPersistentActions();
   initLessonBriefPanel();
   bindFocusWhyToggle();
   void loadIllustrativeMathMapData();
