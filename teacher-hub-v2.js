@@ -382,7 +382,7 @@
     { id: "tool-diagnostic", kind: "diagnostic", label: "Decoding Diagnostic", subtitle: "Diagnostic activity", href: "activities/decoding-diagnostic.html" },
     { id: "tool-brief", kind: "resource", label: "Lesson Brief", subtitle: "Open class lesson briefing", action: "brief" },
     { id: "tool-curriculum", kind: "resource", label: "Curriculum Quick Reference", subtitle: "Open curriculum supports", action: "curriculum" },
-    { id: "tool-workspace", kind: "resource", label: "Reports & Meetings", subtitle: "Weekly insights, meetings, history, and exports", href: "teacher-dashboard.html" }
+    { id: "tool-workspace", kind: "resource", label: "Reports", subtitle: "Weekly insights, meetings, history, and exports", href: "reports.html" }
   ];
 
   function ensureSearchService() {
@@ -774,7 +774,7 @@
       actions.map(function (action) {
         return '<a class="th2-quick-action" href="' + escapeHtml(action.href) + '"><strong>' + escapeHtml(action.label) + '</strong><span>' + escapeHtml(action.subtitle) + "</span></a>";
       }).join(""),
-      '      <a class="th2-quick-action" href="' + escapeHtml("teacher-dashboard.html") + '"><strong>Open Reports</strong><span>Weekly insights, meeting prep, history, and exports.</span></a>',
+      '      <a class="th2-quick-action" href="' + escapeHtml("reports.html") + '"><strong>Open Reports</strong><span>Weekly insights, meeting prep, history, and exports.</span></a>',
       "    </div>",
       "  </div>",
       '  <div class="th2-quick-rail__secondary">',
@@ -2320,7 +2320,7 @@
         '    <a class="th2-drawer-link" href="student-profile.html?student=' + encodeURIComponent(studentId) + '&from=hub">Open Student Profile &rarr;</a>',
         '  </div>',
         '  <div class="th2-drawer-row">',
-        '    <a class="th2-drawer-link" href="teacher-dashboard.html?student=' + encodeURIComponent(studentId) + '&tab=meeting&from=hub">Open Reports &amp; Meetings &rarr;</a>',
+        '    <a class="th2-drawer-link" href="reports.html?student=' + encodeURIComponent(studentId) + '&tab=meeting&from=hub">Open Reports &rarr;</a>',
         '  </div>',
         '</div>'
       ].join("\n");

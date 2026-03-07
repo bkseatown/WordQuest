@@ -6488,7 +6488,7 @@
   function csComputeHeaderTitleCenter() {
     const path = String(location.pathname || '').toLowerCase();
     if (path.endsWith('/reading-lab.html')) return 'Reading Lab';
-    if (path.endsWith('/teacher-dashboard.html')) return 'Teacher Workspace';
+    if (path.endsWith('/teacher-dashboard.html') || path.endsWith('/reports.html')) return 'Reports';
     if (path.endsWith('/sentence-surgery.html') || path.endsWith('/writing-studio.html')) return 'Writing Studio';
     const mode = document.documentElement.getAttribute('data-home-mode');
     if (mode === 'home') return 'Cornerstone MTSS';

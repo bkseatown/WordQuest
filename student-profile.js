@@ -262,7 +262,7 @@
 
   function renderFBA(record) {
     el.fbaList.innerHTML = record.fbaIncidents && record.fbaIncidents.length ? record.fbaIncidents.slice(0, 6).map(function (row) {
-      return '<div class="sp-record"><strong>' + esc(row.behavior || "Behavior incident") + '</strong><p>' + esc([row.when, row.setting, row.probableFunction].filter(Boolean).join(" • ")) + '</p><p>' + esc((row.teacherResponse || "No teacher response logged") + (row.notes ? " · " + row.notes : "")) + '</p></div>';
+      return '<div class="sp-record"><strong>' + esc(row.behavior || "Behavior incident") + '</strong><p>' + esc([row.when, row.setting, row.frequency, row.duration, row.probableFunction].filter(Boolean).join(" • ")) + '</p><p>' + esc([row.antecedent, row.consequence].filter(Boolean).join(" → ") || "ABC data not complete yet.") + '</p><p>' + esc((row.teacherResponse || "No teacher response logged") + (row.notes ? " · " + row.notes : "")) + '</p></div>';
     }).join("") : '<div class="sp-google-empty">Ghost example only: log when, what preceded the behavior, what happened, and what adults or peers did. This disappears once real entries are saved.</div>';
   }
 
@@ -271,9 +271,11 @@
     el.bipView.innerHTML = plan.targetBehavior || plan.replacementBehavior || plan.reviewDate ? [
       '<div class="sp-list">',
       '<div class="sp-list-item"><strong>Target behavior</strong><p>' + esc(plan.targetBehavior || "Not set") + '</p></div>',
-      '<div class="sp-list-item"><strong>Replacement behavior</strong><p>' + esc(plan.replacementBehavior || "Not set") + '</p></div>',
-      '<div class="sp-list-item"><strong>Prevention + adult response</strong><p>' + esc([plan.preventionMoves, plan.adultResponse].filter(Boolean).join(" • ") || "Not set") + '</p></div>',
-      '<div class="sp-list-item"><strong>Reinforcement + review</strong><p>' + esc([plan.reinforcementPlan, plan.reviewDate].filter(Boolean).join(" • ") || "Not set") + '</p></div>',
+      '<div class="sp-list-item"><strong>Function + replacement behavior</strong><p>' + esc([plan.hypothesizedFunction, plan.replacementBehavior].filter(Boolean).join(" • ") || "Not set") + '</p></div>',
+      '<div class="sp-list-item"><strong>Prevent + teach</strong><p>' + esc([plan.preventionSupports, plan.teachingMoves].filter(Boolean).join(" • ") || "Not set") + '</p></div>',
+      '<div class="sp-list-item"><strong>Respond + reinforce</strong><p>' + esc([plan.responsePlan, plan.reinforcementPlan].filter(Boolean).join(" • ") || "Not set") + '</p></div>',
+      '<div class="sp-list-item"><strong>Progress monitoring</strong><p>' + esc(plan.progressMonitoring || "Not set") + '</p></div>',
+      '<div class="sp-list-item"><strong>Review date</strong><p>' + esc(plan.reviewDate || "Not set") + '</p></div>',
       '</div>'
     ].join("") : '<div class="sp-google-empty">Set a replacement behavior, adult response, and review date here so the plan can drive reminders and reports later.</div>';
   }
@@ -326,7 +328,7 @@
     renderCheckins(record);
     renderGoogle(student);
 
-    el.reportsLink.href = "./teacher-dashboard.html?student=" + encodeURIComponent(student.id);
+    el.reportsLink.href = "./reports.html?student=" + encodeURIComponent(student.id);
     el.gamesLink.href = "./game-platform.html?student=" + encodeURIComponent(student.id);
   }
 
@@ -350,9 +352,12 @@
           when: form.get("when"),
           setting: form.get("setting"),
           frequency: form.get("frequency"),
+          duration: form.get("duration"),
           intensity: form.get("intensity"),
+          dataSource: form.get("dataSource"),
           antecedent: form.get("antecedent"),
           behavior: form.get("behavior"),
+          consequence: form.get("consequence"),
           teacherResponse: form.get("teacherResponse"),
           peerResponse: form.get("peerResponse"),
           probableFunction: form.get("probableFunction"),
@@ -369,10 +374,13 @@
         var form = new FormData(el.bipForm);
         StudentProfileStore.saveBIPPlan(state.studentId, {
           targetBehavior: form.get("targetBehavior"),
+          hypothesizedFunction: form.get("hypothesizedFunction"),
           replacementBehavior: form.get("replacementBehavior"),
-          preventionMoves: form.get("preventionMoves"),
-          adultResponse: form.get("adultResponse"),
+          preventionSupports: form.get("preventionSupports"),
+          teachingMoves: form.get("teachingMoves"),
+          responsePlan: form.get("responsePlan"),
           reinforcementPlan: form.get("reinforcementPlan"),
+          progressMonitoring: form.get("progressMonitoring"),
           reviewDate: form.get("reviewDate")
         });
         render();

@@ -9,7 +9,7 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260307d">
   <link rel="stylesheet" href="./style/typography.css?v=20260307d">
-  <link rel="stylesheet" href="./student-profile.css?v=20260307d">
+  <link rel="stylesheet" href="./student-profile.css?v=20260307f">
 </head>
 <body class="sp-page">
   <main class="sp-shell">
@@ -23,7 +23,7 @@
       </label>
       <div class="sp-header-actions">
         <a class="sp-btn sp-btn-quiet" href="./teacher-hub-v2.html">Back to Hub</a>
-        <a id="sp-reports-link" class="sp-btn sp-btn-quiet" href="./teacher-dashboard.html">Open Reports</a>
+        <a id="sp-reports-link" class="sp-btn sp-btn-quiet" href="./reports.html">Open Reports</a>
         <a id="sp-games-link" class="sp-btn sp-btn-primary" href="./game-platform.html">Open Games</a>
       </div>
     </header>
@@ -68,9 +68,10 @@
             </article>
             <article class="sp-panel">
               <p class="sp-kicker">FBA Quick Log</p>
+              <p class="sp-panel-intro">Capture objective ABC data, context, and a working function hypothesis.</p>
               <form id="sp-fba-form" class="sp-form">
                 <div class="sp-form-grid">
-                  <label><span>When</span><input name="when" type="text" placeholder="Transition to writing"></label>
+                  <label><span>Routine / time</span><input name="when" type="text" placeholder="Transition to writing"></label>
                   <label><span>Setting</span><input name="setting" type="text" placeholder="Small group table"></label>
                   <label><span>Frequency</span>
                     <select name="frequency">
@@ -81,6 +82,7 @@
                       <option>Very often</option>
                     </select>
                   </label>
+                  <label><span>Duration</span><input name="duration" type="text" placeholder="2 minutes"></label>
                   <label><span>Intensity</span>
                     <select name="intensity">
                       <option value="">Select</option>
@@ -89,11 +91,21 @@
                       <option>High</option>
                     </select>
                   </label>
+                  <label><span>Data source</span>
+                    <select name="dataSource">
+                      <option value="">Select</option>
+                      <option>Direct observation</option>
+                      <option>Teacher report</option>
+                      <option>Family report</option>
+                      <option>Student report</option>
+                    </select>
+                  </label>
                   <label class="sp-span-2"><span>Antecedent</span><input name="antecedent" type="text" placeholder="Asked to begin independent writing"></label>
-                  <label class="sp-span-2"><span>Behavior</span><input name="behavior" type="text" placeholder="Called out and left seat"></label>
+                  <label class="sp-span-2"><span>Observable behavior</span><input name="behavior" type="text" placeholder="Called out and left seat"></label>
+                  <label class="sp-span-2"><span>Consequence</span><input name="consequence" type="text" placeholder="Task paused and peers looked over"></label>
                   <label class="sp-span-2"><span>Teacher response</span><input name="teacherResponse" type="text" placeholder="Redirected and offered choice"></label>
-                  <label class="sp-span-2"><span>Peer response</span><input name="peerResponse" type="text" placeholder="Peers laughed / peers ignored"></label>
-                  <label><span>Probable function</span><input name="probableFunction" type="text" placeholder="Escape / attention / sensory"></label>
+                  <label class="sp-span-2"><span>Other student response</span><input name="peerResponse" type="text" placeholder="Peers laughed / peers ignored"></label>
+                  <label><span>Hypothesized function</span><input name="probableFunction" type="text" placeholder="Escape / attention / access / sensory"></label>
                   <label class="sp-span-3"><span>Notes</span><textarea name="notes" rows="3" placeholder="Brief context only."></textarea></label>
                 </div>
                 <button class="sp-btn sp-btn-primary" type="submit">Save FBA Entry</button>
@@ -102,13 +114,17 @@
             </article>
             <article class="sp-panel">
               <p class="sp-kicker">BIP Quick Plan</p>
+              <p class="sp-panel-intro">Use a function-based plan: prevent, teach, respond, reinforce, and monitor.</p>
               <form id="sp-bip-form" class="sp-form">
                 <div class="sp-form-grid">
                   <label class="sp-span-2"><span>Target behavior</span><input name="targetBehavior" type="text" placeholder="Leaves seat during writing"></label>
+                  <label class="sp-span-2"><span>Hypothesized function</span><input name="hypothesizedFunction" type="text" placeholder="Escape difficult writing task"></label>
                   <label class="sp-span-2"><span>Replacement behavior</span><input name="replacementBehavior" type="text" placeholder="Uses break card and returns to task"></label>
-                  <label class="sp-span-2"><span>Prevention moves</span><textarea name="preventionMoves" rows="2" placeholder="Visual model, choice, pre-correction"></textarea></label>
-                  <label class="sp-span-2"><span>Adult response</span><textarea name="adultResponse" rows="2" placeholder="Prompt replacement behavior, reinforce return"></textarea></label>
+                  <label class="sp-span-2"><span>Prevention supports</span><textarea name="preventionSupports" rows="2" placeholder="Visual model, choice, pre-correction"></textarea></label>
+                  <label class="sp-span-2"><span>Teaching moves</span><textarea name="teachingMoves" rows="2" placeholder="Model the replacement behavior and practice it"></textarea></label>
+                  <label class="sp-span-2"><span>Response plan</span><textarea name="responsePlan" rows="2" placeholder="Prompt replacement behavior, redirect, and return to task"></textarea></label>
                   <label class="sp-span-2"><span>Reinforcement plan</span><textarea name="reinforcementPlan" rows="2" placeholder="Specific praise, earned break, check-in"></textarea></label>
+                  <label class="sp-span-2"><span>Progress monitoring</span><textarea name="progressMonitoring" rows="2" placeholder="Track frequency during writing block 3 times per week"></textarea></label>
                   <label><span>Review date</span><input name="reviewDate" type="date"></label>
                 </div>
                 <button class="sp-btn sp-btn-primary" type="submit">Save BIP Plan</button>
@@ -154,7 +170,7 @@
   <script src="./js/teacher/teacher-selectors.js?v=20260307d"></script>
   <script src="./js/teacher/teacher-intelligence.js?v=20260307d"></script>
   <script src="./js/weekly-insight-generator.js?v=20260307d"></script>
-  <script src="./js/student-profile-store.js?v=20260307d"></script>
-  <script src="./student-profile.js?v=20260307d"></script>
+  <script src="./js/student-profile-store.js?v=20260307f"></script>
+  <script src="./student-profile.js?v=20260307f"></script>
 </body>
 </html>

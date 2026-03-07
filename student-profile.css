@@ -134,6 +134,13 @@ body.sp-page {
   font-weight: 700;
 }
 
+.sp-panel-intro {
+  margin: -2px 0 12px;
+  color: color-mix(in oklab, var(--text-primary) 68%, var(--muted) 32%);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
 .sp-ghost-line {
   margin: 0;
   color: color-mix(in oklab, var(--muted) 72%, white 28%);

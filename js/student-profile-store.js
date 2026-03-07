@@ -43,10 +43,13 @@
       fbaIncidents: [],
       bipPlan: {
         targetBehavior: "",
+        hypothesizedFunction: "",
         replacementBehavior: "",
-        preventionMoves: "",
-        adultResponse: "",
+        preventionSupports: "",
+        teachingMoves: "",
+        responsePlan: "",
         reinforcementPlan: "",
+        progressMonitoring: "",
         reviewDate: ""
       },
       stakeholderCheckins: [],
@@ -86,9 +89,12 @@
       when: String(src.when || ""),
       setting: String(src.setting || ""),
       frequency: String(src.frequency || ""),
+      duration: String(src.duration || ""),
       intensity: String(src.intensity || ""),
+      dataSource: String(src.dataSource || ""),
       antecedent: String(src.antecedent || ""),
       behavior: String(src.behavior || ""),
+      consequence: String(src.consequence || ""),
       teacherResponse: String(src.teacherResponse || ""),
       peerResponse: String(src.peerResponse || ""),
       probableFunction: String(src.probableFunction || ""),
@@ -106,10 +112,13 @@
     var src = payload && typeof payload === "object" ? payload : {};
     record.bipPlan = {
       targetBehavior: String(src.targetBehavior || ""),
+      hypothesizedFunction: String(src.hypothesizedFunction || ""),
       replacementBehavior: String(src.replacementBehavior || ""),
-      preventionMoves: String(src.preventionMoves || ""),
-      adultResponse: String(src.adultResponse || ""),
+      preventionSupports: String(src.preventionSupports || ""),
+      teachingMoves: String(src.teachingMoves || ""),
+      responsePlan: String(src.responsePlan || ""),
       reinforcementPlan: String(src.reinforcementPlan || ""),
+      progressMonitoring: String(src.progressMonitoring || ""),
       reviewDate: String(src.reviewDate || ""),
       updatedAt: nowIso()
     };
