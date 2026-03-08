@@ -257,19 +257,14 @@
         <div class="focus-inline-actions" role="group" aria-label="Quick supports">
           <button id="focus-clue-btn" class="focus-action-btn" type="button" aria-label="Open clue support">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <path d="M12 2.75c1.2 0 2.19.89 2.36 2.04l.06.46v1.07a1.4 1.4 0 0 0 1.1 1.36l.18.03h1.07c1.23 0 2.24.94 2.4 2.14l.02.28c0 1.2-.89 2.19-2.04 2.36l-.46.06h-1.07a1.4 1.4 0 0 0-1.36 1.1l-.03.18v1.07c0 1.23-.94 2.24-2.14 2.4l-.28.02c-1.2 0-2.19-.89-2.36-2.04l-.06-.46v-1.07a1.4 1.4 0 0 0-1.1-1.36l-.18-.03H7.3c-1.23 0-2.24-.94-2.4-2.14l-.02-.28c0-1.2.89-2.19 2.04-2.36l.46-.06h1.07a1.4 1.4 0 0 0 1.36-1.1l.03-.18V5.27c0-1.23.94-2.24 2.14-2.4l.28-.02Z"></path>
-              <path d="M9.2 10.15h5.6"></path>
-              <path d="M9.2 13.25h5.6"></path>
+              <path d="M10 4.5h4a1.85 1.85 0 0 1 1.85 1.85v1.05a1.55 1.55 0 1 0 0 3.1v1.05A1.85 1.85 0 0 1 14 13.4h-1.05a1.55 1.55 0 1 0-3.1 0H8.8A1.85 1.85 0 0 1 6.95 11.55V10.5a1.55 1.55 0 1 0 0-3.1V6.35A1.85 1.85 0 0 1 8.8 4.5H10Z"></path>
             </svg>
           </button>
           <button id="focus-ideas-btn" class="focus-action-btn" type="button" aria-label="Show starter word ideas">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <path d="M9.75 18.15h4.5"></path>
-              <path d="M10.35 21.05h3.3"></path>
-              <path d="M12 3.15a5.5 5.5 0 0 0-3.7 9.58c.72.63 1.17 1.31 1.39 2.15h4.62c.22-.84.67-1.52 1.39-2.15A5.5 5.5 0 0 0 12 3.15Z"></path>
-              <path d="M12 1.95v1.15"></path>
-              <path d="M7.45 4.25l.84.83"></path>
-              <path d="M16.55 4.25l-.84.83"></path>
+              <path d="M12 4.15c-3.05 0-5.2 2.16-5.2 5.15 0 1.84.79 3.13 1.88 4.08.76.67 1.17 1.27 1.37 2.02h3.9c.2-.75.61-1.35 1.37-2.02 1.09-.95 1.88-2.24 1.88-4.08 0-2.99-2.15-5.15-5.2-5.15Z"></path>
+              <path d="M10 17.45h4"></path>
+              <path d="M10.7 20h2.6"></path>
             </svg>
           </button>
         </div>
@@ -350,18 +345,44 @@
 
       <section id="settings-quick" class="settings-section is-active" role="tabpanel" aria-labelledby="settings-tab-quick" data-settings-section="quick">
         <details id="settings-group-core" class="settings-group" open>
-          <summary>Gameplay</summary>
+          <summary>Quick Setup</summary>
           <div class="settings-group-grid">
+            <div class="setting-row setting-row-full setting-row-modepicker">
+              <div class="settings-mode-picker" role="group" aria-label="Game mode">
+                <button class="settings-mode-card is-active" type="button" data-settings-play-style-choice="detective" aria-pressed="true">
+                  <span class="settings-mode-preview settings-mode-preview-detective" aria-hidden="true">
+                    <span class="settings-mode-preview-tile"></span>
+                    <span class="settings-mode-preview-tile"></span>
+                    <span class="settings-mode-preview-tile is-accent"></span>
+                  </span>
+                  <span class="settings-mode-copy">
+                    <strong>Detective Mode</strong>
+                    <span>Color clues and strategy</span>
+                  </span>
+                </button>
+                <button class="settings-mode-card" type="button" data-settings-play-style-choice="listening" aria-pressed="false">
+                  <span class="settings-mode-preview settings-mode-preview-listening" aria-hidden="true">
+                    <span class="settings-mode-preview-wave"></span>
+                    <span class="settings-mode-preview-wave"></span>
+                    <span class="settings-mode-preview-wave"></span>
+                  </span>
+                  <span class="settings-mode-copy">
+                    <strong>Spelling Mode</strong>
+                    <span>Hear it, then spell it</span>
+                  </span>
+                </button>
+              </div>
+              <label class="setting-row setting-row-hidden-select">Game Mode<select id="s-play-style"><option value="detective" selected>Detective Mode (visual clue strategy)</option><option value="listening">Spelling Mode (hear + spell)</option></select></label>
+            </div>
             <div class="setting-row setting-row-internal hidden" aria-hidden="true"><label>Grade Band<select id="s-grade"><option value="all">All grades (K-2 safe)</option><option value="K-2">K–2</option><option value="G3-5">Grades 3–5</option><option value="G6-8">Grades 6–8</option><option value="G9-12">Grades 9–12</option></select></label></div>
-            <div class="setting-row"><label>Word Length<select id="s-length"><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="any">Any</option></select></label></div>
-            <div class="setting-row"><label>Max Guesses<select id="s-guesses"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option></select></label></div>
-            <div class="setting-row"><label>Try These Words<select id="s-starter-words"><option value="off">Off</option><option value="on_demand">On demand</option><option value="after_2">Auto after 2 guesses</option><option value="after_3" selected>Auto after 3 guesses</option></select></label></div>
+            <div class="setting-row settings-condensed"><label>Word Length<select id="s-length"><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="any">Any</option></select></label></div>
+            <div class="setting-row settings-condensed"><label>Max Guesses<select id="s-guesses"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option></select></label></div>
+            <div class="setting-row settings-condensed"><label>Try These Words<select id="s-starter-words"><option value="off">Off</option><option value="on_demand">On demand</option><option value="after_2">Auto after 2 guesses</option><option value="after_3" selected>Auto after 3 guesses</option></select></label></div>
             <div class="setting-row setting-row-full">
               <button id="s-force-update-now-top" class="quick-action-btn quick-action-btn-warning hidden" aria-hidden="true" type="button" tabindex="-1">Refresh for Latest</button>
             </div>
             <div class="setting-row hidden" aria-hidden="true"><label>Hint Cues<select id="s-hint"><option value="off">Off</option><option value="on">On</option></select></label></div>
-            <div class="setting-row"><label>Game Mode<select id="s-play-style"><option value="detective" selected>Detective Mode (visual clue strategy)</option><option value="listening">Spelling Mode (hear + spell)</option></select></label></div>
-            <div class="setting-row setting-row-full setting-row-help">Teacher tip: <b>Detective Mode</b> for visual strategy rounds, <b>Spelling Mode</b> for auditory mapping and dictation practice.</div>
+            <div class="setting-row setting-row-full setting-row-help">Pick the mode first, then keep the rest simple.</div>
             <div class="setting-row hidden settings-keyboard-layout-row" aria-hidden="true" style="display:none !important;"><label>Keyboard Layout<select id="s-keyboard-layout"><option value="standard" selected>QWERTY</option><option value="alphabet">Alphabet</option></select></label></div>
             <div class="setting-row hidden" aria-hidden="true"><label>Text Size<select id="s-text-size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></label></div>
             <div class="setting-row hidden" aria-hidden="true"><label>Keyboard Style<select id="s-key-style"><option value="bubble" selected>Puffy Rounded</option></select></label></div>

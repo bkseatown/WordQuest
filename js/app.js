@@ -3421,6 +3421,14 @@
     );
   }
 
+  function syncSettingsModeCards(mode = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle)) {
+    document.querySelectorAll('[data-settings-play-style-choice]').forEach((button) => {
+      const active = button.getAttribute('data-settings-play-style-choice') === mode;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
   function clearFocusSupportUnlockTimer() {
     if (!focusSupportUnlockTimer) return;
     clearTimeout(focusSupportUnlockTimer);
@@ -3580,6 +3588,7 @@
     const select = _el('s-play-style');
     if (select && select.value !== normalized) select.value = normalized;
     syncPlayStyleToggleUI(normalized);
+    syncSettingsModeCards(normalized);
     syncHeaderClueLauncherUI(normalized);
     syncStarterWordLauncherUI();
     syncGameplayAudioStrip(normalized);
@@ -4709,6 +4718,13 @@
     }
 
     const words = pickStarterWordsForRound(state, 9);
+    if (guessCount >= 1 && words.length > 0 && words.length <= 3) {
+      if (source !== 'auto') {
+        WQUI.showToast('Try one more guess before using a pattern match.');
+      }
+      hideStarterWordCard();
+      return false;
+    }
     currentRoundStarterWordsShown = true;
     if (titleEl) titleEl.textContent = guessCount >= 1 ? 'Try a Pattern Match' : (source === 'auto' ? 'Try a Starter Word' : 'Need Ideas? Try a Starter Word');
     if (messageEl) {
@@ -5387,6 +5403,20 @@
       }
     });
     document.body.dataset.wqFirstRunSetupBound = '1';
+  }
+
+  function bindSettingsModeCards() {
+    if (document.body.dataset.wqSettingsModeCardsBound === '1') return;
+    document.querySelectorAll('[data-settings-play-style-choice]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const next = normalizePlayStyle(button.getAttribute('data-settings-play-style-choice') || 'detective');
+        const select = _el('s-play-style');
+        if (!select) return;
+        select.value = next;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    });
+    document.body.dataset.wqSettingsModeCardsBound = '1';
   }
 
   function markDiagnosticsReset(reason = 'maintenance') {
@@ -6833,6 +6863,7 @@
   syncTeacherPresetButtons();
   syncAssessmentLockRuntime({ closeFocus: false });
   bindFirstRunSetupModal();
+  bindSettingsModeCards();
   if (firstRunSetupPending) {
     openFirstRunSetupModal();
   }
@@ -15146,6 +15177,15 @@
   _el('starter-word-close-icon')?.addEventListener('click', () => {
     hideStarterWordCard();
   });
+  document.addEventListener('pointerdown', (event) => {
+    const card = _el('starter-word-card');
+    if (!card || card.classList.contains('hidden')) return;
+    const target = event.target instanceof Node ? event.target : null;
+    if (!target) return;
+    if (card.contains(target)) return;
+    if (target instanceof Element && target.closest('#starter-word-open-btn, #focus-ideas-btn')) return;
+    hideStarterWordCard();
+  }, { passive: true });
   _el('listening-mode-close')?.addEventListener('click', () => {
     hideListeningModeExplainer();
   });

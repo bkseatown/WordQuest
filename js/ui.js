@@ -180,10 +180,11 @@ const WQUI = (() => {
 
         if (key === '⌫') {
           btn.innerHTML = `
-            <svg class="key-backspace-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <path d="M21 5H9l-6 7 6 7h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"></path>
-              <path d="m10 9 4 6"></path>
-              <path d="m14 9-4 6"></path>
+            <svg class="key-backspace-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M20 12H8.5"></path>
+              <path d="m12.5 8-4.5 4 4.5 4"></path>
+              <path d="m14.5 9.2 3 5.6"></path>
+              <path d="m17.5 9.2-3 5.6"></path>
             </svg>
           `;
           btn.classList.add('wide');
