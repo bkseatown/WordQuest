@@ -9750,7 +9750,9 @@
     const inlineLabel = formatGradeBandInlineLabel(activeGrade);
     const titleLabel = formatGradeBandLabel(activeGrade);
     if (gradeEl) {
-      const isDefaultSafeBand = String(activeGrade || 'all').toLowerCase() === 'all';
+      const normalizedGrade = String(activeGrade || 'all').toLowerCase();
+      const safeDefaultGrade = String(SAFE_DEFAULT_GRADE_BAND || 'k-2').toLowerCase();
+      const isDefaultSafeBand = normalizedGrade === 'all' || normalizedGrade === safeDefaultGrade;
       gradeEl.textContent = isDefaultSafeBand ? '' : `Grade ${inlineLabel}`;
       gradeEl.classList.toggle('is-subtle-hidden', isDefaultSafeBand);
       gradeEl.setAttribute('aria-hidden', isDefaultSafeBand ? 'true' : 'false');

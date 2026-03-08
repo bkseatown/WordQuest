@@ -5087,8 +5087,8 @@ html:not([data-home-mode="play"]) .key.is-vowel:not(.correct):not(.present):not(
 
 html[data-home-mode="play"] .key.vowel:not(.correct):not(.present):not(.absent),
 html[data-home-mode="play"] .key.is-vowel:not(.correct):not(.present):not(.absent) {
-  color: var(--wq-play-vowel-color);
-  text-shadow: 0 1px 0 rgba(255,255,255,0.28);
+  color: var(--wq-play-key-color);
+  text-shadow: var(--wq-play-key-text-shadow);
   filter: none;
 }
 
@@ -5198,7 +5198,7 @@ html[data-key-style="pebble"] .key::after {
 /* ── Vowel cue ───────────────────────────────────── */
 /* Hint cue uses a tiny top "smile" notch: no dot and no border ring. */
 html[data-hint="on"] .key.vowel:not(.correct):not(.present):not(.absent) {
-  color: var(--wq-play-vowel-color);
+  color: var(--wq-play-key-color);
 }
 
 html[data-hint="on"] .key.vowel:not(.correct):not(.present):not(.absent)::before {
