@@ -2058,6 +2058,240 @@ html[data-view-mode="projector"] .cg-brand-copy h1 {
   max-width: 960px; margin: 0 auto 18px;
   padding: 0 24px;
 }
+.cg-pomo-tab {
+  position: fixed;
+  right: 20px;
+  top: 118px;
+  z-index: 40;
+  display: grid;
+  gap: 2px;
+  min-width: 126px;
+  padding: 10px 14px 12px;
+  border: 0;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(14, 40, 68, 0.94), rgba(8, 24, 43, 0.94));
+  color: #f8fafc;
+  box-shadow: 0 14px 28px rgba(2, 6, 23, 0.28);
+  cursor: pointer;
+}
+.cg-pomo-tab-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.72);
+}
+.cg-pomo-tab-value {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+.cg-pomo-widget {
+  position: fixed;
+  top: 148px;
+  right: 20px;
+  z-index: 60;
+  width: min(520px, calc(100vw - 32px));
+  padding: 14px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(12, 34, 60, 0.96), rgba(10, 24, 44, 0.95));
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  box-shadow: 0 24px 60px rgba(2, 6, 23, 0.4);
+}
+.cg-pomo-widget.is-dragging {
+  box-shadow: 0 28px 72px rgba(2, 6, 23, 0.5);
+}
+.cg-pomo-widget.is-minimized .cg-pomo-widget-body {
+  display: none;
+}
+.cg-pomo-widget-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 12px;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+.cg-pomo-widget-head.is-dragging {
+  cursor: grabbing;
+}
+.cg-pomo-widget-head h2 {
+  margin: 4px 0 0;
+  font-size: 22px;
+  color: #f8fafc;
+}
+.cg-pomo-widget-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.cg-pomo-icon-btn {
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+  color: #f8fafc;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.cg-pomo-widget-body {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(220px, 240px) minmax(0, 1fr);
+  align-items: stretch;
+}
+.cg-pomo-ring-panel {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: 16px 0 10px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(233, 239, 245, 0.98), rgba(204, 216, 228, 0.96));
+  border: 1px solid rgba(255,255,255,0.35);
+  position: relative;
+}
+.cg-pomo-ring-panel[data-tone="clock"] {
+  background: linear-gradient(180deg, rgba(230, 239, 250, 0.98), rgba(203, 222, 240, 0.96));
+}
+.cg-pomo-ring {
+  width: 180px;
+  height: 180px;
+  transform: rotate(-90deg);
+}
+.cg-pomo-ring-track {
+  fill: none;
+  stroke: rgba(15, 23, 42, 0.11);
+  stroke-width: 10;
+}
+.cg-pomo-ring-progress {
+  fill: none;
+  stroke: #7ccf2e;
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+.cg-pomo-ring-panel[data-tone="clock"] .cg-pomo-ring-progress {
+  stroke: #2f67a8;
+}
+.cg-pomo-ring-copy {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 44px;
+}
+.cg-pomo-mode-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(18, 48, 79, 0.66);
+}
+.cg-pomo-subcopy {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(18, 48, 79, 0.72);
+}
+.cg-gallery-plan-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+.cg-plan-field {
+  gap: 6px;
+}
+.cg-plan-field-wide {
+  grid-column: 1 / -1;
+}
+.cg-plan-input,
+.cg-plan-textarea {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  color: #10233c !important;
+  background: rgba(239, 244, 249, 0.96) !important;
+  border: 1px solid rgba(148, 163, 184, 0.45) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+}
+.cg-plan-textarea {
+  min-height: 144px;
+  resize: vertical;
+  line-height: 1.5;
+}
+.cg-pomo-panel {
+  padding: 16px 16px 14px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(233, 239, 245, 0.98), rgba(204, 216, 228, 0.96));
+  border: 1px solid rgba(255,255,255,0.35);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.75);
+}
+.cg-pomo-panel[data-running="true"] {
+  background: linear-gradient(180deg, rgba(232, 246, 239, 0.98), rgba(204, 229, 214, 0.96));
+}
+.cg-pomo-dragging,
+.cg-pomo-dragging * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+.cg-pomo-time {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #12304f;
+  text-align: center;
+}
+.cg-pomo-bar {
+  height: 10px;
+  margin: 10px 0 14px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+.cg-pomo-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7ccf2e, #e8c44f);
+}
+.cg-pomo-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.cg-action-compact {
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+.cg-pomo-presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cg-pomo-chip {
+  padding: 8px 12px;
+  border: 1px solid rgba(29, 78, 216, 0.18);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.78);
+  color: #12304f;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.cg-pomo-chip.is-active {
+  background: #173f73;
+  color: #fff;
+  border-color: transparent;
+}
 .cg-setup-row {
   display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;
 }
@@ -2075,6 +2309,27 @@ html[data-view-mode="projector"] .cg-brand-copy h1 {
   .cg-gallery-setup { padding: 0 14px; }
   .cg-setup-row { flex-direction: column; }
   .cg-select-sm { width: 100%; }
+  .cg-pomo-tab {
+    top: auto;
+    bottom: 18px;
+    right: 14px;
+  }
+  .cg-pomo-widget {
+    right: 14px;
+    left: 14px;
+    top: auto !important;
+    bottom: 72px;
+    width: auto;
+  }
+  .cg-pomo-widget-body {
+    grid-template-columns: 1fr;
+  }
+  .cg-gallery-plan-grid {
+    grid-template-columns: 1fr;
+  }
+  .cg-pomo-actions {
+    flex-direction: column;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════

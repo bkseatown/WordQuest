@@ -2,9 +2,7 @@
    Keep visual theme tokens sourced from style/themes.css. */
 
 .wordquest-root {
-  background:
-    radial-gradient(circle at 16% 6%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 44%),
-    linear-gradient(180deg, var(--page-bg), var(--page-bg2));
+  background: var(--theme-backdrop);
   color: var(--text);
 }
 

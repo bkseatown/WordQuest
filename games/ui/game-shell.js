@@ -107,6 +107,21 @@
     return new URL(appBasePath() + clean, runtimeRoot.location.origin).toString();
   }
 
+  function storageGet(key, fallback) {
+    try {
+      var raw = runtimeRoot.localStorage.getItem(key);
+      return raw == null ? fallback : raw;
+    } catch (_e) {
+      return fallback;
+    }
+  }
+
+  function storageSet(key, value) {
+    try {
+      runtimeRoot.localStorage.setItem(key, value);
+    } catch (_e) {}
+  }
+
   function guessState(guess, word) {
     var result = Array(word.length).fill("absent");
     var letters = word.split("");
@@ -858,6 +873,93 @@
     var live = runtimeRoot.CSGameA11y.createLiveRegion(document.getElementById("cg-live-region"));
     var sound = runtimeRoot.CSGameSound.create({ enabled: false });
     var shell = document.getElementById("cg-shell");
+    var GALLERY_PLAN_KEY = "cs.gallery.plan.v1";
+    var GALLERY_POMODORO_KEY = "cs.gallery.pomodoro.v1";
+    var GALLERY_POMODORO_UI_KEY = "cs.gallery.pomodoro.ui.v1";
+    var pomodoroInterval = 0;
+    var pomodoroPopout = null;
+    var galleryPlan = (function loadGalleryPlan() {
+      var raw = storageGet(GALLERY_PLAN_KEY, "");
+      if (!raw) {
+        return {
+          classLabel: context.classLabel || "",
+          sessionDate: "",
+          agenda: ""
+        };
+      }
+      try {
+        raw = JSON.parse(raw);
+        return {
+          classLabel: String(raw.classLabel || context.classLabel || "").trim(),
+          sessionDate: String(raw.sessionDate || "").trim(),
+          agenda: String(raw.agenda || "").trim()
+        };
+      } catch (_e) {
+        return {
+          classLabel: context.classLabel || "",
+          sessionDate: "",
+          agenda: ""
+        };
+      }
+    })();
+    var galleryPomodoro = (function loadGalleryPomodoro() {
+      var raw = storageGet(GALLERY_POMODORO_KEY, "");
+      if (!raw) {
+        return {
+          durationMinutes: 25,
+          remainingSeconds: 25 * 60,
+          running: false,
+          endsAt: 0
+        };
+      }
+      try {
+        raw = JSON.parse(raw);
+        var duration = Math.max(5, Math.min(60, Number(raw.durationMinutes) || 25));
+        return {
+          durationMinutes: duration,
+          remainingSeconds: Math.max(0, Number(raw.remainingSeconds) || duration * 60),
+          running: Boolean(raw.running),
+          endsAt: Number(raw.endsAt) || 0
+        };
+      } catch (_e) {
+        return {
+          durationMinutes: 25,
+          remainingSeconds: 25 * 60,
+          running: false,
+          endsAt: 0
+        };
+      }
+    })();
+    var galleryPomodoroUi = (function loadGalleryPomodoroUi() {
+      var raw = storageGet(GALLERY_POMODORO_UI_KEY, "");
+      if (!raw) {
+        return {
+          open: false,
+          minimized: false,
+          mode: "timer",
+          x: null,
+          y: null
+        };
+      }
+      try {
+        raw = JSON.parse(raw);
+        return {
+          open: raw.open === true,
+          minimized: raw.minimized === true,
+          mode: raw.mode === "clock" ? "clock" : "timer",
+          x: Number.isFinite(Number(raw.x)) ? Number(raw.x) : null,
+          y: Number.isFinite(Number(raw.y)) ? Number(raw.y) : null
+        };
+      } catch (_e) {
+        return {
+          open: false,
+          minimized: false,
+          mode: "timer",
+          x: null,
+          y: null
+        };
+      }
+    })();
     var uiState = {
       teacherPanelOpen: false,
       selectedChoice: "",
@@ -870,6 +972,180 @@
     };
 
     if (!shell) return;
+
+    function persistGalleryPlan() {
+      storageSet(GALLERY_PLAN_KEY, JSON.stringify(galleryPlan));
+    }
+
+    function persistGalleryPomodoro() {
+      storageSet(GALLERY_POMODORO_KEY, JSON.stringify(galleryPomodoro));
+    }
+
+    function persistGalleryPomodoroUi() {
+      storageSet(GALLERY_POMODORO_UI_KEY, JSON.stringify(galleryPomodoroUi));
+    }
+
+    function stopPomodoroInterval() {
+      if (pomodoroInterval) {
+        runtimeRoot.clearInterval(pomodoroInterval);
+        pomodoroInterval = 0;
+      }
+    }
+
+    function formatPomodoroClock(totalSeconds) {
+      var safe = Math.max(0, Number(totalSeconds) || 0);
+      var minutes = Math.floor(safe / 60);
+      var seconds = Math.floor(safe % 60);
+      return String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
+    }
+
+    function formatWallClock(date) {
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var suffix = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12;
+      if (!hours) hours = 12;
+      return hours + ":" + String(minutes).padStart(2, "0") + " " + suffix;
+    }
+
+    function syncPomodoroClock() {
+      if (galleryPomodoro.running) {
+        galleryPomodoro.remainingSeconds = Math.max(0, Math.ceil((galleryPomodoro.endsAt - Date.now()) / 1000));
+        if (galleryPomodoro.remainingSeconds <= 0) {
+          galleryPomodoro.running = false;
+          galleryPomodoro.endsAt = 0;
+        }
+        persistGalleryPomodoro();
+      }
+      renderPomodoroPopout();
+      if (galleryOnly && (galleryPomodoro.running || galleryPomodoroUi.mode === "clock")) render();
+      if (!galleryPomodoro.running && galleryPomodoroUi.mode !== "clock" && (!pomodoroPopout || pomodoroPopout.closed)) {
+        stopPomodoroInterval();
+      }
+    }
+
+    function ensurePomodoroTicking() {
+      stopPomodoroInterval();
+      if (!galleryPomodoro.running && galleryPomodoroUi.mode !== "clock" && (!pomodoroPopout || pomodoroPopout.closed)) return;
+      pomodoroInterval = runtimeRoot.setInterval(syncPomodoroClock, 1000);
+    }
+
+    function pomodoroVisualModel() {
+      var ringCircumference = 276;
+      if (galleryPomodoroUi.mode === "clock") {
+        var now = new Date();
+        var seconds = now.getSeconds();
+        var clockProgress = Math.max(0.04, seconds / 60);
+        return {
+          title: "Clock",
+          value: formatWallClock(now),
+          sublabel: "Live classroom clock",
+          offset: Math.round(ringCircumference * (1 - clockProgress)),
+          dasharray: ringCircumference,
+          tone: "clock"
+        };
+      }
+      var durationSeconds = Math.max(1, galleryPomodoro.durationMinutes * 60);
+      var timerProgress = Math.max(0.04, Math.min(1, galleryPomodoro.remainingSeconds / durationSeconds));
+      return {
+        title: "Timer",
+        value: formatPomodoroClock(galleryPomodoro.remainingSeconds),
+        sublabel: galleryPomodoro.running ? "Pomodoro in progress" : "Ready to start",
+        offset: Math.round(ringCircumference * (1 - timerProgress)),
+        dasharray: ringCircumference,
+        tone: galleryPomodoro.running ? "timer-running" : "timer"
+      };
+    }
+
+    function renderPomodoroLauncher() {
+      return [
+        '<button class="cg-pomo-tab" type="button" data-pomo-ui="toggle" aria-expanded="' + (galleryPomodoroUi.open ? "true" : "false") + '">',
+        '  <span class="cg-pomo-tab-label">Class Timer</span>',
+        '  <span class="cg-pomo-tab-value">' + (galleryPomodoroUi.mode === "clock" ? formatWallClock(new Date()) : formatPomodoroClock(galleryPomodoro.remainingSeconds)) + '</span>',
+        '</button>'
+      ].join("");
+    }
+
+    function renderPomodoroWidget() {
+      var escapeHtml = runtimeRoot.CSGameComponents.escapeHtml;
+      var options = [15, 25, 40].map(function (minutes) {
+        return '<button class="cg-pomo-chip' + (galleryPomodoro.durationMinutes === minutes ? ' is-active' : '') + '" type="button" data-pomo-duration="' + minutes + '">' + minutes + ' min</button>';
+      }).join("");
+      var visual = pomodoroVisualModel();
+      if (!galleryPomodoroUi.open) return "";
+      var style = [];
+      var widgetWidth = Math.min(360, Math.max(280, (runtimeRoot.innerWidth || 1280) - 32));
+      var widgetHeight = galleryPomodoroUi.minimized ? 84 : 520;
+      var safeLeft = Number.isFinite(galleryPomodoroUi.x)
+        ? Math.max(12, Math.min((runtimeRoot.innerWidth || 1280) - widgetWidth - 12, galleryPomodoroUi.x))
+        : null;
+      var safeTop = Number.isFinite(galleryPomodoroUi.y)
+        ? Math.max(92, Math.min((runtimeRoot.innerHeight || 900) - widgetHeight - 12, galleryPomodoroUi.y))
+        : null;
+      if (Number.isFinite(safeLeft)) style.push("left:" + Math.round(safeLeft) + "px");
+      if (Number.isFinite(safeTop)) style.push("top:" + Math.round(safeTop) + "px");
+      return [
+        '<section class="cg-pomo-widget' + (galleryPomodoroUi.minimized ? ' is-minimized' : '') + '" aria-label="Class plan and Pomodoro timer" style="' + style.join(";") + '">',
+        '  <div class="cg-pomo-widget-head" data-pomo-drag-handle="true">',
+        '    <div>',
+        '      <p class="cg-kicker">Classroom Planner</p>',
+        '      <h2>Agenda + Pomodoro</h2>',
+        '    </div>',
+        '    <div class="cg-pomo-widget-controls">',
+        '      <button class="cg-pomo-icon-btn" type="button" data-pomo-ui="mode">' + (galleryPomodoroUi.mode === "clock" ? 'Timer' : 'Clock') + '</button>',
+        '      <button class="cg-pomo-icon-btn" type="button" data-pomo-ui="popout">Pop Out</button>',
+        '      <button class="cg-pomo-icon-btn" type="button" data-pomo-ui="minimize">' + (galleryPomodoroUi.minimized ? 'Expand' : 'Minimize') + '</button>',
+        '    </div>',
+        '  </div>',
+        '  <div class="cg-pomo-widget-body">',
+        '    <div class="cg-pomo-ring-panel" data-tone="' + visual.tone + '">',
+        '      <svg class="cg-pomo-ring" viewBox="0 0 120 120" aria-hidden="true">',
+        '        <circle class="cg-pomo-ring-track" cx="60" cy="60" r="44"></circle>',
+        '        <circle class="cg-pomo-ring-progress" cx="60" cy="60" r="44" stroke-dasharray="' + visual.dasharray + '" stroke-dashoffset="' + visual.offset + '"></circle>',
+        '      </svg>',
+        '      <div class="cg-pomo-ring-copy">',
+        '        <span class="cg-pomo-mode-label">' + visual.title + '</span>',
+        '        <span class="cg-pomo-time">' + visual.value + '</span>',
+        '        <span class="cg-pomo-subcopy">' + visual.sublabel + '</span>',
+        '      </div>',
+        '    </div>',
+        '    <div class="cg-pomo-panel" data-running="' + (galleryPomodoro.running ? 'true' : 'false') + '">',
+        '      <div class="cg-pomo-actions">',
+        '        <button class="cg-action cg-action-primary cg-action-compact" type="button" data-pomo-action="' + (galleryPomodoro.running ? 'pause' : 'start') + '">' + (galleryPomodoro.running ? 'Pause' : 'Start') + '</button>',
+        '        <button class="cg-action cg-action-quiet cg-action-compact" type="button" data-pomo-action="reset">Reset</button>',
+        '      </div>',
+        '      <div class="cg-pomo-presets">' + options + '</div>',
+        '      <div class="cg-gallery-plan-grid">',
+        '    <label class="cg-setup-label cg-plan-field">Class / Block<input id="cg-plan-class" class="cg-input cg-plan-input" type="text" maxlength="80" value="' + escapeHtml(galleryPlan.classLabel || "") + '" placeholder="Grade 3 Reading Block"></label>',
+        '    <label class="cg-setup-label cg-plan-field">Day / Date<input id="cg-plan-date" class="cg-input cg-plan-input" type="text" maxlength="60" value="' + escapeHtml(galleryPlan.sessionDate || "") + '" placeholder="Monday · March 8"></label>',
+        '    <label class="cg-setup-label cg-plan-field cg-plan-field-wide">Agenda<textarea id="cg-plan-agenda" class="cg-input cg-plan-textarea" rows="4" placeholder="Warm-up&#10;Mini-lesson&#10;Word Quest rotation&#10;Exit ticket">' + escapeHtml(galleryPlan.agenda || "") + '</textarea></label>',
+        '      </div>',
+        '  </div>',
+        ' </div>',
+        '</section>'
+      ].join("");
+    }
+
+    function renderPomodoroPopout() {
+      if (!pomodoroPopout || pomodoroPopout.closed) return;
+      var visual = pomodoroVisualModel();
+      pomodoroPopout.document.title = "Class Timer";
+      pomodoroPopout.document.body.innerHTML = [
+        '<style>',
+        'body{margin:0;font-family:ui-rounded,system-ui,sans-serif;background:#0f2745;color:#f8fafc;display:grid;place-items:center;min-height:100vh;}',
+        '.wrap{width:min(92vw,320px);padding:18px;border-radius:24px;background:linear-gradient(180deg,rgba(18,48,79,.96),rgba(8,23,41,.96));box-shadow:0 18px 40px rgba(2,6,23,.45);text-align:center;}',
+        '.ring{position:relative;width:188px;height:188px;margin:0 auto 14px;}',
+        'svg{width:100%;height:100%;transform:rotate(-90deg)}',
+        '.track{fill:none;stroke:rgba(255,255,255,.12);stroke-width:10}',
+        '.prog{fill:none;stroke:#7ccf2e;stroke-width:10;stroke-linecap:round}',
+        '.copy{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;}',
+        '.mode{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(226,232,240,.72)}',
+        '.time{font-size:32px;font-weight:900;color:#fff}',
+        '.sub{font-size:12px;color:rgba(226,232,240,.8)}',
+        '</style>',
+        '<div class="wrap"><div class="ring"><svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="44"></circle><circle class="prog" cx="60" cy="60" r="44" stroke-dasharray="' + visual.dasharray + '" stroke-dashoffset="' + visual.offset + '"></circle></svg><div class="copy"><div><div class="mode">' + visual.title + '</div><div class="time">' + visual.value + '</div><div class="sub">' + visual.sublabel + '</div></div></div></div></div>'
+      ].join("");
+    }
 
     var engine = runtimeRoot.CSGameEngine.create({
       games: games,
@@ -943,6 +1219,8 @@
           '      </select></label>',
           '    </div>',
           '  </div>',
+          renderPomodoroLauncher(),
+          renderPomodoroWidget(),
           '  <div class="cg-gallery-grid">' + Object.keys(games).map(function (id) {
             var isRec = id === recommendedGame;
             return runtimeRoot.CSGameComponents.renderGameCard(games[id], isRec, {
@@ -1462,6 +1740,143 @@
       if (soundToggle) soundToggle.addEventListener("change", function () {
         engine.updateSettings({ soundEnabled: !!soundToggle.checked });
       });
+
+      Array.prototype.forEach.call(shell.querySelectorAll("[data-pomo-ui]"), function (button) {
+        button.addEventListener("click", function () {
+          var action = button.getAttribute("data-pomo-ui");
+          if (action === "toggle") {
+            galleryPomodoroUi.open = !galleryPomodoroUi.open;
+            galleryPomodoroUi.minimized = false;
+          } else if (action === "minimize") {
+            galleryPomodoroUi.minimized = !galleryPomodoroUi.minimized;
+          } else if (action === "mode") {
+            galleryPomodoroUi.mode = galleryPomodoroUi.mode === "clock" ? "timer" : "clock";
+          } else if (action === "popout") {
+            pomodoroPopout = runtimeRoot.open("", "cs-gallery-pomodoro", "width=340,height=420,resizable=yes");
+            renderPomodoroPopout();
+          }
+          persistGalleryPomodoroUi();
+          render();
+        });
+      });
+
+      var planClass = document.getElementById("cg-plan-class");
+      if (planClass) planClass.addEventListener("input", function () {
+        galleryPlan.classLabel = String(planClass.value || "");
+        persistGalleryPlan();
+        renderPomodoroPopout();
+      });
+
+      var planDate = document.getElementById("cg-plan-date");
+      if (planDate) planDate.addEventListener("input", function () {
+        galleryPlan.sessionDate = String(planDate.value || "");
+        persistGalleryPlan();
+        renderPomodoroPopout();
+      });
+
+      var planAgenda = document.getElementById("cg-plan-agenda");
+      if (planAgenda) planAgenda.addEventListener("input", function () {
+        galleryPlan.agenda = String(planAgenda.value || "");
+        persistGalleryPlan();
+      });
+
+      Array.prototype.forEach.call(shell.querySelectorAll("[data-pomo-duration]"), function (button) {
+        button.addEventListener("click", function () {
+          var minutes = Math.max(5, Math.min(60, Number(button.getAttribute("data-pomo-duration")) || 25));
+          galleryPomodoro.durationMinutes = minutes;
+          galleryPomodoro.remainingSeconds = minutes * 60;
+          galleryPomodoro.running = false;
+          galleryPomodoro.endsAt = 0;
+          stopPomodoroInterval();
+          persistGalleryPomodoro();
+          renderPomodoroPopout();
+          render();
+        });
+      });
+
+      Array.prototype.forEach.call(shell.querySelectorAll("[data-pomo-action]"), function (button) {
+        button.addEventListener("click", function () {
+          var action = button.getAttribute("data-pomo-action");
+          if (action === "start") {
+            galleryPomodoro.running = true;
+            galleryPomodoro.endsAt = Date.now() + (Math.max(1, galleryPomodoro.remainingSeconds) * 1000);
+            ensurePomodoroTicking();
+          } else if (action === "pause") {
+            syncPomodoroClock();
+            galleryPomodoro.running = false;
+            galleryPomodoro.endsAt = 0;
+            stopPomodoroInterval();
+          } else if (action === "reset") {
+            galleryPomodoro.running = false;
+            galleryPomodoro.endsAt = 0;
+            galleryPomodoro.remainingSeconds = galleryPomodoro.durationMinutes * 60;
+            stopPomodoroInterval();
+          }
+          persistGalleryPomodoro();
+          renderPomodoroPopout();
+          render();
+        });
+      });
+
+      var dragHandle = shell.querySelector("[data-pomo-drag-handle]");
+      if (dragHandle) {
+        dragHandle.addEventListener("pointerdown", function (event) {
+          var widget = shell.querySelector(".cg-pomo-widget");
+          if (!widget || event.button !== 0 || event.target.closest("[data-pomo-ui], input, textarea, select, button, label")) return;
+          var rect = widget.getBoundingClientRect();
+          var startX = event.clientX;
+          var startY = event.clientY;
+          var offsetX = event.clientX - rect.left;
+          var offsetY = event.clientY - rect.top;
+          var pointerId = event.pointerId;
+          var didDrag = false;
+          function clampDrag(nextX, nextY) {
+            galleryPomodoroUi.x = Math.max(12, Math.min(runtimeRoot.innerWidth - rect.width - 12, nextX));
+            galleryPomodoroUi.y = Math.max(92, Math.min(runtimeRoot.innerHeight - rect.height - 12, nextY));
+            widget.style.left = Math.round(galleryPomodoroUi.x) + "px";
+            widget.style.top = Math.round(galleryPomodoroUi.y) + "px";
+          }
+          function cleanup() {
+            runtimeRoot.removeEventListener("pointermove", onMove);
+            runtimeRoot.removeEventListener("pointerup", onUp);
+            runtimeRoot.removeEventListener("pointercancel", onUp);
+            dragHandle.classList.remove("is-dragging");
+            widget.classList.remove("is-dragging");
+            if (runtimeRoot.document && runtimeRoot.document.body) {
+              runtimeRoot.document.body.classList.remove("cg-pomo-dragging");
+            }
+            try { dragHandle.releasePointerCapture(pointerId); } catch (_error) {}
+          }
+          function onMove(moveEvent) {
+            if (moveEvent.pointerId !== pointerId) return;
+            var deltaX = moveEvent.clientX - startX;
+            var deltaY = moveEvent.clientY - startY;
+            if (!didDrag) {
+              if ((deltaX * deltaX) + (deltaY * deltaY) < 36) return;
+              didDrag = true;
+              dragHandle.classList.add("is-dragging");
+              widget.classList.add("is-dragging");
+              if (runtimeRoot.document && runtimeRoot.document.body) {
+                runtimeRoot.document.body.classList.add("cg-pomo-dragging");
+              }
+            }
+            moveEvent.preventDefault();
+            clampDrag(moveEvent.clientX - offsetX, moveEvent.clientY - offsetY);
+          }
+          function onUp(upEvent) {
+            if (upEvent.pointerId !== pointerId) return;
+            cleanup();
+            if (didDrag) {
+              upEvent.preventDefault();
+              persistGalleryPomodoroUi();
+            }
+          }
+          try { dragHandle.setPointerCapture(pointerId); } catch (_error) {}
+          runtimeRoot.addEventListener("pointermove", onMove);
+          runtimeRoot.addEventListener("pointerup", onUp);
+          runtimeRoot.addEventListener("pointercancel", onUp);
+        });
+      }
     }
 
     /* ── Gallery setup selects ───────────────────────────── */
@@ -1474,6 +1889,8 @@
     }
     if (setupGrade)   setupGrade.addEventListener("change", applyGallerySetup);
     if (setupSubject) setupSubject.addEventListener("change", applyGallerySetup);
+
+    ensurePomodoroTicking();
 
     function handleSubmit(gameId) {
       if (gameId === "word-quest") {

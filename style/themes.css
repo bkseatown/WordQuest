@@ -100,9 +100,12 @@
   --wq-play-control-bg: linear-gradient(180deg, rgba(244,248,251,0.98) 0%, rgba(214,221,226,0.98) 100%);
   --wq-play-control-border: rgba(0, 34, 68, 0.18);
   --wq-play-control-color: #10283f;
+  --theme-backdrop:
+    radial-gradient(circle at 16% 6%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 44%),
+    linear-gradient(180deg, var(--page-bg), var(--page-bg2));
   --font:      Inter, system-ui, sans-serif;
   --font-logo: Inter, system-ui, sans-serif;
-  --wq-play-letter-font: "Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif;
+  --wq-play-letter-font: Verdana, "Trebuchet MS", "Arial Black", Arial, sans-serif;
 }
 
 /* ── DEFAULT ── 60-30-10 gray / sage / plum ─── */
@@ -131,8 +134,8 @@
   --panel-bg:     #d9e7df;
   --panel-border: rgba(67,110,90,0.26);
   --panel-shadow: 0 14px 34px rgba(20,28,24,0.20);
-  --text:         #1f3228;
-  --text-muted:   #42584d;
+  --theme-text:         #1f3228;
+  --theme-text-muted:   #42584d;
   --modal-bg:     #e4efe8;
   --fun-bg:       #d0e6d8;
   --fun-text:     #26493a;
@@ -165,12 +168,16 @@
   --panel-bg:     #243040;
   --panel-border: rgba(255,255,255,0.08);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  --text:         #e2e8f0;
-  --text-muted:   #94a3b8;
+  --theme-text:         #e2e8f0;
+  --theme-text-muted:   #b7c4d3;
   --modal-bg:     #243040;
   --fun-bg:       #1a2a3a;
   --fun-text:     #7dd3fc;
   --fun-border:   #1e4060;
+  --theme-backdrop:
+    radial-gradient(circle at 15% 8%, rgba(56,189,248,0.18), transparent 34%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 12px, transparent 12px 28px),
+    linear-gradient(180deg, #3a4a5c, #2a3848);
 }
 
 /* ── SEAHAWKS ── Navy #002244 + Action Green #69BE28 + Wolf Gray #A5ACAF
@@ -208,8 +215,8 @@
   --key-text:     #001a34;
   --key-shadow:   0 4px 0 #738493, 0 8px 16px rgba(3, 17, 34, 0.16);
   --key-hover:    #dde4e8;
-  --text:         #11283d;
-  --text-muted:   #385066;
+  --theme-text:         #11283d;
+  --theme-text-muted:   #385066;
   --modal-bg:     #c5d0d7;
 
   /* 10% accent: Action Green */
@@ -224,16 +231,18 @@
   --logo-quest:   #69be28;
   --logo-dot:     #69be28;
   --wq-play-header-bg:
-    linear-gradient(180deg, #114a7a 0%, #0a3962 24%, #002f56 58%, #002244 100%);
+    linear-gradient(180deg, rgba(255,255,255,0.18) 0 3%, transparent 3% 100%),
+    linear-gradient(180deg, #0b3f6f 0 50%, #b6c0c7 50% 100%);
   --wq-play-header-border: rgba(105, 190, 40, 0.48);
   --wq-play-header-shadow: 0 12px 26px rgba(0, 18, 36, 0.22);
-  --wq-play-header-art-width: 212px;
-  --wq-play-header-art-height: 54px;
+  --wq-play-header-art-width: 280px;
+  --wq-play-header-art-height: 64px;
   --wq-play-header-art-bg:
-    linear-gradient(120deg, transparent 0 56%, rgba(165, 172, 175, 0.12) 56% 61%, transparent 61% 100%),
-    linear-gradient(120deg, transparent 0 68%, rgba(165, 172, 175, 0.10) 68% 73%, transparent 73% 100%),
-    linear-gradient(120deg, transparent 0 80%, rgba(105, 190, 40, 0.18) 80% 85%, transparent 85% 100%);
-  --wq-play-header-art-opacity: 0.72;
+    linear-gradient(180deg, transparent 0 18%, rgba(255,255,255,0.16) 18% 21%, transparent 21% 48%, rgba(255,255,255,0.14) 48% 51%, transparent 51% 100%),
+    radial-gradient(164px 22px at 92% 18%, rgba(255,255,255,0.10) 0 68%, transparent 69%),
+    radial-gradient(170px 24px at 92% 52%, rgba(18,44,69,0.16) 0 68%, transparent 69%),
+    radial-gradient(122px 22px at 97% 53%, rgba(105,190,40,0.16) 0 54%, transparent 55%);
+  --wq-play-header-art-opacity: 0.82;
   --wq-play-focus-surface-bg: linear-gradient(180deg, rgba(247, 250, 252, 0.98) 0%, rgba(226, 233, 237, 0.98) 100%);
   --wq-play-focus-surface-border: rgba(0, 34, 68, 0.2);
   --wq-play-focus-chip-bg: linear-gradient(180deg, rgba(236, 240, 243, 0.98) 0%, rgba(207, 215, 221, 0.98) 100%);
@@ -317,36 +326,36 @@
 /* ── HUSKIES ── Purple #4B2E83 + Gold #B7A57A/#85754D
    Medium purple page — not dark. Gold keys dominate = UW game day feel */
 [data-theme="huskies"] {
-  --page-bg:      #4b2e83;
-  --page-bg2:     #2e1b57;
-  --plate-bg:     rgba(0,0,0,0.18);
-  --plate-border: rgba(200,168,72,0.45);
-  --tile-face:    linear-gradient(160deg, #fff8ee 0%, #f5ead8 100%);
-  --tile-border:  #b7a57a;
-  --tile-text:    #1a0800;
-  --tile-shadow:  0 3px 0 #4b2e83, 0 1px 4px rgba(0,0,0,0.25);
-  --tile-filled-border: #d8bb66;
-  --key-bg:       #efe8db;
-  --key-text:     #241540;
-  --key-shadow:   0 3px 0 #9a8d72, 0 1px 3px rgba(45,28,78,0.24);
-  --key-hover:    #faf6ef;
-  --vowel-accent: #e3cb87;
-  --brand:        #b7a57a;
-  --brand-dk:     #85754d;
-  --brand-text:   #1a0800;
-  --accent:       #d7c08a;
+  --page-bg:      #98a8bb;
+  --page-bg2:     #7187a0;
+  --plate-bg:     rgba(198, 206, 216, 0.42);
+  --plate-border: rgba(96, 112, 132, 0.58);
+  --tile-face:    linear-gradient(160deg, #fdfcf9 0%, #edf0f4 100%);
+  --tile-border:  #77889d;
+  --tile-text:    #1e2530;
+  --tile-shadow:  0 4px 0 #4f647b, 0 8px 18px rgba(20, 28, 40, 0.2);
+  --tile-filled-border: #b7a57a;
+  --key-bg:       #dde4ea;
+  --key-text:     #202f42;
+  --key-shadow:   0 4px 0 #7c8da0, 0 8px 16px rgba(24, 34, 48, 0.16);
+  --key-hover:    #e9eef3;
+  --vowel-accent: #b7a57a;
+  --brand:        #4b2e83;
+  --brand-dk:     #2d1757;
+  --brand-text:   #f4f0ff;
+  --accent:       #b7a57a;
   --header-bg:    #4b2e83;
-  --header-border: rgba(214,184,95,0.62);
-  --focusbar-bg:  rgba(30,15,60,0.6);
-  --panel-bg:     #2a1860;
-  --panel-border: rgba(216,188,108,0.34);
-  --panel-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  --text:         #efe4c9;
-  --text-muted:   #d6bd85;
-  --modal-bg:     #2a1860;
-  --fun-bg:       #1e1000;
-  --fun-text:     #f0d040;
-  --fun-border:   #604010;
+  --header-border: rgba(183, 165, 122, 0.62);
+  --focusbar-bg:  rgba(223, 229, 235, 0.94);
+  --panel-bg:     #d5dde5;
+  --panel-border: rgba(80, 95, 116, 0.28);
+  --panel-shadow: 0 12px 28px rgba(18, 28, 42, 0.2);
+  --theme-text:         #263548;
+  --theme-text-muted:   #58697d;
+  --modal-bg:     #d9e0e7;
+  --fun-bg:       #24163f;
+  --fun-text:     #e7d29b;
+  --fun-border:   #7b6a43;
 }
 
 /* ── COFFEE / STARBUCKS ── Green #00704A + espresso + cream
@@ -376,12 +385,17 @@
   --panel-bg:     #433126;
   --panel-border: rgba(206,178,122,0.35);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.55);
-  --text:         #f8ecdd;
-  --text-muted:   #c6aa7e;
+  --theme-text:         #f8ecdd;
+  --theme-text-muted:   #dcc39d;
   --modal-bg:     #392a21;
   --fun-bg:       #180e06;
   --fun-text:     #cba05f;
   --fun-border:   #5a3a10;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 10%, rgba(206,178,122,0.16), transparent 30%),
+    radial-gradient(circle at 84% 16%, rgba(255,244,224,0.08), transparent 18%),
+    linear-gradient(180deg, rgba(0,0,0,0.08) 0 2px, transparent 2px 100%),
+    linear-gradient(180deg, #35241b, #241913);
 }
 
 /* ── MATRIX ── Electric green on deep green. INTENTIONALLY high contrast.
@@ -411,12 +425,16 @@
   --panel-bg:     #1c3a2f;
   --panel-border: rgba(80,208,140,0.3);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.66);
-  --text:         #d8f7e6;
-  --text-muted:   #8fd4b0;
+  --theme-text:         #d8f7e6;
+  --theme-text-muted:   #aee8c8;
   --modal-bg:     #1d352b;
   --fun-bg:       #0d1f16;
   --fun-text:     #8be27e;
   --fun-border:   #2f6a4c;
+  --theme-backdrop:
+    radial-gradient(circle at 14% 8%, rgba(152,242,143,0.16), transparent 28%),
+    repeating-linear-gradient(180deg, rgba(152,242,143,0.05) 0 2px, transparent 2px 8px),
+    linear-gradient(180deg, #173126, #102319);
 }
 
 /* ── SUNSET ── warm peach-orange ──────────────────────── */
@@ -445,8 +463,8 @@
   --panel-bg:     #fffaf5;
   --panel-border: rgba(145,68,30,0.15);
   --panel-shadow: 0 8px 32px rgba(145,68,30,0.18);
-  --text:         #4a2412;
-  --text-muted:   #844c32;
+  --theme-text:         #4a2412;
+  --theme-text-muted:   #844c32;
   --modal-bg:     #fffaf5;
   --fun-bg:       #fff2df;
   --fun-text:     #7a3f1e;
@@ -479,8 +497,8 @@
   --panel-bg:     #d9e5f8;
   --panel-border: rgba(16,38,102,0.16);
   --panel-shadow: 0 8px 32px rgba(10,24,84,0.16);
-  --text:         #122750;
-  --text-muted:   #3d5792;
+  --theme-text:         #122750;
+  --theme-text-muted:   #3d5792;
   --modal-bg:     #e2ebfb;
   --fun-bg:       #fff6dc;
   --fun-text:     #7b2f18;
@@ -518,12 +536,16 @@
   --panel-bg:     #24100c;
   --panel-border: rgba(228,189,114,0.26);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.65);
-  --text:         #f8f0e0;
-  --text-muted:   #bc9960;
+  --theme-text:         #f8f0e0;
+  --theme-text-muted:   #d6b37b;
   --modal-bg:     #24100c;
   --fun-bg:       #140400;
   --fun-text:     #f1cf85;
   --fun-border:   #806000;
+  --theme-backdrop:
+    radial-gradient(circle at 16% 8%, rgba(240,195,97,0.18), transparent 26%),
+    linear-gradient(135deg, rgba(170,5,5,0.12) 0 18%, transparent 18% 50%, rgba(240,195,97,0.08) 50% 68%, transparent 68% 100%),
+    linear-gradient(180deg, #4a1e1a, #35140f);
 }
 
 /* ── MARVEL ── COMIC BOOK transformation (NOT dark horror!)
@@ -555,12 +577,17 @@
   --panel-bg:     #22345e;
   --panel-border: rgba(95,168,255,0.24);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.52);
-  --text:         #f4e7d7;
-  --text-muted:   #bfa38f;
+  --theme-text:         #f4e7d7;
+  --theme-text-muted:   #d6c0af;
   --modal-bg:     #22345e;
   --fun-bg:       #17264a;
   --fun-text:     #5fa8ff;
   --fun-border:   #385b96;
+  --theme-backdrop:
+    radial-gradient(circle at 15% 10%, rgba(237,29,36,0.16), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(95,168,255,0.14), transparent 20%),
+    radial-gradient(circle, rgba(255,255,255,0.06) 0 1.2px, transparent 1.2px) 0 0 / 18px 18px,
+    linear-gradient(180deg, #2b3e69, #1d2b4a);
 }
 
 /* ── DEMON HUNTER ── electric teal-purple neon ─────────── */
@@ -589,12 +616,17 @@
   --panel-bg:     #1a2550;
   --panel-border: rgba(96,162,220,0.28);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.65);
-  --text:         #e6f2ff;
-  --text-muted:   #8db1dd;
+  --theme-text:         #e6f2ff;
+  --theme-text-muted:   #b3cbf0;
   --modal-bg:     #1a2550;
   --fun-bg:       #101a38;
   --fun-text:     #8be9ff;
   --fun-border:   #2c5980;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 8%, rgba(34,211,238,0.16), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(244,114,182,0.14), transparent 20%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 10px, transparent 10px 26px),
+    linear-gradient(180deg, #1b2444, #121a34);
 }
 
 /* ── HARLEY QUINN ── ANIMATED SERIES palette (chaotic fun, not dark cave!)
@@ -625,8 +657,8 @@
   --panel-bg:     #f5f1f7;
   --panel-border: rgba(145,112,168,0.24);
   --panel-shadow: 0 8px 32px rgba(74,56,86,0.20);
-  --text:         #2a1328;
-  --text-muted:   #6e4f74;
+  --theme-text:         #2a1328;
+  --theme-text-muted:   #6e4f74;
   --modal-bg:     #f5f1f7;
   --fun-bg:       #edf6ff;
   --fun-text:     #2f93d2;
@@ -663,12 +695,17 @@
   --panel-bg:     #26153a;
   --panel-border: rgba(241,129,178,0.22);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.60);
-  --text:         #f5d8f0;
-  --text-muted:   #b080b8;
+  --theme-text:         #f5d8f0;
+  --theme-text-muted:   #d3abd5;
   --modal-bg:     #26153a;
   --fun-bg:       #120820;
   --fun-text:     #f181b2;
   --fun-border:   #602858;
+  --theme-backdrop:
+    radial-gradient(circle at 16% 8%, rgba(241,129,178,0.18), transparent 28%),
+    radial-gradient(circle at 84% 18%, rgba(192,160,240,0.14), transparent 20%),
+    radial-gradient(circle, rgba(255,255,255,0.05) 0 1.4px, transparent 1.4px) 0 0 / 22px 22px,
+    linear-gradient(180deg, #332046, #251436);
 }
 
 /* ── HARRY POTTER ── burgundy, parchment, and brass ─────── */
@@ -697,12 +734,16 @@
   --panel-bg:     #311b22;
   --panel-border: rgba(212,175,55,0.26);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.62);
-  --text:         #f3e3c2;
-  --text-muted:   #c3a98a;
+  --theme-text:         #f3e3c2;
+  --theme-text-muted:   #dbc6a6;
   --modal-bg:     #2a171d;
   --fun-bg:       #1a0f13;
   --fun-text:     #d4af37;
   --fun-border:   #6f5828;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 9%, rgba(212,175,55,0.16), transparent 26%),
+    linear-gradient(135deg, rgba(212,175,55,0.06) 0 14%, transparent 14% 52%, rgba(122,31,43,0.10) 52% 66%, transparent 66% 100%),
+    linear-gradient(180deg, #4a272f, #2f181d);
 }
 
 /* ── OCEAN ── clear tropical water ──────────────────────── */
@@ -731,8 +772,8 @@
   --panel-bg:     #f0f9fd;
   --panel-border: rgba(16,92,126,0.18);
   --panel-shadow: 0 8px 32px rgba(16,70,100,0.18);
-  --text:         #103147;
-  --text-muted:   #3f6e87;
+  --theme-text:         #103147;
+  --theme-text-muted:   #3f6e87;
   --modal-bg:     #f0f9fd;
   --fun-bg:       #e1f3fb;
   --fun-text:     #0b607f;
@@ -766,12 +807,16 @@
   --panel-bg:     #263320;
   --panel-border: rgba(126,186,76,0.28);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.62);
-  --text:         #e9f2df;
-  --text-muted:   #aac494;
+  --theme-text:         #e9f2df;
+  --theme-text-muted:   #c1d8ad;
   --modal-bg:     #263320;
   --fun-bg:       #192614;
   --fun-text:     #b6df96;
   --fun-border:   #58763d;
+  --theme-backdrop:
+    linear-gradient(90deg, rgba(0,0,0,0.12) 0 8%, transparent 8% 92%, rgba(0,0,0,0.12) 92% 100%),
+    linear-gradient(180deg, rgba(126,186,76,0.08) 0 12%, transparent 12% 24%, rgba(78,104,56,0.12) 24% 36%, transparent 36% 100%),
+    linear-gradient(180deg, #34422d, #24301f);
 }
 
 /* ── MARIO ── Mushroom Kingdom red+blue with warm cream playfield */
@@ -800,8 +845,8 @@
   --panel-bg:     #f6e8cd;
   --panel-border: rgba(194,78,32,0.20);
   --panel-shadow: 0 8px 32px rgba(120,40,10,0.20);
-  --text:         #3a1d0c;
-  --text-muted:   #8c4f2d;
+  --theme-text:         #3a1d0c;
+  --theme-text-muted:   #8c4f2d;
   --modal-bg:     #f9ecd4;
   --fun-bg:       #ffeed4;
   --fun-text:     #1f4ab5;
@@ -837,8 +882,8 @@
   --panel-bg:     #f2f4f5;
   --panel-border: rgba(58,81,104,0.20);
   --panel-shadow: 0 8px 32px rgba(10,26,44,0.30);
-  --text:         #203246;
-  --text-muted:   #5d7287;
+  --theme-text:         #203246;
+  --theme-text-muted:   #5d7287;
   --modal-bg:     #f1f4f7;
   --fun-bg:       #f5f0df;
   --fun-text:     #7a6124;
@@ -871,12 +916,17 @@
   --panel-bg:     #24305b;
   --panel-border: rgba(94,112,190,0.32);
   --panel-shadow: 0 8px 32px rgba(0,0,0,0.60);
-  --text:         #ecf0ff;
-  --text-muted:   #a7b4db;
+  --theme-text:         #ecf0ff;
+  --theme-text-muted:   #c2cbed;
   --modal-bg:     #1f2a52;
   --fun-bg:       #121937;
   --fun-text:     #8fe9ff;
   --fun-border:   #345d86;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 10%, rgba(34,211,238,0.12), transparent 18%),
+    radial-gradient(circle at 72% 18%, rgba(255,255,255,0.16) 0 1px, transparent 1px) 0 0 / 26px 26px,
+    radial-gradient(circle at 16% 8%, rgba(225,29,72,0.18), transparent 24%),
+    linear-gradient(180deg, #202543, #11162d);
 }
 
 /* ── RAINBOW FRIENDS ── playful cyan-lime-orange palette ── */
@@ -905,8 +955,8 @@
   --panel-bg:     #dde8f2;
   --panel-border: rgba(39,88,136,0.20);
   --panel-shadow: 0 8px 32px rgba(16,50,90,0.20);
-  --text:         #16324d;
-  --text-muted:   #4f6f8e;
+  --theme-text:         #16324d;
+  --theme-text-muted:   #4f6f8e;
   --modal-bg:     #e4edf6;
   --fun-bg:       #fff0e2;
   --fun-text:     #92531d;
@@ -939,8 +989,8 @@
   --panel-bg:     #fff7fc;
   --panel-border: rgba(233, 121, 188, 0.24);
   --panel-shadow: 0 8px 32px rgba(145, 52, 116, 0.20);
-  --text:         #3a112e;
-  --text-muted:   #8d4e77;
+  --theme-text:         #3a112e;
+  --theme-text-muted:   #8d4e77;
   --modal-bg:     #fff6fc;
   --fun-bg:       #ffe8f7;
   --fun-text:     #a0256f;
@@ -948,4 +998,104 @@
   --logo-word:    #30112a;
   --logo-quest:   #ff4ab0;
   --logo-dot:     #b07bff;
+}
+
+[data-theme] {
+  --text: var(--theme-text, var(--text-primary));
+  --text-muted: var(--theme-text-muted, var(--text-secondary));
+}
+
+.wordquest-root.theme-dark {
+  --text: #e2e8f0;
+  --text-muted: #b7c4d3;
+  --theme-backdrop:
+    radial-gradient(circle at 15% 8%, rgba(56,189,248,0.18), transparent 34%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 12px, transparent 12px 28px),
+    linear-gradient(180deg, #3a4a5c, #2a3848);
+}
+
+.wordquest-root.theme-coffee {
+  --text: #f8ecdd;
+  --text-muted: #dcc39d;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 10%, rgba(206,178,122,0.16), transparent 30%),
+    radial-gradient(circle at 84% 16%, rgba(255,244,224,0.08), transparent 18%),
+    linear-gradient(180deg, rgba(0,0,0,0.08) 0 2px, transparent 2px 100%),
+    linear-gradient(180deg, #35241b, #241913);
+}
+
+.wordquest-root.theme-matrix {
+  --text: #d8f7e6;
+  --text-muted: #aee8c8;
+  --theme-backdrop:
+    radial-gradient(circle at 14% 8%, rgba(152,242,143,0.16), transparent 28%),
+    repeating-linear-gradient(180deg, rgba(152,242,143,0.05) 0 2px, transparent 2px 8px),
+    linear-gradient(180deg, #173126, #102319);
+}
+
+.wordquest-root.theme-ironman {
+  --text: #f8f0e0;
+  --text-muted: #d6b37b;
+  --theme-backdrop:
+    radial-gradient(circle at 16% 8%, rgba(240,195,97,0.18), transparent 26%),
+    linear-gradient(135deg, rgba(170,5,5,0.12) 0 18%, transparent 18% 50%, rgba(240,195,97,0.08) 50% 68%, transparent 68% 100%),
+    linear-gradient(180deg, #4a1e1a, #35140f);
+}
+
+.wordquest-root.theme-marvel {
+  --text: #f4e7d7;
+  --text-muted: #d6c0af;
+  --theme-backdrop:
+    radial-gradient(circle at 15% 10%, rgba(237,29,36,0.16), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(95,168,255,0.14), transparent 20%),
+    radial-gradient(circle, rgba(255,255,255,0.06) 0 1.2px, transparent 1.2px) 0 0 / 18px 18px,
+    linear-gradient(180deg, #2b3e69, #1d2b4a);
+}
+
+.wordquest-root.theme-demonhunter {
+  --text: #e6f2ff;
+  --text-muted: #b3cbf0;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 8%, rgba(34,211,238,0.16), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(244,114,182,0.14), transparent 20%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 10px, transparent 10px 26px),
+    linear-gradient(180deg, #1b2444, #121a34);
+}
+
+.wordquest-root.theme-kuromi {
+  --text: #f5d8f0;
+  --text-muted: #d3abd5;
+  --theme-backdrop:
+    radial-gradient(circle at 16% 8%, rgba(241,129,178,0.18), transparent 28%),
+    radial-gradient(circle at 84% 18%, rgba(192,160,240,0.14), transparent 20%),
+    radial-gradient(circle, rgba(255,255,255,0.05) 0 1.4px, transparent 1.4px) 0 0 / 22px 22px,
+    linear-gradient(180deg, #332046, #251436);
+}
+
+.wordquest-root.theme-harrypotter {
+  --text: #f3e3c2;
+  --text-muted: #dbc6a6;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 9%, rgba(212,175,55,0.16), transparent 26%),
+    linear-gradient(135deg, rgba(212,175,55,0.06) 0 14%, transparent 14% 52%, rgba(122,31,43,0.10) 52% 66%, transparent 66% 100%),
+    linear-gradient(180deg, #4a272f, #2f181d);
+}
+
+.wordquest-root.theme-minecraft {
+  --text: #e9f2df;
+  --text-muted: #c1d8ad;
+  --theme-backdrop:
+    linear-gradient(90deg, rgba(0,0,0,0.12) 0 8%, transparent 8% 92%, rgba(0,0,0,0.12) 92% 100%),
+    linear-gradient(180deg, rgba(126,186,76,0.08) 0 12%, transparent 12% 24%, rgba(78,104,56,0.12) 24% 36%, transparent 36% 100%),
+    linear-gradient(180deg, #34422d, #24301f);
+}
+
+.wordquest-root.theme-amongus {
+  --text: #ecf0ff;
+  --text-muted: #c2cbed;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 10%, rgba(34,211,238,0.12), transparent 18%),
+    radial-gradient(circle at 72% 18%, rgba(255,255,255,0.16) 0 1px, transparent 1px) 0 0 / 26px 26px,
+    radial-gradient(circle at 16% 8%, rgba(225,29,72,0.18), transparent 24%),
+    linear-gradient(180deg, #202543, #11162d);
 }
