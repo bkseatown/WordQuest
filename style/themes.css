@@ -185,8 +185,8 @@
   --radius-key:      12px;
   --font-logo:       "Avenir Next Condensed", "Arial Narrow", "Trebuchet MS", "Atkinson Hyperlegible", sans-serif;
   /* 60% dominant: College Navy */
-  --page-bg:      #7f98ab;
-  --page-bg2:     #54748e;
+  --page-bg:      #90a8bb;
+  --page-bg2:     #6988a1;
   --header-bg:    #002244;
   --brand:        #002244;
   --brand-dk:     #001a34;
@@ -294,11 +294,18 @@
     linear-gradient(180deg, rgba(254, 255, 255, 1) 0%, rgba(228, 235, 239, 0.99) 60%, rgba(186, 196, 203, 0.99) 100%);
   --wq-play-key-wide-bg:
     linear-gradient(180deg, rgba(243, 248, 250, 1) 0%, rgba(201, 211, 218, 0.99) 100%);
-  --wq-play-vowel-color: #3a8790;
+  --wq-play-vowel-color: #0d2439;
   --wq-play-control-bg:
     linear-gradient(180deg, rgba(248,250,252,0.99) 0%, rgba(219,226,231,0.99) 100%);
   --wq-play-control-border: rgba(105, 190, 40, 0.34);
   --wq-play-control-color: #10283f;
+  --wq-play-next-btn-bg: linear-gradient(180deg, #8fdb49 0%, #69be28 100%);
+  --wq-play-next-btn-border: #c6ecab;
+  --wq-play-next-btn-color: #002244;
+  --wq-play-next-btn-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.42),
+    0 6px 14px rgba(8, 22, 38, 0.16);
+  --wq-play-next-btn-hover-bg: linear-gradient(180deg, #9ae754 0%, #74c92f 100%);
 }
 
 /* ── HUSKIES ── Purple #4B2E83 + Gold #B7A57A/#85754D

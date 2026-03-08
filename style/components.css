@@ -904,12 +904,29 @@ html[data-page-mode="wordquest"] #mission-lab-nav-btn {
   white-space:   nowrap;
   box-shadow:    0 1px 0 rgba(255,255,255,0.15) inset;
   text-shadow:   0 1px 1px rgba(6, 16, 32, 0.45);
+  display:       inline-flex;
+  align-items:   center;
+  justify-content: center;
+  text-align:    center;
 }
 #new-game-btn:hover {
   background: linear-gradient(145deg, color-mix(in oklab, var(--accent) 54%, var(--brand) 46%), color-mix(in oklab, var(--brand-dk) 74%, #000000 26%));
 }
 #new-game-btn:active { transform: translateY(1px); }
 #new-game-btn.pulse { animation: pulse 1.4s ease infinite; }
+
+html[data-theme="seahawks"][data-home-mode="play"] #new-game-btn {
+  background: var(--wq-play-next-btn-bg);
+  color: var(--wq-play-next-btn-color);
+  border-color: var(--wq-play-next-btn-border);
+  box-shadow: var(--wq-play-next-btn-shadow);
+  text-shadow: none;
+  font-weight: 900;
+}
+
+html[data-theme="seahawks"][data-home-mode="play"] #new-game-btn:hover {
+  background: var(--wq-play-next-btn-hover-bg);
+}
 
 .active-grade-lock-chip {
   flex: 0 0 auto;
@@ -1325,31 +1342,33 @@ html[data-home-mode="play"] .gameplay-audio {
 }
 
 html[data-home-mode="play"] .header-main-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(170px, 1fr) auto;
+  grid-template-areas: "logo right";
   align-items: center;
-  gap: 8px 12px;
+  gap: 8px 14px;
   min-height: 0;
 }
 
 html[data-home-mode="play"] .logo {
+  grid-area: logo;
   justify-self: start;
-  flex: 0 1 auto;
   min-width: 0;
-  font-size: clamp(0.98rem, 1.8vw, 1.08rem);
-  line-height: 1;
   max-width: 100%;
+  padding-right: 10px;
+  font-size: clamp(0.96rem, 1.6vw, 1.06rem);
+  line-height: 1.02;
 }
 
 html[data-home-mode="play"] .header-right {
+  grid-area: right;
   display: flex;
-  flex: 1 1 420px;
-  flex-wrap: wrap;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
   gap: 8px 10px;
-  min-width: 0;
+  min-width: max-content;
 }
 
 html[data-home-mode="play"] header {
@@ -1403,7 +1422,7 @@ html[data-home-mode="play"] .header-icon-controls {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   flex: 0 0 auto;
 }
 
@@ -1414,23 +1433,32 @@ html[data-home-mode="play"] #new-game-btn {
 
 @media (max-width: 1180px) {
   html[data-home-mode="play"] .header-main-row {
-    align-items: flex-start;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "logo"
+      "right";
+    align-items: center;
   }
 
   html[data-home-mode="play"] .logo {
-    flex: 1 1 100%;
+    justify-self: center;
+    text-align: center;
+    padding-right: 0;
   }
 
   html[data-home-mode="play"] .header-right {
     flex: 1 1 100%;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: 8px;
+    min-width: 0;
+    flex-wrap: wrap;
   }
 
   html[data-home-mode="play"] .header-icon-controls,
   html[data-home-mode="play"] .header-quick-controls {
     flex: 0 1 auto;
+    justify-content: center;
   }
 }
 
@@ -1536,25 +1564,27 @@ html[data-home-mode="play"] .focus-bar {
   border-radius: 999px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 66%, #8aa0b7 34%);
   background: color-mix(in oklab, var(--panel-bg) 92%, #edf3f8 8%);
-  color: color-mix(in oklab, var(--text) 94%, #ffffff 6%);
+  color: #294259;
   cursor: pointer;
   box-shadow: 0 3px 10px rgba(20, 42, 66, 0.12);
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  line-height: 0;
 }
 
 .focus-action-btn:hover {
   border-color: color-mix(in oklab, var(--panel-border) 60%, #8193aa 40%);
   background: color-mix(in oklab, var(--panel-bg) 84%, #dde7f0 16%);
-  color: color-mix(in oklab, var(--text) 96%, #ffffff 4%);
+  color: #183249;
   transform: translateY(-1px);
 }
 
 .focus-action-btn svg {
-  width: 19px;
-  height: 19px;
+  width: 21px;
+  height: 21px;
   display: block;
   flex: 0 0 auto;
   stroke: currentColor;
+  stroke-width: 2.35;
 }
 
 .focus-action-emoji {
@@ -1628,13 +1658,13 @@ html[data-home-mode="play"] .focus-inline-actions {
 }
 
 html[data-home-mode="play"] .focus-action-btn {
-  width: 38px;
-  height: 38px;
+  width: 41px;
+  height: 41px;
   border-radius: 999px;
   border: 1px solid var(--wq-play-focus-chip-border);
   background: var(--wq-play-focus-chip-bg);
   box-shadow: var(--wq-play-focus-chip-shadow);
-  color: color-mix(in oklab, var(--wq-play-control-color) 92%, #12253a 8%);
+  color: #294259;
 }
 
 html[data-home-mode="play"] .focus-inline-search {
@@ -1652,9 +1682,11 @@ html[data-home-mode="play"] .grade-target-inline {
   border-color: var(--wq-play-focus-chip-border);
   background: var(--wq-play-focus-chip-bg);
   box-shadow: var(--wq-play-focus-chip-shadow);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+  line-height: 1;
   font-size: 0.68rem;
   opacity: 0.82;
 }
@@ -4016,13 +4048,18 @@ html[data-home-mode="play"] #keyboard-layout-toggle {
   color: color-mix(in oklab, var(--text) 92%, #ffffff 8%);
   text-shadow: 0 1px 0 rgba(255,255,255,0.16);
   font-weight: 900;
+  align-items: center;
+  justify-content: center;
 }
 
 html[data-home-mode="play"] #music-dock-toggle-btn .icon-emoji,
 html[data-home-mode="play"] #theme-dock-toggle-btn .icon-emoji,
 html[data-home-mode="play"] #keyboard-layout-toggle .icon-emoji {
-  font-size: 1.12rem;
+  font-size: 1rem;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 html[data-home-mode="play"] .case-toggle-glyph {
@@ -5053,6 +5090,11 @@ html[data-home-mode="play"] .key {
   letter-spacing: 0.01em;
 }
 
+html[data-home-mode="play"] .key.is-vowel,
+html[data-home-mode="play"] .key.vowel {
+  color: var(--wq-play-key-color);
+}
+
 html[data-home-mode="play"] .key:hover {
   background: var(--wq-play-key-hover-bg);
 }
@@ -5060,6 +5102,9 @@ html[data-home-mode="play"] .key:hover {
 html[data-home-mode="play"] .key.wide {
   background: var(--wq-play-key-wide-bg);
   font-size: 0.96rem;
+  flex: 1.45;
+  min-width: 86px;
+  max-width: 124px;
 }
 
 html[data-home-mode="play"] .key[data-key="Backspace"] {
@@ -5068,8 +5113,8 @@ html[data-home-mode="play"] .key[data-key="Backspace"] {
 }
 
 html[data-home-mode="play"] .key-backspace-glyph {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   display: block;
   margin: 0 auto;
 }

@@ -195,35 +195,3 @@ jobs:
             echo "Blocking smoke-check failures: ${failures} required URL target(s) failed." >&2
             exit 1
           fi
-
-  deploy-alert:
-    needs:
-      - deploy
-    if: ${{ needs.deploy.result == 'failure' }}
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      contents: read
-    steps:
-      - name: Open deploy alert issue
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const title = `Deploy alert: GitHub Pages failed on ${context.sha.slice(0, 7)}`;
-            const body = [
-              'GitHub Pages deployment failed.',
-              '',
-              `- Run: ${runUrl}`,
-              `- Commit: ${context.sha}`,
-              `- Workflow: ${context.workflow}`,
-              '',
-              'Please run release checks and verify Pages status before next merge.'
-            ].join('\n');
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title,
-              body,
-              labels: ['bug']
-            });
