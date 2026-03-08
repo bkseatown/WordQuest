@@ -186,10 +186,10 @@ const WQUI = (() => {
               <path d="m14 9-4 6"></path>
             </svg>
           `;
-          if (layout === 'standard') btn.classList.add('wide');
+          btn.classList.add('wide');
         } else if (key === 'Enter') {
           btn.textContent = 'Enter';
-          if (layout === 'standard') btn.classList.add('wide');
+          btn.classList.add('wide');
         } else {
           btn.textContent = _fmt(key);
           if (key.length > 1) {
