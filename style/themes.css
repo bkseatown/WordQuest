@@ -140,6 +140,10 @@
   --fun-bg:       #d0e6d8;
   --fun-text:     #26493a;
   --fun-border:   #8cb5a1;
+  --theme-backdrop:
+    radial-gradient(circle at 15% 8%, rgba(110,168,135,0.18), transparent 28%),
+    radial-gradient(circle at 85% 18%, rgba(90,30,99,0.12), transparent 20%),
+    linear-gradient(180deg, #a3aba7, #949d99);
 }
 
 /* ── DARK ── visible slate, not void ──────────────────── */
@@ -356,6 +360,10 @@
   --fun-bg:       #24163f;
   --fun-text:     #e7d29b;
   --fun-border:   #7b6a43;
+  --theme-backdrop:
+    radial-gradient(circle at 16% 8%, rgba(75,46,131,0.18), transparent 30%),
+    linear-gradient(135deg, rgba(183,165,122,0.10) 0 14%, transparent 14% 48%, rgba(75,46,131,0.08) 48% 64%, transparent 64% 100%),
+    linear-gradient(180deg, #98a8bb, #7187a0);
 }
 
 /* ── COFFEE / STARBUCKS ── Green #00704A + espresso + cream
@@ -469,6 +477,10 @@
   --fun-bg:       #fff2df;
   --fun-text:     #7a3f1e;
   --fun-border:   #e8ba84;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 8%, rgba(240,106,29,0.18), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(247,184,81,0.18), transparent 22%),
+    linear-gradient(180deg, #f8e4d2, #efc39d);
 }
 
 /* ── SUPERMAN ── sky blue page, bold blue+red hero palette ── */
@@ -506,6 +518,10 @@
   --logo-word:    #f4f8ff;
   --logo-quest:   #ff6a74;
   --logo-dot:     #f5c745;
+  --theme-backdrop:
+    radial-gradient(circle at 16% 10%, rgba(26,77,179,0.16), transparent 28%),
+    linear-gradient(90deg, rgba(245,201,74,0.14) 0 6%, transparent 6% 94%, rgba(214,40,57,0.14) 94% 100%),
+    linear-gradient(180deg, #adc5ee, #9bb9ea);
 }
 
 /* ── IRON MAN ── red armor + REAL gold keys
@@ -666,6 +682,10 @@
   --logo-word:    #ffeef7;
   --logo-quest:   #e62b84;
   --logo-dot:     #6ac9ff;
+  --theme-backdrop:
+    linear-gradient(90deg, rgba(190,18,10,0.10) 0 50%, rgba(0,18,118,0.10) 50% 100%),
+    radial-gradient(circle at 18% 10%, rgba(177,20,102,0.12), transparent 24%),
+    linear-gradient(180deg, #ebe6ee, #cabed0);
 }
 
 /* ── KUROMI ── Sanrio: purple #514283 + pink bow #F181B2
@@ -778,6 +798,11 @@
   --fun-bg:       #e1f3fb;
   --fun-text:     #0b607f;
   --fun-border:   #88c8da;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 8%, rgba(31,183,169,0.18), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(255,143,74,0.12), transparent 18%),
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.10) 0 2px, transparent 2px 12px),
+    linear-gradient(180deg, #bfe1ec, #79b8cc);
 }
 
 /* ── MINECRAFT ── Dirt brown page, stone gray keys, grass green header
@@ -854,6 +879,10 @@
   --logo-word:    #fff7e6;
   --logo-quest:   #ffd54f;
   --logo-dot:     #ffd54f;
+  --theme-backdrop:
+    linear-gradient(90deg, rgba(220,38,38,0.10) 0 52%, rgba(37,99,235,0.10) 52% 100%),
+    radial-gradient(circle at 18% 10%, rgba(255,255,255,0.16), transparent 22%),
+    linear-gradient(180deg, #f3deb2, #efc87f);
 }
 
 /* ── ZELDA ── Hyrule green + relic gold ─────────────────── */
@@ -888,6 +917,10 @@
   --fun-bg:       #f5f0df;
   --fun-text:     #7a6124;
   --fun-border:   #d7be7a;
+  --theme-backdrop:
+    radial-gradient(circle at 18% 8%, rgba(217,178,79,0.14), transparent 24%),
+    linear-gradient(135deg, rgba(47,96,143,0.10) 0 18%, transparent 18% 50%, rgba(217,178,79,0.08) 50% 66%, transparent 66% 100%),
+    linear-gradient(180deg, #8fb0c8, #6f91b0);
 }
 
 /* ── AMONG US ── deep space with crewmate red + visor cyan ── */
@@ -961,6 +994,10 @@
   --fun-bg:       #fff0e2;
   --fun-text:     #92531d;
   --fun-border:   #eabf97;
+  --theme-backdrop:
+    radial-gradient(circle at 16% 8%, rgba(31,134,207,0.16), transparent 24%),
+    radial-gradient(circle at 82% 18%, rgba(255,122,27,0.18), transparent 20%),
+    linear-gradient(180deg, #c2d3e8, #a4b9d1);
 }
 
 /* ── POP PINK ── bright pop header with soft blush gameplay field */
@@ -998,6 +1035,11 @@
   --logo-word:    #30112a;
   --logo-quest:   #ff4ab0;
   --logo-dot:     #b07bff;
+  --theme-backdrop:
+    radial-gradient(circle at 16% 8%, rgba(243,76,166,0.18), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(176,123,255,0.16), transparent 20%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.12) 0 10px, transparent 10px 24px),
+    linear-gradient(180deg, #f6e8f2, #eed7ea);
 }
 
 [data-theme] {
@@ -1098,4 +1140,76 @@
     radial-gradient(circle at 72% 18%, rgba(255,255,255,0.16) 0 1px, transparent 1px) 0 0 / 26px 26px,
     radial-gradient(circle at 16% 8%, rgba(225,29,72,0.18), transparent 24%),
     linear-gradient(180deg, #202543, #11162d);
+}
+
+.wordquest-root.theme-default {
+  --theme-backdrop:
+    radial-gradient(circle at 15% 8%, rgba(110,168,135,0.18), transparent 28%),
+    radial-gradient(circle at 85% 18%, rgba(90,30,99,0.12), transparent 20%),
+    linear-gradient(180deg, #a3aba7, #949d99);
+}
+
+.wordquest-root.theme-huskies {
+  --theme-backdrop:
+    radial-gradient(circle at 16% 8%, rgba(75,46,131,0.18), transparent 30%),
+    linear-gradient(135deg, rgba(183,165,122,0.10) 0 14%, transparent 14% 48%, rgba(75,46,131,0.08) 48% 64%, transparent 64% 100%),
+    linear-gradient(180deg, #98a8bb, #7187a0);
+}
+
+.wordquest-root.theme-sunset {
+  --theme-backdrop:
+    radial-gradient(circle at 18% 8%, rgba(240,106,29,0.18), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(247,184,81,0.18), transparent 22%),
+    linear-gradient(180deg, #f8e4d2, #efc39d);
+}
+
+.wordquest-root.theme-superman {
+  --theme-backdrop:
+    radial-gradient(circle at 16% 10%, rgba(26,77,179,0.16), transparent 28%),
+    linear-gradient(90deg, rgba(245,201,74,0.14) 0 6%, transparent 6% 94%, rgba(214,40,57,0.14) 94% 100%),
+    linear-gradient(180deg, #adc5ee, #9bb9ea);
+}
+
+.wordquest-root.theme-harleyquinn {
+  --theme-backdrop:
+    linear-gradient(90deg, rgba(190,18,10,0.10) 0 50%, rgba(0,18,118,0.10) 50% 100%),
+    radial-gradient(circle at 18% 10%, rgba(177,20,102,0.12), transparent 24%),
+    linear-gradient(180deg, #ebe6ee, #cabed0);
+}
+
+.wordquest-root.theme-ocean {
+  --theme-backdrop:
+    radial-gradient(circle at 18% 8%, rgba(31,183,169,0.18), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(255,143,74,0.12), transparent 18%),
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.10) 0 2px, transparent 2px 12px),
+    linear-gradient(180deg, #bfe1ec, #79b8cc);
+}
+
+.wordquest-root.theme-mario {
+  --theme-backdrop:
+    linear-gradient(90deg, rgba(220,38,38,0.10) 0 52%, rgba(37,99,235,0.10) 52% 100%),
+    radial-gradient(circle at 18% 10%, rgba(255,255,255,0.16), transparent 22%),
+    linear-gradient(180deg, #f3deb2, #efc87f);
+}
+
+.wordquest-root.theme-zelda {
+  --theme-backdrop:
+    radial-gradient(circle at 18% 8%, rgba(217,178,79,0.14), transparent 24%),
+    linear-gradient(135deg, rgba(47,96,143,0.10) 0 18%, transparent 18% 50%, rgba(217,178,79,0.08) 50% 66%, transparent 66% 100%),
+    linear-gradient(180deg, #8fb0c8, #6f91b0);
+}
+
+.wordquest-root.theme-rainbowfriends {
+  --theme-backdrop:
+    radial-gradient(circle at 16% 8%, rgba(31,134,207,0.16), transparent 24%),
+    radial-gradient(circle at 82% 18%, rgba(255,122,27,0.18), transparent 20%),
+    linear-gradient(180deg, #c2d3e8, #a4b9d1);
+}
+
+.wordquest-root.theme-poppink {
+  --theme-backdrop:
+    radial-gradient(circle at 16% 8%, rgba(243,76,166,0.18), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(176,123,255,0.16), transparent 20%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.12) 0 10px, transparent 10px 24px),
+    linear-gradient(180deg, #f6e8f2, #eed7ea);
 }
