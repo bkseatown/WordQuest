@@ -6996,10 +6996,11 @@
   }
 
   function openTeacherDashboardPage() {
-    const url = new URL(withAppBase('teacher-hub-v2.html'), window.location.origin);
+    const url = new URL(withAppBase('game-platform.html'), window.location.origin);
     try {
       const params = new URLSearchParams(window.location.search || '');
       if (params.get('demo') === '1') url.searchParams.set('demo', '1');
+      if (params.get('subject')) url.searchParams.set('subject', params.get('subject'));
     } catch (_e) {
       // no-op
     }
