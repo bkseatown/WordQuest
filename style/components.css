@@ -611,6 +611,10 @@ html[data-page-mode="wordquest"] #mission-lab-nav-btn {
 
 .header-quick-btn {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   min-height: 30px;
   padding: 4px 10px;
   border-radius: 999px;
@@ -1356,11 +1360,11 @@ html[data-home-mode="play"] .play-mode-label {
 
 html[data-home-mode="play"] .header-quick-controls {
   grid-area: quick;
-  justify-self: end;
+  justify-self: center;
   width: auto;
   display: inline-flex !important;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 8px;
   overflow: visible;
 }
