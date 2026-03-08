@@ -8849,15 +8849,27 @@
       const playfieldW = Math.ceil(boardWidth);
       const playfieldH = Math.ceil(boardHeight);
 
-      const adaptiveKeyFloor = layoutMode === 'compact' ? 34 : layoutMode === 'tight' ? 40 : 44;
-      const adaptiveKeyCeil = layoutMode === 'wide' ? 52 : 50;
-      const adaptiveKeyH = Math.max(adaptiveKeyFloor, Math.min(adaptiveKeyCeil, Math.round(size * 0.9)));
-      let adaptiveKeyMinW = Math.max(layoutMode === 'compact' ? 20 : layoutMode === 'tight' ? 23 : 27, Math.min(44, Math.round(size * 0.74)));
+      const preferredKeyH = parseFloat(rootStyle.getPropertyValue('--key-h')) || 58;
+      const preferredKeyMinW = parseFloat(rootStyle.getPropertyValue('--key-min-w')) || 38;
+      const adaptiveKeyFloor = Math.max(
+        layoutMode === 'compact' ? 36 : layoutMode === 'tight' ? 42 : 48,
+        Math.round(preferredKeyH * 0.88)
+      );
+      const adaptiveKeyCeil = Math.max(layoutMode === 'wide' ? 62 : 60, Math.round(preferredKeyH));
+      const keyScale = layoutMode === 'compact' ? 0.84 : layoutMode === 'tight' ? 0.85 : 0.86;
+      const adaptiveKeyH = Math.max(adaptiveKeyFloor, Math.min(adaptiveKeyCeil, Math.round(size * keyScale)));
+      let adaptiveKeyMinW = Math.max(
+        layoutMode === 'compact' ? 24 : layoutMode === 'tight' ? 28 : 32,
+        Math.min(Math.round(preferredKeyMinW), Math.round(size * 0.78))
+      );
       let adaptiveKeyGap = Math.max(layoutMode === 'compact' ? 5.6 : 6.2, Math.min(10, Math.round(size * 0.16)));
       const maxKeyboardW = Math.max(286, Math.min(window.innerWidth - 16, mainInnerW - 4));
       const activeCols = keyboardLayout === 'wilson' ? 10 : 10;
       const estimateKeyboardW = () => (adaptiveKeyMinW * activeCols) + (adaptiveKeyGap * (activeCols - 1));
-      const minKeyFloor = layoutMode === 'compact' ? 22 : layoutMode === 'tight' ? 23 : 24;
+      const minKeyFloor = Math.max(
+        layoutMode === 'compact' ? 24 : layoutMode === 'tight' ? 28 : 30,
+        Math.round(preferredKeyMinW - 4)
+      );
       while (estimateKeyboardW() > maxKeyboardW && adaptiveKeyMinW > minKeyFloor) {
         adaptiveKeyMinW -= 1;
         if (adaptiveKeyGap > 5.4) adaptiveKeyGap -= 0.2;
