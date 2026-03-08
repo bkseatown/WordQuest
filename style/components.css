@@ -916,7 +916,7 @@ html[data-page-mode="wordquest"] #mission-lab-nav-btn {
 #new-game-btn.pulse { animation: pulse 1.4s ease infinite; }
 
 html[data-theme="seahawks"][data-home-mode="play"] #new-game-btn {
-  background: var(--wq-play-next-btn-bg);
+  background: var(--wq-play-next-btn-bg) !important;
   color: var(--wq-play-next-btn-color);
   border-color: var(--wq-play-next-btn-border);
   box-shadow: var(--wq-play-next-btn-shadow);
@@ -1343,7 +1343,7 @@ html[data-home-mode="play"] .gameplay-audio {
 
 html[data-home-mode="play"] .header-main-row {
   display: grid;
-  grid-template-columns: minmax(170px, 1fr) auto;
+  grid-template-columns: minmax(220px, max-content) minmax(0, 1fr);
   grid-template-areas: "logo right";
   align-items: center;
   gap: 8px 14px;
@@ -1356,19 +1356,19 @@ html[data-home-mode="play"] .logo {
   min-width: 0;
   max-width: 100%;
   padding-right: 10px;
-  font-size: clamp(0.96rem, 1.6vw, 1.06rem);
+  font-size: clamp(0.94rem, 1.42vw, 1.02rem);
   line-height: 1.02;
 }
 
 html[data-home-mode="play"] .header-right {
   grid-area: right;
   display: flex;
-  flex: 0 0 auto;
-  flex-wrap: nowrap;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   gap: 8px 10px;
-  min-width: max-content;
+  min-width: 0;
 }
 
 html[data-home-mode="play"] header {
@@ -1431,7 +1431,7 @@ html[data-home-mode="play"] #new-game-btn {
   align-self: center;
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1360px) {
   html[data-home-mode="play"] .header-main-row {
     grid-template-columns: 1fr;
     grid-template-areas:
@@ -1667,12 +1667,21 @@ html[data-home-mode="play"] .focus-action-btn {
   border: 1px solid var(--wq-play-focus-chip-border);
   background: var(--wq-play-focus-chip-bg);
   box-shadow: var(--wq-play-focus-chip-shadow);
-  color: #294259;
+  color: #1a3147;
 }
 
 html[data-home-mode="play"] .focus-action-btn svg {
   width: 24px;
   height: 24px;
+  stroke-width: 2.4;
+}
+
+html[data-home-mode="play"] .focus-action-btn.is-locked,
+html[data-home-mode="play"] .focus-action-btn:disabled {
+  opacity: 0.64;
+  cursor: default;
+  box-shadow: none;
+  transform: none;
 }
 
 html[data-home-mode="play"] .focus-inline-search {
@@ -4642,16 +4651,16 @@ html[data-home-mode="play"] .tile::after {
 html[data-theme="seahawks"][data-home-mode="play"] .tile::before {
   content: '';
   position: absolute;
-  inset: 8% 11% auto;
-  height: 21%;
-  border-top: 3px solid rgba(255, 255, 255, 0.42);
-  border-left: 2px solid rgba(105, 190, 40, 0.22);
-  border-right: 2px solid rgba(105, 190, 40, 0.22);
-  border-radius: 999px 999px 14px 14px / 100% 100% 36% 36%;
+  inset: 10% 14% auto;
+  height: 18%;
+  border-top: 2px solid rgba(255, 255, 255, 0.34);
+  border-left: 2px solid rgba(105, 190, 40, 0.16);
+  border-right: 2px solid rgba(105, 190, 40, 0.16);
+  border-radius: 999px 999px 12px 12px / 100% 100% 38% 38%;
   box-shadow:
-    0 7px 0 -5px rgba(99, 121, 144, 0.38),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  opacity: 0.88;
+    0 5px 0 -4px rgba(99, 121, 144, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  opacity: 0.72;
   pointer-events: none;
 }
 
@@ -5272,16 +5281,16 @@ html[data-home-mode="play"] .key:hover {
 html[data-theme="seahawks"][data-home-mode="play"] .key::before {
   content: '';
   position: absolute;
-  inset: 7px 10px auto;
-  height: 18%;
-  border-top: 3px solid rgba(255, 255, 255, 0.38);
-  border-left: 2px solid rgba(105, 190, 40, 0.18);
-  border-right: 2px solid rgba(105, 190, 40, 0.18);
-  border-radius: 999px 999px 10px 10px / 100% 100% 40% 40%;
+  inset: auto 14% 11% 14%;
+  height: 16%;
+  border-top: 2px solid rgba(255, 255, 255, 0.24);
+  border-left: 2px solid rgba(0, 34, 68, 0.12);
+  border-right: 2px solid rgba(105, 190, 40, 0.14);
+  border-radius: 999px / 100%;
   box-shadow:
-    0 6px 0 -5px rgba(99, 121, 144, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.26);
-  opacity: 0.86;
+    0 -5px 0 -4px rgba(99, 121, 144, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  opacity: 0.54;
   pointer-events: none;
 }
 
@@ -5299,8 +5308,8 @@ html[data-home-mode="play"] .key[data-key="Backspace"] {
 }
 
 html[data-home-mode="play"] .key-backspace-glyph {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
   display: block;
   margin: 0 auto;
   opacity: 0.96;

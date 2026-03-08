@@ -3469,12 +3469,18 @@
       : 'Open Clue Sprint for detective clue practice');
     button.classList.add('hidden');
     if (focusButton) {
-      const shouldHide = isMissionLabStandaloneMode() || !areFocusSupportsUnlocked();
-      focusButton.classList.toggle('hidden', shouldHide);
+      const missionMode = isMissionLabStandaloneMode();
+      const unlocked = areFocusSupportsUnlocked();
+      focusButton.classList.toggle('hidden', missionMode);
+      focusButton.disabled = !unlocked;
+      focusButton.setAttribute('aria-disabled', unlocked ? 'false' : 'true');
+      focusButton.classList.toggle('is-locked', !unlocked);
       focusButton.setAttribute('aria-label', listening ? 'Open listening coach support' : 'Open clue support');
       setHoverNoteForElement(
         focusButton,
-        listening
+        !unlocked
+          ? 'Clue support unlocks after a miss.'
+          : listening
           ? 'Open listening coach support.'
           : 'Open Clue Sprint for detective clue practice.'
       );
@@ -3498,9 +3504,15 @@
     button.innerHTML = '<span class="quick-btn-label">Need Ideas</span><span class="quick-btn-emoji" aria-hidden="true">💡</span>';
     const normalized = normalizeStarterWordMode(mode);
     const missionMode = isMissionLabStandaloneMode();
-    const hidden = normalized === 'off' || missionMode || !areFocusSupportsUnlocked();
+    const hidden = normalized === 'off' || missionMode;
+    const unlocked = areFocusSupportsUnlocked();
     button.classList.add('hidden');
-    if (focusButton) focusButton.classList.toggle('hidden', hidden);
+    if (focusButton) {
+      focusButton.classList.toggle('hidden', hidden);
+      focusButton.disabled = hidden ? true : !unlocked;
+      focusButton.setAttribute('aria-disabled', hidden ? 'true' : (unlocked ? 'false' : 'true'));
+      focusButton.classList.toggle('is-locked', !hidden && !unlocked);
+    }
     if (hidden) return;
     const threshold = getStarterWordAutoThreshold(normalized);
     button.setAttribute('aria-label', 'Show try these words list');
@@ -3517,7 +3529,9 @@
       focusButton.setAttribute('aria-label', 'Show starter word ideas');
       setHoverNoteForElement(
         focusButton,
-        threshold > 0
+        !unlocked
+          ? 'Pattern ideas unlock after a miss.'
+          : threshold > 0
           ? `Starter words are available now and auto-open after ${threshold} guesses.`
           : 'Starter words are available on demand.'
       );

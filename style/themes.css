@@ -224,24 +224,23 @@
   --logo-quest:   #69be28;
   --logo-dot:     #69be28;
   --wq-play-header-bg:
-    linear-gradient(180deg, #214d76 0%, #0d3a62 18%, #002244 62%, #00172c 100%);
+    linear-gradient(180deg, #114a7a 0%, #0a3962 24%, #002f56 58%, #002244 100%);
   --wq-play-header-border: rgba(105, 190, 40, 0.48);
   --wq-play-header-shadow: 0 12px 26px rgba(0, 18, 36, 0.22);
-  --wq-play-header-art-width: 240px;
+  --wq-play-header-art-width: 212px;
   --wq-play-header-art-height: 54px;
   --wq-play-header-art-bg:
-    radial-gradient(120% 120% at 100% 0%, rgba(255,255,255,0.06) 0 34%, transparent 35%),
-    linear-gradient(128deg, transparent 0 40%, rgba(165, 172, 175, 0.18) 40% 47%, transparent 47% 100%),
-    linear-gradient(128deg, transparent 0 58%, rgba(105, 190, 40, 0.24) 58% 63%, transparent 63% 100%),
-    linear-gradient(128deg, transparent 0 74%, rgba(165, 172, 175, 0.14) 74% 79%, transparent 79% 100%);
-  --wq-play-header-art-opacity: 0.88;
+    linear-gradient(120deg, transparent 0 56%, rgba(165, 172, 175, 0.12) 56% 61%, transparent 61% 100%),
+    linear-gradient(120deg, transparent 0 68%, rgba(165, 172, 175, 0.10) 68% 73%, transparent 73% 100%),
+    linear-gradient(120deg, transparent 0 80%, rgba(105, 190, 40, 0.18) 80% 85%, transparent 85% 100%);
+  --wq-play-header-art-opacity: 0.72;
   --wq-play-focus-surface-bg: linear-gradient(180deg, rgba(247, 250, 252, 0.98) 0%, rgba(226, 233, 237, 0.98) 100%);
   --wq-play-focus-surface-border: rgba(0, 34, 68, 0.2);
-  --wq-play-focus-chip-bg: linear-gradient(180deg, rgba(247, 250, 252, 0.98) 0%, rgba(226, 233, 237, 0.98) 100%);
-  --wq-play-focus-chip-border: rgba(0, 34, 68, 0.2);
+  --wq-play-focus-chip-bg: linear-gradient(180deg, rgba(236, 240, 243, 0.98) 0%, rgba(207, 215, 221, 0.98) 100%);
+  --wq-play-focus-chip-border: rgba(53, 72, 90, 0.3);
   --wq-play-focus-chip-shadow:
-    inset 0 3px 0 rgba(105, 190, 40, 0.62),
-    inset 0 1px 0 rgba(255,255,255,0.72);
+    inset 0 1px 0 rgba(255,255,255,0.72),
+    0 4px 10px rgba(3, 17, 34, 0.1);
   --wq-play-board-bg:
     linear-gradient(180deg, rgba(242, 246, 248, 0.99) 0%, rgba(212, 220, 224, 1) 58%, rgba(194, 204, 210, 1) 100%);
   --wq-play-board-border: rgba(85, 105, 122, 0.88);
@@ -254,25 +253,21 @@
   --wq-play-board-pad-y: 12px;
   --wq-play-board-pad-x: 10px;
   --wq-play-board-before-bg:
-    linear-gradient(90deg, rgba(0,34,68,0.24) 0 3%, transparent 3% 7.5%, rgba(255,255,255,0.16) 7.5% 8.2%, transparent 8.2% 91.8%, rgba(255,255,255,0.16) 91.8% 92.5%, transparent 92.5% 97%, rgba(105,190,40,0.16) 97% 100%),
-    linear-gradient(180deg, rgba(255,255,255,0.16) 0 2%, transparent 2% 18%, rgba(255,255,255,0.11) 18% 19%, transparent 19% 50%, rgba(255,255,255,0.09) 50% 51%, transparent 51% 82%, rgba(255,255,255,0.07) 82% 83%, transparent 83% 100%),
-    radial-gradient(18px 10px at 8.5% 11%, rgba(255,255,255,0.28) 0 28%, rgba(0,34,68,0.28) 29% 44%, transparent 45%),
-    radial-gradient(18px 10px at 8.5% 26%, rgba(255,255,255,0.24) 0 26%, rgba(105,190,40,0.22) 27% 42%, transparent 43%),
-    radial-gradient(18px 10px at 8.5% 41%, rgba(255,255,255,0.28) 0 28%, rgba(0,34,68,0.26) 29% 44%, transparent 45%),
-    radial-gradient(18px 10px at 8.5% 56%, rgba(255,255,255,0.24) 0 26%, rgba(105,190,40,0.22) 27% 42%, transparent 43%),
-    radial-gradient(18px 10px at 8.5% 71%, rgba(255,255,255,0.28) 0 28%, rgba(0,34,68,0.26) 29% 44%, transparent 45%),
-    radial-gradient(18px 10px at 8.5% 86%, rgba(255,255,255,0.24) 0 26%, rgba(105,190,40,0.2) 27% 42%, transparent 43%),
-    radial-gradient(18px 10px at 91.5% 11%, rgba(255,255,255,0.28) 0 28%, rgba(0,34,68,0.28) 29% 44%, transparent 45%),
-    radial-gradient(18px 10px at 91.5% 26%, rgba(255,255,255,0.24) 0 26%, rgba(105,190,40,0.22) 27% 42%, transparent 43%),
-    radial-gradient(18px 10px at 91.5% 41%, rgba(255,255,255,0.28) 0 28%, rgba(0,34,68,0.26) 29% 44%, transparent 45%),
-    radial-gradient(18px 10px at 91.5% 56%, rgba(255,255,255,0.24) 0 26%, rgba(105,190,40,0.22) 27% 42%, transparent 43%),
-    radial-gradient(18px 10px at 91.5% 71%, rgba(255,255,255,0.28) 0 28%, rgba(0,34,68,0.26) 29% 44%, transparent 45%),
-    radial-gradient(18px 10px at 91.5% 86%, rgba(255,255,255,0.24) 0 26%, rgba(105,190,40,0.2) 27% 42%, transparent 43%);
-  --wq-play-board-before-opacity: 0.9;
+    linear-gradient(90deg, rgba(0,34,68,0.22) 0 3%, transparent 3% 7%, rgba(255,255,255,0.12) 7% 7.7%, transparent 7.7% 92.3%, rgba(255,255,255,0.12) 92.3% 93%, transparent 93% 97%, rgba(105,190,40,0.10) 97% 100%),
+    radial-gradient(18px 11px at 8.2% 14%, rgba(255,255,255,0.22) 0 24%, rgba(0,34,68,0.18) 25% 40%, transparent 41%),
+    radial-gradient(18px 11px at 8.2% 35%, rgba(255,255,255,0.2) 0 22%, rgba(105,190,40,0.12) 23% 35%, transparent 36%),
+    radial-gradient(18px 11px at 8.2% 56%, rgba(255,255,255,0.22) 0 24%, rgba(0,34,68,0.18) 25% 40%, transparent 41%),
+    radial-gradient(18px 11px at 8.2% 77%, rgba(255,255,255,0.2) 0 22%, rgba(105,190,40,0.12) 23% 35%, transparent 36%),
+    radial-gradient(18px 11px at 91.8% 14%, rgba(255,255,255,0.22) 0 24%, rgba(0,34,68,0.18) 25% 40%, transparent 41%),
+    radial-gradient(18px 11px at 91.8% 35%, rgba(255,255,255,0.2) 0 22%, rgba(105,190,40,0.12) 23% 35%, transparent 36%),
+    radial-gradient(18px 11px at 91.8% 56%, rgba(255,255,255,0.22) 0 24%, rgba(0,34,68,0.18) 25% 40%, transparent 41%),
+    radial-gradient(18px 11px at 91.8% 77%, rgba(255,255,255,0.2) 0 22%, rgba(105,190,40,0.12) 23% 35%, transparent 36%),
+    linear-gradient(180deg, rgba(255,255,255,0.12) 0 2%, transparent 2% 18%, rgba(255,255,255,0.08) 18% 19%, transparent 19% 50%, rgba(255,255,255,0.06) 50% 51%, transparent 51% 82%, rgba(255,255,255,0.05) 82% 83%, transparent 83% 100%);
+  --wq-play-board-before-opacity: 0.64;
   --wq-play-board-after-bg:
-    radial-gradient(220px 170px at 50% 0%, rgba(255,255,255,0.14) 0 22%, transparent 53%),
-    linear-gradient(180deg, rgba(0,34,68,0.08) 0 3%, transparent 3% 97%, rgba(0,34,68,0.08) 97% 100%);
-  --wq-play-board-after-opacity: 0.28;
+    radial-gradient(220px 170px at 50% 0%, rgba(255,255,255,0.10) 0 18%, transparent 48%),
+    linear-gradient(180deg, rgba(0,34,68,0.06) 0 3%, transparent 3% 97%, rgba(0,34,68,0.06) 97% 100%);
+  --wq-play-board-after-opacity: 0.18;
   --wq-play-tile-radius: 14px;
   --wq-play-tile-clip: polygon(0 0, 94% 0, 100% 8%, 100% 100%, 6% 100%, 0 92%);
   --wq-play-tile-bg:
@@ -303,10 +298,12 @@
     linear-gradient(180deg, rgba(243, 248, 250, 1) 0%, rgba(201, 211, 218, 0.99) 100%);
   --wq-play-vowel-bg:
     linear-gradient(180deg, rgba(252,255,255,1) 0%, rgba(228,243,245,0.99) 52%, rgba(196,218,223,0.99) 100%);
+  --wq-play-vowel-bg:
+    linear-gradient(180deg, rgba(250,253,255,1) 0%, rgba(230,239,245,0.99) 52%, rgba(205,220,231,0.99) 100%);
   --wq-play-vowel-color: #0d2439;
   --wq-play-control-bg:
-    linear-gradient(180deg, rgba(248,250,252,0.99) 0%, rgba(219,226,231,0.99) 100%);
-  --wq-play-control-border: rgba(105, 190, 40, 0.34);
+    linear-gradient(180deg, rgba(237,241,244,0.99) 0%, rgba(207,214,220,0.99) 100%);
+  --wq-play-control-border: rgba(75, 95, 110, 0.32);
   --wq-play-control-color: #10283f;
   --wq-play-next-btn-bg: linear-gradient(180deg, #8fdb49 0%, #69be28 100%);
   --wq-play-next-btn-border: #c6ecab;

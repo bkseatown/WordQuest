@@ -179,14 +179,7 @@ const WQUI = (() => {
         if (/^[a-z]$/i.test(key)) btn.dataset.letter = key.toLowerCase();
 
         if (key === '⌫') {
-          btn.innerHTML = `
-            <svg class="key-backspace-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <path d="M20 12H8.5"></path>
-              <path d="m12.5 8-4.5 4 4.5 4"></path>
-              <path d="m14.5 9.2 3 5.6"></path>
-              <path d="m17.5 9.2-3 5.6"></path>
-            </svg>
-          `;
+          btn.innerHTML = '<span class="key-backspace-glyph" aria-hidden="true">⌫</span>';
           btn.classList.add('wide');
         } else if (key === 'Enter') {
           btn.textContent = 'Enter';
