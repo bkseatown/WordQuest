@@ -18,17 +18,17 @@ const PAGES = [
   { slug: 'precision-play', url: 'precision-play.html' },
   { slug: 'reading-lab', url: 'reading-lab.html' },
   { slug: 'sentence-surgery', url: 'sentence-surgery.html' },
-  { slug: 'teacher-dashboard', url: 'teacher-dashboard.html' },
+  { slug: 'reports', url: 'reports.html' },
   { slug: 'admin-dashboard', url: 'admin-dashboard.html' }
 ];
 
 const OUT_DIR = path.resolve('.artifacts', 'ui-audit', 'screenshots');
-const NO_SCROLL_SLUGS = new Set(['index', 'play', 'word-quest', 'precision-play', 'teacher-dashboard']);
+const NO_SCROLL_SLUGS = new Set(['index', 'play', 'word-quest', 'precision-play', 'reports']);
 
 test.use({ serviceWorkers: 'block' });
 
 function expectedMarker(pageSlug) {
-  if (pageSlug === 'teacher-dashboard') return '#td-shell';
+  if (pageSlug === 'reports') return '#td-shell';
   if (pageSlug === 'reading-lab') return '#rl-root';
   if (pageSlug === 'sentence-surgery') return '.ss-container';
   if (pageSlug === 'word-quest') return 'body';
@@ -132,15 +132,15 @@ test.describe('UI screenshot audit', () => {
         });
         console.log(`[audit] baseURL=${normalizedBase} url=${page.url()} buildId=${buildId} page=${pageDef.slug} viewport=${viewport.width}x${viewport.height}`);
 
-        if (pageDef.slug === 'teacher-dashboard') {
+        if (pageDef.slug === 'reports') {
           const markers = await getDashboardMarkers(page);
-          expect(markers.hasTier1EvidenceTool, 'teacher-dashboard missing Tier 1 Evidence tool').toBe(true);
-          expect(markers.hasAccommodationsPanel, 'teacher-dashboard missing accommodations panel').toBe(true);
-          expect(markers.hasMeetingNotesTool, 'teacher-dashboard missing meeting notes tool').toBe(true);
-          expect(markers.hasReferralPacketExport, 'teacher-dashboard missing referral packet export').toBe(true);
-          expect(markers.hasShareControls, 'teacher-dashboard missing share controls').toBe(true);
-          expect(markers.hasCopySummary, 'teacher-dashboard missing copy summary button').toBe(true);
-          expect(markers.hasEvidenceChips, 'teacher-dashboard missing evidence chips').toBe(true);
+          expect(markers.hasTier1EvidenceTool, 'reports missing Tier 1 Evidence tool').toBe(true);
+          expect(markers.hasAccommodationsPanel, 'reports missing accommodations panel').toBe(true);
+          expect(markers.hasMeetingNotesTool, 'reports missing meeting workspace').toBe(true);
+          expect(markers.hasReferralPacketExport, 'reports missing referral packet export').toBe(true);
+          expect(markers.hasShareControls, 'reports missing share controls').toBe(true);
+          expect(markers.hasCopySummary, 'reports missing copy summary button').toBe(true);
+          expect(markers.hasEvidenceChips, 'reports missing evidence chips').toBe(true);
           testInfo.attach(`audit-dashboard-markers-${viewport.width}x${viewport.height}`, {
             body: Buffer.from(JSON.stringify(markers, null, 2)),
             contentType: 'application/json'

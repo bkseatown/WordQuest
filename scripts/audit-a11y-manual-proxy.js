@@ -107,7 +107,7 @@ async function run() {
   }
 
   try {
-    await page.goto(`${baseUrl}/teacher-dashboard.html?audit=1`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(`${baseUrl}/reports.html?audit=1&mode=daily`, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForSelector('#td-shell', { state: 'visible', timeout: 15000 });
 
     await page.evaluate(() => {
@@ -121,15 +121,15 @@ async function run() {
     if (tabStepsStart > 0) {
       await page.keyboard.press('Enter');
       await page.waitForTimeout(300);
-      const leftDashboard = !String(page.url()).includes('teacher-dashboard.html');
-      record('Keyboard Enter activates primary CTA', leftDashboard, leftDashboard ? 'navigated to activity surface' : 'no navigation');
+      const leftReports = !String(page.url()).includes('reports.html');
+      record('Keyboard Enter activates primary CTA', leftReports, leftReports ? 'navigated to activity surface' : 'no navigation');
     }
 
-    await page.goto(`${baseUrl}/teacher-dashboard.html?audit=1`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(`${baseUrl}/reports.html?audit=1&mode=daily`, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForSelector('#td-shell', { state: 'visible', timeout: 15000 });
 
     const tabStepsMeeting = await tabToElement(page, 'td-meeting-workspace');
-    record('Keyboard focus reaches Meeting & Reports', tabStepsMeeting > 0, tabStepsMeeting > 0 ? `tab steps=${tabStepsMeeting}` : 'not reachable by keyboard');
+    record('Keyboard focus reaches Meeting Prep', tabStepsMeeting > 0, tabStepsMeeting > 0 ? `tab steps=${tabStepsMeeting}` : 'not reachable by keyboard');
 
     if (tabStepsMeeting > 0) {
       await page.keyboard.press('Enter');

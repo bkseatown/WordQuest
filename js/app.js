@@ -3497,21 +3497,21 @@
     const gradeLabel = formatGradeBandInlineLabel(_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade);
     const themeLabel = getThemeDisplayLabel(document.documentElement.getAttribute('data-theme'));
     toggle.innerHTML = `
-      <span class="play-style-toggle-label">Quick Setup</span>
+      <span class="play-style-toggle-label">Game Mode</span>
       <span class="play-style-toggle-pills" aria-hidden="true">
         <span class="play-style-pill is-meta">${gradeLabel}</span>
         <span class="play-style-pill ${listening ? 'is-active' : ''}">${listening ? 'Listen & Spell' : 'Guess & Check'}</span>
         <span class="play-style-pill is-meta">${themeLabel}</span>
       </span>
     `;
-    toggle.setAttribute('aria-pressed', 'false');
+    toggle.setAttribute('aria-pressed', listening ? 'true' : 'false');
     toggle.classList.toggle('is-listening', listening);
     toggle.setAttribute('aria-label', listening
-      ? `Quick setup. Grade ${gradeLabel}, Listen and Spell mode, theme ${themeLabel}.`
-      : `Quick setup. Grade ${gradeLabel}, Guess and Check mode, theme ${themeLabel}.`);
+      ? `Game mode. Grade ${gradeLabel}, Listen and Spell mode, theme ${themeLabel}.`
+      : `Game mode. Grade ${gradeLabel}, Guess and Check mode, theme ${themeLabel}.`);
     setHoverNoteForElement(
       toggle,
-      'Open quick setup for grade band, mode, and theme.'
+      'Switch between Guess & Check and Listen & Spell.'
     );
   }
 
@@ -6517,28 +6517,21 @@
   function syncQuickPopoverPositions() {
     const themePopover = _el('theme-preview-strip');
     const musicPopover = _el('quick-music-strip');
-    const setupPopover = _el('quick-setup-strip');
     if (themePopover && !themePopover.classList.contains('hidden')) {
       positionQuickPopover(themePopover, _el('theme-dock-toggle-btn'));
     }
     if (musicPopover && !musicPopover.classList.contains('hidden')) {
       positionQuickPopover(musicPopover, _el('music-dock-toggle-btn'));
     }
-    if (setupPopover && !setupPopover.classList.contains('hidden')) {
-      positionQuickPopover(setupPopover, _el('play-style-toggle'));
-    }
   }
 
   function closeQuickPopover(kind = 'all') {
     const closeTheme = kind === 'all' || kind === 'theme';
     const closeMusic = kind === 'all' || kind === 'music';
-    const closeSetup = kind === 'all' || kind === 'setup';
     const themePopover = _el('theme-preview-strip');
     const musicPopover = _el('quick-music-strip');
-    const setupPopover = _el('quick-setup-strip');
     const themeBtn = _el('theme-dock-toggle-btn');
     const musicBtn = _el('music-dock-toggle-btn');
-    const setupBtn = _el('play-style-toggle');
     if (closeTheme && themePopover) {
       themePopover.classList.add('hidden');
       themePopover.setAttribute('aria-hidden', 'true');
@@ -6547,10 +6540,6 @@
       musicPopover.classList.add('hidden');
       musicPopover.setAttribute('aria-hidden', 'true');
     }
-    if (closeSetup && setupPopover) {
-      setupPopover.classList.add('hidden');
-      setupPopover.setAttribute('aria-hidden', 'true');
-    }
     if (closeTheme && themeBtn) {
       themeBtn.classList.remove('is-active');
       themeBtn.setAttribute('aria-expanded', 'false');
@@ -6558,10 +6547,6 @@
     if (closeMusic && musicBtn) {
       musicBtn.classList.remove('is-active');
       musicBtn.setAttribute('aria-expanded', 'false');
-    }
-    if (closeSetup && setupBtn) {
-      setupBtn.classList.remove('is-active');
-      setupBtn.setAttribute('aria-expanded', 'false');
     }
   }
 
@@ -6572,26 +6557,16 @@
     }
     const themePopover = _el('theme-preview-strip');
     const musicPopover = _el('quick-music-strip');
-    const setupPopover = _el('quick-setup-strip');
     const themeBtn = _el('theme-dock-toggle-btn');
     const musicBtn = _el('music-dock-toggle-btn');
-    const setupBtn = _el('play-style-toggle');
     if (kind === 'theme' && themePopover) {
       if (musicPopover) {
         musicPopover.classList.add('hidden');
         musicPopover.setAttribute('aria-hidden', 'true');
       }
-      if (setupPopover) {
-        setupPopover.classList.add('hidden');
-        setupPopover.setAttribute('aria-hidden', 'true');
-      }
       if (musicBtn) {
         musicBtn.classList.remove('is-active');
         musicBtn.setAttribute('aria-expanded', 'false');
-      }
-      if (setupBtn) {
-        setupBtn.classList.remove('is-active');
-        setupBtn.setAttribute('aria-expanded', 'false');
       }
       themePopover.classList.remove('hidden');
       themePopover.setAttribute('aria-hidden', 'false');
@@ -6607,17 +6582,9 @@
         themePopover.classList.add('hidden');
         themePopover.setAttribute('aria-hidden', 'true');
       }
-      if (setupPopover) {
-        setupPopover.classList.add('hidden');
-        setupPopover.setAttribute('aria-hidden', 'true');
-      }
       if (themeBtn) {
         themeBtn.classList.remove('is-active');
         themeBtn.setAttribute('aria-expanded', 'false');
-      }
-      if (setupBtn) {
-        setupBtn.classList.remove('is-active');
-        setupBtn.setAttribute('aria-expanded', 'false');
       }
       musicPopover.classList.remove('hidden');
       musicPopover.setAttribute('aria-hidden', 'false');
@@ -6628,39 +6595,12 @@
       }
       return;
     }
-    if (kind === 'setup' && setupPopover) {
-      if (themePopover) {
-        themePopover.classList.add('hidden');
-        themePopover.setAttribute('aria-hidden', 'true');
-      }
-      if (musicPopover) {
-        musicPopover.classList.add('hidden');
-        musicPopover.setAttribute('aria-hidden', 'true');
-      }
-      if (themeBtn) {
-        themeBtn.classList.remove('is-active');
-        themeBtn.setAttribute('aria-expanded', 'false');
-      }
-      if (musicBtn) {
-        musicBtn.classList.remove('is-active');
-        musicBtn.setAttribute('aria-expanded', 'false');
-      }
-      setupPopover.classList.remove('hidden');
-      setupPopover.setAttribute('aria-hidden', 'false');
-      if (setupBtn) {
-        setupBtn.classList.add('is-active');
-        setupBtn.setAttribute('aria-expanded', 'true');
-        positionQuickPopover(setupPopover, setupBtn);
-      }
-    }
   }
 
   function toggleQuickPopover(kind) {
     const popover = kind === 'music'
       ? _el('quick-music-strip')
-      : kind === 'setup'
-        ? _el('quick-setup-strip')
-        : _el('theme-preview-strip');
+      : _el('theme-preview-strip');
     if (!popover || popover.classList.contains('hidden')) {
       openQuickPopover(kind);
       return;
@@ -6672,8 +6612,7 @@
     const allowed = isQuickPopoverAllowed();
     const themeBtn = _el('theme-dock-toggle-btn');
     const musicBtn = _el('music-dock-toggle-btn');
-    const setupBtn = _el('play-style-toggle');
-    [themeBtn, musicBtn, setupBtn].forEach((btn) => {
+    [themeBtn, musicBtn].forEach((btn) => {
       if (!btn) return;
       btn.setAttribute('aria-disabled', allowed ? 'false' : 'true');
     });
@@ -7649,19 +7588,15 @@
     }
     const themeDockBtn = _el('theme-dock-toggle-btn');
     const musicDockBtn = _el('music-dock-toggle-btn');
-    const setupBtn = _el('play-style-toggle');
     const playToolsBtn = _el('play-tools-btn');
     const playToolsDrawer = _el('play-tools-drawer');
     const themePopover = _el('theme-preview-strip');
     const musicPopover = _el('quick-music-strip');
-    const setupPopover = _el('quick-setup-strip');
     const clickInsideQuickPopover =
       themePopover?.contains(e.target) ||
       musicPopover?.contains(e.target) ||
-      setupPopover?.contains(e.target) ||
       themeDockBtn?.contains(e.target) ||
-      musicDockBtn?.contains(e.target) ||
-      setupBtn?.contains(e.target);
+      musicDockBtn?.contains(e.target);
     if (!clickInsideQuickPopover) {
       closeQuickPopover('all');
     }
@@ -8158,35 +8093,12 @@
     void WQAudio.playSentence(current);
   });
   _el('play-style-toggle')?.addEventListener('click', () => {
-    syncQuickSetupControls();
-    toggleQuickPopover('setup');
-  });
-  _el('quick-setup-done')?.addEventListener('click', () => {
-    closeQuickPopover('setup');
-  });
-  _el('quick-setup-grade')?.addEventListener('change', (event) => {
-    const gradeSelect = _el('s-grade');
-    const next = String(event.target?.value || DEFAULT_PREFS.grade).trim() || DEFAULT_PREFS.grade;
-    if (!gradeSelect || gradeSelect.value === next) return;
-    gradeSelect.value = next;
-    gradeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-  });
-  _el('quick-setup-mode')?.addEventListener('change', (event) => {
     const modeSelect = _el('s-play-style');
-    const next = normalizePlayStyle(event.target?.value || DEFAULT_PREFS.playStyle);
-    if (!modeSelect || modeSelect.value === next) return;
+    if (!(modeSelect instanceof HTMLSelectElement)) return;
+    const current = normalizePlayStyle(modeSelect.value || prefs.playStyle || DEFAULT_PREFS.playStyle);
+    const next = current === 'listening' ? 'detective' : 'listening';
     modeSelect.value = next;
     modeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-    WQUI.showToast(next === 'listening'
-      ? 'Spelling Mode on: spell what you hear.'
-      : 'Detective Mode on.');
-  });
-  _el('quick-setup-theme')?.addEventListener('change', (event) => {
-    const themeSelect = _el('s-theme');
-    const next = normalizeTheme(event.target?.value, getThemeFallback());
-    if (!themeSelect || themeSelect.value === next) return;
-    themeSelect.value = next;
-    themeSelect.dispatchEvent(new Event('change', { bubbles: true }));
   });
   _el('s-dupe')?.addEventListener('change',    e => setPref('dupe',     e.target.value));
   _el('s-confetti')?.addEventListener('change',e => {
@@ -10396,21 +10308,7 @@
   }
 
   function syncQuickSetupControls() {
-    const quickGrade = _el('quick-setup-grade');
-    const quickMode = _el('quick-setup-mode');
-    const quickTheme = _el('quick-setup-theme');
-    const gradeValue = String(_el('s-grade')?.value || prefs.grade || DEFAULT_PREFS.grade).trim() || DEFAULT_PREFS.grade;
-    const modeValue = normalizePlayStyle(_el('s-play-style')?.value || prefs.playStyle || DEFAULT_PREFS.playStyle);
-    const themeValue = normalizeTheme(document.documentElement.getAttribute('data-theme'), getThemeFallback());
-    if (quickGrade && quickGrade.value !== gradeValue) quickGrade.value = gradeValue;
-    if (quickMode && quickMode.value !== modeValue) quickMode.value = modeValue;
-    if (quickTheme) {
-      const sourceTheme = _el('s-theme');
-      if (sourceTheme && quickTheme.options.length !== sourceTheme.options.length) {
-        quickTheme.innerHTML = sourceTheme.innerHTML;
-      }
-      if (quickTheme.value !== themeValue) quickTheme.value = themeValue;
-    }
+    syncPlayStyleToggleUI();
   }
 
   function escapeHtml(value) {

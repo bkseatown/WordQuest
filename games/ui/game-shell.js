@@ -202,7 +202,7 @@
       },
       "word-typing": {
         id: "word-typing",
-        title: "Word Keys",
+        title: "Typing Quest",
         subtitle: "Type the lesson word, lock the spelling pattern, and build keyboard confidence through real literacy practice.",
         tags: ["Typing + Literacy", "Orthographic Mapping", "Home Row to Full Keyboard"],
         modeLabel: "Type",

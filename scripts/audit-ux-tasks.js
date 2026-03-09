@@ -104,11 +104,6 @@ async function waitForDestinationReady(page, urlPattern, readySelector, options 
   }
 }
 
-async function gotoDashboard(page, baseUrl) {
-  await page.goto(`${baseUrl}/teacher-dashboard.html?audit=1`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  await waitForVisible(page, '#td-shell');
-}
-
 async function gotoReportsSurface(page, baseUrl) {
   await page.goto(`${baseUrl}/reports.html?audit=1&mode=daily`, { waitUntil: 'domcontentloaded', timeout: 30000 });
   await waitForVisible(page, '#td-shell');
@@ -302,12 +297,12 @@ async function run() {
 
   try {
     await runTask(results, 'selectStudent', 'Select student from caseload', async () => {
-      await gotoDashboard(page, baseUrl);
+      await gotoReportsSurface(page, baseUrl);
       await ensureStudentSelected(page);
     });
 
     await runTask(results, 'startRecommendedSession', 'Launch Start Recommended Session', async () => {
-      await gotoDashboard(page, baseUrl);
+      await gotoReportsSurface(page, baseUrl);
       await ensureStudentSelected(page);
       const before = page.url();
       await Promise.all([
@@ -321,13 +316,13 @@ async function run() {
     });
 
     await runTask(results, 'openMeetingWorkspace', 'Open Meeting Workspace', async () => {
-      await gotoDashboard(page, baseUrl);
+      await gotoReportsSurface(page, baseUrl);
       await ensureStudentSelected(page);
       await openMeetingWorkspace(page);
     });
 
     await runTask(results, 'switchMeetingTabs', 'Switch Meeting Workspace tabs', async () => {
-      await gotoDashboard(page, baseUrl);
+      await gotoReportsSurface(page, baseUrl);
       await ensureStudentSelected(page);
       await openMeetingWorkspace(page);
       const tabs = [

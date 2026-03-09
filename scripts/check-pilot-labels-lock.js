@@ -7,20 +7,19 @@ const path = require('path');
 const ROOT = process.cwd();
 
 const LOCKED_LABELS = {
-  'teacher-dashboard.html': [
-    'Start Recommended Session',
-    'View Details',
-    'Meeting &amp; Reports',
-    'Advanced',
-    'Reports',
-    'Classroom Mode',
-    'Generate Pilot Evaluation Report'
+  'reports.html': [
+    'Reports &amp; Prep',
+    'Back to Hub',
+    'Weekly Insight',
+    'Meeting Prep',
+    'Open Student Profile',
+    'Generate Weekly Draft'
   ],
   'word-quest.html': [
-    'Choose grade band',
-    'Choose grade band (required)',
+    'Grade Band',
+    'Active Grade Band locked:',
     'Start Quest',
-    'show this welcome card again'
+    'Don’t show this welcome card again'
   ],
   'literacy.html': [
     'Literacy Domain',

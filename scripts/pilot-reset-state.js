@@ -70,7 +70,7 @@ async function run() {
   const page = await context.newPage();
 
   try {
-    await page.goto(`${baseUrl}/teacher-dashboard.html`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(`${baseUrl}/reports.html?mode=daily`, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.evaluate(async ({ runtimeKey, firstRunKey }) => {
       localStorage.clear();
       sessionStorage.clear();
@@ -101,7 +101,7 @@ async function run() {
       }
     }, { runtimeKey: DASHBOARD_RUNTIME_KEY, firstRunKey: FIRST_RUN_SETUP_KEY });
 
-    await page.goto(`${baseUrl}/teacher-dashboard.html?audit=1`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(`${baseUrl}/reports.html?audit=1&mode=daily`, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForSelector('#td-shell', { state: 'visible', timeout: 15000 });
 
     const seeded = await page.evaluate(() => {

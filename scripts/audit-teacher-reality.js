@@ -71,8 +71,8 @@ async function waitVisible(page, selector, timeout = 15000) {
   await page.waitForSelector(selector, { state: 'visible', timeout });
 }
 
-async function gotoDashboard(page, baseUrl) {
-  await page.goto(`${baseUrl}/teacher-dashboard.html?audit=1`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+async function gotoReportsSurface(page, baseUrl) {
+  await page.goto(`${baseUrl}/reports.html?audit=1&mode=daily`, { waitUntil: 'domcontentloaded', timeout: 30000 });
   await waitVisible(page, '#td-shell');
 }
 
@@ -150,23 +150,23 @@ async function run() {
   const rows = [];
 
   try {
-    await timedStep('LS 1:1', 'Open dashboard', () => gotoDashboard(page, baseUrl), rows);
+    await timedStep('LS 1:1', 'Open reports prep surface', () => gotoReportsSurface(page, baseUrl), rows);
     await timedStep('LS 1:1', 'Select focus student', () => ensureStudentSelected(page), rows);
     await timedStep('LS 1:1', 'Start recommended session', async () => {
       await page.click('#td-focus-start-btn');
-      await page.waitForURL((url) => !String(url).includes('teacher-dashboard.html'), { timeout: 10000 });
+      await page.waitForURL((url) => !String(url).includes('reports.html'), { timeout: 10000 });
     }, rows);
 
-    await timedStep('Classroom Quick Launch', 'Return to dashboard', () => gotoDashboard(page, baseUrl), rows);
+    await timedStep('Classroom Quick Launch', 'Return to reports prep', () => gotoReportsSurface(page, baseUrl), rows);
     await timedStep('Classroom Quick Launch', 'Select student', () => ensureStudentSelected(page), rows);
     await timedStep('Classroom Quick Launch', 'Switch to classroom mode', () => page.click('#td-mode-classroom'), rows);
     await timedStep('Classroom Quick Launch', 'Launch classroom action', async () => {
       await waitVisible(page, '#td-focus-start-btn');
       await page.click('#td-focus-start-btn');
-      await page.waitForURL((url) => !String(url).includes('teacher-dashboard.html'), { timeout: 10000 });
+      await page.waitForURL((url) => !String(url).includes('reports.html'), { timeout: 10000 });
     }, rows);
 
-    await timedStep('Meeting Prep', 'Return to dashboard', () => gotoDashboard(page, baseUrl), rows);
+    await timedStep('Meeting Prep', 'Return to reports prep', () => gotoReportsSurface(page, baseUrl), rows);
     await timedStep('Meeting Prep', 'Select student', () => ensureStudentSelected(page), rows);
     await timedStep('Meeting Prep', 'Switch to daily mode', () => page.click('#td-mode-daily'), rows);
     await timedStep('Meeting Prep', 'Open meeting workspace', async () => {

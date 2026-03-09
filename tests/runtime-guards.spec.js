@@ -21,7 +21,7 @@ const RUNTIME_ROUTES = [
   { url: './?play=1', marker: 'body' },
   { url: 'word-quest.html?play=1#wordquest', marker: '.tile' },
   { url: 'precision-play.html', marker: '#pp-shell' },
-  { url: 'teacher-dashboard.html', marker: '#td-shell' },
+  { url: 'reports.html?mode=daily', marker: '#td-shell' },
   { url: 'reading-lab.html', marker: '#rl-root' },
   { url: 'sentence-surgery.html', marker: '.ss-container' }
 ];
@@ -78,9 +78,9 @@ test.describe('Runtime guardrails', () => {
     await context.close();
   });
 
-  test('teacher dashboard enforces single-modal visibility', async ({ page, baseURL }) => {
+  test('reports prep enforces single-modal visibility', async ({ page, baseURL }) => {
     const normalizedBase = String(baseURL || '').endsWith('/') ? String(baseURL) : `${baseURL}/`;
-    const url = new URL('teacher-dashboard.html?audit=1', normalizedBase).toString();
+    const url = new URL('reports.html?audit=1&mode=daily', normalizedBase).toString();
     await page.goto(url, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#td-shell')).toBeVisible();
 

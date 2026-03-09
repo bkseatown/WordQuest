@@ -25,10 +25,10 @@ const ROUTES = [
     interactionSelectors: ['.cs-hub-head h1', '.cs-hub-section h2']
   },
   {
-    slug: 'teacher-dashboard',
-    url: 'teacher-dashboard.html?audit=1',
+    slug: 'reports',
+    url: 'reports.html?audit=1&mode=daily',
     marker: '#td-shell',
-    interactionSelectors: ['#td-focus-start-btn', '#td-mode-daily', 'button']
+    interactionSelectors: ['#td-focus-start-btn', '#td-meeting-workspace', 'button']
   },
   {
     slug: 'word-quest',

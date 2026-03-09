@@ -16,7 +16,7 @@ const EXPECTED_BUILD = getArg('expected-build', process.env.EXPECTED_BUILD || ''
 const TIMEOUT_SEC = Number(getArg('timeout-sec', '420')) || 420;
 const INTERVAL_SEC = Number(getArg('interval-sec', '15')) || 15;
 
-const PAGE_PATHS = ['/', '/word-quest.html', '/teacher-dashboard.html', '/reading-lab.html', '/sentence-surgery.html'];
+const PAGE_PATHS = ['/', '/word-quest.html', '/reports.html', '/reading-lab.html', '/sentence-surgery.html'];
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -105,4 +105,3 @@ async function main() {
 }
 
 main();
-

@@ -8,7 +8,8 @@ const root = process.cwd();
 const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const hubHtml = fs.readFileSync(path.join(root, 'teacher-hub-v2.html'), 'utf8');
 const hubSource = fs.readFileSync(path.join(root, 'teacher-hub-v2.js'), 'utf8');
-const dashboardHtml = fs.readFileSync(path.join(root, 'teacher-dashboard.html'), 'utf8');
+const redirectHtml = fs.readFileSync(path.join(root, 'teacher-dashboard.html'), 'utf8');
+const reportsHtml = fs.readFileSync(path.join(root, 'reports.html'), 'utf8');
 const runtimeState = fs.readFileSync(path.join(root, 'js/teacher-runtime-state.js'), 'utf8');
 const searchIndex = fs.readFileSync(path.join(root, 'js/search/teacher-search-index.js'), 'utf8');
 const searchService = fs.readFileSync(path.join(root, 'js/search/teacher-search-service.js'), 'utf8');
@@ -29,10 +30,12 @@ requireText(hubHtml, /js\/search\/teacher-search-index\.js/, 'Teacher search ind
 requireText(hubHtml, /js\/search\/teacher-search-service\.js/, 'Teacher search service is not loaded by teacher-hub-v2.html.');
 requireText(hubHtml, /js\/teacher\/teacher-selectors\.js/, 'Shared teacher selectors are not loaded by teacher-hub-v2.html.');
 requireText(hubHtml, /js\/teacher\/teacher-intelligence\.js/, 'Shared teacher intelligence service is not loaded by teacher-hub-v2.html.');
-requireText(dashboardHtml, /Teacher Workspace/, 'Teacher Workspace labeling is missing from teacher-dashboard.html.');
-requireText(dashboardHtml, /href="\.\/teacher-hub-v2\.html"/, 'Teacher Workspace must retain a route back to teacher-hub-v2.html.');
-requireText(dashboardHtml, /js\/teacher\/teacher-selectors\.js/, 'Shared teacher selectors are not loaded by teacher-dashboard.html.');
-requireText(dashboardHtml, /js\/teacher\/teacher-intelligence\.js/, 'Shared teacher intelligence service is not loaded by teacher-dashboard.html.');
+requireText(redirectHtml, /Opening Reports &amp; Prep/, 'teacher-dashboard.html must remain a redirect shim.');
+requireText(redirectHtml, /\.\/reports\.html/, 'teacher-dashboard.html must redirect to reports.html.');
+requireText(reportsHtml, /id="td-shell"/, 'Reports shell is missing from reports.html.');
+requireText(reportsHtml, /href="\.\/teacher-hub-v2\.html"/, 'Reports & Prep must retain a route back to teacher-hub-v2.html.');
+requireText(reportsHtml, /js\/teacher\/teacher-selectors\.js/, 'Shared teacher selectors are not loaded by reports.html.');
+requireText(reportsHtml, /js\/teacher\/teacher-intelligence\.js/, 'Shared teacher intelligence service is not loaded by reports.html.');
 
 requireText(
   hubSource,

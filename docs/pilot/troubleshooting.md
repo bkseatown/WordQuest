@@ -1,15 +1,15 @@
 # Pilot Troubleshooting
 
-## Dashboard looks stale
+## Reports or Hub looks stale
 - Hard refresh browser.
-- Reopen `teacher-dashboard.html`.
+- Reopen `teacher-hub-v2.html` or `reports.html`.
 
 ## Student list looks empty
 - Run `npm run pilot:reset`.
-- Reload dashboard; demo caseload should repopulate.
+- Reload the Hub or Reports; demo caseload should repopulate.
 
 ## Meeting workspace does not open
-- Click **Meeting & Reports** (top bar).
+- Click **Meeting Prep** on `reports.html`.
 - If blocked, refresh and retry.
 
 ## Visual or interaction oddities

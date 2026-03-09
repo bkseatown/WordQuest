@@ -6,7 +6,7 @@ const path = require("path");
 const { chromium } = require("playwright");
 
 const BASE_URL = "http://127.0.0.1:4174";
-const ROUTES = ["/", "/reading-lab.html", "/sentence-surgery.html", "/teacher-dashboard.html"];
+const ROUTES = ["/", "/reading-lab.html", "/sentence-surgery.html", "/reports.html"];
 const VIEWPORTS = [
   { width: 1440, height: 900 },
   { width: 1024, height: 768 },

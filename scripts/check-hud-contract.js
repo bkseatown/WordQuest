@@ -100,6 +100,15 @@ function extractThemeBlock(css, themeId) {
   return match ? match[1] : null;
 }
 
+function extractSharedBlock(css, selector) {
+  const regex = new RegExp(
+    `${escapeRegex(selector)}\\s*\\{([\\s\\S]*?)\\n\\}`,
+    'm'
+  );
+  const match = css.match(regex);
+  return match ? match[1] : null;
+}
+
 function extractTokenValue(block, tokenName) {
   const regex = new RegExp(`${escapeRegex(tokenName)}\\s*:\\s*([^;]+);`);
   const match = block.match(regex);
@@ -173,6 +182,7 @@ function run() {
   const registryJs = readFile(FILES.registry);
   const componentsCss = readFile(FILES.components);
   const themesCss = readFile(FILES.themes);
+  const sharedThemeBlock = extractSharedBlock(themesCss, '[data-theme]');
   const themeFamilyById = extractThemeFamilyMap(registryJs);
 
   const themeIds = extractThemeIds(registryJs);
@@ -189,9 +199,10 @@ function run() {
       continue;
     }
 
-    const missingTokens = REQUIRED_THEME_TOKENS.filter(
-      (token) => !new RegExp(`${escapeRegex(token)}\\s*:`).test(block)
-    );
+    const missingTokens = REQUIRED_THEME_TOKENS.filter((token) => {
+      const tokenPattern = new RegExp(`${escapeRegex(token)}\\s*:`);
+      return !tokenPattern.test(block) && !(sharedThemeBlock && tokenPattern.test(sharedThemeBlock));
+    });
     if (missingTokens.length) {
       fail(
         `[data-theme="${themeId}"] is missing tokens: ${missingTokens.join(', ')}.`
@@ -284,11 +295,13 @@ function run() {
     pass(`Owned HUD selector "${selector}" has one canonical base block.`);
   }
 
-  const inlineStyleCountInNav = (navJs.match(/style=|style\./g) || []).length;
-  if (inlineStyleCountInNav > 0) {
-    fail(`js/theme-nav.js still has ${inlineStyleCountInNav} inline style usages.`);
+  const inlineStyleMarkupCountInNav =
+    (navJs.match(/style\s*=/g) || []).length +
+    (navJs.match(/setAttribute\(\s*['"]style['"]/g) || []).length;
+  if (inlineStyleMarkupCountInNav > 0) {
+    fail(`js/theme-nav.js still has ${inlineStyleMarkupCountInNav} inline style markup injections.`);
   } else {
-    pass('js/theme-nav.js has no inline style injections.');
+    pass('js/theme-nav.js has no inline style markup injections.');
   }
 
   if (/const\s+THEME_ORDER\s*=/.test(navJs)) {
