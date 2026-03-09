@@ -31,13 +31,24 @@
   --radius-key:      16px;
   --radius-plate:    20px;
   --radius-panel:    16px;
-  --wq-play-header-bg:
-    linear-gradient(180deg, rgba(255,255,255,0.16) 0 3%, transparent 3% 100%),
+  --wq-play-header-top-bg:
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--brand-dk) 92%, #05070b 8%) 0%,
+      color-mix(in oklab, var(--brand) 74%, var(--brand-dk) 26%) 100%
+    );
+  --wq-play-header-bottom-bg:
     linear-gradient(
       180deg,
-      color-mix(in oklab, var(--header-bg) 92%, #ffffff 8%) 0 50%,
-      color-mix(in oklab, var(--panel-bg) 88%, #c8d1db 12%) 50% 100%
+      color-mix(in oklab, var(--panel-bg) 94%, #ffffff 6%) 0%,
+      color-mix(in oklab, var(--panel-bg) 80%, #d7e0ea 20%) 100%
     );
+  --wq-play-header-bg:
+    linear-gradient(180deg, rgba(255,255,255,0.18) 0 3%, transparent 3% 100%) 0 0 / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.16) 100%) top / 100% 50% no-repeat,
+    linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 55%) bottom / 100% 50% no-repeat,
+    var(--wq-play-header-top-bg) top / 100% 50% no-repeat,
+    var(--wq-play-header-bottom-bg) bottom / 100% 50% no-repeat;
   --wq-play-header-border: color-mix(in oklab, var(--header-border) 86%, transparent);
   --wq-play-header-shadow: 0 10px 20px rgba(8, 18, 30, 0.14);
   --wq-play-header-art-width: 0px;
@@ -46,6 +57,7 @@
   --wq-play-header-art-opacity: 0;
   --wq-play-focus-surface-bg: linear-gradient(180deg, #f5f9fd 0%, #e8eff7 100%);
   --wq-play-focus-surface-border: color-mix(in oklab, var(--header-border) 56%, #ffffff 44%);
+  --wq-play-focus-surface-strong-border: color-mix(in oklab, var(--wq-play-control-color, #10283f) 68%, #101318 32%);
   --wq-play-focus-chip-bg: color-mix(in oklab, var(--panel-bg) 62%, #ffffff 38%);
   --wq-play-focus-chip-border: color-mix(in oklab, var(--panel-border) 78%, #ffffff 22%);
   --wq-play-focus-chip-shadow: none;
@@ -105,6 +117,13 @@
   --wq-play-control-bg: linear-gradient(180deg, rgba(244,248,251,0.98) 0%, rgba(214,221,226,0.98) 100%);
   --wq-play-control-border: rgba(0, 34, 68, 0.18);
   --wq-play-control-color: #10283f;
+  --wq-play-help-bg: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--vowel-accent) 20%, #f9fcff 80%) 0%,
+    color-mix(in oklab, var(--vowel-accent) 34%, #e5edf4 66%) 100%
+  );
+  --wq-play-help-border: color-mix(in oklab, var(--vowel-accent) 58%, var(--panel-border) 42%);
+  --wq-play-help-color: color-mix(in oklab, var(--text) 74%, var(--vowel-accent) 26%);
   --wq-play-menu-bg:
     linear-gradient(180deg, rgba(255,255,255,0.1) 0 3%, transparent 3% 100%),
     linear-gradient(
@@ -153,6 +172,7 @@
   --panel-bg:     #d9e7df;
   --panel-border: rgba(67,110,90,0.26);
   --panel-shadow: 0 14px 34px rgba(20,28,24,0.20);
+  --wq-play-header-top-bg: var(--header-bg);
   --theme-text:         #1f3228;
   --theme-text-muted:   #42584d;
   --modal-bg:     #e4efe8;
@@ -351,7 +371,7 @@
    Medium purple page — not dark. Gold keys dominate = UW game day feel */
 [data-theme="huskies"] {
   --page-bg:      #5b4290;
-  --page-bg2:     #6a52a1;
+  --page-bg2:     #5b4290;
   --plate-bg:     rgba(27, 26, 31, 0.44);
   --plate-border: rgba(183, 165, 122, 0.42);
   --tile-face:    linear-gradient(160deg, #f7f1e5 0%, #eadfc9 100%);
@@ -369,6 +389,7 @@
   --brand-text:   #f8f2ff;
   --accent:       #b7a57a;
   --header-bg:    #4b2e83;
+  --wq-play-header-top-bg: linear-gradient(90deg, #2f1858 0%, #4b2e83 100%);
   --header-border: rgba(183, 165, 122, 0.74);
   --focusbar-bg:  rgba(245, 238, 224, 0.94);
   --panel-bg:     #f1ebdc;
@@ -384,10 +405,9 @@
   --logo-quest:   #d7b56d;
   --logo-dot:     #d7b56d;
   --theme-backdrop:
-    radial-gradient(circle at 18% 10%, rgba(183,165,122,0.16), transparent 24%),
-    linear-gradient(90deg, rgba(24,16,38,0.04) 0 7%, transparent 7% 93%, rgba(24,16,38,0.04) 93% 100%),
-    linear-gradient(135deg, rgba(183,165,122,0.06) 0 12%, transparent 12% 42%, rgba(255,255,255,0.10) 42% 52%, transparent 52% 100%),
-    linear-gradient(180deg, #6d56a5, #6d56a5);
+    radial-gradient(circle at 18% 10%, rgba(183,165,122,0.12), transparent 22%),
+    linear-gradient(135deg, rgba(255,255,255,0.08) 0 14%, transparent 14% 44%, rgba(255,255,255,0.06) 44% 54%, transparent 54% 100%),
+    linear-gradient(180deg, #5b4290, #5b4290);
   --wq-play-vowel-shadow: #3e9aa8;
 }
 
@@ -494,6 +514,7 @@
   --accent:       #f7b851;
   --header-bg:    linear-gradient(90deg, #f06a1d 0%, #ef7d31 100%);
   --header-border: rgba(120,44,14,0.30);
+  --wq-play-header-top-bg: var(--header-bg);
   --wq-play-vowel-shadow: #4aa6b8;
   --focusbar-bg:  rgba(252,234,214,0.90);
   --panel-bg:     #fffaf5;
@@ -533,6 +554,7 @@
   --accent:       #f5c94a;
   --header-bg:    linear-gradient(90deg, #1a4db3 0%, #1f46a1 56%, #b91c2f 100%);
   --header-border: rgba(245,199,69,0.46);
+  --wq-play-header-top-bg: var(--header-bg);
   --focusbar-bg:  rgba(220,232,255,0.90);
   --panel-bg:     #d9e5f8;
   --panel-border: rgba(16,38,102,0.16);
@@ -701,6 +723,7 @@
   --accent:       #2f93d2;
   --header-bg:    linear-gradient(90deg, #be120a 50%, #001276 50%);
   --header-border: rgba(177,20,102,0.30);
+  --wq-play-header-top-bg: var(--header-bg);
   --focusbar-bg:  rgba(244,238,246,0.92);
   --panel-bg:     #f5f1f7;
   --panel-border: rgba(145,112,168,0.24);
@@ -784,6 +807,7 @@
   --accent:       #caa34f;
   --header-bg:    linear-gradient(90deg, #7b2432 0%, #5b3f2c 52%, #273a57 100%);
   --header-border: rgba(202,163,79,0.54);
+  --wq-play-header-top-bg: var(--header-bg);
   --focusbar-bg:  rgba(243, 233, 209, 0.94);
   --panel-bg:     #f0e4c9;
   --panel-border: rgba(104, 74, 42, 0.26);
@@ -824,6 +848,7 @@
   --accent:       #ff8f4a;
   --header-bg:    linear-gradient(90deg, #0c6f9a 0%, #0fa5c1 100%);
   --header-border: rgba(220,245,255,0.40);
+  --wq-play-header-top-bg: var(--header-bg);
   --focusbar-bg:  rgba(187,224,239,0.86);
   --panel-bg:     #f0f9fd;
   --panel-border: rgba(16,92,126,0.18);
@@ -865,6 +890,7 @@
   --accent:       #8bcf6d;
   --header-bg:    linear-gradient(180deg, #5d8e35 0%, #4a7429 100%);
   --header-border: rgba(139,207,109,0.36);
+  --wq-play-header-top-bg: var(--header-bg);
   --focusbar-bg:  rgba(26,39,20,0.72);
   --panel-bg:     #263320;
   --panel-border: rgba(126,186,76,0.28);
@@ -904,6 +930,7 @@
   --accent:       #2563eb;
   --header-bg:    linear-gradient(90deg, #dc2626 58%, #1d4ed8 58%);
   --header-border: rgba(255,255,255,0.32);
+  --wq-play-header-top-bg: var(--header-bg);
   --focusbar-bg:  rgba(255,244,220,0.92);
   --panel-bg:     #f6e8cd;
   --panel-border: rgba(194,78,32,0.20);
@@ -946,6 +973,7 @@
   --accent:       #c59c52;
   --header-bg:    linear-gradient(90deg, #47684f 0%, #3a5a46 54%, #2f5f69 100%);
   --header-border: rgba(197,156,82,0.50);
+  --wq-play-header-top-bg: var(--header-bg);
   --focusbar-bg:  rgba(238,229,207,0.94);
   --panel-bg:     #ece2c8;
   --panel-border: rgba(80,101,74,0.26);
@@ -1026,6 +1054,7 @@
   --accent:       #ff8a1f;
   --header-bg:    linear-gradient(90deg, #2f4d69 0%, #2584c8 70%);
   --header-border: rgba(255,122,27,0.34);
+  --wq-play-header-top-bg: var(--header-bg);
   --focusbar-bg:  rgba(229,237,246,0.90);
   --panel-bg:     #dde8f2;
   --panel-border: rgba(39,88,136,0.20);
@@ -1198,10 +1227,9 @@
   --text: #231c31;
   --text-muted: #5d536c;
   --theme-backdrop:
-    radial-gradient(circle at 18% 10%, rgba(183,165,122,0.16), transparent 24%),
-    linear-gradient(90deg, rgba(0,0,0,0.16) 0 7%, transparent 7% 93%, rgba(0,0,0,0.16) 93% 100%),
-    linear-gradient(135deg, rgba(183,165,122,0.10) 0 12%, transparent 12% 42%, rgba(255,255,255,0.06) 42% 52%, transparent 52% 100%),
-    linear-gradient(180deg, #4b2e83, #1f1d22);
+    radial-gradient(circle at 18% 10%, rgba(183,165,122,0.12), transparent 22%),
+    linear-gradient(135deg, rgba(255,255,255,0.08) 0 14%, transparent 14% 44%, rgba(255,255,255,0.06) 44% 54%, transparent 54% 100%),
+    linear-gradient(180deg, #5b4290, #5b4290);
 }
 
 .wordquest-root.theme-sunset {

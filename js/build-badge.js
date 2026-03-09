@@ -28,8 +28,8 @@
     var style = document.createElement("style");
     style.id = "cs-build-badge-style";
     style.textContent = [
-      "#" + BADGE_ID + "{position:fixed;left:10px;bottom:10px;z-index:100;border:none;background:rgba(0,0,0,.08);color:rgba(0,0,0,.3);border-radius:999px;padding:3px 8px;font:500 9px/1.2 var(--font-sans,system-ui,-apple-system,sans-serif);letter-spacing:.01em;cursor:pointer;box-shadow:none;opacity:.5;transition:opacity .2s}",
-      "#" + BADGE_ID + ":hover{background:rgba(0,0,0,.15);color:rgba(0,0,0,.6);opacity:1}",
+      "#" + BADGE_ID + "{position:fixed;left:10px;bottom:10px;z-index:100;border:1px solid rgba(15,23,42,.28);background:rgba(248,250,252,.94);color:#334155;border-radius:999px;padding:4px 8px;font:600 10px/1.2 var(--font-sans,system-ui,-apple-system,sans-serif);letter-spacing:.01em;cursor:pointer;box-shadow:0 2px 8px rgba(15,23,42,.12);opacity:.92;transition:background-color .2s,color .2s,opacity .2s,box-shadow .2s}",
+      "#" + BADGE_ID + ":hover{background:rgba(241,245,249,.98);color:#0f172a;opacity:1;box-shadow:0 4px 12px rgba(15,23,42,.16)}",
       "#" + BADGE_ID + " .dot{display:none}",
       "#" + BADGE_ID + "[data-stale='1'] .dot{background:#f3c96d}",
       "#" + POPOVER_ID + "{position:fixed;left:10px;bottom:44px;z-index:2147483601;width:min(340px,calc(100vw - 20px));padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(12,20,30,.97);color:#eaf3fd;font:500 12px/1.45 var(--font-sans,system-ui,-apple-system,sans-serif);box-shadow:0 16px 30px rgba(0,0,0,.3)}",

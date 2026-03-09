@@ -13,7 +13,7 @@ Current runtime smoke selectors:
 - `first-run-skip-btn`
 - `teacher-panel-btn`
 - `teacher-panel-close`
-- `session-group-assign-target-btn`
+- `session-playlist-save-btn`
 - `new-game-btn`
 - `settings-btn`
 - `session-reset-btn`

@@ -5184,7 +5184,7 @@
     const teacherBtn = _el('teacher-panel-btn');
     if (teacherBtn) {
       teacherBtn.innerHTML = '<span class="icon-emoji" aria-hidden="true">👩‍🏫</span>';
-      setHoverNoteForElement(teacherBtn, 'Specialist tools: class settings, reports, and weekly planning.');
+      setHoverNoteForElement(teacherBtn, 'Specialist tools: add your own words or word list.');
     }
     const themeBtn = _el('theme-dock-toggle-btn');
     if (themeBtn) themeBtn.innerHTML = '<span class="icon-emoji" aria-hidden="true">🎨</span>';
@@ -7414,6 +7414,48 @@
       syncHeaderControlsVisibility();
     });
   }
+  {
+    const panel = _el('teacher-panel');
+    const card = panel?.querySelector('.teacher-panel-card');
+    const header = panel?.querySelector('.teacher-panel-head');
+    let dragging = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    const onPointerMove = (event) => {
+      if (!dragging || !(card instanceof HTMLElement) || !(panel instanceof HTMLElement)) return;
+      const x = Math.max(8, Math.min(window.innerWidth - card.offsetWidth - 8, event.clientX - dragOffsetX));
+      const y = Math.max(8, Math.min(window.innerHeight - card.offsetHeight - 8, event.clientY - dragOffsetY));
+      panel.style.left = `${x}px`;
+      panel.style.top = `${y}px`;
+      panel.style.right = 'auto';
+      panel.style.bottom = 'auto';
+      panel.style.transform = 'none';
+    };
+    const stopDragging = () => {
+      dragging = false;
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', stopDragging);
+    };
+    header?.addEventListener('pointerdown', (event) => {
+      if (!(card instanceof HTMLElement) || !(panel instanceof HTMLElement)) return;
+      if ((event.target instanceof HTMLElement) && event.target.closest('#teacher-panel-close')) return;
+      dragging = true;
+      const rect = card.getBoundingClientRect();
+      dragOffsetX = event.clientX - rect.left;
+      dragOffsetY = event.clientY - rect.top;
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', stopDragging);
+    });
+    document.addEventListener('pointerdown', (event) => {
+      if (!(panel instanceof HTMLElement) || panel.classList.contains('hidden')) return;
+      const target = event.target instanceof Node ? event.target : null;
+      if (!target) return;
+      if (panel.contains(target)) return;
+      if (_el('teacher-panel-btn')?.contains(target)) return;
+      panel.classList.add('hidden');
+      syncHeaderControlsVisibility();
+    });
+  }
 
   
   // Voice help modal
@@ -7652,6 +7694,38 @@
       setPref('theme', normalized);
     }
     WQUI.showToast(`Theme: ${getThemeDisplayLabel(normalized)}`);
+    syncQuickSetupControls();
+    syncPlayStyleToggleUI();
+    syncHeaderControlsVisibility();
+  });
+  _el('s-theme')?.addEventListener('input', e => {
+    const normalized = applyTheme(e.target.value);
+    if (shouldPersistTheme()) {
+      setPref('theme', normalized);
+    }
+    syncQuickSetupControls();
+    syncPlayStyleToggleUI();
+    syncHeaderControlsVisibility();
+  });
+  _el('s-theme')?.addEventListener('keydown', e => {
+    if (!['ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'].includes(e.key)) return;
+    const select = e.currentTarget;
+    if (!(select instanceof HTMLSelectElement)) return;
+    const options = Array.from(select.options).filter((option) => !option.disabled && option.value);
+    if (!options.length) return;
+    const currentIndex = Math.max(0, options.findIndex((option) => option.value === select.value));
+    let nextIndex = currentIndex;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') nextIndex = Math.min(options.length - 1, currentIndex + 1);
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') nextIndex = Math.max(0, currentIndex - 1);
+    if (e.key === 'Home') nextIndex = 0;
+    if (e.key === 'End') nextIndex = options.length - 1;
+    if (nextIndex === currentIndex) return;
+    e.preventDefault();
+    select.value = options[nextIndex].value;
+    const normalized = applyTheme(select.value);
+    if (shouldPersistTheme()) {
+      setPref('theme', normalized);
+    }
     syncQuickSetupControls();
     syncPlayStyleToggleUI();
     syncHeaderControlsVisibility();

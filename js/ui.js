@@ -106,7 +106,9 @@ const WQUI = (() => {
 
   // Flip reveal with staggered timing
   function revealRow(guess, result, row, wordLength, onDone) {
-    const STAGGER = 200;
+    const STAGGER = 285;
+    const FLIP_SETTLE = 335;
+    const REVEAL_FINISH = 340;
     result.forEach((status, col) => {
       const t = _el(`tile-${row * wordLength + col}`);
       if (!t) return;
@@ -117,10 +119,10 @@ const WQUI = (() => {
           t.classList.remove('flip', 'filled', 'just-typed');
           t.classList.add(status, 'wq-reveal');
           setTimeout(()=>t.classList.remove('wq-reveal'), 260);
-        }, 230);
+        }, FLIP_SETTLE);
       }, col * STAGGER);
     });
-    if (onDone) setTimeout(onDone, result.length * STAGGER + 280);
+    if (onDone) setTimeout(onDone, ((result.length - 1) * STAGGER) + FLIP_SETTLE + REVEAL_FINISH);
   }
 
   function shakeRow(guesses, wordLength) {
@@ -180,12 +182,16 @@ const WQUI = (() => {
 
         if (key === '⌫') {
           btn.innerHTML = '<svg class="key-backspace-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6.5H9.2L4 12l5.2 5.5H20z"></path><path d="m11.3 9.3 5.4 5.4"></path><path d="m16.7 9.3-5.4 5.4"></path></svg>';
+          btn.setAttribute('aria-label', 'Backspace');
+          btn.title = 'Backspace';
           btn.classList.add('wide');
         } else if (key === 'Enter') {
           btn.textContent = 'Enter';
+          btn.setAttribute('aria-label', 'Enter');
           btn.classList.add('wide');
         } else {
           btn.textContent = _fmt(key);
+          btn.setAttribute('aria-label', _fmt(key));
           if (key.length > 1) {
             btn.dataset.seq = key.toLowerCase();
           }

@@ -90,9 +90,52 @@ async function waitForAttached(page, selector, timeout = 12000) {
   await page.waitForSelector(selector, { state: 'attached', timeout });
 }
 
+async function waitForDestinationReady(page, urlPattern, readySelector, options = {}) {
+  const timeout = Math.max(1000, Number(options.timeout) || 12000);
+  await page.waitForFunction((pattern) => {
+    var href = String(window.location.href || "");
+    return new RegExp(pattern.source, pattern.flags).test(href);
+  }, { source: urlPattern.source, flags: urlPattern.flags }, { timeout });
+  await waitForAttached(page, readySelector, timeout);
+  if (typeof options.afterReady === 'function') {
+    await options.afterReady(page, timeout);
+  } else {
+    await waitForVisible(page, readySelector, timeout);
+  }
+}
+
 async function gotoDashboard(page, baseUrl) {
   await page.goto(`${baseUrl}/teacher-dashboard.html?audit=1`, { waitUntil: 'domcontentloaded', timeout: 30000 });
   await waitForVisible(page, '#td-shell');
+}
+
+async function gotoReportsSurface(page, baseUrl) {
+  await page.goto(`${baseUrl}/reports.html?audit=1&mode=daily`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await waitForVisible(page, '#td-shell');
+}
+
+async function openActivitiesMenu(page) {
+  const isDirectlyVisible = await page.evaluate(() => {
+    const select = document.getElementById('td-activity-select');
+    if (!(select instanceof HTMLElement)) return false;
+    const style = window.getComputedStyle(select);
+    return style.display !== 'none' && style.visibility !== 'hidden' && select.offsetParent !== null;
+  });
+  if (isDirectlyVisible) return;
+
+  await waitForAttached(page, '#td-top-overflow-toggle');
+  const alreadyOpen = await page.evaluate(() => {
+    const menu = document.getElementById('td-top-overflow-menu');
+    return menu instanceof HTMLElement && !menu.classList.contains('hidden');
+  });
+  if (!alreadyOpen) {
+    await page.click('#td-top-overflow-toggle');
+    await page.waitForFunction(() => {
+      const menu = document.getElementById('td-top-overflow-menu');
+      return menu instanceof HTMLElement && !menu.classList.contains('hidden');
+    }, { timeout: 5000 });
+  }
+  await waitForVisible(page, '#td-activity-select', 5000);
 }
 
 async function ensureStudentSelected(page) {
@@ -303,29 +346,27 @@ async function run() {
     });
 
     await runTask(results, 'launchWordQuest', 'Launch Word Quest from Activities', async () => {
-      await gotoDashboard(page, baseUrl);
-      const dispatched = await page.evaluate(() => {
-        const select = document.getElementById('td-activity-select');
-        if (!(select instanceof HTMLSelectElement)) return false;
-        select.value = 'word-quest.html';
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        return true;
-      });
-      if (!dispatched) throw new Error('Activities selector not available.');
-      await page.waitForURL(/word-quest\.html/i, { timeout: 10000 });
+      await gotoReportsSurface(page, baseUrl);
+      await openActivitiesMenu(page);
+      await Promise.all([
+        waitForDestinationReady(page, /word-quest\.html/i, '#game-board', {
+          timeout: 12000,
+          afterReady: async (nextPage, timeout) => {
+            await nextPage.waitForSelector('#loading-screen', { state: 'hidden', timeout });
+            await waitForVisible(nextPage, '#game-board', timeout);
+          }
+        }),
+        page.selectOption('#td-activity-select', 'word-quest.html')
+      ]);
     });
 
     await runTask(results, 'launchWordConnections', 'Launch Word Connections from Activities', async () => {
-      await gotoDashboard(page, baseUrl);
-      const dispatched = await page.evaluate(() => {
-        const select = document.getElementById('td-activity-select');
-        if (!(select instanceof HTMLSelectElement)) return false;
-        select.value = 'precision-play.html';
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        return true;
-      });
-      if (!dispatched) throw new Error('Activities selector not available.');
-      await page.waitForURL(/precision-play\.html/i, { timeout: 10000 });
+      await gotoReportsSurface(page, baseUrl);
+      await openActivitiesMenu(page);
+      await Promise.all([
+        waitForDestinationReady(page, /precision-play\.html/i, '#pp-shell', { timeout: 12000 }),
+        page.selectOption('#td-activity-select', 'precision-play.html')
+      ]);
     });
   } finally {
     await browser.close();

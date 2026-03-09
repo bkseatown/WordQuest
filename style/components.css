@@ -1337,16 +1337,16 @@ html[data-home-mode="play"] .top-control-hub {
 html[data-home-mode="play"] main {
   height: auto;
   min-height: calc(100dvh - var(--play-header-h) - var(--play-focus-h, 0px));
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 18px;
+  padding-bottom: 18px;
   overflow: visible;
-  gap: 14px;
+  gap: 22px;
 }
 
 html[data-home-mode="play"] .board-zone {
   min-height: auto;
-  gap: 18px;
-  padding-top: 6px;
+  gap: 28px;
+  padding-top: 12px;
 }
 
 html[data-home-mode="play"] .gameplay-audio {
@@ -1376,7 +1376,7 @@ html[data-home-mode="play"] .header-right {
   grid-area: right;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: 38px 32px;
+  grid-template-rows: 46px 30px;
   grid-template-areas:
     "icons icons"
     "focus quick";
@@ -1385,7 +1385,7 @@ html[data-home-mode="play"] .header-right {
   justify-items: stretch;
   gap: 6px 12px;
   min-width: 0;
-  padding: 6px 12px 4px;
+  padding: 10px 12px 4px;
 }
 
 html[data-home-mode="play"] .header-focus-inline-wrap {
@@ -1429,12 +1429,12 @@ html[data-home-mode="play"] .header-main-row {
   gap: 0;
   align-items: stretch;
   position: static;
-  min-height: 78px;
+  min-height: 88px;
 }
 
 html[data-home-mode="play"] .logo {
   position: absolute;
-  top: 3px;
+  top: 4px;
   left: 50%;
   transform: translateX(-50%);
   justify-self: center;
@@ -1448,18 +1448,19 @@ html[data-home-mode="play"] .logo {
 
 html[data-home-mode="play"] #home-logo-btn {
   left: 50%;
-  top: 3px;
+  top: 4px;
   transform: translateX(-50%);
 }
 
 html[data-home-mode="play"] .header-icon-controls {
   grid-area: icons;
   justify-self: end;
-  align-self: center;
+  align-self: start;
   gap: 6px;
   padding: 0;
   transform: none;
-  margin-top: 0;
+  margin-top: 1px;
+  margin-bottom: 5px;
 }
 
 html[data-home-mode="play"] .header-focus-inline-wrap {
@@ -1814,10 +1815,13 @@ html[data-home-mode="play"] .focus-action-btn {
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  border: 1px solid var(--wq-play-focus-surface-border);
-  background: var(--wq-play-key-bg);
-  box-shadow: var(--wq-play-key-shadow);
-  color: var(--wq-play-key-color);
+  border: 1px solid var(--wq-play-help-border);
+  background: var(--wq-play-help-bg);
+  box-shadow:
+    0 3px 0 color-mix(in oklab, var(--wq-play-help-border) 48%, rgba(32, 46, 62, 0.52)),
+    0 8px 14px rgba(8, 18, 30, 0.14),
+    inset 0 1px 0 rgba(255,255,255,0.74);
+  color: var(--wq-play-help-color);
 }
 
 html[data-home-mode="play"] .focus-action-btn svg {
@@ -1839,7 +1843,7 @@ html[data-home-mode="play"] .focus-inline-search {
   flex: 1 1 250px;
   max-width: 340px;
   border-radius: 999px;
-  border: 2px solid rgba(18, 20, 24, 0.72);
+  border: 2px solid var(--wq-play-focus-surface-strong-border);
   background: var(--wq-play-focus-surface-bg);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.78),
@@ -3192,15 +3196,22 @@ html[data-home-mode="play"] .focus-search-empty b {
   width: min(390px, calc(100vw - 24px));
   max-height: min(68vh, 560px);
   overflow: auto;
-  border-radius: 18px;
-  border: 1px solid color-mix(in oklab, var(--panel-border) 56%, transparent);
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--modal-bg) 56%, #dfe6ee 44%),
-    color-mix(in oklab, var(--modal-bg) 44%, #c9d4df 56%)
-  );
-  box-shadow: var(--panel-shadow);
+  border-radius: 24px;
+  border: 1.5px solid color-mix(in oklab, var(--panel-border) 68%, rgba(255,255,255,0.24));
+  background:
+    radial-gradient(circle at top right, color-mix(in oklab, var(--brand) 18%, transparent) 0%, transparent 34%),
+    radial-gradient(circle at top left, color-mix(in oklab, var(--wq-play-vowel-fill, #bfe6ff) 32%, transparent) 0%, transparent 28%),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--modal-bg) 72%, #f8fbff 28%) 0%,
+      color-mix(in oklab, var(--panel-bg) 72%, #eef4fb 28%) 100%
+    );
+  box-shadow:
+    0 22px 44px rgba(8, 16, 32, 0.24),
+    0 8px 0 color-mix(in oklab, var(--panel-border) 52%, rgba(12, 26, 44, 0.14)),
+    inset 0 1px 0 rgba(255,255,255,0.72);
   margin: 0;
+  position: relative;
 }
 
 .teacher-panel-head {
@@ -3208,9 +3219,11 @@ html[data-home-mode="play"] .focus-search-empty b {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 12px 14px 10px;
+  padding: 14px 16px 12px;
   border-bottom: 1px solid color-mix(in oklab, var(--panel-border) 60%, transparent);
-  background: color-mix(in oklab, var(--panel-bg) 48%, #8aa39b 52%);
+  background:
+    linear-gradient(90deg, color-mix(in oklab, var(--brand) 18%, transparent) 0%, transparent 46%),
+    linear-gradient(180deg, color-mix(in oklab, var(--panel-bg) 44%, #ffffff 56%) 0%, color-mix(in oklab, var(--panel-bg) 68%, #eef4fa 32%) 100%);
   cursor: grab;
 }
 
@@ -3228,7 +3241,7 @@ html[data-home-mode="play"] .focus-search-empty b {
 .teacher-panel-body {
   display: grid;
   gap: 0;
-  padding: 10px 12px 12px;
+  padding: 12px 13px 14px;
 }
 
 .teacher-panel-note {
@@ -3239,12 +3252,15 @@ html[data-home-mode="play"] .focus-search-empty b {
 }
 
 .wq-teacher-tools {
-  border: 1px solid color-mix(in oklab, var(--panel-border) 58%, transparent);
-  border-radius: 14px;
-  padding: 10px;
+  border: 1px solid color-mix(in oklab, var(--panel-border) 58%, rgba(255,255,255,0.18));
+  border-radius: 18px;
+  padding: 12px;
   display: grid;
-  gap: 7px;
-  background: color-mix(in oklab, var(--panel-bg) 82%, #ffffff 18%);
+  gap: 9px;
+  background:
+    linear-gradient(145deg, color-mix(in oklab, var(--brand) 10%, transparent) 0%, transparent 28%),
+    linear-gradient(180deg, color-mix(in oklab, var(--panel-bg) 82%, #ffffff 18%) 0%, color-mix(in oklab, var(--panel-bg) 68%, #f6faff 32%) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.56);
 }
 
 .teacher-hub-grid-2 {
@@ -3300,11 +3316,16 @@ html[data-home-mode="play"] .focus-search-empty b {
   resize: vertical;
   padding: 8px;
   border: 1.5px solid color-mix(in oklab, var(--panel-border) 72%, transparent);
-  border-radius: 10px;
-  background: color-mix(in oklab, var(--modal-bg) 92%, #ffffff 8%);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(240,246,252,0.88) 100%),
+    color-mix(in oklab, var(--modal-bg) 90%, #ffffff 10%);
   color: var(--text);
   font-family: var(--font);
   font-size: 0.83rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.82),
+    0 4px 0 color-mix(in oklab, var(--panel-border) 42%, rgba(19, 33, 53, 0.14));
 }
 
 .wq-teacher-actions {
@@ -3317,9 +3338,10 @@ html[data-home-mode="play"] .focus-search-empty b {
   display: grid;
   gap: 3px;
   padding: 8px 10px;
-  border-radius: 12px;
+  border-radius: 16px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 58%, transparent);
-  background: color-mix(in oklab, var(--panel-bg) 74%, #ffffff 26%);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--wq-play-vowel-fill, #d4f0ff) 20%, #ffffff 80%) 0%, color-mix(in oklab, var(--panel-bg) 66%, #f6fbff 34%) 100%);
   color: var(--text);
 }
 
@@ -3339,10 +3361,11 @@ html[data-home-mode="play"] .focus-search-empty b {
 .teacher-support-editor {
   display: grid;
   gap: 8px;
-  padding: 10px;
-  border-radius: 14px;
+  padding: 11px;
+  border-radius: 16px;
   border: 1px solid color-mix(in oklab, var(--panel-border) 58%, transparent);
-  background: color-mix(in oklab, var(--panel-bg) 78%, #ffffff 22%);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--brand) 7%, #ffffff 93%) 0%, color-mix(in oklab, var(--panel-bg) 74%, #f8fbff 26%) 100%);
 }
 
 .teacher-audit-head {
@@ -3379,9 +3402,11 @@ html[data-home-mode="play"] .focus-search-empty b {
   align-items: center;
   gap: 8px;
   padding: 7px 8px;
-  border-radius: 10px;
-  background: color-mix(in oklab, var(--modal-bg) 82%, #ffffff 18%);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.84) 0%, rgba(241,246,251,0.94) 100%);
   border: 1px solid color-mix(in oklab, var(--panel-border) 48%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.78);
 }
 
 .teacher-audit-dot {
@@ -3701,9 +3726,12 @@ html[data-home-mode="play"] .focus-search-empty b {
 /* ── Panel readability floor (play mode) ───────────── */
 html[data-home-mode="play"] .settings-panel,
 html[data-home-mode="play"] .teacher-panel-card {
-  color: #23384c;
-  background: linear-gradient(180deg, #113b63 0%, #0a2d4c 48%, #06213a 100%);
-  border-color: rgba(255, 255, 255, 0.56);
+  color: var(--text);
+  background:
+    radial-gradient(circle at top right, color-mix(in oklab, var(--brand) 18%, transparent) 0%, transparent 34%),
+    radial-gradient(circle at top left, color-mix(in oklab, var(--wq-play-vowel-fill, #bfe6ff) 32%, transparent) 0%, transparent 28%),
+    linear-gradient(180deg, color-mix(in oklab, var(--modal-bg) 76%, #f6fbff 24%) 0%, color-mix(in oklab, var(--panel-bg) 72%, #eef4fb 28%) 100%);
+  border-color: color-mix(in oklab, var(--panel-border) 68%, rgba(255,255,255,0.28));
 }
 
 html[data-home-mode="play"] .settings-header,
@@ -3754,21 +3782,26 @@ html[data-home-mode="play"] .settings-mode-copy span {
 }
 
 html[data-home-mode="play"] .teacher-panel-head {
-  background: linear-gradient(180deg, #d6dde2 0%, #c3cdd4 100%);
+  background:
+    linear-gradient(90deg, color-mix(in oklab, var(--brand) 18%, transparent) 0%, transparent 46%),
+    linear-gradient(180deg, color-mix(in oklab, var(--panel-bg) 44%, #ffffff 56%) 0%, color-mix(in oklab, var(--panel-bg) 68%, #eef4fa 32%) 100%);
   border-bottom-color: rgba(255, 255, 255, 0.26);
 }
 
 html[data-home-mode="play"] .wq-teacher-tools {
-  background: linear-gradient(180deg, #d6dde2 0%, #c3cdd4 100%);
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: 0 10px 18px rgba(4, 14, 25, 0.14), inset 0 1px 0 rgba(255,255,255,0.58);
+  background:
+    linear-gradient(145deg, color-mix(in oklab, var(--brand) 10%, transparent) 0%, transparent 28%),
+    linear-gradient(180deg, color-mix(in oklab, var(--panel-bg) 82%, #ffffff 18%) 0%, color-mix(in oklab, var(--panel-bg) 68%, #f6faff 32%) 100%);
+  border-color: color-mix(in oklab, var(--panel-border) 58%, rgba(255, 255, 255, 0.22));
+  box-shadow: 0 10px 18px rgba(4, 14, 25, 0.12), inset 0 1px 0 rgba(255,255,255,0.58);
 }
 
 html[data-home-mode="play"] .teacher-local-note,
 html[data-home-mode="play"] .teacher-audit-panel,
 html[data-home-mode="play"] .teacher-support-editor {
-  background: linear-gradient(180deg, #dce3e7 0%, #c9d3da 100%);
-  border-color: rgba(255,255,255,0.24);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--wq-play-vowel-fill, #d4f0ff) 18%, #ffffff 82%) 0%, color-mix(in oklab, var(--panel-bg) 74%, #f6fbff 26%) 100%);
+  border-color: color-mix(in oklab, var(--panel-border) 58%, rgba(255,255,255,0.24));
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.56);
 }
 
@@ -5195,22 +5228,16 @@ html[data-theme="seahawks"][data-home-mode="play"] .tile::before {
 }
 
 .tile.filled:not(.correct):not(.present):not(.absent) {
-  border-color: color-mix(in oklab, var(--tile-filled-border) 72%, var(--brand) 28%);
-  background: linear-gradient(
-    170deg,
-    rgba(255,255,255,0.24) 0%,
-    rgba(255,255,255,0.08) 58%,
-    rgba(0,0,0,0.14) 100%
-  );
-  --tile-lift: -1.5px;
-  --tile-scale: 1.035;
+  border-color: color-mix(in oklab, var(--tile-filled-border) 76%, var(--brand) 24%);
+  background: var(--tile-face);
+  --tile-lift: -1px;
+  --tile-scale: 1.018;
   box-shadow:
     var(--tile-shadow),
-    0 12px 20px rgba(8, 16, 30, 0.2),
-    inset 0 1px 0 rgba(255,255,255,0.66),
-    inset 0 -2px 0 rgba(12, 22, 40, 0.2);
-  color: var(--tile-filled-text, color-mix(in oklab, var(--tile-text) 88%, #101820 12%));
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+    0 8px 14px rgba(8, 16, 30, 0.14),
+    inset 0 1px 0 rgba(255,255,255,0.68);
+  color: var(--tile-text);
+  text-shadow: none;
 }
 
 html[data-board-style="soundcard"] .tile {
@@ -5319,11 +5346,11 @@ html[data-board-style="soundcard"] .tile.absent {
   text-shadow: 0 1px 2px rgba(8, 16, 28, 0.64);
 }
 
-.tile.flip  { animation: tile-flip 0.45s ease forwards; }
+.tile.flip  { animation: tile-flip 0.62s cubic-bezier(0.22, 0.8, 0.2, 1) forwards; }
 .tile.shake { animation: shake 0.4s ease; }
 
 html[data-board-style="soundcard"] .tile.flip {
-  animation: tile-flip-soundcard 0.52s cubic-bezier(0.2, 0.86, 0.26, 1) forwards;
+  animation: tile-flip-soundcard 0.68s cubic-bezier(0.22, 0.8, 0.2, 1) forwards;
 }
 
 /* ── Gameplay audio (below board, above keyboard) ─────── */
@@ -5583,8 +5610,8 @@ html[data-play-style="detective"] .gameplay-audio {
 
 html[data-home-mode="play"] #keyboard {
   min-height: clamp(188px, 24vh, 250px);
-  margin-top: 8px;
-  margin-bottom: max(8px, env(safe-area-inset-bottom));
+  margin-top: 16px;
+  margin-bottom: max(12px, env(safe-area-inset-bottom));
 }
 
 @media (max-width: 1100px) {
@@ -6985,7 +7012,7 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
 }
 
 .first-run-setup-card {
-  width: min(560px, calc(100vw - 18px));
+  width: min(520px, calc(100vw - 18px));
   max-height: min(90vh, 860px);
   overflow: auto;
   border: 1px solid #91adc4;
@@ -7008,11 +7035,12 @@ html[data-motion="reduced"] .midgame-boost-ticker-track {
 
 .first-run-setup-card .modal-body {
   gap: 9px;
-  padding: 11px 14px 14px;
+  padding: 11px 12px 14px;
   font-size: 0.9rem;
 }
 
 .first-run-lead {
+  max-width: 24ch;
   font-size: 0.99rem;
   font-weight: 860;
   line-height: 1.3;

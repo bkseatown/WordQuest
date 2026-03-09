@@ -14,7 +14,7 @@ async function run() {
     firstRunSkipBtn: '[data-testid="first-run-skip-btn"]',
     teacherPanelBtn: '[data-testid="teacher-panel-btn"]',
     teacherPanelClose: '[data-testid="teacher-panel-close"]',
-    assignTargetBtn: '[data-testid="session-group-assign-target-btn"]',
+    saveTargetBtn: '[data-testid="session-playlist-save-btn"]',
     newGameBtn: '[data-testid="new-game-btn"]',
     settingsBtn: '[data-testid="settings-btn"]',
     sessionResetBtn: '[data-testid="session-reset-btn"]',
@@ -143,7 +143,7 @@ async function run() {
         const visuallyHidden = style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0';
         return !hiddenClass && !hiddenAttr && !visuallyHidden;
       }, { timeout: 15000 });
-      await clickWithRetries(SEL.assignTargetBtn, { attempts: 3, optional: true, settleMs: 300 });
+      await clickWithRetries(SEL.saveTargetBtn, { attempts: 3, optional: true, settleMs: 300 });
       await page.evaluate((selector) => {
         const btn = document.querySelector(selector);
         if (btn instanceof HTMLElement) btn.click();
