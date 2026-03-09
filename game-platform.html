@@ -19,8 +19,9 @@
   /* ── Class Mode (projector) ─────────────────────────── */
   #cg-class-mode-btn {
     position: fixed;
-    bottom: 18px;
+    top: 18px;
     right: 18px;
+    bottom: auto;
     z-index: 9999;
     display: flex;
     align-items: center;
@@ -112,6 +113,10 @@
     display: none !important;
   }
 
+  body[data-shell-view="play"] #cg-theme-picker {
+    display: none !important;
+  }
+
   body[data-shell-view="gallery"] .cg-shell {
     padding: 0;
   }
@@ -135,8 +140,9 @@
   <style>
     #cg-theme-picker {
       position: fixed;
-      bottom: 18px;
+      top: 18px;
       right: 142px;
+      bottom: auto;
       z-index: 9999;
       display: flex;
       align-items: center;
@@ -165,6 +171,20 @@
       border-color: #fff;
       box-shadow: 0 0 0 2px rgba(255,255,255,0.5), 0 2px 8px rgba(0,0,0,0.4);
       transform: scale(1.1);
+    }
+
+    @media (max-width: 720px) {
+      #cg-class-mode-btn {
+        top: auto;
+        bottom: 12px;
+        right: 12px;
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      #cg-theme-picker {
+        display: none !important;
+      }
     }
   </style>
 

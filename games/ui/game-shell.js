@@ -762,6 +762,139 @@
     ].join("");
   }
 
+  function teachingContextLine(game) {
+    return galleryCaption(game && game.id || "").replace(/^Best for:\s*/i, "");
+  }
+
+  function renderTeachingContext(game) {
+    if (!game) return "";
+    return [
+      '<div class="cg-teaching-context">',
+      '  <p class="cg-micro-label">Best for</p>',
+      '  <p class="cg-teaching-context__copy">' + runtimeRoot.CSGameComponents.escapeHtml(teachingContextLine(game)) + "</p>",
+      "</div>"
+    ].join("");
+  }
+
+  function renderZoneCard(type, title, body) {
+    return [
+      '<section class="cg-zone-card cg-zone-card--' + runtimeRoot.CSGameComponents.escapeHtml(type) + '">',
+      '  <div class="cg-zone-card__header">',
+      '    <p class="cg-zone-card__eyebrow">' + runtimeRoot.CSGameComponents.escapeHtml(title) + "</p>",
+      "  </div>",
+      '  <div class="cg-zone-card__body">' + (body || "") + "</div>",
+      "</section>"
+    ].join("");
+  }
+
+  function renderGameScaffold(game, state, round, config) {
+    var options = config || {};
+    var segments = [];
+    if (options.beforePlay) segments.push(options.beforePlay);
+    segments.push(renderZoneCard("play", options.playTitle || "Play Surface", options.play || ""));
+    if (options.controls) segments.push(renderZoneCard("controls", options.controlsTitle || "Controls", options.controls));
+    segments.push(renderZoneCard("guide", options.guideTitle || "How To Play", (options.guide || "") + renderTeachingContext(game)));
+    if (options.afterGuide) segments.push(options.afterGuide);
+    return [
+      '<div class="cg-game-scaffold cg-game-scaffold--' + runtimeRoot.CSGameComponents.escapeHtml(game && game.id || "game") + '" data-outcome="' + runtimeRoot.CSGameComponents.escapeHtml(resultTone(state && state.lastOutcome)) + '">',
+      segments.join(""),
+      "</div>"
+    ].join("");
+  }
+
+  function currentChoicePreview(choice) {
+    if (!choice) return '<span class="cg-choice-preview__empty">Nothing selected yet.</span>';
+    return '<span class="cg-choice-preview__value">' + runtimeRoot.CSGameComponents.escapeHtml(choice) + "</span>";
+  }
+
+  function buildKeyboardStrip(answer, evaluation, guess, className) {
+    var letters = [];
+    String(guess || "").toUpperCase().split("").forEach(function (letter, index) {
+      if (!letter || letters.some(function (entry) { return entry.letter === letter; })) return;
+      letters.push({
+        letter: letter,
+        state: evaluation && evaluation[index] || "absent"
+      });
+    });
+    if (!letters.length) {
+      String(answer || "").toUpperCase().split("").forEach(function (letter) {
+        if (!letter || letters.some(function (entry) { return entry.letter === letter; })) return;
+        letters.push({ letter: letter, state: "" });
+      });
+    }
+    return [
+      '<div class="' + runtimeRoot.CSGameComponents.escapeHtml(className || "cg-key-strip") + '" aria-label="Letter feedback">',
+      letters.map(function (entry) {
+        return '<span class="cg-key-strip__key" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(entry.state || "") + '">' + runtimeRoot.CSGameComponents.escapeHtml(entry.letter) + "</span>";
+      }).join(""),
+      "</div>"
+    ].join("");
+  }
+
+  function liveOrderFeedback(selected, solution, type) {
+    var built = Array.isArray(selected) ? selected : [];
+    var target = Array.isArray(solution) ? solution : [];
+    var correctCount = built.filter(function (value, index) { return target[index] === value; }).length;
+    var label = type === "sentence" ? "Grammar check" : "Build check";
+    var detail = correctCount
+      ? (correctCount + " of " + target.length + " parts are in the right place.")
+      : (type === "sentence" ? "Drag or tap words into a sentence that sounds right." : "Start with the part that gives the word its base meaning.");
+    return [
+      '<div class="cg-live-check" data-tone="' + (correctCount ? "positive" : "focus") + '">',
+      '  <strong>' + label + "</strong>",
+      '  <span>' + runtimeRoot.CSGameComponents.escapeHtml(detail) + "</span>",
+      "</div>"
+    ].join("");
+  }
+
+  function renderDetectiveFragments(text, selected) {
+    return String(text || "").split(/\s+/).filter(Boolean).map(function (word, index) {
+      var normalized = String(word || "").replace(/[^\w'-]/g, "");
+      var isSelected = selected && normalized && normalized === selected;
+      return '<button class="cg-detective-fragment' + (isSelected ? " is-selected" : "") + '" type="button" data-detective-fragment="' + runtimeRoot.CSGameComponents.escapeHtml(normalized || word) + '" aria-pressed="' + (isSelected ? "true" : "false") + '">' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</button>";
+    }).join(" ");
+  }
+
+  function normalizeTypingInput(raw, target) {
+    var source = String(raw || "").toUpperCase().replace(/[^A-Z]/g, "");
+    var goal = String(target || "").toUpperCase();
+    var locked = "";
+    for (var i = 0; i < source.length && i < goal.length; i += 1) {
+      if (source.charAt(i) !== goal.charAt(i)) break;
+      locked += source.charAt(i);
+    }
+    return locked;
+  }
+
+  function paintTypingPreview(target, typed) {
+    var cells = document.querySelectorAll(".cg-typing-track .cg-letter-box");
+    var keys = document.querySelectorAll(".cg-key-strip--typing .cg-key-strip__key");
+    Array.prototype.forEach.call(cells, function (cell, index) {
+      var letter = String(typed || "").charAt(index) || "";
+      var state = letter ? "correct" : "";
+      cell.textContent = letter;
+      cell.setAttribute("data-state", state);
+      if (state) cell.classList.add("is-revealed");
+      else cell.classList.remove("is-revealed");
+    });
+    Array.prototype.forEach.call(keys, function (key, index) {
+      var letter = String(target || "").charAt(index) || "";
+      key.textContent = letter || key.textContent;
+      key.setAttribute("data-state", index < String(typed || "").length ? "correct" : "");
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".cg-typing-char"), function (cell, index) {
+      cell.classList.toggle("is-locked", index < String(typed || "").length);
+    });
+  }
+
+  function paintCategoryPreview(items) {
+    var host = document.querySelector(".cg-rush-preview");
+    if (!host) return;
+    host.innerHTML = (items || []).map(function (item, index) {
+      return '<span class="cg-rush-preview__item" style="animation-delay:' + (index * 40) + 'ms">' + runtimeRoot.CSGameComponents.escapeHtml(item) + "</span>";
+    }).join("");
+  }
+
   function evidenceModuleForGame(gameId, context) {
     var id = String(gameId || "");
     var subject = String(context && context.subject || "").toLowerCase();
@@ -965,6 +1098,11 @@
       selectedChoice: "",
       builderSelection: [],
       revealedClues: 1,
+      supportRevealOpen: false,
+      detectiveSelection: "",
+      typingLockedValue: "",
+      typingErrorUntil: 0,
+      categoryPreview: [],
       previous: { score: 0, streak: 0, rounds: 0 },
       bumpUntil: { score: 0, streak: 0, rounds: 0 },
       lastLoggedSummaryKey: "",
@@ -1168,6 +1306,11 @@
       uiState.selectedChoice = "";
       uiState.builderSelection = [];
       uiState.revealedClues = 1;
+      uiState.supportRevealOpen = false;
+      uiState.detectiveSelection = "";
+      uiState.typingLockedValue = "";
+      uiState.typingErrorUntil = 0;
+      uiState.categoryPreview = [];
     }
 
     function applyMetricBumps(state) {
@@ -1349,136 +1492,183 @@
       if (game.id === "word-connections") {
         var forbiddenStrike = state.lastOutcome && state.lastOutcome.forbidden;
         var speakerNum = ((Number(state.roundIndex || 0) % 4) + 1);
-        return [
-          '<div class="cg-game-layout cg-game-layout--clue' + (forbiddenStrike ? " cg-focus-panel--forbidden" : "") + '">',
-          roundGuide(game, state, round),
-          renderHostControls(game, state, round),
-          (isGroupView(state) ? [
-            '<div class="cg-taboo-zones">',
-            '  <div class="cg-taboo-zone"><span class="cg-taboo-zone-label">Speaker</span><span class="cg-taboo-zone-name">Student ' + speakerNum + '</span></div>',
-            '  <div class="cg-taboo-zone"><span class="cg-taboo-zone-label">Team</span><span class="cg-taboo-zone-name">Guess together</span></div>',
-            '</div>'
-          ].join("") : ""),
-          '<div class="cg-taboo-card">',
-          '  <p class="cg-taboo-label">Clue the word without saying:</p>',
-          '  <div class="cg-taboo-target">' + runtimeRoot.CSGameComponents.escapeHtml(round.targetWord || "") + '</div>',
-          '  <div class="cg-taboo-danger-band">',
-          '    <span class="cg-taboo-ban-label">Do not say</span>',
-          (round.forbiddenWords || []).map(function (word) {
-            return '    <span class="cg-chip" data-tone="negative">' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</span>";
-          }).join(""),
-          '  </div>',
-          "</div>",
-          '<textarea id="cg-word-connections-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Record the clue or teacher notes for scoring…" : "Write the clue here…") + '"></textarea>',
-          '<div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="word-connections">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Score Clue" : "Check Clue") + '</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Prompt</button></div>',
-          (state.hintVisible ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
-          "</div>"
-        ].join("");
+        return renderGameScaffold(game, state, round, {
+          beforePlay: renderHostControls(game, state, round),
+          play: [
+            '<div class="cg-game-layout cg-game-layout--clue' + (forbiddenStrike ? " cg-focus-panel--forbidden" : "") + '">',
+            '<div class="cg-clue-stage">',
+            '<div class="cg-clue-stage__main">',
+            (isGroupView(state) ? [
+              '<div class="cg-taboo-zones">',
+              '  <div class="cg-taboo-zone"><span class="cg-taboo-zone-label">Speaker</span><span class="cg-taboo-zone-name">Student ' + speakerNum + '</span></div>',
+              '  <div class="cg-taboo-zone"><span class="cg-taboo-zone-label">Team</span><span class="cg-taboo-zone-name">Guess together</span></div>',
+              '</div>'
+            ].join("") : ""),
+            '<div class="cg-taboo-card">',
+            '  <p class="cg-taboo-label">Target word</p>',
+            '  <div class="cg-taboo-target">' + runtimeRoot.CSGameComponents.escapeHtml(round.targetWord || "") + '</div>',
+            '  <div class="cg-taboo-danger-band" aria-label="Blocked words">',
+            '    <span class="cg-taboo-ban-label">Blocked words</span>',
+            (round.forbiddenWords || []).map(function (word) {
+              return '    <span class="cg-taboo-pill">' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</span>";
+            }).join(""),
+            '  </div>',
+            "</div>",
+            '</div>',
+            '<aside class="cg-clue-stage__side">',
+            '<div class="cg-clue-brief">',
+            '  <p class="cg-micro-label">Clue move</p>',
+            '  <h4>' + runtimeRoot.CSGameComponents.escapeHtml(round.requiredMove || "Give a clear clue without using blocked words.") + '</h4>',
+            '  <p>' + runtimeRoot.CSGameComponents.escapeHtml((round.scaffolds || [round.hint || "Use an example, function, or comparison."])[0] || "") + '</p>',
+            '</div>',
+            '<div class="cg-clue-brief cg-clue-brief--soft">',
+            '  <p class="cg-micro-label">Win the round</p>',
+            '  <h4>Make the guess feel obvious.</h4>',
+            '  <p>Use examples, function, or context instead of definitions or blocked words.</p>',
+            '</div>',
+            (uiState.supportRevealOpen ? '<div class="cg-support-reveal"><strong>Reveal</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml((round.scaffolds || [round.hint || "Use an example or comparison."])[0] || "") + "</span></div>" : ""),
+            '</aside>',
+            '</div>',
+            "</div>"
+          ].join(""),
+          controls: [
+            '<textarea id="cg-word-connections-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Record the clue or teacher notes for scoring…" : "Write the clue here…") + '" aria-label="Type your clue"></textarea>',
+            '<div class="cg-feedback-actions"><button class="cg-action cg-action-quiet" type="button" data-action="toggle-support-reveal">' + (uiState.supportRevealOpen ? "Hide Reveal" : "Reveal Support") + '</button><button class="cg-action cg-action-primary" type="button" data-submit="word-connections">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Score Clue" : "Check Clue") + '</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Word</button></div>'
+          ].join(""),
+          guide: roundGuide(game, state, round)
+        });
       }
 
       if (game.id === "morphology-builder") {
         var forgeChosen = Array.isArray(uiState.builderSelection) ? uiState.builderSelection : [];
-        return [
-          '<div class="cg-game-layout cg-game-layout--builder">',
-          roundGuide(game, state, round),
-          renderHostControls(game, state, round),
-          '<div class="cg-forge">',
-          '  <div class="cg-forge-bench">',
-          '    <p class="cg-forge-bench-label">Build Bench</p>',
-          '    <div class="cg-forge-slots">' + (round.solution || []).map(function (_part, index) {
-            var val = forgeChosen[index] || "";
-            return '<button class="cg-forge-slot' + (val ? " is-filled" : "") + '" type="button" data-slot-index="' + index + '">' + runtimeRoot.CSGameComponents.escapeHtml(val || "—") + "</button>";
-          }).join("") + "</div>",
-          "  </div>",
-          '  <div class="cg-forge-tray">',
-          '    <p class="cg-forge-tray-label">Morpheme Parts</p>',
-          '    <div class="cg-forge-tiles">' + (round.tiles || []).map(function (tile) {
-            var sel = forgeChosen.indexOf(tile) >= 0;
-            return '<button class="cg-morph-tile' + (sel ? " is-selected" : "") + '" type="button" data-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '">' + runtimeRoot.CSGameComponents.escapeHtml(tile) + "</button>";
-          }).join("") + "</div>",
-          "  </div>",
-          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="morphology-builder">Check Build</button><button class="cg-action cg-action-quiet" type="button" data-action="clear-build">Clear</button></div>',
-          (state.hintVisible ? '  <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
-          "</div>",
-          "</div>"
-        ].join("");
+        return renderGameScaffold(game, state, round, {
+          beforePlay: renderHostControls(game, state, round),
+          play: [
+            '<div class="cg-game-layout cg-game-layout--builder">',
+            '<div class="cg-forge">',
+            '<div class="cg-forge-layout">',
+            '  <div class="cg-forge-layout__main">',
+            '    <div class="cg-forge-bench">',
+            '      <p class="cg-forge-bench-label">Assembly Area</p>',
+            '      <div class="cg-forge-slots" aria-label="Word assembly slots">' + (round.solution || []).map(function (_part, index) {
+              var val = forgeChosen[index] || "";
+              return '<button class="cg-forge-slot' + (val ? " is-filled" : "") + '" type="button" data-slot-index="' + index + '" data-drop-slot="' + index + '" aria-label="Assembly slot ' + (index + 1) + '">' + runtimeRoot.CSGameComponents.escapeHtml(val || "Drop here") + "</button>";
+            }).join("") + "</div>",
+            "    </div>",
+            '    <div class="cg-forge-tray">',
+            '      <p class="cg-forge-tray-label">Prefixes, roots, suffixes</p>',
+            '      <div class="cg-forge-tiles">' + (round.tiles || []).map(function (tile) {
+              var sel = forgeChosen.indexOf(tile) >= 0;
+              return '<button class="cg-morph-tile' + (sel ? " is-selected" : "") + '" type="button" draggable="true" data-drag-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '" data-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '">' + runtimeRoot.CSGameComponents.escapeHtml(tile) + "</button>";
+            }).join("") + "</div>",
+            "    </div>",
+            '  </div>',
+            '  <aside class="cg-forge-layout__side">',
+            '    <div class="cg-forge-note">',
+            '      <p class="cg-micro-label">Meaning unlock</p>',
+            '      <h4>' + runtimeRoot.CSGameComponents.escapeHtml(round.meaningHint || "Use what each part means to test your build.") + '</h4>',
+            '      <p>Try the root first, then add the part that changes meaning.</p>',
+            '    </div>',
+            liveOrderFeedback(forgeChosen, round.solution, "morphology"),
+            (state.hintVisible ? '<div class="cg-clue-reveal">' + runtimeRoot.CSGameComponents.iconFor("hint") + '<span>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span></div>" : ""),
+            '  </aside>',
+            '</div>',
+            "</div>",
+            "</div>"
+          ].join(""),
+          controls: '<div class="cg-feedback-actions"><button class="cg-action cg-action-quiet" type="button" data-action="hint">Reveal Meaning Hint</button><button class="cg-action cg-action-quiet" type="button" data-action="clear-build">Clear</button><button class="cg-action cg-action-primary" type="button" data-submit="morphology-builder">Check Build</button></div>',
+          guide: roundGuide(game, state, round)
+        });
       }
 
       if (game.id === "sentence-builder") {
         var sentChosen = Array.isArray(uiState.builderSelection) ? uiState.builderSelection : [];
-        return [
-          '<div class="cg-game-layout cg-game-layout--builder">',
-          roundGuide(game, state, round),
-          renderHostControls(game, state, round),
-          '<div class="cg-sentence-sprint">',
-          '  <div class="cg-sentence-lane">',
-          '    <p class="cg-lane-label">Build the sentence \u2192</p>',
-          '    <div class="cg-sentence-slots">' + (round.solution || []).map(function (_part, index) {
-            var val = sentChosen[index] || "";
-            return '<button class="cg-sentence-slot' + (val ? " is-filled" : "") + '" type="button" data-slot-index="' + index + '">' + runtimeRoot.CSGameComponents.escapeHtml(val || "\u00B7\u00B7\u00B7") + "</button>";
-          }).join("") + "</div>",
-          "  </div>",
-          '  <div class="cg-phrase-bank">',
-          '    <p class="cg-phrase-bank-label">Word Tiles</p>',
-          '    <div class="cg-phrase-tiles">' + (round.tiles || []).map(function (tile) {
-            var sel = sentChosen.indexOf(tile) >= 0;
-            return '<button class="cg-phrase-tile' + (sel ? " is-selected" : "") + '" type="button" data-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '">' + runtimeRoot.CSGameComponents.escapeHtml(tile) + "</button>";
-          }).join("") + "</div>",
-          "  </div>",
-          (round.requiredToken ? '  <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + "Must include: " + runtimeRoot.CSGameComponents.escapeHtml(round.requiredToken) + "</span>" : ""),
-          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="sentence-builder">Check Sentence</button><button class="cg-action cg-action-quiet" type="button" data-action="clear-build">Clear</button></div>',
-          (state.hintVisible ? '  <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
-          "</div>",
-          "</div>"
-        ].join("");
+        return renderGameScaffold(game, state, round, {
+          beforePlay: renderHostControls(game, state, round),
+          play: [
+            '<div class="cg-game-layout cg-game-layout--builder">',
+            '<div class="cg-sentence-sprint">',
+            '  <div class="cg-sentence-lane">',
+            '    <p class="cg-lane-label">Build the sentence</p>',
+            '    <div class="cg-sentence-slots" aria-label="Sentence assembly">' + (round.solution || []).map(function (_part, index) {
+              var val = sentChosen[index] || "";
+              return '<button class="cg-sentence-slot' + (val ? " is-filled" : "") + '" type="button" data-slot-index="' + index + '" data-drop-slot="' + index + '" aria-label="Sentence slot ' + (index + 1) + '">' + runtimeRoot.CSGameComponents.escapeHtml(val || "Drop word") + "</button>";
+            }).join("") + "</div>",
+            "  </div>",
+            '  <div class="cg-phrase-bank">',
+            '    <p class="cg-phrase-bank-label">Word tiles</p>',
+            '    <div class="cg-phrase-tiles">' + (round.tiles || []).map(function (tile) {
+              var sel = sentChosen.indexOf(tile) >= 0;
+              return '<button class="cg-phrase-tile' + (sel ? " is-selected" : "") + '" type="button" draggable="true" data-drag-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '" data-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '">' + runtimeRoot.CSGameComponents.escapeHtml(tile) + "</button>";
+            }).join("") + "</div>",
+            "  </div>",
+            (round.requiredToken ? '<span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + "SWBAT use: " + runtimeRoot.CSGameComponents.escapeHtml(round.requiredToken) + "</span>" : ""),
+            liveOrderFeedback(sentChosen, round.solution, "sentence"),
+            (state.hintVisible ? '<div class="cg-clue-reveal">' + runtimeRoot.CSGameComponents.iconFor("hint") + '<span>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span></div>" : ""),
+            "</div>",
+            "</div>"
+          ].join(""),
+          controls: '<div class="cg-feedback-actions"><button class="cg-action cg-action-quiet" type="button" data-action="hint">Grammar Hint</button><button class="cg-action cg-action-quiet" type="button" data-action="clear-build">Clear</button><button class="cg-action cg-action-primary" type="button" data-submit="sentence-builder">Check Sentence</button></div>',
+          guide: roundGuide(game, state, round)
+        });
       }
 
       if (game.id === "concept-ladder") {
         var totalClues = (round.clues || []).length;
         var shownClues = Math.min(uiState.revealedClues, totalClues);
-        return [
-          '<div class="cg-game-layout cg-game-layout--ladder">',
-          roundGuide(game, state, round),
-          renderHostControls(game, state, round),
-          '<p class="cg-kicker">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + ' \u2014 Clue ' + shownClues + ' of ' + totalClues + '</p>',
-          '<div class="cg-ladder">' + (round.clues || []).map(function (clue, index) {
-            if (index < shownClues) {
-              return '<div class="cg-ladder-rung cg-ladder-rung--revealed" style="animation-delay:' + (index * 60) + 'ms"><span class="cg-rung-num">' + (index + 1) + '</span><div class="cg-rung-text">' + runtimeRoot.CSGameComponents.escapeHtml(clue) + "</div></div>";
-            }
-            return '<div class="cg-ladder-rung cg-ladder-rung--locked"><span class="cg-rung-num">' + (index + 1) + '</span><div class="cg-rung-locked-label">Reveal to unlock</div></div>';
-          }).join("") + "</div>",
-          '<div class="cg-choice-row">' + (round.options || []).map(function (option) {
-            return '<button class="cg-choice' + (uiState.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
-          }).join("") + "</div>",
-          '<div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="concept-ladder">Submit Solve</button>' + (shownClues < totalClues ? '<button class="cg-action cg-action-quiet" type="button" data-action="reveal-clue">Reveal Next Clue</button>' : "") + "</div>",
-          "</div>"
-        ].join("");
+        return renderGameScaffold(game, state, round, {
+          beforePlay: renderHostControls(game, state, round),
+          playTitle: "Clue Ladder",
+          play: [
+            '<div class="cg-game-layout cg-game-layout--ladder">',
+            '<div class="cg-step-chip">Step ' + shownClues + " of " + totalClues + "</div>",
+            '<p class="cg-kicker">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</p>",
+            '<div class="cg-ladder">' + (round.clues || []).map(function (clue, index) {
+              if (index < shownClues) {
+                return '<div class="cg-ladder-rung cg-ladder-rung--revealed" style="animation-delay:' + (index * 60) + 'ms"><span class="cg-rung-num">' + (index + 1) + '</span><div class="cg-rung-text">' + runtimeRoot.CSGameComponents.escapeHtml(clue) + "</div></div>";
+              }
+              return '<div class="cg-ladder-rung cg-ladder-rung--locked"><span class="cg-rung-num">' + (index + 1) + '</span><div class="cg-rung-locked-label">Reveal to unlock</div></div>';
+            }).join("") + "</div>",
+            "</div>"
+          ].join(""),
+          controls: [
+            '<div class="cg-choice-row" aria-label="Possible answers">' + (round.options || []).map(function (option) {
+              return '<button class="cg-choice' + (uiState.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
+            }).join("") + "</div>",
+            '<div class="cg-choice-preview"><strong>Current solve</strong>' + currentChoicePreview(uiState.selectedChoice) + '</div>',
+            '<div class="cg-feedback-actions">' + (shownClues < totalClues ? '<button class="cg-action cg-action-quiet" type="button" data-action="reveal-clue">Reveal Next Clue</button>' : "") + '<button class="cg-action cg-action-primary" type="button" data-submit="concept-ladder">Submit Solve</button></div>'
+          ].join(""),
+          guide: roundGuide(game, state, round)
+        });
       }
 
       if (game.id === "error-detective") {
-        return [
-          '<div class="cg-game-layout cg-game-layout--detective">',
-          roundGuide(game, state, round),
-          renderHostControls(game, state, round),
-          '<div class="cg-case-board">',
-          '  <div class="cg-case-file">',
-          '    <div class="cg-case-file-header">',
-          '      <span class="cg-case-stamp">Case File</span>',
-          '      <span class="cg-case-type">' + runtimeRoot.CSGameComponents.escapeHtml(round.misconception || "Reasoning Error") + '</span>',
-          '    </div>',
-          '    <div class="cg-case-error-text">' + runtimeRoot.CSGameComponents.escapeHtml(round.incorrectExample || "") + '</div>',
-          '  </div>',
-          '  <div class="cg-case-paths">',
-          '    <p class="cg-case-paths-label">Choose the fix that closes the case</p>',
-          '    <div class="cg-choice-row">' + (round.options || []).map(function (option) {
-            return '<button class="cg-choice' + (uiState.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
-          }).join("") + "</div>",
-          '  </div>',
-          '  <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="error-detective">Confirm Correction</button></div>',
-          (state.hintVisible ? '  <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
-          "</div>",
-          "</div>"
-        ].join("");
+        return renderGameScaffold(game, state, round, {
+          beforePlay: renderHostControls(game, state, round),
+          play: [
+            '<div class="cg-game-layout cg-game-layout--detective">',
+            '<div class="cg-case-board">',
+            '  <div class="cg-case-file">',
+            '    <div class="cg-case-file-header">',
+            '      <span class="cg-case-stamp">Case File</span>',
+            '      <span class="cg-case-type">' + runtimeRoot.CSGameComponents.escapeHtml(round.misconception || "Reasoning Error") + '</span>',
+            '    </div>',
+            '    <div class="cg-case-error-text" aria-label="Incorrect statement">' + renderDetectiveFragments(round.incorrectExample || "", uiState.detectiveSelection) + '</div>',
+            '    <div class="cg-case-highlight-row"><strong>Suspected error</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(uiState.detectiveSelection || "Highlight the part that looks wrong.") + '</span></div>',
+            '  </div>',
+            '  <div class="cg-case-paths">',
+            '    <p class="cg-case-paths-label">Choose the fix that closes the case</p>',
+            '    <div class="cg-choice-row">' + (round.options || []).map(function (option) {
+              return '<button class="cg-choice' + (uiState.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
+            }).join("") + "</div>",
+            '  </div>',
+            (state.lastOutcome && !state.lastOutcome.correct ? '<div class="cg-support-reveal"><strong>Explanation</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint || "Look for the part that repairs the reasoning.") + "</span></div>" : ""),
+            "</div>",
+            "</div>"
+          ].join(""),
+          controls: '<div class="cg-feedback-actions"><button class="cg-action cg-action-quiet" type="button" data-action="hint">Reveal Explanation</button><button class="cg-action cg-action-primary" type="button" data-submit="error-detective">Confirm Correction</button></div>',
+          guide: roundGuide(game, state, round)
+        });
       }
 
       if (game.id === "rapid-category") {
@@ -1489,63 +1679,79 @@
         var circumference = 276.46;
         var dashOffset = Math.round(circumference * (1 - timerPct / 100));
         var ringStroke = timerTone === "positive" ? "var(--cg-positive)" : timerTone === "warning" ? "var(--cg-warning)" : "var(--cg-negative)";
-        return [
-          '<div class="cg-game-layout cg-game-layout--rush">',
-          roundGuide(game, state, round),
-          renderHostControls(game, state, round),
-          '<div class="cg-rush-arena">',
-          '  <div class="cg-rush-stage">',
-          '    <div class="cg-rush-timer-ring" aria-label="' + remaining + ' seconds remaining">',
-          '      <svg viewBox="0 0 108 108" aria-hidden="true">',
-          '        <circle class="track" cx="54" cy="54" r="44" stroke="rgba(20,34,51,0.10)" stroke-width="8" fill="none"/>',
-          '        <circle class="fill" cx="54" cy="54" r="44" stroke="' + ringStroke + '" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + dashOffset + '" style="transition:stroke-dashoffset .9s linear,stroke .5s"/>',
-          '      </svg>',
-          '      <div class="cg-rush-timer-text">' + remaining + '<small>sec</small></div>',
-          '    </div>',
-          '    <div class="cg-rush-prompt-block">',
-          '      <p class="cg-rush-category-label">Category</p>',
-          '      <h3 class="cg-rush-prompt-text">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + '</h3>',
-          '    </div>',
-          '  </div>',
-          '  <div class="cg-rush-entry">',
-          '    <textarea id="cg-category-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Team responses — one per line or comma-separated…" : "Enter responses — one per line or comma-separated…") + '"></textarea>',
-          '    <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-submit="rapid-category">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Score Round" : "Score Responses") + '</button></div>',
-          '  </div>',
-          (state.hintVisible ? '  <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
-          "</div>",
-          "</div>"
-        ].join("");
+        return renderGameScaffold(game, state, round, {
+          beforePlay: renderHostControls(game, state, round),
+          play: [
+            '<div class="cg-game-layout cg-game-layout--rush">',
+            '<div class="cg-rush-arena">',
+            '  <div class="cg-rush-stage">',
+            '    <div class="cg-rush-timer-ring" aria-label="' + remaining + ' seconds remaining">',
+            '      <svg viewBox="0 0 108 108" aria-hidden="true">',
+            '        <circle class="track" cx="54" cy="54" r="44" stroke="rgba(20,34,51,0.10)" stroke-width="8" fill="none"/>',
+            '        <circle class="fill" cx="54" cy="54" r="44" stroke="' + ringStroke + '" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + dashOffset + '" style="transition:stroke-dashoffset .9s linear,stroke .5s"/>',
+            '      </svg>',
+            '      <div class="cg-rush-timer-text">' + remaining + '<small>sec</small></div>',
+            '    </div>',
+            '    <div class="cg-rush-prompt-block">',
+            '      <p class="cg-rush-category-label">Category</p>',
+            '      <h3 class="cg-rush-prompt-text">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + '</h3>',
+            '      <div class="cg-rush-scoreline"><span>Running score</span><strong>' + Number(state.score || 0) + '</strong></div>',
+            '    </div>',
+            '  </div>',
+            '  <div class="cg-rush-preview" aria-live="polite">' + (uiState.categoryPreview || []).map(function (item, index) {
+              return '<span class="cg-rush-preview__item" style="animation-delay:' + (index * 40) + 'ms">' + runtimeRoot.CSGameComponents.escapeHtml(item) + "</span>";
+            }).join("") + '</div>',
+            (state.hintVisible ? '<div class="cg-clue-reveal">' + runtimeRoot.CSGameComponents.iconFor("hint") + '<span>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span></div>" : ""),
+            "</div>",
+            "</div>"
+          ].join(""),
+          controls: [
+            '<div class="cg-rush-entry">',
+            '  <textarea id="cg-category-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Team responses — one per line or comma-separated…" : "Enter responses — one per line or comma-separated…") + '" aria-label="Enter category responses"></textarea>',
+            '  <div class="cg-feedback-actions"><button class="cg-action cg-action-quiet" type="button" data-action="hint">Show Hint</button><button class="cg-action cg-action-primary" type="button" data-submit="rapid-category">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Score Round" : "Score Responses") + '</button></div>',
+            '</div>'
+          ].join(""),
+          guide: roundGuide(game, state, round)
+        });
       }
 
       if (game.id === "word-typing") {
-        var typed = String(uiState.lastSubmittedGuess || "").toUpperCase();
+        var typed = String(uiState.typingLockedValue || uiState.lastSubmittedGuess || "").toUpperCase();
         var typedEvaluation = state.lastOutcome && state.lastOutcome.evaluation || [];
         var targetChars = String(round.target || "").toUpperCase().split("");
-        return [
-          '<div class="cg-game-layout cg-game-layout--typing">',
-          roundGuide(game, state, round),
-          renderHostControls(game, state, round),
-          '<div class="cg-typing-studio">',
-          '  <div class="cg-typing-zone-badge">',
-          '    <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.escapeHtml(round.keyboardZone || "full keyboard") + '</span>',
-          '    <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(round.orthographyFocus || "typing pattern") + '</span>',
-          '  </div>',
-          '  <div class="cg-typing-target">' + targetChars.map(function (ch) {
-            return '<div class="cg-typing-char">' + runtimeRoot.CSGameComponents.escapeHtml(ch) + "</div>";
-          }).join("") + "</div>",
-          (typedEvaluation.length ? '  <div class="cg-typing-track">' + targetChars.map(function (_ch, index) {
-            return '<div class="cg-letter-box' + (typedEvaluation[index] ? " is-revealed" : "") + '" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(typedEvaluation[index] || "") + '" style="animation-delay:' + (index * 40) + 'ms">' + runtimeRoot.CSGameComponents.escapeHtml(typed[index] || "") + "</div>";
-          }).join("") + "</div>" : ""),
-          '  <div class="cg-typing-entry">',
-          '    <input id="cg-word-typing-input" class="cg-input" maxlength="' + String(round.target || "").length + '" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Type the word for the class…" : "Type the word…") + '" autocomplete="off" autocorrect="off" spellcheck="false">',
-          '    <button class="cg-action cg-action-primary" type="button" data-submit="word-typing">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Check Class Word" : "Check Word") + '</button>',
-          '    <button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Word</button>',
-          '  </div>',
-          '  <p class="cg-typing-cue">' + runtimeRoot.CSGameComponents.escapeHtml(round.fingerCue || "Look across the whole word before you type.") + "</p>",
-          (state.hintVisible ? '  <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
-          "</div>",
-          "</div>"
-        ].join("");
+        return renderGameScaffold(game, state, round, {
+          beforePlay: renderHostControls(game, state, round),
+          play: [
+            '<div class="cg-game-layout cg-game-layout--typing">',
+            '<div class="cg-typing-studio">',
+            '  <div class="cg-typing-zone-badge">',
+            '    <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.escapeHtml(round.keyboardZone || "full keyboard") + '</span>',
+            '    <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(round.orthographyFocus || "typing pattern") + '</span>',
+            '  </div>',
+            '  <div class="cg-typing-target">' + targetChars.map(function (ch, index) {
+              var isLocked = index < typed.length;
+              return '<div class="cg-typing-char' + (isLocked ? ' is-locked' : '') + '">' + runtimeRoot.CSGameComponents.escapeHtml(ch) + "</div>";
+            }).join("") + "</div>",
+            '<div class="cg-typing-track">' + targetChars.map(function (_ch, index) {
+              var stateLabel = typedEvaluation[index] || (index < typed.length ? "correct" : "");
+              return '<div class="cg-letter-box' + (stateLabel ? " is-revealed" : "") + '" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(stateLabel || "") + '" style="animation-delay:' + (index * 40) + 'ms">' + runtimeRoot.CSGameComponents.escapeHtml(typed[index] || "") + "</div>";
+            }).join("") + "</div>",
+            buildKeyboardStrip(round.target, typedEvaluation, typed || round.target, "cg-key-strip cg-key-strip--typing" + (Date.now() < uiState.typingErrorUntil ? " is-error" : "")),
+            '  <p class="cg-typing-cue">' + runtimeRoot.CSGameComponents.escapeHtml(round.fingerCue || "Look across the whole word before you type.") + "</p>",
+            (state.hintVisible ? '<div class="cg-clue-reveal">' + runtimeRoot.CSGameComponents.iconFor("hint") + '<span>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span></div>" : ""),
+            "</div>",
+            "</div>"
+          ].join(""),
+          controls: [
+            '<div class="cg-typing-entry">',
+            '  <input id="cg-word-typing-input" class="cg-input' + (Date.now() < uiState.typingErrorUntil ? " is-invalid" : "") + '" maxlength="' + String(round.target || "").length + '" value="' + runtimeRoot.CSGameComponents.escapeHtml(typed) + '" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Type the word for the class…" : "Type the word…") + '" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Type the target word">',
+            '  <button class="cg-action cg-action-quiet" type="button" data-action="hint">Show Pattern Hint</button>',
+            '  <button class="cg-action cg-action-primary" type="button" data-submit="word-typing">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Check Class Word" : "Check Word") + '</button>',
+            '  <button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Word</button>',
+            '</div>'
+          ].join(""),
+          guide: roundGuide(game, state, round)
+        });
       }
 
       return '<div class="cg-focus-panel">Round ready.</div>';
@@ -1622,6 +1828,11 @@
             render();
             return;
           }
+          if (action === "toggle-support-reveal") {
+            uiState.supportRevealOpen = !uiState.supportRevealOpen;
+            render();
+            return;
+          }
           if (action === "teacher-override") {
             engine.teacherOverride();
             return;
@@ -1646,11 +1857,24 @@
         });
       });
 
+      Array.prototype.forEach.call(shell.querySelectorAll("[data-detective-fragment]"), function (button) {
+        button.addEventListener("click", function () {
+          uiState.detectiveSelection = button.getAttribute("data-detective-fragment") || "";
+          render();
+        });
+      });
+
       Array.prototype.forEach.call(shell.querySelectorAll("[data-tile]"), function (button) {
         button.addEventListener("click", function () {
           var tile = button.getAttribute("data-tile") || "";
           if (uiState.builderSelection.indexOf(tile) >= 0) return;
-          uiState.builderSelection = uiState.builderSelection.concat(tile);
+          var solutionLength = (((engine.getState().round || {}).solution) || []).length;
+          var next = uiState.builderSelection.slice();
+          var emptyIndex = next.indexOf("");
+          if (emptyIndex < 0) emptyIndex = next.length < solutionLength ? next.length : -1;
+          if (emptyIndex < 0) return;
+          next[emptyIndex] = tile;
+          uiState.builderSelection = next;
           render();
         });
       });
@@ -1658,11 +1882,91 @@
       Array.prototype.forEach.call(shell.querySelectorAll("[data-slot-index]"), function (button) {
         button.addEventListener("click", function () {
           var next = uiState.builderSelection.slice();
-          next.splice(Number(button.getAttribute("data-slot-index") || 0), 1);
+          next[Number(button.getAttribute("data-slot-index") || 0)] = "";
           uiState.builderSelection = next;
           render();
         });
       });
+
+      Array.prototype.forEach.call(shell.querySelectorAll("[data-drag-tile]"), function (button) {
+        button.addEventListener("dragstart", function (event) {
+          var tile = button.getAttribute("data-drag-tile") || "";
+          if (!event.dataTransfer || !tile) return;
+          event.dataTransfer.setData("text/plain", tile);
+          event.dataTransfer.effectAllowed = "move";
+          button.classList.add("is-dragging");
+        });
+        button.addEventListener("dragend", function () {
+          button.classList.remove("is-dragging");
+        });
+      });
+
+      Array.prototype.forEach.call(shell.querySelectorAll("[data-drop-slot]"), function (slot) {
+        slot.addEventListener("dragover", function (event) {
+          event.preventDefault();
+          slot.classList.add("is-drop-target");
+        });
+        slot.addEventListener("dragleave", function () {
+          slot.classList.remove("is-drop-target");
+        });
+        slot.addEventListener("drop", function (event) {
+          event.preventDefault();
+          slot.classList.remove("is-drop-target");
+          var tile = event.dataTransfer ? event.dataTransfer.getData("text/plain") : "";
+          if (!tile || uiState.builderSelection.indexOf(tile) >= 0) return;
+          var slotIndex = Number(slot.getAttribute("data-drop-slot") || -1);
+          if (slotIndex < 0) return;
+          var next = uiState.builderSelection.slice();
+          next[slotIndex] = tile;
+          uiState.builderSelection = next;
+          render();
+        });
+      });
+
+      var typingInput = document.getElementById("cg-word-typing-input");
+      if (typingInput) {
+        typingInput.addEventListener("input", function () {
+          var round = engine.getState().round || {};
+          var target = String(round.target || "");
+          var previous = uiState.typingLockedValue || "";
+          var nextValue = normalizeTypingInput(typingInput.value, target);
+          if (String(typingInput.value || "").toUpperCase() !== nextValue && String(typingInput.value || "").length > nextValue.length) {
+            uiState.typingErrorUntil = Date.now() + 180;
+          }
+          if (nextValue.length < previous.length) nextValue = previous;
+          uiState.typingLockedValue = nextValue;
+          typingInput.value = nextValue;
+          paintTypingPreview(target.toUpperCase(), nextValue);
+        });
+        typingInput.addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            handleSubmit("word-typing");
+          }
+        });
+      }
+
+      var clueInput = document.getElementById("cg-word-connections-text");
+      if (clueInput) {
+        clueInput.addEventListener("keydown", function (event) {
+          if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+            event.preventDefault();
+            handleSubmit("word-connections");
+          }
+        });
+      }
+
+      var categoryInput = document.getElementById("cg-category-text");
+      if (categoryInput) {
+        categoryInput.addEventListener("input", function () {
+          uiState.categoryPreview = String(categoryInput.value || "")
+            .split(/[\n,]/)
+            .map(function (item) { return item.trim(); })
+            .filter(Boolean)
+            .slice(0, 8);
+          paintCategoryPreview(uiState.categoryPreview);
+        });
+      }
 
       var viewMode = document.getElementById("cg-view-mode");
       if (viewMode) viewMode.addEventListener("change", function () {
@@ -1902,7 +2206,7 @@
       }
       if (gameId === "word-typing") {
         var typedWord = document.getElementById("cg-word-typing-input");
-        var typedValue = typedWord ? typedWord.value : "";
+        var typedValue = uiState.typingLockedValue || (typedWord ? typedWord.value : "");
         uiState.lastSubmittedGuess = String(typedValue || "").trim();
         engine.submit({ value: typedValue });
         return;
@@ -1925,6 +2229,7 @@
       }
       if (gameId === "rapid-category") {
         var category = document.getElementById("cg-category-text");
+        uiState.categoryPreview = [];
         engine.submit({ value: category ? category.value : "" });
         return;
       }
