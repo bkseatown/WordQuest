@@ -198,6 +198,10 @@
     lessonBriefBtn: document.getElementById("td-lesson-brief"),
     weeklyInsightsBtn: document.getElementById("td-weekly-insights"),
     meetingWorkspaceBtn: document.getElementById("td-meeting-workspace"),
+    reportsOpenMeetingBtn: document.getElementById("td-reports-open-meeting"),
+    reportsOpenWeeklyBtn: document.getElementById("td-reports-open-weekly"),
+    reportsOpenLibraryBtn: document.getElementById("td-reports-open-library"),
+    reportsOpenImportBtn: document.getElementById("td-reports-open-import"),
     tier1PackBtn: document.getElementById("td-tier1-pack"),
     openStudentDrawer: document.getElementById("td-open-student-drawer"),
     drawer: document.getElementById("td-student-drawer"),
@@ -386,12 +390,24 @@
     try {
       var params = new URLSearchParams(window.location.search || "");
       return {
-        student: String(params.get("student") || "").trim()
+        student: String(params.get("student") || "").trim(),
+        mode: String(params.get("mode") || "").trim().toLowerCase()
       };
     } catch (_e) {
-      return { student: "" };
+      return { student: "", mode: "" };
     }
   })();
+
+  function getInitialDashboardMode() {
+    var requested = String(bootContext.mode || "").toLowerCase();
+    if (requested === "daily" || requested === "advanced" || requested === "reports" || requested === "classroom") {
+      return requested;
+    }
+    if (/\/reports\.html(?:$|\?)/i.test(String(window.location.pathname || ""))) {
+      return "reports";
+    }
+    return "daily";
+  }
 
   function getFrameworkAlignmentSafe(skillNode) {
     if (!FrameworkRegistry || typeof FrameworkRegistry.getFrameworkAlignment !== "function") {
@@ -1067,7 +1083,6 @@
       document.body.classList.toggle("td-teacher-role", role !== "admin");
     }
     if (role !== "admin") {
-      if (el.activitySelect) el.activitySelect.closest(".td-activity-pick") && el.activitySelect.closest(".td-activity-pick").classList.add("hidden");
       if (el.coachChip) el.coachChip.classList.add("hidden");
       if (el.adminDemo) el.adminDemo.classList.add("hidden");
     }
@@ -1894,11 +1909,11 @@
     var rows = Evidence.listCaseload();
     if (rows.length) return;
     [
-      { id: "SAS7A-03", name: "Ava", gradeBand: "68", tags: ["decoding"] },
-      { id: "SAS7A-11", name: "Liam", gradeBand: "68", tags: ["fluency"] },
-      { id: "SAS7A-14", name: "Maya", gradeBand: "68", tags: ["sentence"] },
-      { id: "SAS7A-17", name: "Noah", gradeBand: "68", tags: ["writing"] },
-      { id: "SAS7A-19", name: "Zoe", gradeBand: "68", tags: ["decoding"] }
+      { id: "demo-ava", name: "Ava M.", gradeBand: "G3", tags: ["reading", "iesp"] },
+      { id: "demo-liam", name: "Liam T.", gradeBand: "G2", tags: ["phonics", "ip"] },
+      { id: "demo-maya", name: "Maya R.", gradeBand: "G3", tags: ["reading"] },
+      { id: "demo-noah", name: "Noah K.", gradeBand: "G4", tags: ["numeracy"] },
+      { id: "demo-zoe", name: "Zoe W.", gradeBand: "G1", tags: ["phonics", "bip"] }
     ].forEach(function (student) { Evidence.upsertStudent(student); });
   }
 
@@ -2811,7 +2826,7 @@
   bootstrapSkillStore();
   refreshBuildLine();
   applyRoleBasedSimplification();
-  setDashboardMode("reports");
+  setDashboardMode(getInitialDashboardMode());
   seedFromCaseloadStore();
   ensureDemoCaseload();
   primeDemoMetrics();

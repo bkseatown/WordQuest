@@ -3,16 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Redirecting to Reports</title>
-  <meta http-equiv="refresh" content="0; url=./reports.html">
+  <title>Opening Reports &amp; Prep</title>
   <script>
     (function () {
-      var target = "./reports.html" + (window.location.search || "") + (window.location.hash || "");
-      window.location.replace(target);
+      function buildTarget() {
+        var search = window.location.search || "";
+        try {
+          var params = new URLSearchParams(search);
+          if (!params.has("mode")) params.set("mode", "daily");
+          search = "?" + params.toString();
+        } catch (_e) {}
+        return "./reports.html" + search + (window.location.hash || "");
+      }
+
+      window.addEventListener("DOMContentLoaded", function () {
+        window.setTimeout(function () {
+          window.location.replace(buildTarget());
+        }, 0);
+      }, { once: true });
     }());
   </script>
 </head>
 <body>
-  <p>Redirecting to <a href="./reports.html">Reports</a>…</p>
+  <p>Opening Reports &amp; Prep…</p>
 </body>
 </html>

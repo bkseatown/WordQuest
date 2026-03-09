@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="./">
-  <title>Cornerstone MTSS - Reports</title>
+  <title>Cornerstone MTSS - Reports & Prep</title>
   <script src="./config.js?v=20260301y"></script>
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260301y">
   <link rel="stylesheet" href="./style/typography.css?v=20260301y">
   <link rel="stylesheet" href="./style/nav-shell.css?v=20260301y">
-  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260307f">
+  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260309b">
   <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306m">
   <link rel="stylesheet" href="./css/backup-panel.css?v=20260308a">
   <style>
@@ -52,8 +52,8 @@
     <header class="td-top td-surface card">
       <a class="td-wordmark td-brand-home" href="./index.html" aria-label="Home">
         <strong>Cornerstone MTSS</strong>
-        <span>Reports</span>
-        <p class="td-top-description">Aggregate caseload reporting, weekly insight drafts, meeting-ready exports, and evidence review. Use Student Profile for one-student detail.</p>
+        <span>Reports &amp; Prep</span>
+        <p class="td-top-description">A secondary evidence workspace for caseload patterns, weekly drafts, meeting prep, and exports. Use the Hub for daily action and launch decisions.</p>
         <small id="td-buildline" class="td-buildline">Build: checking...</small>
       </a>
 
@@ -68,6 +68,19 @@
         </a>
         <button id="td-weekly-insights" class="td-top-btn" type="button">Weekly Insight</button>
         <button id="td-meeting-workspace" class="td-top-btn" type="button">Meeting Prep</button>
+        <label class="td-activity-pick" for="td-activity-select">
+          <span>Activities</span>
+          <select id="td-activity-select" class="td-top-btn">
+            <option value="">Go to...</option>
+            <option value="word-quest.html">Word Quest</option>
+            <option value="reading-lab.html">Reading Lab</option>
+            <option value="sentence-surgery.html">Sentence Studio</option>
+            <option value="writing-studio.html">Writing Studio</option>
+            <option value="numeracy.html">Numeracy</option>
+            <option value="precision-play.html">Precision Play</option>
+            <option value="activities/decoding-diagnostic.html">Decoding Diagnostic</option>
+          </select>
+        </label>
         <div class="td-top-overflow">
           <button id="td-top-overflow-toggle" class="td-top-btn" type="button" aria-expanded="false" aria-controls="td-top-overflow-menu">More</button>
           <div id="td-top-overflow-menu" class="td-top-overflow-menu hidden">
@@ -76,19 +89,6 @@
             <button id="td-add-student" class="td-top-btn" type="button">Add Student</button>
             <button id="td-new-session" class="td-top-btn" type="button">New Session</button>
             <button id="td-settings" class="td-top-btn" type="button">Settings</button>
-            <label class="td-activity-pick" for="td-activity-select">
-              <span>Activities</span>
-              <select id="td-activity-select" class="td-top-btn">
-                <option value="">Go to...</option>
-                <option value="word-quest.html">Word Quest</option>
-                <option value="reading-lab.html">Reading Lab</option>
-                <option value="sentence-surgery.html">Sentence Studio</option>
-                <option value="writing-studio.html">Writing Studio</option>
-                <option value="numeracy.html">Numeracy</option>
-                <option value="precision-play.html">Precision Play</option>
-                <option value="activities/decoding-diagnostic.html">Decoding Diagnostic</option>
-              </select>
-            </label>
             <button id="td-coach-chip" class="td-top-btn td-coach-chip" type="button">Coach</button>
             <span id="td-demo-badge" class="tier-badge tier-2 hidden" aria-live="polite">Sample data</span>
             <button id="td-admin-demo" class="td-top-btn" type="button">Sample Data</button>
@@ -102,13 +102,19 @@
     </header>
 
     <section class="td-body">
-      <main class="dashboard cs-stage" aria-label="Reports and meeting surface">
+      <main class="dashboard cs-stage" aria-label="Reports and prep surface">
+        <div class="dashboard-mode-strip card td-surface hidden" role="toolbar" aria-label="Dashboard view mode" aria-hidden="true">
+          <button id="td-mode-daily" class="td-top-btn" type="button" aria-pressed="false">Daily</button>
+          <button id="td-mode-classroom" class="td-top-btn" type="button" aria-pressed="false">Classroom</button>
+          <button id="td-mode-reports" class="td-top-btn" type="button" aria-pressed="false">Reports</button>
+          <button id="td-mode-advanced" class="td-top-btn" type="button" aria-pressed="false">Details</button>
+        </div>
         <section class="td-reports-overview card td-surface" aria-label="Reports overview">
           <div class="td-reports-overview__head">
             <div>
-              <p class="dashboard-kicker">Reports Overview</p>
-              <h1 class="td-title">Reports aggregate real support signals across students, blocks, and time.</h1>
-              <p class="dashboard-section-meta">Student-specific data now belongs in Student Profile. This page stays focused on patterns, exports, weekly insight drafts, and meeting-ready summaries.</p>
+              <p class="dashboard-kicker">Reports &amp; Prep</p>
+              <h1 class="td-title">Keep this page for patterns, packets, and meeting-ready outputs.</h1>
+              <p class="dashboard-section-meta">Hub stays primary for who needs support now and what to launch next. This page stays focused on aggregated signals, meeting prep, weekly insight drafts, and share/export work.</p>
             </div>
             <div class="td-reports-overview__actions">
               <a class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html">Back to Hub</a>
@@ -118,19 +124,62 @@
           <div class="td-reports-overview__grid" id="td-overview-grid">
             <article>
               <strong>Caseload patterns</strong>
-              <p>Review who is missing evidence, due for review, or ready for follow-up.</p>
+              <p>Review cross-student risk, missing evidence, and follow-up load before a meeting or weekly check-in.</p>
             </article>
             <article>
               <strong>Meeting-ready outputs</strong>
               <p>Generate weekly drafts, exports, packets, and follow-up notes from real data.</p>
             </article>
             <article>
-              <strong>No fake analytics</strong>
-              <p>Ghost guidance is allowed only for onboarding and disappears on engagement.</p>
+              <strong>Secondary workspace</strong>
+              <p>Launch recommendations and daily intervention moves belong back in the Hub, not here.</p>
             </article>
           </div>
         </section>
-        <section class="td-priority-hero card td-surface" aria-label="Highest priority right now">
+        <section class="td-reports-workbench">
+          <article class="td-reports-panel card td-surface" aria-labelledby="td-patterns-title">
+            <div class="td-reports-panel__head">
+              <div>
+                <p class="dashboard-kicker">Aggregated Caseload Patterns</p>
+                <h2 id="td-patterns-title" class="dashboard-section-title">Use this view to scan evidence health, not choose the next lesson.</h2>
+              </div>
+              <a class="td-top-btn" href="./teacher-hub-v2.html">Open Hub</a>
+            </div>
+            <p class="dashboard-section-meta">Look for caseload-level risk distribution, missing evidence, and students who need review before meetings, packets, or family communication.</p>
+            <div id="td-caseload-snapshot" class="td-caseload-snapshot" aria-live="polite"></div>
+            <div class="td-reports-pattern-list" aria-label="Reports prep checklist">
+              <article>
+                <strong>Before meetings</strong>
+                <p>Review caseload health, recent evidence gaps, and students whose support plan changed.</p>
+              </article>
+              <article>
+                <strong>Before exports</strong>
+                <p>Open Student Profile only when you need one-student evidence or communication history.</p>
+              </article>
+              <article>
+                <strong>Before weekly summaries</strong>
+                <p>Use the weekly draft flow to generate teacher, family, and student-facing summaries from current data.</p>
+              </article>
+            </div>
+          </article>
+          <article class="td-reports-panel card td-surface" aria-labelledby="td-prep-title">
+            <div class="td-reports-panel__head">
+              <div>
+                <p class="dashboard-kicker">Meeting Prep</p>
+                <h2 id="td-prep-title" class="dashboard-section-title">Prepare narratives, packets, and follow-up without acting like the Hub.</h2>
+              </div>
+            </div>
+            <p class="dashboard-section-meta">This workspace is for meeting notes, weekly summary generation, SAS-aligned packets, and import/export tasks.</p>
+            <div class="td-reports-action-grid">
+              <button id="td-reports-open-meeting" class="td-top-btn btn-primary" type="button">Open Meeting Prep</button>
+              <button id="td-reports-open-weekly" class="td-top-btn" type="button">Generate Weekly Draft</button>
+              <button id="td-reports-open-library" class="td-top-btn" type="button">Open SAS Library</button>
+              <button id="td-reports-open-import" class="td-top-btn" type="button">Open Import / Export</button>
+              <a class="td-top-btn" href="./student-profile.html">Open Student Profile</a>
+            </div>
+          </article>
+        </section>
+        <section class="td-priority-hero card td-surface hidden" aria-label="Highest priority right now" aria-hidden="true">
           <div class="td-priority-hero__copy">
             <p class="dashboard-kicker">Highest Priority Right Now</p>
             <h2 id="td-priority-title" class="dashboard-section-title">Open one student and take the clearest next step.</h2>
@@ -141,7 +190,7 @@
             <a class="td-top-btn" href="./teacher-hub-v2.html">Return to Hub</a>
           </div>
         </section>
-        <section class="dashboard-focus">
+        <section class="dashboard-focus hidden" aria-hidden="true">
           <article id="td-focus-card" class="focus-card card td-surface">
             <p class="dashboard-kicker">Today's Focus</p>
             <div class="focus-header">
@@ -307,13 +356,13 @@
           </article>
         </section>
 
-        <section class="dashboard-queue card td-surface">
+        <section class="dashboard-queue card td-surface hidden" aria-hidden="true">
           <h2 class="dashboard-section-title">Who Else Needs Attention</h2>
           <p class="dashboard-section-meta">Keep the queue short, visible, and easy to scan before opening deeper notes.</p>
           <div id="td-surgical-attention-list" class="queue-list" aria-live="polite"></div>
         </section>
 
-        <section class="dashboard-launch card td-surface">
+        <section class="dashboard-launch card td-surface hidden" aria-hidden="true">
           <h2 class="dashboard-section-title">Quick Launch</h2>
           <p class="dashboard-section-meta">Jump into the next specialist move without rebuilding context.</p>
           <div class="launch-row">
@@ -389,11 +438,6 @@
           <div id="td-eval-metrics" class="dashboard-eval-metrics" aria-live="polite"></div>
           <div id="td-eval-report" class="dashboard-eval-report hidden" aria-live="polite"></div>
         </details>
-        <footer class="dashboard-confidence card td-surface" aria-label="Reports guidance">
-          <h2 class="dashboard-section-title">Reports Guidance</h2>
-          <p class="dashboard-section-meta">Keep this page for aggregated signals, packets, and drafts. Use Student Profile for one-student evidence, behavior support, and communication records.</p>
-          <p id="td-confidence-line">Hub for today • Student Profile for one student • Reports for patterns, exports, and meeting-ready summaries</p>
-        </footer>
       </main>
 
     </section>
@@ -452,7 +496,6 @@
       <input id="td-show-alignment" type="checkbox">
       <section id="td-today"></section>
       <div id="td-today-list"></div>
-      <div id="td-caseload-snapshot"></div>
       <button id="td-today-refresh" type="button"></button>
       <button id="td-view-all-students" type="button"></button>
       <div id="td-today-group"></div>
@@ -462,6 +505,7 @@
       <div id="td-group-output"></div>
       <details id="td-exec-panel"></details>
       <div id="td-exec-output"></div>
+      <p id="td-confidence-line"></p>
       <button data-support-tab="accommodations" type="button"></button>
     </section>
   </main>
@@ -697,7 +741,7 @@
   <script src="./js/teacher-runtime-state.js?v=20260306n" defer></script>
   <script src="./js/dashboard/dashboard-state.js?v=20260306n" defer></script>
   <script src="./js/dashboard/dashboard-role.js?v=20260306h" defer></script>
-  <script src="./js/dashboard/dashboard-ui.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-ui.js?v=20260309b" defer></script>
   <script src="./js/dashboard/dashboard-focus.js?v=20260306h" defer></script>
   <script src="./js/dashboard/dashboard-support.js?v=20260306h" defer></script>
   <script src="./js/dashboard/dashboard-support-view.js?v=20260306h" defer></script>
@@ -727,7 +771,7 @@
   <script src="./js/auth/google-workspace.js?v=20260306i" defer onerror="0"></script>
   <script src="./js/backup-manager.js?v=20260308a" defer></script>
   <script src="./js/lesson-brief-panel.js?v=20260306n" defer></script>
-  <script src="./teacher-dashboard.js?v=20260307f" defer></script>
+  <script src="./teacher-dashboard.js?v=20260309b" defer></script>
   <script defer>window.addEventListener("DOMContentLoaded",function(){window.CSBackupManager&&window.CSBackupManager.init&&window.CSBackupManager.init();});</script>
 </body>
 </html>

@@ -170,6 +170,35 @@
           run("setDashboardMode", "reports");
         });
       }
+      if (el.reportsOpenMeetingBtn) {
+        el.reportsOpenMeetingBtn.addEventListener("click", function () {
+          if (el.meetingWorkspaceBtn) {
+            el.meetingWorkspaceBtn.click();
+          }
+        });
+      }
+      if (el.reportsOpenWeeklyBtn) {
+        el.reportsOpenWeeklyBtn.addEventListener("click", function () {
+          if (el.weeklyInsightsBtn) {
+            el.weeklyInsightsBtn.click();
+          }
+        });
+      }
+      if (el.reportsOpenLibraryBtn) {
+        el.reportsOpenLibraryBtn.addEventListener("click", function () {
+          if (modalController && el.sasLibraryModal) {
+            modalController.open("sas-library");
+            run("setCoachLine", "SAS library opened.");
+          }
+        });
+      }
+      if (el.reportsOpenImportBtn) {
+        el.reportsOpenImportBtn.addEventListener("click", function () {
+          if (el.importExport) {
+            el.importExport.click();
+          }
+        });
+      }
       if (el.focusViewDetailsBtn) {
         el.focusViewDetailsBtn.addEventListener("click", function () {
           run("setDashboardMode", "advanced");

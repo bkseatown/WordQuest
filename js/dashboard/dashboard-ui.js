@@ -13,6 +13,10 @@
     if (el && el.modeAdvanced) el.modeAdvanced.classList.toggle("is-active", next === "advanced");
     if (el && el.modeReports) el.modeReports.classList.toggle("is-active", next === "reports");
     if (el && el.modeClassroom) el.modeClassroom.classList.toggle("is-active", next === "classroom");
+    if (el && el.modeDaily) el.modeDaily.setAttribute("aria-pressed", next === "daily" ? "true" : "false");
+    if (el && el.modeAdvanced) el.modeAdvanced.setAttribute("aria-pressed", next === "advanced" ? "true" : "false");
+    if (el && el.modeReports) el.modeReports.setAttribute("aria-pressed", next === "reports" ? "true" : "false");
+    if (el && el.modeClassroom) el.modeClassroom.setAttribute("aria-pressed", next === "classroom" ? "true" : "false");
     return next;
   }
 
