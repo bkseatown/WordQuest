@@ -1003,6 +1003,21 @@
     ].join("");
   }
 
+  function normalizeCategoryEntries(value) {
+    var seen = Object.create(null);
+    return String(value || "")
+      .split(/[\n,]/)
+      .map(function (item) { return item.trim(); })
+      .filter(Boolean)
+      .filter(function (item) {
+        var key = item.toLowerCase();
+        if (seen[key]) return false;
+        seen[key] = true;
+        return true;
+      })
+      .slice(0, 12);
+  }
+
   function normalizeTypingInput(raw, target) {
     var source = String(raw || "").toUpperCase().replace(/[^A-Z;,'!.?\-\/ ]/g, "");
     var goal = String(target || "").toUpperCase();
@@ -2958,7 +2973,7 @@
             var categoryArea = document.getElementById("cg-category-text");
             var entry = String(quickInput && quickInput.value || "").trim();
             if (!entry) return;
-            uiState.categoryPreview = uiState.categoryPreview.concat([entry]).slice(-12);
+            uiState.categoryPreview = normalizeCategoryEntries(uiState.categoryPreview.concat([entry]).join("\n"));
             if (categoryArea) categoryArea.value = uiState.categoryPreview.join("\n");
             if (quickInput) quickInput.value = "";
             paintCategoryPreview(uiState.categoryPreview);
@@ -3122,11 +3137,7 @@
       var categoryInput = document.getElementById("cg-category-text");
       if (categoryInput) {
         categoryInput.addEventListener("input", function () {
-          uiState.categoryPreview = String(categoryInput.value || "")
-            .split(/[\n,]/)
-            .map(function (item) { return item.trim(); })
-            .filter(Boolean)
-            .slice(0, 12);
+          uiState.categoryPreview = normalizeCategoryEntries(categoryInput.value || "");
           paintCategoryPreview(uiState.categoryPreview);
         });
       }
