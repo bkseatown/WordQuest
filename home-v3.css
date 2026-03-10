@@ -8,10 +8,11 @@ body {
 
 body.cs-home-page {
   background:
-    radial-gradient(circle at top left, rgba(88, 137, 247, 0.26), transparent 26%),
-    radial-gradient(circle at top right, rgba(255, 143, 64, 0.12), transparent 22%),
-    linear-gradient(145deg, #0d1f36 0%, #162947 42%, #233756 100%);
-  color: #ecf2ff;
+    radial-gradient(circle at top left, rgba(24, 158, 149, 0.16), transparent 24%),
+    radial-gradient(circle at top right, rgba(184, 135, 31, 0.18), transparent 20%),
+    radial-gradient(circle at bottom right, rgba(87, 173, 81, 0.12), transparent 18%),
+    linear-gradient(145deg, #0b1b33 0%, #132847 40%, #233552 72%, #384967 100%);
+  color: #eef4ff;
   font-family: var(--font-ui, var(--font-sans, system-ui, -apple-system, Segoe UI, Roboto, sans-serif));
   font-size: 16px;
   line-height: 1.5;
@@ -22,87 +23,76 @@ body.cs-home-page {
   place-items: center;
   width: 100%;
   min-height: 100dvh;
-  padding: 18px 18px;
+  padding: 18px;
 }
 
 .home-hero-panel {
-  width: min(1280px, 100%);
+  width: min(1320px, 100%);
   max-height: calc(100dvh - 36px);
   overflow: auto;
   display: grid;
-  grid-template-columns: minmax(260px, 0.86fr) minmax(0, 1.14fr);
-  gap: 22px;
-  padding: 24px 24px 20px;
-  border-radius: 32px;
-  background:
-    linear-gradient(180deg, rgba(243, 247, 255, 0.96), rgba(226, 234, 246, 0.94));
-  border: 1px solid rgba(184, 197, 219, 0.42);
-  box-shadow: 0 36px 80px rgba(2, 10, 23, 0.32);
-  color: #1a2540;
+  grid-template-columns: minmax(300px, 0.8fr) minmax(0, 1.2fr);
+  gap: 20px;
+  padding: 22px;
+  border-radius: 34px;
+  background: linear-gradient(180deg, rgba(228, 236, 246, 0.95), rgba(208, 218, 231, 0.95));
+  border: 1px solid rgba(198, 210, 228, 0.3);
+  box-shadow: 0 34px 80px rgba(1, 10, 23, 0.34);
+  color: #16243f;
 }
 
 .home-hero-copy {
   display: grid;
-  align-content: start;
-  gap: 10px;
-  padding: 6px 8px 6px 2px;
+  align-content: space-between;
+  min-height: 100%;
+  gap: 16px;
+  padding: 24px 22px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(12, 33, 64, 0.98), rgba(17, 47, 87, 0.98));
+  border: 1px solid rgba(72, 108, 156, 0.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
-.home-entry-wordmark,
-.home-entry-kicker,
-.home-entry-tagline,
-.home-entry-intro {
+.home-entry-title,
+.home-entry-subtitle {
   margin: 0;
 }
 
-.home-entry-wordmark {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #4c70ba;
+.home-entry-title {
+  font-size: clamp(3.25rem, 6vw, 5.4rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  max-width: 7ch;
+  color: #f7fbff;
 }
 
-.home-entry-kicker {
-  font-size: 12px;
+.home-entry-subtitle {
+  align-self: end;
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(40, 60, 101, 0.7);
-}
-
-.home-entry-tagline {
-  font-size: clamp(2.3rem, 4.2vw, 4.25rem);
-  line-height: 0.95;
-  letter-spacing: -0.05em;
-  max-width: 8.5ch;
-  color: #13233d;
-}
-
-.home-entry-intro {
-  max-width: 32rem;
-  font-size: 0.94rem;
-  color: rgba(28, 45, 76, 0.72);
+  color: rgba(182, 203, 234, 0.88);
 }
 
 .home-entry-roles {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .home-role-btn {
   display: grid;
   align-content: start;
-  gap: 12px;
+  gap: 14px;
   min-height: 100%;
-  padding: 16px;
-  border-radius: 26px;
+  padding: 14px;
+  border-radius: 28px;
   text-decoration: none;
   color: inherit;
-  border: 1px solid rgba(60, 87, 132, 0.16);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(236, 242, 250, 0.94));
-  box-shadow: 0 18px 34px rgba(17, 28, 45, 0.1);
+  border: 1px solid rgba(72, 90, 126, 0.18);
+  background: linear-gradient(180deg, rgba(247, 249, 252, 0.84), rgba(234, 239, 247, 0.9));
+  box-shadow: 0 18px 34px rgba(18, 28, 45, 0.09);
   transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
 }
 
@@ -119,23 +109,22 @@ body.cs-home-page {
 }
 
 .home-role-btn--hub {
-  background: linear-gradient(180deg, rgba(240, 247, 255, 0.96), rgba(228, 238, 252, 0.94));
+  background: linear-gradient(180deg, rgba(221, 233, 250, 0.92), rgba(204, 219, 240, 0.94));
 }
 
 .home-role-btn--games {
-  background: linear-gradient(180deg, rgba(246, 243, 255, 0.96), rgba(235, 231, 250, 0.94));
+  background: linear-gradient(180deg, rgba(232, 227, 242, 0.94), rgba(220, 214, 236, 0.96));
 }
 
 .home-role-preview {
   display: grid;
   gap: 12px;
-  min-height: 184px;
-  padding: 14px;
-  border-radius: 22px;
-  border: 1px solid rgba(77, 103, 145, 0.12);
-  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(240,245,251,0.96));
+  min-height: 200px;
+  padding: 16px;
+  border-radius: 24px;
+  border: 1px solid rgba(96, 116, 152, 0.15);
+  background: linear-gradient(180deg, rgba(246, 248, 251, 0.88), rgba(230, 235, 243, 0.9));
 }
-
 .home-preview-window {
   display: grid;
   gap: 10px;
@@ -249,32 +238,71 @@ body.cs-home-page {
   display: grid;
   gap: 10px;
   padding: 12px;
-  border-radius: 20px;
-  background: linear-gradient(180deg, rgba(233, 240, 251, 0.98), rgba(220, 230, 246, 0.98));
-  border: 1px solid rgba(102, 125, 165, 0.22);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #d8e1ee, #c8d3e3);
+  border: 1px solid rgba(110, 133, 171, 0.26);
 }
 
 .home-preview-quest-stage--gallery {
-  padding: 10px;
+  padding: 12px;
 }
 
 .home-preview-gallery-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
-  align-items: end;
-  padding: 14px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(247, 250, 255, 0.98), rgba(227, 235, 247, 0.98));
-  border: 1px solid rgba(117, 139, 175, 0.18);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #eef3fa, #dfe7f3);
+  border: 1px solid rgba(133, 152, 184, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.78);
+}
+
+.home-preview-gallery-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.home-preview-gallery-word,
+.home-preview-gallery-guess {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  font-size: 0.94rem;
+  font-weight: 900;
+}
+
+.home-preview-gallery-word {
+  background: #f8fbff;
+  color: #182842;
+  letter-spacing: 0.08em;
+}
+
+.home-preview-gallery-guess {
+  background: linear-gradient(180deg, #cfd8e7, #bcc7d8);
+  color: #223659;
+  box-shadow: 0 5px 0 rgba(86, 99, 124, 0.2);
+}
+
+.home-preview-gallery-clue {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.86);
+  color: #52657f;
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 .home-preview-gallery-board {
   display: grid;
   gap: 8px;
-  min-height: 106px;
-  align-content: start;
 }
 
 .home-preview-gallery-row {
@@ -286,39 +314,28 @@ body.cs-home-page {
 .home-preview-gallery-row i {
   display: block;
   aspect-ratio: 1;
-  min-height: 38px;
-  border-radius: 11px;
-  background: linear-gradient(180deg, #8f99af, #7d879d);
-  box-shadow: inset 0 2px 0 rgba(255,255,255,0.22), 0 4px 0 rgba(63, 74, 92, 0.22);
+  min-height: 36px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff, #edf1f6);
+  border: 1px solid rgba(157, 171, 194, 0.75);
+  box-shadow: 0 5px 0 rgba(92, 106, 131, 0.16);
 }
 
 .home-preview-gallery-row:first-child i:nth-child(1),
 .home-preview-gallery-row:first-child i:nth-child(4) {
-  background: linear-gradient(180deg, #58b84d, #2f8f3f);
+  background: linear-gradient(180deg, #59b34d, #32893e);
+  border-color: rgba(52, 124, 58, 0.9);
 }
 
 .home-preview-gallery-row:first-child i:nth-child(2) {
-  background: linear-gradient(180deg, #e2b44b, #ba8d20);
+  background: linear-gradient(180deg, #cf9b2f, #a77712);
+  border-color: rgba(143, 102, 11, 0.88);
 }
 
 .home-preview-gallery-row:first-child i:nth-child(3),
 .home-preview-gallery-row:first-child i:nth-child(5) {
-  background: linear-gradient(180deg, #303f76, #22315b);
-}
-
-.home-preview-gallery-guess {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 72px;
-  min-height: 54px;
-  padding: 6px 12px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #c9d0dd, #b8c1d1);
-  color: #223659;
-  font-size: 0.98rem;
-  font-weight: 900;
-  box-shadow: 0 5px 0 rgba(86, 99, 124, 0.22);
+  background: linear-gradient(180deg, #31447b, #223059);
+  border-color: rgba(37, 52, 97, 0.92);
 }
 
 .home-preview-pillrow {
@@ -515,7 +532,7 @@ body.cs-home-page {
 
 .home-role-body {
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 .home-role-label {
@@ -527,7 +544,7 @@ body.cs-home-page {
 
 .home-role-sub {
   font-size: 0.98rem;
-  line-height: 1.45;
+  line-height: 1.48;
   color: rgba(31, 48, 79, 0.76);
 }
 
@@ -536,19 +553,19 @@ body.cs-home-page {
   align-items: center;
   justify-content: center;
   width: fit-content;
-  min-height: 42px;
-  padding: 0 15px;
+  min-height: 44px;
+  padding: 0 18px;
   border-radius: 999px;
-  background: #162e51;
+  background: #18335c;
   color: #fff;
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   font-weight: 800;
   box-shadow: 0 12px 22px rgba(22, 46, 81, 0.18);
 }
 
 .home-role-btn--games .home-role-cta {
-  background: #6b45b1;
-  box-shadow: 0 12px 22px rgba(78, 51, 130, 0.22);
+  background: linear-gradient(180deg, #7b4ac6, #6130ac);
+  box-shadow: 0 12px 22px rgba(78, 51, 130, 0.24);
 }
 
 .home-entry-utility {
@@ -557,7 +574,7 @@ body.cs-home-page {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-top: 2px;
+  padding: 4px 4px 0;
 }
 
 .home-utility-copy {
@@ -631,6 +648,15 @@ body.cs-home-page {
 }
 
 @media (max-width: 640px) {
+  .home-entry-title {
+    max-width: none;
+    font-size: 3rem;
+  }
+
+  .home-entry-subtitle {
+    font-size: 0.92rem;
+  }
+
   .cs-home-root {
     padding: 18px;
   }
@@ -640,11 +666,7 @@ body.cs-home-page {
     border-radius: 24px;
   }
 
-  .home-entry-tagline {
-    max-width: 10ch;
-  }
-
-  .home-role-preview {
+    .home-role-preview {
     min-height: 176px;
   }
 
@@ -665,10 +687,7 @@ body.cs-home-page {
     overflow: visible;
   }
 
-  .home-entry-tagline {
-    max-width: 12ch;
   }
-}
 
 @media (max-width: 780px) {
   .cs-home-root {
