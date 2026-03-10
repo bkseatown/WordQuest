@@ -92,9 +92,12 @@
 
   function appBasePath() {
     var path = String((runtimeRoot.location && runtimeRoot.location.pathname) || "");
-    var marker = "/WordQuest/";
-    var idx = path.indexOf(marker);
-    if (idx >= 0) return path.slice(0, idx + marker.length);
+    var markers = ["/CornerstoneMTSS/", "/WordQuest/"];
+    for (var m = 0; m < markers.length; m += 1) {
+      var marker = markers[m];
+      var idx = path.indexOf(marker);
+      if (idx >= 0) return path.slice(0, idx + marker.length);
+    }
     try {
       var baseEl = runtimeRoot.document && runtimeRoot.document.querySelector && runtimeRoot.document.querySelector("base[href]");
       if (baseEl) {
@@ -2219,16 +2222,16 @@
           '      </div>',
           '    </div>',
           '    <div class="cg-typing-course-hero__main">',
-          '      <p class="cg-kicker">Course Map</p>',
+          '      <p class="cg-kicker">Course Path</p>',
           '      <h3 class="cg-display">Typing Quest Foundations</h3>',
-          '      <p class="cg-typing-course-hero__subtitle">' + runtimeRoot.CSGameComponents.escapeHtml(context.typingPlacementRequired ? "Placement unlocks the right course path." : ("Current focus: " + currentUnitMeta.title + ".")) + '</p>',
-          '      <div class="cg-typing-course-ribbon"><span>Home row</span><span>Short vowels</span><span>Heart words</span><span>Top row</span><span>Bottom row</span><span>Connected text</span></div>',
+          '      <p class="cg-typing-course-hero__subtitle">' + runtimeRoot.CSGameComponents.escapeHtml(context.typingPlacementRequired ? "Start with placement, then unlock the first lesson path." : ("Current path: " + currentUnitMeta.title + ".")) + '</p>',
+          '      <div class="cg-typing-course-ribbon"><span>Home row</span><span>Home-row words</span><span>Top row reach</span><span>Bottom row reach</span><span>Connected text</span></div>',
           '      <div class="cg-typing-plan-progress"><div class="cg-typing-plan-progress-fill" style="width:' + courseSummary.progressPercent + '%"></div></div>',
           '      <div class="cg-typing-plan-meta"><span>' + courseSummary.completedLessons + ' of ' + courseSummary.totalLessons + ' lessons mastered</span><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.typingPlacementRequired ? "Placement ready" : ((currentLesson && currentLesson.lessonLabel) || "Lesson 1")) + '</span></div>',
           '    </div>',
           '  </section>',
           renderTypingCourseMap(currentLesson || round),
-          (context.typingPlacementRequired ? '<section class="cg-typing-unit-section"><div class="cg-typing-unit-section__head"><div><p class="cg-kicker">Placement</p><h3>Find the right start point</h3><p>Four quick checks before the course map opens.</p></div><span class="cg-typing-unit-section__count">4 checks</span></div>' + renderTypingPlacementTiles() + '</section>' : ""),
+          (context.typingPlacementRequired ? '<section class="cg-typing-unit-section cg-typing-unit-section--placement"><div class="cg-typing-unit-section__head"><div><p class="cg-kicker">Placement</p><h3>Find the right start point</h3><p>Four short checks, then the first lesson opens in order.</p></div><span class="cg-typing-unit-section__count">4 checks</span></div>' + renderTypingPlacementTiles() + '</section>' : ""),
           renderTypingUnitSections(currentLesson || round),
           '</div>'
         ].join("");

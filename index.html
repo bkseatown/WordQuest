@@ -8,40 +8,70 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
   <link rel="stylesheet" href="./style/typography.css?v=20260306h">
-  <link rel="stylesheet" href="./home-v3.css?v=20260306h">
-  <link rel="stylesheet" href="./css/backup-panel.css?v=20260308a">
+  <link rel="stylesheet" href="./home-v3.css?v=20260310a">
+  <link rel="stylesheet" href="./css/backup-panel.css?v=20260310a">
 </head>
 <body class="cs-home-page">
   <main id="cs-home-root" class="cs-home-root" aria-label="Cornerstone MTSS">
     <select id="s-theme" aria-hidden="true" tabindex="-1" style="display:none;"></select>
-    <div class="home-entry">
-      <header class="home-entry-brand">
+    <section class="home-hero-panel" aria-label="Cornerstone MTSS destinations">
+      <div class="home-hero-copy">
         <p class="home-entry-wordmark">Cornerstone MTSS</p>
         <p class="home-entry-kicker">Specialist support platform</p>
-        <h1 class="home-entry-tagline">Where do you want to go?</h1>
-        <p class="home-entry-intro">Open the Specialist Hub to manage your caseload and plan interventions. Share Games with students and classroom teachers.</p>
-      </header>
-      <nav class="home-entry-roles" aria-label="Role selection">
-        <a class="home-role-btn" href="./teacher-hub-v2.html">
-          <span class="home-role-label">Specialist Hub</span>
-          <span class="home-role-sub">Caseload, class context, lesson briefing, and intervention planning</span>
+        <h1 class="home-entry-tagline">See the day, launch support, and share practice fast.</h1>
+        <p class="home-entry-intro">Choose the specialist workspace or open the student game gallery. The first screen should show what happens next, not make you read a manual.</p>
+      </div>
+      <nav class="home-entry-roles" aria-label="Primary destinations">
+        <a class="home-role-btn home-role-btn--hub" href="./teacher-hub-v2.html">
+          <span class="home-role-preview" aria-hidden="true">
+            <span class="home-preview-window">
+              <span class="home-preview-window__title">Today</span>
+              <span class="home-preview-schedule"><i></i><i></i><i></i></span>
+              <span class="home-preview-alerts"><b>3 now</b><b>2 this block</b></span>
+            </span>
+            <span class="home-preview-panel">
+              <strong>Maya R.</strong>
+              <small>Run vowel sweep with immediate feedback</small>
+            </span>
+          </span>
+          <span class="home-role-body">
+            <span class="home-role-label">Specialist Hub</span>
+            <span class="home-role-sub">Daily caseload view, intervention blocks, lesson brief, and next student actions.</span>
+          </span>
+          <span class="home-role-cta">Open Hub</span>
         </a>
-        <a class="home-role-btn" href="./game-platform.html">
-          <span class="home-role-label">Games</span>
-          <span class="home-role-sub">Game-based vocabulary and literacy practice — open to students and classroom teachers</span>
+        <a class="home-role-btn home-role-btn--games" href="./game-platform.html">
+          <span class="home-role-preview" aria-hidden="true">
+            <span class="home-preview-quest-stage">
+              <span class="home-preview-quest-head"><em>SLIME</em><strong>Guess</strong></span>
+              <span class="home-preview-game home-preview-game--quest">
+                <i></i><i></i><i></i><i></i><i></i>
+              </span>
+              <span class="home-preview-quest-keys"><b>Q</b><b>W</b><b>E</b><b>R</b><b>T</b><b>Y</b></span>
+            </span>
+            <span class="home-preview-pillrow"><b>Word Quest</b><b>Typing Quest</b><b>Word Forge</b></span>
+          </span>
+          <span class="home-role-body">
+            <span class="home-role-label">Games</span>
+            <span class="home-role-sub">Short, projector-ready literacy games for small group, partner work, and student choice.</span>
+          </span>
+          <span class="home-role-cta">Open Games</span>
         </a>
       </nav>
       <div class="home-entry-utility">
-        <button class="home-utility-link home-utility-btn" type="button" data-backup-open="1">Backup &amp; Restore</button>
-        <span class="home-backup-status" data-backup-status="compact">No backup yet</span>
+        <div class="home-utility-copy">
+          <span class="home-utility-label">Local-first backup</span>
+          <span class="home-backup-status" data-backup-status="compact">No backup yet</span>
+        </div>
+        <button class="home-utility-link home-utility-btn" type="button" data-backup-open="1">Open Backup &amp; Restore</button>
       </div>
-    </div>
+    </section>
   </main>
 
   <script src="./js/google-auth-config.js?v=20260306i" onerror="0"></script>
   <script src="./js/auth/google-auth.js?v=20260306i" onerror="0"></script>
   <script src="./js/auth/google-workspace.js?v=20260306i" onerror="0"></script>
-  <script src="./js/backup-manager.js?v=20260308a"></script>
+  <script src="./js/backup-manager.js?v=20260310a"></script>
   <script>window.CSBackupManager&&window.CSBackupManager.init&&window.CSBackupManager.init();</script>
   <script src="./build-stamp.js?v=20260306h"></script>
   <script src="./js/build-badge.js?v=20260306h"></script>
