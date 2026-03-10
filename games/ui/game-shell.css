@@ -4378,6 +4378,7 @@ body.game-platform-page[data-shell-view="gallery"] .cg-card-badge {
 .cg-typing-unit-section__head h3 {
   font-size: clamp(22px, 3vw, 36px);
   line-height: 0.98;
+  color: #25364c;
 }
 
 .cg-typing-lesson-grid {
@@ -4445,4 +4446,455 @@ body.game-platform-page[data-shell-view="play"] .cg-case-highlight-row {
   border-radius: 18px;
   background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(242,246,252,0.96));
   box-shadow: 0 12px 24px rgba(14, 21, 36, 0.08);
+}
+
+
+/* Typing Quest course-map refinement */
+.cg-typing-course-page {
+  gap: 26px;
+}
+
+.cg-typing-course-map {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.cg-typing-unit-card {
+  position: relative;
+  gap: 12px;
+  min-height: 220px;
+  padding: 18px 18px 16px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(252, 253, 255, 0.98), rgba(239, 244, 250, 0.96));
+  box-shadow: 0 16px 28px rgba(21, 34, 56, 0.08);
+  overflow: hidden;
+}
+
+.cg-typing-unit-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 8px;
+  background: linear-gradient(90deg, rgba(92, 159, 226, 0.92), rgba(130, 202, 145, 0.92));
+}
+
+.cg-typing-unit-card--step-2::before { background: linear-gradient(90deg, rgba(108, 131, 229, 0.92), rgba(146, 106, 219, 0.92)); }
+.cg-typing-unit-card--step-3::before { background: linear-gradient(90deg, rgba(90, 175, 198, 0.92), rgba(117, 205, 181, 0.92)); }
+.cg-typing-unit-card--step-4::before { background: linear-gradient(90deg, rgba(103, 196, 127, 0.92), rgba(165, 207, 113, 0.92)); }
+.cg-typing-unit-card--step-5::before { background: linear-gradient(90deg, rgba(146, 118, 225, 0.92), rgba(213, 126, 210, 0.92)); }
+
+.cg-typing-unit-card strong {
+  font-size: 28px;
+  line-height: 0.98;
+}
+
+.cg-typing-unit-progress {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(205, 217, 231, 0.72);
+}
+
+.cg-typing-unit-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #5da1e4, #75c68a);
+}
+
+.cg-typing-unit-card.is-current {
+  transform: translateY(-3px);
+  border-color: rgba(83, 149, 222, 0.76);
+  background: linear-gradient(180deg, rgba(243, 248, 255, 0.98), rgba(230, 239, 249, 0.98));
+  box-shadow: 0 0 0 3px rgba(93, 161, 228, 0.14), 0 22px 34px rgba(34, 60, 97, 0.14);
+}
+
+.cg-typing-unit-section {
+  gap: 18px;
+}
+
+.cg-typing-unit-section.is-current {
+  border-color: rgba(92, 159, 226, 0.46);
+  box-shadow: 0 18px 32px rgba(21, 42, 71, 0.1);
+}
+
+.cg-typing-unit-section.is-collapsed {
+  padding: 18px 20px 18px;
+}
+
+.cg-typing-unit-section__status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cg-typing-unit-section__meter,
+.cg-typing-unit-section__flag,
+.cg-typing-unit-section__jump {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cg-typing-unit-section__meter {
+  background: rgba(240, 245, 251, 0.92);
+  color: #58718d;
+  border: 1px solid rgba(206, 217, 229, 0.96);
+}
+
+.cg-typing-unit-section__flag {
+  background: linear-gradient(180deg, rgba(35, 70, 111, 0.96), rgba(26, 56, 91, 0.96));
+  color: #ffffff;
+}
+
+.cg-typing-unit-section__flag.is-locked {
+  background: rgba(230, 236, 243, 0.96);
+  color: #7b8d9f;
+}
+
+.cg-typing-unit-section__jump {
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(191, 206, 221, 0.96);
+  color: #334c68;
+  box-shadow: 0 10px 18px rgba(19, 34, 56, 0.08);
+}
+
+.cg-typing-unit-section__jump:hover,
+.cg-typing-unit-section__jump:focus-visible {
+  transform: translateY(-1px);
+}
+
+.cg-typing-unit-section.is-collapsed .cg-typing-lesson-grid {
+  grid-template-columns: repeat(auto-fit, minmax(156px, 1fr));
+}
+
+.cg-typing-unit-section.is-collapsed .cg-typing-lesson-tile {
+  min-height: 158px;
+}
+
+.cg-typing-unit-section__more {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 30px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(244, 247, 251, 0.96);
+  border: 1px solid rgba(210, 220, 232, 0.96);
+  color: #60758d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Typing Quest polish pass */
+.cg-typing-unit-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #1f3e66, #173454);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.cg-typing-unit-state {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 30px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(87, 113, 154, 0.12);
+  color: #51657f;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cg-typing-unit-card {
+  gap: 10px;
+}
+
+.cg-typing-unit-card.is-current .cg-typing-unit-state {
+  background: rgba(74, 149, 229, 0.16);
+  color: #245487;
+}
+
+.cg-typing-unit-card.is-locked .cg-typing-unit-state {
+  background: rgba(122, 141, 161, 0.1);
+  color: #8091a3;
+}
+
+.cg-typing-launch-steps,
+.cg-typing-lesson-cues {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cg-typing-launch-steps span,
+.cg-typing-lesson-cues span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(245, 248, 252, 0.94);
+  border: 1px solid rgba(205, 216, 230, 0.96);
+  color: #5a6d83;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.cg-typing-launch-target {
+  justify-items: start;
+}
+
+.cg-typing-target-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.cg-typing-target-word mark {
+  padding: 0 0.08em;
+  border-radius: 0.22em;
+  background: linear-gradient(180deg, rgba(246, 225, 150, 0.96), rgba(236, 197, 82, 0.96));
+  color: #24364c;
+  box-shadow: inset 0 -2px 0 rgba(171, 132, 28, 0.18);
+}
+
+.cg-typing-text-board__target {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 86px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(249, 251, 255, 0.98), rgba(239, 244, 251, 0.96));
+  border: 1px solid rgba(210, 220, 233, 0.96);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.cg-typing-text-board__target .cg-typing-target-word {
+  font-size: clamp(42px, 7vw, 76px);
+  font-weight: 900;
+  line-height: 0.94;
+  letter-spacing: -0.05em;
+  color: #1f3047;
+}
+
+.cg-typing-runtime-card--launch,
+.cg-typing-runtime-card--lesson,
+.cg-typing-runtime-card--summary {
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,248,252,0.97));
+}
+
+.cg-typing-runtime-card__head h3 {
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 0.98;
+  color: #223248;
+}
+
+.cg-typing-runtime-intro__copy .cg-display {
+  font-size: clamp(32px, 4.2vw, 46px);
+  line-height: 0.98;
+  color: #223248;
+}
+
+.cg-typing-guide-head {
+  align-items: center;
+}
+
+.cg-typing-guide-head .cg-micro-label {
+  margin-bottom: 6px;
+}
+
+.cg-typing-guide-head h4 {
+  max-width: 42ch;
+}
+
+.cg-typing-hand-legend {
+  justify-content: flex-end;
+}
+
+.cg-typing-guide {
+  background: linear-gradient(180deg, rgba(249, 251, 255, 0.98), rgba(240, 245, 251, 0.97));
+}
+
+.cg-typing-guide-keys {
+  padding: 8px 0 2px;
+}
+
+.cg-typing-guide-key.is-active {
+  transform: translateY(-2px);
+}
+
+
+/* Typing Quest runtime refinement */
+.cg-typing-runtime-main {
+  gap: 18px;
+}
+
+.cg-typing-runtime-card--launch,
+.cg-typing-runtime-card--lesson {
+  position: relative;
+  overflow: hidden;
+}
+
+.cg-typing-runtime-card--launch::before,
+.cg-typing-runtime-card--lesson::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 8px;
+  background: linear-gradient(90deg, rgba(78, 145, 226, 0.96), rgba(116, 205, 149, 0.96));
+}
+
+.cg-typing-runtime-intro,
+.cg-typing-runtime-card__head {
+  gap: 24px;
+}
+
+.cg-typing-runtime-lessonline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 2px 0 2px;
+}
+
+.cg-typing-runtime-lessonline span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(239, 244, 250, 0.96);
+  border: 1px solid rgba(207, 218, 230, 0.96);
+  color: #556b84;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cg-typing-runtime-card--launch .cg-typing-launch-target,
+.cg-typing-runtime-card--lesson .cg-typing-runtime-goal {
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(236, 242, 250, 0.96));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.78);
+}
+
+.cg-typing-progress-panel {
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(236, 242, 250, 0.96));
+}
+
+.cg-typing-text-board {
+  gap: 16px;
+  padding: 6px 0 8px;
+}
+
+.cg-typing-text-board__target {
+  min-height: 104px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(245, 249, 255, 0.98), rgba(230, 238, 249, 0.98));
+  box-shadow: 0 14px 24px rgba(29, 49, 78, 0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.cg-typing-text-line,
+.cg-typing-text-entry {
+  padding: 14px 18px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(246,249,252,0.96));
+  border: 1px solid rgba(215, 224, 235, 0.96);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.86);
+}
+
+.cg-typing-text-line {
+  min-height: 78px;
+}
+
+.cg-typing-text-entry {
+  min-height: 82px;
+  border-bottom: 1px solid rgba(215, 224, 235, 0.96);
+}
+
+.cg-typing-text-char,
+.cg-typing-text-entry__char {
+  min-width: 28px;
+  min-height: 46px;
+}
+
+.cg-typing-text-char.is-current {
+  border-bottom-color: #4f96e3;
+  background: rgba(78, 145, 226, 0.08);
+}
+
+.cg-typing-entry {
+  padding-top: 4px;
+}
+
+.cg-typing-entry .cg-input {
+  min-height: 58px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,247,251,0.98));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.88);
+}
+
+.cg-typing-runtime-sidebar {
+  gap: 14px;
+}
+
+.cg-typing-runtime-panel {
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(237, 243, 250, 0.96));
+  box-shadow: 0 14px 24px rgba(22, 37, 61, 0.08);
+}
+
+.cg-typing-guide {
+  border-radius: 24px;
+  box-shadow: 0 16px 28px rgba(19, 34, 56, 0.08);
+}
+
+.cg-typing-guide-key {
+  border-radius: 16px;
+  box-shadow: 0 8px 14px rgba(20, 34, 56, 0.06);
+}
+
+.cg-typing-guide-key.is-active {
+  box-shadow: 0 12px 20px rgba(60, 150, 230, 0.14), inset 0 -3px 0 rgba(60, 150, 230, 0.16);
+}
+
+@media (max-width: 760px) {
+  .cg-typing-launch-steps,
+  .cg-typing-lesson-cues {
+    flex-direction: column;
+  }
+
+  .cg-typing-text-board__target .cg-typing-target-word {
+    font-size: clamp(34px, 11vw, 56px);
+  }
 }

@@ -1059,11 +1059,11 @@
   }
 
   var TYPING_UNIT_META = {
-    "Unit 0": { title: "Home Row Foundations", subtitle: "Anchors, sweeps, and home-row control" },
-    "Unit 1": { title: "Home Row Words", subtitle: "Decodable home-row words before new reaches" },
-    "Unit 2": { title: "Top Row Reach", subtitle: "Small reaches into top-row words and phrases" },
-    "Unit 3": { title: "Bottom Row Reach", subtitle: "Bottom-row control, digraphs, and short phrases" },
-    "Unit 4": { title: "Connected Text", subtitle: "Longer phrases once the keyboard map is ready" }
+    "Unit 0": { title: "Home Row Foundations", subtitle: "Anchors, sweeps, and home-row control", phase: "Week 1" },
+    "Unit 1": { title: "Home Row Words", subtitle: "Decodable home-row words before new reaches", phase: "Week 2" },
+    "Unit 2": { title: "Top Row Reach", subtitle: "Small reaches into top-row words and phrases", phase: "Week 3" },
+    "Unit 3": { title: "Bottom Row Reach", subtitle: "Bottom-row control, digraphs, and short phrases", phase: "Week 4" },
+    "Unit 4": { title: "Connected Text", subtitle: "Longer phrases once the keyboard map is ready", phase: "Week 5" }
   };
 
   function typingCourseSummary(progress, rows) {
@@ -1090,8 +1090,24 @@
     var meta = TYPING_UNIT_META[String(unitLabel || "")] || {};
     return {
       title: meta.title || fallbackTitle,
-      subtitle: meta.subtitle || fallbackSubtitle
+      subtitle: meta.subtitle || fallbackSubtitle,
+      phase: meta.phase || String(unitLabel || "Unit")
     };
+  }
+
+  function renderTypingTargetMarkup(round) {
+    var target = String(round && round.target || "").toUpperCase();
+    var heart = String(round && round.heartLetters || "").toUpperCase();
+    if (!target) return "";
+    if (heart && target.indexOf(heart) >= 0) {
+      var idx = target.indexOf(heart);
+      return '<span class="cg-typing-target-word">'
+        + runtimeRoot.CSGameComponents.escapeHtml(target.slice(0, idx))
+        + '<mark>' + runtimeRoot.CSGameComponents.escapeHtml(heart) + '</mark>'
+        + runtimeRoot.CSGameComponents.escapeHtml(target.slice(idx + heart.length))
+        + '</span>';
+    }
+    return '<span class="cg-typing-target-word">' + runtimeRoot.CSGameComponents.escapeHtml(target) + '</span>';
   }
 
   function typingLessonGlyph(row) {
@@ -2118,12 +2134,15 @@
           if (typingProgress.completedLessonIds.indexOf(String(row && row.id || "")) >= 0) grouped[unitKey].completedCount += 1;
           if (grouped[unitKey].preview.length < 3 && row && row.target) grouped[unitKey].preview.push(String(row.target).toUpperCase());
         });
-        return '<div class="cg-typing-course-map" aria-label="Typing course map">' + units.map(function (unit) {
+        return '<div class="cg-typing-course-map" aria-label="Typing course map">' + units.map(function (unit, index) {
           var active = Number(currentRound.lessonOrder || 1) >= unit.startOrder && Number(currentRound.lessonOrder || 1) < (unit.startOrder + unit.lessonCount);
           var unlocked = Number(context.typingUnlockedOrder || typingProgress.unlockedLessonOrder || 1) >= unit.startOrder;
-          return '<button class="cg-typing-unit-card' + (active ? ' is-current' : '') + (unlocked ? '' : ' is-locked') + '" type="button" data-action="jump-typing-lesson" data-lesson-order="' + unit.startOrder + '"' + (unlocked ? '' : ' disabled aria-disabled="true"') + '><span class="cg-typing-unit-label">' + runtimeRoot.CSGameComponents.escapeHtml(unit.unitLabel) + '</span><strong>' + runtimeRoot.CSGameComponents.escapeHtml(unit.focusLabel) + '</strong><small>' + runtimeRoot.CSGameComponents.escapeHtml(unit.completedCount + " / " + unit.lessonCount + " complete") + '</small><div class="cg-typing-unit-preview">' + unit.preview.map(function (item) {
+          var meta = typingUnitMeta(unit.unitLabel, []);
+          var stateLabel = unlocked ? (active ? "Current path" : (unit.completedCount >= unit.lessonCount ? "Mastered" : "Open")) : "Locked";
+          var progressPercent = unit.lessonCount ? Math.round((unit.completedCount / unit.lessonCount) * 100) : 0;
+          return '<button class="cg-typing-unit-card cg-typing-unit-card--step-' + String(index + 1) + (active ? ' is-current' : '') + (unlocked ? '' : ' is-locked') + '" type="button" data-action="jump-typing-lesson" data-lesson-order="' + unit.startOrder + '"' + (unlocked ? '' : ' disabled aria-disabled="true"') + '><span class="cg-typing-unit-label">' + runtimeRoot.CSGameComponents.escapeHtml(meta.phase || unit.unitLabel) + '</span><span class="cg-typing-unit-step">' + runtimeRoot.CSGameComponents.escapeHtml(String(index + 1).padStart(2, '0')) + '</span><strong>' + runtimeRoot.CSGameComponents.escapeHtml(unit.focusLabel) + '</strong><small>' + runtimeRoot.CSGameComponents.escapeHtml(unit.completedCount + " / " + unit.lessonCount + " complete") + '</small><div class="cg-typing-unit-preview">' + unit.preview.map(function (item) {
             return '<span>' + runtimeRoot.CSGameComponents.escapeHtml(item) + "</span>";
-          }).join("") + '</div></button>';
+          }).join("") + '</div><div class="cg-typing-unit-progress"><span style="width:' + progressPercent + '%"></span></div><span class="cg-typing-unit-state">' + runtimeRoot.CSGameComponents.escapeHtml(stateLabel) + '</span></button>';
           }).join("") + "</div>";
       }
 
@@ -2151,6 +2170,7 @@
       function renderTypingUnitSections(currentRound) {
         var grouped = {};
         var order = [];
+        var currentUnitKey = String(currentRound && currentRound.unitLabel || "Unit 0");
         (typingCourseRows || []).forEach(function (item) {
           var key = String(item && item.unitLabel || "Unit");
           if (!grouped[key]) {
@@ -2163,13 +2183,21 @@
           var rows = grouped[key] || [];
           var meta = typingUnitMeta(key, rows);
           var unitSlug = String(key || "unit").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+          var active = key === currentUnitKey;
+          var unlocked = Number(context.typingUnlockedOrder || typingProgress.unlockedLessonOrder || 1) >= Number(rows[0] && rows[0].lessonOrder || 1);
+          var completedCount = rows.filter(function (row) {
+            var result = typingProgress.lessonResults && typingProgress.lessonResults[row.id] || {};
+            return typingProgress.completedLessonIds.indexOf(String(row && row.id || "")) >= 0 || result.complete;
+          }).length;
+          var previewRows = active ? rows : rows.slice(0, Math.min(rows.length, 3));
           return [
-            '<section class="cg-typing-unit-section cg-typing-unit-section--' + runtimeRoot.CSGameComponents.escapeHtml(unitSlug) + '">',
+            '<section class="cg-typing-unit-section cg-typing-unit-section--' + runtimeRoot.CSGameComponents.escapeHtml(unitSlug) + (active ? ' is-current' : ' is-collapsed') + (!unlocked ? ' is-locked' : '') + '">',
             '  <div class="cg-typing-unit-section__head">',
-            '    <div><p class="cg-kicker">' + runtimeRoot.CSGameComponents.escapeHtml(key) + '</p><h3>' + runtimeRoot.CSGameComponents.escapeHtml(meta.title) + '</h3><p>' + runtimeRoot.CSGameComponents.escapeHtml(meta.subtitle) + '</p></div>',
-            '    <span class="cg-typing-unit-section__count">' + runtimeRoot.CSGameComponents.escapeHtml(rows.length + " lessons") + '</span>',
+            '    <div><p class="cg-kicker">' + runtimeRoot.CSGameComponents.escapeHtml(meta.phase || key) + '</p><h3>' + runtimeRoot.CSGameComponents.escapeHtml(meta.title) + '</h3><p>' + runtimeRoot.CSGameComponents.escapeHtml(meta.subtitle) + '</p></div>',
+            '    <div class="cg-typing-unit-section__status"><span class="cg-typing-unit-section__count">' + runtimeRoot.CSGameComponents.escapeHtml(rows.length + " lessons") + '</span><span class="cg-typing-unit-section__meter">' + runtimeRoot.CSGameComponents.escapeHtml(completedCount + " complete") + '</span>' + (active ? '<span class="cg-typing-unit-section__flag">Current week</span>' : (unlocked ? '<a class="cg-typing-unit-section__jump" href="' + runtimeRoot.CSGameComponents.escapeHtml(typingQuestHref({ typingCourseMode: "lesson", lessonId: rows[0] && rows[0].id || "", lessonOrder: rows[0] && rows[0].lessonOrder || 1 })) + '">Open week</a>' : '<span class="cg-typing-unit-section__flag is-locked">Locked</span>')) + '</div>',
             "  </div>",
-            renderTypingLessonTiles(rows, currentRound),
+            renderTypingLessonTiles(previewRows, currentRound),
+            (!active && rows.length > previewRows.length ? '<div class="cg-typing-unit-section__more">+' + runtimeRoot.CSGameComponents.escapeHtml(String(rows.length - previewRows.length)) + ' more lessons in this week</div>' : ''),
             "</section>"
           ].join("");
         }).join("");
@@ -2225,7 +2253,7 @@
           '      <p class="cg-kicker">Course Path</p>',
           '      <h3 class="cg-display">Typing Quest Foundations</h3>',
           '      <p class="cg-typing-course-hero__subtitle">' + runtimeRoot.CSGameComponents.escapeHtml(context.typingPlacementRequired ? "Start with placement, then unlock the first lesson path." : ("Current path: " + currentUnitMeta.title + ".")) + '</p>',
-          '      <div class="cg-typing-course-ribbon"><span>Home row</span><span>Home-row words</span><span>Top row reach</span><span>Bottom row reach</span><span>Connected text</span></div>',
+          '      <div class="cg-typing-course-ribbon"><span>1. Home row</span><span>2. Home-row words</span><span>3. Top row reach</span><span>4. Bottom row reach</span><span>5. Connected text</span></div>',
           '      <div class="cg-typing-plan-progress"><div class="cg-typing-plan-progress-fill" style="width:' + courseSummary.progressPercent + '%"></div></div>',
           '      <div class="cg-typing-plan-meta"><span>' + courseSummary.completedLessons + ' of ' + courseSummary.totalLessons + ' lessons mastered</span><span>' + runtimeRoot.CSGameComponents.escapeHtml(context.typingPlacementRequired ? "Placement ready" : ((currentLesson && currentLesson.lessonLabel) || "Lesson 1")) + '</span></div>',
           '    </div>',
@@ -2253,7 +2281,7 @@
               '    <div class="cg-typing-runtime-card cg-typing-runtime-card--summary">',
               '      <p class="cg-kicker">Placement Complete</p>',
               '      <h3 class="cg-display">Start with ' + runtimeRoot.CSGameComponents.escapeHtml((recommendedLesson && recommendedLesson.lessonLabel || "Lesson 1") + " · " + (recommendedLesson && recommendedLesson.stageLabel || "Foundations")) + '</h3>',
-              '      <p class="cg-typing-summary-copy">The placement checks are done. Open the first lesson that matches the learner’s current control.</p>',
+              '      <p class="cg-typing-summary-copy">The placement checks are done. Start at the first unlocked lesson and build up in order just like a real typing course.</p>',
               '      <div class="cg-typing-summary-stats">',
               '        <span class="cg-stat"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(String(Math.max(1, Number(context.currentTypingLessonOrder || typingProgress.currentLessonOrder || 1)))) + '</strong> recommended lesson</span>',
               '        <span class="cg-stat"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(String((state.history || []).filter(function (row) { return row.result === "correct"; }).length)) + '</strong> checks passed</span>',
@@ -2323,10 +2351,12 @@
             '      <div class="cg-typing-runtime-intro">',
             '        <div class="cg-typing-runtime-intro__copy">',
             '          <p class="cg-kicker">' + runtimeRoot.CSGameComponents.escapeHtml(round.courseMode === "placement" ? "Placement check" : (round.lessonLabel || "Lesson")) + '</p>',
+            '          <div class="cg-typing-runtime-lessonline"><span>Lesson ' + runtimeRoot.CSGameComponents.escapeHtml(String(round.lessonOrder || 1)) + ' of ' + runtimeRoot.CSGameComponents.escapeHtml(String((typingCourseRows || []).length || 1)) + '</span><span>' + runtimeRoot.CSGameComponents.escapeHtml(round.keyboardZone || round.unitLabel || "Typing Quest Foundations") + '</span></div>',
             '          <h3 class="cg-display">' + runtimeRoot.CSGameComponents.escapeHtml(typingPromptTitle(round)) + '</h3>',
             '          <p>' + runtimeRoot.CSGameComponents.escapeHtml(round.courseMode === "placement" ? "Four quick checks, then the course opens at the right lesson." : (round.swbat || "I can type the lesson target with accuracy and rhythm.")) + '</p>',
+            '          <div class="cg-typing-launch-steps"><span>1. Look at the whole target</span><span>2. Type without looking down</span><span>3. Earn 5 stars to move on</span></div>',
             "        </div>",
-            '        <div class="cg-typing-launch-target"><span class="cg-typing-launch-label">Target</span><strong>' + runtimeRoot.CSGameComponents.escapeHtml(String(round.target || "").toUpperCase()) + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(round.orthographyFocus || round.keyboardZone || "typing focus") + '</span></div>',
+            '        <div class="cg-typing-launch-target"><span class="cg-typing-launch-label">Target</span><strong>' + renderTypingTargetMarkup(round) + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(round.orthographyFocus || round.keyboardZone || "typing focus") + '</span></div>',
             "      </div>",
             '      <div class="cg-feedback-actions"><button class="cg-action cg-action-primary" type="button" data-action="start-typing-round">' + runtimeRoot.CSGameComponents.escapeHtml(round.courseMode === "placement" ? "Start Placement" : "Start Lesson") + '</button>' + (round.courseMode === "lesson" ? '<button class="cg-action cg-action-quiet" type="button" data-action="repeat-typing-lesson">Reset Lesson</button>' : "") + '</div>',
             "    </div>",
@@ -2355,6 +2385,7 @@
           '      <div class="cg-typing-runtime-card__head">',
           '        <div>',
           '          <p class="cg-kicker">' + runtimeRoot.CSGameComponents.escapeHtml(round.unitLabel || "Typing Quest Foundations") + '</p>',
+          '          <div class="cg-typing-runtime-lessonline"><span>Lesson ' + runtimeRoot.CSGameComponents.escapeHtml(String(round.lessonOrder || 1)) + ' of ' + runtimeRoot.CSGameComponents.escapeHtml(String((typingCourseRows || []).length || 1)) + '</span><span>' + runtimeRoot.CSGameComponents.escapeHtml(round.keyboardZone || round.orthographyFocus || "typing focus") + '</span></div>',
           '          <h3>' + runtimeRoot.CSGameComponents.escapeHtml((round.lessonLabel || "Lesson") + " · " + (round.stageLabel || "Typing practice")) + '</h3>',
           '          <p>' + runtimeRoot.CSGameComponents.escapeHtml(round.fingerCue || "Look across the whole word before you type.") + '</p>',
           "        </div>",
@@ -2362,10 +2393,12 @@
           "      </div>",
           '      <div class="cg-typing-progress-panel">',
           '        <div class="cg-typing-progress-head"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(round.swbat || "I can type the lesson target with accuracy and rhythm.") + '</strong><span id="cg-typing-live-progress">' + typingMetrics.typedCount + ' / ' + typingMetrics.targetCount + '</span></div>',
+          '        <div class="cg-typing-lesson-cues"><span>Eyes on target</span><span>Return to home row</span><span>Finish with 5 stars</span></div>',
           '        <div class="cg-typing-progress-bar"><div id="cg-typing-progress-fill" class="cg-typing-progress-fill" style="width:' + typingMetrics.progress + '%"></div></div>',
           '        <div class="cg-typing-quest-lane"><div class="cg-typing-quest-track"></div><div id="cg-typing-quest-runner" class="cg-typing-quest-runner" style="left:calc(' + typingMetrics.progress + '% - 16px)"></div><div class="cg-typing-quest-goal">Finish</div></div>',
           "      </div>",
           '      <div class="cg-typing-text-board">',
+          '        <div class="cg-typing-text-board__target">' + renderTypingTargetMarkup(round) + '</div>',
           '        <div class="cg-typing-text-line" aria-label="Typing target">' + targetChars.map(function (ch, index) {
             var charClass = "cg-typing-text-char";
             if (index < typed.length) charClass += " is-correct";
