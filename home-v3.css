@@ -107,6 +107,13 @@ body.cs-home-page {
   grid-template-rows: minmax(0, 1.18fr) minmax(0, 0.88fr);
 }
 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1.18fr) minmax(0, 0.88fr);
+  gap: 10px;
+}
+
 .home-secondary-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -118,7 +125,7 @@ body.cs-home-page {
   display: grid;
   align-content: start;
   gap: 8px;
-  padding: 14px;
+  padding: 12px;
   border-radius: 24px;
   text-decoration: none;
   color: inherit;
@@ -155,7 +162,7 @@ body.cs-home-page {
   grid-template-columns: minmax(320px, 1fr) minmax(300px, 0.88fr);
   align-items: stretch;
   gap: 12px;
-  padding: 14px;
+  padding: 12px;
   background: linear-gradient(180deg, rgba(221, 233, 250, 0.98), rgba(204, 219, 240, 0.98));
   border-color: rgba(81, 113, 163, 0.26);
   box-shadow: 0 24px 48px rgba(17, 37, 70, 0.14);
@@ -189,7 +196,7 @@ body.cs-home-page {
   display: grid;
   gap: 8px;
   min-height: 138px;
-  padding: 10px;
+  padding: 9px;
   border-radius: 18px;
   border: 1px solid rgba(96, 116, 152, 0.15);
   background: linear-gradient(180deg, rgba(246, 248, 251, 0.88), rgba(230, 235, 243, 0.9));
@@ -310,8 +317,8 @@ body.cs-home-page {
   display: grid;
   gap: 6px;
   align-content: start;
-  min-height: 118px;
-  padding: 10px;
+  min-height: 108px;
+  padding: 9px;
   border-radius: 16px;
   background: linear-gradient(180deg, rgba(246,248,252,0.95), rgba(230,235,243,0.92));
   border: 1px solid rgba(106, 125, 157, 0.18);
@@ -328,6 +335,9 @@ body.cs-home-page {
 .home-preview-board {
   display: grid;
   gap: 6px;
+  transform: scale(.75);
+  transform-origin: top left;
+  height: 120px;
 }
 
 .home-preview-board__row {
@@ -338,11 +348,12 @@ body.cs-home-page {
 
 .home-preview-board__row i {
   display: block;
-  aspect-ratio: 1;
-  min-height: 28px;
-  border-radius: 10px;
-  background: linear-gradient(180deg, #d7dee8, #c6cfdb);
-  border: 1px solid rgba(128, 145, 173, 0.24);
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #d9dee5;
+  border: 0;
+  margin: 3px;
 }
 
 .home-preview-typing-lane {
@@ -459,6 +470,10 @@ body.cs-home-page {
   display: grid;
   align-content: start;
   gap: 5px;
+}
+
+.card {
+  padding: 20px;
 }
 
 .home-role-btn--primary .home-role-body {
@@ -591,6 +606,25 @@ body.cs-home-page {
 .home-backup-status[data-state="empty"] {
   background: rgba(233, 238, 245, 0.9);
   color: rgba(60, 76, 110, 0.82);
+}
+
+@media (min-width: 981px) {
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1.24fr) minmax(0, 0.96fr);
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .dashboard-grid > .home-role-btn--primary {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .dashboard-grid > .home-secondary-grid {
+    grid-column: 2;
+    grid-row: 1;
+    align-content: stretch;
+  }
 }
 
 @media (max-width: 980px) {

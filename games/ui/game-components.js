@@ -51,10 +51,10 @@
     if (gameId === "word-quest") {
       return [
         '<div class="cg-card-preview" aria-hidden="true">',
-        '  <div class="cg-preview-board">',
-        '    <div class="cg-preview-row"><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span></div>',
-        '    <div class="cg-preview-row"><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span></div>',
-        '    <div class="cg-preview-row"><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span><span class="cg-preview-tile"></span></div>',
+        '  <div class="cg-preview-board preview-board">',
+        '    <div class="cg-preview-row row"><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span></div>',
+        '    <div class="cg-preview-row row"><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span></div>',
+        '    <div class="cg-preview-row row"><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span><span class="cg-preview-tile tile"></span></div>',
         '  </div>',
         '</div>'
       ].join("");
@@ -162,7 +162,7 @@
     var caption = config.caption ? '<p class="cg-card-caption">' + escapeHtml(config.caption) + "</p>" : "";
     var actionLabel = escapeHtml(config.actionLabel || "Play");
     return [
-      '<article class="cg-game-card' + (active ? " is-active" : "") + '" data-game-id="' + escapeHtml(game.id) + '"' + (config.href ? ' data-href="' + escapeHtml(config.href) + '"' : "") + ' tabindex="0" role="link">',
+      '<article class="cg-game-card game-card' + (active ? " is-active" : "") + '" data-game-id="' + escapeHtml(game.id) + '"' + (config.href ? ' data-href="' + escapeHtml(config.href) + '"' : "") + ' tabindex="0" role="link">',
       renderPreview(game.id),
       '  <div class="cg-game-card-head">',
       '    <span class="cg-game-icon">' + iconFor(game.id, "cg-icon cg-icon--game") + "</span>",

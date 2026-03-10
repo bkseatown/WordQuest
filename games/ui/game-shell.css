@@ -5271,37 +5271,48 @@ body.game-platform-page[data-shell-view="gallery"] .cg-gallery-grid {
 }
 
 body.game-platform-page[data-shell-view="gallery"] .cg-game-card {
-  display: grid;
-  grid-template-rows: auto auto auto 1fr auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   gap: 10px;
   min-height: 100%;
+  padding: 18px;
 }
 
 body.game-platform-page[data-shell-view="gallery"] .cg-card-preview {
-  min-height: 122px;
+  min-height: 120px;
   padding: 12px;
   border-radius: 18px;
   background: linear-gradient(180deg, rgba(236,242,249,0.98), rgba(244,247,252,0.98));
   border: 1px solid rgba(167, 182, 202, 0.26);
+  margin-bottom: 12px;
 }
 
-.cg-preview-board {
+.cg-preview-board,
+.preview-board {
   display: grid;
   gap: 6px;
+  transform: scale(.75);
+  transform-origin: top left;
+  height: 120px;
 }
 
-.cg-preview-row {
+.cg-preview-row,
+.preview-board .row {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 6px;
 }
 
-.cg-preview-tile {
+.cg-preview-tile,
+.preview-board .tile {
   display: block;
-  aspect-ratio: 1;
-  border-radius: 8px;
-  background: linear-gradient(180deg, #dce3ec, #c9d3df);
-  border: 1px solid rgba(154, 169, 190, 0.26);
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #d9dee5;
+  border: 0;
+  margin: 3px;
 }
 
 .cg-mini-taboo-target {

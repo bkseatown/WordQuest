@@ -498,6 +498,10 @@ header {
   min-height: 34px;
 }
 
+.wordquest-header {
+  min-height: 72px;
+}
+
 .play-mode-label {
   grid-area: mode;
   display: none;
@@ -559,6 +563,10 @@ header {
 .header-right {
   display: contents;
   margin-left: 0;
+}
+
+.wordquest-header-controls {
+  min-width: 0;
 }
 
 .header-icon-controls {
@@ -1511,6 +1519,68 @@ html[data-home-mode="play"] .header-main-row {
   z-index: 1;
 }
 
+html[data-home-mode="play"] .wordquest-header {
+  height: 72px;
+  display: grid;
+  grid-template-columns: minmax(180px, max-content) minmax(0, 1fr);
+  grid-template-areas: "logo right";
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 14px;
+  min-height: 72px;
+}
+
+html[data-home-mode="play"] .wordquest-header .logo {
+  position: static;
+  left: auto;
+  top: auto;
+  transform: none;
+  justify-self: start;
+  text-align: left;
+  font-size: clamp(1.4rem, 2.2vw, 1.82rem);
+  line-height: 1.02;
+}
+
+html[data-home-mode="play"] .wordquest-header #home-logo-btn {
+  left: auto;
+  top: auto;
+  transform: none;
+}
+
+html[data-home-mode="play"] .wordquest-header .wordquest-header-controls {
+  grid-area: right;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-rows: 1fr;
+  grid-template-areas: "focus icons quick";
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0;
+}
+
+html[data-home-mode="play"] .wordquest-header .header-focus-inline-wrap {
+  grid-area: focus;
+  width: min(100%, 420px);
+  max-width: 420px;
+  justify-self: start;
+  align-self: center;
+}
+
+html[data-home-mode="play"] .wordquest-header .header-icon-controls {
+  grid-area: icons;
+  justify-self: end;
+  align-self: center;
+  margin: 0;
+}
+
+html[data-home-mode="play"] .wordquest-header .header-quick-controls {
+  grid-area: quick;
+  justify-self: end;
+  align-self: center;
+  margin: 0;
+}
+
 html[data-home-mode="play"] .play-mode-label {
   display: none !important;
 }
@@ -1572,6 +1642,29 @@ html[data-home-mode="play"] #teacher-dashboard-btn svg {
 }
 
 @media (max-width: 1360px) {
+  html[data-home-mode="play"] .wordquest-header {
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "logo"
+      "right";
+    gap: 8px;
+  }
+
+  html[data-home-mode="play"] .wordquest-header .logo {
+    justify-self: center;
+    text-align: center;
+  }
+
+  html[data-home-mode="play"] .wordquest-header .wordquest-header-controls {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "icons"
+      "focus"
+      "quick";
+    justify-items: center;
+  }
+
   html[data-home-mode="play"] .header-main-row {
     grid-template-columns: 1fr;
     grid-template-areas:
