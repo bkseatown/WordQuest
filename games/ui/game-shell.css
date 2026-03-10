@@ -2294,13 +2294,15 @@ html[data-view-mode="classroom"] .cg-quest-board .cg-letter-box {
 
 /* ── 2. TYPING QUEST — Course Map + Lesson Runtime ─────────── */
 body.typing-quest-page {
-  background: #edf3f7;
+  background: #e5eef5;
 }
 
 .cg-typing-app-shell {
   width: 100%;
   min-height: 100dvh;
-  background: linear-gradient(180deg, #e8f1f6 0, #f7f9fb 240px, #f2f5f8 100%);
+  background:
+    radial-gradient(circle at top right, rgba(129, 170, 218, 0.18), transparent 26%),
+    linear-gradient(180deg, #dce9f3 0, #eff4f8 220px, #eaf1f6 100%);
   color: #334155;
 }
 
@@ -2383,14 +2385,6 @@ body.typing-quest-page {
   color: #fff;
 }
 
-.cg-typing-appbar__status {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.58);
-}
-
 .cg-typing-page-wrap {
   max-width: 1180px;
   margin: 0 auto;
@@ -2457,34 +2451,78 @@ body.typing-quest-page {
 
 .cg-typing-course-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+  grid-template-columns: minmax(320px, 0.88fr) minmax(0, 1.12fr);
   gap: 18px;
   align-items: stretch;
 }
 
+.cg-typing-course-start,
 .cg-typing-course-hero__main,
-.cg-typing-course-hero__card,
 .cg-typing-runtime-card,
 .cg-typing-guide,
 .cg-typing-runtime-panel,
 .cg-typing-unit-card {
-  background: #fff;
   border: 1px solid #d3dde7;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
+.cg-typing-course-start,
 .cg-typing-course-hero__main,
-.cg-typing-course-hero__card,
 .cg-typing-runtime-card,
 .cg-typing-guide,
 .cg-typing-runtime-panel {
   border-radius: 14px;
 }
 
+.cg-typing-course-start {
+  display: grid;
+  gap: 22px;
+  align-content: start;
+  padding: 26px 28px;
+  background:
+    radial-gradient(circle at top left, rgba(91, 148, 255, 0.18), transparent 34%),
+    linear-gradient(160deg, #16263a 0%, #1f3651 100%);
+  border-color: rgba(89, 129, 196, 0.34);
+  color: #f5f8ff;
+}
+
+.cg-typing-course-start__head {
+  display: grid;
+  gap: 10px;
+}
+
+.cg-typing-course-start__head h2 {
+  margin: 0;
+  font-size: clamp(34px, 4vw, 48px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.cg-typing-course-start__head p:last-child {
+  margin: 0;
+  color: rgba(235, 242, 255, 0.84);
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.cg-typing-course-start .cg-kicker {
+  color: rgba(198, 220, 255, 0.88);
+}
+
+.cg-typing-course-start__action {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(203, 223, 255, 0.18);
+}
+
 .cg-typing-course-hero__main {
   display: grid;
   gap: 14px;
   padding: 24px 26px;
+  background: linear-gradient(180deg, rgba(245, 248, 253, 0.98) 0%, rgba(235, 241, 248, 0.95) 100%);
 }
 
 .cg-typing-course-hero__main .cg-display {
@@ -2509,7 +2547,7 @@ body.typing-quest-page {
   padding: 7px 11px;
   border-radius: 999px;
   border: 1px solid #d5e0ea;
-  background: #f8fbfd;
+  background: rgba(255, 255, 255, 0.92);
   color: #425366;
   font-size: 12px;
   font-weight: 700;
@@ -2537,14 +2575,7 @@ body.typing-quest-page {
   font-weight: 600;
 }
 
-.cg-typing-course-hero__card {
-  display: grid;
-  gap: 12px;
-  align-content: start;
-  padding: 22px 24px;
-  background: #f8fbff;
-}
-
+.cg-typing-course-start__eyebrow,
 .cg-typing-course-hero__eyebrow,
 .cg-typing-launch-label {
   font-size: 11px;
@@ -2552,6 +2583,30 @@ body.typing-quest-page {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #7b8d9f;
+}
+
+.cg-typing-course-start__eyebrow {
+  color: rgba(198, 220, 255, 0.8);
+}
+
+.cg-typing-course-start__target {
+  font-size: clamp(58px, 7vw, 90px);
+  font-weight: 900;
+  line-height: 0.88;
+  letter-spacing: -0.08em;
+  color: #ffffff;
+}
+
+.cg-typing-course-start__meta {
+  color: rgba(235, 242, 255, 0.84);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cg-typing-course-start__button {
+  justify-self: start;
+  min-width: 220px;
+  box-shadow: 0 16px 28px rgba(10, 26, 48, 0.22);
 }
 
 .cg-typing-course-hero__target,
@@ -2599,7 +2654,7 @@ body.typing-quest-page {
 }
 
 .cg-typing-unit-card.is-locked {
-  opacity: 0.56;
+  opacity: 0.42;
   cursor: not-allowed;
 }
 
@@ -2640,6 +2695,31 @@ body.typing-quest-page {
 .cg-typing-unit-section {
   display: grid;
   gap: 14px;
+  padding-top: 4px;
+  padding: 22px 22px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(193, 209, 224, 0.92);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.cg-typing-unit-section--unit-0 {
+  background: linear-gradient(180deg, rgba(232, 242, 252, 0.92), rgba(241, 247, 253, 0.96));
+}
+
+.cg-typing-unit-section--unit-1 {
+  background: linear-gradient(180deg, rgba(241, 246, 255, 0.92), rgba(247, 249, 253, 0.98));
+}
+
+.cg-typing-unit-section--unit-2 {
+  background: linear-gradient(180deg, rgba(244, 246, 255, 0.94), rgba(249, 250, 254, 0.98));
+}
+
+.cg-typing-unit-section--unit-3 {
+  background: linear-gradient(180deg, rgba(239, 247, 248, 0.94), rgba(246, 250, 251, 0.98));
+}
+
+.cg-typing-unit-section--unit-4 {
+  background: linear-gradient(180deg, rgba(246, 244, 255, 0.94), rgba(250, 248, 254, 0.98));
 }
 
 .cg-typing-unit-section__head {
@@ -2689,6 +2769,22 @@ body.typing-quest-page {
   text-decoration: none;
   color: #334155;
   transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, opacity 160ms ease;
+}
+
+.cg-typing-unit-section--unit-1 .cg-typing-lesson-tile {
+  background: #edf3fb;
+}
+
+.cg-typing-unit-section--unit-2 .cg-typing-lesson-tile {
+  background: #eef1fb;
+}
+
+.cg-typing-unit-section--unit-3 .cg-typing-lesson-tile {
+  background: #e6f3f4;
+}
+
+.cg-typing-unit-section--unit-4 .cg-typing-lesson-tile {
+  background: #f0eefb;
 }
 
 .cg-typing-lesson-tile:hover,
@@ -3275,11 +3371,19 @@ html[data-view-mode="classroom"] .cg-typing-runtime {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .cg-typing-course-start,
   .cg-typing-runtime-card,
   .cg-typing-course-hero__main,
-  .cg-typing-course-hero__card,
   .cg-typing-guide {
     padding: 18px;
+  }
+
+  .cg-typing-course-start__head h2 {
+    font-size: clamp(30px, 10vw, 42px);
+  }
+
+  .cg-typing-course-start__target {
+    font-size: clamp(52px, 18vw, 74px);
   }
 
   .cg-typing-runtime-card__head,

@@ -16,38 +16,7 @@
   <script src="./js/theme-registry.js?v=20260308b"></script>
 </head>
 <style>
-  /* ── Class Mode (projector) ─────────────────────────── */
-  #cg-class-mode-btn {
-    position: fixed;
-    top: 18px;
-    right: 18px;
-    bottom: auto;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 16px;
-    border-radius: 999px;
-    border: 1px solid rgba(0,0,0,0.14);
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(8px);
-    color: #1a1f3d;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-    transition: background 0.14s ease, box-shadow 0.14s ease;
-  }
-  #cg-class-mode-btn:hover {
-    background: rgba(255,255,255,1);
-    box-shadow: 0 6px 22px rgba(0,0,0,0.18);
-  }
-  body.class-mode #cg-class-mode-btn {
-    background: #1a1f3d;
-    color: #fff;
-    border-color: transparent;
-  }
+  /* ── Projector mode scaling (no floating toggle button) ───────────────── */
   /* Scale up game content in class mode */
   body.class-mode { font-size: 1.2rem; }
   body.class-mode .cg-shell,
@@ -108,7 +77,6 @@
     letter-spacing: 0.12em;
   }
 
-  body[data-shell-view="gallery"] #cg-class-mode-btn,
   body[data-shell-view="gallery"] #cg-theme-picker {
     display: none !important;
   }
@@ -128,11 +96,6 @@
     <div id="cg-shell"></div>
     <div id="cg-live-region" aria-live="polite" aria-atomic="true" class="cg-hidden"></div>
   </main>
-
-  <button id="cg-class-mode-btn" type="button" aria-pressed="false" title="Toggle projector-friendly class mode">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-    Class Mode
-  </button>
 
   <!-- Theme picker -->
   <div id="cg-theme-picker" aria-label="Choose game theme" role="group"></div>
@@ -174,14 +137,6 @@
     }
 
     @media (max-width: 720px) {
-      #cg-class-mode-btn {
-        top: auto;
-        bottom: 12px;
-        right: 12px;
-        padding: 8px 12px;
-        font-size: 12px;
-      }
-
       #cg-theme-picker {
         display: none !important;
       }
@@ -189,16 +144,6 @@
   </style>
 
   <script>
-    (function() {
-      var btn = document.getElementById("cg-class-mode-btn");
-      if (!btn) return;
-      btn.addEventListener("click", function() {
-        var active = document.body.classList.toggle("class-mode");
-        btn.setAttribute("aria-pressed", active ? "true" : "false");
-        btn.childNodes[btn.childNodes.length - 1].textContent = active ? " Exit Class Mode" : " Class Mode";
-      });
-    })();
-
     // Scroll active game into view when a game card is clicked in play mode
     (function() {
       document.addEventListener("click", function(e) {

@@ -64,18 +64,17 @@
       lessonOrder: 4,
       unitLabel: "Placement",
       lessonLabel: "Check 4",
-      stageLabel: "Heart-word phrase",
-      prompt: "Type the heart-word phrase.",
-      target: "said the",
+      stageLabel: "Top-row phrase",
+      prompt: "Type the top-row phrase.",
+      target: "it is",
       typingKind: "phrase",
       keyboardZone: "home row + top row + space bar",
-      orthographyFocus: "heart words · ai / e",
-      fingerCue: "Keep said and the grouped as whole words, then notice the parts you remember by heart.",
-      meaningHint: "This check looks for readiness to move beyond basic short-vowel work.",
-      swbat: "I can type common heart words with accurate spacing and rhythm.",
+      orthographyFocus: "high-frequency phrase",
+      fingerCue: "Keep your hands at home row and make only small reaches up to the top row.",
+      meaningHint: "This check looks for readiness to move from home row into early top-row words.",
+      swbat: "I can type a short top-row phrase with spacing and rhythm.",
       masteryGoalWpm: 14,
-      masteryGoalAccuracy: 96,
-      heartLetters: "ai, e"
+      masteryGoalAccuracy: 96
     }
   ];
 });
