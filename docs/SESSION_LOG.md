@@ -25,9 +25,9 @@ Use this log for continuity across agents and sessions.
 - Branch: `main`
 - Scope: Add continuity guardrails documentation for main-only workflow and handoff reliability.
 - Files Changed:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/CONTINUITY_PLAYBOOK.md`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/SESSION_LOG.md`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/README.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/CONTINUITY_PLAYBOOK.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/SESSION_LOG.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/README.md`
 - Commands Run:
   - Documentation-only update (no runtime command required in this sub-step).
 - Result: Continuity process now explicit and enforceable for future agent handoffs.
@@ -44,11 +44,11 @@ Use this log for continuity across agents and sessions.
 - Branch: `main`
 - Scope: Implementation Fidelity Engine v1 (accommodation implementation + Tier 1 usage + consistency overlay + export appenders).
 - Files Changed:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/support-store.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/teacher-dashboard.html`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/teacher-dashboard.css`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/teacher-dashboard.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/admin-dashboard.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/support-store.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/teacher-dashboard.html`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/teacher-dashboard.css`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/teacher-dashboard.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/admin-dashboard.js`
 - Commands Run:
   - `node --check js/support-store.js`: pass
   - `node --check teacher-dashboard.js`: pass
@@ -72,10 +72,10 @@ Use this log for continuity across agents and sessions.
 - Branch: `main`
 - Scope: Executive Function & Organization Layer v1 (task decomposition, sprint logging, assignment snapshot integration).
 - Files Changed:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/support-store.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/teacher-dashboard.html`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/teacher-dashboard.css`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/teacher-dashboard.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/support-store.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/teacher-dashboard.html`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/teacher-dashboard.css`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/teacher-dashboard.js`
 - Commands Run:
   - `node --check js/support-store.js`: pass
   - `node --check teacher-dashboard.js`: pass
@@ -98,13 +98,13 @@ Use this log for continuity across agents and sessions.
 - Branch: `main`
 - Scope: Stabilize Word Quest Seahawks play routing, header, controls, support visibility, and theme-owned play surfaces while keeping student-facing game pages routed back to `Game Gallery`.
 - Files Changed:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/themes.css`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/components.css`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/ui.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/app.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/word-quest.html`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/.github/workflows/qa.yml`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/.github/workflows/deploy-pages.yml`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/themes.css`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/components.css`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/ui.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/app.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/word-quest.html`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/.github/workflows/qa.yml`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/.github/workflows/deploy-pages.yml`
 - Commands Run:
   - `node --check js/ui.js`: pass
   - `npm run dom:hooks:check`: pass

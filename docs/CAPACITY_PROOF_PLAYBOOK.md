@@ -59,7 +59,7 @@ git push
 4. Keep one backlog file with atomic tasks.
 
 Recommended backlog file:
-- `/Users/robertwilliamknaus/Desktop/WordQuest/docs/NEXT_ACTIONS.md`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/NEXT_ACTIONS.md`
 
 Task format:
 

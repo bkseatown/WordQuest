@@ -10,7 +10,7 @@ WordQuest is being built as a playful but academically credible literacy platfor
 The long-term direction is larger than a single game page: the page should become a stable platform shell that can grow into broader audio/text learning experiences without redesign regressions.
 
 Primary product-vision reference:
-- `/Users/robertwilliamknaus/Desktop/WordQuest/VISION.md`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/VISION.md`
 
 ## 2) Current Stabilization Status (March 8, 2026)
 Completed:
@@ -30,7 +30,7 @@ Completed:
 - Latest pushed Word Quest stabilization commit is `8e17d453`.
 - Latest confirmed live Word Quest build is `8e17d453ea00-356`.
 - Latest validated local screenshot for the current Seahawks state:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/artifacts/wordquest-seahawks-validate-25.png`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/artifacts/wordquest-seahawks-validate-25.png`
 
 Current active focus:
 - Word Quest Seahawks theme refinement in play mode.
@@ -56,32 +56,32 @@ Known active issues:
 ## 3) Critical File Ownership
 
 ### Canonical runtime wiring
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/app.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/app.js`
   - owns persisted settings and theme runtime API (`window.WQTheme`).
 
 ### Canonical theme data
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/theme-registry.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/theme-registry.js`
   - owns theme IDs, labels, family grouping, and normalization behavior.
 
 ### Theme navigation + teacher tools behavior
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/theme-nav.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/theme-nav.js`
   - consumes `window.WQTheme` and `window.WQThemeRegistry`.
   - should not become source of truth for theme lists.
 
 ### Visual ownership
-- `/Users/robertwilliamknaus/Desktop/WordQuest/style/themes.css`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/themes.css`
   - token definitions per theme.
-- `/Users/robertwilliamknaus/Desktop/WordQuest/style/components.css`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/components.css`
   - HUD/components styling and motion effects.
-- `/Users/robertwilliamknaus/Desktop/WordQuest/style/modes.css`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/modes.css`
   - mode-level overrides (`projector`, `motion`, feedback palette switches).
 
 ## 4) Enforced Guardrails
 
 ### Automation
 - Script:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-hud-contract.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-change-scope.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/scripts/check-hud-contract.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/scripts/check-change-scope.js`
 - Command:
   - `npm run hud:check`
   - `npm run scope:view`
@@ -136,7 +136,7 @@ If using Claude/ChatGPT/other tools:
    - inject inline styles for HUD components,
    - bypass brightness guardrails.
 4. Work in branches and merge only tested commits.
-5. Keep `/Users/robertwilliamknaus/Desktop/WordQuest/docs/hud-spec-v1.md` as source of truth.
+5. Keep `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/hud-spec-v1.md` as source of truth.
 
 ## 7) Smoke Test Baseline (Latest Run)
 Passed:
@@ -163,14 +163,14 @@ Failed:
 
 ## 9) Operational Discipline
 - Always edit live source folder:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS`
 - Test locally before commit:
   - `python3 -m http.server 8787`
   - `npm run scope:view`
   - `npm run hud:check`
 - Keep backups, but do not patch from zip snapshots directly.
 - Non-coder quick reference:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/NONCODER_SAFETY_GUIDE.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/NONCODER_SAFETY_GUIDE.md`
 
 ## 10) Current Practical Assessment
 Scored from current code + validated local renders, not classroom outcome data.

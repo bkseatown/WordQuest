@@ -7,13 +7,13 @@
 
 ## Scope
 - In scope files:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/index.html`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/components.css`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/themes.css`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/modes.css`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/app.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/theme-registry.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/theme-nav.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/index.html`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/components.css`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/themes.css`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/modes.css`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/app.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/theme-registry.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/theme-nav.js`
 - Out of scope:
   - Core game mechanics in `js/game.js`
   - Data/content loading in `js/data.js`
@@ -101,7 +101,7 @@
 ## Acceptance Workflow
 - A change is done only if all pass:
   - `npm run hud:check`
-  - Manual checks in `/Users/robertwilliamknaus/Desktop/WordQuest/docs/hud-acceptance-checklist.md`
+  - Manual checks in `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/hud-acceptance-checklist.md`
 - Process target:
   - One draft plus one revision max (2 rounds).
 

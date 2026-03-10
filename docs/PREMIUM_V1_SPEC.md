@@ -91,15 +91,15 @@ No slice merges without all checks passing:
 
 ## File Scope for Premium v1 Work
 Primary:
-- `/Users/robertwilliamknaus/Desktop/WordQuest/style/premium-theme.css`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/style/components.css`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/style/themes.css`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/index.html`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/app.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/premium-theme.css`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/components.css`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/themes.css`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/index.html`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/app.js`
 
 Supporting:
-- `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/*` (checks only)
-- `/Users/robertwilliamknaus/Desktop/WordQuest/docs/*` (spec/checklists)
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/scripts/*` (checks only)
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/*` (spec/checklists)
 
 ## Done Definition for Premium v1
 Premium v1 is complete only when:

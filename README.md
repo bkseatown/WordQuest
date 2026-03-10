@@ -3,15 +3,15 @@
 WordQuest is a classroom-friendly word game built for strong literacy practice with rich audio support, theme variety, and scalable data-driven content.
 
 ## Source Of Truth
-- Primary working folder: `/Users/robertwilliamknaus/Desktop/WordQuest`
+- Primary working folder: `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS`
 - Treat this folder as canonical.
 - Keep `.zip` files as read-only backups, not as active dev sources.
 - Product direction and requirements baseline:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/VISION.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/VISION.md`
 
 ## Quick Start
 1. Run local server:
-   - `cd /Users/robertwilliamknaus/Desktop/WordQuest`
+   - `cd /Users/robertwilliamknaus/Desktop/Cornerstone MTSS`
    - `python3 -m http.server 8787`
 2. Open:
    - `http://127.0.0.1:8787/index.html?t=1`
@@ -32,36 +32,36 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
   - `npm run scope:check`
   - `npm run scope:strict`
 - Main docs:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/hud-spec-v1.md`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/hud-acceptance-checklist.md`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/HANDOVER.md`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/CONTINUITY_PLAYBOOK.md`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/AGENT_CONTINUITY.md`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/SESSION_LOG.md`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/NONCODER_SAFETY_GUIDE.md`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/AUDIO_OFFLINE_DEPLOY_CHECKLIST.md`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/docs/CAPACITY_PROOF_PLAYBOOK.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/hud-spec-v1.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/hud-acceptance-checklist.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/HANDOVER.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/CONTINUITY_PLAYBOOK.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/AGENT_CONTINUITY.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/SESSION_LOG.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/NONCODER_SAFETY_GUIDE.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/AUDIO_OFFLINE_DEPLOY_CHECKLIST.md`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/CAPACITY_PROOF_PLAYBOOK.md`
 
 ## Key Architecture Files
 - Entry/UI wiring:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/index.html`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/app.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/index.html`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/app.js`
 - Theme system:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/theme-registry.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/js/theme-nav.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/themes.css`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/theme-registry.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/theme-nav.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/themes.css`
 - HUD styles/motion:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/components.css`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/style/modes.css`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/components.css`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/modes.css`
 - Contract tooling:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-hud-contract.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/build-audio-manifest.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-audio-manifest-sync.js`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/check-offline-contract.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/scripts/check-hud-contract.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/scripts/build-audio-manifest.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/scripts/check-audio-manifest-sync.js`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/scripts/check-offline-contract.js`
 
 ## Deploy Target
 - GitHub Pages workflow:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/.github/workflows/deploy-pages.yml`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/.github/workflows/deploy-pages.yml`
 - Deployment gate:
   - `npm run release:check`
 - Deploy trigger:
@@ -69,7 +69,7 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 
 ## Pages Freshness Monitor
 - Scheduled workflow:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/.github/workflows/pages-freshness.yml`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/.github/workflows/pages-freshness.yml`
 - Schedule:
   - runs hourly (`cron: 17 * * * *`) and on manual dispatch.
 - What it checks on live GitHub Pages:
@@ -103,7 +103,7 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 - Visual regression check: `npm run test:visual:regression`
 - Cross-browser runtime + a11y matrix: `npm run audit:matrix`
 - Full audit bundle: `npm run audit:industry`
-- Audit stack details: [INDUSTRY_EVALUATION_STACK.md](/Users/robertwilliamknaus/Desktop/WordQuest/docs/INDUSTRY_EVALUATION_STACK.md)
+- Audit stack details: [INDUSTRY_EVALUATION_STACK.md](/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/INDUSTRY_EVALUATION_STACK.md)
 
 ## Request Template For Future Edits
 - `Surface`:
@@ -113,20 +113,20 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 - `Acceptance`:
 
 ## Offline Notes
-- Service worker is registered from `/Users/robertwilliamknaus/Desktop/WordQuest/js/app.js` and defined in `/Users/robertwilliamknaus/Desktop/WordQuest/sw.js`.
-- Audio path inventory is generated to `/Users/robertwilliamknaus/Desktop/WordQuest/data/audio-manifest.json`.
+- Service worker is registered from `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/app.js` and defined in `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/sw.js`.
+- Audio path inventory is generated to `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/data/audio-manifest.json`.
 - Full library offline is browser-storage dependent; app shell and previously used audio are prioritized.
 
 ## Music Track Pipeline
 - Drop licensed or self-made files into:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/assets/music/tracks/`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/assets/music/tracks/`
 - Optional filename metadata pattern:
   - `track-name__modes-focus+chill__bpm-92__energy-low.wav`
 - Sync catalog + ledger:
   - `npm run music:catalog`
 - Generated files:
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/data/music-catalog.json`
-  - `/Users/robertwilliamknaus/Desktop/WordQuest/data/music-license-ledger.json`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/data/music-catalog.json`
+  - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/data/music-license-ledger.json`
 - Runtime behavior:
   - File tracks are used first (by mode), with synth fallback if catalog/load/playback fails.
 
@@ -191,7 +191,7 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 ---
 
 ## Teacher Workflow (Command Hub)
-1. Open [teacher-hub-v2.html](/Users/robertwilliamknaus/Desktop/WordQuest/teacher-hub-v2.html) — the new Command Hub (Phase 15)
+1. Open [teacher-hub-v2.html](/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/teacher-hub-v2.html) — the new Command Hub (Phase 15)
 2. **Sign in with Google** (optional) to sync roster from Google Classroom
 3. View your caseload with urgency-ranked students in sidebar
 4. **Morning Brief:** Rich intelligence surface showing tier distributions, top priority students, and recommended next steps
@@ -201,10 +201,10 @@ WordQuest is a classroom-friendly word game built for strong literacy practice w
 8. Optional: Configure Azure OpenAI for AI-powered coaching narration and sub-plan generation
 
 ### Legacy Workflow (Teacher Dashboard v1)
-1. Open [teacher-dashboard.html](/Users/robertwilliamknaus/Desktop/WordQuest/teacher-dashboard.html) — the original dashboard
+1. Open [teacher-dashboard.html](/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/teacher-dashboard.html) — the original dashboard
 2. Search/select a student
 3. Review tier and confidence snapshot
-4. Click `Run 90-second Probe` or `Run 10-min session` to launch [session-runner.html](/Users/robertwilliamknaus/Desktop/WordQuest/session-runner.html)
+4. Click `Run 90-second Probe` or `Run 10-min session` to launch [session-runner.html](/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/session-runner.html)
 5. Complete session blocks; auto-generate teacher notes
 6. Save session and confirm trend updates
 7. Export progress as CSV/JSON

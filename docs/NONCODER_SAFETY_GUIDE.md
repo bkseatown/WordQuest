@@ -4,41 +4,41 @@ This file is for fast safety checks when an AI agent proposes changes.
 
 ## 1) One Rule First
 Only treat this folder as real:
-- `/Users/robertwilliamknaus/Desktop/WordQuest`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS`
 
 If an agent tries to edit files outside this folder, stop and ask why.
 
 ## 2) File Areas In Plain English
 
 ### Usually safe to change (most design requests)
-- `/Users/robertwilliamknaus/Desktop/WordQuest/index.html`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/style/components.css`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/style/themes.css`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/style/modes.css`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/app.js`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/theme-nav.js`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/theme-registry.js`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/docs/*`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/scripts/*`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/index.html`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/components.css`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/themes.css`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/style/modes.css`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/app.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/theme-nav.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/theme-registry.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/*`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/scripts/*`
 
 ### Caution (ask for clear reason first)
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/game.js`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/ui.js`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/audio.js`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/js/data.js`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/data/*`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/game.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/ui.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/audio.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/data.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/data/*`
 
 ### Red flag (do not allow unless you explicitly asked)
-- `/Users/robertwilliamknaus/Desktop/WordQuest/assets/audio/*`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/.git/*`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/files/*`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/assets/audio/*`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/.git/*`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/files/*`
 - `*.bak` backup files
 - `*.zip` snapshot files
 
 ## 3) Commands You Can Run
 
 From repo root:
-- `cd /Users/robertwilliamknaus/Desktop/WordQuest`
+- `cd /Users/robertwilliamknaus/Desktop/Cornerstone MTSS`
 
 Show changed-file safety buckets:
 - `npm run scope:view`

@@ -17,7 +17,7 @@ jobs:
   check-live-pages:
     runs-on: ubuntu-latest
     steps:
-      - name: Validate live WordQuest freshness
+      - name: Validate live Cornerstone MTSS freshness
         env:
           BASE: https://bkseatown.github.io/CornerstoneMTSS
         run: |

@@ -353,7 +353,7 @@ Before proceeding to Phase 16, consider:
 - **Regression prevention:** `docs/REGRESSION_GUARDRAILS.md`
 - **Azure setup (optional):** `docs/HANDOVER.md` (search "CSAIConfig")
 - **Codebase overview:** `docs/CONTINUITY_PLAYBOOK.md`
-- **Live branch:** `https://github.com/bkseatown/WordQuest` (branch: `claude/inspiring-sinoussi`)
+- **Live branch:** `https://github.com/bkseatown/CornerstoneMTSS` (branch: `claude/inspiring-sinoussi`)
 
 ---
 

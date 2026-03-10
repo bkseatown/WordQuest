@@ -10,8 +10,8 @@ This document defines the highest-ROI indicators for broad acceptance by:
 It also defines event names, payload schema, thresholds, and where to instrument in `js/app.js`.
 
 Primary vision alignment:
-- `/Users/robertwilliamknaus/Desktop/WordQuest/VISION.md`
-- `/Users/robertwilliamknaus/Desktop/WordQuest/VISION_AND_DESIGN_SYSTEM.md`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/VISION.md`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/VISION_AND_DESIGN_SYSTEM.md`
 
 ## 2) North Star Metric
 `Meaningful Reading Growth per 20 minutes`
@@ -242,7 +242,7 @@ And one combined "Adoption Health" score:
 - 20% reliability/accessibility
 
 ## 8) app.js Instrumentation Map (Hook Points)
-Use existing runtime functions in `/Users/robertwilliamknaus/Desktop/WordQuest/js/app.js`.
+Use existing runtime functions in `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/app.js`.
 
 Core hooks:
 - Session start/end:
