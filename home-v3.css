@@ -143,6 +143,11 @@ body.cs-home-page {
   color: #f7fbff;
 }
 
+.home-preview-window--support {
+  gap: 12px;
+  padding: 16px;
+}
+
 .home-preview-window__title {
   font-size: 11px;
   font-weight: 800;
@@ -151,28 +156,30 @@ body.cs-home-page {
   color: rgba(226, 236, 255, 0.74);
 }
 
-.home-preview-schedule {
+.home-preview-support-head {
   display: grid;
-  gap: 8px;
+  gap: 2px;
 }
 
-.home-preview-schedule i {
-  display: block;
-  height: 12px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(134, 193, 255, 0.82), rgba(105, 194, 155, 0.85));
+.home-preview-support-head strong {
+  font-size: 1.08rem;
+  color: #ffffff;
 }
 
-.home-preview-schedule i:nth-child(2) { width: 78%; }
-.home-preview-schedule i:nth-child(3) { width: 64%; }
+.home-preview-support-head span {
+  color: rgba(227, 237, 255, 0.82);
+  font-size: 0.84rem;
+}
 
-.home-preview-alerts {
+.home-preview-support-tags,
+.home-preview-support-foot,
+.home-preview-pillrow {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.home-preview-alerts b,
+.home-preview-support-tags b,
 .home-preview-pillrow b {
   display: inline-flex;
   align-items: center;
@@ -185,23 +192,48 @@ body.cs-home-page {
   background: rgba(255, 255, 255, 0.16);
 }
 
-.home-preview-panel {
+.home-preview-goal-card {
   display: grid;
-  gap: 3px;
+  gap: 6px;
   padding: 14px 16px;
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(89, 145, 233, 0.12), rgba(255, 255, 255, 0.9));
-  border: 1px solid rgba(90, 138, 218, 0.18);
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.14), rgba(255, 255, 255, 0.1));
+  border: 1px solid rgba(158, 187, 228, 0.22);
 }
 
-.home-preview-panel strong {
-  font-size: 1rem;
-  color: #1b2741;
+.home-preview-goal-card__label {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(207, 226, 255, 0.74);
 }
 
-.home-preview-panel small {
-  color: rgba(28, 45, 76, 0.72);
-  font-size: 0.9rem;
+.home-preview-goal-card strong {
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.home-preview-goal-card__meta {
+  color: rgba(218, 231, 255, 0.78);
+  font-size: 0.82rem;
+}
+
+.home-preview-support-foot i {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 120px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(134, 193, 255, 0.82), rgba(105, 194, 155, 0.85));
+}
+
+.home-preview-support-foot em {
+  font-style: normal;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: rgba(230, 238, 252, 0.84);
 }
 
 .home-preview-game {
@@ -242,6 +274,27 @@ body.cs-home-page {
   border-radius: 20px;
   background: linear-gradient(180deg, rgba(236, 243, 252, 0.96), rgba(224, 233, 247, 0.98));
   border: 1px solid rgba(111, 135, 180, 0.16);
+}
+
+.home-preview-quest-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(244, 248, 253, 0.98), rgba(231, 238, 249, 0.98));
+  border: 1px solid rgba(115, 137, 173, 0.14);
+}
+
+.home-preview-quest-clue {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #415571;
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 .home-preview-quest-head {
