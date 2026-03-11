@@ -351,7 +351,7 @@
       },
       "word-connections": {
         id: "word-connections",
-        title: "Say It Another Way",
+        title: "Word Clue",
         subtitle: "Give a smart clue so your team can guess the lesson word without using the blocked words on the card.",
         tags: ["Team Guessing", "Academic Language", "Projector Ready"],
         modeLabel: "Clue",
@@ -416,7 +416,7 @@
       },
       "morphology-builder": {
         id: "morphology-builder",
-        title: "Word Forge",
+        title: "Build the Word",
         subtitle: "Snap roots, prefixes, and suffixes together to build a real lesson word and unlock its meaning.",
         tags: ["Roots and Affixes", "Tap to Build", "Meaning Link"],
         modeLabel: "Forge",
@@ -456,7 +456,7 @@
       },
       "concept-ladder": {
         id: "concept-ladder",
-        title: "Clue Climb",
+        title: "Clue Ladder",
         subtitle: "Take clues one rung at a time and solve the idea before the final reveal appears.",
         tags: ["Early Solve", "Clue Reveal", "Lesson Concepts"],
         modeLabel: "Climb",
@@ -493,7 +493,7 @@
       },
       "error-detective": {
         id: "error-detective",
-        title: "Fix-It Detective",
+        title: "Fix the Sentence",
         subtitle: "Spot the mistake, name what went wrong, and pick the fix that repairs the thinking.",
         tags: ["Misconceptions", "Literacy or Math", "Teacher Focus"],
         modeLabel: "Detect",
@@ -525,7 +525,7 @@
       },
       "rapid-category": {
         id: "rapid-category",
-        title: "Category Rush",
+        title: "Word Categories",
         subtitle: "Race the clock to name as many lesson words as you can in the right category.",
         tags: ["Timed Retrieval", "Projector Ready", "Unique Responses"],
         modeLabel: "Rush",
@@ -573,7 +573,7 @@
       },
       "sentence-builder": {
         id: "sentence-builder",
-        title: "Sentence Sprint",
+        title: "Build a Sentence",
         subtitle: "Rebuild the sentence so the ideas flow, the grammar works, and the lesson words stay in place.",
         tags: ["Academic Language", "EAL Support", "Lesson Lock"],
         modeLabel: "Build",
@@ -2010,6 +2010,11 @@
     function render() {
       var state = engine.getState();
       var currentGame = games[state.selectedGameId];
+      if (runtimeRoot.document && currentGame) {
+        runtimeRoot.document.title = galleryOnly
+          ? "Cornerstone MTSS - Game Platform"
+          : ("Cornerstone MTSS - " + currentGame.title);
+      }
       var projectorSuggested = state.settings.viewMode === "projector" || state.settings.viewMode === "classroom";
       runtimeRoot.document.documentElement.setAttribute("data-view-mode", state.settings.viewMode || "individual");
       runtimeRoot.document.body.setAttribute("data-shell-view", galleryOnly ? "gallery" : "play");
