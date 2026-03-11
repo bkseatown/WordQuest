@@ -155,11 +155,13 @@
     var WORD_CLUE_CUSTOM_CARDS_KEY = "cs.wordclue.customcards.v1";
     var WORD_CLUE_STARTER_DECKS_URL = "data/taboo-phonics-starter-decks.json";
     var WORD_CLUE_SUPPLEMENTAL_URL = "data/word-clue-supplemental-approved.json";
+    var WORD_CLUE_OVERRIDES_URL = "data/word-clue-taboo-overrides.json";
     var WORD_CLUE_STARTER_CACHE_KEY = "cs.wordclue.starter.cache.v1";
     var trustedWordClueDeckState = {
       loaded: false,
       loading: false,
       cards: [],
+      overrides: [],
       unmatchedTargets: [],
       starterCount: 0,
       matchedCount: 0
@@ -270,6 +272,14 @@
 
     function normalizeStarterCards(raw) {
       return (Array.isArray(raw) ? raw : []).map(function (card) {
+        var altSets = Array.isArray(card.alt_taboo_sets)
+          ? card.alt_taboo_sets
+          : (Array.isArray(card.alt_forbidden_sets) ? card.alt_forbidden_sets : []);
+        altSets = altSets.map(function (set) {
+          return Array.isArray(set)
+            ? set.map(function (word) { return String(word || "").trim(); }).filter(Boolean)
+            : [];
+        }).filter(function (set) { return set.length >= 2; });
         return {
           id: String(card.deck_id || "deck") + "__" + String(card.id || Date.now()),
           deck_id: String(card.deck_id || "").trim(),
@@ -277,6 +287,7 @@
           target_word: String(card.target_word || "").trim(),
           marked_word: String(card.marked_word || card.target_word || "").trim(),
           taboo_words: Array.isArray(card.taboo_words) ? card.taboo_words.map(function (word) { return String(word || "").trim(); }).filter(Boolean) : [],
+          alt_forbidden_sets: altSets,
           definition: String(card.definition || "").trim(),
           example_sentence: String(card.example_sentence || "").trim(),
           image_keyword: String(card.target_word || "").trim(),
@@ -285,6 +296,49 @@
         };
       }).filter(function (card) {
         return card.target_word && card.taboo_words.length >= 2;
+      });
+    }
+
+    function normalizeWordClueOverrides(raw) {
+      return (Array.isArray(raw) ? raw : []).map(function (item) {
+        var tabooWords = Array.isArray(item.taboo_words)
+          ? item.taboo_words.map(function (word) { return String(word || "").trim(); }).filter(Boolean)
+          : [];
+        var altSets = Array.isArray(item.alt_taboo_sets)
+          ? item.alt_taboo_sets
+          : (Array.isArray(item.alt_forbidden_sets) ? item.alt_forbidden_sets : []);
+        altSets = altSets.map(function (set) {
+          return Array.isArray(set)
+            ? set.map(function (word) { return String(word || "").trim(); }).filter(Boolean)
+            : [];
+        }).filter(function (set) { return set.length >= 2; });
+        return {
+          deck_id: String(item.deck_id || "").trim(),
+          target_word: normalizeWordKey(item.target_word || ""),
+          taboo_words: tabooWords,
+          alt_forbidden_sets: altSets
+        };
+      }).filter(function (item) {
+        return item.deck_id && item.target_word && item.taboo_words.length >= 2;
+      });
+    }
+
+    function applyWordClueOverrides(cards) {
+      var overrides = Array.isArray(trustedWordClueDeckState.overrides) ? trustedWordClueDeckState.overrides : [];
+      if (!overrides.length) return cards;
+      var map = Object.create(null);
+      overrides.forEach(function (item) {
+        var key = String(item.deck_id) + "::" + String(item.target_word);
+        map[key] = item;
+      });
+      return cards.map(function (card) {
+        var key = String(card.deck_id || "") + "::" + normalizeWordKey(card.target_word || "");
+        var override = map[key];
+        if (!override) return card;
+        return Object.assign({}, card, {
+          taboo_words: override.taboo_words.slice(),
+          alt_forbidden_sets: override.alt_forbidden_sets.slice()
+        });
       });
     }
 
@@ -304,6 +358,7 @@
         }));
         return acc;
       }, []);
+      matched = applyWordClueOverrides(matched);
       trustedWordClueDeckState.cards = matched;
       trustedWordClueDeckState.unmatchedTargets = Object.keys(unmatched.reduce(function (acc, word) {
         acc[String(word)] = true;
@@ -355,6 +410,7 @@
         if (existing[String(card.id)]) return;
         trustedWordClueDeckState.cards.push(card);
       });
+      trustedWordClueDeckState.cards = applyWordClueOverrides(trustedWordClueDeckState.cards);
       trustedWordClueDeckState.matchedCount = trustedWordClueDeckState.cards.length;
       if (runtimeRoot.console && typeof runtimeRoot.console.info === "function") {
         runtimeRoot.console.info("[WordClue] Supplemental approved cards added:", supplemental.length);
@@ -372,10 +428,16 @@
       }
       trustedWordClueDeckState.loading = true;
       if (typeof runtimeRoot.fetch === "function") {
-        runtimeRoot.fetch(WORD_CLUE_STARTER_DECKS_URL, { cache: "no-store" })
+        runtimeRoot.fetch(WORD_CLUE_OVERRIDES_URL, { cache: "no-store" })
           .then(function (response) { return response && response.ok ? response.json() : []; })
-          .then(function (data) {
-            setTrustedWordClueCards(data);
+          .catch(function () { return []; })
+          .then(function (overridesRaw) {
+            trustedWordClueDeckState.overrides = normalizeWordClueOverrides(overridesRaw);
+            return runtimeRoot.fetch(WORD_CLUE_STARTER_DECKS_URL, { cache: "no-store" })
+              .then(function (response) { return response && response.ok ? response.json() : []; });
+          })
+          .then(function (starter) {
+            setTrustedWordClueCards(starter);
             return runtimeRoot.fetch(WORD_CLUE_SUPPLEMENTAL_URL, { cache: "no-store" })
               .then(function (response) { return response && response.ok ? response.json() : []; })
               .then(function (supplemental) { mergeSupplementalIntoTrustedDeck(supplemental); })

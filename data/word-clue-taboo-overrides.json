@@ -1,0 +1,90 @@
+[
+  {
+    "deck_id": "taboo_phonics_g2_3_starter_30",
+    "target_word": "math",
+    "taboo_words": ["numbers", "equation", "count", "problem"],
+    "alt_taboo_sets": [
+      ["add", "subtract", "answer", "homework"]
+    ]
+  },
+  {
+    "deck_id": "taboo_phonics_g2_3_starter_30",
+    "target_word": "bright",
+    "taboo_words": ["light", "shiny", "glow", "sun"],
+    "alt_taboo_sets": [
+      ["flashlight", "gleam", "vivid", "sparkle"]
+    ]
+  },
+  {
+    "deck_id": "taboo_phonics_g4_5_starter_30",
+    "target_word": "fraction",
+    "taboo_words": ["numerator", "denominator", "whole", "part"],
+    "alt_taboo_sets": [
+      ["equal", "divide", "piece", "math"]
+    ]
+  },
+  {
+    "deck_id": "taboo_phonics_g4_5_starter_30",
+    "target_word": "process",
+    "taboo_words": ["steps", "sequence", "order", "method"],
+    "alt_taboo_sets": [
+      ["procedure", "stages", "plan", "routine"]
+    ]
+  },
+  {
+    "deck_id": "taboo_phonics_g4_5_starter_30",
+    "target_word": "compare",
+    "taboo_words": ["similar", "different", "contrast", "alike"],
+    "alt_taboo_sets": [
+      ["both", "difference", "same", "opposite"]
+    ]
+  },
+  {
+    "deck_id": "taboo_phonics_g4_5_starter_30",
+    "target_word": "review",
+    "taboo_words": ["check", "revisit", "study", "again"],
+    "alt_taboo_sets": [
+      ["notes", "practice", "prepare", "quiz"]
+    ]
+  },
+  {
+    "deck_id": "taboo_phonics_g4_5_starter_30",
+    "target_word": "project",
+    "taboo_words": ["assignment", "presentation", "model", "research"],
+    "alt_taboo_sets": [
+      ["plan", "rubric", "group", "deadline"]
+    ]
+  },
+  {
+    "deck_id": "taboo_phonics_g4_5_starter_30",
+    "target_word": "careful",
+    "taboo_words": ["attention", "cautious", "mistake", "safety"],
+    "alt_taboo_sets": [
+      ["slowly", "focus", "watch", "protect"]
+    ]
+  },
+  {
+    "deck_id": "word_clue_supplemental_k1",
+    "target_word": "pen",
+    "taboo_words": ["ink", "write", "cap", "paper"],
+    "alt_taboo_sets": [
+      ["notebook", "marker", "pencil", "desk"]
+    ]
+  },
+  {
+    "deck_id": "word_clue_supplemental_k1",
+    "target_word": "red",
+    "taboo_words": ["color", "fire truck", "stop sign", "apple"],
+    "alt_taboo_sets": [
+      ["rose", "cherry", "crayon", "strawberry"]
+    ]
+  },
+  {
+    "deck_id": "word_clue_supplemental_k1",
+    "target_word": "teacher",
+    "taboo_words": ["classroom", "lesson", "students", "school"],
+    "alt_taboo_sets": [
+      ["desk", "board", "instruction", "learning"]
+    ]
+  }
+]
