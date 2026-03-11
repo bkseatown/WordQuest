@@ -9294,6 +9294,7 @@ html[data-home-mode="play"] {
   --key-h: clamp(38px, 4.8vh, 48px);
   --gap-key: 4px;
   --gap-tile: 5px;
+  --key-min-w: clamp(22px, 2.6vw, 32px);
 }
 
 html[data-home-mode="play"],
@@ -9345,6 +9346,7 @@ html[data-home-mode="play"] #game-board {
 
 html[data-home-mode="play"] #keyboard {
   width: min(var(--keyboard-max-width, 540px), calc(100vw - 10px), calc(100% - 2px));
+  max-width: calc(100vw - 6px);
   min-height: var(--wq-bottom-controls-budget);
   max-height: min(calc(var(--wq-vh) - var(--wq-top-chrome-budget) - 172px), 196px);
   margin-top: clamp(2px, 0.5vh, 6px);

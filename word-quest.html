@@ -1369,6 +1369,41 @@
   <script src="js/app.js?v=20260310c"></script>
   <script src="js/deep-dive-plus.js?v=20260303c"></script>
   <script src="js/theme-nav.js?v=20260308b"></script>
+  <script>
+    (function wordQuestFitAssertions() {
+      var isDevHost = /localhost|127\.0\.0\.1/.test(String(window.location.hostname || ""));
+      if (!isDevHost) return;
+      function assertFit() {
+        var keyboard = document.getElementById("keyboard");
+        if (!keyboard) return;
+        var r = keyboard.getBoundingClientRect();
+        var vw = window.innerWidth || 0;
+        var vh = window.innerHeight || 0;
+        var out = r.left < -1 || r.right > vw + 1 || r.bottom > vh + 1;
+        if (!out) return;
+        console.warn("[LayoutFit][word-quest] keyboard overflow", {
+          selector: "#keyboard",
+          rect: {
+            left: Math.round(r.left),
+            right: Math.round(r.right),
+            top: Math.round(r.top),
+            bottom: Math.round(r.bottom),
+            width: Math.round(r.width),
+            height: Math.round(r.height)
+          },
+          viewport: { width: vw, height: vh }
+        });
+      }
+      window.addEventListener("load", function () {
+        setTimeout(assertFit, 700);
+        setTimeout(assertFit, 1800);
+      });
+      window.addEventListener("resize", function () {
+        clearTimeout(window.__wqFitTimer);
+        window.__wqFitTimer = setTimeout(assertFit, 120);
+      });
+    })();
+  </script>
   <!-- Hub back-navigation strip (activates only when ?from=hub is in URL) -->
   <script src="js/hub-back-nav.js" defer></script>
 </body>

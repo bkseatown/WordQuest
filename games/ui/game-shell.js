@@ -2506,6 +2506,7 @@
           "</section>"
         ].join("");
         bindInteractions();
+        assertViewportFit(state);
         return;
       }
 
@@ -2587,6 +2588,7 @@
         if (typingStageBoard && state.round) typingStageBoard.innerHTML = renderRoundBoard(state, currentGame);
         bindInteractions();
         hydrateControls(state);
+        assertViewportFit(state);
         return;
       }
 
@@ -2617,6 +2619,7 @@
                 ? "Time ended"
                 : "";
         var blockedWords = (state.round.forbiddenWords || []).slice(0, challengeStyle ? 5 : Math.max(2, Number(clue.blockedCount || 4)));
+        var hasBlockedWords = blockedWords.length > 0;
         if (String(state.round.targetWord || "").trim() && blockedWords.some(function (word) {
           return String(word || "").trim().toLowerCase() === String(state.round.targetWord || "").trim().toLowerCase();
         })) {
@@ -2682,9 +2685,11 @@
           (challengeStyle ? '<div class="cg-word-clue-urgency">Challenge round: faster pass cadence</div>' : ""),
           '        <div class="cg-word-clue-danger" aria-label="Blocked words">',
           '          <div class="cg-word-clue-danger-head"><strong>Forbidden words</strong><span>Do not say these aloud</span></div>',
-          '          <ul class="cg-word-clue-blocked">' + blockedWords.map(function (word, index) {
-            return '<li><span class="cg-word-clue-blocked-index">' + String(index + 1) + '</span><span class="cg-word-clue-blocked-word">' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</span></li>";
-          }).join("") + '</ul>',
+          '          <ul class="cg-word-clue-blocked">' + (hasBlockedWords
+            ? blockedWords.map(function (word, index) {
+                return '<li><span class="cg-word-clue-blocked-index">' + String(index + 1) + '</span><span class="cg-word-clue-blocked-word">' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</span></li>";
+              }).join("")
+            : '<li class="cg-word-clue-blocked-empty"><span class="cg-word-clue-blocked-index">!</span><span class="cg-word-clue-blocked-word">No forbidden words available for this card. Check filters or deck data.</span></li>') + '</ul>',
           "        </div>",
           "      </div>",
           '      <div class="cg-word-clue-prompt">' + runtimeRoot.CSGameComponents.escapeHtml(wordClueStyleDescription(clue.cardStyle)) + "</div>",
@@ -2736,6 +2741,7 @@
         ].join("");
         bindInteractions();
         hydrateControls(state);
+        assertViewportFit(state);
         return;
       }
 
@@ -2784,6 +2790,46 @@
       if (stageBoard && state.round) stageBoard.innerHTML = renderRoundBoard(state, currentGame);
       bindInteractions();
       hydrateControls(state);
+      assertViewportFit(state);
+    }
+
+    function assertViewportFit(state) {
+      if (!runtimeRoot || !runtimeRoot.console || typeof runtimeRoot.console.warn !== "function") return;
+      var host = runtimeRoot.location && /localhost|127\.0\.0\.1/.test(String(runtimeRoot.location.hostname || ""));
+      if (!host) return;
+      var vw = runtimeRoot.innerWidth || 0;
+      var vh = runtimeRoot.innerHeight || 0;
+      function measure(selector) {
+        var node = document.querySelector(selector);
+        if (!node) return null;
+        var r = node.getBoundingClientRect();
+        return {
+          selector: selector,
+          left: Math.round(r.left),
+          right: Math.round(r.right),
+          top: Math.round(r.top),
+          bottom: Math.round(r.bottom),
+          width: Math.round(r.width),
+          height: Math.round(r.height)
+        };
+      }
+      function out(rect) {
+        return rect && (rect.left < -1 || rect.right > vw + 1 || rect.bottom > vh + 1);
+      }
+      if (state && state.selectedGameId === "word-typing") {
+        var overlays = document.querySelectorAll(".cg-typing-course-page, .cg-typing-runtime");
+        if (overlays.length > 1) {
+          runtimeRoot.console.warn("[LayoutFit][typing] duplicate visible layers", { count: overlays.length });
+        }
+        var typingRect = measure(".cg-typing-runtime") || measure(".cg-typing-course-page");
+        if (out(typingRect)) runtimeRoot.console.warn("[LayoutFit][typing] overflow", { viewport: { width: vw, height: vh }, rect: typingRect });
+      }
+      if (state && state.selectedGameId === "word-connections") {
+        var stageRect = measure(".cg-word-clue-v2");
+        var controlsRect = measure(".cg-word-clue-v2-controls");
+        if (out(stageRect)) runtimeRoot.console.warn("[LayoutFit][word-clue] stage overflow", { viewport: { width: vw, height: vh }, rect: stageRect });
+        if (out(controlsRect)) runtimeRoot.console.warn("[LayoutFit][word-clue] controls overflow", { viewport: { width: vw, height: vh }, rect: controlsRect });
+      }
     }
 
     function renderRoundBoard(state, game) {

@@ -6640,6 +6640,17 @@ body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"]
   text-transform: lowercase;
 }
 
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-blocked-empty {
+  grid-template-columns: 22px 1fr;
+  text-transform: none;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-blocked-empty .cg-word-clue-blocked-word {
+  text-transform: none;
+  font-size: 0.86rem;
+  line-height: 1.28;
+}
+
 body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-controls {
   padding: 10px;
   display: grid;
