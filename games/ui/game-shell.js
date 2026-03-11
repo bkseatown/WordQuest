@@ -2247,6 +2247,8 @@
         var showDrawPrompt = clue.cardStyle === "draw" || clue.mode === "draw";
         var challengeStyle = clue.cardStyle === "challenge";
         var relayStyle = clue.cardStyle === "relay";
+        var pictureStyle = clue.cardStyle === "picture";
+        var standardStyle = clue.cardStyle === "standard";
         var stateLabel = clue.phase === "live" ? "Live" : clue.phase === "ready" ? "Ready" : clue.phase === "reveal" ? "Reveal" : "Setup";
         var resultLabel = clue.result === "gotit"
           ? "Solved"
@@ -2259,6 +2261,7 @@
                 : "";
         var blockedWords = (state.round.forbiddenWords || []).slice(0, challengeStyle ? 5 : Math.max(2, Number(clue.blockedCount || 4)));
         var revealHint = (state.round.scaffolds || [state.round.hint || "Use examples, function, or context clues."])[0] || "";
+        var deckWords = [state.round.targetWord].concat(blockedWords).filter(Boolean).slice(0, 4);
         shell.innerHTML = [
           '<section class="cg-word-clue-v2" data-phase="' + runtimeRoot.CSGameComponents.escapeHtml(clue.phase) + '" data-style="' + runtimeRoot.CSGameComponents.escapeHtml(clue.cardStyle) + '">',
           '  <header class="cg-word-clue-v2-topbar">',
@@ -2273,15 +2276,16 @@
           '    <button class="cg-word-clue-variant' + (clue.cardStyle === "relay" ? " is-active" : "") + '" type="button" data-word-clue-style="relay">Team relay</button>',
           "  </div>",
           '  <main class="cg-word-clue-v2-stage">',
+          '    <div class="cg-word-clue-v2-stage-grid">',
           '    <article class="cg-word-clue-v2-card">',
           '      <div class="cg-word-clue-v2-card-head">',
           '        <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(styleBadge) + '</span>',
           '        <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(String(blockedWords.length)) + ' forbidden</span>',
           '        <span class="cg-chip cg-word-clue-state" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(clue.phase) + '">' + runtimeRoot.CSGameComponents.escapeHtml(stateLabel) + '</span>',
           (challengeStyle ? '        <span class="cg-chip cg-word-clue-challenge-chip">High pressure</span>' : ""),
-          (relayStyle ? '        <span class="cg-chip cg-word-clue-relay-chip">Speaker relay</span>' : ""),
+          (relayStyle ? '        <span class="cg-chip cg-word-clue-relay-chip">Relay mode</span>' : ""),
           "      </div>",
-          '      <div class="cg-word-clue-target-card' + (challengeStyle ? " is-challenge" : "") + (relayStyle ? " is-relay" : "") + '">',
+          '      <div class="cg-word-clue-target-card cg-word-clue-target-card--portrait' + (standardStyle ? " is-standard" : "") + (pictureStyle ? " is-picture" : "") + (showDrawPrompt ? " is-draw" : "") + (challengeStyle ? " is-challenge" : "") + (relayStyle ? " is-relay" : "") + '">',
           '        <p class="cg-word-clue-target-label">Target Word</p>',
           '        <div class="cg-word-clue-target">' + runtimeRoot.CSGameComponents.escapeHtml(state.round.targetWord || "") + '</div>',
           (clue.categoryContext ? ('        <span class="cg-word-clue-category">' + runtimeRoot.CSGameComponents.escapeHtml(clue.categoryContext) + '</span>') : ""),
@@ -2290,18 +2294,26 @@
               ? ('<img class="cg-word-clue-image" src="' + runtimeRoot.CSGameComponents.escapeHtml(state.round.imageSrc) + '" alt="' + runtimeRoot.CSGameComponents.escapeHtml((state.round.targetWord || "Target") + " visual support") + '">')
               : '<div class="cg-word-clue-image-placeholder">Picture clue panel</div>') + '</div>')
             : ""),
-          (showDrawPrompt ? '        <div class="cg-word-clue-draw-zone">Draw-only mode. Use visuals, not words.</div>' : ""),
+          (showDrawPrompt ? '        <div class="cg-word-clue-draw-zone"><strong>Draw It</strong><span>Sketch the idea. Do not write letters.</span></div>' : ""),
           (relayStyle ? '<div class="cg-word-clue-relay-band"><span>Speaker 1</span><span>Speaker 2</span><span>Speaker 3</span></div>' : ""),
-          '      </div>',
-          '      <div class="cg-word-clue-prompt">' + runtimeRoot.CSGameComponents.escapeHtml(wordClueStyleDescription(clue.cardStyle)) + "</div>",
-          '      <div class="cg-word-clue-danger" aria-label="Blocked words">',
-          '        <div class="cg-word-clue-danger-head"><strong>Forbidden words</strong><span>Do not say these aloud</span></div>',
-          '        <ul class="cg-word-clue-blocked">' + blockedWords.map(function (word) {
-            return '<li>' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</li>";
+          (challengeStyle ? '<div class="cg-word-clue-urgency">Challenge round: faster pass cadence</div>' : ""),
+          '        <div class="cg-word-clue-danger" aria-label="Blocked words">',
+          '          <div class="cg-word-clue-danger-head"><strong>Forbidden words</strong><span>Do not say these aloud</span></div>',
+          '          <ul class="cg-word-clue-blocked">' + blockedWords.map(function (word, index) {
+            return '<li><span class="cg-word-clue-blocked-index">' + String(index + 1) + '</span><span class="cg-word-clue-blocked-word">' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</span></li>";
           }).join("") + '</ul>',
+          "        </div>",
           "      </div>",
+          '      <div class="cg-word-clue-prompt">' + runtimeRoot.CSGameComponents.escapeHtml(wordClueStyleDescription(clue.cardStyle)) + "</div>",
           (clue.phase === "reveal" && resultLabel ? ('      <div class="cg-word-clue-result" data-result="' + runtimeRoot.CSGameComponents.escapeHtml(clue.result || "reveal") + '"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(resultLabel) + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(clue.result === "gotit" ? "Strong clue round." : (clue.result === "timeout" ? "Timer expired before a solve." : "Round closed.")) + "</span></div>") : ""),
           "    </article>",
+          '    <aside class="cg-word-clue-v2-deck" aria-label="Deck preview">',
+          '      <p class="cg-word-clue-v2-deck-title">Deck</p>',
+          '      <div class="cg-word-clue-v2-mini-card is-now"><strong>Now</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(state.round.targetWord || "Current card") + "</span></div>",
+          '      <div class="cg-word-clue-v2-mini-stack">' + deckWords.map(function (word, index) {
+            return '<button class="cg-word-clue-v2-mini-card" type="button" data-action="next-round"><strong>' + (index === 0 ? "Next" : "Later") + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</span></button>";
+          }).join("") + "</div>",
+          "    </aside>",
           '    <aside class="cg-word-clue-v2-setup' + (clue.setupOpen ? " is-open" : "") + '">',
           '      <div class="cg-word-clue-v2-setup-head"><h3>Round setup</h3><p>Secondary controls</p></div>',
           '      <label class="cg-field"><span>Class mode</span><select id="cg-word-clue-group" class="cg-select"><option value="individual"' + (clue.groupMode === "individual" ? " selected" : "") + '>Individual</option><option value="partners"' + (clue.groupMode === "partners" ? " selected" : "") + '>Partners</option><option value="teams"' + (clue.groupMode === "teams" ? " selected" : "") + '>Teams</option><option value="whole-class"' + (clue.groupMode === "whole-class" ? " selected" : "") + '>Whole class</option></select></label>',
@@ -2312,6 +2324,7 @@
           '      <textarea id="cg-word-connections-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml("Notes / transcript (optional)…") + '" aria-label="Clue notes"></textarea>',
           (clue.phase === "reveal" ? ('      <div class="cg-word-clue-reveal-note"><strong>Reveal support:</strong> ' + runtimeRoot.CSGameComponents.escapeHtml(revealHint) + "</div>") : ""),
           "    </aside>",
+          "    </div>",
           "  </main>",
           '  <footer class="cg-word-clue-v2-controls">',
           '    <div class="cg-word-clue-timer' + (clue.phase === "live" && timerSeconds ? " is-live" : "") + '"' + (!timerSeconds ? ' data-untimed="true"' : "") + '><span>' + (timerSeconds ? "Countdown" : "Untimed round") + '</span><strong class="timer">' + (timerSeconds ? runtimeRoot.CSGameComponents.escapeHtml(String(clue.timerRemaining || timerSeconds) + "s") : "No timer") + '</strong></div>',
