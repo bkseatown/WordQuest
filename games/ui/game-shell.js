@@ -1693,7 +1693,21 @@
       bumpUntil: { score: 0, streak: 0, rounds: 0 },
       lastLoggedSummaryKey: "",
       lastSubmittedGuess: "",
-      lastTypingPersistKey: ""
+      lastTypingPersistKey: "",
+      wordClue: {
+        roundId: "",
+        phase: "setup",
+        mode: "speak",
+        groupMode: "teams",
+        blockedCount: 4,
+        timerPreset: "45",
+        timerRemaining: 45,
+        timerRunning: false,
+        paused: false,
+        categoryContext: "",
+        result: ""
+      },
+      wordClueTimerId: 0
     };
 
     if (!shell) return;
@@ -1883,7 +1897,9 @@
         wordConnectionsDifficulty: 3,
         wordConnectionsMode: "speak",
         contentMode: context.contentMode || "lesson",
-        timerEnabled: recommendedGame === "word-typing" ? false : !(recommendedGame === "word-typing" && context.typingPlacementRequired),
+        timerEnabled: (recommendedGame === "word-typing" || recommendedGame === "word-connections")
+          ? false
+          : !(recommendedGame === "word-typing" && context.typingPlacementRequired),
         hintsEnabled: true,
         soundEnabled: false,
         customWordSet: "",
@@ -1935,6 +1951,62 @@
       engine.restartGame();
     }
 
+    function stopWordClueTimer() {
+      if (uiState.wordClueTimerId) {
+        runtimeRoot.clearInterval(uiState.wordClueTimerId);
+        uiState.wordClueTimerId = 0;
+      }
+      uiState.wordClue.timerRunning = false;
+      uiState.wordClue.paused = false;
+    }
+
+    function wordCluePresetSeconds(value) {
+      var key = String(value || "45");
+      if (key === "untimed") return 0;
+      if (key === "30") return 30;
+      if (key === "60") return 60;
+      return 45;
+    }
+
+    function syncWordClueRoundState(state) {
+      if (!state || state.selectedGameId !== "word-connections" || !state.round) return;
+      var clue = uiState.wordClue;
+      if (clue.roundId === state.round.id) return;
+      stopWordClueTimer();
+      clue.roundId = state.round.id;
+      clue.phase = "setup";
+      clue.mode = String(state.round.playMode || clue.mode || "speak").toLowerCase();
+      clue.blockedCount = Number(state.round.blockedCount || clue.blockedCount || 4);
+      clue.result = "";
+      clue.timerRemaining = wordCluePresetSeconds(clue.timerPreset);
+    }
+
+    function startWordClueTimer(state) {
+      var clue = uiState.wordClue;
+      var duration = wordCluePresetSeconds(clue.timerPreset);
+      stopWordClueTimer();
+      if (!duration) {
+        clue.timerRemaining = 0;
+        return;
+      }
+      clue.timerRemaining = duration;
+      clue.timerRunning = true;
+      clue.paused = false;
+      uiState.wordClueTimerId = runtimeRoot.setInterval(function () {
+        if (clue.paused) return;
+        clue.timerRemaining = Math.max(0, Number(clue.timerRemaining || 0) - 1);
+        if (clue.timerRemaining <= 0) {
+          stopWordClueTimer();
+          clue.phase = "reveal";
+          clue.result = "timeout";
+          if (state.selectedGameId === "word-connections" && state.status === "playing") {
+            engine.submit({ timedOut: true, value: "" });
+          }
+        }
+        render();
+      }, 1000);
+    }
+
     function syncTypingProgressFromState(state) {
       if (state.selectedGameId !== "word-typing" || !state.round || !state.lastOutcome || state.status !== "round-summary") return;
       var lessonKey = [
@@ -1982,6 +2054,7 @@
     }
 
     function resetRoundUi() {
+      stopWordClueTimer();
       uiState.selectedChoice = "";
       uiState.builderSelection = [];
       uiState.revealedClues = 1;
@@ -1995,6 +2068,10 @@
       uiState.typingAcceptedChars = 0;
       uiState.typingMistakes = 0;
       uiState.categoryPreview = [];
+      uiState.wordClue.roundId = "";
+      uiState.wordClue.phase = "setup";
+      uiState.wordClue.result = "";
+      uiState.wordClue.timerRemaining = wordCluePresetSeconds(uiState.wordClue.timerPreset);
     }
 
     function applyMetricBumps(state) {
@@ -2010,6 +2087,7 @@
     function render() {
       var state = engine.getState();
       var currentGame = games[state.selectedGameId];
+      syncWordClueRoundState(state);
       if (runtimeRoot.document && currentGame) {
         runtimeRoot.document.title = galleryOnly
           ? "Cornerstone MTSS - Game Platform"
@@ -2143,6 +2221,89 @@
 
         var typingStageBoard = document.getElementById("cg-stage-board");
         if (typingStageBoard && state.round) typingStageBoard.innerHTML = renderRoundBoard(state, currentGame);
+        bindInteractions();
+        hydrateControls(state);
+        return;
+      }
+
+      if (currentGame.id === "word-connections" && state.round) {
+        var clue = uiState.wordClue;
+        var timerSeconds = wordCluePresetSeconds(clue.timerPreset);
+        var timerBadge = timerSeconds ? (String(timerSeconds) + "s") : "Untimed";
+        var stateLabel = clue.phase === "live" ? "Live" : clue.phase === "ready" ? "Ready" : clue.phase === "reveal" ? "Reveal" : "Setup";
+        var resultLabel = clue.result === "gotit"
+          ? "Solved"
+          : clue.result === "pass"
+            ? "Passed"
+            : clue.result === "reveal"
+              ? "Revealed"
+              : clue.result === "timeout"
+                ? "Time ended"
+                : "";
+        var revealHint = (state.round.scaffolds || [state.round.hint || "Use examples, function, or context clues."])[0] || "";
+        shell.innerHTML = [
+          '<div class="cg-brandbar cg-brandbar--play cg-brandbar--word-clue">',
+          '  <div class="cg-brand">',
+          '    <div class="cg-brand-mark">' + runtimeRoot.CSGameComponents.iconFor(state.selectedGameId, "cg-icon cg-icon--game") + "</div>",
+          '    <div class="cg-brand-copy">',
+          '      <p class="cg-kicker">Cornerstone MTSS</p>',
+          '      <h1 class="cg-display">Word Clue</h1>',
+          '      <p>Round-based speaking game for clue language and blocked-word pressure.</p>',
+          "    </div>",
+          "  </div>",
+          '  <div class="cg-toolbar">' + toolbarParts.join("") + '</div>',
+          "</div>",
+          '<section class="cg-word-clue-shell">',
+          '  <header class="cg-word-clue-header">',
+          '    <div><p class="cg-kicker">Round header</p><h2>Word Clue</h2><p>Describe the word without saying the blocked words.</p></div>',
+          '    <div class="cg-word-clue-badges">',
+          '      <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(String(clue.groupMode || "teams").replace(/\b\w/g, function (ch) { return ch.toUpperCase(); })) + '</span>',
+          '      <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(String(clue.mode || "speak").replace(/\b\w/g, function (ch) { return ch.toUpperCase(); })) + '</span>',
+          '      <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(String(clue.blockedCount || 4)) + ' blocked</span>',
+          '      <span class="cg-chip" data-tone="' + (timerSeconds ? "focus" : "warning") + '">' + runtimeRoot.CSGameComponents.escapeHtml(timerBadge) + '</span>',
+          '      <span class="cg-chip cg-word-clue-state" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(clue.phase) + '">' + runtimeRoot.CSGameComponents.escapeHtml(stateLabel) + '</span>',
+          "    </div>",
+          "  </header>",
+          '  <div class="cg-word-clue-stage" data-phase="' + runtimeRoot.CSGameComponents.escapeHtml(clue.phase) + '">',
+          '    <section class="cg-word-clue-main">',
+          '      <div class="cg-word-clue-target-card">',
+          '        <p class="cg-word-clue-target-label">Target Word</p>',
+          '        <div class="cg-word-clue-target">' + runtimeRoot.CSGameComponents.escapeHtml(state.round.targetWord || "") + '</div>',
+          (clue.categoryContext ? ('        <span class="cg-word-clue-category">' + runtimeRoot.CSGameComponents.escapeHtml(clue.categoryContext) + '</span>') : ""),
+          "      </div>",
+          '      <div class="cg-word-clue-prompt">Describe this concept without using any blocked words.</div>',
+          '      <div class="cg-word-clue-danger" aria-label="Blocked words">',
+          '        <div class="cg-word-clue-danger-head"><strong>Blocked Words</strong><span>Do not say these aloud</span></div>',
+          '        <ul class="cg-word-clue-blocked">' + (state.round.forbiddenWords || []).map(function (word) {
+            return '<li>' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</li>";
+          }).join("") + '</ul>',
+          "      </div>",
+          (clue.phase === "reveal" && resultLabel ? ('      <div class="cg-word-clue-result" data-result="' + runtimeRoot.CSGameComponents.escapeHtml(clue.result || "reveal") + '"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(resultLabel) + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(clue.result === "gotit" ? "Strong clue round." : (clue.result === "timeout" ? "Timer expired before a solve." : "Round closed.")) + "</span></div>") : ""),
+          "    </section>",
+          '    <section class="cg-word-clue-controls">',
+          '      <div class="cg-word-clue-setup"' + (clue.phase === "setup" ? "" : ' hidden') + '>',
+          '        <label class="cg-field"><span>Class mode</span><select id="cg-word-clue-group" class="cg-select"><option value="individual"' + (clue.groupMode === "individual" ? " selected" : "") + '>Individual</option><option value="partners"' + (clue.groupMode === "partners" ? " selected" : "") + '>Partners</option><option value="teams"' + (clue.groupMode === "teams" ? " selected" : "") + '>Teams</option><option value="whole-class"' + (clue.groupMode === "whole-class" ? " selected" : "") + '>Whole class</option></select></label>',
+          '        <label class="cg-field"><span>Mode</span><select id="cg-word-connections-mode" class="cg-select"><option value="speak"' + (clue.mode === "speak" ? " selected" : "") + '>Speak</option><option value="draw"' + (clue.mode === "draw" ? " selected" : "") + '>Draw</option><option value="act"' + (clue.mode === "act" ? " selected" : "") + '>Act</option><option value="mixed"' + (clue.mode === "mixed" ? " selected" : "") + '>Mixed</option></select></label>',
+          '        <label class="cg-field"><span>Difficulty</span><select id="cg-word-connections-difficulty" class="cg-select"><option value="1"' + (clue.blockedCount === 2 ? " selected" : "") + '>2 blocked words</option><option value="2"' + (clue.blockedCount === 3 ? " selected" : "") + '>3 blocked words</option><option value="3"' + (clue.blockedCount === 4 ? " selected" : "") + '>4 blocked words</option></select></label>',
+          '        <label class="cg-field"><span>Timer</span><select id="cg-word-clue-timer" class="cg-select"><option value="untimed"' + (clue.timerPreset === "untimed" ? " selected" : "") + '>Untimed</option><option value="30"' + (clue.timerPreset === "30" ? " selected" : "") + '>30s</option><option value="45"' + (clue.timerPreset === "45" ? " selected" : "") + '>45s</option><option value="60"' + (clue.timerPreset === "60" ? " selected" : "") + '>60s</option></select></label>',
+          '        <label class="cg-field"><span>Category context (optional)</span><input id="cg-word-clue-category" class="cg-input" type="text" maxlength="48" value="' + runtimeRoot.CSGameComponents.escapeHtml(clue.categoryContext || "") + '" placeholder="e.g., Ecosystems"></label>',
+          '        <button class="cg-action cg-action-primary" type="button" data-action="wc-start-round">Start Round</button>',
+          "      </div>",
+          '      <div class="cg-word-clue-live-controls"' + (clue.phase === "setup" ? ' hidden' : "") + '>',
+          '        <div class="cg-word-clue-timer' + (clue.phase === "live" && timerSeconds ? " is-live" : "") + '"' + (!timerSeconds ? ' data-untimed="true"' : "") + '><span>' + (timerSeconds ? "Countdown" : "Untimed round") + '</span><strong class="timer">' + (timerSeconds ? runtimeRoot.CSGameComponents.escapeHtml(String(clue.timerRemaining || timerSeconds) + "s") : "No timer") + '</strong></div>',
+          '        <textarea id="cg-word-connections-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml("Teacher notes or clue transcript…") + '" aria-label="Clue notes"></textarea>',
+          '        <div class="cg-feedback-actions">',
+          (clue.phase === "ready" ? '<button class="cg-action cg-action-primary" type="button" data-action="wc-begin-live">' + runtimeRoot.CSGameComponents.escapeHtml(timerSeconds ? "Begin Timer" : "Begin Round") + "</button>" : ""),
+          (clue.phase === "live" ? '<button class="cg-action cg-action-quiet" type="button" data-action="wc-pass">Pass</button><button class="cg-action cg-action-primary" type="button" data-action="wc-got-it">Got it</button><button class="cg-action cg-action-quiet" type="button" data-action="wc-reveal">Reveal</button><button class="cg-action cg-action-quiet" type="button" data-action="wc-pause">' + runtimeRoot.CSGameComponents.escapeHtml(clue.paused ? "Resume" : "Pause") + "</button>" : ""),
+          (clue.phase === "reveal" ? '<button class="cg-action cg-action-primary" type="button" data-action="next-round">Next Word</button><button class="cg-action cg-action-quiet" type="button" data-action="wc-replay-round">Replay Round</button><button class="cg-action cg-action-quiet" type="button" data-action="wc-back-setup">Back to Setup</button>' : ""),
+          "        </div>",
+          (clue.phase === "reveal" ? ('        <div class="cg-word-clue-reveal-note"><strong>Reveal support:</strong> ' + runtimeRoot.CSGameComponents.escapeHtml(revealHint) + "</div>") : ""),
+          "      </div>",
+          "    </section>",
+          "  </div>",
+          teacherPanelMarkup,
+          "</section>"
+        ].join("");
         bindInteractions();
         hydrateControls(state);
         return;
@@ -2973,6 +3134,67 @@
             engine.nextRound();
             return;
           }
+          if (action === "wc-start-round") {
+            uiState.wordClue.phase = "ready";
+            uiState.wordClue.result = "";
+            uiState.wordClue.timerRemaining = wordCluePresetSeconds(uiState.wordClue.timerPreset);
+            render();
+            return;
+          }
+          if (action === "wc-begin-live") {
+            if (currentState.selectedGameId !== "word-connections") return;
+            uiState.wordClue.phase = "live";
+            uiState.wordClue.result = "";
+            startWordClueTimer(currentState);
+            render();
+            return;
+          }
+          if (action === "wc-pass") {
+            if (currentState.selectedGameId !== "word-connections" || currentState.status !== "playing") return;
+            stopWordClueTimer();
+            uiState.wordClue.phase = "reveal";
+            uiState.wordClue.result = "pass";
+            engine.submit({ value: "" });
+            return;
+          }
+          if (action === "wc-got-it") {
+            if (currentState.selectedGameId !== "word-connections" || currentState.status !== "playing") return;
+            stopWordClueTimer();
+            uiState.wordClue.phase = "reveal";
+            uiState.wordClue.result = "gotit";
+            engine.teacherOverride();
+            return;
+          }
+          if (action === "wc-reveal") {
+            if (currentState.selectedGameId !== "word-connections" || currentState.status !== "playing") return;
+            stopWordClueTimer();
+            uiState.wordClue.phase = "reveal";
+            uiState.wordClue.result = "reveal";
+            engine.submit({ value: "" });
+            return;
+          }
+          if (action === "wc-pause") {
+            if (currentState.selectedGameId !== "word-connections") return;
+            uiState.wordClue.paused = !uiState.wordClue.paused;
+            render();
+            return;
+          }
+          if (action === "wc-replay-round") {
+            stopWordClueTimer();
+            uiState.wordClue.phase = "ready";
+            uiState.wordClue.result = "";
+            uiState.wordClue.timerRemaining = wordCluePresetSeconds(uiState.wordClue.timerPreset);
+            render();
+            return;
+          }
+          if (action === "wc-back-setup") {
+            stopWordClueTimer();
+            uiState.wordClue.phase = "setup";
+            uiState.wordClue.result = "";
+            uiState.wordClue.timerRemaining = wordCluePresetSeconds(uiState.wordClue.timerPreset);
+            render();
+            return;
+          }
           if (action === "add-category-entry") {
             var quickInput = document.getElementById("cg-category-quick-input");
             var categoryArea = document.getElementById("cg-category-text");
@@ -3127,6 +3349,7 @@
 
       var clueMode = document.getElementById("cg-word-connections-mode");
       if (clueMode) clueMode.addEventListener("change", function () {
+        uiState.wordClue.mode = String(clueMode.value || "speak");
         engine.updateSettings({ wordConnectionsMode: clueMode.value });
         resetRoundUi();
         engine.restartGame();
@@ -3134,9 +3357,29 @@
 
       var clueDifficulty = document.getElementById("cg-word-connections-difficulty");
       if (clueDifficulty) clueDifficulty.addEventListener("change", function () {
-        engine.updateSettings({ wordConnectionsDifficulty: Number(clueDifficulty.value || 3) });
+        var nextDifficulty = Number(clueDifficulty.value || 3);
+        uiState.wordClue.blockedCount = nextDifficulty + 1;
+        engine.updateSettings({ wordConnectionsDifficulty: nextDifficulty });
         resetRoundUi();
         engine.restartGame();
+      });
+
+      var clueGroupMode = document.getElementById("cg-word-clue-group");
+      if (clueGroupMode) clueGroupMode.addEventListener("change", function () {
+        uiState.wordClue.groupMode = String(clueGroupMode.value || "teams");
+        render();
+      });
+
+      var clueTimerMode = document.getElementById("cg-word-clue-timer");
+      if (clueTimerMode) clueTimerMode.addEventListener("change", function () {
+        uiState.wordClue.timerPreset = String(clueTimerMode.value || "45");
+        uiState.wordClue.timerRemaining = wordCluePresetSeconds(uiState.wordClue.timerPreset);
+        render();
+      });
+
+      var clueCategory = document.getElementById("cg-word-clue-category");
+      if (clueCategory) clueCategory.addEventListener("input", function () {
+        uiState.wordClue.categoryContext = String(clueCategory.value || "").trim();
       });
 
       var categoryInput = document.getElementById("cg-category-text");
@@ -3434,6 +3677,16 @@
     }
 
     engine.subscribe(function (state) {
+      syncWordClueRoundState(state);
+      if (state.selectedGameId === "word-connections" && (state.status === "round-complete" || state.status === "round-summary")) {
+        stopWordClueTimer();
+        if (!uiState.wordClue.result) {
+          if (state.lastOutcome && (state.lastOutcome.correct || state.lastOutcome.teacherOverride)) uiState.wordClue.result = "gotit";
+          else if (state.lastOutcome && state.lastOutcome.timedOut) uiState.wordClue.result = "timeout";
+          else uiState.wordClue.result = "reveal";
+        }
+        uiState.wordClue.phase = "reveal";
+      }
       if (state.selectedGameId === "word-typing" && state.round && state.round.id !== uiState.typingRoundId) {
         uiState.typingRoundId = state.round.id;
         uiState.typingStartedRoundId = "";

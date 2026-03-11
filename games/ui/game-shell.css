@@ -6401,3 +6401,229 @@ body.game-platform-page[data-shell-view="play"] .cg-typing-course-hero {
     max-height: 64px !important;
   }
 }
+
+/* 2026-03-11 Word Clue rebuild: distinct round-based speaking stage */
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-play-shell {
+  display: block;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-shell {
+  display: grid;
+  gap: 12px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(129, 147, 179, 0.34);
+  background: linear-gradient(180deg, rgba(245, 249, 255, 0.98), rgba(233, 241, 251, 0.98));
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-header h2 {
+  margin: 2px 0 4px;
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+  line-height: 1.1;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-header p {
+  margin: 0;
+  color: #4a5f80;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-state[data-state="live"] {
+  background: rgba(227, 104, 76, 0.18);
+  color: #9c2f15;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-state[data-state="reveal"] {
+  background: rgba(61, 128, 78, 0.17);
+  color: #145730;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-stage {
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 12px;
+  min-height: min(74vh, 700px);
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-main,
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-controls {
+  border-radius: 18px;
+  border: 1px solid rgba(126, 147, 183, 0.34);
+  background: linear-gradient(180deg, rgba(252, 254, 255, 0.98), rgba(239, 246, 255, 0.98));
+  box-shadow: 0 14px 26px rgba(21, 40, 68, 0.12);
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-main {
+  padding: clamp(12px, 2.2vh, 18px);
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-target-card {
+  border-radius: 18px;
+  padding: clamp(12px, 2vh, 18px);
+  background: linear-gradient(165deg, rgba(28, 49, 84, 0.96), rgba(41, 72, 123, 0.94));
+  color: #f4f8ff;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-target-label {
+  margin: 0 0 8px;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-target {
+  font-weight: 900;
+  font-size: clamp(2rem, 4.8vw, 3.9rem);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-category {
+  margin-top: 8px;
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-prompt {
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 1.04rem;
+  font-weight: 700;
+  color: #253e66;
+  background: rgba(232, 241, 255, 0.84);
+  border: 1px solid rgba(137, 162, 203, 0.34);
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-danger {
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(211, 127, 99, 0.58);
+  background: linear-gradient(180deg, rgba(255, 241, 236, 0.96), rgba(255, 230, 222, 0.96));
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-danger-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  color: #8d2f19;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-danger-head strong {
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-danger-head span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-blocked {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-blocked li {
+  padding: 10px 10px;
+  border-radius: 10px;
+  border: 1px dashed rgba(179, 71, 40, 0.66);
+  background: rgba(255, 255, 255, 0.72);
+  color: #8f2a11;
+  font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+  font-weight: 900;
+  text-transform: lowercase;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-controls {
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-setup,
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-live-controls {
+  display: grid;
+  gap: 8px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-timer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px;
+  border: 1px solid rgba(130, 150, 186, 0.34);
+  background: rgba(238, 244, 253, 0.88);
+  padding: 8px 10px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-timer.is-live {
+  border-color: rgba(209, 102, 70, 0.56);
+  background: linear-gradient(180deg, rgba(255, 239, 233, 0.96), rgba(255, 222, 212, 0.96));
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-timer[data-untimed="true"] {
+  border-color: rgba(131, 150, 182, 0.34);
+  background: rgba(235, 243, 255, 0.72);
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-result {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(229, 240, 255, 0.84);
+  border: 1px solid rgba(112, 136, 176, 0.36);
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-result[data-result="gotit"] {
+  background: rgba(222, 245, 231, 0.92);
+  border-color: rgba(80, 156, 104, 0.42);
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-reveal-note {
+  border-radius: 10px;
+  border: 1px solid rgba(132, 151, 181, 0.34);
+  background: rgba(241, 247, 255, 0.88);
+  padding: 8px 10px;
+  color: #335278;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 1100px) {
+  body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-stage {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+}

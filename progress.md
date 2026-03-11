@@ -16,3 +16,6 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - 2026-03-11: Completed global viewport-fit layout system pass and pushed `8732a7d2` on `main` (landing, hub, gallery, stage/course sizing tokens and breakpoints).
 - 2026-03-11: Naming consistency pass in progress: canonicalized game titles in `games/ui/game-shell.js` to match gallery card labels (`Word Clue`, `Build the Word`, `Clue Ladder`, `Fix the Sentence`, `Word Categories`, `Build a Sentence`) and added dynamic `document.title` sync for play vs gallery views.
 - 2026-03-11: Cache-bust updated `game-platform.html` and `typing-quest.html` to load `game-shell.js?v=20260311f`; runtime guardrails pass green after change (`npm run guard:runtime`).
+- 2026-03-11: Rebuilt `word-connections` play page into a dedicated Word Clue stage layout with explicit Setup/Ready/Live/Reveal states in `games/ui/game-shell.js` + scoped UI in `games/ui/game-shell.css` (no routing or engine refactor).
+- 2026-03-11: Word Clue timer behavior changed to manual round control only: no timer auto-start on load, timer begins on `Begin Timer`, supports pause/resume, and stops on reveal/end.
+- 2026-03-11: Updated cache-bust to `game-shell.css/js?v=20260311g` in `game-platform.html` and `typing-quest.html`; syntax check + runtime guardrails pass green.
