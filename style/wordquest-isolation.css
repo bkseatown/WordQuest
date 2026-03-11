@@ -7,8 +7,9 @@
 }
 
 .wordquest-root #play-shell {
-  height: calc(100dvh - var(--nav-h, 58px));
-  overflow: visible;
+  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 .wordquest-root .board-zone,

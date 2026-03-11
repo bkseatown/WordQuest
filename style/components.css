@@ -9281,139 +9281,113 @@ html[data-motion="fun"] .tile.wq-reveal {
   color: #1d3953;
 }
 
-/* 2026-03-11 containment pass: Word Quest responsive fit on common laptop heights
-   UI-only sizing layer; no gameplay logic touched. */
+/* 2026-03-12 shared viewport-budget system: Word Quest play shell */
+html[data-home-mode="play"] {
+  --wq-vh: 100dvh;
+  --wq-shell-pad-inline: clamp(6px, 0.9vw, 12px);
+  --wq-shell-pad-bottom: max(6px, env(safe-area-inset-bottom));
+  --wq-top-chrome-budget: clamp(42px, 7.2vh, 58px);
+  --wq-bottom-controls-budget: clamp(146px, 22.5vh, 220px);
+  --wq-stage-gap: clamp(4px, 0.8vh, 9px);
+}
+
+html[data-home-mode="play"],
 html[data-home-mode="play"] body {
-  overflow-y: auto;
+  min-height: var(--wq-vh);
+  height: var(--wq-vh);
+  overflow: hidden;
 }
 
 html[data-home-mode="play"] #play-shell {
-  min-height: 100dvh;
+  min-height: var(--wq-vh);
+  height: var(--wq-vh);
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: var(--wq-top-chrome-budget) minmax(0, 1fr);
 }
 
 html[data-home-mode="play"] main {
   min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  row-gap: clamp(6px, 1.1vh, 12px);
-  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  row-gap: var(--wq-stage-gap);
+  padding: 0 var(--wq-shell-pad-inline) var(--wq-shell-pad-bottom);
+  overflow: hidden;
+}
+
+html[data-home-mode="play"] header {
+  min-height: var(--wq-top-chrome-budget);
+}
+
+html[data-home-mode="play"] .header-main-row {
+  min-height: calc(var(--wq-top-chrome-budget) - 4px);
 }
 
 html[data-home-mode="play"] .board-zone {
-  gap: clamp(6px, 1vh, 10px);
-  justify-content: center;
   min-height: 0;
+  gap: var(--wq-stage-gap);
+  justify-content: center;
+  align-content: start;
 }
 
 html[data-home-mode="play"] .board-plate {
-  width: min(calc(var(--playfield-width) + clamp(22px, 3vw, 44px)), calc(100vw - 14px), calc(100% - 6px));
-  padding: clamp(8px, 1.4vh, 14px) clamp(9px, 1.5vw, 14px);
+  width: min(calc(var(--playfield-width) + clamp(14px, 2.2vw, 30px)), calc(100vw - 12px), calc(100% - 4px));
+  padding: clamp(6px, 1vh, 11px) clamp(8px, 1.3vw, 12px);
 }
 
 html[data-home-mode="play"] #game-board {
-  max-width: min(420px, calc(100vw - 42px));
+  max-width: min(404px, calc(100vw - 32px));
 }
 
 html[data-home-mode="play"] #keyboard {
-  width: min(var(--keyboard-max-width, 540px), calc(100vw - 12px), calc(100% - 4px));
-  min-height: clamp(166px, 23vh, 236px);
-  margin-top: clamp(6px, 1vh, 12px);
-  margin-bottom: max(8px, env(safe-area-inset-bottom));
-  gap: clamp(5px, 0.9vh, 8px);
+  width: min(var(--keyboard-max-width, 540px), calc(100vw - 10px), calc(100% - 2px));
+  min-height: var(--wq-bottom-controls-budget);
+  max-height: min(calc(var(--wq-vh) - var(--wq-top-chrome-budget) - 170px), 248px);
+  margin-top: clamp(4px, 0.8vh, 8px);
+  margin-bottom: var(--wq-shell-pad-bottom);
+  gap: clamp(4px, 0.8vh, 7px);
+  overflow: hidden;
 }
 
-/* Short laptop heights: reduce chrome/gaps first, keep board+keyboard readable. */
 @media (max-height: 860px) and (min-width: 980px) {
   html[data-home-mode="play"] {
-    --tile-size: clamp(58px, 7.2vh, 68px);
-    --playfield-width: clamp(320px, 40vw, 370px);
-    --key-h: clamp(48px, 6.1vh, 56px);
-    --gap-key: 6px;
-    --gap-tile: 7px;
-  }
-
-  html[data-home-mode="play"] header {
-    padding-block: 3px 1px;
-  }
-
-  html[data-home-mode="play"] .header-main-row {
-    min-height: 46px;
-  }
-
-  html[data-home-mode="play"] #keyboard {
-    min-height: clamp(154px, 21.5vh, 212px);
-    margin-top: 8px;
+    --wq-top-chrome-budget: clamp(38px, 6.3vh, 50px);
+    --wq-bottom-controls-budget: clamp(136px, 20.8vh, 190px);
+    --wq-stage-gap: 6px;
+    --tile-size: clamp(56px, 6.8vh, 64px);
+    --playfield-width: clamp(304px, 38vw, 360px);
+    --key-h: clamp(46px, 5.8vh, 52px);
+    --gap-key: 5px;
+    --gap-tile: 6px;
   }
 }
 
 @media (max-height: 760px) and (min-width: 980px) {
   html[data-home-mode="play"] {
-    --tile-size: clamp(52px, 6.3vh, 60px);
-    --playfield-width: clamp(290px, 36vw, 336px);
-    --key-h: clamp(42px, 5.2vh, 48px);
-    --gap-key: 5px;
-    --gap-tile: 6px;
-  }
-
-  html[data-home-mode="play"] .board-zone {
-    gap: 6px;
-  }
-
-  html[data-home-mode="play"] #keyboard {
-    min-height: clamp(140px, 19.2vh, 186px);
-    margin-top: 6px;
-  }
-}
-
-@media (max-height: 700px) and (min-width: 980px) {
-  html[data-home-mode="play"] {
-    --tile-size: clamp(48px, 5.7vh, 54px);
-    --playfield-width: clamp(276px, 33vw, 310px);
-    --key-h: clamp(38px, 4.5vh, 44px);
+    --wq-top-chrome-budget: clamp(34px, 5.4vh, 44px);
+    --wq-bottom-controls-budget: clamp(122px, 18.5vh, 164px);
+    --wq-stage-gap: 5px;
+    --tile-size: clamp(50px, 6vh, 58px);
+    --playfield-width: clamp(280px, 34vw, 324px);
+    --key-h: clamp(40px, 4.8vh, 46px);
     --gap-key: 4px;
     --gap-tile: 5px;
-  }
-
-  html[data-home-mode="play"] header {
-    padding-block: 1px 0;
-  }
-
-  html[data-home-mode="play"] .header-main-row {
-    min-height: 40px;
-  }
-
-  html[data-home-mode="play"] .board-zone {
-    gap: 4px;
   }
 
   html[data-home-mode="play"] .play-support-row {
     margin-top: 0;
     margin-bottom: 1px;
   }
+}
 
-  html[data-home-mode="play"] #keyboard {
-    min-height: clamp(126px, 17.2vh, 158px);
-    margin-top: 4px;
-    margin-bottom: max(4px, env(safe-area-inset-bottom));
+@media (max-height: 700px) and (min-width: 980px) {
+  html[data-home-mode="play"] {
+    --wq-top-chrome-budget: clamp(30px, 4.8vh, 40px);
+    --wq-bottom-controls-budget: clamp(112px, 16.5vh, 148px);
+    --wq-stage-gap: 4px;
+    --tile-size: clamp(46px, 5.2vh, 52px);
+    --playfield-width: clamp(262px, 32vw, 298px);
+    --key-h: clamp(36px, 4.1vh, 42px);
+    --gap-key: 3px;
+    --gap-tile: 4px;
   }
-}
-
-/* Stage fit refinement: explicitly budget play shell space before allowing scroll. */
-html[data-home-mode="play"] {
-  --stage-header-height: clamp(38px, 6.6vh, 54px);
-  --stage-controls-gap: clamp(4px, 0.8vh, 8px);
-}
-
-html[data-home-mode="play"] header {
-  min-height: var(--stage-header-height);
-}
-
-html[data-home-mode="play"] .header-main-row {
-  min-height: calc(var(--stage-header-height) - 4px);
-}
-
-html[data-home-mode="play"] .board-zone {
-  gap: var(--stage-controls-gap);
 }
