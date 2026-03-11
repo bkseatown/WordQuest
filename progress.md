@@ -19,3 +19,5 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - 2026-03-11: Rebuilt `word-connections` play page into a dedicated Word Clue stage layout with explicit Setup/Ready/Live/Reveal states in `games/ui/game-shell.js` + scoped UI in `games/ui/game-shell.css` (no routing or engine refactor).
 - 2026-03-11: Word Clue timer behavior changed to manual round control only: no timer auto-start on load, timer begins on `Begin Timer`, supports pause/resume, and stops on reveal/end.
 - 2026-03-11: Updated cache-bust to `game-shell.css/js?v=20260311g` in `game-platform.html` and `typing-quest.html`; syntax check + runtime guardrails pass green.
+- 2026-03-11: Card-first visual rebuild pass for Word Clue: added round-style variant strip (Standard, Picture, Draw, Challenge, Team Relay), card-variant-aware hero rendering, compact secondary setup rail, and stronger projection readability.
+- 2026-03-11: Contrast pass: forced high-contrast light headings/subtitles on dark play hero bars to eliminate dark-on-purple title regressions.
