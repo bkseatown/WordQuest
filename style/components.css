@@ -9358,3 +9358,36 @@ html[data-home-mode="play"] #keyboard {
     margin-top: 6px;
   }
 }
+
+@media (max-height: 700px) and (min-width: 980px) {
+  html[data-home-mode="play"] {
+    --tile-size: clamp(48px, 5.7vh, 54px);
+    --playfield-width: clamp(276px, 33vw, 310px);
+    --key-h: clamp(38px, 4.5vh, 44px);
+    --gap-key: 4px;
+    --gap-tile: 5px;
+  }
+
+  html[data-home-mode="play"] header {
+    padding-block: 1px 0;
+  }
+
+  html[data-home-mode="play"] .header-main-row {
+    min-height: 40px;
+  }
+
+  html[data-home-mode="play"] .board-zone {
+    gap: 4px;
+  }
+
+  html[data-home-mode="play"] .play-support-row {
+    margin-top: 0;
+    margin-bottom: 1px;
+  }
+
+  html[data-home-mode="play"] #keyboard {
+    min-height: clamp(126px, 17.2vh, 158px);
+    margin-top: 4px;
+    margin-bottom: max(4px, env(safe-area-inset-bottom));
+  }
+}

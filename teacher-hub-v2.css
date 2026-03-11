@@ -6149,6 +6149,17 @@ body.th2-page {
   box-shadow: 0 14px 28px rgba(22, 34, 52, 0.18);
 }
 
+/* Soften floating tools affordance for flagship school-facing screens. */
+.th2-tools-fab {
+  box-shadow: 0 10px 20px rgba(22, 34, 52, 0.14);
+  border-color: rgba(120, 139, 172, 0.34);
+}
+
+.th2-tools-fab__label {
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
 /* 2026-03-11 premium readability adjustments */
 .th2-sidebar {
   box-shadow: inset -1px 0 0 rgba(139, 155, 181, 0.34);
