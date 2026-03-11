@@ -1700,6 +1700,7 @@
         mode: "speak",
         groupMode: "teams",
         cardStyle: "standard",
+        setupOpen: false,
         blockedCount: 4,
         timerPreset: "45",
         timerRemaining: 45,
@@ -1978,6 +1979,7 @@
       clue.phase = "setup";
       clue.mode = String(state.round.playMode || clue.mode || "speak").toLowerCase();
       clue.blockedCount = Number(state.round.blockedCount || clue.blockedCount || 4);
+      clue.setupOpen = false;
       clue.result = "";
       clue.timerRemaining = wordCluePresetSeconds(clue.timerPreset);
     }
@@ -2079,6 +2081,7 @@
       uiState.categoryPreview = [];
       uiState.wordClue.roundId = "";
       uiState.wordClue.phase = "setup";
+      uiState.wordClue.setupOpen = false;
       uiState.wordClue.result = "";
       uiState.wordClue.timerRemaining = wordCluePresetSeconds(uiState.wordClue.timerPreset);
     }
@@ -2242,6 +2245,8 @@
         var styleBadge = String(clue.cardStyle || "standard").replace(/\b\w/g, function (ch) { return ch.toUpperCase(); });
         var allowImage = clue.cardStyle === "picture" && clue.mode !== "draw";
         var showDrawPrompt = clue.cardStyle === "draw" || clue.mode === "draw";
+        var challengeStyle = clue.cardStyle === "challenge";
+        var relayStyle = clue.cardStyle === "relay";
         var stateLabel = clue.phase === "live" ? "Live" : clue.phase === "ready" ? "Ready" : clue.phase === "reveal" ? "Reveal" : "Setup";
         var resultLabel = clue.result === "gotit"
           ? "Solved"
@@ -2249,86 +2254,78 @@
             ? "Passed"
             : clue.result === "reveal"
               ? "Revealed"
-              : clue.result === "timeout"
+          : clue.result === "timeout"
                 ? "Time ended"
                 : "";
+        var blockedWords = (state.round.forbiddenWords || []).slice(0, challengeStyle ? 5 : Math.max(2, Number(clue.blockedCount || 4)));
         var revealHint = (state.round.scaffolds || [state.round.hint || "Use examples, function, or context clues."])[0] || "";
         shell.innerHTML = [
-          '<div class="cg-brandbar cg-brandbar--play cg-brandbar--word-clue">',
-          '  <div class="cg-brand">',
-          '    <div class="cg-brand-mark">' + runtimeRoot.CSGameComponents.iconFor(state.selectedGameId, "cg-icon cg-icon--game") + "</div>",
-          '    <div class="cg-brand-copy">',
-          '      <p class="cg-kicker">Cornerstone MTSS</p>',
-          '      <h1 class="cg-display">Word Clue</h1>',
-          '      <p>Round-based speaking game for clue language and blocked-word pressure.</p>',
-          "    </div>",
-          "  </div>",
-          '  <div class="cg-toolbar">' + toolbarParts.join("") + '</div>',
-          "</div>",
-          '<section class="cg-word-clue-shell">',
-          '  <header class="cg-word-clue-header">',
-          '    <div><p class="cg-kicker">Round header</p><h2>Word Clue</h2><p>Describe the word without saying the blocked words.</p></div>',
-          '    <div class="cg-word-clue-badges">',
-          '      <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(String(clue.groupMode || "teams").replace(/\b\w/g, function (ch) { return ch.toUpperCase(); })) + '</span>',
-          '      <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(String(clue.mode || "speak").replace(/\b\w/g, function (ch) { return ch.toUpperCase(); })) + '</span>',
-          '      <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(styleBadge) + '</span>',
-          '      <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(String(clue.blockedCount || 4)) + ' blocked</span>',
-          '      <span class="cg-chip" data-tone="' + (timerSeconds ? "focus" : "warning") + '">' + runtimeRoot.CSGameComponents.escapeHtml(timerBadge) + '</span>',
-          '      <span class="cg-chip cg-word-clue-state" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(clue.phase) + '">' + runtimeRoot.CSGameComponents.escapeHtml(stateLabel) + '</span>',
-          "    </div>",
+          '<section class="cg-word-clue-v2" data-phase="' + runtimeRoot.CSGameComponents.escapeHtml(clue.phase) + '" data-style="' + runtimeRoot.CSGameComponents.escapeHtml(clue.cardStyle) + '">',
+          '  <header class="cg-word-clue-v2-topbar">',
+          '    <div class="cg-word-clue-v2-title"><p class="cg-kicker">Cornerstone MTSS</p><h1>Word Clue</h1></div>',
+          '    <div class="cg-word-clue-v2-actions">' + toolbarParts.join("") + '<button class="cg-action cg-action-quiet" type="button" data-action="wc-toggle-setup">' + runtimeRoot.CSGameComponents.escapeHtml(clue.setupOpen ? "Hide Setup" : "Setup") + "</button></div>",
           "  </header>",
-          '  <div class="cg-word-clue-stage" data-phase="' + runtimeRoot.CSGameComponents.escapeHtml(clue.phase) + '">',
-          '    <section class="cg-word-clue-main">',
-          '      <div class="cg-word-clue-variants" role="tablist" aria-label="Round style">',
-          '        <button class="cg-word-clue-variant' + (clue.cardStyle === "standard" ? " is-active" : "") + '" type="button" data-word-clue-style="standard">Standard clue</button>',
-          '        <button class="cg-word-clue-variant' + (clue.cardStyle === "picture" ? " is-active" : "") + '" type="button" data-word-clue-style="picture">Picture clue</button>',
-          '        <button class="cg-word-clue-variant' + (clue.cardStyle === "draw" ? " is-active" : "") + '" type="button" data-word-clue-style="draw">Draw it</button>',
-          '        <button class="cg-word-clue-variant' + (clue.cardStyle === "challenge" ? " is-active" : "") + '" type="button" data-word-clue-style="challenge">Challenge round</button>',
-          '        <button class="cg-word-clue-variant' + (clue.cardStyle === "relay" ? " is-active" : "") + '" type="button" data-word-clue-style="relay">Team relay</button>',
+          '  <div class="cg-word-clue-v2-variant-strip" role="tablist" aria-label="Round style">',
+          '    <button class="cg-word-clue-variant' + (clue.cardStyle === "standard" ? " is-active" : "") + '" type="button" data-word-clue-style="standard">Standard clue</button>',
+          '    <button class="cg-word-clue-variant' + (clue.cardStyle === "picture" ? " is-active" : "") + '" type="button" data-word-clue-style="picture">Picture clue</button>',
+          '    <button class="cg-word-clue-variant' + (clue.cardStyle === "draw" ? " is-active" : "") + '" type="button" data-word-clue-style="draw">Draw it</button>',
+          '    <button class="cg-word-clue-variant' + (clue.cardStyle === "challenge" ? " is-active" : "") + '" type="button" data-word-clue-style="challenge">Challenge round</button>',
+          '    <button class="cg-word-clue-variant' + (clue.cardStyle === "relay" ? " is-active" : "") + '" type="button" data-word-clue-style="relay">Team relay</button>',
+          "  </div>",
+          '  <div class="cg-word-clue-style-note">' + runtimeRoot.CSGameComponents.escapeHtml(wordClueStyleDescription(clue.cardStyle)) + "</div>",
+          '  <main class="cg-word-clue-v2-stage">',
+          '    <article class="cg-word-clue-v2-card">',
+          '      <div class="cg-word-clue-v2-card-head">',
+          '        <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(styleBadge) + '</span>',
+          '        <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(String(clue.mode || "speak").replace(/\b\w/g, function (ch) { return ch.toUpperCase(); })) + '</span>',
+          '        <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(String(clue.groupMode || "teams").replace(/\b\w/g, function (ch) { return ch.toUpperCase(); })) + '</span>',
+          '        <span class="cg-chip">' + runtimeRoot.CSGameComponents.escapeHtml(String(blockedWords.length)) + ' blocked</span>',
+          '        <span class="cg-chip cg-word-clue-state" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(clue.phase) + '">' + runtimeRoot.CSGameComponents.escapeHtml(stateLabel) + '</span>',
+          (clue.categoryContext ? ('        <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.escapeHtml(clue.categoryContext) + '</span>') : ""),
           "      </div>",
-          '      <div class="cg-word-clue-style-note">' + runtimeRoot.CSGameComponents.escapeHtml(wordClueStyleDescription(clue.cardStyle)) + "</div>",
-          '      <div class="cg-word-clue-target-card">',
+          '      <div class="cg-word-clue-target-card' + (challengeStyle ? " is-challenge" : "") + (relayStyle ? " is-relay" : "") + '">',
           '        <p class="cg-word-clue-target-label">Target Word</p>',
           '        <div class="cg-word-clue-target">' + runtimeRoot.CSGameComponents.escapeHtml(state.round.targetWord || "") + '</div>',
-          (clue.categoryContext ? ('        <span class="cg-word-clue-category">' + runtimeRoot.CSGameComponents.escapeHtml(clue.categoryContext) + '</span>') : ""),
           (allowImage
             ? ('        <div class="cg-word-clue-image-zone">' + (state.round.imageSrc
               ? ('<img class="cg-word-clue-image" src="' + runtimeRoot.CSGameComponents.escapeHtml(state.round.imageSrc) + '" alt="' + runtimeRoot.CSGameComponents.escapeHtml((state.round.targetWord || "Target") + " visual support") + '">')
-              : '<div class="cg-word-clue-image-placeholder">Picture clue zone</div>') + '</div>')
+              : '<div class="cg-word-clue-image-placeholder">Picture clue panel</div>') + '</div>')
             : ""),
-          (showDrawPrompt ? '        <div class="cg-word-clue-draw-zone">Drawing mode: sketch the concept only. No letters or words.</div>' : ""),
-          "      </div>",
-          '      <div class="cg-word-clue-prompt">Describe this concept without using any blocked words.</div>',
+          (showDrawPrompt ? '        <div class="cg-word-clue-draw-zone">Draw-only mode. Use visuals, not words.</div>' : ""),
+          '      </div>',
+          '      <div class="cg-word-clue-prompt">' + runtimeRoot.CSGameComponents.escapeHtml(relayStyle ? "Relay cue: each speaker gives one legal clue, then pass." : "Describe this concept without saying any blocked words.") + "</div>",
           '      <div class="cg-word-clue-danger" aria-label="Blocked words">',
-          '        <div class="cg-word-clue-danger-head"><strong>Blocked Words</strong><span>Do not say these aloud</span></div>',
-          '        <ul class="cg-word-clue-blocked">' + (state.round.forbiddenWords || []).map(function (word) {
+          '        <div class="cg-word-clue-danger-head"><strong>Forbidden words</strong><span>Do not say these aloud</span></div>',
+          '        <ul class="cg-word-clue-blocked">' + blockedWords.map(function (word) {
             return '<li>' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</li>";
           }).join("") + '</ul>',
           "      </div>",
           (clue.phase === "reveal" && resultLabel ? ('      <div class="cg-word-clue-result" data-result="' + runtimeRoot.CSGameComponents.escapeHtml(clue.result || "reveal") + '"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(resultLabel) + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(clue.result === "gotit" ? "Strong clue round." : (clue.result === "timeout" ? "Timer expired before a solve." : "Round closed.")) + "</span></div>") : ""),
-          "    </section>",
-          '    <section class="cg-word-clue-controls">',
-          '      <div class="cg-word-clue-setup"' + (clue.phase === "setup" ? "" : ' hidden') + '>',
-          '        <label class="cg-field"><span>Class mode</span><select id="cg-word-clue-group" class="cg-select"><option value="individual"' + (clue.groupMode === "individual" ? " selected" : "") + '>Individual</option><option value="partners"' + (clue.groupMode === "partners" ? " selected" : "") + '>Partners</option><option value="teams"' + (clue.groupMode === "teams" ? " selected" : "") + '>Teams</option><option value="whole-class"' + (clue.groupMode === "whole-class" ? " selected" : "") + '>Whole class</option></select></label>',
-          '        <label class="cg-field"><span>Mode</span><select id="cg-word-connections-mode" class="cg-select"><option value="speak"' + (clue.mode === "speak" ? " selected" : "") + '>Speak</option><option value="draw"' + (clue.mode === "draw" ? " selected" : "") + '>Draw</option><option value="act"' + (clue.mode === "act" ? " selected" : "") + '>Act</option><option value="mixed"' + (clue.mode === "mixed" ? " selected" : "") + '>Mixed</option></select></label>',
-          '        <label class="cg-field"><span>Difficulty</span><select id="cg-word-connections-difficulty" class="cg-select"><option value="1"' + (clue.blockedCount === 2 ? " selected" : "") + '>2 blocked words</option><option value="2"' + (clue.blockedCount === 3 ? " selected" : "") + '>3 blocked words</option><option value="3"' + (clue.blockedCount === 4 ? " selected" : "") + '>4 blocked words</option><option value="4"' + (clue.blockedCount === 5 ? " selected" : "") + '>5 blocked words</option></select></label>',
-          '        <label class="cg-field"><span>Timer</span><select id="cg-word-clue-timer" class="cg-select"><option value="untimed"' + (clue.timerPreset === "untimed" ? " selected" : "") + '>Untimed</option><option value="30"' + (clue.timerPreset === "30" ? " selected" : "") + '>30s</option><option value="45"' + (clue.timerPreset === "45" ? " selected" : "") + '>45s</option><option value="60"' + (clue.timerPreset === "60" ? " selected" : "") + '>60s</option></select></label>',
-          '        <label class="cg-field"><span>Category context (optional)</span><input id="cg-word-clue-category" class="cg-input" type="text" maxlength="48" value="' + runtimeRoot.CSGameComponents.escapeHtml(clue.categoryContext || "") + '" placeholder="e.g., Ecosystems"></label>',
-          '        <button class="cg-action cg-action-primary" type="button" data-action="wc-start-round">Start Round</button>',
-          "      </div>",
-          '      <div class="cg-word-clue-live-controls"' + (clue.phase === "setup" ? ' hidden' : "") + '>',
-          '        <div class="cg-word-clue-timer' + (clue.phase === "live" && timerSeconds ? " is-live" : "") + '"' + (!timerSeconds ? ' data-untimed="true"' : "") + '><span>' + (timerSeconds ? "Countdown" : "Untimed round") + '</span><strong class="timer">' + (timerSeconds ? runtimeRoot.CSGameComponents.escapeHtml(String(clue.timerRemaining || timerSeconds) + "s") : "No timer") + '</strong></div>',
-          '        <textarea id="cg-word-connections-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml("Teacher notes or clue transcript…") + '" aria-label="Clue notes"></textarea>',
-          '        <div class="cg-feedback-actions">',
-          (clue.phase === "ready" ? '<button class="cg-action cg-action-primary" type="button" data-action="wc-begin-live">' + runtimeRoot.CSGameComponents.escapeHtml(timerSeconds ? "Begin Timer" : "Begin Round") + "</button>" : ""),
-          (clue.phase === "live" ? '<button class="cg-action cg-action-quiet" type="button" data-action="wc-pass">Pass</button><button class="cg-action cg-action-primary" type="button" data-action="wc-got-it">Got it</button><button class="cg-action cg-action-quiet" type="button" data-action="wc-reveal">Reveal</button><button class="cg-action cg-action-quiet" type="button" data-action="wc-pause">' + runtimeRoot.CSGameComponents.escapeHtml(clue.paused ? "Resume" : "Pause") + "</button>" : ""),
-          (clue.phase === "reveal" ? '<button class="cg-action cg-action-primary" type="button" data-action="next-round">Next Card</button><button class="cg-action cg-action-quiet" type="button" data-action="wc-replay-round">Replay</button><button class="cg-action cg-action-quiet" type="button" data-action="wc-back-setup">Back to Setup</button>' : ""),
-          "        </div>",
-          (clue.phase === "reveal" ? ('        <div class="cg-word-clue-reveal-note"><strong>Reveal support:</strong> ' + runtimeRoot.CSGameComponents.escapeHtml(revealHint) + "</div>") : ""),
-          "      </div>",
-          "    </section>",
-          "  </div>",
-          teacherPanelMarkup,
+          "    </article>",
+          '    <aside class="cg-word-clue-v2-setup' + (clue.setupOpen ? " is-open" : "") + '">',
+          '      <div class="cg-word-clue-v2-setup-head"><h3>Round setup</h3><p>Secondary controls</p></div>',
+          '      <label class="cg-field"><span>Class mode</span><select id="cg-word-clue-group" class="cg-select"><option value="individual"' + (clue.groupMode === "individual" ? " selected" : "") + '>Individual</option><option value="partners"' + (clue.groupMode === "partners" ? " selected" : "") + '>Partners</option><option value="teams"' + (clue.groupMode === "teams" ? " selected" : "") + '>Teams</option><option value="whole-class"' + (clue.groupMode === "whole-class" ? " selected" : "") + '>Whole class</option></select></label>',
+          '      <label class="cg-field"><span>Mode</span><select id="cg-word-connections-mode" class="cg-select"><option value="speak"' + (clue.mode === "speak" ? " selected" : "") + '>Speak</option><option value="draw"' + (clue.mode === "draw" ? " selected" : "") + '>Draw</option><option value="act"' + (clue.mode === "act" ? " selected" : "") + '>Act</option><option value="mixed"' + (clue.mode === "mixed" ? " selected" : "") + '>Mixed</option></select></label>',
+          '      <label class="cg-field"><span>Difficulty</span><select id="cg-word-connections-difficulty" class="cg-select"><option value="1"' + (clue.blockedCount === 2 ? " selected" : "") + '>2 blocked words</option><option value="2"' + (clue.blockedCount === 3 ? " selected" : "") + '>3 blocked words</option><option value="3"' + (clue.blockedCount === 4 ? " selected" : "") + '>4 blocked words</option><option value="4"' + (clue.blockedCount === 5 ? " selected" : "") + '>5 blocked words</option></select></label>',
+          '      <label class="cg-field"><span>Timer</span><select id="cg-word-clue-timer" class="cg-select"><option value="untimed"' + (clue.timerPreset === "untimed" ? " selected" : "") + '>Untimed</option><option value="30"' + (clue.timerPreset === "30" ? " selected" : "") + '>30s</option><option value="45"' + (clue.timerPreset === "45" ? " selected" : "") + '>45s</option><option value="60"' + (clue.timerPreset === "60" ? " selected" : "") + '>60s</option></select></label>',
+          '      <label class="cg-field"><span>Category</span><input id="cg-word-clue-category" class="cg-input" type="text" maxlength="48" value="' + runtimeRoot.CSGameComponents.escapeHtml(clue.categoryContext || "") + '" placeholder="e.g., Ecosystems"></label>',
+          '      <textarea id="cg-word-connections-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml("Notes / transcript (optional)…") + '" aria-label="Clue notes"></textarea>',
+          (clue.phase === "reveal" ? ('      <div class="cg-word-clue-reveal-note"><strong>Reveal support:</strong> ' + runtimeRoot.CSGameComponents.escapeHtml(revealHint) + "</div>") : ""),
+          "    </aside>",
+          "  </main>",
+          '  <footer class="cg-word-clue-v2-controls">',
+          '    <div class="cg-word-clue-timer' + (clue.phase === "live" && timerSeconds ? " is-live" : "") + '"' + (!timerSeconds ? ' data-untimed="true"' : "") + '><span>' + (timerSeconds ? "Countdown" : "Untimed round") + '</span><strong class="timer">' + (timerSeconds ? runtimeRoot.CSGameComponents.escapeHtml(String(clue.timerRemaining || timerSeconds) + "s") : "No timer") + '</strong></div>',
+          '    <div class="cg-word-clue-v2-action-row">',
+          '      <button class="cg-action cg-action-primary" type="button" data-action="wc-start-round">Start Round</button>',
+          '      <button class="cg-action cg-action-quiet" type="button" data-action="wc-pass">Pass</button>',
+          '      <button class="cg-action cg-action-primary" type="button" data-action="wc-got-it">Got it</button>',
+          '      <button class="cg-action cg-action-quiet" type="button" data-action="wc-reveal">Reveal</button>',
+          '      <button class="cg-action cg-action-quiet" type="button" data-action="wc-pause">' + runtimeRoot.CSGameComponents.escapeHtml(clue.paused ? "Resume" : "Pause") + '</button>',
+          '      <button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Card</button>',
+          "    </div>",
+          (clue.phase === "ready" ? '<div class="cg-word-clue-v2-state-tip">Ready state: press Begin Round to go live.</div>' : ""),
+          (clue.phase === "live" ? '<div class="cg-word-clue-v2-state-tip is-live">Live round: countdown only runs now.</div>' : ""),
+          "  </footer>",
           "</section>"
         ].join("");
         bindInteractions();
@@ -3162,9 +3159,20 @@
             return;
           }
           if (action === "wc-start-round") {
-            uiState.wordClue.phase = "ready";
-            uiState.wordClue.result = "";
-            uiState.wordClue.timerRemaining = wordCluePresetSeconds(uiState.wordClue.timerPreset);
+            if (uiState.wordClue.phase === "setup" || uiState.wordClue.phase === "reveal") {
+              uiState.wordClue.phase = "ready";
+              uiState.wordClue.result = "";
+              uiState.wordClue.timerRemaining = wordCluePresetSeconds(uiState.wordClue.timerPreset);
+            } else if (uiState.wordClue.phase === "ready") {
+              uiState.wordClue.phase = "live";
+              uiState.wordClue.result = "";
+              startWordClueTimer(currentState);
+            }
+            render();
+            return;
+          }
+          if (action === "wc-toggle-setup") {
+            uiState.wordClue.setupOpen = !uiState.wordClue.setupOpen;
             render();
             return;
           }
@@ -3177,7 +3185,7 @@
             return;
           }
           if (action === "wc-pass") {
-            if (currentState.selectedGameId !== "word-connections" || currentState.status !== "playing") return;
+            if (currentState.selectedGameId !== "word-connections" || currentState.status !== "playing" || uiState.wordClue.phase !== "live") return;
             stopWordClueTimer();
             uiState.wordClue.phase = "reveal";
             uiState.wordClue.result = "pass";
@@ -3185,7 +3193,7 @@
             return;
           }
           if (action === "wc-got-it") {
-            if (currentState.selectedGameId !== "word-connections" || currentState.status !== "playing") return;
+            if (currentState.selectedGameId !== "word-connections" || currentState.status !== "playing" || uiState.wordClue.phase !== "live") return;
             stopWordClueTimer();
             uiState.wordClue.phase = "reveal";
             uiState.wordClue.result = "gotit";
@@ -3193,7 +3201,7 @@
             return;
           }
           if (action === "wc-reveal") {
-            if (currentState.selectedGameId !== "word-connections" || currentState.status !== "playing") return;
+            if (currentState.selectedGameId !== "word-connections" || currentState.status !== "playing" || uiState.wordClue.phase !== "live") return;
             stopWordClueTimer();
             uiState.wordClue.phase = "reveal";
             uiState.wordClue.result = "reveal";
@@ -3201,7 +3209,7 @@
             return;
           }
           if (action === "wc-pause") {
-            if (currentState.selectedGameId !== "word-connections") return;
+            if (currentState.selectedGameId !== "word-connections" || uiState.wordClue.phase !== "live") return;
             uiState.wordClue.paused = !uiState.wordClue.paused;
             render();
             return;

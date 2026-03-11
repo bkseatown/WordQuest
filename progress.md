@@ -21,3 +21,5 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - 2026-03-11: Updated cache-bust to `game-shell.css/js?v=20260311g` in `game-platform.html` and `typing-quest.html`; syntax check + runtime guardrails pass green.
 - 2026-03-11: Card-first visual rebuild pass for Word Clue: added round-style variant strip (Standard, Picture, Draw, Challenge, Team Relay), card-variant-aware hero rendering, compact secondary setup rail, and stronger projection readability.
 - 2026-03-11: Contrast pass: forced high-contrast light headings/subtitles on dark play hero bars to eliminate dark-on-purple title regressions.
+- 2026-03-11: Hard-reset alternate layout pass for Word Clue (v2): replaced the in-place two-column stage with compact top utility bar + centered hero card stage + immediate action row + collapsible setup drawer.
+- 2026-03-11: Word Clue v2 variants now visibly alter presentation (picture panel, draw-only cue, challenge urgency styling, relay cue), and blocked-word rendering scales with difficulty.
