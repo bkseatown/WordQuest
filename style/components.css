@@ -9284,7 +9284,8 @@ html[data-motion="fun"] .tile.wq-reveal {
 /* 2026-03-12 shared viewport-budget system: Word Quest play shell */
 html[data-home-mode="play"] {
   --wq-vh: 100dvh;
-  --wq-shell-pad-inline: clamp(6px, 0.9vw, 12px);
+  --wq-safe-edge: clamp(12px, 1.4vw, 22px);
+  --wq-shell-pad-inline: var(--wq-safe-edge);
   --wq-shell-pad-bottom: max(6px, env(safe-area-inset-bottom));
   --wq-top-chrome-budget: clamp(42px, 7.2vh, 58px);
   --wq-bottom-controls-budget: clamp(118px, 18vh, 172px);
@@ -9336,17 +9337,17 @@ html[data-home-mode="play"] .board-zone {
 }
 
 html[data-home-mode="play"] .board-plate {
-  width: min(calc(var(--playfield-width) + clamp(14px, 2.2vw, 30px)), calc(100vw - 12px), calc(100% - 4px));
+  width: min(calc(var(--playfield-width) + clamp(14px, 2.2vw, 30px)), calc(100vw - (var(--wq-safe-edge) * 2)), calc(100% - 4px));
   padding: clamp(6px, 1vh, 11px) clamp(8px, 1.3vw, 12px);
 }
 
 html[data-home-mode="play"] #game-board {
-  max-width: min(404px, calc(100vw - 32px));
+  max-width: min(404px, calc(100vw - (var(--wq-safe-edge) * 2) - 10px));
 }
 
 html[data-home-mode="play"] #keyboard {
-  width: min(var(--keyboard-max-width, 540px), calc(100vw - 10px), calc(100% - 2px));
-  max-width: calc(100vw - 6px);
+  width: min(var(--keyboard-max-width, 540px), calc(100vw - (var(--wq-safe-edge) * 2) - 4px), calc(100% - 2px));
+  max-width: calc(100vw - (var(--wq-safe-edge) * 2));
   min-height: var(--wq-bottom-controls-budget);
   max-height: min(calc(var(--wq-vh) - var(--wq-top-chrome-budget) - 172px), 196px);
   margin-top: clamp(2px, 0.5vh, 6px);

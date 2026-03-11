@@ -468,6 +468,21 @@
       }
     }
 
+    function getWordClueTabooSets(card) {
+      if (!card || typeof card !== "object") return [[]];
+      var primary = Array.isArray(card.taboo_words)
+        ? card.taboo_words
+        : (Array.isArray(card.forbidden_words) ? card.forbidden_words : []);
+      var alt = Array.isArray(card.alt_forbidden_sets)
+        ? card.alt_forbidden_sets
+        : (Array.isArray(card.alt_taboo_sets) ? card.alt_taboo_sets : []);
+      var sets = [primary].concat(alt);
+      sets = sets.map(function (set) {
+        return Array.isArray(set) ? set.map(function (word) { return String(word || "").trim(); }).filter(Boolean) : [];
+      }).filter(function (set) { return set.length >= 2; });
+      return sets.length ? sets : [[]];
+    }
+
     function buildWordClueDeck(input, mode, difficultyCount) {
       var settings = input && input.settings || {};
       var filters = {
@@ -497,11 +512,11 @@
       var filtered = deck.filter(function (card) { return String(card.id) !== previousId && String(card.target_word).toLowerCase() !== String(wordClueRoundMemory.lastTarget || "").toLowerCase(); });
       var picked = (filtered[0] || deck[0] || null);
       if (!picked) return null;
-      var allSets = [picked.forbidden_words].concat(picked.alt_forbidden_sets || []);
+      var allSets = getWordClueTabooSets(picked);
       var targetKey = String(picked.target_word || "").toLowerCase();
       var nextSetIndex = (Number(wordClueRoundMemory.altSetByTarget[targetKey]) || 0) % allSets.length;
       wordClueRoundMemory.altSetByTarget[targetKey] = nextSetIndex + 1;
-      var blocked = (allSets[nextSetIndex] || picked.forbidden_words || []).slice(0, Math.max(2, difficultyCount));
+      var blocked = (allSets[nextSetIndex] || []).slice(0, Math.max(2, difficultyCount));
       wordClueRoundMemory.lastTarget = String(picked.target_word || "");
       return {
         card: picked,
@@ -670,7 +685,7 @@
             row = {
               id: "wc-fallback",
               target_word: "No matching cards",
-              forbidden_words: [],
+              taboo_words: [],
               grade_band: "K-1",
               subject: "ELA",
               curriculum_tag: "Adjust grade/deck filters",
@@ -680,9 +695,9 @@
               image_keyword: "",
               teacher_created: false
             };
-            cardPick = { card: row, forbiddenWords: row.forbidden_words };
+            cardPick = { card: row, forbiddenWords: row.taboo_words };
           }
-          var resolvedForbidden = (cardPick.forbiddenWords || row.forbidden_words || []).slice(0, desiredBlockedCount);
+          var resolvedForbidden = (cardPick.forbiddenWords || (Array.isArray(row.taboo_words) ? row.taboo_words : row.forbidden_words) || []).slice(0, desiredBlockedCount);
           var normalizedTarget = String(row.target_word || "").trim();
           var normalizedForbidden = resolvedForbidden.map(function (word) { return String(word || "").trim().toLowerCase(); }).filter(Boolean);
           if (normalizedForbidden.indexOf(normalizedTarget.toLowerCase()) >= 0) {
