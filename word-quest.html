@@ -48,25 +48,13 @@
   <link rel="stylesheet" href="style/world-themes.css?v=20260303c">
   <link rel="stylesheet" href="style/wordquest-isolation.css?v=20260308c">
   <link rel="stylesheet" href="hero-v2.css?v=20260303c">
-  <link rel="stylesheet" href="style/home-lock.css?v=20260303c">
   <style>
     /* First-paint guard to prevent hero/gameplay bleed before app.js runs. */
     #play-shell { display: none !important; }
     html[data-home-mode="play"] #play-shell { display: block !important; }
     html[data-home-mode="play"] #hero-v2 { display: none !important; }
     html[data-home-mode="play"] > body > header { display: block; }
-    html[data-home-mode="play"],
-    html[data-home-mode="play"] body {
-      min-height: 100dvh;
-      height: 100dvh;
-      overflow: hidden;
-    }
     html[data-home-mode="home"] > body > header { display: none; }
-    html[data-home-mode="home"],
-    html[data-home-mode="home"] body {
-      height: 100vh;
-      overflow: hidden !important;
-    }
   </style>
 </head>
 <body class="wordquest-root theme-seahawks">
