@@ -9363,6 +9363,7 @@
       if (viewportW >= 1040 && viewportH >= 760) layoutMode = 'wide';
       else if (viewportH <= 560 || (isLandscape && viewportH <= 620)) layoutMode = 'compact';
       else if (viewportH <= 760) layoutMode = 'tight';
+      const shortLaptopMode = playModeActive && viewportW >= 960 && viewportH <= 730;
       const tileGap = baseTileGap;
       const keyboardBottomGap = layoutMode === 'compact'
         ? (isFullscreen ? 2 : 4)
@@ -9417,6 +9418,9 @@
       if (wordLength === 5 && layoutMode !== 'compact' && viewportW >= 900) {
         size = Math.max(size, 64);
       }
+      if (shortLaptopMode) {
+        size = Math.max(layoutMode === 'tight' ? 54 : sizeFloor, Math.min(size, wordLength === 5 ? 58 : 56));
+      }
       const tileRadius = Math.max(10, Math.min(19, Math.round(size * 0.24)));
       const boardWidth = wordLength * size + (wordLength - 1) * tileGap;
       const boardHeight = maxGuesses * size + (maxGuesses - 1) * tileGap;
@@ -9427,28 +9431,28 @@
       const preferredKeyMinW = parseFloat(rootStyle.getPropertyValue('--key-min-w')) || 38;
       const adaptiveKeyFloor = Math.max(
         playModeActive
-          ? (layoutMode === 'compact' ? 30 : layoutMode === 'tight' ? 34 : layoutMode === 'wide' ? 38 : 40)
+          ? (layoutMode === 'compact' ? 30 : shortLaptopMode ? 30 : layoutMode === 'tight' ? 34 : layoutMode === 'wide' ? 38 : 40)
           : (layoutMode === 'compact' ? 36 : layoutMode === 'tight' ? 42 : 48),
         Math.round(preferredKeyH * (playModeActive ? 0.78 : 0.88))
       );
       const adaptiveKeyCeil = Math.min(
         playModeActive
-          ? (layoutMode === 'compact' ? 40 : layoutMode === 'tight' ? 44 : layoutMode === 'wide' ? 48 : 50)
+          ? (layoutMode === 'compact' ? 40 : shortLaptopMode ? 40 : layoutMode === 'tight' ? 44 : layoutMode === 'wide' ? 48 : 50)
           : Math.max(layoutMode === 'wide' ? 62 : 60, Math.round(preferredKeyH)),
         Math.max(playModeActive ? 32 : 36, size - (playModeActive ? 8 : 4))
       );
       const keyScale = playModeActive
-        ? (layoutMode === 'compact' ? 0.68 : layoutMode === 'tight' ? 0.71 : layoutMode === 'wide' ? 0.73 : 0.76)
+        ? (layoutMode === 'compact' ? 0.68 : shortLaptopMode ? 0.66 : layoutMode === 'tight' ? 0.71 : layoutMode === 'wide' ? 0.73 : 0.76)
         : (layoutMode === 'compact' ? 0.84 : layoutMode === 'tight' ? 0.85 : 0.86);
       const adaptiveKeyH = Math.max(adaptiveKeyFloor, Math.min(adaptiveKeyCeil, Math.round(size * keyScale)));
       let adaptiveKeyMinW = Math.max(
         playModeActive
-          ? (layoutMode === 'compact' ? 22 : layoutMode === 'tight' ? 26 : 28)
+          ? (layoutMode === 'compact' ? 22 : shortLaptopMode ? 24 : layoutMode === 'tight' ? 26 : 28)
           : (layoutMode === 'compact' ? 24 : layoutMode === 'tight' ? 28 : 32),
         Math.min(Math.round(preferredKeyMinW), Math.round(size * (playModeActive ? 0.72 : 0.78)))
       );
       let adaptiveKeyGap = Math.max(
-        playModeActive ? (layoutMode === 'compact' ? 4.2 : 4.6) : (layoutMode === 'compact' ? 5.6 : 6.2),
+        playModeActive ? (layoutMode === 'compact' ? 4.2 : shortLaptopMode ? 4.0 : 4.6) : (layoutMode === 'compact' ? 5.6 : 6.2),
         Math.min(playModeActive ? 8 : 10, Math.round(size * (playModeActive ? 0.12 : 0.16)))
       );
       const maxKeyboardW = Math.max(286, Math.min(window.innerWidth - (safeEdge * 2), mainInnerW - 4));
