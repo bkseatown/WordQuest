@@ -3258,13 +3258,34 @@
           renderGameScaffold(game, state, round, {
             beforePlay: renderHostControls(game, state, round),
             play: [
-              '<div class="cg-quest-board' + (state.lastOutcome && state.lastOutcome.correct ? " row-success" : "") + '">',
-              '  <p class="cg-quest-clue">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</p>",
-              '  <div class="cg-quest-grid">' + String(round.answer || "").split("").map(function (_letter, index) {
+              '<div class="cg-premium-stage cg-premium-stage--quest' + (state.lastOutcome && state.lastOutcome.correct ? " is-success" : "") + '">',
+              '  <section class="cg-quest-hero">',
+              '    <div class="cg-quest-hero__copy">',
+              '      <p class="cg-micro-label">Clue to solve</p>',
+              '      <h3>Use the clue, test the pattern, and lock in the hidden word.</h3>',
+              '      <p class="cg-quest-clue">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + '</p>',
+              '    </div>',
+              '    <div class="cg-quest-hero__stats">',
+              '      <div class="cg-quest-stat"><span>Target length</span><strong>' + runtimeRoot.CSGameComponents.escapeHtml(String(String(round.answer || "").length)) + ' letters</strong></div>',
+              '      <div class="cg-quest-stat"><span>Status</span><strong>' + runtimeRoot.CSGameComponents.escapeHtml(state.lastOutcome && state.lastOutcome.correct ? "Solved" : (guess ? "Attempt in view" : "Ready to guess")) + '</strong></div>',
+              "    </div>",
+              "  </section>",
+              '<div class="cg-quest-workbench">',
+              '  <div class="cg-quest-board' + (state.lastOutcome && state.lastOutcome.correct ? " row-success" : "") + '">',
+              '    <div class="cg-quest-grid">' + String(round.answer || "").split("").map(function (_letter, index) {
                 return '<div class="cg-letter-box tile-flip' + (evaluation[index] ? " is-revealed" : "") + '" data-state="' + runtimeRoot.CSGameComponents.escapeHtml(evaluation[index] || "") + '" style="animation-delay:' + (index * 40) + 'ms">' + runtimeRoot.CSGameComponents.escapeHtml(guess[index] || "") + "</div>";
               }).join("") + "</div>",
+              "  </div>",
+              '  <aside class="cg-quest-sidebar">',
+              '    <div class="cg-premium-note">',
+              '      <p class="cg-micro-label">Solve move</p>',
+              '      <h4>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint || "Start with the clue meaning, then test the letters you know.") + '</h4>',
+              '      <p>Use one strong guess instead of random resets. The color row will show what to keep.</p>',
+              '    </div>',
               buildKeyboardStrip(round.answer || "", evaluation, guess, "cg-key-strip cg-key-press-strip"),
               (state.hintVisible ? '<span class="cg-chip" data-tone="warning">' + runtimeRoot.CSGameComponents.iconFor("hint") + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span>" : ""),
+              "  </aside>",
+              "</div>",
               "</div>"
             ].join(""),
             controls: [
@@ -3337,15 +3358,29 @@
 
       if (game.id === "morphology-builder") {
         var forgeChosen = Array.isArray(uiState.builderSelection) ? uiState.builderSelection : [];
+        var forgeFilled = forgeChosen.filter(Boolean).length;
+        var forgeTargetCount = Array.isArray(round.solution) ? round.solution.length : 0;
         return renderGameScaffold(game, state, round, {
           beforePlay: renderHostControls(game, state, round),
           play: [
             '<div class="cg-game-layout cg-game-layout--builder">',
+            '<div class="cg-premium-stage cg-premium-stage--forge">',
+            '  <section class="cg-forge-hero">',
+            '    <div class="cg-forge-hero__copy">',
+            '      <p class="cg-micro-label">Word build</p>',
+            '      <h3>Combine meaningful parts into one precise academic word.</h3>',
+            '      <p>' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt || "Build the target word from its parts.") + '</p>',
+            '    </div>',
+            '    <div class="cg-forge-hero__stats">',
+            '      <div class="cg-forge-stat"><span>Placed</span><strong>' + forgeFilled + " / " + forgeTargetCount + '</strong></div>',
+            '      <div class="cg-forge-stat"><span>Meaning check</span><strong>' + runtimeRoot.CSGameComponents.escapeHtml(round.meaningHint || "Unlock when built") + '</strong></div>',
+            "    </div>",
+            "  </section>",
             '<div class="cg-forge">',
             '<div class="cg-forge-layout">',
             '  <div class="cg-forge-layout__main">',
             '    <div class="cg-forge-bench">',
-            '      <p class="cg-forge-bench-label">Assembly Area</p>',
+            '      <div class="cg-forge-bench__head"><p class="cg-forge-bench-label">Assembly Area</p><span>' + runtimeRoot.CSGameComponents.escapeHtml(forgeTargetCount ? (forgeTargetCount + " parts") : "Build path") + '</span></div>',
             '      <div class="cg-forge-equation"><span>Prefix</span><span>+</span><span>Root</span><span>+</span><span>Suffix</span></div>',
             '      <div class="cg-forge-slots" aria-label="Word assembly slots">' + (round.solution || []).map(function (_part, index) {
               var val = forgeChosen[index] || "";
@@ -3353,7 +3388,7 @@
             }).join("") + "</div>",
             "    </div>",
             '    <div class="cg-forge-tray">',
-            '      <p class="cg-forge-tray-label">Prefixes, roots, suffixes</p>',
+            '      <div class="cg-forge-tray__head"><p class="cg-forge-tray-label">Prefixes, roots, suffixes</p><span>Drag or tap to build</span></div>',
             '      <div class="cg-forge-tiles">' + (round.tiles || []).map(function (tile) {
               var sel = forgeChosen.indexOf(tile) >= 0;
               return '<button class="cg-morph-tile' + (sel ? " is-selected" : "") + '" type="button" draggable="true" data-drag-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '" data-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '">' + runtimeRoot.CSGameComponents.escapeHtml(tile) + "</button>";
@@ -3361,7 +3396,7 @@
             "    </div>",
             '  </div>',
             '  <aside class="cg-forge-layout__side">',
-            '    <div class="cg-forge-note">',
+            '    <div class="cg-premium-note">',
             '      <p class="cg-micro-label">Meaning unlock</p>',
             '      <h4>' + runtimeRoot.CSGameComponents.escapeHtml(round.meaningHint || "Use what each part means to test your build.") + '</h4>',
             '      <p>Try the root first, then add the part that changes meaning.</p>',
@@ -3380,28 +3415,52 @@
 
       if (game.id === "sentence-builder") {
         var sentChosen = Array.isArray(uiState.builderSelection) ? uiState.builderSelection : [];
+        var sentenceFilled = sentChosen.filter(Boolean).length;
+        var sentenceTargetCount = Array.isArray(round.solution) ? round.solution.length : 0;
         return renderGameScaffold(game, state, round, {
           beforePlay: renderHostControls(game, state, round),
           play: [
             '<div class="cg-game-layout cg-game-layout--builder">',
-            '<div class="cg-sentence-sprint">',
-            '  <div class="cg-sentence-lane">',
-            '    <p class="cg-lane-label">Build the sentence</p>',
-            '    <div class="cg-sentence-slots" aria-label="Sentence assembly">' + (round.solution || []).map(function (_part, index) {
+            '<div class="cg-premium-stage cg-premium-stage--sentence">',
+            '  <section class="cg-sentence-hero">',
+            '    <div class="cg-sentence-hero__head">',
+            '      <p class="cg-micro-label">Language move</p>',
+            '      <h3>Assemble the sentence with the strongest academic order.</h3>',
+            '      <p>' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt || "Arrange the tiles into a complete sentence.") + '</p>',
+            '    </div>',
+            '    <div class="cg-sentence-hero__stats">',
+            '      <div class="cg-sentence-stat"><span>Placed</span><strong>' + sentenceFilled + " / " + sentenceTargetCount + '</strong></div>',
+            '      <div class="cg-sentence-stat"><span>Status</span><strong>' + runtimeRoot.CSGameComponents.escapeHtml(sentenceFilled === sentenceTargetCount ? "Ready to check" : "Still building") + '</strong></div>',
+            (round.requiredToken ? '<div class="cg-sentence-stat cg-sentence-stat--focus"><span>Must use</span><strong>' + runtimeRoot.CSGameComponents.escapeHtml(round.requiredToken) + '</strong></div>' : ""),
+            "    </div>",
+            "  </section>",
+            '  <div class="cg-sentence-workbench">',
+            '    <div class="cg-sentence-lane-card">',
+            '      <div class="cg-sentence-lane">',
+            '        <p class="cg-lane-label">Build the sentence</p>',
+            '        <div class="cg-sentence-slots" aria-label="Sentence assembly">' + (round.solution || []).map(function (_part, index) {
               var val = sentChosen[index] || "";
               return '<button class="cg-sentence-slot' + (val ? " is-filled" : "") + '" type="button" data-slot-index="' + index + '" data-drop-slot="' + index + '" aria-label="Sentence slot ' + (index + 1) + '">' + runtimeRoot.CSGameComponents.escapeHtml(val || "Drop word") + "</button>";
             }).join("") + "</div>",
+            "      </div>",
+            "    </div>",
+            '    <aside class="cg-sentence-sidebar">',
+            '      <div class="cg-premium-note">',
+            '        <p class="cg-micro-label">Coach cue</p>',
+            '        <h4>' + runtimeRoot.CSGameComponents.escapeHtml(round.requiredToken ? ("Use " + round.requiredToken + " in the right spot.") : "Start with the words that sound like the sentence stem.") + '</h4>',
+            '        <p>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint || "Read it aloud after every move to hear whether it flows.") + '</p>',
+            "      </div>",
+            liveOrderFeedback(sentChosen, round.solution, "sentence"),
+            (state.hintVisible ? '<div class="cg-clue-reveal">' + runtimeRoot.CSGameComponents.iconFor("hint") + '<span>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span></div>" : ""),
+            "    </aside>",
             "  </div>",
-            '  <div class="cg-phrase-bank">',
-            '    <p class="cg-phrase-bank-label">Word tiles</p>',
+            '  <div class="cg-phrase-bank cg-phrase-bank--premium">',
+            '    <div class="cg-phrase-bank__head"><p class="cg-phrase-bank-label">Word tiles</p><span>' + runtimeRoot.CSGameComponents.escapeHtml(sentenceTargetCount ? (sentenceTargetCount + "-part sentence") : "Tile set") + "</span></div>",
             '    <div class="cg-phrase-tiles">' + (round.tiles || []).map(function (tile) {
               var sel = sentChosen.indexOf(tile) >= 0;
               return '<button class="cg-phrase-tile' + (sel ? " is-selected" : "") + '" type="button" draggable="true" data-drag-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '" data-tile="' + runtimeRoot.CSGameComponents.escapeHtml(tile) + '">' + runtimeRoot.CSGameComponents.escapeHtml(tile) + "</button>";
             }).join("") + "</div>",
             "  </div>",
-            (round.requiredToken ? '<span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + "SWBAT use: " + runtimeRoot.CSGameComponents.escapeHtml(round.requiredToken) + "</span>" : ""),
-            liveOrderFeedback(sentChosen, round.solution, "sentence"),
-            (state.hintVisible ? '<div class="cg-clue-reveal">' + runtimeRoot.CSGameComponents.iconFor("hint") + '<span>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span></div>" : ""),
             "</div>",
             "</div>"
           ].join(""),
@@ -3413,26 +3472,49 @@
       if (game.id === "concept-ladder") {
         var totalClues = (round.clues || []).length;
         var shownClues = Math.min(uiState.revealedClues, totalClues);
+        var cluesLeft = Math.max(totalClues - shownClues, 0);
         return renderGameScaffold(game, state, round, {
           beforePlay: renderHostControls(game, state, round),
           playTitle: "Clue Ladder",
           play: [
             '<div class="cg-game-layout cg-game-layout--ladder">',
-            '<div class="cg-step-chip">Step ' + shownClues + " of " + totalClues + "</div>",
-            '<p class="cg-kicker">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + "</p>",
-            '<div class="cg-ladder">' + (round.clues || []).map(function (clue, index) {
+            '<div class="cg-premium-stage cg-premium-stage--ladder">',
+            '  <section class="cg-ladder-hero">',
+            '    <div class="cg-ladder-hero__copy">',
+            '      <p class="cg-micro-label">Inference build</p>',
+            '      <h3>Climb from broad clue to precise solve.</h3>',
+            '      <p>' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + '</p>',
+            '    </div>',
+            '    <div class="cg-ladder-hero__stats">',
+            '      <div class="cg-ladder-stat"><span>Revealed</span><strong>' + shownClues + " / " + totalClues + '</strong></div>',
+            '      <div class="cg-ladder-stat"><span>Points lane</span><strong>' + runtimeRoot.CSGameComponents.escapeHtml(cluesLeft > 0 ? "High-value solve live" : "Final clue open") + '</strong></div>',
+            "    </div>",
+            "  </section>",
+            '  <div class="cg-ladder-stage">',
+            '    <div class="cg-ladder-stage__main">',
+            '      <div class="cg-step-chip">Step ' + shownClues + " of " + totalClues + "</div>",
+            '      <div class="cg-ladder">' + (round.clues || []).map(function (clue, index) {
               if (index < shownClues) {
                 return '<div class="cg-ladder-rung cg-ladder-rung--revealed" style="animation-delay:' + (index * 60) + 'ms"><span class="cg-rung-num">' + (index + 1) + '</span><div class="cg-rung-text">' + runtimeRoot.CSGameComponents.escapeHtml(clue) + "</div></div>";
               }
               return '<div class="cg-ladder-rung cg-ladder-rung--locked"><span class="cg-rung-num">' + (index + 1) + '</span><div class="cg-rung-locked-label">Reveal to unlock</div></div>';
             }).join("") + "</div>",
+            "    </div>",
+            '    <aside class="cg-ladder-stage__side">',
+            '      <div class="cg-premium-note">',
+            '        <p class="cg-micro-label">Solve strategy</p>',
+            '        <h4>' + runtimeRoot.CSGameComponents.escapeHtml(cluesLeft > 1 ? "Pause before revealing the next clue." : "Use every clue to eliminate distractors.") + '</h4>',
+            '        <p>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint || "Name what the clues all have in common before you pick the answer.") + '</p>',
+            "      </div>",
+            '      <div class="cg-choice-preview"><strong>Current solve</strong>' + currentChoicePreview(uiState.selectedChoice) + '</div>',
+            "    </aside>",
+            "  </div>",
             "</div>"
           ].join(""),
           controls: [
             '<div class="cg-choice-row" aria-label="Possible answers">' + (round.options || []).map(function (option) {
               return '<button class="cg-choice' + (uiState.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
             }).join("") + "</div>",
-            '<div class="cg-choice-preview"><strong>Current solve</strong>' + currentChoicePreview(uiState.selectedChoice) + '</div>',
             '<div class="cg-feedback-actions">' + (shownClues < totalClues ? '<button class="cg-action cg-action-quiet" type="button" data-action="reveal-clue">Reveal Next Clue</button>' : "") + '<button class="cg-action cg-action-primary" type="button" data-submit="concept-ladder">Submit Solve</button></div>'
           ].join(""),
           guide: roundGuide(game, state, round)
@@ -3444,20 +3526,37 @@
           beforePlay: renderHostControls(game, state, round),
           play: [
             '<div class="cg-game-layout cg-game-layout--detective">',
-            '<div class="cg-case-board">',
-            '  <div class="cg-case-file">',
-            '    <div class="cg-case-file-header">',
-            '      <span class="cg-case-stamp">Case File</span>',
-            '      <span class="cg-case-type">' + runtimeRoot.CSGameComponents.escapeHtml(round.misconception || "Reasoning Error") + '</span>',
+            '<div class="cg-premium-stage cg-premium-stage--detective">',
+            '  <section class="cg-detective-hero">',
+            '    <div class="cg-detective-hero__copy">',
+            '      <p class="cg-micro-label">Correction case</p>',
+            '      <h3>Find the weak reasoning and close the case with the strongest fix.</h3>',
+            '      <p>' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt || "Tap the part that is wrong, then choose the best correction.") + '</p>',
             '    </div>',
-            '    <div class="cg-case-error-text" aria-label="Incorrect statement">' + renderDetectiveFragments(round.incorrectExample || "", uiState.detectiveSelection) + '</div>',
-            '    <div class="cg-case-highlight-row"><strong>Suspected error</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(uiState.detectiveSelection || "Highlight the part that looks wrong.") + '</span></div>',
-            '  </div>',
-            '  <div class="cg-case-paths">',
-            '    <p class="cg-case-paths-label">Choose the fix that closes the case</p>',
-            '    <div class="cg-choice-row">' + (round.options || []).map(function (option) {
+            '    <div class="cg-detective-hero__badge">' + runtimeRoot.CSGameComponents.escapeHtml(round.misconception || "Reasoning Error") + '</div>',
+            '  </section>',
+            '  <div class="cg-case-board cg-case-board--premium">',
+            '    <div class="cg-case-file">',
+            '      <div class="cg-case-file-header">',
+            '        <span class="cg-case-stamp">Case File</span>',
+            '        <span class="cg-case-type">' + runtimeRoot.CSGameComponents.escapeHtml(round.misconception || "Reasoning Error") + '</span>',
+            '      </div>',
+            '      <div class="cg-case-error-text" aria-label="Incorrect statement">' + renderDetectiveFragments(round.incorrectExample || "", uiState.detectiveSelection) + '</div>',
+            '      <div class="cg-case-highlight-row"><strong>Suspected error</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(uiState.detectiveSelection || "Highlight the part that looks wrong.") + '</span></div>',
+            '    </div>',
+            '    <aside class="cg-case-sidebar">',
+            '      <div class="cg-premium-note cg-premium-note--danger">',
+            '        <p class="cg-micro-label">Evidence cue</p>',
+            '        <h4>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint || "Look for the phrase that breaks the meaning or logic.") + '</h4>',
+            '        <p>Pick the correction that repairs the idea, not just the wording.</p>',
+            '      </div>',
+            '      <div class="cg-case-paths">',
+            '        <p class="cg-case-paths-label">Choose the fix that closes the case</p>',
+            '        <div class="cg-choice-row cg-choice-row--stacked">' + (round.options || []).map(function (option) {
               return '<button class="cg-choice' + (uiState.selectedChoice === option ? " is-selected" : "") + '" type="button" data-choice="' + runtimeRoot.CSGameComponents.escapeHtml(option) + '">' + runtimeRoot.CSGameComponents.escapeHtml(option) + "</button>";
             }).join("") + "</div>",
+            '      </div>',
+            '    </aside>',
             '  </div>',
             (state.lastOutcome && !state.lastOutcome.correct ? '<div class="cg-support-reveal"><strong>Explanation</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint || "Look for the part that repairs the reasoning.") + "</span></div>" : ""),
             "</div>",
@@ -3480,25 +3579,28 @@
           beforePlay: renderHostControls(game, state, round),
           play: [
             '<div class="cg-game-layout cg-game-layout--rush">',
-            '<div class="cg-rush-arena">',
-            '  <div class="cg-rush-stage">',
-            '    <div class="cg-rush-timer-ring" aria-label="' + remaining + ' seconds remaining">',
-            '      <svg viewBox="0 0 108 108" aria-hidden="true">',
-            '        <circle class="track" cx="54" cy="54" r="44" stroke="rgba(20,34,51,0.10)" stroke-width="8" fill="none"/>',
-            '        <circle class="fill" cx="54" cy="54" r="44" stroke="' + ringStroke + '" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + dashOffset + '" style="transition:stroke-dashoffset .9s linear,stroke .5s"/>',
-            '      </svg>',
-            '      <div class="cg-rush-timer-text">' + remaining + '<small>sec</small></div>',
+            '<div class="cg-premium-stage cg-premium-stage--rush">',
+            '  <section class="cg-rush-hero">',
+            '    <div class="cg-rush-stage">',
+            '      <div class="cg-rush-timer-ring" aria-label="' + remaining + ' seconds remaining">',
+            '        <svg viewBox="0 0 108 108" aria-hidden="true">',
+            '          <circle class="track" cx="54" cy="54" r="44" stroke="rgba(20,34,51,0.10)" stroke-width="8" fill="none"/>',
+            '          <circle class="fill" cx="54" cy="54" r="44" stroke="' + ringStroke + '" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + dashOffset + '" style="transition:stroke-dashoffset .9s linear,stroke .5s"/>',
+            '        </svg>',
+            '        <div class="cg-rush-timer-text">' + remaining + '<small>sec</small></div>',
+            '      </div>',
+            '      <div class="cg-rush-prompt-block">',
+            '        <p class="cg-rush-category-label">Category</p>',
+            '        <h3 class="cg-rush-prompt-text">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + '</h3>',
+            '        <div class="cg-rush-scoreline"><span>Running score</span><strong>' + Number(state.score || 0) + '</strong></div>',
+            '      </div>',
+            '      <div class="cg-rush-hero__tips"><span>' + runtimeRoot.CSGameComponents.escapeHtml(timerPct > 40 ? "Fast unique answers score best." : "Push for one more unique response.") + '</span><span>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint || "Switch to a new subcategory if you stall.") + '</span></div>',
             '    </div>',
-            '    <div class="cg-rush-prompt-block">',
-            '      <p class="cg-rush-category-label">Category</p>',
-            '      <h3 class="cg-rush-prompt-text">' + runtimeRoot.CSGameComponents.escapeHtml(round.prompt) + '</h3>',
-            '      <div class="cg-rush-scoreline"><span>Running score</span><strong>' + Number(state.score || 0) + '</strong></div>',
-            '    </div>',
-            '  </div>',
-            '  <div class="cg-rush-preview" aria-live="polite">' + (uiState.categoryPreview || []).map(function (item, index) {
+            '    <div class="cg-rush-preview" aria-live="polite">' + (uiState.categoryPreview || []).map(function (item, index) {
               return '<span class="cg-rush-preview__item" style="animation-delay:' + (index * 40) + 'ms">' + runtimeRoot.CSGameComponents.escapeHtml(item) + "</span>";
             }).join("") + '</div>',
             (state.hintVisible ? '<div class="cg-clue-reveal">' + runtimeRoot.CSGameComponents.iconFor("hint") + '<span>' + runtimeRoot.CSGameComponents.escapeHtml(round.hint) + "</span></div>" : ""),
+            '  </section>',
             "</div>",
             "</div>"
           ].join(""),
