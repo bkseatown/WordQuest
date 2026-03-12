@@ -1029,6 +1029,11 @@
       var summary = student && student.studentId
         ? getStudentSummaryForHub(student.studentId, { id: student.studentId, name: student.name || "" })
         : null;
+      var tier = summary ? quickTier(summary) : 2;
+      var trend = summary ? quickTrend(summary) : "stable";
+      var daysSince = summary && summary.lastSession && summary.lastSession.timestamp
+        ? Math.max(0, Math.round((Date.now() - Date.parse(summary.lastSession.timestamp)) / 86400000))
+        : 999;
       var detail = (student.relatedSupport || [])[0]
         || student.primaryGoal
         || (summary && (summary.primaryGoal || summary.recommendationTitle || summary.goalLabel))
@@ -1036,6 +1041,9 @@
       return {
         name: student.name || "Student",
         label: displayTierLabel(student),
+        tier: tier,
+        trend: trend,
+        daysSince: daysSince,
         detail: detail
       };
     });
@@ -4810,6 +4818,24 @@
     return "Ready block";
   }
 
+  function scorePriorityContext(students, block, isCurrent, isNext) {
+    var rows = Array.isArray(students) ? students : [];
+    return rows.reduce(function (score, student) {
+      var tier = Number(student && student.tier || 2);
+      var trend = String(student && student.trend || "stable");
+      var daysSince = Number(student && student.daysSince || 0);
+      score += tier >= 3 ? 20 : (tier === 2 ? 11 : 4);
+      if (trend === "down") score += 12;
+      else if (trend === "stable") score += 5;
+      if (daysSince >= 7) score += 12;
+      else if (daysSince >= 4) score += 7;
+      return score;
+    }, 0)
+    + (isCurrent ? 28 : 0)
+    + (isNext ? 16 : 0)
+    + (/pull/.test(String(block && block.supportType || "").toLowerCase()) ? 6 : 0);
+  }
+
   function distinctPriorityAngle(item, usedAngles) {
     var options = [];
     var block = item && item.block ? item.block : {};
@@ -4831,10 +4857,13 @@
     var rows = Array.isArray(blocks) ? blocks : [];
     var ranked = rows.map(function (block) {
       var contextData = buildTeacherContextForBlock(block);
-      var supportCount = countSupportStudentsForContext(contextData);
+      var students = supportStudentsSummary(contextData);
+      var supportCount = students.filter(function (student) {
+        return /^T[23]$/i.test(String(student && student.label || ""));
+      }).length;
       var isCurrent = !!(currentBlock && block && block.id === currentBlock.id);
       var isNext = !!(!isCurrent && nextBlock && block && block.id === nextBlock.id);
-      var score = (supportCount * 30) + (isCurrent ? 40 : 0) + (isNext ? 18 : 0);
+      var score = scorePriorityContext(students, block, isCurrent, isNext);
       var status = isCurrent ? "Urgent" : (supportCount >= 2 || isNext ? "Watch" : "Ready");
       return {
         block: block,
