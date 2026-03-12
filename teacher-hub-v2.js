@@ -4997,6 +4997,38 @@
     };
   }
 
+  function buildBlockOutputText(kind, block, item) {
+    var blockLabel = block && (block.label || block.classSection || block.subject) || "This block";
+    var teacher = block && block.teacher || "Teacher";
+    var time = block && block.timeLabel || "";
+    var supportCount = Number(item && item.supportCount || 0);
+    var reason = String(item && item.reason || "");
+    if (kind === "team") {
+      return [
+        "Team update",
+        blockLabel + (time ? " (" + time + ")" : ""),
+        "Lead: " + teacher,
+        supportCount + " priority students are attached to this block.",
+        reason
+      ].join("\n");
+    }
+    if (kind === "family") {
+      return [
+        "Family update draft",
+        "Today we are preparing for " + blockLabel + ".",
+        "Support will focus on helping students stay successful during the lesson.",
+        reason
+      ].join("\n");
+    }
+    return [
+      "Intervention snapshot",
+      blockLabel + (time ? " · " + time : ""),
+      "Priority students: " + supportCount,
+      "Recommended first move: " + (item && item.angle || "Priority support"),
+      reason
+    ].join("\n");
+  }
+
   function renderPriorityRail(items) {
     var rows = Array.isArray(items) ? items : [];
     if (!rows.length) {
@@ -5059,6 +5091,9 @@
       '    <div class="th2-command-brief-card"><span>' + escapeHtml(brief.next.label) + '</span><strong>' + escapeHtml(brief.next.value) + '</strong><p>' + escapeHtml(brief.next.meta) + '</p></div>',
       '    <div class="th2-command-brief-card"><span>' + escapeHtml(brief.action.label) + '</span><strong>' + escapeHtml(brief.action.value) + '</strong><p>' + escapeHtml(brief.action.meta) + '</p></div>',
       '  </div>',
+      (brief.primaryItem
+        ? '  <div class="th2-note-actions"><span class="th2-note-actions-label">Quick outputs</span><button class="th2-note-btn" data-copy-brief="team" data-copy-brief-block="' + escapeHtml(brief.primaryItem.block && brief.primaryItem.block.id || "") + '" type="button">&#x1F4CB; Team</button><button class="th2-note-btn" data-copy-brief="family" data-copy-brief-block="' + escapeHtml(brief.primaryItem.block && brief.primaryItem.block.id || "") + '" type="button">&#x2709; Family</button><button class="th2-note-btn" data-copy-brief="snapshot" data-copy-brief-block="' + escapeHtml(brief.primaryItem.block && brief.primaryItem.block.id || "") + '" type="button">&#x1F4CA; Snapshot</button></div>'
+        : ''),
       '  <div class="th2-day-brief__actions"><button class="th2-day-sched-preview__open" data-open-block="' + escapeHtml(leadBlock && leadBlock.id || "") + '" type="button"' + (leadBlock ? "" : " disabled") + '>Open current class</button><a class="th2-inline-link" href="reports.html">Go to reports</a><button class="th2-day-sched-sync-btn" data-connect-calendar="1" type="button">Sync Calendar</button></div>',
       '</section>',
       renderPriorityRail(brief.priorityItems),
@@ -5408,6 +5443,29 @@
     if (!blockId) return;
     recordBlockOpen(blockId);
     openClassDetailPage(blockId);
+  });
+
+  document.addEventListener("click", function (e) {
+    var copyBtn = e.target.closest && e.target.closest("[data-copy-brief]");
+    if (!copyBtn) return;
+    var kind = copyBtn.getAttribute("data-copy-brief") || "snapshot";
+    var blockId = copyBtn.getAttribute("data-copy-brief-block") || "";
+    var blocks = getTodayLessonBlocks();
+    var brief = buildNowNextBrief(blocks);
+    var item = (brief.priorityItems || []).filter(function (row) {
+      return row && row.block && row.block.id === blockId;
+    })[0] || brief.primaryItem || null;
+    var block = item && item.block ? item.block : null;
+    var text = buildBlockOutputText(kind, block, item);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        showToast("Copied " + kind + " output.", "success");
+      }).catch(function () {
+        showToast("Couldn't copy output.", "warn");
+      });
+    } else {
+      showToast("Clipboard not available on this device.", "warn");
+    }
   });
 
   document.addEventListener("click", function (e) {
