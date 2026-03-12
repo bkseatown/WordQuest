@@ -696,17 +696,45 @@ body.th2-page {
   color: var(--text-muted);
 }
 
+.th2-class-hero {
+  display: grid;
+  gap: 4px;
+}
+
+.th2-class-hero__title {
+  margin: 0;
+  font-size: clamp(34px, 4vw, 56px);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+  color: var(--text-primary);
+}
+
+.th2-class-hero__meta {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.th2-mission-card__support-line {
+  margin: -2px 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #214e91;
+}
+
 .th2-mission-card__headline {
   margin: 0 0 10px;
-  font-size: 28px;
-  line-height: 1.05;
+  font-size: 34px;
+  line-height: 1.02;
   letter-spacing: -0.04em;
   color: var(--text-primary);
 }
 
 .th2-mission-card__sub {
   margin: 0 0 18px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--text-secondary);
 }

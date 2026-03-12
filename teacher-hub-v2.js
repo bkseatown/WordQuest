@@ -487,6 +487,57 @@
     return value;
   }
 
+  function simplifyCurriculumLabel(label) {
+    var value = String(label || "").trim();
+    if (!value) return "";
+    if (/\+/.test(value)) return simplifyCurriculumLabel(value.split("+")[0]);
+    if (/ufli/i.test(value)) return "UFLI";
+    if (/fundations/i.test(value)) return "Fundations";
+    if (/illustrative math/i.test(value)) return "Illustrative Math";
+    if (/bridges/i.test(value)) return "Bridges";
+    if (/lli/i.test(value)) return "LLI";
+    return value;
+  }
+
+  function inferSupportAreaFromText(text) {
+    var value = String(text || "").toLowerCase();
+    if (!value) return "";
+    if (/(math|fraction|number|numeracy|algebra|geometry|problem)/.test(value)) return "Math";
+    if (/(writing|revise|editing|edit|plan|paragraph|essay|sentence|scribe)/.test(value)) return "Writing";
+    if (/(reading|decode|encoding|phonemic|phonics|fluency|comprehension|stop and jot|jot)/.test(value)) return "Reading";
+    return "";
+  }
+
+  function inferPrimarySupportArea(student, block) {
+    var supports = Array.isArray(student && student.relatedSupport) ? student.relatedSupport : [];
+    for (var i = 0; i < supports.length; i += 1) {
+      var area = inferSupportAreaFromText(supports[i]);
+      if (area) return area;
+    }
+    var goalArea = inferSupportAreaFromText(student && student.primaryGoal);
+    if (goalArea) return goalArea;
+    var subjectArea = inferSupportAreaFromText(block && block.subject);
+    if (subjectArea) return subjectArea;
+    return "Reading";
+  }
+
+  function deriveBlockSupportSummary(contextData) {
+    var block = contextData && contextData.block ? contextData.block : {};
+    var students = contextData && contextData.derived && Array.isArray(contextData.derived.students)
+      ? contextData.derived.students
+      : [];
+    var tierGroups = {};
+    students.forEach(function (student) {
+      var tier = displayTierLabel(student);
+      var area = inferPrimarySupportArea(student, block);
+      if (!tierGroups[tier]) tierGroups[tier] = [];
+      if (tierGroups[tier].indexOf(area) === -1) tierGroups[tier].push(area);
+    });
+    var tier = tierGroups.T3 && tierGroups.T3.length ? "T3" : (tierGroups.T2 && tierGroups.T2.length ? "T2" : "T1");
+    var areas = tierGroups[tier] && tierGroups[tier].length ? tierGroups[tier] : [inferSupportAreaFromText(block.subject) || "Reading"];
+    return tier + " " + areas.join("/");
+  }
+
   var HUB_SEARCH_RESOURCES = [
     { id: "tool-curriculum", kind: "resource", label: "Curriculum Quick Reference", subtitle: "Open curriculum supports", action: "curriculum" },
     { id: "tool-workspace", kind: "resource", label: "Reports", subtitle: "Weekly insights, meetings, history, and exports", href: "reports.html" }
@@ -746,7 +797,7 @@
   function renderLessonContextZone(contextData) {
     var derived = contextData && contextData.derived ? contextData.derived : {};
     var block = contextData && contextData.block ? contextData.block : {};
-    var curriculumLabel = derived.curriculum || block.curriculum || derived.unit || "";
+    var curriculumLabel = simplifyCurriculumLabel(derived.curriculum || block.curriculum || derived.unit || "");
     var rawLessonHeadline = derived.lesson || derived.lessonFocus || block.lesson || "Lesson context loading";
     var lessonHeadline = rawLessonHeadline;
     if (curriculumLabel && rawLessonHeadline.toLowerCase().indexOf(String(curriculumLabel).toLowerCase()) === 0) {
@@ -756,11 +807,13 @@
     var lessonHref = appendContextParamsForBlock("game-platform.html", contextData);
     var classTitle = block.label || block.classSection || block.subject || "Class";
     var classMeta = [block.timeLabel, block.teacher].filter(Boolean).join(" · ");
+    var supportSummary = deriveBlockSupportSummary(contextData) + " Support";
     return [
       '<section class="th2-context-zone th2-context-zone--lesson">',
-      '  <div class="th2-context-zone__heading"><div><p class="th2-section-label">' + escapeHtml(classTitle) + '</p>' + (classMeta ? '<p class="th2-zone-card__meta">' + escapeHtml(classMeta) + '</p>' : '') + '</div><button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Edit lesson</button></div>',
+      '  <div class="th2-context-zone__heading"><div class="th2-class-hero"><h1 class="th2-class-hero__title">' + escapeHtml(classTitle) + '</h1>' + (classMeta ? '<p class="th2-class-hero__meta">' + escapeHtml(classMeta) + '</p>' : '') + '</div><button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Edit lesson</button></div>',
       '  <div class="th2-mission-card">',
       (curriculumLabel ? '    <p class="th2-mission-card__title">' + escapeHtml(curriculumLabel) + "</p>" : ""),
+      '    <p class="th2-mission-card__support-line">' + escapeHtml(supportSummary) + "</p>",
       '    <h2 class="th2-mission-card__headline">' + escapeHtml(lessonHeadline) + "</h2>",
       '    <p class="th2-mission-card__sub">' + escapeHtml(lessonSummary) + "</p>",
       '    <p class="th2-mission-card__target">' + escapeHtml(deriveLearningTarget(contextData)) + "</p>",
@@ -873,9 +926,7 @@
 
   function displayTierGoalLabel(student) {
     var tier = displayTierLabel(student);
-    var supports = Array.isArray(student && student.relatedSupport) ? student.relatedSupport : [];
-    var goal = String(student && student.primaryGoal || "").trim();
-    var area = supports[0] || goal || "Support";
+    var area = inferPrimarySupportArea(student, null);
     return tier + " " + area;
   }
 
@@ -3294,10 +3345,10 @@
             label: "World Language Exempt Support",
             classSection: "ES Exempt Support / MS-HS Learning Support",
             teacher: "Ms. Rivera",
-            subject: "Learning Support",
-            curriculum: "Fundations + UFLI",
-            curriculumId: "fundations-ufli",
-            lesson: "Tier 2/3 decoding support",
+            subject: "Reading",
+            curriculum: "Fundations",
+            curriculumId: "fundations",
+            lesson: "Decoding and encoding support",
             supportType: "pull-out",
             notes: "Students who are exempt from world language receive targeted literacy support during this block.",
             studentIds: ["demo-liam", "demo-zoe"],
@@ -3402,9 +3453,9 @@
             classId: "demo-block-intervention",
             label: "World Language Exempt Support",
             teacher: "Ms. Rivera",
-            subject: "Learning Support",
-            curriculum: "Fundations + UFLI",
-            lesson: "Tier 2/3 decoding support",
+            subject: "Reading",
+            curriculum: "Fundations",
+            lesson: "Decoding and encoding support",
             supportType: "pull-out",
             conceptFocus: "Use the exempt/support window for targeted literacy support in ES and learning support time in MS/HS.",
             languageDemands: ["blend", "segment", "explain"],
@@ -3548,11 +3599,11 @@
           TeacherStorage.saveLessonContext("demo-lesson-intervention", {
             lessonContextId: "demo-lesson-intervention",
             blockId: "demo-block-intervention",
-            subject: "Learning Support",
-            programId: "fundations-ufli",
+            subject: "Reading",
+            programId: "fundations",
             unit: "Fundations",
-            title: "Tier 2/3 decoding support",
-            conceptFocus: "Use the exempt/support window for targeted decoding intervention.",
+            title: "Decoding and encoding support",
+            conceptFocus: "Use the exempt/support window for targeted Fundations intervention focused on decoding, encoding, and phonemic awareness.",
             languageDemands: ["blend", "segment", "read"],
             misconceptions: [
               "Students over-rely on memorized words instead of applying sound-symbol knowledge.",
