@@ -108,8 +108,62 @@
     try { return fn(); } catch (_e) { return null; }
   }
 
+  function createHubMemoryAdapter() {
+    var storage = TeacherStorage && typeof TeacherStorage === "object" ? TeacherStorage : null;
+    return {
+      mode: storage ? "adapter" : "local-only",
+      getString: function (key, fallback) {
+        if (!key) return fallback || "";
+        if (storage && typeof storage.get === "function") {
+          var stored = safe(function () { return storage.get(key); });
+          if (stored !== null && typeof stored !== "undefined" && stored !== "") return String(stored);
+        }
+        try {
+          var localValue = localStorage.getItem(key);
+          return localValue !== null && typeof localValue !== "undefined" ? String(localValue) : (fallback || "");
+        } catch (_e) {
+          return fallback || "";
+        }
+      },
+      setString: function (key, value) {
+        if (!key) return;
+        if (storage && typeof storage.set === "function") {
+          safe(function () { storage.set(key, value); });
+        }
+        try {
+          if (value === null || typeof value === "undefined" || value === "") localStorage.removeItem(key);
+          else localStorage.setItem(key, String(value));
+        } catch (_e) {}
+      },
+      getJson: function (key, fallback) {
+        var raw = this.getString(key, "");
+        if (!raw) return fallback;
+        try { return JSON.parse(raw); }
+        catch (_e) { return fallback; }
+      },
+      setJson: function (key, value) {
+        this.setString(key, JSON.stringify(value));
+      },
+      remove: function (key) {
+        if (!key) return;
+        if (storage && typeof storage.remove === "function") {
+          safe(function () { storage.remove(key); });
+        }
+        try { localStorage.removeItem(key); } catch (_e) {}
+      }
+    };
+  }
+
+  var hubMemory = createHubMemoryAdapter();
+
   function todayIsoKey() {
     return new Date().toISOString().slice(0, 10);
+  }
+
+  function hubMemoryModeLabel() {
+    return hubMemory.mode === "adapter"
+      ? "Memory is running through the shared storage adapter and can be upgraded beyond this browser."
+      : "Memory is saved in this browser for now and can be upgraded to shared sync later.";
   }
 
   function blockMemoryKey() {
@@ -117,12 +171,11 @@
   }
 
   function readBlockMemory() {
-    try { return JSON.parse(localStorage.getItem(blockMemoryKey()) || "{}"); }
-    catch (_e) { return {}; }
+    return hubMemory.getJson(blockMemoryKey(), {}) || {};
   }
 
   function writeBlockMemory(memory) {
-    try { localStorage.setItem(blockMemoryKey(), JSON.stringify(memory || {})); } catch (_e) {}
+    hubMemory.setJson(blockMemoryKey(), memory || {});
   }
 
   function recordBlockOpen(blockId) {
@@ -146,8 +199,7 @@
   }
 
   function readRecommendationVerdict(studentId) {
-    try { return String(localStorage.getItem(recommendationVerdictKey(studentId)) || ""); }
-    catch (_e) { return ""; }
+    return hubMemory.getString(recommendationVerdictKey(studentId), "");
   }
 
   function recommendationOutcomeKey(studentId) {
@@ -155,8 +207,7 @@
   }
 
   function readRecommendationOutcome(studentId) {
-    try { return String(localStorage.getItem(recommendationOutcomeKey(studentId)) || ""); }
-    catch (_e) { return ""; }
+    return hubMemory.getString(recommendationOutcomeKey(studentId), "");
   }
 
   function setActiveModeTab(mode) {
@@ -4216,10 +4267,8 @@
     if (!strip) return;
     var todayKey = "cs.rec.verdict." + studentId + "." + new Date().toISOString().slice(0, 10);
     var outcomeKey = "cs.rec.outcome." + studentId + "." + new Date().toISOString().slice(0, 10);
-    var saved;
-    try { saved = localStorage.getItem(todayKey) || ""; } catch (_e) { saved = ""; }
-    var savedOutcome;
-    try { savedOutcome = localStorage.getItem(outcomeKey) || ""; } catch (_e) { savedOutcome = ""; }
+    var saved = hubMemory.getString(todayKey, "");
+    var savedOutcome = hubMemory.getString(outcomeKey, "");
     if (saved) {
       var btn = strip.querySelector('[data-verdict="' + saved + '"]');
       if (btn) btn.classList.add("is-selected");
@@ -4232,14 +4281,14 @@
       btn.addEventListener("click", function () {
         strip.querySelectorAll(".th2-rec-btn").forEach(function (b) { b.classList.remove("is-selected"); });
         btn.classList.add("is-selected");
-        try { localStorage.setItem(todayKey, btn.getAttribute("data-verdict") || ""); } catch (_e) {}
+        hubMemory.setString(todayKey, btn.getAttribute("data-verdict") || "");
       });
     });
     strip.querySelectorAll(".th2-rec-outcome-btn").forEach(function (btn) {
       btn.addEventListener("click", function () {
         strip.querySelectorAll(".th2-rec-outcome-btn").forEach(function (b) { b.classList.remove("is-selected"); });
         btn.classList.add("is-selected");
-        try { localStorage.setItem(outcomeKey, btn.getAttribute("data-outcome") || ""); } catch (_e) {}
+        hubMemory.setString(outcomeKey, btn.getAttribute("data-outcome") || "");
       });
     });
   }
@@ -5028,6 +5077,7 @@
       },
       rationale: primaryItem ? primaryItem.reason : "Once classes are connected, the hub will rank the most important next move automatically.",
       outcomeMemory: primaryItem ? describeOutcomeMemory(primaryItem) : "",
+      memoryMode: hubMemoryModeLabel(),
       currentBlock: currentBlock,
       nextBlock: nextBlock,
       primaryItem: primaryItem,
@@ -5233,6 +5283,7 @@
       '  <p class="th2-day-brief__prompt">' + escapeHtml(brief.rationale) + '</p>',
       (brief.primaryItem ? '  <div class="th2-day-brief__trust"><span class="th2-day-brief__confidence">' + escapeHtml(priorityConfidenceLabel(brief.primaryItem)) + '</span>' + (priorityWhyLine(brief.primaryItem) ? '<span class="th2-day-brief__why">' + escapeHtml(priorityWhyLine(brief.primaryItem)) + '</span>' : '') + '</div>' : ''),
       (brief.outcomeMemory ? '  <p class="th2-day-brief__memory">' + escapeHtml(brief.outcomeMemory) + '</p>' : ''),
+      (brief.memoryMode ? '  <p class="th2-day-brief__memory-mode">' + escapeHtml(brief.memoryMode) + '</p>' : ''),
       (brief.primaryItem && detectSharedPattern(brief.primaryItem) ? '  <p class="th2-day-brief__pattern">' + escapeHtml(detectSharedPattern(brief.primaryItem)) + '</p>' : ''),
       (brief.primaryItem && buildGroupSuggestion(brief.primaryItem)
         ? '  <div class="th2-day-brief__group"><div><span class="th2-day-brief__group-label">Suggested group</span><strong>' + escapeHtml(buildGroupSuggestion(brief.primaryItem).count + ' students for ' + buildGroupSuggestion(brief.primaryItem).label) + '</strong><p>' + escapeHtml(buildGroupSuggestion(brief.primaryItem).names.join(", ")) + '</p></div><button class="th2-note-btn" data-copy-group-plan="' + escapeHtml(brief.primaryItem.block && brief.primaryItem.block.id || "") + '" type="button">&#x1F465; Copy group plan</button></div>'
