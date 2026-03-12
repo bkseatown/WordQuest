@@ -63,3 +63,9 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - 2026-03-13: Finished another shared-theme pass in `games/ui/game-theme.css` for Zelda/Minecraft, Iron Man, Among Us, Matrix, Harley Quinn/Pop Pink, Kuromi, Harry Potter, and Demon Hunter so the extended theme library reads more like distinct product worlds instead of one reused dark-card treatment.
 - 2026-03-13: Reworked the shared-shell theme picker in `games/ui/game-shell.css` from a detached hard pill into a softer integrated tray that inherits shell surfaces/borders and stays available on mobile instead of disappearing entirely.
 - 2026-03-13: Local browser QA on `http://127.0.0.1:4174/game-platform.html?play=1&game=word-connections&cb=20260313-theme-pass3` confirmed theme switching still works after the tray/theme pass (spot-checked Ocean and Iron Man), reading-ink tokens remain neutral for readability, and no new console errors were introduced beyond the existing Word Clue unmatched-target warning.
+## 2026-03-13 (Word Quest header hierarchy follow-up)
+
+- tightened the standalone `word-quest.html` play header so the brand no longer occupies two visual rows during active play
+- reduced the Word Quest title scale, widened the quest/support lane, and aligned the quick actions into a cleaner second-row toolbar
+- bumped standalone Word Quest stylesheet cache-busters to `20260313b` so live Pages picks up the refined header immediately
+- verified locally on `http://127.0.0.1:4174/word-quest.html?cb=20260313-pass5` with screenshot capture and live input check (`e` typed successfully on the on-screen keyboard)

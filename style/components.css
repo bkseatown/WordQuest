@@ -9192,13 +9192,13 @@ html[data-home-mode="play"] header {
 
 html[data-home-mode="play"] .header-main-row {
   min-height: 0;
-  grid-template-columns: auto minmax(220px, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
-    'logo focus icons'
-    'logo focus quick';
-  align-items: center;
-  column-gap: 12px;
-  row-gap: 6px;
+    'logo icons'
+    'focus quick';
+  align-items: start;
+  column-gap: 10px;
+  row-gap: 8px;
 }
 
 html[data-home-mode="play"] .board-zone {
@@ -9215,9 +9215,10 @@ html[data-home-mode="play"] .board-plate {
 
 html[data-home-mode="play"] .logo {
   top: auto;
-  font-size: clamp(1.7rem, 2.7vw, 2.3rem);
-  align-self: center;
-  max-width: 100%;
+  font-size: clamp(1.42rem, 2.15vw, 1.92rem);
+  line-height: 0.94;
+  align-self: start;
+  max-width: min(100%, 320px);
 }
 
 html[data-home-mode="play"] .header-right {
@@ -9232,10 +9233,10 @@ html[data-home-mode="play"] .header-icon-controls {
 }
 
 html[data-home-mode="play"] .header-focus-inline-wrap {
-  width: min(100%, 420px);
+  width: min(100%, 520px);
   min-width: min(100%, 220px);
-  max-width: 420px;
-  justify-self: center;
+  max-width: 520px;
+  justify-self: start;
 }
 
 html[data-home-mode="play"] #game-board {
@@ -9342,19 +9343,18 @@ html[data-home-mode="play"] .key-backspace-glyph {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       'logo icons'
-      'focus focus'
-      'quick quick';
+      'focus quick';
     column-gap: 8px;
   }
 
   html[data-home-mode="play"] .header-focus-inline-wrap {
-    width: 100%;
+    width: min(100%, 100%);
     max-width: none;
     justify-self: stretch;
   }
 
   html[data-home-mode="play"] .header-quick-controls {
-    justify-self: stretch;
+    justify-self: end;
     justify-content: flex-end;
   }
 }
