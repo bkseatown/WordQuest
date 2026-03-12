@@ -150,6 +150,15 @@
     catch (_e) { return ""; }
   }
 
+  function recommendationOutcomeKey(studentId) {
+    return "cs.rec.outcome." + studentId + "." + todayIsoKey();
+  }
+
+  function readRecommendationOutcome(studentId) {
+    try { return String(localStorage.getItem(recommendationOutcomeKey(studentId)) || ""); }
+    catch (_e) { return ""; }
+  }
+
   function setActiveModeTab(mode) {
     el.modeTabs.forEach(function (tab) {
       var isActive = (tab.getAttribute("data-mode") || "") === mode;
@@ -4206,17 +4215,31 @@
     var strip = container && container.querySelector(".th2-rec-annotation");
     if (!strip) return;
     var todayKey = "cs.rec.verdict." + studentId + "." + new Date().toISOString().slice(0, 10);
+    var outcomeKey = "cs.rec.outcome." + studentId + "." + new Date().toISOString().slice(0, 10);
     var saved;
     try { saved = localStorage.getItem(todayKey) || ""; } catch (_e) { saved = ""; }
+    var savedOutcome;
+    try { savedOutcome = localStorage.getItem(outcomeKey) || ""; } catch (_e) { savedOutcome = ""; }
     if (saved) {
       var btn = strip.querySelector('[data-verdict="' + saved + '"]');
       if (btn) btn.classList.add("is-selected");
+    }
+    if (savedOutcome) {
+      var outcomeBtn = strip.querySelector('[data-outcome="' + savedOutcome + '"]');
+      if (outcomeBtn) outcomeBtn.classList.add("is-selected");
     }
     strip.querySelectorAll(".th2-rec-btn").forEach(function (btn) {
       btn.addEventListener("click", function () {
         strip.querySelectorAll(".th2-rec-btn").forEach(function (b) { b.classList.remove("is-selected"); });
         btn.classList.add("is-selected");
         try { localStorage.setItem(todayKey, btn.getAttribute("data-verdict") || ""); } catch (_e) {}
+      });
+    });
+    strip.querySelectorAll(".th2-rec-outcome-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        strip.querySelectorAll(".th2-rec-outcome-btn").forEach(function (b) { b.classList.remove("is-selected"); });
+        btn.classList.add("is-selected");
+        try { localStorage.setItem(outcomeKey, btn.getAttribute("data-outcome") || ""); } catch (_e) {}
       });
     });
   }
@@ -4383,6 +4406,9 @@
       '  <button class="th2-rec-btn" type="button" data-verdict="followed">Followed</button>',
       '  <button class="th2-rec-btn" type="button" data-verdict="modified">Modified</button>',
       '  <button class="th2-rec-btn" type="button" data-verdict="skipped">Skipped</button>',
+      '  <span class="th2-rec-annotation-label th2-rec-annotation-label--outcome">Outcome:</span>',
+      '  <button class="th2-rec-outcome-btn" type="button" data-outcome="helped">Helped</button>',
+      '  <button class="th2-rec-outcome-btn" type="button" data-outcome="not-yet">Not yet</button>',
       '</div>',
 
       /* Quick log */
@@ -4869,6 +4895,7 @@
       var trend = String(student && student.trend || "stable");
       var daysSince = Number(student && student.daysSince || 0);
       var verdict = readRecommendationVerdict(student && student.studentId);
+      var outcome = readRecommendationOutcome(student && student.studentId);
       score += tier >= 3 ? 20 : (tier === 2 ? 11 : 4);
       if (trend === "down") score += 12;
       else if (trend === "stable") score += 5;
@@ -4877,6 +4904,8 @@
       if (verdict === "skipped") score += 10;
       else if (verdict === "modified") score += 4;
       else if (verdict === "followed") score -= 5;
+      if (outcome === "not-yet") score += 8;
+      else if (outcome === "helped") score -= 6;
       return score;
     }, 0)
     + (isCurrent ? 28 : 0)
@@ -4916,6 +4945,12 @@
       var skippedCount = students.filter(function (student) {
         return readRecommendationVerdict(student && student.studentId) === "skipped";
       }).length;
+      var helpedCount = students.filter(function (student) {
+        return readRecommendationOutcome(student && student.studentId) === "helped";
+      }).length;
+      var notYetCount = students.filter(function (student) {
+        return readRecommendationOutcome(student && student.studentId) === "not-yet";
+      }).length;
       var isCurrent = !!(currentBlock && block && block.id === currentBlock.id);
       var isNext = !!(!isCurrent && nextBlock && block && block.id === nextBlock.id);
       var score = scorePriorityContext(students, block, isCurrent, isNext);
@@ -4932,6 +4967,8 @@
         opensToday: Number(memory.opens || 0),
         followedCount: followedCount,
         skippedCount: skippedCount,
+        helpedCount: helpedCount,
+        notYetCount: notYetCount,
         reason: buildPriorityReason(block, supportCount, isCurrent, isNext),
         angle: describePriorityAngle(block, supportCount, isCurrent, isNext),
         cue: isCurrent ? "Now" : (isNext ? "Up next" : "")
@@ -4990,6 +5027,7 @@
           : "Connect calendar once"
       },
       rationale: primaryItem ? primaryItem.reason : "Once classes are connected, the hub will rank the most important next move automatically.",
+      outcomeMemory: primaryItem ? describeOutcomeMemory(primaryItem) : "",
       currentBlock: currentBlock,
       nextBlock: nextBlock,
       primaryItem: primaryItem,
@@ -5009,24 +5047,38 @@
         blockLabel + (time ? " (" + time + ")" : ""),
         "Lead: " + teacher,
         supportCount + " priority students are attached to this block.",
+        describeOutcomeMemory(item),
         reason
-      ].join("\n");
+      ].filter(Boolean).join("\n");
     }
     if (kind === "family") {
       return [
         "Family update draft",
         "Today we are preparing for " + blockLabel + ".",
         "Support will focus on helping students stay successful during the lesson.",
+        describeOutcomeMemory(item),
         reason
-      ].join("\n");
+      ].filter(Boolean).join("\n");
     }
     return [
       "Intervention snapshot",
       blockLabel + (time ? " · " + time : ""),
       "Priority students: " + supportCount,
       "Recommended first move: " + (item && item.angle || "Priority support"),
+      describeOutcomeMemory(item),
       reason
-    ].join("\n");
+    ].filter(Boolean).join("\n");
+  }
+
+  function describeOutcomeMemory(item) {
+    if (!item) return "";
+    if (Number(item.notYetCount || 0) > 0) {
+      return item.notYetCount + " recent move" + (item.notYetCount === 1 ? " still needs" : "s still need") + " another pass here.";
+    }
+    if (Number(item.helpedCount || 0) > 0) {
+      return "Last move helped " + item.helpedCount + " student" + (item.helpedCount === 1 ? "" : "s") + " in this block.";
+    }
+    return "";
   }
 
   function detectSharedPattern(item) {
@@ -5167,6 +5219,7 @@
       '  <p class="th2-day-brief__summary">' + escapeHtml(brief.summary) + '</p>',
       '  <p class="th2-day-brief__prompt">' + escapeHtml(brief.rationale) + '</p>',
       (brief.primaryItem ? '  <div class="th2-day-brief__trust"><span class="th2-day-brief__confidence">' + escapeHtml(priorityConfidenceLabel(brief.primaryItem)) + '</span>' + (priorityWhyLine(brief.primaryItem) ? '<span class="th2-day-brief__why">' + escapeHtml(priorityWhyLine(brief.primaryItem)) + '</span>' : '') + '</div>' : ''),
+      (brief.outcomeMemory ? '  <p class="th2-day-brief__memory">' + escapeHtml(brief.outcomeMemory) + '</p>' : ''),
       (brief.primaryItem && detectSharedPattern(brief.primaryItem) ? '  <p class="th2-day-brief__pattern">' + escapeHtml(detectSharedPattern(brief.primaryItem)) + '</p>' : ''),
       (brief.primaryItem && buildGroupSuggestion(brief.primaryItem)
         ? '  <div class="th2-day-brief__group"><div><span class="th2-day-brief__group-label">Suggested group</span><strong>' + escapeHtml(buildGroupSuggestion(brief.primaryItem).count + ' students for ' + buildGroupSuggestion(brief.primaryItem).label) + '</strong><p>' + escapeHtml(buildGroupSuggestion(brief.primaryItem).names.join(", ")) + '</p></div><button class="th2-note-btn" data-copy-group-plan="' + escapeHtml(brief.primaryItem.block && brief.primaryItem.block.id || "") + '" type="button">&#x1F465; Copy group plan</button></div>'

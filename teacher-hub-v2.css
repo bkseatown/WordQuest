@@ -3359,6 +3359,13 @@ body.th2-page {
   color: var(--text-secondary);
 }
 
+.th2-day-brief__memory {
+  margin: -2px 0 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #6c5f49;
+}
+
 .th2-day-brief__trust {
   display: flex;
   align-items: center;
@@ -6708,6 +6715,29 @@ textarea::placeholder {
 .th2-rec-btn.is-selected {
   background: rgba(105,190,40,0.18); border-color: #69be28;
   color: #8dd44a;
+}
+.th2-rec-annotation-label--outcome {
+  margin-left: 8px;
+}
+.th2-rec-outcome-btn {
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.45);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+}
+.th2-rec-outcome-btn:hover {
+  border-color: rgba(255,255,255,0.28);
+  color: rgba(255,255,255,0.76);
+}
+.th2-rec-outcome-btn.is-selected {
+  background: rgba(248, 183, 74, 0.16);
+  border-color: rgba(248, 183, 74, 0.6);
+  color: #ffd17a;
 }
 
 /* ── Quick log ─────────────────────────────────── */
