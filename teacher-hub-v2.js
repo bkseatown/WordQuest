@@ -395,16 +395,12 @@
   }
 
   function storageGet(key, fallback) {
-    try {
-      var raw = localStorage.getItem(key);
-      return raw === null ? fallback : raw;
-    } catch (_e) {
-      return fallback;
-    }
+    var raw = hubMemory.getString(key, "__missing__");
+    return raw === "__missing__" ? fallback : raw;
   }
 
   function storageSet(key, value) {
-    try { localStorage.setItem(key, value); } catch (_e) {}
+    hubMemory.setString(key, value);
   }
 
   function todayKey() {
@@ -1976,12 +1972,11 @@
   ];
 
   function getUdlActive(studentId) {
-    try { return JSON.parse(localStorage.getItem("cs.hub.udl." + studentId) || "[]"); }
-    catch (_) { return []; }
+    return hubMemory.getJson("cs.hub.udl." + studentId, []) || [];
   }
 
   function setUdlActive(studentId, ids) {
-    localStorage.setItem("cs.hub.udl." + studentId, JSON.stringify(ids));
+    hubMemory.setJson("cs.hub.udl." + studentId, ids);
   }
 
   function renderUdlStrip(studentId) {
@@ -2270,13 +2265,10 @@
   /* ── Lesson navigator — localStorage state ────────────── */
   function lsNavKey(currId, grade)    { return "cs.lessonNav." + currId + "." + grade; }
   function getLessonNavState(currId, grade) {
-    try {
-      var raw = localStorage.getItem(lsNavKey(currId, grade));
-      return raw ? JSON.parse(raw) : null;
-    } catch (_e) { return null; }
+    return hubMemory.getJson(lsNavKey(currId, grade), null);
   }
   function setLessonNavState(currId, grade, state) {
-    try { localStorage.setItem(lsNavKey(currId, grade), JSON.stringify(state)); } catch (_e) {}
+    hubMemory.setJson(lsNavKey(currId, grade), state);
   }
 
   /* ── Lesson URL builders ──────────────────────────────── */
