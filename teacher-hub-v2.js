@@ -546,6 +546,44 @@
     return block && (block.label || block.classSection || block.subject) || "Class";
   }
 
+  function currentUnitGoalText(student, block) {
+    var subject = String(block && block.subject || inferPrimarySupportArea(student, block) || "").toLowerCase();
+    var tierLine = studentSupportLineForBlock(student, block);
+    var goal = String(student && student.primaryGoal || "").trim();
+    if (/fundations/i.test(String(block && block.curriculum || ""))) {
+      if (/decod|phon/i.test(goal)) return "Read and spell closed-syllable and glued-sound words with Fundations accuracy.";
+      if (/encod|write/i.test(goal)) return "Encode targeted Fundations patterns in dictation and sentence work.";
+      return "Apply the Fundations pattern accurately in word reading, spelling, and connected text.";
+    }
+    if (subject === "math") {
+      if (/fraction/i.test(String(block && block.lesson || ""))) return "Compare fractions using benchmark reasoning, visual models, and precise math language.";
+      return "Use the class strategy independently and explain the math thinking with support.";
+    }
+    if (subject === "writing") return "Plan, draft, and revise with the current writing structure and one clear craft target.";
+    if (subject === "reading") return "Use the lesson text and talk routine to strengthen comprehension, decoding, and evidence-based responses.";
+    if (/science|social/i.test(subject)) return "Use content vocabulary and evidence notes to explain the key idea from today’s lesson.";
+    if (goal) return goal;
+    return tierLine + " goal is ready for this block.";
+  }
+
+  function annualGoalText(student, block) {
+    var goals = student && student.studentId ? getStudentGoals(student.studentId) : [];
+    var blockArea = inferSupportAreaFromText(block && block.subject);
+    var matchedGoal = null;
+    var i;
+    for (i = 0; i < goals.length; i += 1) {
+      if (inferSupportAreaFromText(goals[i] && goals[i].domain) === blockArea) {
+        matchedGoal = goals[i];
+        break;
+      }
+    }
+    matchedGoal = matchedGoal || goals[0] || null;
+    if (!matchedGoal) {
+      return String(student && student.primaryGoal || "Annual goal loads after student goals are connected.");
+    }
+    return String(matchedGoal.skill || student && student.primaryGoal || "Annual goal");
+  }
+
   function studentSupportLineForBlock(student, block) {
     var blockArea = inferSupportAreaFromText(block && block.subject);
     var baseArea = blockArea || inferPrimarySupportArea(student, block);
@@ -856,15 +894,13 @@
     var lessonSummary = derived.mainConcept || "Lesson focus not fully mapped yet.";
     var classTitle = blockDisplayTitle(block);
     var classMeta = [block.timeLabel, block.teacher].filter(Boolean).join(" · ");
-    var communityOwned = isCommunityOwnedBlock(block, contextData);
-    var isFundationsBlock = /fundations/i.test(curriculumLabel);
-    var lessonLabel = lessonHeadline;
-    var mainHeadline = isFundationsBlock ? curriculumLabel : lessonHeadline;
+    var lessonLabel = rawLessonHeadline;
+    var mainHeadline = curriculumLabel || lessonHeadline;
     return [
       '<section class="th2-context-zone th2-context-zone--lesson">',
       '  <div class="th2-context-zone__heading"><div class="th2-class-hero"><h1 class="th2-class-hero__title">' + escapeHtml(classTitle) + '</h1>' + (classMeta ? '<p class="th2-class-hero__meta">' + escapeHtml(classMeta) + '</p>' : '') + '</div><button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Edit lesson</button></div>',
       '  <div class="th2-mission-card">',
-      (isFundationsBlock ? ('    <p class="th2-mission-card__title">' + escapeHtml(lessonLabel) + "</p>") : (curriculumLabel ? '    <p class="th2-mission-card__title">' + escapeHtml(curriculumLabel) + "</p>" : "")),
+      (lessonLabel ? '    <p class="th2-mission-card__title">' + escapeHtml(lessonLabel) + "</p>" : ""),
       '    <h2 class="th2-mission-card__headline">' + escapeHtml(mainHeadline) + "</h2>",
       '    <p class="th2-mission-card__sub">' + escapeHtml(lessonSummary) + "</p>",
       '    <p class="th2-mission-card__target">' + escapeHtml(deriveLearningTarget(contextData)) + "</p>",
@@ -961,9 +997,9 @@
       };
     }
     return {
-      title: greetingWord() + ", " + teacher + ". " + (firstBlock.label || firstBlock.classSection || "Your first class") + " is up first.",
+      title: greetingWord() + ", " + teacher + ".",
       summary: "You have " + rows.length + " blocks today and " + activeSupports + " total T2/T3 support touchpoints across the day.",
-      prompt: "Choose a class from the left to open its roster, lesson, SWBAT, support goals, and deeper student links."
+      prompt: "Choose a class from the left to open its lesson brief, SWBAT, and student goals."
     };
   }
 
@@ -1041,10 +1077,8 @@
     var block = contextData && contextData.block ? contextData.block : {};
     var derived = contextData && contextData.derived ? contextData.derived : {};
     var subject = block.subject || derived.subject || "this block";
-    var supportCount = countSupportStudentsForContext(contextData);
-    if (supportCount > 0) {
-      return supportCount + " support student" + (supportCount === 1 ? "" : "s") + " ready for " + subject + ".";
-    }
+    var curriculum = simplifyCurriculumLabel(block.curriculum || derived.curriculum || "");
+    if (curriculum) return curriculum + " is ready for " + subject + ".";
     if (/advisory|community|specials/i.test(String(subject))) {
       return subject + " is ready. Open for teacher notes, transitions, and class context.";
     }
@@ -1374,6 +1408,7 @@
       (students.length ? students.map(function (student, index) {
         var recommendation = (student.relatedSupport || [])[0] || supportMoves[index] || supportMoves[0] || "Model one example, then stay close for the first response.";
         var profileHref = "student-profile.html?student=" + encodeURIComponent(student.studentId || "") + "&from=hub";
+        var annualGoalLabel = /IESP/.test((student && student.plans || []).join(" ")) ? "Annual IESP goal" : "Annual goal";
         return [
           '<div class="th2-class-student-row">',
           '  <div class="th2-class-student-head">',
@@ -1382,9 +1417,10 @@
           '  </div>',
           '  <div class="th2-student-strength-gap">',
           '    <div><span>Strengths</span><p>' + escapeHtml(studentStrengthText(student)) + '</p></div>',
-          '    <div><span>Learning gaps</span><p>' + escapeHtml(studentGapText(student)) + '</p></div>',
+          '    <div><span>Area to strengthen</span><p>' + escapeHtml(studentGapText(student)) + '</p></div>',
           '  </div>',
-          '  <p class="th2-class-goal"><strong>Tier goal:</strong> ' + escapeHtml(student.primaryGoal || "Goal loads after the roster is confirmed.") + '</p>',
+          '  <p class="th2-class-goal"><strong>Current unit goal:</strong> ' + escapeHtml(currentUnitGoalText(student, block)) + '</p>',
+          '  <p class="th2-class-goal"><strong>' + escapeHtml(annualGoalLabel) + ':</strong> ' + escapeHtml(annualGoalText(student, block)) + '</p>',
           '  <p class="th2-class-accommodations"><strong>Best support now:</strong> ' + escapeHtml(recommendation) + '</p>',
           '  <div class="th2-student-link-row"><a class="th2-inline-link" data-context-student="' + escapeHtml(student.studentId || "") + '" href="' + escapeHtml(profileHref) + '">Open student profile</a></div>',
           '</div>'
@@ -3433,7 +3469,7 @@
           {
             id: "demo-block-specials",
             timeLabel: "2:00 PM - 2:45 PM",
-            label: "World Language / Specials",
+            label: "Specials",
             classSection: "Art · Music · PE · World Language",
             teacher: "Specials Team",
             subject: "Specials",
@@ -3539,7 +3575,7 @@
           });
           TeacherStorage.saveClassContext("demo-block-specials", {
             classId: "demo-block-specials",
-            label: "World Language / Specials",
+            label: "Specials",
             teacher: "Specials Team",
             subject: "Specials",
             curriculum: "Encore Rotation",
@@ -3679,18 +3715,18 @@
             programId: "fundations",
             unit: "Fundations",
             title: "Lesson 56",
-            conceptFocus: "Target decoding, encoding, and phonemic awareness using Fundations routines during the world language exempt block.",
-            languageDemands: ["blend", "segment", "read"],
+            conceptFocus: "Practice glued sounds and closed-syllable reading so students can decode, encode, and apply the pattern in connected text.",
+            languageDemands: ["blend", "tap", "read"],
             misconceptions: [
-              "Students over-rely on memorized words instead of applying sound-symbol knowledge.",
-              "Automatic word reading can break down when vowel patterns shift."
+              "Students guess from the first sound instead of tapping through the full word.",
+              "Students can read the pattern in isolation but lose accuracy in connected text."
             ],
             supportMoves: [
-              "Use Fundations tapping and rapid decoding in the first round.",
-              "Bridge immediately into decodable reading with feedback."
+              "Tap and map two example words before students read independently.",
+              "Move quickly from word work into a short decodable sentence read."
             ],
-            targetSkills: ["phonics intervention", "automatic word reading", "Fundations routines"],
-            vocabulary: ["tap", "blend", "pattern", "word reading"]
+            targetSkills: ["glued sounds", "decoding", "encoding"],
+            vocabulary: ["tap", "blend", "glued sound", "dictation"]
           });
           TeacherStorage.saveLessonContext("demo-lesson-specials", {
             lessonContextId: "demo-lesson-specials",
@@ -3851,7 +3887,7 @@
     if (el.sidebarCtx) {
       var sidebarDate = todayDateStr();
       var sidebarNote = timedBlock
-        ? "Now" + (isCurrentTimeBlock(timedBlock) ? "" : " next") + ": " + (timedBlock.label || timedBlock.subject || "Block")
+        ? (isCurrentTimeBlock(timedBlock) ? "In progress" : "Up next: " + (timedBlock.label || timedBlock.subject || "Block"))
         : "After school";
       el.sidebarCtx.classList.add("th2-sidebar-ctx");
       el.sidebarCtx.innerHTML = '<p class="th2-sidebar-date">' + escapeHtml(sidebarDate) + '</p><p class="th2-sidebar-urgency">' + escapeHtml(sidebarNote) + '</p>';
@@ -4078,24 +4114,35 @@
     if (!el.emptyState) return;
     el.emptyState.innerHTML = [
       '<div class="th2-onboarding">',
-      '  <div class="th2-onboarding-icon">&#x1F4DA;</div>',
+      '  <div class="th2-onboarding-head">',
+      '    <span class="th2-onboarding-kicker">Specialist hub</span>',
+      '    <div class="th2-onboarding-icon" aria-hidden="true">&#x1F4DA;</div>',
+      '  </div>',
       '  <h2 class="th2-onboarding-title">Welcome to Cornerstone MTSS</h2>',
-      '  <p class="th2-onboarding-sub">Start by adding your caseload here. Schedule setup lives in the temporary <strong>Setup</strong> tab until your classes are connected.</p>',
+      '  <p class="th2-onboarding-sub">Add your caseload first. Once classes are connected, the hub opens each block with the lesson brief, SWBAT, and student goals already in context.</p>',
+      '  <div class="th2-onboarding-highlights" aria-label="What the hub unlocks">',
+      '    <span class="th2-onboarding-pill">Lesson brief</span>',
+      '    <span class="th2-onboarding-pill">Student goals</span>',
+      '    <span class="th2-onboarding-pill">Next-step support</span>',
+      '  </div>',
       '  <ol class="th2-onboarding-steps">',
       '    <li class="th2-onboarding-step">',
       '      <span class="th2-step-num">1</span>',
-      '      <div><strong>Add students</strong><p>Build your caseload here first so the hub can personalize support once you open a class block.</p></div>',
+      '      <div class="th2-onboarding-step-copy"><strong>Add students</strong><p>Build the caseload so every class block opens with the right students already attached.</p></div>',
       '    </li>',
       '    <li class="th2-onboarding-step">',
       '      <span class="th2-step-num">2</span>',
-      '      <div><strong>Connect your schedule</strong><p>Use the Setup tab to bring in today’s classes when you’re ready.</p></div>',
+      '      <div class="th2-onboarding-step-copy"><strong>Connect your schedule</strong><p>Use the temporary <strong>Setup</strong> tab when you are ready to bring in today&apos;s classes.</p></div>',
       '    </li>',
       '    <li class="th2-onboarding-step">',
       '      <span class="th2-step-num">3</span>',
-      '      <div><strong>Open a class block</strong><p>That’s where lesson brief details, student supports, and next-step recommendations appear.</p></div>',
+      '      <div class="th2-onboarding-step-copy"><strong>Open a class block</strong><p>The hub then surfaces the lesson brief, student goals, and next-step recommendations automatically.</p></div>',
       '    </li>',
       '  </ol>',
-      '  <button class="th2-btn th2-btn-primary th2-onboarding-cta" id="th2-onboarding-add" type="button">+ Add your first student</button>',
+      '  <div class="th2-onboarding-actions">',
+      '    <button class="th2-btn th2-btn-primary th2-onboarding-cta" id="th2-onboarding-add" type="button">Add your first student</button>',
+      '    <p class="th2-onboarding-note">Schedule setup stays available after your first student is added.</p>',
+      '  </div>',
       '</div>'
     ].join("\n");
     var addBtn = el.emptyState.querySelector("#th2-onboarding-add");
@@ -4738,75 +4785,186 @@
     ].join("");
   }
 
+  function buildPriorityReason(block, supportCount, isCurrent, isNext) {
+    var lessonRef = simplifyCurriculumLabel(block && (block.curriculum || block.lesson || "")) || String(block && (block.subject || block.label) || "this block");
+    if (supportCount >= 3) {
+      return supportCount + " priority students need support during " + lessonRef + ".";
+    }
+    if (isCurrent) {
+      return "This class is already in progress and should stay front-of-mind.";
+    }
+    if (isNext) {
+      return "This block is next, so it is the best transition to prep.";
+    }
+    return lessonRef + " is ready with context and support coverage.";
+  }
+
+  function labelConfidence(score) {
+    var numeric = Number(score || 0);
+    if (numeric >= 80) return "High confidence";
+    if (numeric >= 45) return "Medium confidence";
+    return "Emerging confidence";
+  }
+
+  function buildPrioritySource(block, supportCount, isCurrent, isNext) {
+    var sources = [];
+    if (isCurrent) sources.push("live timing");
+    else if (isNext) sources.push("schedule timing");
+    if (supportCount > 0) sources.push("support roster");
+    if (block && (block.lesson || block.curriculum)) sources.push("lesson context");
+    return sources.length ? "Based on " + sources.join(" + ") + "." : "Based on available hub context.";
+  }
+
+  function buildRecommendationConfidence(summary, trendDecision, recReason) {
+    var score = 28;
+    if (summary && summary.lastSession) score += 22;
+    if (summary && Array.isArray(summary.evidenceChips) && summary.evidenceChips.length) score += 24;
+    if (trendDecision && trendDecision !== "HOLD") score += 14;
+    if (recReason && recReason.length > 24) score += 12;
+    return labelConfidence(score);
+  }
+
+  function buildRecommendationSource(summary, plan) {
+    var sources = [];
+    if (summary && summary.lastSession) sources.push("recent session");
+    if (summary && Array.isArray(summary.evidenceChips) && summary.evidenceChips.length) sources.push("skill evidence");
+    if (plan && plan.tierSignal && plan.tierSignal.trendDecision) sources.push("tier signal");
+    if (plan && plan.reasoning && plan.reasoning.length) sources.push("planner reasoning");
+    return sources.length ? "Based on " + sources.join(" + ") + "." : "Based on current student context.";
+  }
+
+  function buildPriorityItems(blocks, currentBlock, nextBlock) {
+    var rows = Array.isArray(blocks) ? blocks : [];
+    return rows.map(function (block) {
+      var contextData = buildTeacherContextForBlock(block);
+      var supportCount = countSupportStudentsForContext(contextData);
+      var isCurrent = !!(currentBlock && block && block.id === currentBlock.id);
+      var isNext = !!(!isCurrent && nextBlock && block && block.id === nextBlock.id);
+      var score = (supportCount * 30) + (isCurrent ? 40 : 0) + (isNext ? 18 : 0);
+      var status = isCurrent ? "Urgent" : (supportCount >= 2 || isNext ? "Watch" : "Ready");
+      return {
+        block: block,
+        contextData: contextData,
+        score: score,
+        confidence: labelConfidence(score),
+        status: status,
+        supportCount: supportCount,
+        reason: buildPriorityReason(block, supportCount, isCurrent, isNext),
+        source: buildPrioritySource(block, supportCount, isCurrent, isNext),
+        cue: isCurrent ? "Now" : (isNext ? "Up next" : "Later")
+      };
+    }).sort(function (a, b) {
+      return b.score - a.score;
+    }).slice(0, 4);
+  }
+
+  function buildNowNextBrief(blocks) {
+    var rows = Array.isArray(blocks) ? blocks : [];
+    var currentBlock = rows.filter(isCurrentTimeBlock)[0] || null;
+    var nextBlock = findCurrentOrNextBlock(rows) || rows[0] || null;
+    var priorityItems = buildPriorityItems(rows, currentBlock, nextBlock);
+    var primaryItem = priorityItems[0] || null;
+    var activeSupportCount = rows.reduce(function (count, block) {
+      return count + countSupportStudentsForContext(buildTeacherContextForBlock(block));
+    }, 0);
+    var nowLabel = currentBlock
+      ? (currentBlock.label || currentBlock.classSection || currentBlock.subject || "Current block")
+      : "After school";
+    var nextLabel = nextBlock
+      ? (nextBlock.label || nextBlock.classSection || nextBlock.subject || "Next block")
+      : "No upcoming class";
+    var actionLabel = primaryItem
+      ? "Open " + (primaryItem.block.label || primaryItem.block.subject || "this class")
+      : "Sync your schedule";
+    return {
+      title: currentBlock ? "Support the class in motion." : greetingWord() + ", " + currentTeacherFirstName() + ".",
+      summary: rows.length
+        ? "You have " + rows.length + " blocks today and " + activeSupportCount + " priority support touchpoints across the schedule."
+        : "Your schedule is clear right now. Connect today's classes and this page will become your live command view.",
+      now: {
+        label: currentBlock ? "Now" : "Status",
+        value: nowLabel,
+        meta: currentBlock ? (currentBlock.timeLabel || "In progress") : "No active class"
+      },
+      next: {
+        label: "Up next",
+        value: nextLabel,
+        meta: nextBlock ? (nextBlock.timeLabel || "Scheduled") : "Nothing queued"
+      },
+      action: {
+        label: "Best next action",
+        value: actionLabel,
+        meta: primaryItem
+          ? ((primaryItem.supportCount || 0) + " priority student" + (primaryItem.supportCount === 1 ? "" : "s"))
+          : "Connect calendar once"
+      },
+      rationale: primaryItem ? primaryItem.reason : "Once classes are connected, the hub will rank the most important next move automatically.",
+      currentBlock: currentBlock,
+      nextBlock: nextBlock,
+      primaryItem: primaryItem,
+      priorityItems: priorityItems
+    };
+  }
+
+  function renderPriorityRail(items) {
+    var rows = Array.isArray(items) ? items : [];
+    if (!rows.length) {
+      return [
+        '<section class="th2-priority-rail">',
+        '  <div class="th2-priority-rail__head"><p class="th2-section-label">Priority engine</p><p class="th2-today-sub">Connect your schedule and the hub will rank what deserves attention first.</p></div>',
+        '  <div class="th2-priority-rail__empty">No priority blocks yet.</div>',
+        '</section>'
+      ].join("");
+    }
+    return [
+      '<section class="th2-priority-rail">',
+      '  <div class="th2-priority-rail__head"><p class="th2-section-label">Priority engine</p><p class="th2-today-sub">Ranked by timing, attached support students, and readiness.</p></div>',
+      '  <div class="th2-priority-rail__list">',
+      rows.map(function (item, index) {
+        var block = item.block || {};
+        return [
+          '<button class="th2-priority-item" data-open-block="' + escapeHtml(block.id || "") + '" type="button">',
+          '  <div class="th2-priority-item__top">',
+          '    <span class="th2-priority-item__rank">#' + String(index + 1) + '</span>',
+          '    <span class="th2-priority-item__status" data-status="' + escapeHtml(String(item.status || "Ready").toLowerCase()) + '">' + escapeHtml(item.status || "Ready") + '</span>',
+          '  </div>',
+          '  <strong class="th2-priority-item__title">' + escapeHtml(block.label || block.classSection || block.subject || "Class block") + '</strong>',
+          '  <p class="th2-priority-item__meta">' + escapeHtml([block.timeLabel, block.teacher].filter(Boolean).join(" · ") || item.cue || "") + '</p>',
+          '  <p class="th2-priority-item__reason">' + escapeHtml(item.reason || "") + '</p>',
+          '  <div class="th2-priority-item__footer"><span>' + escapeHtml(item.cue || "Ready") + '</span><span>' + escapeHtml(String(item.supportCount || 0)) + ' priority</span></div>',
+          '</button>'
+        ].join("");
+      }).join(""),
+      '  </div>',
+      '</section>'
+    ].join("");
+  }
+
   function renderDailyScheduleMain(blocks) {
     if (!el.emptyState) return;
 
     var today = new Date();
     var dayStr = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-    var greeting = personalizedGreeting(blocks);
-    var greetingLine = greetingWord() + ", " + currentTeacherFirstName();
-    var leadBlock = blocks[0] || null;
-    var summaryLine = blocks.length
-      ? blocks.length + " class block" + (blocks.length !== 1 ? "s" : "") + " ready today"
-      : "No classes scheduled";
-
-    var blockCards = blocks.map(function (block) {
-      var roster = renderScheduleRoster(block);
-      var contextData = roster.contextData;
-      var derived = contextData && contextData.derived ? contextData.derived : {};
-      var time = escapeHtml(block.timeLabel || "");
-      var label = escapeHtml(block.label || block.classSection || derived.subject || block.subject || "Support block");
-      var subject = escapeHtml(block.subject || derived.subject || "Support");
-      var teacher = escapeHtml(block.teacher || "Teacher");
-      var lesson = escapeHtml([block.supportType || "class block", compactLessonLabel(contextData)].filter(Boolean).join(" • "));
-      var count = countSupportStudentsForContext(contextData) || (block.studentIds && block.studentIds.length) || 0;
-      var guidance = escapeHtml(buildBlockSignalText(contextData));
-      return [
-        '<button class="th2-day-sched-block th2-day-sched-block--planner' + (leadBlock && block.id === leadBlock.id ? ' is-featured' : '') + '" data-open-block="' + escapeHtml(block.id) + '" type="button">',
-        (time ? '<span class="th2-day-sched-time">' + time + '</span>' : ""),
-        '<span class="th2-day-sched-name">' + label + "</span>",
-        '<span class="th2-day-sched-sub">' + teacher + " • " + subject + "</span>",
-        '<span class="th2-day-sched-count">' + escapeHtml(String(count || (block.studentIds && block.studentIds.length) || 0)) + " support</span>",
-        '<span class="th2-day-sched-lesson">' + lesson + "</span>",
-        '<div class="th2-day-sched-roster">' + roster.html + "</div>",
-        '<p class="th2-day-sched-guidance">' + guidance + "</p>",
-        "</button>"
-      ].join("");
-    }).join("");
-
-    var emptySlot = !blocks.length
-      ? '<div class="th2-day-sched-empty"><p class="th2-day-sched-empty-msg">No schedule connected yet.</p><p class="th2-day-sched-empty-sub">Use the Setup tab or sync your calendar once. After that, today’s blocks and recommendations will appear here automatically.</p></div>'
-      : "";
+    var brief = buildNowNextBrief(blocks);
+    var leadBlock = (brief.primaryItem && brief.primaryItem.block) || brief.nextBlock || blocks[0] || null;
 
     el.emptyState.innerHTML = [
       '<div class="th2-day-schedule-view">',
-      '<header class="th2-day-sched-header">',
-      '<div class="th2-day-sched-meta">',
-      '<p class="th2-day-sched-greeting">' + escapeHtml(greetingLine) + "</p>",
-      '<p class="th2-day-sched-date">' + escapeHtml(dayStr) + "</p>",
-      '<p class="th2-day-sched-summary">' + escapeHtml(summaryLine) + "</p>",
-      "</div>",
-      '<div class="th2-day-sched-cta-row">',
-      '<button class="th2-day-sched-sync-btn" data-connect-calendar="1" type="button">Sync Calendar</button>',
-      "</div>",
-      "</header>",
       '<section class="th2-day-sched-hero">',
-      '  <div class="th2-day-sched-list-wrap">',
-      '    <div class="th2-day-sched-list-head"><p class="th2-section-label">Today\'s Schedule</p><p class="th2-today-sub">Teacher, subject, support students, lesson context, and next moves all load from the block you choose.</p></div>',
-      '    <div class="th2-day-sched-list">',
-      blockCards + emptySlot,
-      "    </div>",
-      "  </div>",
-      '  <div class="th2-day-sched-side">',
-      '<section class="th2-day-brief">',
-      '  <p class="th2-section-label">Today at a glance</p>',
-      '  <h2 class="th2-day-brief__title">' + greeting.title + '</h2>',
-      '  <p class="th2-day-brief__summary">' + greeting.summary + '</p>',
-      '  <p class="th2-day-brief__prompt">' + greeting.prompt + '</p>',
-      '  <div class="th2-day-brief__actions"><button class="th2-day-sched-preview__open" data-open-block="' + escapeHtml(leadBlock && leadBlock.id || "") + '" type="button"' + (leadBlock ? "" : " disabled") + '>Open first class</button><a class="th2-inline-link" href="reports.html">Go to reports</a></div>',
+      '<section class="th2-day-brief th2-day-brief--command">',
+      '  <p class="th2-section-label">Command brief</p>',
+      '  <p class="th2-day-brief__date">' + escapeHtml(dayStr) + '</p>',
+      '  <h2 class="th2-day-brief__title">' + escapeHtml(brief.title) + '</h2>',
+      '  <p class="th2-day-brief__summary">' + escapeHtml(brief.summary) + '</p>',
+      '  <p class="th2-day-brief__prompt">' + escapeHtml(brief.rationale) + '</p>',
+      '  <div class="th2-command-brief-grid">',
+      '    <div class="th2-command-brief-card"><span>' + escapeHtml(brief.now.label) + '</span><strong>' + escapeHtml(brief.now.value) + '</strong><p>' + escapeHtml(brief.now.meta) + '</p></div>',
+      '    <div class="th2-command-brief-card"><span>' + escapeHtml(brief.next.label) + '</span><strong>' + escapeHtml(brief.next.value) + '</strong><p>' + escapeHtml(brief.next.meta) + '</p></div>',
+      '    <div class="th2-command-brief-card"><span>' + escapeHtml(brief.action.label) + '</span><strong>' + escapeHtml(brief.action.value) + '</strong><p>' + escapeHtml(brief.action.meta) + '</p></div>',
+      '  </div>',
+      '  <div class="th2-day-brief__actions"><button class="th2-day-sched-preview__open" data-open-block="' + escapeHtml(leadBlock && leadBlock.id || "") + '" type="button"' + (leadBlock ? "" : " disabled") + '>Open current class</button><a class="th2-inline-link" href="reports.html">Go to reports</a><button class="th2-day-sched-sync-btn" data-connect-calendar="1" type="button">Sync Calendar</button></div>',
       '</section>',
-      renderScheduleGuidance(blocks),
-      "  </div>",
+      renderPriorityRail(brief.priorityItems),
       "</section>",
       "</div>"
     ].join("");
