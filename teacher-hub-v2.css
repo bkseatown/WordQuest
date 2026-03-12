@@ -52,6 +52,10 @@ body.th2-page {
   overflow: hidden;
 }
 
+body.th2-page.cs-has-nav-shell {
+  padding-top: 0;
+}
+
 /* ── Shell: two-panel grid ─────────────────────────────── */
 
 .th2-shell {
@@ -7036,8 +7040,11 @@ body.th2-page {
 }
 
 .th2-shell {
-  min-height: 100svh;
-  height: 100svh;
+  min-height: calc(100svh - var(--nav-h) - 32px);
+  height: calc(100svh - var(--nav-h) - 32px);
+  margin: calc(var(--nav-h) + 20px) 14px 14px;
+  border-radius: 32px;
+  box-shadow: 0 28px 60px rgba(37, 44, 58, 0.14);
 }
 
 .th2-main {

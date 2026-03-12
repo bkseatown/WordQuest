@@ -33,11 +33,13 @@
 
   function buildLinks() {
     var links = [
-      { href: withBase("index.html"), label: "Home", pages: ["", "/", "index.html"] },
-      { href: withBase("teacher-hub-v2.html"), label: "Specialist Hub", pages: ["teacher-hub-v2.html"] },
+      { href: withBase("index.html"), label: "Home", icon: "⌂", pages: ["", "/", "index.html"] },
+      { href: withBase("teacher-hub-v2.html"), label: "Hub", icon: "◫", pages: ["teacher-hub-v2.html"] },
+      { href: withBase("student-profile.html"), label: "Students", icon: "◌", pages: ["student-profile.html"] },
       {
         href: withBase("game-platform.html"),
-        label: "Games",
+        label: "Practice",
+        icon: "✦",
         pages: [
           "game-platform.html",
           "word-quest.html",
@@ -49,16 +51,33 @@
           "decoding-diagnostic.html"
         ]
       },
-      { href: withBase("reports.html"), label: "Reports & Prep", pages: ["teacher-dashboard.html", "reports.html"] }
+      { href: withBase("reports.html"), label: "Reports", icon: "▣", pages: ["teacher-dashboard.html", "reports.html"] }
     ];
     return links;
   }
 
+  function pageMeta(page) {
+    var map = {
+      "index.html": { eyebrow: "Platform", title: "Cornerstone MTSS" },
+      "teacher-hub-v2.html": { eyebrow: "Daily Command", title: "Specialist Hub" },
+      "student-profile.html": { eyebrow: "Student Story", title: "Profile Workspace" },
+      "reports.html": { eyebrow: "Planning", title: "Reports & Prep" },
+      "game-platform.html": { eyebrow: "Practice", title: "Learning Games" },
+      "word-quest.html": { eyebrow: "Practice", title: "Word Quest" },
+      "reading-lab.html": { eyebrow: "Practice", title: "Reading Lab" },
+      "sentence-surgery.html": { eyebrow: "Practice", title: "Sentence Surgery" },
+      "writing-studio.html": { eyebrow: "Practice", title: "Writing Studio" },
+      "numeracy.html": { eyebrow: "Practice", title: "Numeracy" },
+      "precision-play.html": { eyebrow: "Practice", title: "Precision Play" },
+      "decoding-diagnostic.html": { eyebrow: "Assessment", title: "Decoding Diagnostic" }
+    };
+    return map[page] || { eyebrow: "Platform", title: "Cornerstone MTSS" };
+  }
+
   function init() {
     if (!document.body || document.getElementById("cs-nav-shell")) return;
-    return;
-
     var current = normalizePage(window.location.pathname);
+    var meta = pageMeta(current);
     var nav = document.createElement("nav");
     nav.id = "cs-nav-shell";
     nav.className = "cs-nav-shell";
@@ -67,7 +86,13 @@
     var brand = document.createElement("a");
     brand.className = "cs-nav-brand";
     brand.href = withBase("index.html");
-    brand.textContent = "Cornerstone MTSS";
+    brand.innerHTML = [
+      '<span class="cs-nav-brand-mark" aria-hidden="true"></span>',
+      '<span class="cs-nav-brand-copy">',
+      '  <span class="cs-nav-brand-eyebrow">' + meta.eyebrow + '</span>',
+      '  <strong class="cs-nav-brand-title">' + meta.title + '</strong>',
+      '</span>'
+    ].join("");
     nav.appendChild(brand);
 
     var linksWrap = document.createElement("div");
@@ -77,7 +102,7 @@
       var link = document.createElement("a");
       link.className = "cs-nav-link";
       link.href = item.href;
-      link.textContent = item.label;
+      link.innerHTML = '<span class="cs-nav-link-icon" aria-hidden="true">' + item.icon + '</span><span class="cs-nav-link-label">' + item.label + '</span>';
       if (item.pages.indexOf(current) >= 0 || (current === "index.html" && item.label === "Home")) {
         link.classList.add("is-active");
         link.setAttribute("aria-current", "page");
@@ -86,6 +111,10 @@
     });
 
     nav.appendChild(linksWrap);
+    var glow = document.createElement("div");
+    glow.className = "cs-nav-shell-glow";
+    glow.setAttribute("aria-hidden", "true");
+    nav.appendChild(glow);
     document.body.insertBefore(nav, document.body.firstChild);
     document.body.classList.add("cs-has-nav-shell");
   }
