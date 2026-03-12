@@ -5041,12 +5041,21 @@
     var time = block && block.timeLabel || "";
     var supportCount = Number(item && item.supportCount || 0);
     var reason = String(item && item.reason || "");
+    var pattern = detectSharedPattern(item);
+    var suggestion = buildGroupSuggestion(item);
+    var actionLabel = "Recommended first move: " + (item && item.angle || "Priority support");
+    var groupLine = suggestion
+      ? "Suggested group: " + suggestion.names.join(", ") + " for " + suggestion.label + "."
+      : "";
     if (kind === "team") {
       return [
         "Team update",
         blockLabel + (time ? " (" + time + ")" : ""),
         "Lead: " + teacher,
-        supportCount + " priority students are attached to this block.",
+        "Priority load: " + supportCount + " student" + (supportCount === 1 ? "" : "s") + ".",
+        actionLabel,
+        pattern,
+        groupLine,
         describeOutcomeMemory(item),
         reason
       ].filter(Boolean).join("\n");
@@ -5054,8 +5063,10 @@
     if (kind === "family") {
       return [
         "Family update draft",
-        "Today we are preparing for " + blockLabel + ".",
-        "Support will focus on helping students stay successful during the lesson.",
+        "Today we are getting ready for " + blockLabel + (time ? " during " + time + "." : "."),
+        "Our first support move will focus on helping students enter the lesson successfully.",
+        pattern ? "A shared focus we are watching is " + pattern.replace(/^\d+ students in this block are showing the same need:\s*/i, "").replace(/\.$/, "") + "." : "",
+        suggestion ? "We may pull a brief small group for " + suggestion.label + " support." : "",
         describeOutcomeMemory(item),
         reason
       ].filter(Boolean).join("\n");
@@ -5064,7 +5075,9 @@
       "Intervention snapshot",
       blockLabel + (time ? " · " + time : ""),
       "Priority students: " + supportCount,
-      "Recommended first move: " + (item && item.angle || "Priority support"),
+      actionLabel,
+      pattern,
+      groupLine,
       describeOutcomeMemory(item),
       reason
     ].filter(Boolean).join("\n");
