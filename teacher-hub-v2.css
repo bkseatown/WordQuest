@@ -6937,10 +6937,6 @@ body.th2-page {
 }
 
 @media (max-width: 720px) {
-  .th2-resource-link {
-    flex: 1 1 calc(50% - 4px);
-  }
-
   .th2-tools-fact-grid,
   .th2-tools-timer-layout,
   .th2-tools-launch-grid {
@@ -6959,6 +6955,18 @@ body.th2-page {
   .th2-day-sched-preview__head,
   .th2-tools-student-row {
     flex-direction: column;
+  }
+
+  .th2-day-brief__actions,
+  .th2-mission-card__actions,
+  .th2-student-link-row,
+  .th2-context-zone__heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .th2-student-strength-gap {
+    grid-template-columns: 1fr;
   }
 
   .th2-command-center--class-detail .th2-active-context__grid,
