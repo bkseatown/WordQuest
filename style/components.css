@@ -9296,15 +9296,18 @@ html[data-home-mode="play"] main {
   grid-template-rows: auto minmax(0, 1fr) auto;
   row-gap: var(--wq-stage-gap);
   padding: 0 var(--wq-shell-pad-inline) var(--wq-shell-pad-bottom);
-  overflow: hidden;
+  overflow: hidden !important;
 }
 
 html[data-home-mode="play"] header {
   min-height: var(--wq-top-chrome-budget);
+  padding: 3px 8px 1px !important;
+  border-width: 2px;
+  border-radius: 22px;
 }
 
 html[data-home-mode="play"] .header-main-row {
-  min-height: calc(var(--wq-top-chrome-budget) - 4px);
+  min-height: min(72px, calc(var(--wq-top-chrome-budget) + 24px));
 }
 
 html[data-home-mode="play"] .board-zone {
@@ -9319,15 +9322,38 @@ html[data-home-mode="play"] .board-plate {
   padding: clamp(5px, 0.8vh, 9px) clamp(6px, 1vw, 10px);
 }
 
+html[data-home-mode="play"] .logo {
+  top: 2px;
+  font-size: clamp(1.8rem, 3.3vw, 2.5rem);
+}
+
+html[data-home-mode="play"] .header-right {
+  grid-template-rows: 34px 28px;
+  gap: 4px 10px;
+  padding: 4px 8px 2px;
+}
+
+html[data-home-mode="play"] .header-icon-controls {
+  gap: 4px;
+  margin-top: 0;
+  margin-bottom: 2px;
+}
+
+html[data-home-mode="play"] .header-focus-inline-wrap {
+  width: min(100%, 340px);
+  min-width: min(100%, 220px);
+  max-width: 340px;
+}
+
 html[data-home-mode="play"] #game-board {
   max-width: min(372px, calc(100vw - (var(--wq-safe-edge) * 2) - 10px));
 }
 
 html[data-home-mode="play"] #keyboard {
-  width: min(var(--keyboard-max-width, 488px), calc(100vw - (var(--wq-safe-edge) * 2) - 8px), calc(100% - 2px));
+  width: min(var(--keyboard-max-width, 472px), calc(100vw - (var(--wq-safe-edge) * 2) - 8px), calc(100% - 2px));
   max-width: calc(100vw - (var(--wq-safe-edge) * 2) - 2px);
-  min-height: var(--wq-bottom-controls-budget);
-  max-height: min(calc(var(--wq-vh) - var(--wq-top-chrome-budget) - 156px), 176px);
+  min-height: min(var(--wq-bottom-controls-budget), 162px);
+  max-height: min(calc(var(--wq-vh) - var(--wq-top-chrome-budget) - 168px), 162px);
   margin-top: clamp(1px, 0.35vh, 4px);
   margin-bottom: max(2px, env(safe-area-inset-bottom));
   gap: clamp(3px, 0.6vh, 6px);
@@ -9338,26 +9364,39 @@ html[data-home-mode="play"] .key-row-1,
 html[data-home-mode="play"] .key-row-2,
 html[data-home-mode="play"] .key-row-3 {
   padding-inline: 0 !important;
+  gap: clamp(4px, 0.45vh, 6px) !important;
 }
 
 html[data-home-mode="play"] .key {
-  max-width: 54px;
+  max-width: 50px;
+  font-size: clamp(1.38rem, 2.3vh, 1.56rem);
+}
+
+html[data-home-mode="play"] .key:not(.wide):not(.key-chunk) {
+  flex: 0 0 min(calc(var(--key-h) + 1px), calc(var(--tile-size) - 6px));
+  min-width: min(calc(var(--key-h) + 1px), calc(var(--tile-size) - 6px));
+  max-width: min(calc(var(--key-h) + 1px), calc(var(--tile-size) - 6px));
 }
 
 html[data-home-mode="play"] .key.wide {
   flex: 1.08;
-  min-width: 62px;
-  max-width: 82px;
-  font-size: 0.82rem;
+  min-width: 56px;
+  max-width: 74px;
+  font-size: 0.78rem;
 }
 
 html[data-home-mode="play"] .key[data-key="Enter"] {
-  font-size: 0.96rem;
+  font-size: 0.9rem;
 }
 
 html[data-home-mode="play"] .gameplay-audio {
   margin-top: 1px;
   margin-bottom: 2px;
+}
+
+html[data-home-mode="play"] .key-backspace-glyph {
+  width: 28px;
+  height: 28px;
 }
 
 @media (max-height: 860px) and (min-width: 980px) {

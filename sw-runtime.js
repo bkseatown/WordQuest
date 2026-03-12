@@ -34,8 +34,14 @@ const CORE_FILES = [
 const VERSION_URL = new URL('./build.json', self.registration.scope).toString();
 const VERSION_META_CACHE = 'wq-version-meta';
 let runtimeCacheSuffix = RUNTIME_BUILD_ID;
+const IS_LOCAL_HOST = ['localhost', '127.0.0.1', '::1'].includes(String(self.location.hostname || '').toLowerCase());
+const LOCAL_BUILD_PAYLOAD = {
+  build: 'local-dev',
+  timestamp: '2026-03-10'
+};
 
 async function readVersionPayload() {
+  if (IS_LOCAL_HOST) return LOCAL_BUILD_PAYLOAD;
   try {
     const response = await fetch(VERSION_URL, { cache: 'no-store' });
     if (!response.ok) return null;
@@ -272,6 +278,16 @@ self.addEventListener('fetch', (event) => {
 
   if (isDataRequest(url)) {
     if (url.pathname.endsWith('/build.json')) {
+      if (IS_LOCAL_HOST) {
+        event.respondWith(new Response(JSON.stringify(LOCAL_BUILD_PAYLOAD), {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': 'no-store'
+          }
+        }));
+        return;
+      }
       event.respondWith(fetch(request, { cache: 'no-store' }).catch(() => networkFirst(request, DATA_CACHE)));
       return;
     }

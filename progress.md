@@ -30,3 +30,7 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - 2026-03-12: Moved `game-platform.html` theme-picker layout CSS into `games/ui/game-shell.css` so the CG shell owns that layout instead of page-level inline styles.
 - 2026-03-12: Added `docs/PLATFORM_LAYOUT_OWNERS.md` documenting the single layout owner per page family and the guardrails for future cleanup/refinement.
 - 2026-03-12: Added localhost-safe build-line behavior to `teacher-dashboard.js` to reduce direct local `build.json` fetch noise outside the shared build badge helpers.
+
+- 2026-03-12: Tightened Word Quest protected shell again in `style/components.css` by reducing actual header chrome, row gaps, wide-key widths, and keyboard height; bumped `word-quest.html` stylesheet cache-buster to `20260312f` so live refreshes pick up the owner CSS immediately.
+- 2026-03-12: Stabilized landing destination cards in `home-v3.css` by replacing flex/space-between content stacking with explicit grid rows to prevent preview/text/button overlap; bumped `index.html` cache-buster to `20260312f`.
+- 2026-03-12: Reduced landing page shell shadow/height pressure in `home-v3.css` and added a localhost-safe synthetic `build.json` response in `sw-runtime.js` to remove local QA 404 noise from the service worker path.
