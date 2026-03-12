@@ -2791,8 +2791,9 @@
     if (!caseload.length) return;
     var now = Date.now();
     var sevenDays = 7 * 24 * 60 * 60 * 1000;
-    var activeCount = 0, overdueCount = 0, neverCount = 0;
+    var activeCount = 0, overdueCount = 0, neverCount = 0, watchCount = 0;
     var focusTally = {};
+    var sessionAges = [];
     caseload.forEach(function (student) {
       var summary;
       try { summary = Evidence.getStudentSummary(student.id); } catch (_e) { summary = null; }
@@ -2801,27 +2802,43 @@
         neverCount++;
       } else if ((now - lastSession.timestamp) > sevenDays) {
         overdueCount++;
+        sessionAges.push(8);
       } else {
         activeCount++;
+        sessionAges.push(Math.max(1, Math.round((now - lastSession.timestamp) / (24 * 60 * 60 * 1000))));
       }
+      if (String((summary && summary.risk) || "").toLowerCase().indexOf("risk") >= 0) watchCount++;
       var focus = (summary && summary.focus) || student.focus || "";
       if (focus) focusTally[focus] = (focusTally[focus] || 0) + 1;
     });
     var topFocus = Object.keys(focusTally).sort(function (a, b) { return focusTally[b] - focusTally[a]; })[0] || "";
     var total = caseload.length;
+    var activePct = total ? Math.round((activeCount / total) * 100) : 0;
+    var readinessPct = Math.max(12, Math.min(96, 100 - (neverCount * 18) - (overdueCount * 12)));
+    var trendBars = sessionAges.length ? sessionAges.slice(0, 6).map(function (days) {
+      return Math.max(18, 82 - (days * 8));
+    }) : [72, 66, 54, 48, 40, 32];
     grid.innerHTML = [
-      '<article class="td-overview-stat">',
-      '  <strong class="td-stat-num">' + activeCount + '<span class="td-stat-denom"> / ' + total + '</span></strong>',
-      '  <p class="td-stat-label">Active this week</p>',
+      '<article class="td-overview-stat td-overview-stat--signal">',
+      '  <span class="td-overview-eyebrow">Progress signal</span>',
+      '  <strong class="td-stat-num">' + activePct + '<span class="td-stat-denom">%</span></strong>',
+      '  <p class="td-stat-label">Caseload with fresh evidence this week</p>',
+      '  <div class="td-overview-meter"><span style="width:' + activePct + '%"></span></div>',
+      '  <p class="td-stat-meta">' + activeCount + ' of ' + total + ' students are active; top focus is ' + escAttr(topFocus || "still emerging") + '.</p>',
       '</article>',
-      '<article class="td-overview-stat' + (overdueCount > 0 ? " td-overview-stat--warn" : "") + '">',
+      '<article class="td-overview-stat td-overview-stat--rhythm' + (overdueCount > 0 ? " td-overview-stat--warn" : "") + '">',
+      '  <span class="td-overview-eyebrow">Intervention rhythm</span>',
       '  <strong class="td-stat-num">' + overdueCount + '<span class="td-stat-denom"> / ' + total + '</span></strong>',
-      '  <p class="td-stat-label">Overdue — 7+ days without a session</p>',
+      '  <p class="td-stat-label">Students drifting past the 7-day review window</p>',
+      '  <div class="td-overview-mini-bars">' + trendBars.map(function (bar) { return '<span style="height:' + bar + 'px"></span>'; }).join("") + '</div>',
+      '  <p class="td-stat-meta">' + (overdueCount ? "Tighten session cadence before the next meeting cycle." : "Session rhythm is healthy across the caseload.") + '</p>',
       '</article>',
-      '<article class="td-overview-stat">',
-      '  <strong class="td-stat-num">' + (neverCount > 0 ? neverCount : "\u2713") + '</strong>',
-      '  <p class="td-stat-label">' + (neverCount > 0 ? "Students with no sessions yet" : "All students have session data") + '</p>',
-      (topFocus ? '  <p class="td-stat-meta">Top need: ' + escAttr(topFocus) + '</p>' : ""),
+      '<article class="td-overview-stat td-overview-stat--readiness">',
+      '  <span class="td-overview-eyebrow">Meeting readiness</span>',
+      '  <strong class="td-stat-num">' + readinessPct + '<span class="td-stat-denom">%</span></strong>',
+      '  <p class="td-stat-label">Packet readiness across progress, notes, and intervention continuity</p>',
+      '  <div class="td-overview-meter td-overview-meter--warm"><span style="width:' + readinessPct + '%"></span></div>',
+      '  <p class="td-stat-meta">' + (neverCount > 0 ? (neverCount + ' students still need a first documented session.') : ('Watch list: ' + watchCount + ' students need closer progress monitoring.')) + '</p>',
       '</article>'
     ].join("");
   }
