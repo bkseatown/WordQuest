@@ -4810,9 +4810,26 @@
     return "Ready block";
   }
 
+  function distinctPriorityAngle(item, usedAngles) {
+    var options = [];
+    var block = item && item.block ? item.block : {};
+    var supportType = String(block && block.supportType || "").toLowerCase();
+    if (item && item.isCurrent) options.push("Live block");
+    if (item && item.isNext) options.push("Next transition");
+    if ((item && item.supportCount || 0) >= 3) options.push("Highest support load");
+    if (/pull/.test(supportType)) options.push("Protected support time");
+    if (/push/.test(supportType)) options.push("In-class coverage");
+    if (/coverage|core/.test(supportType)) options.push("Class readiness");
+    options.push("Ready block");
+    for (var i = 0; i < options.length; i += 1) {
+      if (usedAngles.indexOf(options[i]) === -1) return options[i];
+    }
+    return options[0];
+  }
+
   function buildPriorityItems(blocks, currentBlock, nextBlock) {
     var rows = Array.isArray(blocks) ? blocks : [];
-    return rows.map(function (block) {
+    var ranked = rows.map(function (block) {
       var contextData = buildTeacherContextForBlock(block);
       var supportCount = countSupportStudentsForContext(contextData);
       var isCurrent = !!(currentBlock && block && block.id === currentBlock.id);
@@ -4825,6 +4842,8 @@
         score: score,
         status: status,
         supportCount: supportCount,
+        isCurrent: isCurrent,
+        isNext: isNext,
         reason: buildPriorityReason(block, supportCount, isCurrent, isNext),
         angle: describePriorityAngle(block, supportCount, isCurrent, isNext),
         cue: isCurrent ? "Now" : (isNext ? "Up next" : "")
@@ -4832,6 +4851,12 @@
     }).sort(function (a, b) {
       return b.score - a.score;
     }).slice(0, 3);
+    var usedAngles = [];
+    ranked.forEach(function (item) {
+      item.angle = distinctPriorityAngle(item, usedAngles);
+      usedAngles.push(item.angle);
+    });
+    return ranked;
   }
 
   function buildNowNextBrief(blocks) {
