@@ -159,7 +159,8 @@
         greetingWord: greetingWord,
         currentTeacherFirstName: currentTeacherFirstName,
         describeOutcomeMemory: describeOutcomeMemory,
-        hubMemoryModeLabel: hubMemoryModeLabel
+        hubMemoryModeLabel: hubMemoryModeLabel,
+        summarizeRecommendationHistory: summarizeRecommendationHistory
       })
     : null;
 
@@ -268,6 +269,58 @@
 
   function readRecommendationOutcome(studentId) {
     return hubMemory.getString(recommendationOutcomeKey(studentId), "");
+  }
+
+  function recommendationHistoryKey(studentId) {
+    return "cs.rec.history." + studentId;
+  }
+
+  function readRecommendationHistory(studentId) {
+    return hubMemory.getJson(recommendationHistoryKey(studentId), []) || [];
+  }
+
+  function writeRecommendationHistory(studentId, rows) {
+    hubMemory.setJson(recommendationHistoryKey(studentId), Array.isArray(rows) ? rows.slice(0, 12) : []);
+  }
+
+  function saveRecommendationHistoryPoint(studentId, update) {
+    if (!studentId) return;
+    var day = todayIsoKey();
+    var rows = readRecommendationHistory(studentId).filter(function (row) {
+      return row && row.day !== day;
+    });
+    var current = readRecommendationHistory(studentId).filter(function (row) {
+      return row && row.day === day;
+    })[0] || { day: day };
+    rows.unshift({
+      day: day,
+      verdict: typeof update.verdict === "string" ? update.verdict : String(current.verdict || ""),
+      outcome: typeof update.outcome === "string" ? update.outcome : String(current.outcome || ""),
+      updatedAt: new Date().toISOString()
+    });
+    writeRecommendationHistory(studentId, rows);
+  }
+
+  function summarizeRecommendationHistory(studentIds) {
+    var ids = Array.isArray(studentIds) ? studentIds.filter(Boolean) : [];
+    var totals = { helped: 0, notYet: 0, followed: 0, skipped: 0, entries: 0 };
+    ids.forEach(function (studentId) {
+      readRecommendationHistory(studentId).slice(0, 4).forEach(function (row) {
+        if (!row) return;
+        totals.entries += 1;
+        if (row.outcome === "helped") totals.helped += 1;
+        if (row.outcome === "not-yet") totals.notYet += 1;
+        if (row.verdict === "followed") totals.followed += 1;
+        if (row.verdict === "skipped") totals.skipped += 1;
+      });
+    });
+    return totals;
+  }
+
+  function recommendationQualityLabel(item) {
+    return hubPriorityEngine && typeof hubPriorityEngine.recommendationQualityLabel === "function"
+      ? hubPriorityEngine.recommendationQualityLabel(item)
+      : "";
   }
 
   function setActiveModeTab(mode) {
@@ -4331,14 +4384,18 @@
       btn.addEventListener("click", function () {
         strip.querySelectorAll(".th2-rec-btn").forEach(function (b) { b.classList.remove("is-selected"); });
         btn.classList.add("is-selected");
-        hubMemory.setString(todayKey, btn.getAttribute("data-verdict") || "");
+        var verdict = btn.getAttribute("data-verdict") || "";
+        hubMemory.setString(todayKey, verdict);
+        saveRecommendationHistoryPoint(studentId, { verdict: verdict });
       });
     });
     strip.querySelectorAll(".th2-rec-outcome-btn").forEach(function (btn) {
       btn.addEventListener("click", function () {
         strip.querySelectorAll(".th2-rec-outcome-btn").forEach(function (b) { b.classList.remove("is-selected"); });
         btn.classList.add("is-selected");
-        hubMemory.setString(outcomeKey, btn.getAttribute("data-outcome") || "");
+        var outcome = btn.getAttribute("data-outcome") || "";
+        hubMemory.setString(outcomeKey, outcome);
+        saveRecommendationHistoryPoint(studentId, { outcome: outcome });
       });
     });
   }
@@ -4990,7 +5047,8 @@
       pattern: item ? detectSharedPattern(item) : "",
       suggestion: item ? buildGroupSuggestion(item) : null,
       why: item ? priorityWhyLine(item) : "",
-      confidence: item ? priorityConfidenceLabel(item) : ""
+      confidence: item ? priorityConfidenceLabel(item) : "",
+      quality: item ? recommendationQualityLabel(item) : ""
     };
   }
 
@@ -5061,6 +5119,7 @@
       '  <p class="th2-day-brief__summary">' + escapeHtml(brief.summary) + '</p>',
       '  <p class="th2-day-brief__prompt">' + escapeHtml(brief.rationale) + '</p>',
       (brief.primaryItem ? '  <div class="th2-day-brief__trust"><span class="th2-day-brief__confidence">' + escapeHtml(briefSignals.confidence) + '</span>' + (briefSignals.why ? '<span class="th2-day-brief__why">' + escapeHtml(briefSignals.why) + '</span>' : '') + '</div>' : ''),
+      (briefSignals.quality ? '  <p class="th2-day-brief__memory">' + escapeHtml(briefSignals.quality) + '</p>' : ''),
       (brief.outcomeMemory ? '  <p class="th2-day-brief__memory">' + escapeHtml(brief.outcomeMemory) + '</p>' : ''),
       (brief.memoryMode ? '  <p class="th2-day-brief__memory-mode">' + escapeHtml(brief.memoryMode) + '</p>' : ''),
       (briefSignals.pattern ? '  <p class="th2-day-brief__pattern">' + escapeHtml(briefSignals.pattern) + '</p>' : ''),

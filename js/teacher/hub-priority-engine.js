@@ -84,6 +84,9 @@
       var ranked = rows.map(function (block) {
         var contextData = api.buildTeacherContextForBlock(block);
         var students = api.supportStudentsSummary(contextData);
+        var history = api.summarizeRecommendationHistory(students.map(function (student) {
+          return student && student.studentId;
+        }));
         var supportCount = students.filter(function (student) {
           return /^T[23]$/i.test(String(student && student.label || ""));
         }).length;
@@ -117,6 +120,7 @@
           skippedCount: skippedCount,
           helpedCount: helpedCount,
           notYetCount: notYetCount,
+          recentHistory: history,
           reason: buildPriorityReason(block, supportCount, isCurrent, isNext),
           angle: describePriorityAngle(block, supportCount, isCurrent, isNext),
           cue: isCurrent ? "Now" : (isNext ? "Up next" : "")
@@ -193,16 +197,31 @@
 
     function priorityWhyLine(item) {
       if (!item) return "";
-      if (item.isCurrent) return "Why: in progress right now";
-      if (item.isNext) return "Why: next transition";
-      if ((item.supportCount || 0) >= 3) return "Why: " + item.supportCount + " priority students";
-      return "";
+      var parts = [];
+      if (item.isCurrent) parts.push("in progress right now");
+      else if (item.isNext) parts.push("next transition");
+      else if ((item.supportCount || 0) >= 3) parts.push(item.supportCount + " priority students");
+      if (item.recentHistory && item.recentHistory.entries >= 2) {
+        if (item.recentHistory.helped > item.recentHistory.notYet) parts.push("strong recent outcomes");
+        else if (item.recentHistory.notYet > 0) parts.push("mixed recent outcomes");
+      }
+      return parts.length ? "Why: " + parts.join(" · ") : "";
+    }
+
+    function recommendationQualityLabel(item) {
+      var history = item && item.recentHistory ? item.recentHistory : { entries: 0, helped: 0, notYet: 0 };
+      var score = Number(item && item.score || 0);
+      if (history.entries >= 3 && history.helped >= history.notYet + 1) return "Proven move";
+      if (score >= 90) return "High quality signal";
+      if (score >= 55) return "Solid quality signal";
+      return "Emerging signal";
     }
 
     return {
       buildNowNextBrief: buildNowNextBrief,
       priorityConfidenceLabel: priorityConfidenceLabel,
-      priorityWhyLine: priorityWhyLine
+      priorityWhyLine: priorityWhyLine,
+      recommendationQualityLabel: recommendationQualityLabel
     };
   }
 
