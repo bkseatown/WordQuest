@@ -171,6 +171,21 @@
       altSetByTarget: Object.create(null)
     };
 
+    function notifyTrustedWordClueDeckUpdate() {
+      if (!runtimeRoot || typeof runtimeRoot.dispatchEvent !== "function") return;
+      try {
+        runtimeRoot.dispatchEvent(new runtimeRoot.CustomEvent("cs-word-clue-decks-updated", {
+          detail: {
+            loaded: trustedWordClueDeckState.loaded,
+            loading: trustedWordClueDeckState.loading,
+            starterCount: trustedWordClueDeckState.starterCount,
+            matchedCount: trustedWordClueDeckState.matchedCount,
+            unmatchedTargets: trustedWordClueDeckState.unmatchedTargets.slice()
+          }
+        }));
+      } catch (_error) {}
+    }
+
     function roundContext(input) {
       return Object.assign({}, input.context || {}, {
         customWordSet: input.settings && input.settings.customWordSet || "",
@@ -375,6 +390,7 @@
           runtimeRoot.console.warn("[WordClue] Unmatched starter targets:", trustedWordClueDeckState.unmatchedTargets);
         }
       }
+      notifyTrustedWordClueDeckUpdate();
     }
 
     function normalizeSupplementalCards(raw) {
@@ -415,6 +431,7 @@
       if (runtimeRoot.console && typeof runtimeRoot.console.info === "function") {
         runtimeRoot.console.info("[WordClue] Supplemental approved cards added:", supplemental.length);
       }
+      notifyTrustedWordClueDeckUpdate();
     }
 
     function ensureTrustedWordClueDecksLoaded() {
@@ -449,14 +466,17 @@
             }
             trustedWordClueDeckState.loaded = true;
             trustedWordClueDeckState.cards = [];
+            notifyTrustedWordClueDeckUpdate();
           })
           .finally(function () {
             trustedWordClueDeckState.loading = false;
+            notifyTrustedWordClueDeckUpdate();
           });
       } else {
         trustedWordClueDeckState.loaded = true;
         trustedWordClueDeckState.cards = [];
         trustedWordClueDeckState.loading = false;
+        notifyTrustedWordClueDeckUpdate();
       }
     }
 
@@ -498,6 +518,12 @@
         : normalizedMode;
       ensureTrustedWordClueDecksLoaded();
       var deck = trustedWordClueDeckState.cards.slice();
+      if (!deck.length && trustedWordClueDeckState.loading && !trustedWordClueDeckState.loaded) {
+        return {
+          pending: true,
+          filters: filters
+        };
+      }
       deck = deck.filter(function (card) {
         if (filters.gradeBand && filters.gradeBand !== "ALL" && normalizeStarterGradeBand(card.grade_band) !== filters.gradeBand) return false;
         if (settings.wordClueDeckId && String(settings.wordClueDeckId).trim() && String(card.deck_id) !== String(settings.wordClueDeckId).trim()) return false;
@@ -683,12 +709,14 @@
           var row = (cardPick && cardPick.card) ? cardPick.card : null;
           if (!row) {
             row = {
-              id: "wc-fallback",
-              target_word: "No matching cards",
+              id: cardPick && cardPick.pending ? "wc-loading" : "wc-fallback",
+              target_word: cardPick && cardPick.pending ? "Loading cards…" : "No matching cards",
               taboo_words: [],
               grade_band: "K-1",
               subject: "ELA",
-              curriculum_tag: "Adjust grade/deck filters",
+              curriculum_tag: cardPick && cardPick.pending
+                ? "Trusted Word Clue deck is loading"
+                : "Adjust grade/deck filters",
               drawing_prompt: "",
               acting_prompt: "",
               image_supported: false,
@@ -2275,6 +2303,25 @@
         lessonLock: true
       }
     });
+
+    function wordClueRoundNeedsDeckRefresh(state) {
+      if (!state || state.selectedGameId !== "word-connections" || !state.round) return false;
+      var target = String(state.round.targetWord || "").trim().toLowerCase();
+      var recordId = String(state.round.cardRecordId || "").trim();
+      return !recordId || target === "no matching cards" || target === "loading cards…";
+    }
+
+    if (runtimeRoot && typeof runtimeRoot.addEventListener === "function") {
+      runtimeRoot.addEventListener("cs-word-clue-decks-updated", function (event) {
+        var detail = event && event.detail || {};
+        if (!detail.loaded || !detail.matchedCount) return;
+        var state = engine.getState();
+        if (!wordClueRoundNeedsDeckRefresh(state)) return;
+        resetRoundUi();
+        engine.restartGame();
+        render();
+      });
+    }
 
     function setTypingCurrentLessonByOrder(order) {
       var nextLesson = typingLessonByOrder(order);

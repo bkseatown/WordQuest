@@ -9352,6 +9352,8 @@
       const viewportH = window.visualViewport?.height || window.innerHeight;
       const viewportW = window.visualViewport?.width || window.innerWidth;
       const homeMode = document.documentElement.getAttribute('data-home-mode') || 'play';
+      const playModeActive = homeMode === 'play';
+      const safeEdge = parsePx(rootStyle.getPropertyValue('--wq-safe-edge'), 12);
       const playStyle = document.documentElement.getAttribute('data-play-style') || 'detective';
       const keyboardLayout = document.documentElement.getAttribute('data-keyboard-layout') || 'standard';
       const chunkTabsOn = document.documentElement.getAttribute('data-chunk-tabs') !== 'off';
@@ -9424,30 +9426,43 @@
       const preferredKeyH = parseFloat(rootStyle.getPropertyValue('--key-h')) || 58;
       const preferredKeyMinW = parseFloat(rootStyle.getPropertyValue('--key-min-w')) || 38;
       const adaptiveKeyFloor = Math.max(
-        layoutMode === 'compact' ? 36 : layoutMode === 'tight' ? 42 : 48,
-        Math.round(preferredKeyH * 0.88)
+        playModeActive
+          ? (layoutMode === 'compact' ? 30 : layoutMode === 'tight' ? 34 : layoutMode === 'wide' ? 38 : 40)
+          : (layoutMode === 'compact' ? 36 : layoutMode === 'tight' ? 42 : 48),
+        Math.round(preferredKeyH * (playModeActive ? 0.78 : 0.88))
       );
       const adaptiveKeyCeil = Math.min(
-        Math.max(layoutMode === 'wide' ? 62 : 60, Math.round(preferredKeyH)),
-        Math.max(36, size - 4)
+        playModeActive
+          ? (layoutMode === 'compact' ? 40 : layoutMode === 'tight' ? 44 : layoutMode === 'wide' ? 48 : 50)
+          : Math.max(layoutMode === 'wide' ? 62 : 60, Math.round(preferredKeyH)),
+        Math.max(playModeActive ? 32 : 36, size - (playModeActive ? 8 : 4))
       );
-      const keyScale = layoutMode === 'compact' ? 0.84 : layoutMode === 'tight' ? 0.85 : 0.86;
+      const keyScale = playModeActive
+        ? (layoutMode === 'compact' ? 0.68 : layoutMode === 'tight' ? 0.71 : layoutMode === 'wide' ? 0.73 : 0.76)
+        : (layoutMode === 'compact' ? 0.84 : layoutMode === 'tight' ? 0.85 : 0.86);
       const adaptiveKeyH = Math.max(adaptiveKeyFloor, Math.min(adaptiveKeyCeil, Math.round(size * keyScale)));
       let adaptiveKeyMinW = Math.max(
-        layoutMode === 'compact' ? 24 : layoutMode === 'tight' ? 28 : 32,
-        Math.min(Math.round(preferredKeyMinW), Math.round(size * 0.78))
+        playModeActive
+          ? (layoutMode === 'compact' ? 22 : layoutMode === 'tight' ? 26 : 28)
+          : (layoutMode === 'compact' ? 24 : layoutMode === 'tight' ? 28 : 32),
+        Math.min(Math.round(preferredKeyMinW), Math.round(size * (playModeActive ? 0.72 : 0.78)))
       );
-      let adaptiveKeyGap = Math.max(layoutMode === 'compact' ? 5.6 : 6.2, Math.min(10, Math.round(size * 0.16)));
-      const maxKeyboardW = Math.max(286, Math.min(window.innerWidth - 16, mainInnerW - 4));
+      let adaptiveKeyGap = Math.max(
+        playModeActive ? (layoutMode === 'compact' ? 4.2 : 4.6) : (layoutMode === 'compact' ? 5.6 : 6.2),
+        Math.min(playModeActive ? 8 : 10, Math.round(size * (playModeActive ? 0.12 : 0.16)))
+      );
+      const maxKeyboardW = Math.max(286, Math.min(window.innerWidth - (safeEdge * 2), mainInnerW - 4));
       const activeCols = keyboardLayout === 'wilson' ? 10 : 10;
       const estimateKeyboardW = () => (adaptiveKeyMinW * activeCols) + (adaptiveKeyGap * (activeCols - 1));
       const minKeyFloor = Math.max(
-        layoutMode === 'compact' ? 24 : layoutMode === 'tight' ? 28 : 30,
-        Math.round(preferredKeyMinW - 4)
+        playModeActive
+          ? (layoutMode === 'compact' ? 22 : layoutMode === 'tight' ? 24 : 26)
+          : (layoutMode === 'compact' ? 24 : layoutMode === 'tight' ? 28 : 30),
+        Math.round(preferredKeyMinW - (playModeActive ? 6 : 4))
       );
       while (estimateKeyboardW() > maxKeyboardW && adaptiveKeyMinW > minKeyFloor) {
         adaptiveKeyMinW -= 1;
-        if (adaptiveKeyGap > 5.4) adaptiveKeyGap -= 0.2;
+        if (adaptiveKeyGap > (playModeActive ? 4.2 : 5.4)) adaptiveKeyGap -= 0.2;
       }
 
       document.documentElement.style.setProperty('--tile-size', `${size}px`);
@@ -9455,9 +9470,9 @@
       document.documentElement.style.setProperty('--gap-tile', `${tileGap}px`);
       document.documentElement.style.setProperty('--playfield-width', `${playfieldW}px`);
       document.documentElement.style.setProperty('--playfield-height', `${playfieldH}px`);
-      document.documentElement.style.setProperty('--key-h', `${Math.min(adaptiveKeyH, Math.max(36, size - 4))}px`);
+      document.documentElement.style.setProperty('--key-h', `${Math.min(adaptiveKeyH, Math.max(playModeActive ? 30 : 36, size - (playModeActive ? 8 : 4)))}px`);
       document.documentElement.style.setProperty('--key-min-w', `${adaptiveKeyMinW}px`);
-      document.documentElement.style.setProperty('--gap-key', `${Math.max(6, adaptiveKeyGap).toFixed(1)}px`);
+      document.documentElement.style.setProperty('--gap-key', `${Math.max(playModeActive ? 4.2 : 6, adaptiveKeyGap).toFixed(1)}px`);
       document.documentElement.style.setProperty('--keyboard-max-width', `${Math.ceil(maxKeyboardW)}px`);
       document.documentElement.style.setProperty('--keyboard-bottom-gap', `${keyboardBottomGap + listeningBottomGapBoost}px`);
       document.documentElement.style.setProperty('--play-header-h', `${Math.ceil(headerH)}px`);

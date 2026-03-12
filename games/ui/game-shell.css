@@ -7776,7 +7776,7 @@ body.game-platform-page[data-shell-view="play"][data-game-id="word-typing"] .cg-
 }
 
 body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-v2 {
-  height: 100% !important;
+  height: calc(100% - clamp(4px, 0.7vh, 8px)) !important;
   min-height: 0 !important;
   max-height: 100% !important;
   overflow: hidden !important;
@@ -7819,6 +7819,7 @@ body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"]
 body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-v2-controls {
   margin-top: 0 !important;
   gap: clamp(4px, 0.6vh, 7px) !important;
+  padding-bottom: max(2px, env(safe-area-inset-bottom)) !important;
 }
 
 body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-v2-action-row .cg-action {
