@@ -12,99 +12,105 @@
   <link rel="stylesheet" href="./css/backup-panel.css?v=20260310a">
 </head>
 <body class="cs-home-page">
-  <main id="cs-home-root" class="cs-home-root" aria-label="Cornerstone MTSS">
+  <main class="landing-shell" aria-label="Cornerstone MTSS welcome dashboard">
     <select id="s-theme" aria-hidden="true" tabindex="-1" style="display:none;"></select>
-    <section class="home-hero-panel" aria-label="Cornerstone MTSS destinations">
-      <section class="home-identity-block" aria-label="Product identity">
-        <p class="home-identity-kicker">Cornerstone MTSS</p>
-        <h1 class="home-entry-title">Instructional Support Platform</h1>
-        <p class="home-entry-subtitle">for Learning Support, EAL, and Intervention Teachers</p>
-        <p class="home-identity-capabilities">Plan interventions &bull; Support lessons &bull; Track student progress &bull; Generate family insights</p>
-      </section>
-      <nav class="home-entry-roles" aria-label="Primary destinations">
-        <a class="home-role-btn home-role-btn--hub home-role-btn--primary" href="./teacher-hub-v2.html">
-          <span class="home-role-preview" aria-hidden="true">
-            <span class="home-preview-window home-preview-window--support">
-              <span class="home-preview-window__title">Today</span>
-              <span class="home-preview-support-head">
-                <strong>Maya R.</strong>
-                <span>Grade 2 · 9:35 ELA intervention</span>
-              </span>
-              <span class="home-preview-support-tags"><b>T3 decoding</b><b>IEP goal</b><b>IESP service</b></span>
-              <span class="home-preview-goal-card">
-                <span class="home-preview-goal-card__label">Current goal</span>
-                <strong>Blend and read short-a CVC words with 95% accuracy across 3 consecutive probes.</strong>
-                <span class="home-preview-goal-card__meta">Next move: phoneme-grapheme chaining + immediate error correction</span>
-              </span>
-              <span class="home-preview-support-foot"><i></i><em>2 students need support in this block</em></span>
-            </span>
-          </span>
-          <span class="home-role-body">
-            <span class="home-role-eyebrow">Primary workflow</span>
-            <span class="home-role-label">Start Today&rsquo;s Hub</span>
-            <span class="home-role-sub">View today&rsquo;s intervention blocks, student priorities, lesson support, and next actions.</span>
-          </span>
-          <span class="home-role-cta">Open Specialist Hub</span>
-        </a>
-        <div class="home-secondary-grid" aria-label="Secondary destinations">
-          <a class="home-role-btn home-role-btn--games home-role-btn--secondary" href="./game-platform.html">
-            <span class="home-role-preview" aria-hidden="true">
-              <span class="home-preview-games-grid">
-                <span class="home-game-preview-card home-game-preview-card--wordquest">
-                  <span class="home-game-preview-title">Word Quest</span>
-                  <span class="home-preview-board">
-                    <span class="home-preview-board__row"><i></i><i></i><i></i><i></i><i></i></span>
-                    <span class="home-preview-board__row"><i></i><i></i><i></i><i></i><i></i></span>
-                    <span class="home-preview-board__row"><i></i><i></i><i></i><i></i><i></i></span>
-                  </span>
-                </span>
-                <span class="home-game-preview-card home-game-preview-card--typing">
-                  <span class="home-game-preview-title">Typing Quest</span>
-                  <span class="home-preview-typing-lane"><b>fj</b><i></i><em>fjfj</em></span>
-                  <span class="home-preview-mini-keys"><u>F</u><u>J</u><u>A</u><u>S</u><u>D</u></span>
-                </span>
-                <span class="home-game-preview-card home-game-preview-card--taboo">
-                  <span class="home-game-preview-title">Say It Another Way</span>
-                  <span class="home-preview-taboo-word">ECOSYSTEM</span>
-                  <span class="home-preview-pillrow"><b>plants</b><b>animals</b><b>nature</b></span>
-                </span>
-              </span>
-            </span>
-            <span class="home-role-body">
-              <span class="home-role-label">Instructional Practice Games</span>
-              <span class="home-role-sub">Short literacy and language games for individuals, small groups, or projector play.</span>
-            </span>
-            <span class="home-role-cta">Open Games</span>
-          </a>
-          <a class="home-role-btn home-role-btn--workspace home-role-btn--secondary" href="./teacher-dashboard.html">
-            <span class="home-role-preview home-role-preview--workspace" aria-hidden="true">
-              <span class="home-preview-workspace-card">
-                <span class="home-preview-workspace-kicker">Workspace</span>
-                <strong>Weekly planning</strong>
-                <span class="home-preview-workspace-row"><i></i><em>Progress insights ready</em></span>
-                <span class="home-preview-workspace-row"><i></i><em>Meeting notes drafted</em></span>
-                <span class="home-preview-workspace-row"><i></i><em>Family summary prepared</em></span>
-              </span>
-            </span>
-            <span class="home-role-body">
-              <span class="home-role-label">Teacher Workspace</span>
-              <span class="home-role-sub">Reports, progress insights, meeting preparation, and family communication tools.</span>
-            </span>
-            <span class="home-role-cta">Open Workspace</span>
-          </a>
-        </div>
-      </nav>
-      <div class="home-entry-utility" aria-label="System utilities">
-        <div class="home-utility-copy">
-          <span class="home-utility-label">Local-first backup &bull; No cloud dependency</span>
-          <span class="home-backup-status" data-backup-status="compact">No backup yet</span>
-        </div>
-        <div class="home-utility-actions">
-          <button class="home-utility-link home-utility-btn" type="button" data-backup-open="1">Backup &amp; Restore</button>
-          <span class="home-build-slot" data-build-slot="1" aria-live="polite"></span>
+
+    <section class="landing-hero" aria-label="Welcome and today focus">
+      <div class="landing-hero__content">
+        <p class="landing-eyebrow">Cornerstone MTSS</p>
+        <h1 class="landing-title">Instructional Support Platform</h1>
+        <p class="landing-subtitle">Support lessons, student progress, and intervention decisions from one calm daily workspace.</p>
+        <div class="landing-hero__actions">
+          <a class="landing-btn landing-btn--primary" href="./teacher-hub-v2.html">Open Specialist Hub</a>
         </div>
       </div>
+
+      <aside class="landing-focus-card" aria-label="Today focus">
+        <p class="landing-focus-card__eyebrow">Today</p>
+        <h2 class="landing-focus-card__student">Maya R.</h2>
+        <p class="landing-focus-card__meta">Grade 2 &middot; 9:35 ELA intervention</p>
+        <div class="landing-focus-card__goal">Blend and read short-a CVC words with 95% accuracy across 3 consecutive probes.</div>
+        <div class="landing-focus-card__tags">
+          <span>T3 decoding</span>
+          <span>IEP goal</span>
+          <span>IESP service</span>
+        </div>
+      </aside>
     </section>
+
+    <section class="landing-destinations" aria-label="Main destinations">
+      <article class="landing-destination landing-destination--games">
+        <div class="landing-destination__preview landing-preview--games" aria-hidden="true">
+          <div class="landing-preview-card">
+            <p class="landing-preview__kicker">Word Quest</p>
+            <div class="landing-preview-board">
+              <div class="landing-preview-board__row"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="landing-preview-board__row"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="landing-preview-board__row"><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+          </div>
+          <div class="landing-preview-card">
+            <p class="landing-preview__kicker">Typing Quest</p>
+            <div class="landing-preview-lane"><strong>fj</strong><span></span><em>fjfj</em></div>
+            <div class="landing-preview-keys">
+              <span class="landing-preview-key is-active">F</span>
+              <span class="landing-preview-key is-active">J</span>
+              <span class="landing-preview-key">A</span>
+              <span class="landing-preview-key">S</span>
+              <span class="landing-preview-key">D</span>
+            </div>
+          </div>
+          <div class="landing-preview-card">
+            <p class="landing-preview__kicker">Word Clue</p>
+            <div class="landing-preview-word">ECOSYSTEM</div>
+            <div class="landing-preview-pills">
+              <span class="landing-preview-pill">plants</span>
+              <span class="landing-preview-pill">animals</span>
+              <span class="landing-preview-pill">nature</span>
+            </div>
+          </div>
+        </div>
+        <div class="landing-destination__content">
+          <div>
+            <h2>Instructional Practice Games</h2>
+            <p>Launch quick literacy and language routines for individuals, pairs, and small groups.</p>
+          </div>
+          <a class="landing-btn landing-btn--secondary" href="./game-platform.html">Open Games</a>
+        </div>
+      </article>
+
+      <article class="landing-destination landing-destination--workspace">
+        <div class="landing-destination__preview landing-preview--workspace" aria-hidden="true">
+          <div class="landing-preview-workspace-card">
+            <p class="landing-preview__kicker">Workspace</p>
+            <strong>Weekly planning</strong>
+            <div class="landing-preview-note"><i class="landing-preview-note-dot"></i><span>Progress insights ready</span></div>
+            <div class="landing-preview-note"><i class="landing-preview-note-dot"></i><span>Meeting notes drafted</span></div>
+            <div class="landing-preview-note"><i class="landing-preview-note-dot"></i><span>Family summary prepared</span></div>
+          </div>
+        </div>
+        <div class="landing-destination__content">
+          <div>
+            <h2>Teacher Workspace</h2>
+            <p>Review planning notes, progress insights, and family-ready summaries.</p>
+          </div>
+          <a class="landing-btn landing-btn--secondary" href="./teacher-dashboard.html">Open Workspace</a>
+        </div>
+      </article>
+    </section>
+
+    <footer class="landing-utility" aria-label="System utility strip">
+      <div class="landing-utility__left">
+        <span class="landing-utility__label">System</span>
+        <span class="landing-utility__meta">Local-first backup</span>
+        <span class="landing-utility__meta">No cloud dependency</span>
+        <span class="landing-utility__meta home-backup-status" data-backup-status="compact">No backup yet</span>
+      </div>
+      <div class="landing-utility__right">
+        <button class="landing-utility__button" type="button" data-backup-open="1">Backup &amp; Restore</button>
+        <span class="landing-build home-build-slot" data-build-slot="1" aria-live="polite"></span>
+      </div>
+    </footer>
   </main>
 
   <script src="./js/google-auth-config.js?v=20260306i" onerror="0"></script>

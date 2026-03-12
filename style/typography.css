@@ -31,6 +31,21 @@ h3, .h3 {
   letter-spacing: -0.008em;
 }
 
+.display-hero,
+.display-page {
+  letter-spacing: var(--tracking-tight, -0.015em);
+  line-height: 0.96;
+  font-weight: var(--fw-semibold);
+}
+
+.display-hero {
+  font-size: var(--fs-9, clamp(3.4rem, 7vw, 5.2rem));
+}
+
+.display-page {
+  font-size: var(--fs-7, 40px);
+}
+
 p {
   line-height: 1.52;
 }
@@ -69,6 +84,78 @@ button,
   font-size: max(0.875rem, var(--fs-1));
   font-weight: var(--fw-medium);
   line-height: var(--lh-ui, 1.35);
+}
+
+.button-premium,
+.button-secondary,
+.button-quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-round);
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-ui, -0.005em);
+  text-decoration: none;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-med) var(--motion-ease),
+    background-color var(--motion-med) var(--motion-ease),
+    border-color var(--motion-med) var(--motion-ease),
+    color var(--motion-med) var(--motion-ease);
+}
+
+.button-premium {
+  color: #ffffff;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 88%, white 12%), var(--accent));
+  box-shadow: 0 12px 24px rgba(31, 66, 125, 0.22);
+}
+
+.button-secondary {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(48, 38, 20, 0.12);
+  box-shadow: var(--shadow-soft);
+}
+
+.button-quiet {
+  min-height: 38px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.66);
+  border-color: rgba(48, 38, 20, 0.08);
+}
+
+.button-premium:hover,
+.button-premium:focus-visible,
+.button-secondary:hover,
+.button-secondary:focus-visible,
+.button-quiet:hover,
+.button-quiet:focus-visible {
+  transform: translateY(-2px);
+}
+
+.button-premium:active,
+.button-secondary:active,
+.button-quiet:active {
+  transform: translateY(1px);
+}
+
+.dashboard-kicker,
+.section-kicker,
+.cg-kicker,
+.th2-section-label {
+  color: color-mix(in oklab, var(--text-secondary) 88%, white 12%);
+}
+
+.empty-state-copy,
+.loading-state-copy,
+.meta-copy {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm, 13px);
+  line-height: 1.45;
 }
 
 .td-surface,

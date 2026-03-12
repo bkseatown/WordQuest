@@ -23,3 +23,10 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - 2026-03-11: Contrast pass: forced high-contrast light headings/subtitles on dark play hero bars to eliminate dark-on-purple title regressions.
 - 2026-03-11: Hard-reset alternate layout pass for Word Clue (v2): replaced the in-place two-column stage with compact top utility bar + centered hero card stage + immediate action row + collapsible setup drawer.
 - 2026-03-11: Word Clue v2 variants now visibly alter presentation (picture panel, draw-only cue, challenge urgency styling, relay cue), and blocked-word rendering scales with difficulty.
+- 2026-03-12: Began platform-wide legacy conflict cleanup. Rebuilt landing page onto a single structural path in `index.html` + `home-v3.css`, replacing the nested `home-role-btn` dashboard stack with a three-zone welcome/dashboard shell.
+- 2026-03-12: Removed a conflicting short-height Word Quest media block from `style/components.css` that was inflating tiles and keyboard after the newer viewport-budget system applied.
+- 2026-03-12: Added a shared design-system foundation in `style/tokens.css` and `style/typography.css` covering radius, shadows, border treatments, spacing, typography, motion, premium surfaces, button patterns, and reduced-motion-safe state helpers.
+- 2026-03-12: Added `docs/PLATFORM_DESIGN_SYSTEM.md` as the source-of-truth for visual language, component patterns, motion rules, and page ownership. Next pass should apply these classes/tokens progressively to landing, hub, gallery, and game shells instead of inventing new one-off styles.
+- 2026-03-12: Moved `game-platform.html` theme-picker layout CSS into `games/ui/game-shell.css` so the CG shell owns that layout instead of page-level inline styles.
+- 2026-03-12: Added `docs/PLATFORM_LAYOUT_OWNERS.md` documenting the single layout owner per page family and the guardrails for future cleanup/refinement.
+- 2026-03-12: Added localhost-safe build-line behavior to `teacher-dashboard.js` to reduce direct local `build.json` fetch noise outside the shared build badge helpers.

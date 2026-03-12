@@ -1262,6 +1262,12 @@
   function refreshBuildLine() {
     if (!el.buildline) return;
     var fallback = "Build: local";
+    var host = String(window.location && window.location.hostname || "").toLowerCase();
+    if (!host || host === "localhost" || host === "127.0.0.1" || host === "::1") {
+      el.buildline.textContent = fallback;
+      if (el.shareBuildline) el.shareBuildline.textContent = fallback;
+      return;
+    }
     fetch("./build.json", { cache: "no-store" }).then(function (resp) {
       if (!resp.ok) throw new Error("build");
       return resp.json();

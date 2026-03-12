@@ -5815,29 +5815,6 @@ html[data-home-mode="play"] .header-quick-btn {
   color: var(--wq-play-control-color);
 }
 
-@media (max-height: 820px) and (min-width: 980px) {
-  html[data-home-mode="play"] {
-    --tile-size: 70px;
-    --playfield-width: 370px;
-    --key-h: 58px;
-    --key-min-w: 40px;
-    --gap-key: 7px;
-    --gap-tile: 8px;
-  }
-
-  html[data-home-mode="play"] header {
-    padding: 4px 10px 2px;
-  }
-
-  html[data-home-mode="play"] .focus-bar {
-    padding: 1px 0 0;
-  }
-
-  html[data-home-mode="play"] .board-zone {
-    gap: 6px;
-  }
-}
-
 html[data-key-style="bubble"] .key:not(.wide):not(.key-chunk) {
   flex: 0 0 min(calc(var(--key-h) + 2px), calc(var(--tile-size) - 4px));
   min-width: min(calc(var(--key-h) + 2px), calc(var(--tile-size) - 4px));
