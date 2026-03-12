@@ -73,7 +73,15 @@
 
   function inferSubject(block) {
     var row = block && typeof block === "object" ? block : {};
-    var subject = String(row.subject || row.area || "").trim().toLowerCase();
+    var explicitSubject = String(row.subject || "").trim();
+    var normalizedExplicit = explicitSubject.toLowerCase();
+    if (normalizedExplicit === "intervention") return "Intervention";
+    if (normalizedExplicit === "ela") return "ELA";
+    if (normalizedExplicit === "math") return "Math";
+    if (normalizedExplicit === "writing") return "Writing";
+    if (normalizedExplicit === "humanities") return "Humanities";
+    if (explicitSubject) return explicitSubject;
+    var subject = String(row.area || "").trim().toLowerCase();
     if (subject === "intervention") return "Intervention";
     if (subject === "ela") return "ELA";
     if (subject === "math") return "Math";

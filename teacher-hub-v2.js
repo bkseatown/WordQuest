@@ -49,6 +49,7 @@
     try { isDemoMode = localStorage.getItem("cs.hub.demo") === "1"; } catch (_e) {}
   }
   var initialStudentId = urlParams.get("student") || "";
+  var initialClassId = urlParams.get("classId") || "";
 
   /* ── Hub state ─────────────────────────────────────────── */
 
@@ -78,7 +79,8 @@
     list:        document.getElementById("th2-list"),
     listEmpty:   document.getElementById("th2-list-empty"),
     listNone:    document.getElementById("th2-list-none"),
-    modeTabs:    Array.prototype.slice.call(document.querySelectorAll(".th2-mode-tab")),
+    modeTabs:    Array.prototype.slice.call(document.querySelectorAll(".th2-mode-tab[data-mode]")),
+    setupTab:    document.getElementById("th2-setup-tab"),
     main:        document.getElementById("th2-main"),
     emptyState:  document.getElementById("th2-empty-state"),
     focusCard:   document.getElementById("th2-focus-card"),
@@ -104,6 +106,14 @@
 
   function safe(fn) {
     try { return fn(); } catch (_e) { return null; }
+  }
+
+  function setActiveModeTab(mode) {
+    el.modeTabs.forEach(function (tab) {
+      var isActive = (tab.getAttribute("data-mode") || "") === mode;
+      tab.classList.toggle("is-active", isActive);
+      tab.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
   }
 
   function getStudentSummaryForHub(studentId, fallbackStudent) {
@@ -155,6 +165,13 @@
 
   /* Support plan types — stored on student, shown only in View Details */
   var PLAN_TYPES = ["IESP", "IP", "IAP", "BIP", "504"];
+  var DEMO_SUPPORT_PRIORITY_BY_STUDENT = {
+    "demo-maya": "T3",
+    "demo-liam": "T3",
+    "demo-ava": "T2",
+    "demo-noah": "T2",
+    "demo-zoe": "T2"
+  };
 
   /* ── Goal storage helpers ────────────────────────────────── */
   /* Goals: { [studentId]: [{domain, skill, level (1-4)}] }
@@ -328,6 +345,28 @@
     }).filter(function (row) { return row.id && row.label; });
   }
 
+  function buildHubRoute(params) {
+    try {
+      var next = new URL("teacher-hub-v2.html", window.location.href);
+      var input = params && typeof params === "object" ? params : {};
+      if (isDemoMode) next.searchParams.set("demo", "1");
+      if (input.studentId) next.searchParams.set("student", String(input.studentId));
+      if (input.classId) next.searchParams.set("classId", String(input.classId));
+      return next.pathname.replace(/^\//, "") + (next.search || "") + (next.hash || "");
+    } catch (_e) {
+      return "teacher-hub-v2.html";
+    }
+  }
+
+  function openClassDetailPage(blockId) {
+    if (!blockId) return;
+    window.location.href = buildHubRoute({ classId: blockId });
+  }
+
+  function returnToSchedulePage() {
+    window.location.href = buildHubRoute({});
+  }
+
   function areaLabel(area) {
     if (area === "math") return "Math";
     if (area === "writing") return "Writing";
@@ -357,10 +396,8 @@
   function currentBlockFromState() {
     var blockId = hubState.get().context.classId || "";
     var blocks = getTodayLessonBlocks();
-    return blocks.filter(function (row) { return row.id === blockId; })[0]
-      || blocks.filter(function (row) { return row && Array.isArray(row.studentIds) && row.studentIds.length > 0 && String(row.subject || "").toLowerCase() !== "specials"; })[0]
-      || blocks[0]
-      || null;
+    if (!blockId) return null;
+    return blocks.filter(function (row) { return row.id === blockId; })[0] || null;
   }
 
   function currentBlockContextForTools() {
@@ -451,15 +488,6 @@
   }
 
   var HUB_SEARCH_RESOURCES = [
-    { id: "tool-wordquest", kind: "tool", label: "Word Quest", subtitle: "Word game activity surface", href: "word-quest.html?play=1" },
-    { id: "tool-platform", kind: "tool", label: "Game Platform", subtitle: "Shared runtime for all game surfaces", href: "game-platform.html" },
-    { id: "tool-reading", kind: "resource", label: "Reading Lab", subtitle: "Literacy activity", href: "reading-lab.html" },
-    { id: "tool-sentence", kind: "resource", label: "Sentence Studio", subtitle: "Sentence support surface", href: "sentence-surgery.html" },
-    { id: "tool-writing", kind: "resource", label: "Writing Studio", subtitle: "Writing support surface", href: "writing-studio.html" },
-    { id: "tool-numeracy", kind: "intervention", label: "Numeracy", subtitle: "Math intervention surface", href: "numeracy.html" },
-    { id: "tool-precision", kind: "intervention", label: "Precision Play", subtitle: "Practice surface", href: "precision-play.html" },
-    { id: "tool-diagnostic", kind: "diagnostic", label: "Decoding Diagnostic", subtitle: "Diagnostic activity", href: "activities/decoding-diagnostic.html" },
-    { id: "tool-brief", kind: "resource", label: "Lesson Brief", subtitle: "Open class lesson briefing", action: "brief" },
     { id: "tool-curriculum", kind: "resource", label: "Curriculum Quick Reference", subtitle: "Open curriculum supports", action: "curriculum" },
     { id: "tool-workspace", kind: "resource", label: "Reports", subtitle: "Weekly insights, meetings, history, and exports", href: "reports.html" }
   ];
@@ -632,60 +660,6 @@
     };
   }
 
-  function getRecommendedGameActions(contextData) {
-    var derived = contextData && contextData.derived ? contextData.derived : {};
-    var subject = String(derived.subject || "").toLowerCase();
-    var games;
-    if (subject === "math") {
-      games = [
-        { id: "concept-ladder", label: "Launch Clue Climb" },
-        { id: "error-detective", label: "Launch Fix-It Detective" },
-        { id: "word-connections", label: "Launch Say It Another Way" }
-      ];
-    } else if (subject === "intervention" || subject === "ela") {
-      games = [
-        { id: "word-quest", label: "Launch Word Quest" },
-        { id: "morphology-builder", label: "Launch Word Forge" },
-        { id: "sentence-builder", label: "Launch Sentence Sprint" }
-      ];
-    } else if (subject === "writing") {
-      games = [
-        { id: "sentence-builder", label: "Launch Sentence Sprint" },
-        { id: "word-connections", label: "Launch Say It Another Way" },
-        { id: "rapid-category", label: "Launch Category Rush" }
-      ];
-    } else {
-      games = [
-        { id: "word-quest", label: "Launch Word Quest" },
-        { id: "word-connections", label: "Launch Say It Another Way" },
-        { id: "concept-ladder", label: "Launch Clue Climb" }
-      ];
-    }
-    return games.map(function (game) {
-      var payload = GameContextInjection && typeof GameContextInjection.buildGameContext === "function"
-        ? GameContextInjection.buildGameContext({
-            block: contextData.block,
-            classContext: contextData.classContext,
-            lessonContext: contextData.lessonContext,
-            students: getBlockStudents(contextData.block),
-            studentIds: derived.studentIds || []
-          }, {
-            TeacherStorage: TeacherStorage,
-            TeacherSelectors: TeacherSelectors,
-            SupportStore: SupportStore
-          })
-        : {};
-      var recommendation = GameContextInjection && typeof GameContextInjection.getRecommendedGameContent === "function"
-        ? GameContextInjection.getRecommendedGameContent(game.id, payload)
-        : { loadedFocus: derived.targetSkills || [] };
-      return {
-        label: game.label,
-        href: appendContextParamsForBlock("game-platform.html?game=" + encodeURIComponent(game.id), contextData),
-        subtitle: (recommendation.loadedFocus || []).slice(0, 2).join(" • ") || "Context-aligned practice"
-      };
-    });
-  }
-
   function appendContextParamsForBlock(href, contextData) {
     try {
       var url = new URL(String(href || ""), window.location.href);
@@ -713,9 +687,7 @@
     var nextLabel = nextBlock
       ? [nextBlock.timeLabel || nextBlock.label, nextBlock.subject].filter(Boolean).join(" · ")
       : "No block selected yet";
-    var priority = derived.prioritySignal && derived.prioritySignal.label
-      ? derived.prioritySignal.label
-      : "Select a class block to load lesson context and student priorities.";
+    var priority = buildBlockSignalText(contextData);
     return [
       '<section class="th2-command-header">',
       '  <div class="th2-command-header__copy">',
@@ -742,19 +714,16 @@
 
   function renderBlockContextHeader(contextData) {
     var block = contextData && contextData.block ? contextData.block : {};
-    var derived = contextData && contextData.derived ? contextData.derived : {};
-    var priority = derived.prioritySignal && derived.prioritySignal.label
-      ? derived.prioritySignal.label
-      : "Block context loaded.";
+    var priority = buildBlockSignalText(contextData);
     return [
       '<section class="th2-block-context-header">',
       '  <div class="th2-block-context-header__main">',
-      '    <p class="th2-section-label">Current Block</p>',
+      '    <p class="th2-section-label">Selected class</p>',
       '    <h1 class="th2-block-context-header__title">' + escapeHtml(block.label || block.classSection || "Support block") + "</h1>",
-      '    <p class="th2-block-context-header__meta">' + escapeHtml([block.timeLabel, derived.subject || block.subject, derived.supportType || block.supportType].filter(Boolean).join(" · ")) + "</p>",
+      '    <p class="th2-block-context-header__meta">' + escapeHtml([block.timeLabel, block.teacher, block.subject, block.supportType].filter(Boolean).join(" · ")) + "</p>",
       "  </div>",
       '  <div class="th2-block-context-header__signal">',
-      '    <span>Priority signal</span>',
+      '    <span>Class signal</span>',
       '    <strong>' + escapeHtml(priority) + "</strong>",
       "  </div>",
       "</section>"
@@ -767,12 +736,12 @@
       '<section class="th2-day-strip">',
       '  <div class="th2-day-strip__head">',
       '    <p class="th2-section-label">My Day</p>',
-      '    <p class="th2-today-sub">Open one block to move into lesson context and student priorities.</p>',
+      '    <p class="th2-today-sub">Open one block to move into lesson context, student needs, and recommended supports.</p>',
       "  </div>",
       '  <div class="th2-day-strip__grid">',
       rows.map(function (block) {
         var contextData = buildTeacherContextForBlock(block);
-        var focusCount = countFocusStudents(contextData && contextData.derived && contextData.derived.students);
+        var focusCount = countSupportStudentsForContext(contextData);
         return [
           '<button class="th2-day-block' + (block.id === activeBlockId ? " is-active" : "") + '" data-open-block="' + escapeHtml(block.id) + '" type="button">',
           '  <span class="th2-day-block__time">' + escapeHtml(block.timeLabel || block.label) + "</span>",
@@ -790,19 +759,25 @@
 
   function renderLessonContextZone(contextData) {
     var derived = contextData && contextData.derived ? contextData.derived : {};
+    var block = contextData && contextData.block ? contextData.block : {};
+    var lessonHeadline = [derived.unit, derived.lesson].filter(Boolean).join(" ") || derived.lessonFocus || block.lesson || "Lesson context loading";
+    var lessonSummary = derived.mainConcept || "Lesson focus not fully mapped yet.";
+    var lessonHref = appendContextParamsForBlock("game-platform.html", contextData);
     return [
       '<section class="th2-context-zone th2-context-zone--lesson">',
-      '  <p class="th2-section-label">Lesson Context</p>',
+      '  <div class="th2-context-zone__heading"><p class="th2-section-label">Lesson</p><button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Edit lesson</button></div>',
       '  <div class="th2-mission-card">',
-      '    <p class="th2-mission-card__title">' + escapeHtml((derived.subject || "Subject") + " · " + (derived.curriculum || "Curriculum")) + "</p>",
-      '    <h2 class="th2-mission-card__headline">' + escapeHtml([derived.unit, derived.lesson].filter(Boolean).join(" ") || derived.lessonFocus || "Lesson context loading") + "</h2>",
-      '    <p class="th2-mission-card__sub">' + escapeHtml(derived.mainConcept || "Lesson focus not fully mapped yet.") + "</p>",
+      '    <p class="th2-mission-card__title">' + escapeHtml((block.subject || derived.subject || "Subject") + " · " + (derived.curriculum || block.curriculum || "Curriculum")) + "</p>",
+      '    <h2 class="th2-mission-card__headline">' + escapeHtml(lessonHeadline) + "</h2>",
+      '    <p class="th2-mission-card__sub">' + escapeHtml(lessonSummary) + "</p>",
       '    <p class="th2-mission-card__target">' + escapeHtml(deriveLearningTarget(contextData)) + "</p>",
+      '    <div class="th2-lesson-alignment"><span>Alignment to support goals</span><strong>' + escapeHtml(buildLessonAlignment(contextData)) + '</strong></div>',
       '    <div class="th2-mission-card__meta">',
-      '      <div><span>Teacher</span><strong>' + escapeHtml((contextData.classContext && contextData.classContext.teacher) || contextData.block.teacher || "Not set") + '</strong></div>',
-      '      <div><span>Support</span><strong>' + escapeHtml(derived.supportType || contextData.block.supportType || "push-in") + '</strong></div>',
+      '      <div><span>Teacher</span><strong>' + escapeHtml((contextData.classContext && contextData.classContext.teacher) || block.teacher || "Not set") + '</strong></div>',
+      '      <div><span>Support</span><strong>' + escapeHtml(derived.supportType || block.supportType || "push-in") + '</strong></div>',
       '      <div><span>Language Demand</span><strong>' + escapeHtml((derived.languageDemands || []).slice(0, 3).join(" • ") || "Explain • compare • justify") + '</strong></div>',
       "    </div>",
+      '    <div class="th2-mission-card__actions"><a class="th2-inline-link" href="' + escapeHtml(lessonHref) + '">Learn more</a><a class="th2-inline-link" href="reports.html">Open reports</a></div>',
       "  </div>",
       "</section>"
     ].join("");
@@ -825,33 +800,235 @@
     return [derived.curriculum || derived.subject, derived.lesson || derived.unit].filter(Boolean).join(" ") || "Lesson context ready";
   }
 
+  function studentSupportTags(student) {
+    var rows = [];
+    var tier = displayTierLabel(student);
+    var supports = Array.isArray(student && student.relatedSupport) ? student.relatedSupport : [];
+    if (!supports.length) return [tier + " Support"];
+    supports.forEach(function (item) {
+      rows.push(tier + " " + item);
+    });
+    return rows.slice(0, 3);
+  }
+
+  function studentStrengthText(student) {
+    var supports = Array.isArray(student && student.relatedSupport) ? student.relatedSupport : [];
+    if (supports.indexOf("Fluency") !== -1) return "Shows growing confidence when text is familiar and modeled.";
+    if (supports.indexOf("Decoding") !== -1 || supports.indexOf("Phonics") !== -1) return "Responds well to explicit modeling and sound-by-sound rehearsal.";
+    if (supports.indexOf("Writing") !== -1) return "Can generate ideas and respond when given a clear structure.";
+    if (supports.indexOf("Math") !== -1) return "Benefits from visual models and can explain thinking with support.";
+    return "Engages with teacher support and shows clear next-step potential.";
+  }
+
+  function studentGapText(student) {
+    var goal = String(student && student.primaryGoal || "").toLowerCase();
+    var supports = Array.isArray(student && student.relatedSupport) ? student.relatedSupport : [];
+    if (goal.indexOf("decode") !== -1 || supports.indexOf("Decoding") !== -1 || supports.indexOf("Phonics") !== -1) {
+      return "Still needs repeated practice transferring decoding patterns into connected reading.";
+    }
+    if (goal.indexOf("write") !== -1 || supports.indexOf("Writing") !== -1) {
+      return "Needs help organizing ideas, evidence, and language independently.";
+    }
+    if (goal.indexOf("math") !== -1 || supports.indexOf("Math") !== -1 || goal.indexOf("problem") !== -1) {
+      return "Needs scaffolded practice choosing strategies and explaining reasoning.";
+    }
+    return "Needs more consistent independence on the current target skill.";
+  }
+
+  function buildLessonAlignment(contextData) {
+    var students = contextData && contextData.derived && Array.isArray(contextData.derived.students)
+      ? contextData.derived.students
+      : [];
+    if (!students.length) return "This lesson supports whole-group access and keeps space for in-the-moment scaffolds.";
+    var goals = students.slice(0, 3).map(function (student) {
+      return student.primaryGoal || "";
+    }).filter(Boolean);
+    if (!goals.length) return "This lesson is positioned to reinforce the students' current support priorities.";
+    return "This lesson aligns to current support goals by reinforcing " + goals.join("; ").replace(/\.$/, "") + ".";
+  }
+
+  function personalizedGreeting(blocks) {
+    var rows = Array.isArray(blocks) ? blocks : [];
+    var firstBlock = rows[0] || null;
+    var activeSupports = rows.reduce(function (count, block) {
+      var contextData = buildTeacherContextForBlock(block);
+      return count + countSupportStudentsForContext(contextData);
+    }, 0);
+    var teacher = currentTeacherFirstName();
+    if (!firstBlock) {
+      return {
+        title: greetingWord() + ", " + teacher,
+        summary: "Your schedule is clear right now. Connect or update today's classes and this page will turn into your live command view.",
+        prompt: "Once your first class is selected, the main workspace will switch into that class with lesson context, support tiers, and student goals."
+      };
+    }
+    return {
+      title: greetingWord() + ", " + teacher + ". " + (firstBlock.label || firstBlock.classSection || "Your first class") + " is up first.",
+      summary: "You have " + rows.length + " blocks today and " + activeSupports + " total T2/T3 support touchpoints across the day.",
+      prompt: "Choose a class from the left to open its roster, lesson, SWBAT, support goals, and deeper student links."
+    };
+  }
+
+  function displayTierLabel(student) {
+    var studentId = String(student && student.studentId || "");
+    if (DEMO_SUPPORT_PRIORITY_BY_STUDENT[studentId]) return DEMO_SUPPORT_PRIORITY_BY_STUDENT[studentId];
+    var explicit = String(student && student.supportPriority || "").trim();
+    if (/^T[123]$/i.test(explicit)) return explicit.toUpperCase();
+    if (studentId) {
+      var summary = getStudentSummaryForHub(studentId, { id: studentId, name: student && student.name || "" });
+      return "T" + String(quickTier(summary));
+    }
+    return "T2";
+  }
+
   function supportStudentsSummary(contextData) {
     var students = contextData && contextData.derived && Array.isArray(contextData.derived.students)
       ? contextData.derived.students
       : [];
     return students.map(function (student) {
+      var summary = student && student.studentId
+        ? getStudentSummaryForHub(student.studentId, { id: student.studentId, name: student.name || "" })
+        : null;
+      var detail = (student.relatedSupport || [])[0]
+        || student.primaryGoal
+        || (summary && (summary.primaryGoal || summary.recommendationTitle || summary.goalLabel))
+        || "Support ready";
       return {
         name: student.name || "Student",
-        label: student.supportPriority || "Monitor",
-        detail: (student.relatedSupport || [])[0] || "Support ready"
+        label: displayTierLabel(student),
+        detail: detail
       };
     });
+  }
+
+  function countSupportStudentsForContext(contextData) {
+    return supportStudentsSummary(contextData).filter(function (student) {
+      return /^T[23]$/i.test(String(student && student.label || ""));
+    }).length;
+  }
+
+  function buildBlockSignalText(contextData) {
+    var block = contextData && contextData.block ? contextData.block : {};
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    var subject = block.subject || derived.subject || "this block";
+    var supportCount = countSupportStudentsForContext(contextData);
+    if (supportCount > 0) {
+      return supportCount + " support student" + (supportCount === 1 ? "" : "s") + " ready for " + subject + ".";
+    }
+    if (/advisory|community|specials/i.test(String(subject))) {
+      return subject + " is ready. Open for teacher notes, transitions, and class context.";
+    }
+    return subject + " is ready. Open for lesson support, class recommendations, and next moves.";
+  }
+
+  function pickLeadSupportBlock(blocks) {
+    var rows = Array.isArray(blocks) ? blocks : [];
+    for (var i = 0; i < rows.length; i += 1) {
+      var contextData = buildTeacherContextForBlock(rows[i]);
+      if (countSupportStudentsForContext(contextData) > 0) return rows[i];
+    }
+    return rows[0] || null;
+  }
+
+  function isDemoBlock(block) {
+    var id = String(block && block.id || "");
+    return /^demo-block-|^demo-first-run$/.test(id);
+  }
+
+  function scheduleStudentsForBlock(block) {
+    var contextData = buildTeacherContextForBlock(block) || {
+      block: block,
+      derived: {
+        subject: block && block.subject || "",
+        students: []
+      }
+    };
+    var students = supportStudentsSummary(contextData);
+    var priorityStudents = students.filter(function (student) {
+      return /^T[23]/.test(String(student && student.label || ""));
+    });
+    return {
+      contextData: contextData,
+      students: (priorityStudents.length ? priorityStudents : students).slice(0, 4)
+    };
+  }
+
+  function renderScheduleRoster(block) {
+    var roster = scheduleStudentsForBlock(block);
+    var rows = roster.students;
+    return {
+      contextData: roster.contextData,
+      html: rows.length
+        ? rows.map(function (student) {
+            return [
+              '<span class="th2-day-sched-student-chip">',
+              '  <strong>' + escapeHtml(student.name) + '</strong>',
+              '  <em class="th2-day-sched-student-tier" data-tier="' + escapeHtml(String(student.label || "T1").replace(/^T/, "")) + '">' + escapeHtml(student.label || "T1") + '</em>',
+              "</span>"
+            ].join("");
+          }).join("")
+        : '<span class="th2-day-sched-student-chip is-empty"><strong>No support students assigned yet</strong></span>'
+    };
+  }
+
+  function renderScheduleGuidance(blocks) {
+    var leadBlock = (Array.isArray(blocks) ? blocks[0] : null) || null;
+    var contextData = leadBlock ? buildTeacherContextForBlock(leadBlock) : null;
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    var roster = leadBlock ? renderScheduleRoster(leadBlock) : { html: "" };
+    var focus = derived.lessonFocus || deriveLearningTarget(contextData);
+    var firstMove = contextData && contextData.companion && Array.isArray(contextData.companion.supportMoves) && contextData.companion.supportMoves.length
+      ? contextData.companion.supportMoves[0]
+      : "Open the block to load your recommended first move.";
+    if (!leadBlock) {
+      return [
+        '<section class="th2-day-sched-preview th2-day-sched-preview--empty">',
+        '  <p class="th2-section-label">First block today</p>',
+        '  <h2 class="th2-day-sched-preview__title">Set up today’s schedule once</h2>',
+        '  <p class="th2-day-sched-preview__text">When your classes are connected, the first block, teacher, subject, and support roster will appear here automatically.</p>',
+        '  <button class="th2-day-sched-sync-btn" data-open-setup="schedule" type="button">Set up schedule</button>',
+        "</section>"
+      ].join("");
+    }
+    return [
+      '<section class="th2-day-sched-preview">',
+      '  <div class="th2-day-sched-preview__head">',
+      '    <div>',
+      '      <p class="th2-section-label">First block today</p>',
+      '      <h2 class="th2-day-sched-preview__title">' + escapeHtml(leadBlock.label || leadBlock.classSection || "Support block") + '</h2>',
+      '      <p class="th2-day-sched-preview__meta">' + escapeHtml([leadBlock.timeLabel, leadBlock.teacher, leadBlock.subject].filter(Boolean).join(" • ")) + '</p>',
+      '    </div>',
+      '    <button class="th2-day-sched-preview__open" data-open-block="' + escapeHtml(leadBlock.id) + '" type="button">Open block</button>',
+      '  </div>',
+      '  <div class="th2-day-sched-preview__facts">',
+      '    <div><span>Teacher</span><strong>' + escapeHtml(leadBlock.teacher || "Not set") + '</strong></div>',
+      '    <div><span>Subject</span><strong>' + escapeHtml(leadBlock.subject || derived.subject || "Class block") + '</strong></div>',
+      '    <div><span>Support</span><strong>' + escapeHtml(leadBlock.supportType || derived.supportType || "Class block") + '</strong></div>',
+      '  </div>',
+      '  <div class="th2-day-sched-preview__roster"><p class="th2-day-sched-preview__subhead">Students needing support</p>' +
+      (roster.html || '<span class="th2-day-sched-student-chip is-empty"><strong>No support students assigned yet</strong></span>') +
+      '</div>',
+      '  <div class="th2-day-sched-preview__focus">',
+      '    <p class="th2-day-sched-preview__subhead">Focus and recommendation</p>',
+      '    <strong>' + escapeHtml(focus || "Class focus loads here.") + '</strong>',
+      '    <p>' + escapeHtml(firstMove) + '</p>',
+      '  </div>',
+      "</section>"
+    ].join("");
   }
 
   function renderTodayPriorityPanel(contextData) {
     var block = contextData && contextData.block ? contextData.block : null;
     var derived = contextData && contextData.derived ? contextData.derived : {};
     var companion = contextData && contextData.companion ? contextData.companion : {};
-    var games = getRecommendedGameActions(contextData);
-    var primaryStudent = getPriorityStudent(contextData);
-    var focusSkill = primaryStudent && primaryStudent.primaryGoal
-      ? primaryStudent.primaryGoal
-      : (derived.lessonFocus || deriveLearningTarget(contextData));
-    var suggestedMove = primaryStudent && primaryStudent.relatedSupport && primaryStudent.relatedSupport[0]
-      ? primaryStudent.relatedSupport[0]
-      : ((companion.supportMoves || [])[0] || "Review the current lesson move and reinforce with immediate feedback.");
-    var recommendedActivity = games[0] || { label: "Launch Word Quest", subtitle: "Context-aligned practice", href: appendContextParamsForBlock("game-platform.html?game=word-quest", contextData) };
+    var focusSkill = derived.lessonFocus || deriveLearningTarget(contextData);
+    var suggestedMove = ((companion.supportMoves || [])[0] || "Review the current lesson move and reinforce with immediate feedback.");
     var supportStudents = supportStudentsSummary(contextData);
+    var studentLine = supportStudents.length
+      ? supportStudents.map(function (student) {
+          return student.name + " (" + student.label + ")";
+        }).join(" • ")
+      : "No direct support students assigned yet";
     var progressTotal = Math.max((block && block.studentIds && block.studentIds.length) || supportStudents.length || 1, 1);
     var progressCount = Math.min(supportStudents.length || 1, progressTotal);
     var progressPct = Math.max(18, Math.round((progressCount / progressTotal) * 100));
@@ -859,22 +1036,21 @@
       '<section class="th2-priority-panel">',
       '  <div class="th2-priority-panel__shell">',
       '    <div class="th2-priority-panel__copy">',
-      '      <p class="th2-priority-panel__kicker">Today</p>',
-      '      <h2 class="th2-priority-panel__student">' + escapeHtml((primaryStudent && primaryStudent.name) || (block && (block.label || block.classSection)) || "Today’s priority") + '</h2>',
-      '      <p class="th2-priority-panel__block">' + escapeHtml(compactBlockLabel(block)) + '</p>',
+      '      <p class="th2-priority-panel__kicker">Block at a glance</p>',
+      '      <h2 class="th2-priority-panel__student">' + escapeHtml((block && (block.label || block.classSection)) || "Today’s priority") + '</h2>',
+      '      <p class="th2-priority-panel__block">' + escapeHtml([block && block.timeLabel, block && block.teacher, block && block.subject || derived.subject].filter(Boolean).join(" • ")) + '</p>',
       '      <div class="th2-priority-panel__sections">',
-      '        <div class="th2-priority-panel__section"><span>Focus Today</span><strong>' + escapeHtml(focusSkill || "Review the selected lesson focus.") + '</strong></div>',
-      '        <div class="th2-priority-panel__section"><span>Suggested Move</span><strong>' + escapeHtml(suggestedMove) + '</strong></div>',
-      '        <div class="th2-priority-panel__section"><span>Recommended Activity</span><strong>' + escapeHtml(recommendedActivity.label.replace(/^Launch\s+/i, "")) + '</strong><em>' + escapeHtml(recommendedActivity.subtitle || "Context-aligned practice") + '</em></div>',
+      '        <div class="th2-priority-panel__section"><span>Focus today</span><strong>' + escapeHtml(focusSkill || "Review the selected lesson focus.") + '</strong></div>',
+      '        <div class="th2-priority-panel__section"><span>Students needing support</span><strong>' + escapeHtml(studentLine) + '</strong></div>',
+      '        <div class="th2-priority-panel__section"><span>Recommended move</span><strong>' + escapeHtml(suggestedMove) + '</strong><em>Start here, then refine based on live student responses.</em></div>',
       "      </div>",
       '      <div class="th2-priority-panel__progress" aria-hidden="true">',
-      '        <div class="th2-priority-panel__progress-copy"><span>Support progress</span><strong>' + escapeHtml(String(progressCount) + " of " + String(progressTotal) + " students need direct support") + '</strong></div>',
+      '        <div class="th2-priority-panel__progress-copy"><span>Support load</span><strong>' + escapeHtml(String(progressCount) + " of " + String(progressTotal) + " students need direct support") + '</strong></div>',
       '        <div class="th2-priority-panel__progress-track"><div class="th2-priority-panel__progress-fill" style="width:' + escapeHtml(String(progressPct)) + '%"></div></div>',
       "      </div>",
       "    </div>",
       '    <div class="th2-priority-panel__actions">',
-      '      <button class="th2-priority-panel__start" data-open-block="' + escapeHtml(block && block.id || "") + '" type="button">Start Session</button>',
-      '      <a class="th2-priority-panel__activity" href="' + escapeHtml(recommendedActivity.href) + '"><strong>' + escapeHtml(recommendedActivity.label) + '</strong><span>' + escapeHtml(recommendedActivity.subtitle || "Open the recommended activity for this block.") + '</span></a>',
+      '      <button class="th2-priority-panel__start" data-open-brief="1" data-open-brief-block="' + escapeHtml(block && block.id || "") + '" type="button">Open Class Plan</button>',
       '    </div>',
       "  </div>",
       "</section>"
@@ -894,7 +1070,7 @@
       "    </div>",
       '    <div class="th2-zone-card__facts">',
       '      <div><span>Teacher</span><strong>' + escapeHtml(block.teacher || "Not set") + '</strong></div>',
-      '      <div><span>Subject</span><strong>' + escapeHtml(derived.subject || block.subject || "Support") + '</strong></div>',
+      '      <div><span>Subject</span><strong>' + escapeHtml(block.subject || derived.subject || "Support") + '</strong></div>',
       '      <div><span>Lesson</span><strong>' + escapeHtml([derived.unit, derived.lesson].filter(Boolean).join(" ") || derived.lessonFocus || block.lesson || "Lesson ready") + '</strong></div>',
       "    </div>",
       '    <div class="th2-zone-card__support">',
@@ -971,18 +1147,12 @@
   }
 
   function renderQuickAccessRail(contextData) {
-    var wordQuest = {
-      label: "Launch Word Quest",
-      href: appendContextParamsForBlock("game-platform.html?game=word-quest", contextData),
-      subtitle: "Context-aligned practice"
-    };
     return [
       '<section class="th2-quick-command-zone">',
-      '  <p class="th2-section-label">Quick Actions</p>',
+      '  <p class="th2-section-label">Class Actions</p>',
       '  <div class="th2-quick-command-bar">',
-      '    <button class="th2-command-action" data-open-block="' + escapeHtml(contextData.block && contextData.block.id || "") + '" type="button"><strong>Start Small Group</strong><span>Open the selected block and move directly into the live support view.</span></button>',
-      '    <a class="th2-command-action" href="' + escapeHtml(wordQuest.href) + '"><strong>Launch Word Quest</strong><span>' + escapeHtml(wordQuest.subtitle || "Context-aligned practice") + '</span></a>',
-      '    <button class="th2-command-action" data-open-brief="1" data-open-brief-block="' + escapeHtml(contextData.block && contextData.block.id || "") + '" type="button"><strong>Open Lesson Brief</strong><span>Review the lesson focus, supports, and next teaching moves.</span></button>',
+      '    <button class="th2-command-action" data-open-brief="1" data-open-brief-block="' + escapeHtml(contextData.block && contextData.block.id || "") + '" type="button"><strong>Open Class Plan</strong><span>Open the lesson brief when you want accommodations, materials, and the fuller plan.</span></button>',
+      '    <button class="th2-command-action" data-open-curriculum="1" type="button"><strong>Open Curriculum</strong><span>Check the lesson sequence, vocabulary, and anchor resources.</span></button>',
       '    <a class="th2-command-action" href="reports.html"><strong>View Progress</strong><span>Open reports, progress insights, and meeting-ready history.</span></a>',
       "  </div>",
       "</section>"
@@ -1079,10 +1249,93 @@
   function renderFirstRunBanner() {
     return [
       '<div class="th2-firstrun-banner" role="note">',
-      '  <span>Sample class shown — open <strong>Lesson Brief</strong> to add your real class blocks and unlock full context.</span>',
-      '  <button class="th2-firstrun-banner__btn" data-open-brief="1" type="button">Set up my classes</button>',
+      '  <span>Sample day loaded — use <strong>Set Up Schedule</strong> to connect your real timetable and replace this demo view.</span>',
+      '  <button class="th2-firstrun-banner__btn" data-open-setup="schedule" type="button">Set up my schedule</button>',
       "</div>"
     ].join("");
+  }
+
+  function renderBlockSupportZone(contextData) {
+    var students = contextData && contextData.derived && Array.isArray(contextData.derived.students)
+      ? contextData.derived.students
+      : [];
+    var supportMoves = contextData && contextData.companion && Array.isArray(contextData.companion.supportMoves)
+      ? contextData.companion.supportMoves
+      : [];
+    return [
+      '<section class="th2-context-zone th2-context-zone--support">',
+      '  <div class="th2-class-detail-card">',
+      '    <div class="th2-class-detail-head">',
+      '      <div>',
+      '        <p class="th2-section-label">Students needing support</p>',
+      '        <p class="th2-zone-card__meta">Open any student name to go deeper into their profile, grades, progress monitoring, and linked reports.</p>',
+      '      </div>',
+      '      <span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(String(students.length || 0)) + ' support student' + (students.length === 1 ? '' : 's') + '</span>',
+      '    </div>',
+      '    <div class="th2-student-priority-list">' +
+      (students.length ? students.map(function (student, index) {
+        var recommendation = (student.relatedSupport || [])[0] || supportMoves[index] || supportMoves[0] || "Model one example, then stay close for the first response.";
+        var profileHref = "student-profile.html?student=" + encodeURIComponent(student.studentId || "") + "&from=hub";
+        var reportsHref = "reports.html?student=" + encodeURIComponent(student.studentId || "") + "&from=hub";
+        return [
+          '<div class="th2-class-student-row">',
+          '  <div class="th2-class-student-head">',
+          '    <div class="th2-class-student-title"><a class="th2-student-link" data-context-student="' + escapeHtml(student.studentId || "") + '" href="' + escapeHtml(profileHref) + '"><strong>' + escapeHtml(student.name || "Student") + '</strong></a><span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(displayTierLabel(student)) + '</span></div>',
+          '    <div class="th2-class-accommodation-icons">' + accommodationIcons(student.accommodations) + '</div>',
+          '  </div>',
+          '  <div class="th2-class-chip-row">' + (studentSupportTags(student).map(function (item) {
+            return '<span class="th2-class-chip">' + escapeHtml(item) + '</span>';
+          }).join("")) + '</div>',
+          '  <div class="th2-student-strength-gap">',
+          '    <div><span>Strengths</span><p>' + escapeHtml(studentStrengthText(student)) + '</p></div>',
+          '    <div><span>Learning gaps</span><p>' + escapeHtml(studentGapText(student)) + '</p></div>',
+          '  </div>',
+          '  <p class="th2-class-goal"><strong>Goal:</strong> ' + escapeHtml(student.primaryGoal || "Goal loads after the roster is confirmed.") + '</p>',
+          '  <p class="th2-class-accommodations"><strong>Best support now:</strong> ' + escapeHtml(recommendation) + '</p>',
+          '  <div class="th2-student-link-row"><a class="th2-inline-link" data-context-student="' + escapeHtml(student.studentId || "") + '" href="' + escapeHtml(profileHref) + '">Open student profile</a><a class="th2-inline-link" href="' + escapeHtml(reportsHref) + '">Open reports</a></div>',
+          '</div>'
+        ].join("");
+      }).join("") : '<p class="th2-today-sub">Support student details will appear here after the block roster is set.</p>') +
+      '</div>',
+      '  </div>',
+      '</section>'
+    ].join("");
+  }
+
+  function renderBlockDetailView(activeBlock, blocks) {
+    if (!el.emptyState) return;
+    var block = activeBlock || null;
+    if (!block) {
+      renderDailyScheduleMain(blocks || []);
+      return;
+    }
+    var contextData = buildTeacherContextForBlock(block);
+    el.emptyState.innerHTML = [
+      '<button class="th2-back-to-schedule" data-back-to-schedule="1" type="button">← Today\'s schedule</button>',
+      '<div class="th2-command-center th2-command-center--class-detail">',
+      renderBlockContextHeader(contextData),
+      '<section class="th2-active-context">',
+      '  <div class="th2-active-context__grid">',
+      renderTodayPriorityPanel(contextData),
+      renderLessonContextZone(contextData),
+      renderBlockSupportZone(contextData),
+      '  </div>',
+      '</section>',
+      '<div class="th2-day-mobile-sections">',
+      renderMobileSection("Block Snapshot", renderTodayPriorityPanel(contextData), true, "block-snapshot"),
+      renderMobileSection("Lesson", renderLessonContextZone(contextData), false, "block-lesson"),
+      renderMobileSection("Support Plan", renderBlockSupportZone(contextData), false, "block-support"),
+      '</div>',
+      '</div>'
+    ].join("");
+
+    if (el.sidebarCtx) {
+      var signalLabel = buildBlockSignalText(contextData);
+      el.sidebarCtx.classList.add("th2-sidebar-ctx");
+      el.sidebarCtx.innerHTML =
+        '<p class="th2-sidebar-date">' + todayDateStr() + '</p>' +
+        '<p class="th2-sidebar-urgency">' + escapeHtml(signalLabel) + "</p>";
+    }
   }
 
   function renderCommandCenter(activeBlock, options) {
@@ -1130,13 +1383,11 @@
     ].join("");
 
     if (el.sidebarCtx) {
-      var signal = contextData.derived && contextData.derived.prioritySignal
-        ? contextData.derived.prioritySignal
-        : { label: "Select a block to load context." };
+      var signalLabel = buildBlockSignalText(contextData);
       el.sidebarCtx.classList.add("th2-sidebar-ctx");
       el.sidebarCtx.innerHTML =
         '<p class="th2-sidebar-date">' + todayDateStr() + '</p>' +
-        '<p class="th2-sidebar-urgency">' + escapeHtml(signal.label) + "</p>";
+        '<p class="th2-sidebar-urgency">' + escapeHtml(signalLabel) + "</p>";
     }
   }
 
@@ -2963,8 +3214,8 @@
       localStorage.setItem(SUPPORT_KEY, "1");
     }
 
-    var CONTEXT_KEY = "cs.hub.demo.context.v2";
-    if (!localStorage.getItem(CONTEXT_KEY) && TeacherStorage) {
+    var CONTEXT_KEY = "cs.hub.demo.context.v4";
+    if ((isDemoMode || !localStorage.getItem(CONTEXT_KEY)) && TeacherStorage) {
       safe(function () {
         var today = typeof TeacherStorage.todayStamp === "function" ? TeacherStorage.todayStamp() : todayKey();
         var existingBlocks = typeof TeacherStorage.loadScheduleBlocks === "function"
@@ -2976,6 +3227,7 @@
           "demo-block-recess": true,
           "demo-block-ela": true,
           "demo-block-writing": true,
+          "demo-block-content": true,
           "demo-block-intervention": true,
           "demo-block-specials": true,
           "demo-block-reading": true
@@ -3034,22 +3286,22 @@
           {
             id: "demo-block-ela",
             timeLabel: "9:35 AM - 10:30 AM",
-            label: "ELA Reading + Science/Social Studies",
-            classSection: "Grade 3 ELA",
+            label: "Reading Workshop",
+            classSection: "Grade 3 Reading",
             teacher: "Ms. Rivera",
-            subject: "ELA",
-            curriculum: "Fish Tank ELA",
+            subject: "Reading",
+            curriculum: "Fish Tank Reading",
             curriculumId: "fishtank-ela",
-            lesson: "Unit 2 · Knowledge Building Text",
+            lesson: "Unit 2 · Shared Text",
             supportType: "push-in",
-            notes: "Blend close reading with science/social studies content vocabulary.",
+            notes: "Support text evidence, decoding, and academic vocabulary during the reading block.",
             studentIds: ["demo-ava", "demo-maya", "demo-zoe"],
             lessonContextId: "demo-lesson-ela"
           },
           {
             id: "demo-block-writing",
             timeLabel: "10:30 AM - 11:20 AM",
-            label: "ELA Writing + Content Response",
+            label: "Writing Workshop",
             classSection: "Grade 3 Writing",
             teacher: "Ms. Patel",
             subject: "Writing",
@@ -3062,17 +3314,32 @@
             lessonContextId: "demo-lesson-writing"
           },
           {
+            id: "demo-block-content",
+            timeLabel: "11:20 AM - 12:05 PM",
+            label: "Science / Social Studies Support",
+            classSection: "Grade 3 Content Literacy",
+            teacher: "Ms. Patel",
+            subject: "Science/Social Studies",
+            curriculum: "Knowledge Builder",
+            curriculumId: "knowledge-builder",
+            lesson: "Unit 3 · Discussion + notes",
+            supportType: "push-in",
+            notes: "Support language-heavy content learning during science/social studies.",
+            studentIds: ["demo-noah", "demo-zoe"],
+            lessonContextId: "demo-lesson-content"
+          },
+          {
             id: "demo-block-intervention",
             timeLabel: "1:10 PM - 1:55 PM",
-            label: "Literacy Intervention / Fundations",
-            classSection: "T3 Literacy Intervention",
+            label: "World Language Exempt Support",
+            classSection: "ES Exempt Support / MS-HS Learning Support",
             teacher: "Ms. Rivera",
-            subject: "Intervention",
+            subject: "Learning Support",
             curriculum: "Fundations + UFLI",
             curriculumId: "fundations-ufli",
-            lesson: "Word reading intervention group",
+            lesson: "Tier 2/3 decoding support",
             supportType: "pull-out",
-            notes: "T3 students meet here instead of world language for targeted literacy support.",
+            notes: "Students who are exempt from world language receive targeted literacy support during this block.",
             studentIds: ["demo-liam", "demo-zoe"],
             lessonContextId: "demo-lesson-intervention"
           },
@@ -3137,19 +3404,19 @@
           });
           TeacherStorage.saveClassContext("demo-block-ela", {
             classId: "demo-block-ela",
-            label: "ELA Reading + Science/Social Studies",
+            label: "Reading Workshop",
             teacher: "Ms. Rivera",
-            subject: "ELA",
-            curriculum: "Fish Tank ELA",
-            lesson: "Unit 2 · Knowledge Building Text",
+            subject: "Reading",
+            curriculum: "Fish Tank Reading",
+            lesson: "Unit 2 · Shared Text",
             supportType: "push-in",
-            conceptFocus: "Read for understanding and connect text ideas to science/social studies content.",
+            conceptFocus: "Read closely, track evidence, and support comprehension during the reading block.",
             languageDemands: ["read", "cite", "explain"],
             lessonContextId: "demo-lesson-ela"
           });
           TeacherStorage.saveClassContext("demo-block-writing", {
             classId: "demo-block-writing",
-            label: "ELA Writing + Content Response",
+            label: "Writing Workshop",
             teacher: "Ms. Patel",
             subject: "Writing",
             curriculum: "Fish Tank Writing",
@@ -3159,15 +3426,27 @@
             languageDemands: ["claim", "evidence", "justify"],
             lessonContextId: "demo-lesson-writing"
           });
+          TeacherStorage.saveClassContext("demo-block-content", {
+            classId: "demo-block-content",
+            label: "Science / Social Studies Support",
+            teacher: "Ms. Patel",
+            subject: "Science/Social Studies",
+            curriculum: "Knowledge Builder",
+            lesson: "Unit 3 · Discussion + notes",
+            supportType: "push-in",
+            conceptFocus: "Support content vocabulary, discussion language, and evidence notes during science/social studies.",
+            languageDemands: ["discuss", "describe", "record evidence"],
+            lessonContextId: "demo-lesson-content"
+          });
           TeacherStorage.saveClassContext("demo-block-intervention", {
             classId: "demo-block-intervention",
-            label: "Literacy Intervention / Fundations",
+            label: "World Language Exempt Support",
             teacher: "Ms. Rivera",
-            subject: "Intervention",
+            subject: "Learning Support",
             curriculum: "Fundations + UFLI",
-            lesson: "Word reading intervention group",
+            lesson: "Tier 2/3 decoding support",
             supportType: "pull-out",
-            conceptFocus: "Provide Tier 3 decoding intervention during the world language block.",
+            conceptFocus: "Use the exempt/support window for targeted literacy support in ES and learning support time in MS/HS.",
             languageDemands: ["blend", "segment", "explain"],
             lessonContextId: "demo-lesson-intervention"
           });
@@ -3249,21 +3528,21 @@
           TeacherStorage.saveLessonContext("demo-lesson-ela", {
             lessonContextId: "demo-lesson-ela",
             blockId: "demo-block-ela",
-            subject: "ELA",
+            subject: "Reading",
             programId: "fishtank-ela",
             unit: "Unit 2",
-            title: "Knowledge Building Text",
-            conceptFocus: "Use text evidence to build understanding in reading and connected science/social studies content.",
+            title: "Shared Text",
+            conceptFocus: "Use text evidence to build understanding during the reading block.",
             languageDemands: ["read", "cite", "explain"],
             misconceptions: [
               "Students retell loosely without grounding answers in text evidence.",
-              "Content vocabulary may block comprehension even when decoding is solid."
+              "Academic vocabulary can block comprehension even when decoding is solid."
             ],
             supportMoves: [
-              "Pre-teach two content words before the first read.",
+              "Preview two anchor words before the first read.",
               "Use a text-evidence sentence frame during discussion."
             ],
-            targetSkills: ["text evidence", "content vocabulary", "knowledge building"],
+            targetSkills: ["text evidence", "academic vocabulary", "reading comprehension"],
             vocabulary: ["evidence", "topic", "details", "explain"]
           });
           TeacherStorage.saveLessonContext("demo-lesson-writing", {
@@ -3286,14 +3565,34 @@
             targetSkills: ["argument writing", "evidence sentence", "reasoning language"],
             vocabulary: ["claim", "evidence", "reasoning", "therefore"]
           });
+          TeacherStorage.saveLessonContext("demo-lesson-content", {
+            lessonContextId: "demo-lesson-content",
+            blockId: "demo-block-content",
+            subject: "Science/Social Studies",
+            programId: "knowledge-builder",
+            unit: "Unit 3",
+            title: "Discussion + notes",
+            conceptFocus: "Build understanding of new content through structured discussion and evidence notes.",
+            languageDemands: ["describe", "compare", "record evidence"],
+            misconceptions: [
+              "Students can understand the concept orally but struggle to capture the idea in notes.",
+              "Content vocabulary can block participation in discussion."
+            ],
+            supportMoves: [
+              "Pre-teach two key terms before discussion starts.",
+              "Keep a simple note-taking frame visible during partner talk."
+            ],
+            targetSkills: ["content vocabulary", "discussion language", "note-taking"],
+            vocabulary: ["observe", "evidence", "describe", "compare"]
+          });
           TeacherStorage.saveLessonContext("demo-lesson-intervention", {
             lessonContextId: "demo-lesson-intervention",
             blockId: "demo-block-intervention",
-            subject: "Intervention",
+            subject: "Learning Support",
             programId: "fundations-ufli",
             unit: "Fundations",
-            title: "Word reading intervention group",
-            conceptFocus: "Provide Tier 3 literacy intervention during the world language block.",
+            title: "Tier 2/3 decoding support",
+            conceptFocus: "Use the exempt/support window for targeted decoding intervention.",
             languageDemands: ["blend", "segment", "read"],
             misconceptions: [
               "Students over-rely on memorized words instead of applying sound-symbol knowledge.",
@@ -3351,6 +3650,9 @@
       localStorage.removeItem("cs.hub.demo.sessions.v2");
       localStorage.removeItem("cs.hub.demo.support.v1");
       localStorage.removeItem("cs.hub.demo.context.v1");
+      localStorage.removeItem("cs.hub.demo.context.v2");
+      localStorage.removeItem("cs.hub.demo.context.v3");
+      localStorage.removeItem("cs.hub.demo.context.v4");
       var evidenceRaw = localStorage.getItem("CS_EVIDENCE_V1");
       var evidenceState = evidenceRaw ? JSON.parse(evidenceRaw) : null;
       if (evidenceState && typeof evidenceState === "object") {
@@ -3426,12 +3728,13 @@
     if (!el.list) return;
     var blocks = getTodayLessonBlocks();
     var selectedBlockId = hubState.get().context.classId || "";
+    if (el.listNone) el.listNone.classList.add("hidden");
+    if (el.listEmpty) el.listEmpty.classList.add("hidden");
     if (!blocks.length) {
       el.list.innerHTML = [
         '<div class="th2-sidebar-empty-schedule">',
-        '  <p class="th2-sidebar-empty-msg">No classes scheduled yet.</p>',
-        '  <p class="th2-sidebar-empty-sub">Add your schedule to see class context here.</p>',
-        '  <button class="th2-sidebar-setup-btn" data-open-brief="1" type="button">Set up my classes</button>',
+        '  <p class="th2-sidebar-empty-msg">No classes connected yet.</p>',
+        '  <p class="th2-sidebar-empty-sub">Use the Setup tab to connect today’s schedule. Once your classes are live, the tab disappears.</p>',
         '</div>'
       ].join("");
       return;
@@ -3440,7 +3743,7 @@
       var isActive = block.id === selectedBlockId;
       var label = escapeHtml(block.label || block.classSection || "Class");
       var time = escapeHtml(block.timeLabel || "");
-      var sub = [escapeHtml(block.subject || ""), escapeHtml(block.programId || "")].filter(Boolean).join(" · ");
+      var sub = [escapeHtml(block.teacher || ""), escapeHtml(block.subject || "")].filter(Boolean).join(" • ");
       var studentCount = block.studentIds && block.studentIds.length;
       return [
         '<button class="th2-block-card' + (isActive ? " is-active" : "") + '"',
@@ -3452,7 +3755,7 @@
         (time ? '    <span class="th2-block-card-time">' + time + '</span>' : ""),
         '    <span class="th2-block-card-name">' + label + '</span>',
         (sub ? '    <span class="th2-block-card-meta">' + sub + '</span>' : ""),
-        (studentCount ? '    <span class="th2-block-card-count">' + studentCount + ' student' + (studentCount !== 1 ? 's' : '') + '</span>' : ""),
+        (studentCount ? '    <span class="th2-block-card-count">' + studentCount + ' support</span>' : ""),
         '  </div>',
         '</button>'
       ].join("\n");
@@ -3463,12 +3766,36 @@
 
   function renderStudentList() {
     if (!el.list) return;
+    var mode = hubState.get().context.mode || "caseload";
+
+    if (mode !== "caseload") {
+      el.list.innerHTML = "";
+      return;
+    }
+
+    if (el.listNone) el.listNone.classList.toggle("hidden", !(mode === "caseload" && caseload.length === 0));
 
     if (el.listEmpty) el.listEmpty.classList.toggle("hidden", filtered.length > 0 || caseload.length === 0);
 
     var selectedId = hubState.get().context.studentId || "";
+    var caseloadAction = [
+      '<div class="th2-caseload-actions">',
+      '  <button class="th2-caseload-action-btn" data-open-add-student="1" type="button">+ Add Student</button>',
+      '</div>'
+    ].join("");
 
-    el.list.innerHTML = filtered.map(function (student) {
+    if (!caseload.length) {
+      el.list.innerHTML = [
+        caseloadAction,
+        '<div class="th2-caseload-empty-card">',
+        '  <p class="th2-sidebar-empty-msg">No students in your caseload yet.</p>',
+        '  <p class="th2-sidebar-empty-sub">Open Add Student here when you are ready. Once your caseload is set, the schedule view becomes the daily home screen.</p>',
+        '</div>'
+      ].join("");
+      return;
+    }
+
+    el.list.innerHTML = caseloadAction + filtered.map(function (student) {
       var summary = getStudentSummaryForHub(student.id, student);
       var tier    = quickTier(summary);
       var trend   = quickTrend(summary);
@@ -3505,8 +3832,9 @@
   function selectStudent(studentId) {
     // Write to HubState → HubContext auto-computes intelligence
     var student = caseload.find(function (s) { return s.id === studentId; }) || null;
+    setActiveModeTab("caseload");
     hubState.set({
-      context: { studentId: studentId },
+      context: { mode: "caseload", studentId: studentId, classId: "" },
       active_student_context: {
         studentId: String(studentId || ""),
         studentName: student && student.name || "",
@@ -3647,19 +3975,19 @@
       '<div class="th2-onboarding">',
       '  <div class="th2-onboarding-icon">&#x1F4DA;</div>',
       '  <h2 class="th2-onboarding-title">Welcome to Cornerstone MTSS</h2>',
-      '  <p class="th2-onboarding-sub">Your context-first teacher hub for the day\'s schedule, caseload, and class support.</p>',
+      '  <p class="th2-onboarding-sub">Start by adding your caseload here. Schedule setup lives in the temporary <strong>Setup</strong> tab until your classes are connected.</p>',
       '  <ol class="th2-onboarding-steps">',
       '    <li class="th2-onboarding-step">',
       '      <span class="th2-step-num">1</span>',
-      '      <div><strong>Add students</strong><p>Click <em>+ Add Student</em> to build your caseload.</p></div>',
+      '      <div><strong>Add students</strong><p>Build your caseload here first so the hub can personalize support once you open a class block.</p></div>',
       '    </li>',
       '    <li class="th2-onboarding-step">',
       '      <span class="th2-step-num">2</span>',
-      '      <div><strong>Log sessions</strong><p>After each session, log results to unlock live intelligence.</p></div>',
+      '      <div><strong>Connect your schedule</strong><p>Use the Setup tab to bring in today’s classes when you’re ready.</p></div>',
       '    </li>',
       '    <li class="th2-onboarding-step">',
       '      <span class="th2-step-num">3</span>',
-      '      <div><strong>Get recommendations</strong><p>Cornerstone surfaces MTSS decisions, goals &amp; next steps automatically.</p></div>',
+      '      <div><strong>Open a class block</strong><p>That’s where lesson brief details, student supports, and next-step recommendations appear.</p></div>',
       '    </li>',
       '  </ol>',
       '  <button class="th2-btn th2-btn-primary th2-onboarding-cta" id="th2-onboarding-add" type="button">+ Add your first student</button>',
@@ -3773,8 +4101,8 @@
     var deltaClass = trend === "up" ? "th2-delta-up" : (trend === "down" ? "th2-delta-down" : "th2-delta-stable");
     var deltaLabel = trend === "up" ? "↑ improving" : (trend === "down" ? "↓ declining" : "→ stable");
 
-    // Activity href
-    var activityHref = launch ? toActivityHref(launch, studentId) : "word-quest.html?play=1&student=" + encodeURIComponent(studentId) + "&from=hub";
+    var profileHref = "student-profile.html?student=" + encodeURIComponent(studentId) + "&from=hub";
+    var reportsHref = "reports.html?student=" + encodeURIComponent(studentId) + "&from=hub";
 
     // Set tier on card element for CSS stripe color
     el.focusCard.setAttribute("data-tier", String(tier));
@@ -3841,9 +4169,9 @@
 
       /* Actions */
       '<div class="th2-actions">',
-      '  <a class="th2-btn th2-btn-primary" href="' + escapeHtml(activityHref) + '">Start Recommended Session</a>',
-      '  <a class="th2-btn th2-btn-quiet" href="' + escapeHtml(appendGameContextParams("game-platform.html")) + '">Open Game Platform</a>',
-      '  <a class="th2-btn th2-btn-quiet" href="student-profile.html?student=' + encodeURIComponent(studentId) + '&from=hub">Open Student Profile</a>',
+      '  <a class="th2-btn th2-btn-primary" href="' + escapeHtml(profileHref) + '">Open Student Support Plan</a>',
+      '  <a class="th2-btn th2-btn-quiet" href="' + escapeHtml(reportsHref) + '">View Reports</a>',
+      '  <a class="th2-btn th2-btn-quiet" href="' + escapeHtml(profileHref) + '">Open Student Profile</a>',
       '</div>',
 
       /* Recommendation annotation */
@@ -3945,23 +4273,7 @@
           return;
         }
         if (kind === "class" && id) {
-          el.modeTabs.forEach(function (tab) {
-            var active = tab.getAttribute("data-mode") === "class";
-            tab.classList.toggle("is-active", active);
-            tab.setAttribute("aria-selected", active ? "true" : "false");
-          });
-          var classContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
-            ? TeacherSelectors.buildClassContext(TeacherSelectors.getBlockById(id, todayKey(), { TeacherStorage: TeacherStorage }), { TeacherStorage: TeacherStorage })
-            : null;
-          hubState.set({
-            context: { mode: "class", classId: id, studentId: "" },
-            active_class_context: {
-              classId: id,
-              label: classContext && classContext.label || "",
-              supportType: classContext && classContext.supportType || "",
-              lessonContextId: classContext && classContext.lessonContextId || ""
-            }
-          });
+          openClassDetailPage(id);
           return;
         }
         if (kind === "curriculum" && id) {
@@ -3969,18 +4281,7 @@
             return row && row.id === id;
           })[0] || null;
           if (curriculumItem && curriculumItem.payload && curriculumItem.payload.id) {
-            var curriculumContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
-              ? TeacherSelectors.buildClassContext(curriculumItem.payload, { TeacherStorage: TeacherStorage })
-              : null;
-            hubState.set({
-              context: { mode: "class", classId: curriculumItem.payload.id, studentId: "" },
-              active_class_context: {
-                classId: curriculumItem.payload.id,
-                label: curriculumContext && curriculumContext.label || "",
-                supportType: curriculumContext && curriculumContext.supportType || "",
-                lessonContextId: curriculumContext && curriculumContext.lessonContextId || ""
-              }
-            });
+            openClassDetailPage(curriculumItem.payload.id);
             return;
           }
         }
@@ -3991,8 +4292,10 @@
           return;
         }
         if (item.action === "curriculum") {
-          var curBtn = document.getElementById("th2-cur-btn");
-          if (curBtn) curBtn.click();
+          var panel = window.CSCurriculumPanel;
+          if (panel && typeof panel.toggle === "function") {
+            panel.toggle(curriculumPanelContext());
+          }
           return;
         }
         if (item.href) window.location.href = appendGameContextParams(item.href);
@@ -4008,7 +4311,7 @@
     var mode = hubState.get().context.mode;
     if (mode === "class") { renderClassSnapshot(); return; }
     if (el.search && String(el.search.value || "").trim()) { renderSearchResults(); return; }
-    if (!caseload.length) { renderCommandCenter(null); return; }
+    if (!caseload.length) { renderOnboarding(); return; }
     renderMorningBrief();
   }
 
@@ -4038,11 +4341,11 @@
     var blocks = getTodayLessonBlocks();
     var selectedBlockId = hubState.get().context.classId || "";
 
-    // If a block is explicitly selected, show its command center
+    // If a block is explicitly selected, show its class detail view.
     if (selectedBlockId) {
       var activeBlock = blocks.filter(function (b) { return b.id === selectedBlockId; })[0] || null;
       if (activeBlock) {
-        renderCommandCenter(activeBlock, { mode: "class" });
+        renderBlockDetailView(activeBlock, blocks);
         return;
       }
     }
@@ -4099,7 +4402,7 @@
     var derived = contextData && contextData.derived ? contextData.derived : {};
     var students = Array.isArray(derived.students) ? derived.students.slice(0, 4) : [];
     var lessonHeadline = [derived.unit, derived.lesson].filter(Boolean).join(" ") || derived.lessonFocus || (block && block.lesson) || "Lesson context ready";
-    var lessonSub = derived.mainConcept || "Open Lesson Brief to confirm the exact support moves, language demands, and accommodations for this block.";
+    var lessonSub = derived.mainConcept || "Open the class plan only when you need the full lesson brief, accommodations, and materials.";
     var learningTarget = deriveLearningTarget(contextData);
     return [
       '<section class="th2-day-preview">',
@@ -4113,7 +4416,7 @@
       '      <p class="th2-day-preview__target">' + escapeHtml(learningTarget) + "</p>",
       "    </div>",
       '    <div class="th2-day-preview__actions">',
-      '      <button class="th2-day-preview__primary" data-open-brief="1" data-open-brief-block="' + escapeHtml(block && block.id || "") + '" type="button">Open Lesson Brief</button>',
+      '      <button class="th2-day-preview__primary" data-open-brief="1" data-open-brief-block="' + escapeHtml(block && block.id || "") + '" type="button">View Class Plan</button>',
       '      <button class="th2-day-preview__secondary" data-open-block="' + escapeHtml(block && block.id || "") + '" type="button">Open Full Block View</button>',
       '      <button class="th2-day-preview__secondary" data-open-curriculum="1" type="button">Browse Curriculum</button>',
       "    </div>",
@@ -4124,10 +4427,10 @@
       '      <div class="th2-day-preview__students">' +
       (students.length ? students.map(function (student) {
         return [
-          '<a class="th2-day-preview__student" data-context-student="' + escapeHtml(student.studentId || "") + '" href="student-profile.html?student=' + encodeURIComponent(student.studentId || "") + '&from=hub">',
+          '<div class="th2-day-preview__student">',
           '  <strong>' + escapeHtml(student.name || "Student") + '</strong>',
           '  <span>' + escapeHtml((student.supportPriority || "Tier") + " · " + ((student.relatedSupport || []).slice(0, 2).join(" • ") || "Support ready")) + "</span>",
-          "</a>"
+          "</div>"
         ].join("");
       }).join("") : '<p class="th2-today-sub">Students will appear here once the block roster is set.</p>') +
       "</div>",
@@ -4260,49 +4563,72 @@
     var block = contextData && contextData.block ? contextData.block : {};
     var derived = contextData && contextData.derived ? contextData.derived : {};
     var swbat = deriveLearningTarget(contextData);
-    var agenda = getAgendaForContext(contextData);
     var modeMeta = toolsTimerModes()[toolState.timerMode] || toolsTimerModes().focus;
-    var progress = toolState.timerTotalSec ? ((toolState.timerTotalSec - toolState.timerRemainingSec) / toolState.timerTotalSec) * 360 : 0;
-    var games = getRecommendedGameActions(contextData).slice(0, 3);
-    if (el.toolsTitle) el.toolsTitle.textContent = block.label || block.classSection || "Ready for this block";
+    var progressPct = toolState.timerTotalSec
+      ? Math.max(0, Math.min(100, Math.round(((toolState.timerTotalSec - toolState.timerRemainingSec) / toolState.timerTotalSec) * 100)))
+      : 0;
+    var supportMoves = Array.isArray(contextData && contextData.companion && contextData.companion.supportMoves)
+      ? contextData.companion.supportMoves.slice(0, 3)
+      : [];
+    var primaryMove = supportMoves[0] || "Start with the learning target, model one example, then stay close to priority students.";
+    var supportStudents = supportStudentsSummary(contextData).slice(0, 4);
+    if (el.toolsTitle) el.toolsTitle.textContent = block.label || block.classSection || "Block toolkit";
     el.toolsBody.innerHTML = [
       '<div class="th2-tools-stack">',
-      '  <section class="th2-tools-card th2-tools-card--timer">',
-      '    <div class="th2-tools-card__head"><p class="th2-tools-card__kicker">Timer</p><div class="th2-tools-chip-row">' +
+      '  <section class="th2-tools-card th2-tools-card--snapshot">',
+        '    <div class="th2-tools-card__head"><p class="th2-tools-card__kicker">Block at a glance</p><span class="th2-tools-card__meta">' + escapeHtml(block.timeLabel || "") + "</span></div>",
+      '    <div class="th2-tools-fact-grid">',
+      '      <div class="th2-tools-fact"><span>Teacher</span><strong>' + escapeHtml(block.teacher || "Not set") + '</strong></div>',
+      '      <div class="th2-tools-fact"><span>Subject</span><strong>' + escapeHtml(block.subject || derived.subject || "Support") + '</strong></div>',
+      '      <div class="th2-tools-fact"><span>Support</span><strong>' + escapeHtml(block.supportType || "Class block") + '</strong></div>',
+      '    </div>',
+      '    <p class="th2-tools-learning-target">' + escapeHtml(swbat) + "</p>",
+      '    <p class="th2-tools-note">Use this drawer for class-level support only. Student profiles stay tucked away unless you intentionally open My Caseload.</p>',
+      "  </section>",
+      '  <section class="th2-tools-card">',
+      '    <div class="th2-tools-card__head"><p class="th2-tools-card__kicker">Who needs support first?</p><span class="th2-tools-card__meta">T2/T3 students only</span></div>',
+      '    <div class="th2-tools-student-list">' + (supportStudents.length ? supportStudents.map(function (student) {
+            return [
+              '<div class="th2-tools-student-row">',
+              '  <div class="th2-tools-student-copy">',
+              '    <strong>' + escapeHtml(student.name) + '</strong>',
+              '    <span>' + escapeHtml(student.detail || "Support ready") + '</span>',
+              "  </div>",
+              '  <span class="th2-tools-student-tier" data-tier="' + escapeHtml(String(student.label || "T1").replace(/^T/, "")) + '">' + escapeHtml(student.label || "T1") + "</span>",
+              "</div>"
+            ].join("");
+          }).join("") : '<p class="th2-tools-note">No T2/T3 students are assigned to this block yet. Stay with whole-class support and use the class plan if you need more context.</p>') + '</div>',
+      "  </section>",
+      '  <section class="th2-tools-card">',
+      '    <div class="th2-tools-card__head"><p class="th2-tools-card__kicker">Recommended support flow</p><span class="th2-tools-card__meta">' + escapeHtml(block.subject || derived.subject || "Block") + "</span></div>",
+      '    <div class="th2-tools-highlight"><span>Best next move</span><strong>' + escapeHtml(primaryMove) + '</strong><p>Keep the class moving with one clear scaffold before you add anything else.</p></div>',
+      '    <div class="th2-tools-agenda">' + (supportMoves.length ? supportMoves.map(function (item, index) {
+            return '<div class="th2-tools-agenda__item"><span>' + escapeHtml(item) + "</span></div>";
+          }).join("") : '<p class="th2-tools-note">Support moves will appear here after the block context loads.</p>') + '</div>',
+      "  </section>",
+      '  <section class="th2-tools-card th2-tools-card--resources">',
+      '    <div class="th2-tools-card__head"><p class="th2-tools-card__kicker">Quick links</p><span class="th2-tools-card__meta">Open only when needed</span></div>',
+      '    <div class="th2-tools-action-row">',
+      '      <button class="th2-tools-action" type="button" data-open-brief="1" data-open-brief-block="' + escapeHtml(block && block.id || "") + '"><strong>Class Plan</strong><span>Lesson brief, accommodations, and materials</span></button>',
+      '      <button class="th2-tools-action" type="button" data-open-curriculum="1"><strong>Curriculum</strong><span>Sequence, vocabulary, and anchor resources</span></button>',
+      '      <a class="th2-tools-action" href="reports.html"><strong>Reports</strong><span>Progress notes and meeting-ready history</span></a>',
+      '      <button class="th2-tools-action" type="button" data-tools-google="calendar"><strong>Calendar</strong><span>Open or sync today’s schedule</span></button>',
+      '    </div>',
+      '  </section>',
+      '  <details class="th2-tools-optional"' + (toolState.timerRunning ? " open" : "") + '>',
+      '    <summary class="th2-tools-optional__summary"><span>Optional pacing timer</span><em>Only if it helps today</em></summary>',
+      '    <section class="th2-tools-card th2-tools-card--timer">',
+      '    <div class="th2-tools-card__head"><p class="th2-tools-card__kicker">Optional pacing timer</p><div class="th2-tools-chip-row">' +
             Object.keys(toolsTimerModes()).map(function (key) {
               return '<button class="th2-tools-chip' + (key === toolState.timerMode ? ' is-active' : '') + '" type="button" data-tools-timer-mode="' + escapeHtml(key) + '">' + escapeHtml(toolsTimerModes()[key].label) + '</button>';
             }).join("") +
       '</div></div>',
-      '    <div class="th2-tools-timer-visual" style="--th2-timer-accent:' + escapeHtml(modeMeta.accent) + ';--th2-timer-deg:' + progress.toFixed(2) + 'deg;">',
-      '      <div class="th2-tools-timer-visual__inner"><strong>' + escapeHtml(formatClock(toolState.timerRemainingSec)) + '</strong><span>' + escapeHtml(modeMeta.label) + "</span></div>",
-      "    </div>",
+      '    <div class="th2-tools-timer-summary"><strong>' + escapeHtml(formatClock(toolState.timerRemainingSec)) + '</strong><span>' + escapeHtml(modeMeta.label) + " timer</span></div>",
+      '    <div class="th2-tools-timer-track"><div class="th2-tools-timer-track-fill" style="width:' + escapeHtml(String(progressPct)) + '%;background:' + escapeHtml(modeMeta.accent) + ';"></div></div>',
+      '    <p class="th2-tools-note">Use the timer only if it helps pace the block. Instruction and recommendations stay primary.</p>',
       '    <div class="th2-tools-inline-actions"><button class="th2-tools-primary" type="button" data-tools-timer-toggle="1">' + (toolState.timerRunning ? "Pause Timer" : "Start Timer") + '</button><button class="th2-tools-quiet" type="button" data-tools-timer-reset="1">Reset</button></div>',
-      "  </section>",
-      '  <section class="th2-tools-card">',
-      '    <div class="th2-tools-card__head"><p class="th2-tools-card__kicker">SWBAT</p><span class="th2-tools-card__meta">' + escapeHtml(block.timeLabel || "") + "</span></div>",
-      '    <p class="th2-tools-learning-target">' + escapeHtml(swbat) + "</p>",
-      '    <p class="th2-tools-note">' + escapeHtml((derived.mainConcept || "Use this target to anchor your opening and closing moves.") ) + "</p>",
-      "  </section>",
-      '  <section class="th2-tools-card">',
-      '    <div class="th2-tools-card__head"><p class="th2-tools-card__kicker">Agenda</p><button class="th2-tools-quiet" type="button" data-tools-agenda-reset="1">Reset</button></div>',
-      '    <div class="th2-tools-agenda">' + agenda.map(function (item, index) {
-            return '<label class="th2-tools-agenda__item"><input type="checkbox" data-tools-agenda-check="' + escapeHtml(String(index)) + '"' + (item.done ? " checked" : "") + '><span>' + escapeHtml(item.label) + "</span></label>";
-          }).join("") + '</div>',
-      "  </section>",
-      '  <section class="th2-tools-card">',
-      '    <div class="th2-tools-card__head"><p class="th2-tools-card__kicker">Quick Launch</p><span class="th2-tools-card__meta">Same app workflow</span></div>',
-      '    <div class="th2-tools-launch-grid">',
-      '      <button class="th2-tools-launch th2-tools-launch--google" type="button" data-tools-google="doc"><strong>Docs</strong><span>Lesson notes</span></button>',
-      '      <button class="th2-tools-launch th2-tools-launch--google" type="button" data-tools-google="sheet"><strong>Sheets</strong><span>Checklist / tracker</span></button>',
-      '      <button class="th2-tools-launch th2-tools-launch--google" type="button" data-tools-google="slides"><strong>Slides</strong><span>Project visuals</span></button>',
-      '      <button class="th2-tools-launch th2-tools-launch--google" type="button" data-tools-google="youtube"><strong>YouTube</strong><span>Support video</span></button>',
-      '      <button class="th2-tools-launch th2-tools-launch--google" type="button" data-tools-google="drive"><strong>Drive</strong><span>Find linked files</span></button>',
-      '      <button class="th2-tools-launch th2-tools-launch--google" type="button" data-tools-google="calendar"><strong>Calendar</strong><span>Open today</span></button>',
-      games.map(function (game) {
-        return '<a class="th2-tools-launch th2-tools-launch--game" href="' + escapeHtml(game.href) + '"><strong>' + escapeHtml(game.label.replace(/^Launch\s+/i, "")) + '</strong><span>' + escapeHtml(game.subtitle) + '</span></a>';
-      }).join(""),
-      "    </div>",
-      "  </section>",
+      "    </section>",
+      "  </details>",
       "</div>"
     ].join("");
   }
@@ -4310,44 +4636,41 @@
   function renderDailyScheduleMain(blocks) {
     if (!el.emptyState) return;
 
-    // No caseload and no blocks → demo seed
-    if (!caseload.length && !blocks.length) {
-      renderCommandCenter(null);
-      return;
-    }
-
     var today = new Date();
     var dayStr = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-    var totalStudents = blocks.reduce(function (acc, b) {
-      return acc + (b.studentIds ? b.studentIds.length : 0);
-    }, 0);
-    var featuredBlock = blocks.filter(function (block) {
-      return block && Array.isArray(block.studentIds) && block.studentIds.length > 0 && String(block.subject || "").toLowerCase() !== "specials";
-    })[0] || blocks[0] || null;
-    var featuredContext = featuredBlock ? buildTeacherContextForBlock(featuredBlock) : buildFirstRunContext();
-    var calendarEvents = buildDemoCalendarEvents(blocks);
+    var greeting = personalizedGreeting(blocks);
     var greetingLine = greetingWord() + ", " + currentTeacherFirstName();
+    var leadBlock = blocks[0] || null;
     var summaryLine = blocks.length
-      ? blocks.length + " class" + (blocks.length !== 1 ? "es" : "") + (totalStudents ? " · " + totalStudents + " student" + (totalStudents !== 1 ? "s" : "") : "")
+      ? blocks.length + " class block" + (blocks.length !== 1 ? "s" : "") + " ready today"
       : "No classes scheduled";
 
     var blockCards = blocks.map(function (block) {
-      var label = escapeHtml(block.label || block.classSection || "Class");
+      var roster = renderScheduleRoster(block);
+      var contextData = roster.contextData;
+      var derived = contextData && contextData.derived ? contextData.derived : {};
       var time = escapeHtml(block.timeLabel || "");
-      var sub = [escapeHtml(block.subject || ""), escapeHtml(block.supportType || "")].filter(Boolean).join(" · ");
-      var count = block.studentIds && block.studentIds.length;
+      var label = escapeHtml(block.label || block.classSection || derived.subject || block.subject || "Support block");
+      var subject = escapeHtml(block.subject || derived.subject || "Support");
+      var teacher = escapeHtml(block.teacher || "Teacher");
+      var lesson = escapeHtml([block.supportType || "class block", compactLessonLabel(contextData)].filter(Boolean).join(" • "));
+      var count = countSupportStudentsForContext(contextData) || (block.studentIds && block.studentIds.length) || 0;
+      var guidance = escapeHtml(buildBlockSignalText(contextData));
       return [
-        '<button class="th2-day-sched-block" data-open-block="' + escapeHtml(block.id) + '" type="button">',
+        '<button class="th2-day-sched-block th2-day-sched-block--planner' + (leadBlock && block.id === leadBlock.id ? ' is-featured' : '') + '" data-open-block="' + escapeHtml(block.id) + '" type="button">',
         (time ? '<span class="th2-day-sched-time">' + time + '</span>' : ""),
         '<span class="th2-day-sched-name">' + label + "</span>",
-        (sub ? '<span class="th2-day-sched-sub">' + sub + "</span>" : ""),
-        (count ? '<span class="th2-day-sched-count">' + count + " student" + (count !== 1 ? "s" : "") + "</span>" : ""),
+        '<span class="th2-day-sched-sub">' + teacher + " • " + subject + "</span>",
+        '<span class="th2-day-sched-count">' + escapeHtml(String(count || (block.studentIds && block.studentIds.length) || 0)) + " support</span>",
+        '<span class="th2-day-sched-lesson">' + lesson + "</span>",
+        '<div class="th2-day-sched-roster">' + roster.html + "</div>",
+        '<p class="th2-day-sched-guidance">' + guidance + "</p>",
         "</button>"
       ].join("");
     }).join("");
 
     var emptySlot = !blocks.length
-      ? '<div class="th2-day-sched-empty"><p class="th2-day-sched-empty-msg">Demo day loaded — replace it with your real schedule anytime.</p><p class="th2-day-sched-empty-sub">Connect Google Calendar or update Lesson Brief to turn this sample day into your live plan.</p></div>'
+      ? '<div class="th2-day-sched-empty"><p class="th2-day-sched-empty-msg">No schedule connected yet.</p><p class="th2-day-sched-empty-sub">Use the Setup tab or sync your calendar once. After that, today’s blocks and recommendations will appear here automatically.</p></div>'
       : "";
 
     el.emptyState.innerHTML = [
@@ -4359,44 +4682,69 @@
       '<p class="th2-day-sched-summary">' + escapeHtml(summaryLine) + "</p>",
       "</div>",
       '<div class="th2-day-sched-cta-row">',
-      '<button class="th2-day-sched-add-btn" data-open-brief="1" type="button">Open Lesson Brief</button>',
       '<button class="th2-day-sched-sync-btn" data-connect-calendar="1" type="button">Sync Calendar</button>',
       "</div>",
       "</header>",
       '<section class="th2-day-sched-hero">',
       '  <div class="th2-day-sched-list-wrap">',
-      '    <div class="th2-day-sched-list-head"><p class="th2-section-label">Today\'s Blocks</p><p class="th2-today-sub">Select any block to open the full teaching context.</p></div>',
+      '    <div class="th2-day-sched-list-head"><p class="th2-section-label">Today\'s Schedule</p><p class="th2-today-sub">Teacher, subject, support students, lesson context, and next moves all load from the block you choose.</p></div>',
       '    <div class="th2-day-sched-list">',
       blockCards + emptySlot,
       "    </div>",
       "  </div>",
-      renderDayCalendar(calendarEvents),
+      '  <div class="th2-day-sched-side">',
+      '<section class="th2-day-brief">',
+      '  <p class="th2-section-label">Today at a glance</p>',
+      '  <h2 class="th2-day-brief__title">' + greeting.title + '</h2>',
+      '  <p class="th2-day-brief__summary">' + greeting.summary + '</p>',
+      '  <p class="th2-day-brief__prompt">' + greeting.prompt + '</p>',
+      '  <div class="th2-day-brief__actions"><button class="th2-day-sched-preview__open" data-open-block="' + escapeHtml(leadBlock && leadBlock.id || "") + '" type="button"' + (leadBlock ? "" : " disabled") + '>Open first class</button><a class="th2-inline-link" href="reports.html">Go to reports</a></div>',
+      '</section>',
+      renderScheduleGuidance(blocks),
+      "  </div>",
       "</section>",
-      renderTodayPriorityPanel(featuredContext),
-      '<div class="th2-day-sched-deep-grid">',
-      renderClassContextZone(featuredContext),
-      renderQuickAccessRail(featuredContext),
-      "</div>",
-      '<div class="th2-day-mobile-sections">',
-      renderMobileSection("Class Context", renderClassContextZone(featuredContext), false, "class-context"),
-      renderMobileSection("Quick Access", renderQuickAccessRail(featuredContext), false, "quick-access"),
-      "</div>",
       "</div>"
     ].join("");
   }
 
   function showTodaysClasses() {
+    setActiveModeTab("class");
     if (el.emptyState) { el.emptyState.classList.remove("hidden"); el.emptyState.removeAttribute("aria-hidden"); }
     if (el.focusCard)  { el.focusCard.classList.add("hidden"); el.focusCard.setAttribute("aria-hidden", "true"); }
     renderSidebarSchedule();
     renderClassSnapshot();
+    syncSetupTab();
+    syncToolsAvailability();
+  }
+
+  function syncSetupTab() {
+    if (!el.setupTab) return;
+    var needsSchedule = !getTodayLessonBlocks().length;
+    if (needsSchedule) {
+      el.setupTab.textContent = "Set Up Schedule";
+      el.setupTab.setAttribute("data-setup-action", "schedule");
+      el.setupTab.classList.remove("hidden");
+      return;
+    }
+    el.setupTab.classList.add("hidden");
+    el.setupTab.removeAttribute("data-setup-action");
+  }
+
+  function syncToolsAvailability() {
+    if (!el.toolsFab) return;
+    var state = hubState.get();
+    var hasActiveBlock = state && state.context && state.context.mode === "class" && !!state.context.classId;
+    el.toolsFab.classList.toggle("hidden", !hasActiveBlock);
+    if (!hasActiveBlock) closeToolsPanel();
   }
 
   /* ── HubState subscription → render ────────────────────── */
 
   hubState.subscribe(function (state) {
     var mode = state.context.mode || "caseload";
+    syncSetupTab();
     if (mode === "class") { showTodaysClasses(); return; }
+    syncToolsAvailability();
     var studentId = state.context.studentId || "";
     if (!studentId) {
       showEmptyState();
@@ -4661,10 +5009,28 @@
       tab.classList.add("is-active");
       tab.setAttribute("aria-selected", "true");
       var mode = tab.getAttribute("data-mode") || "caseload";
-      hubState.set({ context: { mode: mode, studentId: "" } });
+      hubState.set({ context: { mode: mode, studentId: "", classId: "" } });
       if (mode === "class") { showTodaysClasses(); }
       else { renderStudentList(); showEmptyState(); }
     });
+  });
+
+  if (el.setupTab) {
+    el.setupTab.addEventListener("click", function () {
+      var action = el.setupTab.getAttribute("data-setup-action") || "";
+      if (action === "schedule" && window.CSLessonBriefPanel && window.CSLessonBriefPanel.toggle) {
+        window.CSLessonBriefPanel.toggle(lessonBriefContext());
+      }
+    });
+  }
+
+  document.addEventListener("click", function (e) {
+    var setupBtn = e.target.closest && e.target.closest("[data-open-setup]");
+    if (!setupBtn) return;
+    var action = setupBtn.getAttribute("data-open-setup") || "";
+    if (action === "schedule" && window.CSLessonBriefPanel && window.CSLessonBriefPanel.toggle) {
+      window.CSLessonBriefPanel.toggle(lessonBriefContext());
+    }
   });
 
   // View details → open drawer
@@ -4680,18 +5046,13 @@
     if (!blockBtn) return;
     var blockId = blockBtn.getAttribute("data-open-block") || "";
     if (!blockId) return;
-    var blockContext = TeacherSelectors && typeof TeacherSelectors.buildClassContext === "function"
-      ? TeacherSelectors.buildClassContext(TeacherSelectors.getBlockById(blockId, todayKey(), { TeacherStorage: TeacherStorage }), { TeacherStorage: TeacherStorage })
-      : null;
-    hubState.set({
-      context: { mode: "class", classId: blockId, studentId: "" },
-      active_class_context: {
-        classId: blockId,
-        label: blockContext && blockContext.label || "",
-        supportType: blockContext && blockContext.supportType || "",
-        lessonContextId: blockContext && blockContext.lessonContextId || ""
-      }
-    });
+    openClassDetailPage(blockId);
+  });
+
+  document.addEventListener("click", function (e) {
+    var addBtn = e.target.closest && e.target.closest("[data-open-add-student]");
+    if (!addBtn) return;
+    openAddDrawer();
   });
 
   document.addEventListener("click", function (e) {
@@ -4706,8 +5067,7 @@
   document.addEventListener("click", function (e) {
     var backBtn = e.target.closest && e.target.closest("[data-back-to-schedule]");
     if (!backBtn) return;
-    hubState.set({ context: { mode: "class", classId: "", studentId: "" } });
-    renderDailyScheduleMain(getTodayLessonBlocks());
+    returnToSchedulePage();
   });
 
   document.addEventListener("click", function (e) {
@@ -4980,11 +5340,6 @@
     var addDrawer = document.getElementById("th2-add-drawer");
     if (addDrawer && addDrawer.classList.contains("is-open")) { closeAddDrawer(); return; }
     if (hubState.get().ui.drawerOpen) closeDrawer();
-  });
-
-  // Add Student button
-  document.addEventListener("click", function (e) {
-    if (e.target && e.target.id === "th2-add-student-btn") openAddDrawer();
   });
 
   // Phase 9: Progress note copy buttons (focus card)
@@ -5525,6 +5880,7 @@
 
     // Load caseload (reads from evidence store)
     loadCaseload();
+    syncSetupTab();
 
     var seededBlocks = getTodayLessonBlocks();
     if (!seededBlocks.length) {
@@ -5545,11 +5901,15 @@
         t.classList.toggle("is-active", active);
         t.setAttribute("aria-selected", active ? "true" : "false");
       });
-      hubState.set({ context: { mode: "caseload" } });
+      hubState.set({ context: { mode: "caseload", studentId: "", classId: "" } });
       renderStudentList();
       selectStudent(initialStudentId);
+    } else if (initialClassId) {
+      hubState.set({ context: { mode: "class", studentId: "", classId: initialClassId } });
+      showTodaysClasses();
     } else if (caseload.length) {
       // Default to Today's Classes view so teachers see their schedule first
+      hubState.set({ context: { mode: "class", studentId: "", classId: "" } });
       showTodaysClasses();
     } else if (isDemoMode) {
       /* Demo resilience: dev-servers sometimes strip query params.
@@ -5558,14 +5918,17 @@
         ensureDemoCaseload();
         loadCaseload();
         if (caseload.length) {
+          hubState.set({ context: { mode: "class", studentId: "", classId: "" } });
           showTodaysClasses();
           if (el.demoBadge) el.demoBadge.classList.remove("hidden");
         } else {
-          renderCommandCenter(null);
+          hubState.set({ context: { mode: "class", studentId: "", classId: "" } });
+          showTodaysClasses();
         }
       }, 120);
     } else {
-      renderCommandCenter(null);
+      hubState.set({ context: { mode: "class", studentId: "", classId: "" } });
+      showTodaysClasses();
     }
   }
 

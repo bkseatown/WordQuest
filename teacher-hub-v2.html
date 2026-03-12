@@ -9,7 +9,7 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
   <link rel="stylesheet" href="./style/typography.css?v=20260306h">
-  <link rel="stylesheet" href="./teacher-hub-v2.css?v=20260311e">
+  <link rel="stylesheet" href="./teacher-hub-v2.css?v=20260312i">
   <link rel="stylesheet" href="./css/curriculum-panel.css?v=20260306h">
   <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306i">
   <link rel="stylesheet" href="./css/onboarding-tour.css?v=20260306j">
@@ -65,24 +65,12 @@
             id="th2-search"
             type="search"
             class="th2-search"
-            placeholder="Search student, class, curriculum, resource, or tool…"
+            placeholder="Search student, class, curriculum, or report…"
             autocomplete="off"
             aria-label="Global teacher search"
           >
         </div>
-
-        <div class="th2-mode-row" role="tablist" aria-label="Context mode">
-          <button class="th2-mode-tab" data-mode="caseload" role="tab" aria-selected="false">
-            My Caseload
-          </button>
-          <button class="th2-mode-tab is-active" data-mode="class" role="tab" aria-selected="true">
-            Today's Classes
-          </button>
-        </div>
-
-        <button id="th2-add-student-btn" class="th2-add-student-btn" type="button" aria-label="Add a student to caseload">
-          + Add Student
-        </button>
+        <p class="th2-sidebar-label">Today’s schedule</p>
       </div>
 
       <!-- Context strip: date + urgency — sits between tabs and student list -->
@@ -100,19 +88,10 @@
 
       <!-- ── Sidebar footer: Lesson brief + curriculum + help/reports ── -->
       <div class="th2-sidebar-footer">
-        <button id="th2-brief-btn" class="th2-cur-btn th2-brief-btn" type="button" aria-label="Open lesson brief">
-          Lesson Brief
-        </button>
-        <button id="th2-cur-btn" class="th2-cur-btn" type="button" aria-label="Open curriculum quick reference">
-          Curriculum
-        </button>
         <div class="th2-sidebar-footer-row">
           <button id="th2-help-btn" class="th2-footer-icon-btn" type="button" aria-label="Open help and replay tour" title="Help">
             Help
           </button>
-          <a id="th2-reports-btn" class="th2-footer-icon-btn" href="./reports.html" aria-label="Open reports and meeting prep" title="Reports">
-            Reports
-          </a>
         </div>
       </div>
 
@@ -179,25 +158,6 @@
   <!-- ── Toast host ───────────────────────────────────── -->
   <div id="th2-toast-host" class="th2-toast-host" aria-live="polite" aria-atomic="false"></div>
 
-  <!-- ── Floating class tools ─────────────────────────── -->
-  <button id="th2-tools-fab" class="th2-tools-fab" type="button" aria-label="Open class tools" aria-expanded="false" title="Class tools">
-    <span class="th2-tools-fab__icon" aria-hidden="true">◔</span>
-    <span class="th2-tools-fab__label">Tools</span>
-  </button>
-  <section id="th2-tools-panel" class="th2-tools-panel hidden" aria-hidden="true" role="dialog" aria-label="Class tools">
-    <header id="th2-tools-head" class="th2-tools-head">
-      <div>
-        <p class="th2-tools-kicker">Class Tools</p>
-        <h2 id="th2-tools-title" class="th2-tools-title">Ready for this block</h2>
-      </div>
-      <div class="th2-tools-head-actions">
-        <button id="th2-tools-min" class="th2-tools-icon" type="button" aria-label="Minimize class tools">−</button>
-        <button id="th2-tools-close" class="th2-tools-icon" type="button" aria-label="Close class tools">×</button>
-      </div>
-    </header>
-    <div id="th2-tools-body" class="th2-tools-body"></div>
-  </section>
-
   <!-- ── Demo badge (hidden unless demo mode) ─────────── -->
   <div id="th2-demo-badge" class="th2-demo-badge hidden" aria-hidden="true">
     Demo Mode
@@ -246,7 +206,7 @@
 
   <!-- ── Data layer ────────────────────────────────────── -->
   <script src="./js/caseload-store.js?v=20260306h"></script>
-  <script src="./js/teacher/teacher-storage.js?v=20260306o"></script>
+  <script src="./js/teacher/teacher-storage.js?v=20260312r"></script>
   <script src="./js/teacher/teacher-selectors.js?v=20260306o"></script>
   <script src="./js/teacher/teacher-intelligence.js?v=20260306t"></script>
   <script src="./js/teacher-context/lesson-context-deriver.js?v=20260306p"></script>
@@ -303,7 +263,7 @@
   <script src="./js/onboarding-tour.js?v=20260306j"></script>
 
   <!-- ── Application ───────────────────────────────────── -->
-  <script src="./teacher-hub-v2.js?v=20260310c"></script>
+  <script src="./teacher-hub-v2.js?v=20260312j"></script>
   <script>window.CSBackupManager && window.CSBackupManager.init && window.CSBackupManager.init();</script>
 
   <!-- ── Build infrastructure ──────────────────────────── -->
