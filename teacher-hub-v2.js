@@ -4799,38 +4799,15 @@
     return lessonRef + " is ready with context and support coverage.";
   }
 
-  function labelConfidence(score) {
-    var numeric = Number(score || 0);
-    if (numeric >= 80) return "High confidence";
-    if (numeric >= 45) return "Medium confidence";
-    return "Emerging confidence";
-  }
-
-  function buildPrioritySource(block, supportCount, isCurrent, isNext) {
-    var sources = [];
-    if (isCurrent) sources.push("live timing");
-    else if (isNext) sources.push("schedule timing");
-    if (supportCount > 0) sources.push("support roster");
-    if (block && (block.lesson || block.curriculum)) sources.push("lesson context");
-    return sources.length ? "Based on " + sources.join(" + ") + "." : "Based on available hub context.";
-  }
-
-  function buildRecommendationConfidence(summary, trendDecision, recReason) {
-    var score = 28;
-    if (summary && summary.lastSession) score += 22;
-    if (summary && Array.isArray(summary.evidenceChips) && summary.evidenceChips.length) score += 24;
-    if (trendDecision && trendDecision !== "HOLD") score += 14;
-    if (recReason && recReason.length > 24) score += 12;
-    return labelConfidence(score);
-  }
-
-  function buildRecommendationSource(summary, plan) {
-    var sources = [];
-    if (summary && summary.lastSession) sources.push("recent session");
-    if (summary && Array.isArray(summary.evidenceChips) && summary.evidenceChips.length) sources.push("skill evidence");
-    if (plan && plan.tierSignal && plan.tierSignal.trendDecision) sources.push("tier signal");
-    if (plan && plan.reasoning && plan.reasoning.length) sources.push("planner reasoning");
-    return sources.length ? "Based on " + sources.join(" + ") + "." : "Based on current student context.";
+  function describePriorityAngle(block, supportCount, isCurrent, isNext) {
+    var supportType = String(block && block.supportType || "").toLowerCase();
+    if (isCurrent) return "Live block";
+    if (isNext) return "Next transition";
+    if (supportCount >= 3) return "Highest support load";
+    if (/pull/.test(supportType)) return "Protected support time";
+    if (/push/.test(supportType)) return "In-class coverage";
+    if (/coverage|core/.test(supportType)) return "Class readiness";
+    return "Ready block";
   }
 
   function buildPriorityItems(blocks, currentBlock, nextBlock) {
@@ -4849,7 +4826,7 @@
         status: status,
         supportCount: supportCount,
         reason: buildPriorityReason(block, supportCount, isCurrent, isNext),
-        source: buildPrioritySource(block, supportCount, isCurrent, isNext),
+        angle: describePriorityAngle(block, supportCount, isCurrent, isNext),
         cue: isCurrent ? "Now" : (isNext ? "Up next" : "")
       };
     }).sort(function (a, b) {
@@ -4876,7 +4853,9 @@
       ? "Open " + (primaryItem.block.label || primaryItem.block.subject || "this class")
       : "Sync your schedule";
     return {
-      title: currentBlock ? "Support the class in motion." : greetingWord() + ", " + currentTeacherFirstName() + ".",
+      title: primaryItem
+        ? ((primaryItem.block && (primaryItem.block.label || primaryItem.block.subject)) || "This block") + " needs the first look."
+        : greetingWord() + ", " + currentTeacherFirstName() + ".",
       summary: rows.length
         ? "You have " + rows.length + " blocks today and " + activeSupportCount + " priority support touchpoints across the schedule."
         : "Your schedule is clear right now. Connect today's classes and this page will become your live command view.",
@@ -4928,7 +4907,7 @@
           '<button class="th2-priority-item" data-open-block="' + escapeHtml(block.id || "") + '" type="button">',
           '  <div class="th2-priority-item__top">',
           '    <span class="th2-priority-item__rank">#' + String(index + 1) + '</span>',
-          '    <span class="th2-priority-item__status" data-status="' + escapeHtml(String(item.status || "Ready").toLowerCase()) + '">' + escapeHtml(item.status || "Ready") + '</span>',
+          '    <span class="th2-priority-item__status" data-status="' + escapeHtml(String(item.status || "Ready").toLowerCase()) + '">' + escapeHtml(item.angle || item.status || "Ready") + '</span>',
           '  </div>',
           '  <strong class="th2-priority-item__title">' + escapeHtml(block.label || block.classSection || block.subject || "Class block") + '</strong>',
           '  <p class="th2-priority-item__meta">' + escapeHtml([block.timeLabel, block.teacher].filter(Boolean).join(" · ") || item.cue || "") + '</p>',
