@@ -713,21 +713,7 @@
   }
 
   function renderBlockContextHeader(contextData) {
-    var block = contextData && contextData.block ? contextData.block : {};
-    var priority = buildBlockSignalText(contextData);
-    return [
-      '<section class="th2-block-context-header">',
-      '  <div class="th2-block-context-header__main">',
-      '    <p class="th2-section-label">Selected class</p>',
-      '    <h1 class="th2-block-context-header__title">' + escapeHtml(block.label || block.classSection || "Support block") + "</h1>",
-      '    <p class="th2-block-context-header__meta">' + escapeHtml([block.timeLabel, block.teacher, block.subject, block.supportType].filter(Boolean).join(" · ")) + "</p>",
-      "  </div>",
-      '  <div class="th2-block-context-header__signal">',
-      '    <span>Class signal</span>',
-      '    <strong>' + escapeHtml(priority) + "</strong>",
-      "  </div>",
-      "</section>"
-    ].join("");
+    return "";
   }
 
   function renderDayStrip(blocks, activeBlockId) {
@@ -760,24 +746,26 @@
   function renderLessonContextZone(contextData) {
     var derived = contextData && contextData.derived ? contextData.derived : {};
     var block = contextData && contextData.block ? contextData.block : {};
-    var lessonHeadline = [derived.unit, derived.lesson].filter(Boolean).join(" ") || derived.lessonFocus || block.lesson || "Lesson context loading";
+    var curriculumLabel = derived.curriculum || block.curriculum || derived.unit || "";
+    var rawLessonHeadline = derived.lesson || derived.lessonFocus || block.lesson || "Lesson context loading";
+    var lessonHeadline = rawLessonHeadline;
+    if (curriculumLabel && rawLessonHeadline.toLowerCase().indexOf(String(curriculumLabel).toLowerCase()) === 0) {
+      lessonHeadline = rawLessonHeadline.slice(String(curriculumLabel).length).trim() || rawLessonHeadline;
+    }
     var lessonSummary = derived.mainConcept || "Lesson focus not fully mapped yet.";
     var lessonHref = appendContextParamsForBlock("game-platform.html", contextData);
+    var classTitle = block.label || block.classSection || block.subject || "Class";
+    var classMeta = [block.timeLabel, block.teacher].filter(Boolean).join(" · ");
     return [
       '<section class="th2-context-zone th2-context-zone--lesson">',
-      '  <div class="th2-context-zone__heading"><p class="th2-section-label">Lesson</p><button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Edit lesson</button></div>',
+      '  <div class="th2-context-zone__heading"><div><p class="th2-section-label">' + escapeHtml(classTitle) + '</p>' + (classMeta ? '<p class="th2-zone-card__meta">' + escapeHtml(classMeta) + '</p>' : '') + '</div><button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Edit lesson</button></div>',
       '  <div class="th2-mission-card">',
-      '    <p class="th2-mission-card__title">' + escapeHtml((block.subject || derived.subject || "Subject") + " · " + (derived.curriculum || block.curriculum || "Curriculum")) + "</p>",
+      (curriculumLabel ? '    <p class="th2-mission-card__title">' + escapeHtml(curriculumLabel) + "</p>" : ""),
       '    <h2 class="th2-mission-card__headline">' + escapeHtml(lessonHeadline) + "</h2>",
       '    <p class="th2-mission-card__sub">' + escapeHtml(lessonSummary) + "</p>",
       '    <p class="th2-mission-card__target">' + escapeHtml(deriveLearningTarget(contextData)) + "</p>",
       '    <div class="th2-lesson-alignment"><span>Alignment to support goals</span><strong>' + escapeHtml(buildLessonAlignment(contextData)) + '</strong></div>',
-      '    <div class="th2-mission-card__meta">',
-      '      <div><span>Teacher</span><strong>' + escapeHtml((contextData.classContext && contextData.classContext.teacher) || block.teacher || "Not set") + '</strong></div>',
-      '      <div><span>Support</span><strong>' + escapeHtml(derived.supportType || block.supportType || "push-in") + '</strong></div>',
-      '      <div><span>Language Demand</span><strong>' + escapeHtml((derived.languageDemands || []).slice(0, 3).join(" • ") || "Explain • compare • justify") + '</strong></div>',
-      "    </div>",
-      '    <div class="th2-mission-card__actions"><a class="th2-inline-link" href="' + escapeHtml(lessonHref) + '">Learn more</a><a class="th2-inline-link" href="reports.html">Open reports</a></div>',
+      '    <div class="th2-mission-card__actions"><a class="th2-inline-link" href="' + escapeHtml(lessonHref) + '">Learn more</a></div>',
       "  </div>",
       "</section>"
     ].join("");
@@ -840,11 +828,13 @@
       ? contextData.derived.students
       : [];
     if (!students.length) return "This lesson supports whole-group access and keeps space for in-the-moment scaffolds.";
-    var goals = students.slice(0, 3).map(function (student) {
+    var goals = students.slice(0, 4).map(function (student) {
       return student.primaryGoal || "";
-    }).filter(Boolean);
+    }).filter(Boolean).filter(function (goal, index, arr) {
+      return arr.indexOf(goal) === index;
+    });
     if (!goals.length) return "This lesson is positioned to reinforce the students' current support priorities.";
-    return "This lesson aligns to current support goals by reinforcing " + goals.join("; ").replace(/\.$/, "") + ".";
+    return goals.join(" · ").replace(/\.$/, "");
   }
 
   function personalizedGreeting(blocks) {
@@ -881,6 +871,14 @@
     return "T2";
   }
 
+  function displayTierGoalLabel(student) {
+    var tier = displayTierLabel(student);
+    var supports = Array.isArray(student && student.relatedSupport) ? student.relatedSupport : [];
+    var goal = String(student && student.primaryGoal || "").trim();
+    var area = supports[0] || goal || "Support";
+    return tier + " " + area;
+  }
+
   function supportStudentsSummary(contextData) {
     var students = contextData && contextData.derived && Array.isArray(contextData.derived.students)
       ? contextData.derived.students
@@ -905,6 +903,32 @@
     return supportStudentsSummary(contextData).filter(function (student) {
       return /^T[23]$/i.test(String(student && student.label || ""));
     }).length;
+  }
+
+  function parseTimeLabelRange(timeLabel) {
+    var text = String(timeLabel || "").trim();
+    var match = text.match(/^(\d{1,2}:\d{2}\s*[AP]M)\s*[-–]\s*(\d{1,2}:\d{2}\s*[AP]M)$/i);
+    if (!match) return null;
+    function toMinutes(value) {
+      var parts = String(value || "").trim().match(/^(\d{1,2}):(\d{2})\s*([AP]M)$/i);
+      if (!parts) return null;
+      var hour = Number(parts[1]) % 12;
+      var minute = Number(parts[2]);
+      if (parts[3].toUpperCase() === "PM") hour += 12;
+      return hour * 60 + minute;
+    }
+    var start = toMinutes(match[1]);
+    var end = toMinutes(match[2]);
+    if (start == null || end == null) return null;
+    return { start: start, end: end };
+  }
+
+  function isCurrentTimeBlock(block) {
+    var range = parseTimeLabelRange(block && block.timeLabel);
+    if (!range) return false;
+    var now = new Date();
+    var minutes = now.getHours() * 60 + now.getMinutes();
+    return minutes >= range.start && minutes < range.end;
   }
 
   function buildBlockSignalText(contextData) {
@@ -1013,46 +1037,6 @@
       '    <strong>' + escapeHtml(focus || "Class focus loads here.") + '</strong>',
       '    <p>' + escapeHtml(firstMove) + '</p>',
       '  </div>',
-      "</section>"
-    ].join("");
-  }
-
-  function renderTodayPriorityPanel(contextData) {
-    var block = contextData && contextData.block ? contextData.block : null;
-    var derived = contextData && contextData.derived ? contextData.derived : {};
-    var companion = contextData && contextData.companion ? contextData.companion : {};
-    var focusSkill = derived.lessonFocus || deriveLearningTarget(contextData);
-    var suggestedMove = ((companion.supportMoves || [])[0] || "Review the current lesson move and reinforce with immediate feedback.");
-    var supportStudents = supportStudentsSummary(contextData);
-    var studentLine = supportStudents.length
-      ? supportStudents.map(function (student) {
-          return student.name + " (" + student.label + ")";
-        }).join(" • ")
-      : "No direct support students assigned yet";
-    var progressTotal = Math.max((block && block.studentIds && block.studentIds.length) || supportStudents.length || 1, 1);
-    var progressCount = Math.min(supportStudents.length || 1, progressTotal);
-    var progressPct = Math.max(18, Math.round((progressCount / progressTotal) * 100));
-    return [
-      '<section class="th2-priority-panel">',
-      '  <div class="th2-priority-panel__shell">',
-      '    <div class="th2-priority-panel__copy">',
-      '      <p class="th2-priority-panel__kicker">Block at a glance</p>',
-      '      <h2 class="th2-priority-panel__student">' + escapeHtml((block && (block.label || block.classSection)) || "Today’s priority") + '</h2>',
-      '      <p class="th2-priority-panel__block">' + escapeHtml([block && block.timeLabel, block && block.teacher, block && block.subject || derived.subject].filter(Boolean).join(" • ")) + '</p>',
-      '      <div class="th2-priority-panel__sections">',
-      '        <div class="th2-priority-panel__section"><span>Focus today</span><strong>' + escapeHtml(focusSkill || "Review the selected lesson focus.") + '</strong></div>',
-      '        <div class="th2-priority-panel__section"><span>Students needing support</span><strong>' + escapeHtml(studentLine) + '</strong></div>',
-      '        <div class="th2-priority-panel__section"><span>Recommended move</span><strong>' + escapeHtml(suggestedMove) + '</strong><em>Start here, then refine based on live student responses.</em></div>',
-      "      </div>",
-      '      <div class="th2-priority-panel__progress" aria-hidden="true">',
-      '        <div class="th2-priority-panel__progress-copy"><span>Support load</span><strong>' + escapeHtml(String(progressCount) + " of " + String(progressTotal) + " students need direct support") + '</strong></div>',
-      '        <div class="th2-priority-panel__progress-track"><div class="th2-priority-panel__progress-fill" style="width:' + escapeHtml(String(progressPct)) + '%"></div></div>',
-      "      </div>",
-      "    </div>",
-      '    <div class="th2-priority-panel__actions">',
-      '      <button class="th2-priority-panel__start" data-open-brief="1" data-open-brief-block="' + escapeHtml(block && block.id || "") + '" type="button">Open Class Plan</button>',
-      '    </div>',
-      "  </div>",
       "</section>"
     ].join("");
   }
@@ -1265,34 +1249,23 @@
     return [
       '<section class="th2-context-zone th2-context-zone--support">',
       '  <div class="th2-class-detail-card">',
-      '    <div class="th2-class-detail-head">',
-      '      <div>',
-      '        <p class="th2-section-label">Students needing support</p>',
-      '        <p class="th2-zone-card__meta">Open any student name to go deeper into their profile, grades, progress monitoring, and linked reports.</p>',
-      '      </div>',
-      '      <span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(String(students.length || 0)) + ' support student' + (students.length === 1 ? '' : 's') + '</span>',
-      '    </div>',
       '    <div class="th2-student-priority-list">' +
       (students.length ? students.map(function (student, index) {
         var recommendation = (student.relatedSupport || [])[0] || supportMoves[index] || supportMoves[0] || "Model one example, then stay close for the first response.";
         var profileHref = "student-profile.html?student=" + encodeURIComponent(student.studentId || "") + "&from=hub";
-        var reportsHref = "reports.html?student=" + encodeURIComponent(student.studentId || "") + "&from=hub";
         return [
           '<div class="th2-class-student-row">',
           '  <div class="th2-class-student-head">',
-          '    <div class="th2-class-student-title"><a class="th2-student-link" data-context-student="' + escapeHtml(student.studentId || "") + '" href="' + escapeHtml(profileHref) + '"><strong>' + escapeHtml(student.name || "Student") + '</strong></a><span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(displayTierLabel(student)) + '</span></div>',
+          '    <div class="th2-class-student-title"><a class="th2-student-link" data-context-student="' + escapeHtml(student.studentId || "") + '" href="' + escapeHtml(profileHref) + '"><strong>' + escapeHtml(student.name || "Student") + '</strong></a><span class="th2-class-chip th2-class-chip--primary">' + escapeHtml(displayTierGoalLabel(student)) + '</span></div>',
           '    <div class="th2-class-accommodation-icons">' + accommodationIcons(student.accommodations) + '</div>',
           '  </div>',
-          '  <div class="th2-class-chip-row">' + (studentSupportTags(student).map(function (item) {
-            return '<span class="th2-class-chip">' + escapeHtml(item) + '</span>';
-          }).join("")) + '</div>',
           '  <div class="th2-student-strength-gap">',
           '    <div><span>Strengths</span><p>' + escapeHtml(studentStrengthText(student)) + '</p></div>',
           '    <div><span>Learning gaps</span><p>' + escapeHtml(studentGapText(student)) + '</p></div>',
           '  </div>',
-          '  <p class="th2-class-goal"><strong>Goal:</strong> ' + escapeHtml(student.primaryGoal || "Goal loads after the roster is confirmed.") + '</p>',
+          '  <p class="th2-class-goal"><strong>Tier goal:</strong> ' + escapeHtml(student.primaryGoal || "Goal loads after the roster is confirmed.") + '</p>',
           '  <p class="th2-class-accommodations"><strong>Best support now:</strong> ' + escapeHtml(recommendation) + '</p>',
-          '  <div class="th2-student-link-row"><a class="th2-inline-link" data-context-student="' + escapeHtml(student.studentId || "") + '" href="' + escapeHtml(profileHref) + '">Open student profile</a><a class="th2-inline-link" href="' + escapeHtml(reportsHref) + '">Open reports</a></div>',
+          '  <div class="th2-student-link-row"><a class="th2-inline-link" data-context-student="' + escapeHtml(student.studentId || "") + '" href="' + escapeHtml(profileHref) + '">Open student profile</a></div>',
           '</div>'
         ].join("");
       }).join("") : '<p class="th2-today-sub">Support student details will appear here after the block roster is set.</p>') +
@@ -1316,13 +1289,11 @@
       renderBlockContextHeader(contextData),
       '<section class="th2-active-context">',
       '  <div class="th2-active-context__grid">',
-      renderTodayPriorityPanel(contextData),
       renderLessonContextZone(contextData),
       renderBlockSupportZone(contextData),
       '  </div>',
       '</section>',
       '<div class="th2-day-mobile-sections">',
-      renderMobileSection("Block Snapshot", renderTodayPriorityPanel(contextData), true, "block-snapshot"),
       renderMobileSection("Lesson", renderLessonContextZone(contextData), false, "block-lesson"),
       renderMobileSection("Support Plan", renderBlockSupportZone(contextData), false, "block-support"),
       '</div>',
@@ -1330,11 +1301,8 @@
     ].join("");
 
     if (el.sidebarCtx) {
-      var signalLabel = buildBlockSignalText(contextData);
       el.sidebarCtx.classList.add("th2-sidebar-ctx");
-      el.sidebarCtx.innerHTML =
-        '<p class="th2-sidebar-date">' + todayDateStr() + '</p>' +
-        '<p class="th2-sidebar-urgency">' + escapeHtml(signalLabel) + "</p>";
+      el.sidebarCtx.innerHTML = '<p class="th2-sidebar-date">' + todayDateStr() + '</p>';
     }
   }
 
@@ -1364,30 +1332,22 @@
       '<button class="th2-back-to-schedule" data-back-to-schedule="1" type="button">← Today\'s schedule</button>',
       '<div class="th2-command-center">',
       renderBlockContextHeader(contextData),
-      renderDayStrip(blocks, block.id),
       '<section class="th2-active-context">',
       '  <div class="th2-active-context__grid">',
       renderLessonContextZone(contextData),
-      renderCompanionZone(contextData),
-      renderStudentPriorityZone(contextData),
+      renderBlockSupportZone(contextData),
       "  </div>",
       "</section>",
-      renderQuickAccessRail(contextData),
       '<div class="th2-day-mobile-sections">',
-      renderMobileSection("Lesson Context", renderLessonContextZone(contextData), true, "block-lesson"),
-      renderMobileSection("Lesson Companion", renderCompanionZone(contextData), false, "block-companion"),
-      renderMobileSection("Student Priorities", renderStudentPriorityZone(contextData), false, "block-priorities"),
-      renderMobileSection("Quick Access", renderQuickAccessRail(contextData), false, "block-quick"),
+      renderMobileSection("Lesson", renderLessonContextZone(contextData), false, "block-lesson"),
+      renderMobileSection("Support Plan", renderBlockSupportZone(contextData), true, "block-support"),
       "</div>",
       "</div>"
     ].join("");
 
     if (el.sidebarCtx) {
-      var signalLabel = buildBlockSignalText(contextData);
       el.sidebarCtx.classList.add("th2-sidebar-ctx");
-      el.sidebarCtx.innerHTML =
-        '<p class="th2-sidebar-date">' + todayDateStr() + '</p>' +
-        '<p class="th2-sidebar-urgency">' + escapeHtml(signalLabel) + "</p>";
+      el.sidebarCtx.innerHTML = '<p class="th2-sidebar-date">' + todayDateStr() + '</p>';
     }
   }
 
@@ -3741,12 +3701,13 @@
     }
     el.list.innerHTML = blocks.map(function (block) {
       var isActive = block.id === selectedBlockId;
+      var isCurrent = isCurrentTimeBlock(block);
       var label = escapeHtml(block.label || block.classSection || "Class");
       var time = escapeHtml(block.timeLabel || "");
       var sub = [escapeHtml(block.teacher || ""), escapeHtml(block.subject || "")].filter(Boolean).join(" • ");
       var studentCount = block.studentIds && block.studentIds.length;
       return [
-        '<button class="th2-block-card' + (isActive ? " is-active" : "") + '"',
+        '<button class="th2-block-card' + (isActive ? " is-active" : "") + (isCurrent ? " is-current" : "") + '"',
         '  data-open-block="' + escapeHtml(block.id) + '"',
         '  type="button"',
         '  aria-pressed="' + isActive + '"',

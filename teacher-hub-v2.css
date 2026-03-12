@@ -256,6 +256,17 @@ body.th2-page {
 .th2-block-card.is-active {
   background: color-mix(in oklab, var(--surface-elev-2) 80%, var(--accent) 20%);
   border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.th2-block-card.is-current {
+  background: color-mix(in oklab, #fff4d6 72%, white 28%);
+  border-color: rgba(211, 160, 58, 0.35);
+}
+
+.th2-block-card.is-active.is-current {
+  background: linear-gradient(180deg, rgba(255, 247, 221, 0.96), rgba(237, 244, 251, 0.92));
+  border-color: color-mix(in oklab, var(--accent) 42%, rgba(211, 160, 58, 0.4));
 }
 
 .th2-block-card-body {
@@ -3564,7 +3575,7 @@ body.th2-page {
 
 .th2-context-zone__heading {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
 }
