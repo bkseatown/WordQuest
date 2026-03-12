@@ -30,6 +30,7 @@
   var InstantInsight       = window.CSInstantInsightOverlay;
   var GameContextInjection = window.CSGameContextInjection;
   var HubContext           = window.CSHubContext;
+  var HubMemoryModule      = window.CSHubMemory;
   var TeacherStorage       = window.CSTeacherStorage;
 
   if (!Evidence || !TeacherRuntimeState) return;
@@ -121,61 +122,24 @@
     try { return fn(); } catch (_e) { return null; }
   }
 
-  function createHubMemoryAdapter() {
-    var storage = TeacherStorage && typeof TeacherStorage === "object" ? TeacherStorage : null;
-    return {
-      mode: storage ? "adapter" : "local-only",
-      getString: function (key, fallback) {
-        if (!key) return fallback || "";
-        if (storage && typeof storage.get === "function") {
-          var stored = safe(function () { return storage.get(key); });
-          if (stored !== null && typeof stored !== "undefined" && stored !== "") return String(stored);
-        }
-        try {
-          var localValue = localStorage.getItem(key);
-          return localValue !== null && typeof localValue !== "undefined" ? String(localValue) : (fallback || "");
-        } catch (_e) {
-          return fallback || "";
-        }
-      },
-      setString: function (key, value) {
-        if (!key) return;
-        if (storage && typeof storage.set === "function") {
-          safe(function () { storage.set(key, value); });
-        }
-        try {
-          if (value === null || typeof value === "undefined" || value === "") localStorage.removeItem(key);
-          else localStorage.setItem(key, String(value));
-        } catch (_e) {}
-      },
-      getJson: function (key, fallback) {
-        var raw = this.getString(key, "");
-        if (!raw) return fallback;
-        try { return JSON.parse(raw); }
-        catch (_e) { return fallback; }
-      },
-      setJson: function (key, value) {
-        this.setString(key, JSON.stringify(value));
-      },
-      remove: function (key) {
-        if (!key) return;
-        if (storage && typeof storage.remove === "function") {
-          safe(function () { storage.remove(key); });
-        }
-        try { localStorage.removeItem(key); } catch (_e) {}
-      }
-    };
-  }
-
-  var hubMemory = createHubMemoryAdapter();
+  var hubMemory = HubMemoryModule && typeof HubMemoryModule.createAdapter === "function"
+    ? HubMemoryModule.createAdapter({ storage: TeacherStorage })
+    : {
+        mode: "local-only",
+        getString: function (key, fallback) { return bootStorageGet(key, fallback || ""); },
+        setString: function (key, value) { bootStorageSet(key, value); },
+        getJson: function (key, fallback) { return safeJsonParse(bootStorageGet(key, ""), fallback); },
+        setJson: function (key, value) { bootStorageSet(key, JSON.stringify(value)); },
+        remove: function (key) { try { localStorage.removeItem(key); } catch (_e) {} }
+      };
 
   function todayIsoKey() {
     return new Date().toISOString().slice(0, 10);
   }
 
   function hubMemoryModeLabel() {
-    return hubMemory.mode === "adapter"
-      ? "Memory is running through the shared storage adapter and can be upgraded beyond this browser."
+    return HubMemoryModule && typeof HubMemoryModule.memoryModeLabel === "function"
+      ? HubMemoryModule.memoryModeLabel(hubMemory)
       : "Memory is saved in this browser for now and can be upgraded to shared sync later.";
   }
 
