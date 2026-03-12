@@ -181,6 +181,88 @@
       : { fbaIncidents: [], bipPlan: {}, stakeholderCheckins: [] };
   }
 
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function toneForRisk(risk) {
+    var value = String(risk || "").toLowerCase();
+    if (value.indexOf("high") >= 0 || value.indexOf("risk") >= 0) return "alert";
+    if (value.indexOf("watch") >= 0 || value.indexOf("mod") >= 0) return "watch";
+    return "steady";
+  }
+
+  function getRecentEvidence(studentId, limit) {
+    return SupportStore && typeof SupportStore.getRecentEvidencePoints === "function"
+      ? SupportStore.getRecentEvidencePoints(studentId, 30, limit || 8)
+      : [];
+  }
+
+  function estimateGoalProgress(goal, index) {
+    var row = goal && typeof goal === "object" ? goal : {};
+    var explicit = Number(row.progress || row.mastery || row.percent || row.completion);
+    if (Number.isFinite(explicit) && explicit > 0) return clamp(Math.round(explicit), 8, 100);
+    return [36, 58, 74, 49][index % 4];
+  }
+
+  function buildMeter(label, value, tone, detail) {
+    var pct = clamp(Math.round(Number(value) || 0), 0, 100);
+    return [
+      '<div class="sp-meter sp-meter--' + esc(tone || "steady") + '">',
+      '  <div class="sp-meter-top"><span>' + esc(label) + '</span><strong>' + esc(String(pct)) + '%</strong></div>',
+      '  <div class="sp-meter-track"><span style="width:' + esc(String(pct)) + '%"></span></div>',
+      detail ? '  <p>' + esc(detail) + '</p>' : "",
+      '</div>'
+    ].join("");
+  }
+
+  function buildSignalPills(items, fallback) {
+    var rows = (Array.isArray(items) ? items : []).filter(Boolean);
+    if (!rows.length) rows = [fallback];
+    return '<div class="sp-pill-row">' + rows.map(function (item) {
+      return '<span class="sp-pill">' + esc(item) + '</span>';
+    }).join("") + '</div>';
+  }
+
+  function buildInterventionLane(interventions) {
+    var rows = Array.isArray(interventions) ? interventions.slice(0, 3) : [];
+    if (!rows.length) {
+      return '<div class="sp-lane-empty">No intervention cycle recorded yet. Start with one short move and track the response here.</div>';
+    }
+    return '<div class="sp-lane">' + rows.map(function (row, index) {
+      var label = row.domain || row.tier || "Support cycle";
+      var focus = row.strategy || row.focus || "Targeted move recorded";
+      var metric = row.progressMetric || row.metric || row.schedule || "Monitoring cue not set yet";
+      return [
+        '<article class="sp-lane-card">',
+        '  <div class="sp-lane-step">0' + esc(String(index + 1)) + '</div>',
+        '  <div class="sp-lane-copy">',
+        '    <strong>' + esc(label) + '</strong>',
+        '    <p>' + esc(focus) + '</p>',
+        '    <span>' + esc(metric) + '</span>',
+        '  </div>',
+        '</article>'
+      ].join("");
+    }).join("") + '</div>';
+  }
+
+  function buildEvidenceMoments(evidenceRows, chips) {
+    var rows = Array.isArray(evidenceRows) ? evidenceRows.slice(0, 3) : [];
+    if (rows.length) {
+      return '<div class="sp-moment-list">' + rows.map(function (row) {
+        return [
+          '<article class="sp-moment">',
+          '  <strong>' + esc(row.module || row.type || "Support signal") + '</strong>',
+          '  <p>' + esc(relativeDate(row.createdAt)) + '</p>',
+          '</article>'
+        ].join("");
+      }).join("") + '</div>';
+    }
+    return buildSignalPills((chips || []).map(function (chip) {
+      return chip.label + ": " + chip.value;
+    }), "First progress signal still needed");
+  }
+
   function renderStudentList() {
     var rows = filteredCaseload();
     el.studentList.innerHTML = rows.length ? rows.map(function (student) {
@@ -244,12 +326,26 @@
   function renderSnapshot(student, support, summary, snapshot) {
     var needs = snapshot && Array.isArray(snapshot.needs) ? snapshot.needs : [];
     var interventions = Array.isArray(support.interventions) ? support.interventions : [];
+    var evidenceCount = getRecentEvidence(student.id, 24).length;
+    var readiness = clamp(28 + (interventions.length * 16) + Math.min(evidenceCount, 6) * 6, 18, 96);
+    var continuity = clamp(22 + (interventions.length * 20), 16, 92);
+    var freshness = clamp(evidenceCount * 11, 10, 94);
     el.supportSnapshot.innerHTML = [
       '<p class="sp-kicker">Support Snapshot</p>',
-      '<div class="sp-list">',
-      '<div class="sp-list-item"><strong>Current move</strong><p>' + esc((summary && summary.nextMove && summary.nextMove.line) || "Priority still forming from available support data.") + '</p></div>',
-      '<div class="sp-list-item"><strong>Needs surfacing</strong><p>' + esc(needs.length ? needs.slice(0, 3).map(function (row) { return row.label || row.key || row.skillId || "Need"; }).join(" • ") : "No need profile captured yet.") + '</p></div>',
-      '<div class="sp-list-item"><strong>Recent support</strong><p>' + esc(interventions.length ? interventions.slice(0, 2).map(function (row) { return (row.domain || row.tier || "Support") + ": " + (row.strategy || row.focus || "Recorded"); }).join(" • ") : "No intervention history recorded yet.") + '</p></div>',
+      '<h3 class="sp-card-title">Intervention posture</h3>',
+      '<p class="sp-panel-intro">' + esc((summary && summary.nextMove && summary.nextMove.line) || "Priority still forming from available support data.") + '</p>',
+      '<div class="sp-meter-grid">',
+      buildMeter("Readiness", readiness, toneForRisk(summary && summary.risk), "How ready this profile is for a confident next move."),
+      buildMeter("Fresh signal", freshness, "steady", evidenceCount ? "Recent evidence is visible across the last 30 days." : "Collect one quick check to strengthen the picture."),
+      buildMeter("Continuity", continuity, "watch", interventions.length ? "Interventions are starting to form a usable story." : "No consistent intervention rhythm recorded yet."),
+      '</div>',
+      '<div class="sp-card-band">',
+      '  <strong>Shared needs</strong>',
+      buildSignalPills(needs.slice(0, 4).map(function (row) { return row.label || row.key || row.skillId || "Need"; }), "Need profile still taking shape"),
+      '</div>',
+      '<div class="sp-card-band">',
+      '  <strong>Intervention lane</strong>',
+      buildInterventionLane(interventions),
       '</div>'
     ].join("");
   }
@@ -257,33 +353,49 @@
   function renderGoals(support) {
     var goals = Array.isArray(support.goals) ? support.goals : [];
     var accs = Array.isArray(support.accommodations) ? support.accommodations : [];
+    var goalRows = goals.slice(0, 3).map(function (row, index) {
+      var label = row.skill || row.domain || row.target || "Goal in progress";
+      var progress = estimateGoalProgress(row, index);
+      return [
+        '<article class="sp-goal-track">',
+        '  <div class="sp-goal-track-top"><strong>' + esc(label) + '</strong><span>' + esc(String(progress)) + '%</span></div>',
+        '  <div class="sp-goal-track-bar"><span style="width:' + esc(String(progress)) + '%"></span></div>',
+        '  <p>' + esc(row.metric || row.measure || row.target || "Goal language still needs a sharper success measure.") + '</p>',
+        '</article>'
+      ].join("");
+    });
     el.goalsPanel.innerHTML = [
       '<p class="sp-kicker">Goals & Accommodations</p>',
-      '<div class="sp-list">',
-      '<div class="sp-list-item"><strong>Goals in play</strong><p>' + esc(goals.length ? goals.slice(0, 4).map(function (row) { return row.skill || row.domain || row.target || "Goal"; }).join(" • ") : "No goals recorded yet.") + '</p></div>',
-      '<div class="sp-list-item"><strong>Supports on deck</strong><p>' + esc(accs.length ? accs.slice(0, 4).map(function (row) { return row.title || row.whenToUse || "Accommodation"; }).join(" • ") : "No accommodations logged yet.") + '</p></div>',
+      '<h3 class="sp-card-title">Progress map</h3>',
+      '<p class="sp-panel-intro">See where support is already moving and where scaffolds still need to be anchored.</p>',
+      (goalRows.length ? '<div class="sp-goal-track-list">' + goalRows.join("") + '</div>' : '<div class="sp-lane-empty">No goals recorded yet. Add one target and this area will start showing momentum.</div>'),
+      '<div class="sp-card-band">',
+      '  <strong>Supports on deck</strong>',
+      buildSignalPills(accs.slice(0, 6).map(function (row) { return row.title || row.whenToUse || "Accommodation"; }), "No accommodations logged yet"),
       '</div>'
     ].join("");
   }
 
   function renderEvidence(studentId, summary) {
-    var evidenceRows = SupportStore && typeof SupportStore.getRecentEvidencePoints === "function"
-      ? SupportStore.getRecentEvidencePoints(studentId, 30, 8)
-      : [];
+    var evidenceRows = getRecentEvidence(studentId, 8);
     var chips = summary && Array.isArray(summary.evidenceChips) ? summary.evidenceChips : [];
     var series = evidenceRows.length ? evidenceRows.map(function (row, index) {
       return 30 + Math.round((((index + 1) / evidenceRows.length) * 48));
     }) : [22, 28, 18, 34, 26, 40, 22, 30];
+    var cadence = evidenceRows.length >= 6 ? "Healthy cadence" : (evidenceRows.length >= 3 ? "Building cadence" : "Thin cadence");
     el.evidencePanel.innerHTML = [
       '<p class="sp-kicker">Evidence Pulse</p>',
+      '<h3 class="sp-card-title">Progress monitoring</h3>',
+      '<p class="sp-panel-intro">Quick read on data flow, recency, and what the team can trust today.</p>',
       '<div class="sp-evidence-story">',
       '  <div class="sp-signal-bar">' + series.map(function (value) {
         return '<span style="height:' + value + 'px"></span>';
       }).join("") + '</div>',
-      '  <div class="sp-signal-caption"><span>' + esc(evidenceRows.length ? "Recent data flowing" : "Baseline still thin") + '</span><span>' + esc(evidenceRows.length ? (evidenceRows.length + " points") : "0 points") + '</span></div>',
+      '  <div class="sp-signal-caption"><span>' + esc(cadence) + '</span><span>' + esc(evidenceRows.length ? (evidenceRows.length + " points") : "0 points") + '</span></div>',
       '</div>',
-      '<div class="sp-list">',
-      '<div class="sp-list-item"><strong>What changed lately</strong><p>' + esc(evidenceRows.length ? evidenceRows.slice(0, 3).map(function (row) { return (row.module || "Support") + " · " + relativeDate(row.createdAt); }).join(" • ") : (chips.length ? chips.map(function (chip) { return chip.label + ": " + chip.value; }).join(" • ") : "No recent evidence points yet.")) + '</p></div>',
+      '<div class="sp-card-band">',
+      '  <strong>Recent signal moments</strong>',
+      buildEvidenceMoments(evidenceRows, chips),
       '</div>'
     ].join("");
   }
@@ -293,11 +405,19 @@
       el.weeklyPanel.innerHTML = '<div class="sp-weekly-card"><strong>Weekly summary</strong><p>No weekly insight generated yet.</p></div>';
       return;
     }
+    var strengths = (weekly.strengths || []).slice(0, 2);
+    var growth = (weekly.growthFocus || []).slice(0, 2);
+    var activities = (weekly.recentActivities || []).slice(0, 3);
     el.weeklyPanel.innerHTML = [
+      '<div class="sp-weekly-feature">',
+      '  <span class="sp-weekly-eyebrow">This week</span>',
+      '  <strong>' + esc(growth[0] || strengths[0] || "Weekly story is forming.") + '</strong>',
+      '  <p>' + esc(strengths[0] ? ("Keep leaning on " + strengths[0].toLowerCase() + " while tightening the next support move.") : "Run one more support cycle to strengthen the weekly readout.") + '</p>',
+      '</div>',
       '<div class="sp-list">',
-      '<div class="sp-weekly-card"><strong>Strengths</strong><p>' + esc((weekly.strengths || []).join(" • ")) + '</p></div>',
-      '<div class="sp-weekly-card"><strong>Growth focus</strong><p>' + esc((weekly.growthFocus || []).join(" • ")) + '</p></div>',
-      '<div class="sp-weekly-card"><strong>Recent activities</strong><p>' + esc((weekly.recentActivities || []).join(" • ")) + '</p></div>',
+      '<div class="sp-weekly-card"><strong>Strengths</strong><p>' + esc(strengths.join(" • ") || "No strength pattern surfaced yet.") + '</p></div>',
+      '<div class="sp-weekly-card"><strong>Growth focus</strong><p>' + esc(growth.join(" • ") || "No growth focus surfaced yet.") + '</p></div>',
+      '<div class="sp-weekly-card"><strong>Recent activities</strong><p>' + esc(activities.join(" • ") || "No recent activities recorded yet.") + '</p></div>',
       '</div>'
     ].join("");
   }

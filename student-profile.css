@@ -355,10 +355,176 @@ body.sp-page {
   display: grid;
   gap: 12px;
   align-content: start;
+  background:
+    radial-gradient(circle at top right, rgba(136, 175, 224, 0.16), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,0.72), rgba(247, 244, 238, 0.62));
 }
 
 .sp-visual-card .sp-kicker {
   margin-bottom: 2px;
+}
+
+.sp-card-title {
+  margin: -2px 0 2px;
+  font-size: 1.2rem;
+  line-height: 1.05;
+  font-family: var(--font-display);
+}
+
+.sp-meter-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.sp-meter {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid color-mix(in oklab, var(--border) 80%, white 20%);
+}
+
+.sp-meter-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.sp-meter-top span,
+.sp-card-band > strong,
+.sp-lane-copy span,
+.sp-weekly-eyebrow {
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--muted) 80%, white 20%);
+  font-weight: 800;
+}
+
+.sp-meter-track,
+.sp-goal-track-bar {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(84, 99, 125, 0.12);
+}
+
+.sp-meter-track span,
+.sp-goal-track-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #3d71d0, #8cc6ff);
+}
+
+.sp-meter--alert .sp-meter-track span {
+  background: linear-gradient(90deg, #d15b4b, #efb26f);
+}
+
+.sp-meter--watch .sp-meter-track span {
+  background: linear-gradient(90deg, #c98e2f, #f0c974);
+}
+
+.sp-meter p,
+.sp-goal-track p,
+.sp-lane-copy p,
+.sp-weekly-feature p,
+.sp-lane-empty {
+  margin: 0;
+  color: color-mix(in oklab, var(--text-primary) 72%, var(--muted) 28%);
+  line-height: 1.45;
+}
+
+.sp-card-band {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid color-mix(in oklab, var(--border) 82%, white 18%);
+}
+
+.sp-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sp-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--accent, #2b5da8) 10%, white 90%);
+  border: 1px solid color-mix(in oklab, var(--accent, #2b5da8) 18%, white 82%);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: color-mix(in oklab, var(--text-primary) 84%, var(--accent, #2b5da8) 16%);
+}
+
+.sp-lane,
+.sp-goal-track-list,
+.sp-moment-list {
+  display: grid;
+  gap: 10px;
+}
+
+.sp-lane-card,
+.sp-goal-track,
+.sp-moment,
+.sp-weekly-feature {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid color-mix(in oklab, var(--border) 84%, white 16%);
+}
+
+.sp-lane-card {
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: start;
+}
+
+.sp-lane-step {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(53, 111, 216, 0.18), rgba(53, 111, 216, 0.08));
+  color: #2f5cab;
+  font-weight: 800;
+}
+
+.sp-lane-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.sp-goal-track-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.sp-moment-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sp-moment strong {
+  font-size: 0.96rem;
+}
+
+.sp-weekly-feature {
+  background:
+    radial-gradient(circle at top right, rgba(241, 205, 130, 0.26), transparent 34%),
+    linear-gradient(135deg, rgba(255,255,255,0.88), rgba(243, 247, 255, 0.84));
 }
 
 .sp-evidence-story {
@@ -535,6 +701,10 @@ body.sp-page {
   .sp-student-list {
     max-height: none;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sp-moment-list {
+    grid-template-columns: 1fr;
   }
 }
 
