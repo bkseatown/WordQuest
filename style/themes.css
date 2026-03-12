@@ -235,8 +235,8 @@
   --radius-key:      12px;
   --font-logo:       "Avenir Next Condensed", "Arial Narrow", "Trebuchet MS", "Atkinson Hyperlegible", sans-serif;
   /* 60% dominant: College Navy */
-  --page-bg:      #90a8bb;
-  --page-bg2:     #6988a1;
+  --page-bg:      #87a2b8;
+  --page-bg2:     #5f7f98;
   --header-bg:    #002244;
   --brand:        #002244;
   --brand-dk:     #001a34;
@@ -244,20 +244,20 @@
   --focusbar-bg:  rgba(215, 223, 229, 0.92);
 
   /* 30% secondary: Wolf Grey / white-tinted structural surfaces */
-  --panel-bg:     #dbe3e7;
+  --panel-bg:     #d7e1e8;
   --panel-border: rgba(241, 245, 247, 0.82);
-  --plate-bg:     #c0cbd2;
-  --plate-border: #61798d;
-  --tile-face:    linear-gradient(160deg, #fcfeff 0%, #ecf1f4 100%);
-  --tile-border:  #72889d;
+  --plate-bg:     #bcc8d2;
+  --plate-border: #587286;
+  --tile-face:    linear-gradient(160deg, #fcfeff 0%, #e9f0f5 100%);
+  --tile-border:  #688198;
   --tile-text:    #001833;
   --tile-filled-text: #001433;
   --tile-shadow:  0 4px 0 #2a4258, 0 8px 18px rgba(3, 17, 34, 0.22);
   --tile-filled-border: #69be28;
-  --key-bg:       #d7dde1;
+  --key-bg:       #d1dbe3;
   --key-text:     #001a34;
-  --key-shadow:   0 4px 0 #738493, 0 8px 16px rgba(3, 17, 34, 0.16);
-  --key-hover:    #dde4e8;
+  --key-shadow:   0 4px 0 #678092, 0 8px 16px rgba(3, 17, 34, 0.16);
+  --key-hover:    #dce6ed;
   --theme-text:         #11283d;
   --theme-text-muted:   #385066;
   --modal-bg:     #c5d0d7;
@@ -275,7 +275,7 @@
   --logo-dot:     #69be28;
   --wq-play-header-bg:
     linear-gradient(180deg, rgba(255,255,255,0.18) 0 3%, transparent 3% 100%),
-    linear-gradient(180deg, #0b3f6f 0 50%, #b6c0c7 50% 100%);
+    linear-gradient(180deg, #0a3a66 0 50%, #bac9d5 50% 100%);
   --wq-play-header-border: rgba(105, 190, 40, 0.48);
   --wq-play-header-shadow: 0 12px 26px rgba(0, 18, 36, 0.22);
   --wq-play-header-art-width: 280px;
@@ -286,17 +286,17 @@
     radial-gradient(170px 24px at 92% 52%, rgba(18,44,69,0.16) 0 68%, transparent 69%),
     radial-gradient(122px 22px at 97% 53%, rgba(105,190,40,0.16) 0 54%, transparent 55%);
   --wq-play-header-art-opacity: 0.82;
-  --wq-play-focus-surface-bg: linear-gradient(180deg, rgba(247, 250, 252, 0.98) 0%, rgba(226, 233, 237, 0.98) 100%);
+  --wq-play-focus-surface-bg: linear-gradient(180deg, rgba(247, 250, 253, 0.98) 0%, rgba(219, 229, 237, 0.98) 100%);
   --wq-play-focus-surface-border: rgba(0, 34, 68, 0.2);
   --wq-play-vowel-shadow: #69be28;
-  --wq-play-focus-chip-bg: linear-gradient(180deg, rgba(236, 240, 243, 0.98) 0%, rgba(207, 215, 221, 0.98) 100%);
+  --wq-play-focus-chip-bg: linear-gradient(180deg, rgba(235, 241, 246, 0.98) 0%, rgba(201, 212, 221, 0.98) 100%);
   --wq-play-focus-chip-border: rgba(53, 72, 90, 0.3);
   --wq-play-focus-chip-shadow:
     inset 0 1px 0 rgba(255,255,255,0.72),
     0 4px 10px rgba(3, 17, 34, 0.1);
   --wq-play-board-bg:
-    linear-gradient(180deg, rgba(242, 246, 248, 0.99) 0%, rgba(212, 220, 224, 1) 58%, rgba(194, 204, 210, 1) 100%);
-  --wq-play-board-border: rgba(85, 105, 122, 0.88);
+    linear-gradient(180deg, rgba(241, 246, 250, 0.99) 0%, rgba(208, 219, 227, 1) 58%, rgba(186, 200, 210, 1) 100%);
+  --wq-play-board-border: rgba(76, 98, 116, 0.9);
   --wq-play-board-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.82),
     inset 0 -4px 0 rgba(3, 17, 34, 0.12),
@@ -325,8 +325,8 @@
   --wq-play-tile-clip: polygon(0 0, 94% 0, 100% 8%, 100% 100%, 6% 100%, 0 92%);
   --wq-play-tile-bg:
     radial-gradient(circle at 50% 16%, rgba(255,255,255,0.4) 0 12%, transparent 13%),
-    linear-gradient(180deg, rgba(255,255,255,0.99) 0%, rgba(243, 247, 249, 0.99) 58%, rgba(230, 236, 240, 0.99) 100%);
-  --wq-play-tile-border: #61798d;
+    linear-gradient(180deg, rgba(255,255,255,0.99) 0%, rgba(240, 246, 250, 0.99) 58%, rgba(224, 233, 240, 0.99) 100%);
+  --wq-play-tile-border: #567084;
   --wq-play-tile-shadow:
     0 6px 0 #294158,
     0 11px 18px rgba(8, 18, 34, 0.14),
@@ -336,27 +336,27 @@
   --wq-play-key-radius: 10px;
   --wq-play-key-bg:
     radial-gradient(circle at 50% 16%, rgba(255,255,255,0.38) 0 10%, transparent 11%),
-    linear-gradient(180deg, rgba(253, 254, 255, 1) 0%, rgba(233, 239, 242, 0.99) 44%, rgba(205, 215, 221, 0.99) 72%, rgba(166, 178, 187, 0.99) 100%);
-  --wq-play-key-border: rgba(84, 103, 118, 0.96);
+    linear-gradient(180deg, rgba(253, 254, 255, 1) 0%, rgba(229, 238, 245, 0.99) 44%, rgba(199, 212, 222, 0.99) 72%, rgba(157, 172, 184, 0.99) 100%);
+  --wq-play-key-border: rgba(72, 95, 113, 0.96);
   --wq-play-key-color: #0d2439;
   --wq-play-key-text-shadow: 0 1px 0 rgba(255,255,255,0.62);
   --wq-play-key-shadow:
-    0 6px 0 #4a6073,
+    0 6px 0 #3f586d,
     0 12px 18px rgba(8, 18, 34, 0.18),
     inset 0 1px 0 rgba(255,255,255,0.92),
     inset 0 -2px 0 rgba(0,34,68,0.12);
   --wq-play-key-hover-bg:
-    linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(239, 244, 247, 0.99) 46%, rgba(215, 223, 228, 0.99) 72%, rgba(180, 190, 198, 0.99) 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(236, 243, 248, 0.99) 46%, rgba(210, 221, 229, 0.99) 72%, rgba(173, 186, 197, 0.99) 100%);
   --wq-play-key-wide-bg:
-    linear-gradient(180deg, rgba(243, 248, 250, 1) 0%, rgba(201, 211, 218, 0.99) 100%);
+    linear-gradient(180deg, rgba(241, 247, 251, 1) 0%, rgba(196, 209, 219, 0.99) 100%);
   --wq-play-vowel-bg:
     linear-gradient(180deg, rgba(252,255,255,1) 0%, rgba(228,243,245,0.99) 52%, rgba(196,218,223,0.99) 100%);
   --wq-play-vowel-bg:
-    linear-gradient(180deg, rgba(250,253,255,1) 0%, rgba(230,239,245,0.99) 52%, rgba(205,220,231,0.99) 100%);
+    linear-gradient(180deg, rgba(250,253,255,1) 0%, rgba(225,237,246,0.99) 52%, rgba(198,216,229,0.99) 100%);
   --wq-play-vowel-color: #0d2439;
   --wq-play-control-bg:
-    linear-gradient(180deg, rgba(237,241,244,0.99) 0%, rgba(207,214,220,0.99) 100%);
-  --wq-play-control-border: rgba(75, 95, 110, 0.32);
+    linear-gradient(180deg, rgba(233,239,245,0.99) 0%, rgba(200,210,220,0.99) 100%);
+  --wq-play-control-border: rgba(67, 90, 108, 0.34);
   --wq-play-control-color: #10283f;
   --wq-play-next-btn-bg: linear-gradient(180deg, #8fdb49 0%, #69be28 100%);
   --wq-play-next-btn-border: #c6ecab;
