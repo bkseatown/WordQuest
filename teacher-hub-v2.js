@@ -5053,6 +5053,45 @@
     return "";
   }
 
+  function buildGroupSuggestion(item) {
+    var students = item && item.contextData && item.contextData.derived && Array.isArray(item.contextData.derived.students)
+      ? item.contextData.derived.students
+      : [];
+    var groups = {};
+    students.forEach(function (student) {
+      var label = String((student && student.relatedSupport && student.relatedSupport[0]) || student && student.primaryGoal || "").trim();
+      if (!label) return;
+      groups[label] = groups[label] || [];
+      groups[label].push(student.name || "Student");
+    });
+    var bestLabel = "";
+    var bestNames = [];
+    Object.keys(groups).forEach(function (key) {
+      if (groups[key].length > bestNames.length) {
+        bestLabel = key;
+        bestNames = groups[key];
+      }
+    });
+    if (bestNames.length < 2) return null;
+    return {
+      label: bestLabel,
+      names: bestNames.slice(0, 3),
+      count: bestNames.length
+    };
+  }
+
+  function buildGroupPlanText(block, item, suggestion) {
+    if (!suggestion) return "";
+    var blockLabel = block && (block.label || block.classSection || block.subject) || "This block";
+    return [
+      "Small-group plan",
+      blockLabel,
+      "Focus: " + suggestion.label,
+      "Students: " + suggestion.names.join(", "),
+      "Move: Pull this group first for a quick scaffold before whole-group release."
+    ].join("\n");
+  }
+
   function priorityConfidenceLabel(item) {
     var score = Number(item && item.score || 0);
     if (score >= 90) return "High confidence";
@@ -5129,6 +5168,9 @@
       '  <p class="th2-day-brief__prompt">' + escapeHtml(brief.rationale) + '</p>',
       (brief.primaryItem ? '  <div class="th2-day-brief__trust"><span class="th2-day-brief__confidence">' + escapeHtml(priorityConfidenceLabel(brief.primaryItem)) + '</span>' + (priorityWhyLine(brief.primaryItem) ? '<span class="th2-day-brief__why">' + escapeHtml(priorityWhyLine(brief.primaryItem)) + '</span>' : '') + '</div>' : ''),
       (brief.primaryItem && detectSharedPattern(brief.primaryItem) ? '  <p class="th2-day-brief__pattern">' + escapeHtml(detectSharedPattern(brief.primaryItem)) + '</p>' : ''),
+      (brief.primaryItem && buildGroupSuggestion(brief.primaryItem)
+        ? '  <div class="th2-day-brief__group"><div><span class="th2-day-brief__group-label">Suggested group</span><strong>' + escapeHtml(buildGroupSuggestion(brief.primaryItem).count + ' students for ' + buildGroupSuggestion(brief.primaryItem).label) + '</strong><p>' + escapeHtml(buildGroupSuggestion(brief.primaryItem).names.join(", ")) + '</p></div><button class="th2-note-btn" data-copy-group-plan="' + escapeHtml(brief.primaryItem.block && brief.primaryItem.block.id || "") + '" type="button">&#x1F465; Copy group plan</button></div>'
+        : ''),
       '  <div class="th2-command-brief-grid">',
       '    <div class="th2-command-brief-card"><span>' + escapeHtml(brief.now.label) + '</span><strong>' + escapeHtml(brief.now.value) + '</strong><p>' + escapeHtml(brief.now.meta) + '</p></div>',
       '    <div class="th2-command-brief-card"><span>' + escapeHtml(brief.next.label) + '</span><strong>' + escapeHtml(brief.next.value) + '</strong><p>' + escapeHtml(brief.next.meta) + '</p></div>',
@@ -5505,6 +5547,31 @@
         showToast("Copied " + kind + " output.", "success");
       }).catch(function () {
         showToast("Couldn't copy output.", "warn");
+      });
+    } else {
+      showToast("Clipboard not available on this device.", "warn");
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    var groupBtn = e.target.closest && e.target.closest("[data-copy-group-plan]");
+    if (!groupBtn) return;
+    var blockId = groupBtn.getAttribute("data-copy-group-plan") || "";
+    var brief = buildNowNextBrief(getTodayLessonBlocks());
+    var item = (brief.priorityItems || []).filter(function (row) {
+      return row && row.block && row.block.id === blockId;
+    })[0] || brief.primaryItem || null;
+    var suggestion = buildGroupSuggestion(item);
+    var text = buildGroupPlanText(item && item.block, item, suggestion);
+    if (!text) {
+      showToast("No group suggestion ready yet.", "warn");
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        showToast("Copied group plan.", "success");
+      }).catch(function () {
+        showToast("Couldn't copy group plan.", "warn");
       });
     } else {
       showToast("Clipboard not available on this device.", "warn");
