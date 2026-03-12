@@ -4951,6 +4951,15 @@
       : "";
   }
 
+  function getBriefIntelligenceSnapshot(item) {
+    return {
+      pattern: item ? detectSharedPattern(item) : "",
+      suggestion: item ? buildGroupSuggestion(item) : null,
+      why: item ? priorityWhyLine(item) : "",
+      confidence: item ? priorityConfidenceLabel(item) : ""
+    };
+  }
+
   function priorityConfidenceLabel(item) {
     return hubPriorityEngine && typeof hubPriorityEngine.priorityConfidenceLabel === "function"
       ? hubPriorityEngine.priorityConfidenceLabel(item)
@@ -5009,6 +5018,7 @@
     var today = new Date();
     var dayStr = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
     var brief = buildNowNextBrief(blocks);
+    var briefSignals = getBriefIntelligenceSnapshot(brief.primaryItem);
     var leadBlock = (brief.primaryItem && brief.primaryItem.block) || brief.nextBlock || blocks[0] || null;
 
     el.emptyState.innerHTML = [
@@ -5020,12 +5030,12 @@
       '  <h2 class="th2-day-brief__title">' + escapeHtml(brief.title) + '</h2>',
       '  <p class="th2-day-brief__summary">' + escapeHtml(brief.summary) + '</p>',
       '  <p class="th2-day-brief__prompt">' + escapeHtml(brief.rationale) + '</p>',
-      (brief.primaryItem ? '  <div class="th2-day-brief__trust"><span class="th2-day-brief__confidence">' + escapeHtml(priorityConfidenceLabel(brief.primaryItem)) + '</span>' + (priorityWhyLine(brief.primaryItem) ? '<span class="th2-day-brief__why">' + escapeHtml(priorityWhyLine(brief.primaryItem)) + '</span>' : '') + '</div>' : ''),
+      (brief.primaryItem ? '  <div class="th2-day-brief__trust"><span class="th2-day-brief__confidence">' + escapeHtml(briefSignals.confidence) + '</span>' + (briefSignals.why ? '<span class="th2-day-brief__why">' + escapeHtml(briefSignals.why) + '</span>' : '') + '</div>' : ''),
       (brief.outcomeMemory ? '  <p class="th2-day-brief__memory">' + escapeHtml(brief.outcomeMemory) + '</p>' : ''),
       (brief.memoryMode ? '  <p class="th2-day-brief__memory-mode">' + escapeHtml(brief.memoryMode) + '</p>' : ''),
-      (brief.primaryItem && detectSharedPattern(brief.primaryItem) ? '  <p class="th2-day-brief__pattern">' + escapeHtml(detectSharedPattern(brief.primaryItem)) + '</p>' : ''),
-      (brief.primaryItem && buildGroupSuggestion(brief.primaryItem)
-        ? '  <div class="th2-day-brief__group"><div><span class="th2-day-brief__group-label">Suggested group</span><strong>' + escapeHtml(buildGroupSuggestion(brief.primaryItem).count + ' students for ' + buildGroupSuggestion(brief.primaryItem).label) + '</strong><p>' + escapeHtml(buildGroupSuggestion(brief.primaryItem).names.join(", ")) + '</p></div><button class="th2-note-btn" data-copy-group-plan="' + escapeHtml(brief.primaryItem.block && brief.primaryItem.block.id || "") + '" type="button">&#x1F465; Copy group plan</button></div>'
+      (briefSignals.pattern ? '  <p class="th2-day-brief__pattern">' + escapeHtml(briefSignals.pattern) + '</p>' : ''),
+      (brief.primaryItem && briefSignals.suggestion
+        ? '  <div class="th2-day-brief__group"><div><span class="th2-day-brief__group-label">Suggested group</span><strong>' + escapeHtml(briefSignals.suggestion.count + ' students for ' + briefSignals.suggestion.label) + '</strong><p>' + escapeHtml(briefSignals.suggestion.names.join(", ")) + '</p></div><button class="th2-note-btn" data-copy-group-plan="' + escapeHtml(brief.primaryItem.block && brief.primaryItem.block.id || "") + '" type="button">&#x1F465; Copy group plan</button></div>'
         : ''),
       '  <div class="th2-command-brief-grid">',
       '    <div class="th2-command-brief-card"><span>' + escapeHtml(brief.now.label) + '</span><strong>' + escapeHtml(brief.now.value) + '</strong><p>' + escapeHtml(brief.now.meta) + '</p></div>',
