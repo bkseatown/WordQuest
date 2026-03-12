@@ -280,15 +280,13 @@
    * Subject- and goal-specific performance levels per student. */
   var GOALS_KEY = "cs.goals.v1";
   function getStudentGoals(sid) {
-    try { return JSON.parse(localStorage.getItem(GOALS_KEY) || "{}")[sid] || []; }
-    catch (_e) { return []; }
+    var all = hubMemory.getJson(GOALS_KEY, {}) || {};
+    return all[sid] || [];
   }
   function saveStudentGoals(sid, goals) {
-    try {
-      var all = JSON.parse(localStorage.getItem(GOALS_KEY) || "{}");
-      all[sid] = goals;
-      localStorage.setItem(GOALS_KEY, JSON.stringify(all));
-    } catch (_e) {}
+    var all = hubMemory.getJson(GOALS_KEY, {}) || {};
+    all[sid] = goals;
+    hubMemory.setJson(GOALS_KEY, all);
   }
   function getStudentPlans(student) {
     return Array.isArray((student || {}).plans) ? student.plans : [];
@@ -1908,15 +1906,15 @@
 
   function getFpLevel(studentId) {
     var lsKey = "cs.hub.fp." + studentId;
-    var stored = localStorage.getItem(lsKey);
-    if (stored !== null) return stored || null;   // "" means "cleared"
+    var stored = hubMemory.getString(lsKey, "__missing__");
+    if (stored !== "__missing__") return stored || null;   // "" means "cleared"
     var demo = FP_DEMO_LEVELS[studentId] || null;
-    if (demo) localStorage.setItem(lsKey, demo);  // seed once
+    if (demo) hubMemory.setString(lsKey, demo);  // seed once
     return demo;
   }
 
   function setFpLevel(studentId, level) {
-    localStorage.setItem("cs.hub.fp." + studentId, level ? String(level).toUpperCase().slice(0, 1) : "");
+    hubMemory.setString("cs.hub.fp." + studentId, level ? String(level).toUpperCase().slice(0, 1) : "");
   }
 
   function renderFpBadge(studentId) {
@@ -1937,17 +1935,17 @@
 
   function getToolBadge(studentId, tool) {
     var lsKey = "cs.hub." + tool + "." + studentId;
-    var stored = localStorage.getItem(lsKey);
-    if (stored !== null) return stored || null;
+    var stored = hubMemory.getString(lsKey, "__missing__");
+    if (stored !== "__missing__") return stored || null;
     // Seed demo values once
     var demo = (tool === "wtw" ? WTW_DEMO : tool === "rn" ? RN_DEMO : {})[studentId] || null;
-    if (demo) localStorage.setItem(lsKey, demo);
+    if (demo) hubMemory.setString(lsKey, demo);
     return demo;
   }
 
   function setToolBadge(studentId, tool, value) {
-    if (value) localStorage.setItem("cs.hub." + tool + "." + studentId, String(value));
-    else        localStorage.removeItem("cs.hub." + tool + "." + studentId);
+    if (value) hubMemory.setString("cs.hub." + tool + "." + studentId, String(value));
+    else        hubMemory.remove("cs.hub." + tool + "." + studentId);
   }
 
   function renderToolBadges(studentId) {
