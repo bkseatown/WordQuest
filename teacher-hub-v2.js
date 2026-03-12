@@ -141,6 +141,15 @@
     return memory[String(blockId || "")] || { opens: 0, lastOpenedAt: "" };
   }
 
+  function recommendationVerdictKey(studentId) {
+    return "cs.rec.verdict." + studentId + "." + todayIsoKey();
+  }
+
+  function readRecommendationVerdict(studentId) {
+    try { return String(localStorage.getItem(recommendationVerdictKey(studentId)) || ""); }
+    catch (_e) { return ""; }
+  }
+
   function setActiveModeTab(mode) {
     el.modeTabs.forEach(function (tab) {
       var isActive = (tab.getAttribute("data-mode") || "") === mode;
@@ -1073,6 +1082,7 @@
         || "Support ready";
       return {
         name: student.name || "Student",
+        studentId: String(student.studentId || ""),
         label: displayTierLabel(student),
         tier: tier,
         trend: trend,
@@ -4858,11 +4868,15 @@
       var tier = Number(student && student.tier || 2);
       var trend = String(student && student.trend || "stable");
       var daysSince = Number(student && student.daysSince || 0);
+      var verdict = readRecommendationVerdict(student && student.studentId);
       score += tier >= 3 ? 20 : (tier === 2 ? 11 : 4);
       if (trend === "down") score += 12;
       else if (trend === "stable") score += 5;
       if (daysSince >= 7) score += 12;
       else if (daysSince >= 4) score += 7;
+      if (verdict === "skipped") score += 10;
+      else if (verdict === "modified") score += 4;
+      else if (verdict === "followed") score -= 5;
       return score;
     }, 0)
     + (isCurrent ? 28 : 0)
@@ -4896,6 +4910,12 @@
       var supportCount = students.filter(function (student) {
         return /^T[23]$/i.test(String(student && student.label || ""));
       }).length;
+      var followedCount = students.filter(function (student) {
+        return readRecommendationVerdict(student && student.studentId) === "followed";
+      }).length;
+      var skippedCount = students.filter(function (student) {
+        return readRecommendationVerdict(student && student.studentId) === "skipped";
+      }).length;
       var isCurrent = !!(currentBlock && block && block.id === currentBlock.id);
       var isNext = !!(!isCurrent && nextBlock && block && block.id === nextBlock.id);
       var score = scorePriorityContext(students, block, isCurrent, isNext);
@@ -4910,6 +4930,8 @@
         isCurrent: isCurrent,
         isNext: isNext,
         opensToday: Number(memory.opens || 0),
+        followedCount: followedCount,
+        skippedCount: skippedCount,
         reason: buildPriorityReason(block, supportCount, isCurrent, isNext),
         angle: describePriorityAngle(block, supportCount, isCurrent, isNext),
         cue: isCurrent ? "Now" : (isNext ? "Up next" : "")
@@ -4994,6 +5016,8 @@
         var footerBits = [];
         if (item.cue) footerBits.push('<span>' + escapeHtml(item.cue) + '</span>');
         if (item.opensToday > 0) footerBits.push('<span>Opened ' + escapeHtml(String(item.opensToday)) + 'x today</span>');
+        if (item.followedCount > 0) footerBits.push('<span>' + escapeHtml(String(item.followedCount)) + ' followed</span>');
+        if (item.skippedCount > 0) footerBits.push('<span>' + escapeHtml(String(item.skippedCount)) + ' skipped</span>');
         footerBits.push('<span>' + escapeHtml(String(item.supportCount || 0)) + ' priority</span>');
         return [
           '<button class="th2-priority-item" data-open-block="' + escapeHtml(block.id || "") + '" type="button">',
