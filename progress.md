@@ -156,3 +156,23 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
   - `node --check games/ui/game-shell.js` passes
   - local browser snapshot on `http://127.0.0.1:4174/typing-quest.html?cb=20260313k3` shows the new preview lane and unit-jump strip in the welcome screen
   - browser metrics still show a very small outer-document overflow (`scrollHeight 745` vs `innerHeight 739`) even though the main Typing shell itself remains compact (`mainHeight ~732px`), so there is still a small fit cleanup available later if we want pixel-perfect no-scroll behavior
+
+## 2026-03-13 (Typing Quest placement strip separation fix)
+
+- found that the placement section was still visually reading like a giant translucent sheet under the hero even after the course-hub restructure; the issue was not negative positioning, but an oversized, pale placement block that blended back into the hero
+- applied stronger page-specific placement styling in `games/ui/game-shell.css` using the route-scoped `body.game-platform-page[data-shell-view="play"][data-game-id="word-typing"]` selector so later generic Typing section rules no longer override the compact placement layout
+- made the placement lane more opaque, reduced its internal padding, tightened the four check tiles, and kept the row as a clearer launch strip rather than a second giant card
+- bumped the shared shell CSS cache-buster to `20260313m` in `typing-quest.html` and `game-platform.html`
+- local verification:
+  - `node --check games/ui/game-shell.js` passes
+  - local browser metrics on `http://127.0.0.1:4174/typing-quest.html?cb=20260313m1` show the placement section height reduced from ~404px to ~337px with the new opaque background applied
+
+## 2026-03-13 (Typing Quest no-scroll welcome cleanup)
+
+- adopted the platform rule for this screen directly: no page scroll unless the window is genuinely too small to support the layout
+- in `games/ui/game-shell.js`, reduced explanatory copy on the Typing Quest welcome page and turned the first-unit block into a smaller teaser when placement is still pending instead of rendering the full four-lesson unit immediately
+- in `games/ui/game-shell.css`, removed the forced viewport-filling min-height on the course page and tightened welcome text sizing so the screen relies more on visual artifacts and less on stacked copy
+- bumped the Typing Quest shell CSS cache-buster to `20260313n` in `typing-quest.html`
+- local verification:
+  - `node --check games/ui/game-shell.js` passes
+  - local browser metrics on `http://127.0.0.1:4174/typing-quest.html?cb=20260313n1` now report `scrollHeight === innerHeight` with hero, placement strip, and first-unit teaser all visible in one non-scrolling welcome screen
