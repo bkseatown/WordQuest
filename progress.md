@@ -90,3 +90,10 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - wrapped the active-play keyboard in a softer keybed surface with a subtle top sheen so the board and keyboard feel like part of the same premium puzzle object
 - bumped standalone Word Quest stylesheet cache-busters to `20260313e`
 - rechecked locally on `http://127.0.0.1:4174/word-quest.html?cb=20260313-pass9`; no overflow, no new console issues, and on-screen key input still worked after the visual polish
+
+## 2026-03-13 (Word Quest support language polish)
+
+- made active-play support affordances read more like learner-facing game help instead of internal tool labels
+- updated the clue launcher copy to `Need Hint?`, improved the quest picker placeholder/title to show the current quest directly, and clarified active-play navigation labels like `Open all games`
+- bumped the standalone Word Quest app script cache-buster to `20260313f` so the updated runtime copy loads reliably
+- rechecked locally on `http://127.0.0.1:4174/word-quest.html?cb=20260313-pass11`; new copy rendered correctly, on-screen input still worked, and console output stayed clean

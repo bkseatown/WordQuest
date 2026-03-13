@@ -3492,17 +3492,20 @@
     const listening = playStyle === 'listening';
     const minimumGuesses = getHintUnlockMinimum(playStyle);
     const guessNoun = minimumGuesses === 1 ? 'guess' : 'guesses';
-    toggle.textContent = listening ? 'Sound Help' : 'Clue Hint';
+    toggle.textContent = listening ? 'Need Sound?' : 'Need Hint?';
     toggle.setAttribute('aria-pressed', 'false');
     toggle.setAttribute('aria-label', listening
       ? 'Open optional sound help for listening and spelling'
       : 'Open optional clue hint');
+    toggle.setAttribute('title', listening
+      ? 'Need help hearing the word or meaning?'
+      : 'Need a clue for this word?');
     setHoverNoteForElement(
       toggle,
       enabled
         ? (listening
-            ? `Optional support. Unlocks after ${minimumGuesses} submitted ${guessNoun}.`
-            : `Optional clue support with phonics markings. Unlocks after ${minimumGuesses} submitted ${guessNoun}.`)
+            ? `Optional sound support. Unlocks after ${minimumGuesses} submitted ${guessNoun}.`
+            : `Optional clue support. Unlocks after ${minimumGuesses} submitted ${guessNoun}.`)
         : 'Hint cues are off in settings, but you can still ask for support'
     );
     toggle.classList.toggle('is-off', !enabled);
@@ -7211,6 +7214,7 @@
     updateFocusSummaryLabel();
     updateGradeTargetInline();
     updateNextActionLine();
+    syncPlayHeaderCopy();
   }
 
   document.querySelectorAll('#settings-panel [data-settings-tab]').forEach((tab) => {
@@ -10313,10 +10317,9 @@
     if (!inputEl) return;
     inputEl.value = '';
     delete inputEl.dataset.lockedLabel;
-    // Legacy regression sentinels:
-    inputEl.placeholder = 'Select your quest';
-    inputEl.setAttribute('aria-label', `Select your quest. Current selection: ${currentLabel}`);
-    inputEl.setAttribute('title', `Current selection: ${currentLabel}`);
+    inputEl.placeholder = currentLabel;
+    inputEl.setAttribute('aria-label', `Quest picker. Current selection: ${currentLabel}`);
+    inputEl.setAttribute('title', `Current quest: ${currentLabel}. Click to switch.`);
   }
 
   function formatGradeBandLabel(value) {
@@ -10367,6 +10370,35 @@
     const sourceLabel = fromSubjectPreset ? 'subject preset' : 'teacher/session grade';
     chipEl.textContent = `Active Grade Band locked: ${gradeLabel}`;
     chipEl.setAttribute('title', `New rounds use ${gradeLabel} from ${sourceLabel}.`);
+  }
+
+  function syncPlayHeaderCopy() {
+    const homeBtn = _el('home-logo-btn');
+    const galleryBtn = _el('teacher-dashboard-btn');
+    const nextBtn = _el('new-game-btn');
+    const focusBtn = _el('focus-help-btn');
+    const focusInput = _el('focus-inline-search');
+
+    if (homeBtn) {
+      homeBtn.setAttribute('title', 'Back to Cornerstone home');
+      homeBtn.setAttribute('aria-label', 'Back to Cornerstone home');
+    }
+    if (galleryBtn) {
+      galleryBtn.setAttribute('title', 'All games');
+      galleryBtn.setAttribute('aria-label', 'Open all games');
+      setHoverNoteForElement(galleryBtn, 'Back to all games');
+    }
+    if (nextBtn) {
+      nextBtn.setAttribute('title', 'Start a fresh word');
+      setHoverNoteForElement(nextBtn, 'Start a fresh word');
+    }
+    if (focusBtn) {
+      focusBtn.setAttribute('title', 'Open quest supports');
+      setHoverNoteForElement(focusBtn, 'Open quest supports');
+    }
+    if (focusInput) {
+      setHoverNoteForElement(focusInput, 'Open the quest picker');
+    }
   }
 
   function syncQuickSetupControls() {
