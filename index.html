@@ -8,7 +8,7 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
   <link rel="stylesheet" href="./style/typography.css?v=20260306h">
-  <link rel="stylesheet" href="./home-v3.css?v=20260313a">
+  <link rel="stylesheet" href="./home-v3.css?v=20260313b">
   <link rel="stylesheet" href="./css/backup-panel.css?v=20260310a">
 </head>
 <body class="cs-home-page">
@@ -55,41 +55,43 @@
             <div class="landing-scene-card landing-scene-card--board">
               <div class="landing-scene-card__top">
                 <p class="landing-scene__kicker">Word Quest</p>
-                <span class="landing-scene-card__chip">Puzzle lane</span>
               </div>
               <div class="landing-preview-board landing-preview-board--quest">
-                <div class="landing-preview-board__row"><i class="is-hit">S</i><i class="is-hit">T</i><i class="is-hit">O</i><i class="is-hit">R</i><i class="is-hit">M</i></div>
-                <div class="landing-preview-board__row"><i></i><i></i><i></i><i></i><i></i></div>
-                <div class="landing-preview-board__row"><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="landing-preview-board__row"><i class="is-hit">W</i><i class="is-present">O</i><i class="is-miss">R</i><i class="is-miss">D</i><i class="is-miss">S</i></div>
+                <div class="landing-preview-board__row"><i class="is-hit">W</i><i class="is-hit">R</i><i class="is-present">I</i><i class="is-present">T</i><i class="is-miss">E</i></div>
+                <div class="landing-preview-board__row"><i class="is-hit">W</i><i class="is-hit">R</i><i class="is-hit">I</i><i class="is-hit">T</i><i class="is-hit">E</i></div>
               </div>
               <div class="landing-preview-quest-meta">
-                <span>Hint ready</span>
-                <strong>3 tries left</strong>
+                <span>Color clues narrow the pattern</span>
+                <strong>Word solved</strong>
               </div>
             </div>
             <div class="landing-scene-card landing-scene-card--typing">
               <div class="landing-scene-card__top">
                 <p class="landing-scene__kicker">Typing Quest</p>
-                <span class="landing-scene-card__chip">Course sprint</span>
               </div>
-              <div class="landing-preview-typing-head">
-                <span>Home row</span>
-                <strong>92%</strong>
-              </div>
-              <div class="landing-preview-lane"><strong>fj</strong><span></span><em>fjfj</em></div>
-              <div class="landing-preview-progress"><span></span></div>
-              <div class="landing-preview-keys landing-preview-keys--typing">
-                <span class="landing-preview-key is-active">F</span>
-                <span class="landing-preview-key is-active">J</span>
-                <span class="landing-preview-key">D</span>
-                <span class="landing-preview-key">K</span>
-                <span class="landing-preview-key">Space</span>
+              <div class="landing-preview-typing-card">
+                <div class="landing-preview-typing-line">
+                  <strong>fj</strong>
+                  <em>fj fj</em>
+                </div>
+                <div class="landing-preview-typing-coach">Home row anchors</div>
+                <div class="landing-preview-typing-keyboard">
+                  <span>A</span>
+                  <span>S</span>
+                  <span>D</span>
+                  <span class="is-guide">F</span>
+                  <span>G</span>
+                  <span>H</span>
+                  <span class="is-guide">J</span>
+                  <span>K</span>
+                  <span>L</span>
+                </div>
               </div>
             </div>
             <div class="landing-scene-card landing-scene-card--clue">
               <div class="landing-scene-card__top">
                 <p class="landing-scene__kicker">Word Clue</p>
-                <span class="landing-scene-card__chip">Team clue</span>
               </div>
               <div class="landing-preview-clue-card">
                 <span class="landing-preview-clue-card__eyebrow">Do not say</span>
@@ -119,8 +121,19 @@
       <article class="landing-destination landing-destination--workspace">
         <div class="landing-destination__scene landing-scene landing-scene--workspace" aria-hidden="true">
           <div class="landing-workspace-panel">
-            <p class="landing-scene__kicker">Workspace</p>
-            <strong>Weekly planning</strong>
+            <div class="landing-workspace-panel__top">
+              <p class="landing-scene__kicker">Workspace</p>
+              <span class="landing-workspace-chip">Briefing ready</span>
+            </div>
+            <div class="landing-workspace-brief">
+              <strong>Weekly planning</strong>
+              <p>Progress, meeting prep, and family updates all in one review lane.</p>
+            </div>
+            <div class="landing-workspace-metrics">
+              <div class="landing-workspace-metric"><span>Signals</span><strong>8 fresh</strong></div>
+              <div class="landing-workspace-metric"><span>Meetings</span><strong>3 ready</strong></div>
+              <div class="landing-workspace-metric"><span>Family notes</span><strong>2 drafted</strong></div>
+            </div>
             <div class="landing-workspace-list">
               <div class="landing-preview-note"><i class="landing-preview-note-dot"></i><span>Progress insights ready</span></div>
               <div class="landing-preview-note"><i class="landing-preview-note-dot"></i><span>Meeting notes drafted</span></div>

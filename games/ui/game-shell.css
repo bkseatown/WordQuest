@@ -2453,7 +2453,8 @@ body.typing-quest-page {
 }
 
 .cg-typing-page-wrap {
-  max-width: 1180px;
+  width: min(1480px, calc(100vw - 56px));
+  max-width: 1480px;
   margin: 0 auto;
   padding: 18px 30px 48px;
   display: grid;
@@ -2518,9 +2519,59 @@ body.typing-quest-page {
 
 .cg-typing-course-hero {
   display: grid;
-  grid-template-columns: minmax(320px, 0.88fr) minmax(0, 1.12fr);
+  grid-template-columns: minmax(360px, 0.92fr) minmax(0, 1.08fr);
   gap: 18px;
   align-items: stretch;
+}
+
+body.typing-quest-page #cg-theme-picker,
+body.game-platform-page[data-shell-view="play"][data-game-id="word-typing"] #cg-theme-picker {
+  top: 12px;
+  right: 16px;
+  max-width: 224px;
+  padding: 6px 8px;
+  gap: 4px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(166, 182, 203, 0.52);
+  box-shadow: 0 10px 24px rgba(31, 43, 56, 0.18);
+  scrollbar-width: none;
+}
+
+body.typing-quest-page #cg-theme-picker::-webkit-scrollbar,
+body.game-platform-page[data-shell-view="play"][data-game-id="word-typing"] #cg-theme-picker::-webkit-scrollbar {
+  display: none;
+}
+
+body.typing-quest-page .cg-theme-swatch,
+body.game-platform-page[data-shell-view="play"][data-game-id="word-typing"] .cg-theme-swatch {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+}
+
+body.typing-quest-page .cg-typing-appbar,
+body.game-platform-page[data-shell-view="play"][data-game-id="word-typing"] .cg-typing-appbar {
+  padding-right: 264px;
+}
+
+@media (max-width: 1100px) {
+  body.typing-quest-page #cg-theme-picker,
+  body.game-platform-page[data-shell-view="play"][data-game-id="word-typing"] #cg-theme-picker {
+    top: auto;
+    right: 12px;
+    bottom: 12px;
+    max-width: min(220px, calc(100vw - 24px));
+  }
+
+  body.typing-quest-page .cg-typing-appbar,
+  body.game-platform-page[data-shell-view="play"][data-game-id="word-typing"] .cg-typing-appbar {
+    padding-right: 18px;
+  }
 }
 
 .cg-typing-course-start,

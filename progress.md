@@ -118,3 +118,17 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - updated the shared layout diagnostics in `games/ui/game-shell.js` to measure the visible typing shell (`.cg-typing-runtime`, `.cg-typing-page-shell`, or `.cg-typing-app-shell.is-hub`) instead of the full internal course-page content height
 - filtered duplicate-layer warnings down to actually visible typing layers only, which removes false positives from hidden/inactive markup
 - bumped the shared shell asset version to `20260313j` in `typing-quest.html` and `game-platform.html`
+
+## 2026-03-13 (Homepage contrast and preview redesign)
+
+- redesigned the home dashboard surfaces in `home-v3.css` so the hero, games destination, and workspace destination have stronger contrast and clearer visual ownership instead of pale cards blending together
+- rebuilt the homepage game previews in `index.html` to better match the actual products: Word Quest now shows a realistic three-row solve progression, Typing Quest now shows a calmer home-row prompt with a proper keyboard order, and Word Clue keeps a cleaner taboo-card artifact
+- upgraded the workspace destination preview into a real briefing panel with a weekly-planning summary, signal metrics, and action-ready items instead of a mostly empty pale box
+- bumped the homepage stylesheet cache-buster to `20260313b`
+
+## 2026-03-13 (Typing Quest course hub cleanup, pass 1)
+
+- widened the Typing Quest course container in `games/ui/game-shell.css` so the course hub does not read like a tiny centered strip on large screens
+- compacted the shared theme picker for Typing Quest routes into a smaller horizontal tray and added responsive guards so it stops dominating the top-right corner
+- reserved extra right padding in the typing app bar on large screens so the compact theme tray does not collide with the course header
+- bumped the shared shell stylesheet cache-buster to `20260313e` in `typing-quest.html` and `game-platform.html`
