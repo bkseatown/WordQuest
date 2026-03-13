@@ -104,3 +104,10 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - updated the early-round coach copy to explain the expected first guess and when help becomes available, and refreshed the post-miss coach copy to point learners toward feedback plus support unlocks
 - piped the existing hint-unlock copy into the help affordance logic and bumped the standalone Word Quest app script cache-buster through `20260313h`
 - rechecked locally on `http://127.0.0.1:4174/word-quest.html?cb=20260313-pass13`; the coach ribbon now renders in active play, keyboard input still works, and console output stayed clean
+
+## 2026-03-13 (Typing Quest course-first cleanup)
+
+- tightened the Typing Quest top app bar so the course hub no longer carries extra runtime controls; the course page now emphasizes `Course`, `Placement first`, and `All Games` instead of reading like a full game control strip
+- rewrote the placement/course hero copy in `games/ui/game-shell.js` so it reads more like a calm instructional start than a promo dashboard
+- bumped local Typing Quest and shared game-platform shell asset versions (`game-shell.js` `20260313i`, shell CSS `20260313c`, theme CSS `20260313b`) in `typing-quest.html` and `game-platform.html`
+- verified locally on `http://127.0.0.1:4174/typing-quest.html?cb=20260313-typing-pass2` and `http://127.0.0.1:4174/game-platform.html?play=1&game=word-typing&cb=20260313-typing-pass3`; the calmer course hub changes rendered correctly, but the existing `[LayoutFit][typing] overflow` warning still remains in the shared typing shell and needs a later fit pass
