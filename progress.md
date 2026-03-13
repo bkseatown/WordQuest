@@ -76,3 +76,10 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - gave the standalone play shell a softer atmospheric overlay and tuned the Seahawks base blues slightly darker so the page feels richer while staying light
 - upgraded the support strip under the board into a surfaced control band instead of loose controls floating between the board and keyboard
 - bumped standalone Word Quest stylesheet cache-busters to `20260313c` and re-verified locally on `http://127.0.0.1:4174/word-quest.html?cb=20260313-pass6` with layout metrics plus a live on-screen keypress check
+
+## 2026-03-13 (Word Quest visual QA cleanup)
+
+- hid the play support band automatically when it has no visible controls so active play no longer leaves an empty spacer between the board and keyboard
+- softened the floating build badge during active play so it stays available for debugging without competing with the puzzle surface
+- bumped standalone Word Quest stylesheet cache-busters to `20260313d`
+- rechecked locally on `http://127.0.0.1:4174/word-quest.html?cb=20260313-pass8`; support row collapsed correctly, board-to-keyboard spacing tightened, console stayed clean, and on-screen keyboard input still worked

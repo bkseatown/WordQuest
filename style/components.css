@@ -9326,8 +9326,29 @@ html[data-home-mode="play"] .play-support-row {
   z-index: 1;
 }
 
+html[data-home-mode="play"] .play-support-row:not(:has(.gameplay-audio:not(.hidden), #play-style-banner:not(.hidden))) {
+  display: none;
+}
+
 html[data-home-mode="play"] .gameplay-audio {
   padding: 0;
+}
+
+html[data-home-mode="play"] #cs-build-badge {
+  left: 12px !important;
+  bottom: 12px !important;
+  padding: 3px 8px !important;
+  border-color: rgba(15, 23, 42, 0.18) !important;
+  background: rgba(246, 249, 252, 0.74) !important;
+  color: rgba(51, 65, 85, 0.88) !important;
+  font-size: 9px !important;
+  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.1) !important;
+  opacity: 0.68 !important;
+  backdrop-filter: blur(6px);
+}
+
+html[data-home-mode="play"] #cs-build-badge:hover {
+  opacity: 0.9 !important;
 }
 
 html[data-home-mode="play"] .key-row-1,
