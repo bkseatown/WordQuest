@@ -195,3 +195,13 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
   - `node --check games/ui/game-shell.js` passes
   - local browser snapshot on `http://127.0.0.1:4174/typing-quest.html?cb=layout-audit2` shows hero + starter rail + collapsed course plan with no visible overlap
   - local browser metrics report the Typing welcome shell at ~509px tall inside a ~772px viewport, with `scrollHeight === innerHeight` and 0 browser warnings
+
+## 2026-03-13 (Word Quest de-noise + build-stamp alignment)
+
+- removed the large translucent standalone Word Quest play-stage scaffolding in `style/components.css` by disabling the extra `.board-zone::before` panel and clearing the decorative keyboard tray background so the board and keys are the focus again
+- added a route-scoped final reset in `games/ui/game-shell.css` for the Typing Quest welcome branch to force smaller hero text, smaller preview artifacts, and tighter action/button sizing at the end of the file where older Typing rules can no longer override them
+- aligned visible build metadata and asset cache-busters for the pages under active review: `word-quest.html`, `typing-quest.html`, `game-platform.html`, `build.json`, `build-stamp.js`, and `js/build-stamp.js` now point at build `20260313q`
+- local verification:
+  - `node --check games/ui/game-shell.js` passes
+  - local Word Quest browser check on `http://127.0.0.1:4174/word-quest.html?cb=20260313q-final&play=1` shows build badge `20260313q`
+  - local Typing Quest browser metrics still report in-viewport fit and the action/button bounding boxes remain inside the viewport
