@@ -8,7 +8,7 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260306h">
   <link rel="stylesheet" href="./style/typography.css?v=20260306h">
-  <link rel="stylesheet" href="./home-v3.css?v=20260312g">
+  <link rel="stylesheet" href="./home-v3.css?v=20260313a">
   <link rel="stylesheet" href="./css/backup-panel.css?v=20260310a">
 </head>
 <body class="cs-home-page">
@@ -53,31 +53,56 @@
         <div class="landing-destination__scene landing-scene landing-scene--games" aria-hidden="true">
           <div class="landing-scene__rail">
             <div class="landing-scene-card landing-scene-card--board">
-              <p class="landing-scene__kicker">Word Quest</p>
-              <div class="landing-preview-board">
+              <div class="landing-scene-card__top">
+                <p class="landing-scene__kicker">Word Quest</p>
+                <span class="landing-scene-card__chip">Puzzle lane</span>
+              </div>
+              <div class="landing-preview-board landing-preview-board--quest">
+                <div class="landing-preview-board__row"><i class="is-hit">S</i><i class="is-hit">T</i><i class="is-hit">O</i><i class="is-hit">R</i><i class="is-hit">M</i></div>
                 <div class="landing-preview-board__row"><i></i><i></i><i></i><i></i><i></i></div>
                 <div class="landing-preview-board__row"><i></i><i></i><i></i><i></i><i></i></div>
-                <div class="landing-preview-board__row"><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
+              <div class="landing-preview-quest-meta">
+                <span>Hint ready</span>
+                <strong>3 tries left</strong>
               </div>
             </div>
             <div class="landing-scene-card landing-scene-card--typing">
-              <p class="landing-scene__kicker">Typing Quest</p>
+              <div class="landing-scene-card__top">
+                <p class="landing-scene__kicker">Typing Quest</p>
+                <span class="landing-scene-card__chip">Course sprint</span>
+              </div>
+              <div class="landing-preview-typing-head">
+                <span>Home row</span>
+                <strong>92%</strong>
+              </div>
               <div class="landing-preview-lane"><strong>fj</strong><span></span><em>fjfj</em></div>
-              <div class="landing-preview-keys">
+              <div class="landing-preview-progress"><span></span></div>
+              <div class="landing-preview-keys landing-preview-keys--typing">
                 <span class="landing-preview-key is-active">F</span>
                 <span class="landing-preview-key is-active">J</span>
-                <span class="landing-preview-key">A</span>
-                <span class="landing-preview-key">S</span>
                 <span class="landing-preview-key">D</span>
+                <span class="landing-preview-key">K</span>
+                <span class="landing-preview-key">Space</span>
               </div>
             </div>
             <div class="landing-scene-card landing-scene-card--clue">
-              <p class="landing-scene__kicker">Word Clue</p>
-              <div class="landing-preview-word">ECOSYSTEM</div>
-              <div class="landing-preview-pills">
+              <div class="landing-scene-card__top">
+                <p class="landing-scene__kicker">Word Clue</p>
+                <span class="landing-scene-card__chip">Team clue</span>
+              </div>
+              <div class="landing-preview-clue-card">
+                <span class="landing-preview-clue-card__eyebrow">Do not say</span>
+                <div class="landing-preview-word">ECOSYSTEM</div>
+              </div>
+              <div class="landing-preview-pills landing-preview-pills--clue">
                 <span class="landing-preview-pill">plants</span>
                 <span class="landing-preview-pill">animals</span>
                 <span class="landing-preview-pill">nature</span>
+              </div>
+              <div class="landing-preview-clue-footer">
+                <span>45s</span>
+                <strong>Next card</strong>
               </div>
             </div>
           </div>

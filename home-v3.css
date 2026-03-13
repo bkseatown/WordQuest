@@ -297,9 +297,75 @@ body.cs-home-page {
   min-height: 104px;
   padding: 12px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.78);
+  position: relative;
+  overflow: hidden;
   border: 1px solid rgba(116, 136, 175, 0.14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 12px 20px rgba(22, 34, 58, 0.08);
+}
+
+.landing-scene-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 42%);
+  pointer-events: none;
+}
+
+.landing-scene-card__top,
+.landing-preview-typing-head,
+.landing-preview-quest-meta,
+.landing-preview-clue-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.landing-scene-card__chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.landing-scene-card--board {
+  background:
+    radial-gradient(circle at top right, rgba(130, 214, 126, 0.28), transparent 34%),
+    linear-gradient(180deg, #f6fbff 0%, #e8f1fb 100%);
+}
+
+.landing-scene-card--typing {
+  background:
+    radial-gradient(circle at top left, rgba(109, 229, 211, 0.24), transparent 34%),
+    linear-gradient(180deg, #eff6ff 0%, #dfeafe 100%);
+}
+
+.landing-scene-card--clue {
+  background:
+    radial-gradient(circle at top right, rgba(255, 190, 132, 0.24), transparent 34%),
+    linear-gradient(180deg, #fff8f1 0%, #f5efe8 100%);
+}
+
+.landing-scene-card--board .landing-scene-card__chip {
+  background: rgba(109, 193, 84, 0.16);
+  color: #366c24;
+}
+
+.landing-scene-card--typing .landing-scene-card__chip {
+  background: rgba(65, 126, 255, 0.12);
+  color: #3459b4;
+}
+
+.landing-scene-card--clue .landing-scene-card__chip {
+  background: rgba(209, 108, 63, 0.14);
+  color: #9d4b24;
 }
 
 .landing-scene__kicker {
@@ -399,6 +465,10 @@ body.cs-home-page {
   gap: 6px;
 }
 
+.landing-preview-board--quest {
+  gap: 7px;
+}
+
 .landing-preview-board__row {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -415,8 +485,52 @@ body.cs-home-page {
 .landing-preview-board__row i {
   aspect-ratio: 1;
   border-radius: 10px;
-  background: linear-gradient(180deg, #d9e0ea, #c7d1de);
-  border: 1px solid rgba(128, 145, 173, 0.24);
+  background: linear-gradient(180deg, #f4f8fc, #dce7f4);
+  border: 1px solid rgba(92, 116, 152, 0.2);
+  box-shadow:
+    inset 0 -4px 0 rgba(68, 96, 134, 0.22),
+    0 4px 8px rgba(34, 52, 86, 0.08);
+}
+
+.landing-preview-board__row i.is-hit {
+  background: linear-gradient(180deg, #9ed46d, #72b146);
+  color: #fff;
+  border-color: rgba(62, 118, 33, 0.28);
+  box-shadow:
+    inset 0 -4px 0 rgba(46, 94, 22, 0.24),
+    0 6px 10px rgba(48, 91, 34, 0.18);
+  font-style: normal;
+  font-size: 0.82rem;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  text-transform: uppercase;
+}
+
+.landing-preview-quest-meta span,
+.landing-preview-quest-meta strong,
+.landing-preview-typing-head span,
+.landing-preview-typing-head strong,
+.landing-preview-clue-footer span,
+.landing-preview-clue-footer strong {
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.landing-preview-quest-meta span {
+  color: rgba(52, 83, 39, 0.68);
+}
+
+.landing-preview-quest-meta strong {
+  color: #27445f;
+}
+
+.landing-preview-typing-head span {
+  color: rgba(52, 88, 150, 0.72);
+}
+
+.landing-preview-typing-head strong {
+  color: #1f4da7;
 }
 
 .landing-preview-lane {
@@ -429,6 +543,21 @@ body.cs-home-page {
   background: rgba(255, 255, 255, 0.84);
   color: #17304f;
   font-weight: 800;
+}
+
+.landing-preview-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(83, 118, 177, 0.12);
+  overflow: hidden;
+}
+
+.landing-preview-progress span {
+  display: block;
+  width: 72%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #54cb7c 0%, #5f88ff 100%);
 }
 
 .landing-preview-lane strong {
@@ -451,6 +580,10 @@ body.cs-home-page {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.landing-preview-keys--typing .landing-preview-key:last-child {
+  min-width: 58px;
 }
 
 .landing-preview-key,
@@ -483,6 +616,37 @@ body.cs-home-page {
   color: #243b5d;
   font-size: 1rem;
   font-weight: 900;
+}
+
+.landing-preview-clue-card {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 247, 241, 0.92));
+  border: 1px solid rgba(214, 153, 116, 0.24);
+}
+
+.landing-preview-clue-card__eyebrow {
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(162, 90, 53, 0.72);
+}
+
+.landing-preview-pills--clue .landing-preview-pill {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(210, 156, 122, 0.2);
+  color: #8d4d29;
+}
+
+.landing-preview-clue-footer span {
+  color: rgba(148, 80, 41, 0.72);
+}
+
+.landing-preview-clue-footer strong {
+  color: #8f4822;
 }
 
 .landing-preview-note {
