@@ -240,6 +240,19 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
   - stale decorative overlay risk
   - need for rendered verification before claiming UI work is complete
 
+## 2026-03-13 (Platform excellence playbook)
+
+- added `docs/PLATFORM_EXCELLENCE_PLAYBOOK.md` as the new platform-wide “best of the best” standard for future work
+- documented advanced expectations for:
+  - premium CSS and token-first design
+  - typography/readability
+  - game identity and feedback
+  - adaptive/EAL-friendly scaffolding
+  - no-scroll-by-default hierarchy
+  - verification discipline
+  - advanced engineering patterns that are worth using in this repo
+- linked the new playbook from `README.md` and `docs/HANDOVER.md`
+
 - replaced the split top-level Typing Quest hero/card composition in `games/ui/game-shell.js` with one unified welcome surface: the main start card plus a lighter integrated course overview block in the same section
 - updated the final route-scoped Typing Quest CSS in `games/ui/game-shell.css` so the unified welcome surface keeps a two-column desktop layout while staying visually connected and inside the viewport budget
 - bumped the Typing shared shell cache-busters to `20260313s` in `typing-quest.html` and `game-platform.html`
