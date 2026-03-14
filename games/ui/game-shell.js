@@ -209,10 +209,10 @@
     }
 
     function wordConnectionsInstruction(mode) {
-      if (mode === "draw") return "Draw the concept without writing the blocked words.";
-      if (mode === "act") return "Act it out charades-style without saying the blocked words.";
-      if (mode === "mixed") return "Choose whether to speak, draw, or act. Keep the blocked words off limits.";
-      return "Describe the word without saying the blocked words.";
+      if (mode === "draw") return "Draw the concept without writing the off-limits words.";
+      if (mode === "act") return "Act it out charades-style without saying the off-limits words.";
+      if (mode === "mixed") return "Choose whether to speak, draw, or act. Keep the off-limits words off limits.";
+      return "Describe the word without saying the off-limits words.";
     }
 
     function wordClueVisualGlyph(keyword, targetWord) {
@@ -302,6 +302,56 @@
       if (band === "K-2") return "K-1";
       if (band === "3-5") return "G2-3";
       return "K-1";
+    }
+
+    function wordClueBandRank(value) {
+      var band = normalizeStarterGradeBand(value);
+      if (band === "G4-5") return 3;
+      if (band === "G2-3") return 2;
+      return 1;
+    }
+
+    function wordClueMaxWordLength(gradeBand) {
+      var band = normalizeStarterGradeBand(gradeBand);
+      if (band === "G4-5") return 12;
+      if (band === "G2-3") return 10;
+      return 8;
+    }
+
+    function wordClueLooksAbstract(word) {
+      var normalized = normalizeWordKey(word);
+      if (!normalized) return true;
+      return [
+        "analy", "argu", "claim", "concept", "context", "decompose", "evidence",
+        "equivalent", "fraction", "hypothesis", "infer", "justify", "method",
+        "perspective", "process", "ratio", "rhetoric", "summar", "syntax",
+        "theme", "variable"
+      ].some(function (stem) {
+        return normalized.indexOf(stem) >= 0;
+      });
+    }
+
+    function wordClueIsGuessFriendlyWord(word, gradeBand) {
+      var normalized = normalizeWordKey(word);
+      if (!normalized) return false;
+      if (!/^[a-z]+(?: [a-z]+)?$/.test(normalized)) return false;
+      if (normalized.indexOf(" ") >= 0) return false;
+      if (normalized.length > wordClueMaxWordLength(gradeBand)) return false;
+      if (wordClueLooksAbstract(normalized) && wordClueBandRank(gradeBand) < 3) return false;
+      return true;
+    }
+
+    function wordClueCardIsStudentSafe(card, gradeBand) {
+      if (!card || !wordClueIsGuessFriendlyWord(card.target_word, gradeBand)) return false;
+      var blocked = getWordClueTabooSets(card)[0] || [];
+      if (blocked.length < 2) return false;
+      return blocked.every(function (word) {
+        return wordClueIsGuessFriendlyWord(word, gradeBand);
+      });
+    }
+
+    function wordClueAllowedGradeBand(cardBand, requestedBand) {
+      return wordClueBandRank(cardBand || "K-1") <= wordClueBandRank(requestedBand || "K-1");
     }
 
     function normalizeWordKey(value) {
@@ -559,8 +609,9 @@
     function buildWordClueDeck(input, mode, difficultyCount) {
       var settings = input && input.settings || {};
       var customTargets = parseTeacherWordList(settings.customWordSet || "");
+      var requestedGradeBand = normalizeStarterGradeBand(settings.wordClueGradeBand || input && input.context && input.context.gradeBand || "K-2");
       var filters = {
-        gradeBand: normalizeStarterGradeBand(settings.wordClueGradeBand || "K-1"),
+        gradeBand: requestedGradeBand,
         subject: String(settings.wordClueSubject || "ELA").toUpperCase(),
         curriculum: String(settings.wordClueCurriculum || "").trim().toLowerCase(),
         roundType: String(settings.wordClueRoundType || mode || "any").toLowerCase(),
@@ -579,7 +630,18 @@
         };
       }
       deck = deck.filter(function (card) {
-        if (filters.gradeBand && filters.gradeBand !== "ALL" && normalizeStarterGradeBand(card.grade_band) !== filters.gradeBand) return false;
+        return wordClueAllowedGradeBand(card.grade_band || "K-1", requestedGradeBand);
+      });
+      deck = deck.filter(function (card) {
+        return wordClueCardIsStudentSafe(card, requestedGradeBand);
+      });
+      if (String(settings.contentMode || "").toLowerCase() !== "custom") {
+        deck = deck.filter(function (card) {
+          return Boolean(card && card.word_bank_word);
+        });
+      }
+      deck = deck.filter(function (card) {
+        if (filters.gradeBand && filters.gradeBand !== "ALL" && !wordClueAllowedGradeBand(card.grade_band, filters.gradeBand)) return false;
         if (settings.wordClueDeckId && String(settings.wordClueDeckId).trim() && String(card.deck_id) !== String(settings.wordClueDeckId).trim()) return false;
         if (filters.curriculum && String(card.deck_id || "").toLowerCase().indexOf(filters.curriculum) === -1) return false;
         if (filters.roundType === "picture") return card.image_supported;
@@ -761,8 +823,8 @@
       },
       "word-connections": {
         id: "word-connections",
-        title: "Word Clue",
-        subtitle: "Give a smart clue so your team can guess the lesson word without using the blocked words on the card.",
+        title: "Off Limits",
+        subtitle: "Give a smart clue so your team can guess the lesson word without using the off-limits words on the card.",
         tags: ["Team Guessing", "Academic Language", "Projector Ready"],
         modeLabel: "Clue",
         baseTimerSeconds: 60,
@@ -772,7 +834,7 @@
           var tabooMode = String(input.settings && input.settings.wordConnectionsMode || "speak").toLowerCase();
           var presentationMode = tabooMode;
           if (tabooMode === "mixed") {
-            presentationMode = ["speak", "picture", "draw"][Number(input.roundIndex || 0) % 3];
+            presentationMode = ["speak", "draw", "act"][Number(input.roundIndex || 0) % 3];
           }
           var tabooDifficulty = Math.max(1, Math.min(4, Number(input.settings && input.settings.wordConnectionsDifficulty) || 3));
           var desiredBlockedCount = wordConnectionsDifficultyCount(tabooDifficulty);
@@ -810,7 +872,7 @@
           }
           return {
             id: row.id || ("wc-" + Date.now()),
-            promptLabel: "Clue the word without using the blocked words.",
+            promptLabel: "Clue the word without using the off-limits words.",
             entryLabel: (input.settings.viewMode === "projector" || input.settings.viewMode === "classroom"
               ? "One speaker clues. The group locks the guess."
               : "Give just enough clues so a partner can name the word."),
@@ -822,7 +884,7 @@
                 : presentationMode === "act"
                   ? (row.acting_prompt || "Act out the idea with movement only.")
                   : "Give a clue that points to meaning, use, or context.") || (input.settings.viewMode === "projector" || input.settings.viewMode === "classroom"
-              ? "Give one clean clue the whole class can build on without saying the blocked words."
+              ? "Give one clean clue the whole class can build on without saying the off-limits words."
               : "Use a clear clue in one or two complete sentences that fit the lesson."),
             timerSeconds: 45,
             hint: (row.curriculum_tag || "") || "Try an example, function, or comparison instead of a definition.",
@@ -854,10 +916,10 @@
           });
           var usesTarget = text.indexOf(String(round.targetWord || "").toLowerCase()) >= 0;
           if (usesTarget && !blocked && text.split(/\s+/).filter(Boolean).length >= 4) {
-            return { correct: true, message: "Strong clue. The blocked words stayed out." };
+            return { correct: true, message: "Strong clue. The off-limits words stayed out." };
           }
           if (blocked) {
-            return { correct: false, nearMiss: false, forbidden: true, message: "Blocked word used — find a different angle." };
+            return { correct: false, nearMiss: false, forbidden: true, message: "Off-limits word used — find a different angle." };
           }
           return {
             correct: false,
@@ -1144,7 +1206,7 @@
     if (!game || !round) return "";
     if (game.id === "word-typing") return [round.unitLabel, round.keyboardZone, round.orthographyFocus].filter(Boolean).join(" · ");
     if (game.id === "word-quest") return round.answer ? ("Target length · " + String(round.answer).length + " letters") : "";
-    if (game.id === "word-connections") return "Blocked words stay out";
+    if (game.id === "word-connections") return "Off-limits words stay out";
     if (game.id === "morphology-builder") return round.meaningHint ? "Meaning unlock after build" : "Build from parts";
     if (game.id === "concept-ladder") return "Earlier solves earn more";
     if (game.id === "error-detective") return round.misconception || "Misconception repair";
@@ -1169,9 +1231,9 @@
       turnCue = group ? "Use projector mode for modeling, but save real fluency scores for individual keyboards." : "Accuracy comes first. Build to 5 stars before moving on.";
       winCue = "Type the full lesson target and meet the WPM and accuracy goal.";
     } else if (game.id === "word-connections") {
-      firstMove = group ? "One speaker gives the first clue while the team listens for the target word." : "Give one clear clue without using any blocked words.";
+      firstMove = group ? "One speaker gives the first clue while the team listens for the target word." : "Give one clear clue without using any off-limits words.";
       turnCue = group ? "Rotate speakers each round so every team member gets a clue turn." : "Keep the clue short, useful, and lesson-linked.";
-      winCue = "Help the guesser land the word without saying the blocked words.";
+      winCue = "Help the guesser land the word without saying the off-limits words.";
     } else if (game.id === "morphology-builder") {
       firstMove = "Tap the parts in the order that builds a real word.";
       turnCue = group ? "Ask students to explain each morpheme before confirming the build." : "Use the meaning of each chunk to test your build.";
@@ -2475,9 +2537,10 @@
     }
 
     function wordClueStyleDescription(style) {
-      if (style === "picture") return "Use the image to cue language without naming blocked words.";
+      if (style === "picture") return "Use the image to cue language without naming off-limits words.";
       if (style === "draw") return "Sketch the idea. No text or letters on the drawing.";
-      if (style === "mixed") return "Mix speaking, picture, and draw rounds while keeping the clue words off limits.";
+      if (style === "act") return "Act it out without saying the target or off-limits words.";
+      if (style === "mixed") return "Mix speaking, drawing, and acting while keeping the clue words off limits.";
       if (style === "relay") return "Team relay: each speaker adds one legal clue.";
       return "Standard clue: one speaker gives a clear verbal clue.";
     }
@@ -2664,21 +2727,23 @@
 
       var typingHubMode = currentGame.id === "word-typing" && !params.typingPage;
       var typingRuntimeMode = currentGame.id === "word-typing" && params.typingPage;
-      var teacherPanelMarkup = [
-        '<section class="cg-main-card cg-surface' + (uiState.teacherPanelOpen ? "" : " cg-hidden") + '" id="cg-teacher-panel">',
-        '  <p class="cg-kicker">Teacher Control Panel</p>',
-        '  <div class="cg-control-grid">',
+      var teacherPanelMarkup = uiState.teacherPanelOpen ? [
+        '<section class="cg-main-card cg-surface" id="cg-teacher-panel">',
+        '  <div class="cg-teacher-panel-head"><p class="cg-kicker">Teacher Control Panel</p><h3>Set the round tone</h3><p class="cg-teacher-panel-copy">Starts with K-2 friendly curriculum words by default.</p></div>',
+        '  <div class="cg-control-grid cg-control-grid--teacher">',
         '    <div class="cg-field"><label for="cg-grade-band">Age / Grade Band</label><select id="cg-grade-band" class="cg-select"><option value="K-2">K-2</option><option value="3-5">3-5</option><option value="6-8">6-8</option><option value="9-12">9-12</option></select></div>',
         '    <div class="cg-field"><label for="cg-word-source">Word Source</label><select id="cg-word-source" class="cg-select"><option value="lesson">Curriculum deck</option><option value="random">Random graded bank</option><option value="custom">Teacher word list</option><option value="mixed">Teacher + bank mix</option></select><small class="cg-field-help">Word Clue works best with words students can describe, draw, or act out.</small></div>',
         '    <div class="cg-field cg-field--wide"><label for="cg-custom-word-set">Teacher Word List</label><textarea id="cg-custom-word-set" class="cg-textarea" rows="3" placeholder="Add one word per line or use commas. Example: dog, rain, bicycle">' + runtimeRoot.CSGameComponents.escapeHtml(state.settings.customWordSet || "") + '</textarea><small class="cg-field-help">Use this for your own lesson list, focus group words, or a quick custom round.</small></div>',
-        '    <label class="cg-checkbox"><input id="cg-toggle-team-play" type="checkbox"' + (isGroupView(state) ? " checked" : "") + '>Team play</label>',
-        '    <label class="cg-checkbox"><input id="cg-toggle-timer" type="checkbox"' + (state.settings.timerEnabled ? " checked" : "") + '>Timer enabled</label>',
-        '    <label class="cg-checkbox"><input id="cg-toggle-hints" type="checkbox"' + (state.settings.hintsEnabled ? " checked" : "") + '>Hints enabled</label>',
-        '    <label class="cg-checkbox"><input id="cg-toggle-shuffle-words" type="checkbox"' + (state.settings.shuffleWordOrder ? " checked" : "") + '>Shuffle teacher-selected words</label>',
-        '    <button class="cg-action cg-action-quiet" type="button" data-action="teacher-override">' + runtimeRoot.CSGameComponents.iconFor("teacher") + 'Teacher Override</button>',
+        '    <div class="cg-toggle-cluster">',
+        '      <label class="cg-checkbox"><input id="cg-toggle-team-play" type="checkbox"' + (isGroupView(state) ? " checked" : "") + '>Team play</label>',
+        '      <label class="cg-checkbox"><input id="cg-toggle-timer" type="checkbox"' + (state.settings.timerEnabled ? " checked" : "") + '>Timer enabled</label>',
+        '      <label class="cg-checkbox"><input id="cg-toggle-hints" type="checkbox"' + (state.settings.hintsEnabled ? " checked" : "") + '>Hints enabled</label>',
+        '      <label class="cg-checkbox"><input id="cg-toggle-shuffle-words" type="checkbox"' + (state.settings.shuffleWordOrder ? " checked" : "") + '>Shuffle teacher words</label>',
+        '    </div>',
+        '    <button class="cg-action cg-action-quiet cg-teacher-panel-override" type="button" data-action="teacher-override">' + runtimeRoot.CSGameComponents.iconFor("teacher") + 'Teacher Override</button>',
         "  </div>",
         "</section>"
-      ].join("");
+      ].join("") : "";
       var stageKicker = typingHubMode ? "Course Hub" : (typingRuntimeMode ? "Typing Lesson" : "Now Playing");
       var stageTitle = currentGame.title;
       var stageSubtitle = typingHubMode
@@ -2793,7 +2858,7 @@
             ? "Round closed"
             : "Speaker check";
         var roundGuideCopy = clue.phase === "live"
-          ? "Give one clear clue. Do not say the blocked words. Let your team do the guessing."
+          ? "Give one clear clue. Do not say the off-limits words. Let your team do the guessing."
           : clue.phase === "reveal"
             ? "Look at how the round went, then choose whether to replay, switch speakers, or move on."
             : "Pick a clue style, check the timer, and reveal the speaker card when you are ready.";
@@ -2806,20 +2871,22 @@
           shell.innerHTML = [
             '<section class="cg-word-clue-landing" data-style="' + runtimeRoot.CSGameComponents.escapeHtml(clue.cardStyle) + '">',
             '  <header class="cg-word-clue-v2-topbar">',
-            '    <div class="cg-word-clue-v2-title"><h1>Word Clue</h1><p class="cg-word-clue-v2-subtitle">Choose one clue style, set how many words to avoid, and then open a clean play page built just for that format.</p></div>',
+            '    <div class="cg-word-clue-v2-title"><h1>Off Limits</h1></div>',
             '    <div class="cg-word-clue-v2-actions">' + toolbarParts.join("") + "</div>",
             "  </header>",
             teacherPanelMarkup,
-            '  <section class="cg-word-clue-landing-hero">',
-            '    <div class="cg-word-clue-landing-copy"><p class="cg-kicker">Choose a format</p><h2>Start simple, then open the clue stage.</h2><p>Use the first page to pick the routine. The play page stays focused on one speaker, one card, and one guessing round at a time.</p></div>',
-            '    <div class="cg-word-clue-landing-note"><strong>Better on laptops and tablets</strong><p>This keeps the chooser separate from the live clue card so the page does not feel stretched or crowded.</p></div>',
-            "  </section>",
-            '  <section class="cg-word-clue-landing-grid" aria-label="Word Clue formats">',
-            '    <article class="cg-word-clue-format-card' + (clue.cardStyle === "standard" ? " is-active" : "") + '"><div class="cg-word-clue-format-card__head"><span class="cg-chip">Classic</span><h3>Say a clue</h3></div><p>One speaker gives a clear clue without using the words to avoid.</p><div class="cg-word-clue-format-card__preview"><strong>HOUSE</strong><span>home · live · family</span></div><label class="cg-field"><span>Words to avoid</span><select class="cg-select" data-action="wc-set-blocked" data-style-target="standard"><option value="2"' + (clue.cardStyle === "standard" && clue.blockedCount === 2 ? " selected" : "") + '>2</option><option value="3"' + (clue.cardStyle === "standard" && clue.blockedCount === 3 ? " selected" : "") + '>3</option><option value="4"' + ((clue.cardStyle !== "picture" && clue.cardStyle !== "mixed" && clue.blockedCount === 4) ? " selected" : "") + '>4</option><option value="5"' + (clue.cardStyle === "standard" && clue.blockedCount === 5 ? " selected" : "") + '>5</option></select></label><button class="cg-action cg-action-primary" type="button" data-action="wc-open-format" data-format="standard">Open Classic</button></article>',
-            '    <article class="cg-word-clue-format-card' + (clue.cardStyle === "picture" ? " is-active" : "") + '"><div class="cg-word-clue-format-card__head"><span class="cg-chip">Picture</span><h3>Use a visual clue</h3></div><p>Show a simple picture cue and let the speaker build the clue around it.</p><div class="cg-word-clue-format-card__preview cg-word-clue-format-card__preview--emoji"><span aria-hidden="true">🐶</span><strong>DOG</strong></div><label class="cg-field"><span>Words to avoid</span><select class="cg-select" data-action="wc-set-blocked" data-style-target="picture"><option value="2"' + (clue.cardStyle === "picture" && clue.blockedCount === 2 ? " selected" : "") + '>2</option><option value="3"' + (clue.cardStyle === "picture" && clue.blockedCount === 3 ? " selected" : "") + '>3</option><option value="4"' + (clue.cardStyle === "picture" && clue.blockedCount === 4 ? " selected" : "") + '>4</option><option value="5"' + (clue.cardStyle === "picture" && clue.blockedCount === 5 ? " selected" : "") + '>5</option></select></label><button class="cg-action cg-action-primary" type="button" data-action="wc-open-format" data-format="picture">Open Picture</button></article>',
-            '    <article class="cg-word-clue-format-card' + (clue.cardStyle === "draw" ? " is-active" : "") + '"><div class="cg-word-clue-format-card__head"><span class="cg-chip">Draw</span><h3>Sketch the idea</h3></div><p>No words on the sketch. Students use a quick drawing to support the clue.</p><div class="cg-word-clue-format-card__preview cg-word-clue-format-card__preview--draw"><span aria-hidden="true">☀️</span><strong>SUN</strong></div><button class="cg-action cg-action-primary" type="button" data-action="wc-open-format" data-format="draw">Open Draw</button></article>',
-            '    <article class="cg-word-clue-format-card' + (clue.cardStyle === "mixed" ? " is-active" : "") + '"><div class="cg-word-clue-format-card__head"><span class="cg-chip">Mixed</span><h3>Rotate clue types</h3></div><p>Mix speaking, picture, and draw rounds in one session while still choosing the words to avoid.</p><div class="cg-word-clue-format-card__preview"><strong>MIXED</strong><span>speak · picture · draw</span></div><label class="cg-field"><span>Words to avoid</span><select class="cg-select" data-action="wc-set-blocked" data-style-target="mixed"><option value="2"' + (clue.cardStyle === "mixed" && clue.blockedCount === 2 ? " selected" : "") + '>2</option><option value="3"' + (clue.cardStyle === "mixed" && clue.blockedCount === 3 ? " selected" : "") + '>3</option><option value="4"' + (clue.cardStyle === "mixed" && clue.blockedCount === 4 ? " selected" : "") + '>4</option><option value="5"' + (clue.cardStyle === "mixed" && clue.blockedCount === 5 ? " selected" : "") + '>5</option></select></label><button class="cg-action cg-action-primary" type="button" data-action="wc-open-format" data-format="mixed">Open Mixed</button></article>',
-            "  </section>",
+            (uiState.teacherPanelOpen ? "" : [
+              '  <section class="cg-word-clue-landing-hero">',
+              '    <div class="cg-word-clue-landing-copy"><span class="cg-word-clue-landing-kicker">4 ways to play</span><h2>Pick a style. Then let the card lead.</h2></div>',
+              '    <div class="cg-word-clue-landing-note"><span class="cg-word-clue-landing-kicker cg-word-clue-landing-kicker--quiet">Direct play</span><strong>Each card opens that mode.</strong></div>',
+              "  </section>",
+              '  <section class="cg-word-clue-landing-grid" aria-label="Word Clue formats">',
+              '    <article class="cg-word-clue-format-card cg-word-clue-format-card--classic' + (clue.cardStyle === "standard" ? " is-active" : "") + '" role="button" tabindex="0" data-action="wc-open-format" data-format="standard"><div class="cg-word-clue-format-card__head"><span class="cg-chip">Classic</span></div><div class="cg-word-clue-format-card__preview cg-word-clue-format-card__preview--taboo"><div class="cg-word-clue-preview-topline"><span class="cg-word-clue-preview-label">Target Word</span></div><div class="cg-word-clue-preview-main"><strong>HOUSE</strong></div><div class="cg-word-clue-preview-footer cg-word-clue-preview-footer--alert"><span class="cg-word-clue-preview-section">Off Limits</span><div class="cg-word-clue-preview-list"><b>HOME</b><b>LIVE</b><b>FAMILY</b></div></div></div></article>',
+              '    <article class="cg-word-clue-format-card cg-word-clue-format-card--draw' + (clue.cardStyle === "draw" ? " is-active" : "") + '" role="button" tabindex="0" data-action="wc-open-format" data-format="draw"><div class="cg-word-clue-format-card__head"><span class="cg-chip">Draw</span></div><div class="cg-word-clue-format-card__preview cg-word-clue-format-card__preview--drawcard"><div class="cg-word-clue-preview-topline"><span class="cg-word-clue-preview-label">Target Word</span></div><div class="cg-word-clue-preview-main cg-word-clue-preview-main--icon"><span class="cg-word-clue-preview-icon" aria-hidden="true">✏️</span><strong>SUN</strong></div><div class="cg-word-clue-preview-footer"><div class="cg-word-clue-preview-draw">Sketch it. No letters.</div></div></div></article>',
+              '    <article class="cg-word-clue-format-card cg-word-clue-format-card--act' + (clue.cardStyle === "act" ? " is-active" : "") + '" role="button" tabindex="0" data-action="wc-open-format" data-format="act"><div class="cg-word-clue-format-card__head"><span class="cg-chip">Act</span></div><div class="cg-word-clue-format-card__preview cg-word-clue-format-card__preview--act"><div class="cg-word-clue-preview-topline"><span class="cg-word-clue-preview-label">Target Word</span></div><div class="cg-word-clue-preview-main cg-word-clue-preview-main--icon"><span class="cg-word-clue-preview-icon" aria-hidden="true">🙆</span><strong>JUMP</strong></div><div class="cg-word-clue-preview-footer"><div class="cg-word-clue-preview-act">Act it out. No words.</div></div></div></article>',
+              '    <article class="cg-word-clue-format-card cg-word-clue-format-card--mixed' + (clue.cardStyle === "mixed" ? " is-active" : "") + '" role="button" tabindex="0" data-action="wc-open-format" data-format="mixed"><div class="cg-word-clue-format-card__head"><span class="cg-chip">Mixed</span></div><div class="cg-word-clue-format-card__preview cg-word-clue-format-card__preview--mix"><div class="cg-word-clue-preview-topline"><span class="cg-word-clue-preview-label">Target Word</span></div><div class="cg-word-clue-preview-main"><strong>HOUSE</strong></div><div class="cg-word-clue-preview-footer cg-word-clue-preview-footer--alert"><span class="cg-word-clue-preview-section">Style Mix</span><div class="cg-word-clue-preview-list"><b>SAY</b><b>DRAW</b><b>ACT</b></div></div></div></article>',
+              "  </section>"
+            ].join("")),
             "</section>"
           ].join("");
           bindInteractions();
@@ -2828,9 +2895,9 @@
           return;
         }
         shell.innerHTML = [
-          '<section class="cg-word-clue-v2' + (clue.setupOpen ? ' has-setup-open' : '') + '" data-phase="' + runtimeRoot.CSGameComponents.escapeHtml(clue.phase) + '" data-style="' + runtimeRoot.CSGameComponents.escapeHtml(clue.cardStyle) + '">',
+          '<section class="cg-word-clue-v2' + (clue.setupOpen ? ' has-setup-open' : '') + (uiState.teacherPanelOpen ? ' has-teacher-open' : '') + '" data-phase="' + runtimeRoot.CSGameComponents.escapeHtml(clue.phase) + '" data-style="' + runtimeRoot.CSGameComponents.escapeHtml(clue.cardStyle) + '">',
           '  <header class="cg-word-clue-v2-topbar">',
-          '    <div class="cg-word-clue-v2-title"><h1>Word Clue</h1><p class="cg-word-clue-v2-subtitle">Give a clue without using the blocked words. Your team listens, thinks, and guesses the word.</p></div>',
+          '    <div class="cg-word-clue-v2-title"><h1>Off Limits</h1></div>',
           '    <div class="cg-word-clue-v2-actions">' + toolbarParts.join("") + '<button class="cg-action cg-action-quiet" type="button" data-action="wc-back-landing">Formats</button><button class="cg-action cg-action-quiet" type="button" data-action="wc-toggle-setup">' + runtimeRoot.CSGameComponents.escapeHtml(clue.setupOpen ? "Close Round Setup" : "Round Setup") + "</button></div>",
           "  </header>",
           teacherPanelMarkup,
@@ -2855,15 +2922,15 @@
               + (showDrawPrompt ? '        <div class="cg-word-clue-draw-zone"><strong>Draw It</strong><span>Sketch the idea. Do not write letters.</span></div>' : "")
               + (relayStyle ? '<div class="cg-word-clue-relay-band"><span>Speaker 1</span><span>Speaker 2</span><span>Speaker 3</span></div>' : "")
               + (mixedStyle ? '<div class="cg-word-clue-urgency">Mixed round: the clue style can change each turn.</div>' : "")
-              + '        <div class="cg-word-clue-danger" aria-label="Words to avoid">'
-              + '          <div class="cg-word-clue-danger-head"><strong>Words to avoid</strong><span>Try not to use these clue words</span></div>'
+              + '        <div class="cg-word-clue-danger" aria-label="Off-limits words">'
+              + '          <div class="cg-word-clue-danger-head"><strong>Off Limits</strong><span>Try not to use these clue words</span></div>'
               + '          <ul class="cg-word-clue-blocked">' + (hasBlockedWords
                 ? blockedWords.map(function (word, index) {
                     return '<li><span class="cg-word-clue-blocked-index">' + String(index + 1) + '</span><span class="cg-word-clue-blocked-word">' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</span></li>";
                   }).join("")
-                : '<li class="cg-word-clue-blocked-empty"><span class="cg-word-clue-blocked-index">!</span><span class="cg-word-clue-blocked-word">No blocked words available for this card. Check filters or deck data.</span></li>') + '</ul>'
+                : '<li class="cg-word-clue-blocked-empty"><span class="cg-word-clue-blocked-index">!</span><span class="cg-word-clue-blocked-word">No off-limits words available for this card. Check filters or deck data.</span></li>') + '</ul>'
               + "        </div>")
-            : ('        <div class="cg-word-clue-cover"><strong>Speaker card hidden</strong><span>Press Show Card when the speaker is ready to see the word and clue words to avoid.</span></div>')),
+            : ('        <div class="cg-word-clue-cover"><span class="cg-word-clue-cover-kicker">Off Limits</span><strong>Speaker card ready</strong><span>Press Show Card to flip and reveal the word.</span></div>')),
           "      </div>",
           '      <div class="cg-word-clue-prompt">' + runtimeRoot.CSGameComponents.escapeHtml(wordClueStyleDescription(clue.cardStyle)) + "</div>",
           (clue.phase === "reveal" && resultLabel ? ('      <div class="cg-word-clue-result" data-result="' + runtimeRoot.CSGameComponents.escapeHtml(clue.result || "reveal") + '"><strong>' + runtimeRoot.CSGameComponents.escapeHtml(resultLabel) + '</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml(clue.result === "gotit" ? "Strong clue round." : (clue.result === "timeout" ? "Timer expired before a solve." : "Round closed.")) + "</span></div>") : ""),
@@ -2872,7 +2939,7 @@
           '      <div class="cg-word-clue-v2-setup-head"><h3>Round setup</h3><p>Secondary controls</p></div>',
           '      <label class="cg-field"><span>Class mode</span><select id="cg-word-clue-group" class="cg-select"><option value="individual"' + (clue.groupMode === "individual" ? " selected" : "") + '>Individual</option><option value="partners"' + (clue.groupMode === "partners" ? " selected" : "") + '>Partners</option><option value="teams"' + (clue.groupMode === "teams" ? " selected" : "") + '>Teams</option><option value="whole-class"' + (clue.groupMode === "whole-class" ? " selected" : "") + '>Whole class</option></select></label>',
           '      <label class="cg-field"><span>Round type</span><select id="cg-word-connections-mode" class="cg-select"><option value="speak"' + (clue.mode === "speak" ? " selected" : "") + '>Classic clue</option><option value="picture"' + (clue.mode === "picture" ? " selected" : "") + '>Picture clue</option><option value="draw"' + (clue.mode === "draw" ? " selected" : "") + '>Draw it</option><option value="mixed"' + (clue.mode === "mixed" ? " selected" : "") + '>Mixed</option></select></label>',
-          '      <label class="cg-field"><span>Difficulty</span><select id="cg-word-connections-difficulty" class="cg-select"><option value="1"' + (clue.blockedCount === 2 ? " selected" : "") + '>2 blocked words</option><option value="2"' + (clue.blockedCount === 3 ? " selected" : "") + '>3 blocked words</option><option value="3"' + (clue.blockedCount === 4 ? " selected" : "") + '>4 blocked words</option><option value="4"' + (clue.blockedCount === 5 ? " selected" : "") + '>5 blocked words</option></select></label>',
+          '      <label class="cg-field"><span>Difficulty</span><select id="cg-word-connections-difficulty" class="cg-select"><option value="1"' + (clue.blockedCount === 2 ? " selected" : "") + '>2 off-limits words</option><option value="2"' + (clue.blockedCount === 3 ? " selected" : "") + '>3 off-limits words</option><option value="3"' + (clue.blockedCount === 4 ? " selected" : "") + '>4 off-limits words</option><option value="4"' + (clue.blockedCount === 5 ? " selected" : "") + '>5 off-limits words</option></select></label>',
           '      <label class="cg-field"><span>Timer</span><select id="cg-word-clue-timer" class="cg-select"><option value="untimed"' + (clue.timerPreset === "untimed" ? " selected" : "") + '>Untimed</option><option value="30"' + (clue.timerPreset === "30" ? " selected" : "") + '>30s</option><option value="45"' + (clue.timerPreset === "45" ? " selected" : "") + '>45s</option><option value="60"' + (clue.timerPreset === "60" ? " selected" : "") + '>60s</option></select></label>',
           '      <label class="cg-field"><span>Category</span><input id="cg-word-clue-category" class="cg-input" type="text" maxlength="48" value="' + runtimeRoot.CSGameComponents.escapeHtml(clue.categoryContext || "") + '" placeholder="e.g., Ecosystems"></label>',
           '      <div class="cg-word-clue-setup-divider"></div>',
@@ -3507,8 +3574,8 @@
             '  <div class="cg-taboo-target target-word">' + runtimeRoot.CSGameComponents.escapeHtml(round.targetWord || "") + '</div>',
             (round.imageSrc ? '  <img class="cg-taboo-image word-image" src="' + runtimeRoot.CSGameComponents.escapeHtml(round.imageSrc) + '" alt="' + runtimeRoot.CSGameComponents.escapeHtml(round.targetWord || "Target word") + '">' : ""),
             '  <div class="cg-taboo-divider" role="presentation"></div>',
-            '  <div class="cg-taboo-danger-band" aria-label="Blocked words">',
-            '    <span class="cg-taboo-ban-label">Blocked words</span>',
+            '  <div class="cg-taboo-danger-band" aria-label="Off-limits words">',
+            '    <span class="cg-taboo-ban-label">Off Limits</span>',
             '    <ul class="cg-taboo-word-list blocked-words">' + (round.forbiddenWords || []).map(function (word) {
               return '<li class="cg-taboo-pill">' + runtimeRoot.CSGameComponents.escapeHtml(word) + "</li>";
             }).join("") + '</ul>',
@@ -3518,13 +3585,13 @@
             '<aside class="cg-clue-stage__side">',
             '<div class="cg-clue-brief">',
             '  <p class="cg-micro-label">Instruction</p>',
-            '  <h4>' + runtimeRoot.CSGameComponents.escapeHtml(round.modeInstruction || round.requiredMove || "Give a clear clue without using blocked words.") + '</h4>',
+            '  <h4>' + runtimeRoot.CSGameComponents.escapeHtml(round.modeInstruction || round.requiredMove || "Give a clear clue without using off-limits words.") + '</h4>',
             '  <p>' + runtimeRoot.CSGameComponents.escapeHtml((round.scaffolds || [round.hint || "Use an example, function, or comparison."])[0] || "") + '</p>',
             '</div>',
             '<div class="cg-clue-brief cg-clue-brief--soft">',
             '  <p class="cg-micro-label">Difficulty</p>',
-            '  <h4>' + runtimeRoot.CSGameComponents.escapeHtml(String(round.blockedCount || 4)) + ' blocked words</h4>',
-            '  <p>Use examples, function, or context instead of definitions or blocked words.</p>',
+            '  <h4>' + runtimeRoot.CSGameComponents.escapeHtml(String(round.blockedCount || 4)) + ' off-limits words</h4>',
+            '  <p>Use examples, function, or context instead of definitions or off-limits words.</p>',
             '</div>',
             (uiState.supportRevealOpen ? '<div class="cg-support-reveal"><strong>Reveal</strong><span>' + runtimeRoot.CSGameComponents.escapeHtml((round.scaffolds || [round.hint || "Use an example or comparison."])[0] || "") + "</span></div>" : ""),
             '</aside>',
@@ -3533,8 +3600,8 @@
           ].join(""),
           controls: [
             '<div class="cg-choice-row cg-choice-row--stacked">',
-            '  <label class="cg-field"><span>Mode</span><select id="cg-word-connections-mode" class="cg-select"><option value="speak"' + (round.playMode === "speak" ? " selected" : "") + '>Classic</option><option value="picture"' + (round.playMode === "picture" ? " selected" : "") + '>Picture</option><option value="draw"' + (round.playMode === "draw" ? " selected" : "") + '>Draw</option><option value="mixed"' + (round.playMode === "mixed" ? " selected" : "") + '>Mixed</option></select></label>',
-            '  <label class="cg-field"><span>Difficulty</span><select id="cg-word-connections-difficulty" class="cg-select"><option value="1"' + (round.blockedCount === 2 ? " selected" : "") + '>1 · 2 blocked words</option><option value="2"' + (round.blockedCount === 3 ? " selected" : "") + '>2 · 3 blocked words</option><option value="3"' + (round.blockedCount === 4 ? " selected" : "") + '>3 · 4 blocked words</option><option value="4"' + (round.blockedCount === 5 ? " selected" : "") + '>4 · 5 blocked words</option></select></label>',
+            '  <label class="cg-field"><span>Mode</span><select id="cg-word-connections-mode" class="cg-select"><option value="speak"' + (round.playMode === "speak" ? " selected" : "") + '>Classic</option><option value="draw"' + (round.playMode === "draw" ? " selected" : "") + '>Draw</option><option value="act"' + (round.playMode === "act" ? " selected" : "") + '>Act</option><option value="mixed"' + (round.playMode === "mixed" ? " selected" : "") + '>Mixed</option></select></label>',
+            '  <label class="cg-field"><span>Difficulty</span><select id="cg-word-connections-difficulty" class="cg-select"><option value="1"' + (round.blockedCount === 2 ? " selected" : "") + '>1 · 2 off-limits words</option><option value="2"' + (round.blockedCount === 3 ? " selected" : "") + '>2 · 3 off-limits words</option><option value="3"' + (round.blockedCount === 4 ? " selected" : "") + '>3 · 4 off-limits words</option><option value="4"' + (round.blockedCount === 5 ? " selected" : "") + '>4 · 5 off-limits words</option></select></label>',
             '</div>',
             '<textarea id="cg-word-connections-text" class="cg-textarea" placeholder="' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Record the clue or teacher notes for scoring…" : "Write the clue here…") + '" aria-label="Type your clue"></textarea>',
             '<div class="cg-feedback-actions"><button class="cg-action cg-action-quiet" type="button" data-action="toggle-support-reveal">' + (uiState.supportRevealOpen ? "Hide Reveal" : "Reveal Support") + '</button><button class="cg-action cg-action-primary" type="button" data-submit="word-connections">' + runtimeRoot.CSGameComponents.escapeHtml(isGroupView(state) ? "Score Clue" : "Check Clue") + '</button><button class="cg-action cg-action-quiet" type="button" data-action="next-round">Next Word</button></div>'
@@ -3867,6 +3934,8 @@
           var inTypingRuntime = currentState.selectedGameId === "word-typing" && params.typingPage;
           if (action === "toggle-teacher") {
             uiState.teacherPanelOpen = !uiState.teacherPanelOpen;
+            var picker = runtimeRoot.document.getElementById("cg-theme-picker");
+            if (picker) picker.setAttribute("data-open", "false");
             render();
             return;
           }
@@ -3980,6 +4049,8 @@
           }
           if (action === "wc-open-format") {
             var format = String(button.getAttribute("data-format") || "standard");
+            var pickerOpen = runtimeRoot.document.getElementById("cg-theme-picker");
+            if (pickerOpen) pickerOpen.setAttribute("data-open", "false");
             uiState.wordClue.screen = "play";
             uiState.wordClue.setupOpen = false;
             uiState.wordClue.phase = "setup";
@@ -3991,6 +4062,10 @@
               uiState.wordClue.cardStyle = "draw";
               uiState.wordClue.mode = "draw";
               engine.updateSettings({ wordConnectionsMode: "draw", wordClueCardStyle: "draw" });
+            } else if (format === "act") {
+              uiState.wordClue.cardStyle = "act";
+              uiState.wordClue.mode = "act";
+              engine.updateSettings({ wordConnectionsMode: "act", wordClueCardStyle: "act" });
             } else if (format === "mixed") {
               uiState.wordClue.cardStyle = "mixed";
               uiState.wordClue.mode = "mixed";
@@ -4132,6 +4207,14 @@
         });
       });
 
+      Array.prototype.forEach.call(shell.querySelectorAll(".cg-word-clue-format-card[role='button']"), function (card) {
+        card.addEventListener("keydown", function (event) {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          card.click();
+        });
+      });
+
       Array.prototype.forEach.call(shell.querySelectorAll("[data-submit]"), function (button) {
         button.addEventListener("click", function () {
           handleSubmit(button.getAttribute("data-submit") || "");
@@ -4195,6 +4278,10 @@
             uiState.wordClue.cardStyle = "draw";
             uiState.wordClue.mode = "draw";
             engine.updateSettings({ wordConnectionsMode: "draw", wordClueCardStyle: "draw" });
+          } else if (previewMode === "act") {
+            uiState.wordClue.cardStyle = "act";
+            uiState.wordClue.mode = "act";
+            engine.updateSettings({ wordConnectionsMode: "act", wordClueCardStyle: "act" });
           } else if (previewMode === "mixed") {
             uiState.wordClue.cardStyle = "mixed";
             uiState.wordClue.mode = "mixed";
@@ -4323,6 +4410,7 @@
         uiState.wordClue.mode = String(clueMode.value || "speak");
         if (uiState.wordClue.mode === "picture") uiState.wordClue.cardStyle = "picture";
         if (uiState.wordClue.mode === "draw") uiState.wordClue.cardStyle = "draw";
+        if (uiState.wordClue.mode === "act") uiState.wordClue.cardStyle = "act";
         if (uiState.wordClue.mode === "mixed") uiState.wordClue.cardStyle = "mixed";
         if (uiState.wordClue.mode === "speak") uiState.wordClue.cardStyle = "standard";
         engine.updateSettings({ wordConnectionsMode: clueMode.value, wordClueCardStyle: uiState.wordClue.cardStyle });
@@ -4437,7 +4525,9 @@
       var gradeBand = document.getElementById("cg-grade-band");
       if (gradeBand) gradeBand.addEventListener("change", function () {
         context.gradeBand = gradeBand.value;
+        uiState.wordClue.filterGradeBand = normalizeStarterGradeBand(gradeBand.value);
         engine.updateContext({ gradeBand: gradeBand.value });
+        engine.updateSettings({ wordClueGradeBand: normalizeStarterGradeBand(gradeBand.value) });
         resetRoundUi();
         engine.restartGame();
       });

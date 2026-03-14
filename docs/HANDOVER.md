@@ -227,6 +227,7 @@ Treat these files as the durable project memory:
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/README.md`
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/HANDOVER.md`
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/AGENT_CONTINUITY.md`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/FIGMA_AUDIT_SCORECARD.md`
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/REGRESSION_GUARDRAILS.md`
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/PLATFORM_DESIGN_SYSTEM.md`
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/PLATFORM_MASTER_REDESIGN_BRIEF.md`
@@ -248,6 +249,17 @@ Treat these files as the durable project memory:
 3. Typing Quest premium identity pass
 4. Homepage top-surface unification and contrast pass
 5. Cross-game interaction polish pass
+
+## 11.5) Figma Audit Rule
+Visual work must now use the scorecard in:
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/docs/FIGMA_AUDIT_SCORECARD.md`
+
+Required process:
+- one screen/state at a time
+- canonical desktop audit viewport first: `1440x900`
+- screenshot is the source of truth
+- no claiming a pass is fixed unless the screenshot supports it
+- include category scores and a blunt list of what is still wrong
 
 ## 12) Product Recommendation
 What to do next:
