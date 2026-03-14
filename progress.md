@@ -50,6 +50,12 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
     - no new console errors; the existing unmatched starter-target warning remains unchanged
     - `scrollHeight: 900` in a `900px` viewport
     - `.cg-word-clue-v2-controls` remains fully in-bounds with bottom aligned to the viewport (`bottom ~889.7` in a `900px` viewport)
+- 2026-03-14: Clarified the real Word Clue contract after user correction.
+  - the existing chooser landing page is the correct design and should be preserved
+  - selecting a format should open a separate single-style game page for that format
+  - the post-selection runtime should be a portrait-style Taboo card
+  - top and bottom chrome on the runtime should stay reduced
+  - broad/wide board-style runtime treatments are the wrong direction even if they technically fit
 
 - 2026-03-14: Rebuilt Word Clue into a real two-step flow in `games/ui/game-shell.js` + `games/ui/game-shell.css`: landing page now acts as a format chooser (`Classic`, `Picture`, `Draw`, `Mixed`) with blocked-word selectors for the describable formats, and the play page now loads as a separate focused runtime for the chosen format.
 - 2026-03-14: Renamed the old `challenge` path into `mixed` in the Word Clue shell logic and styling, removed the `On deck` rail from the runtime, switched hidden-speaker flow to `Get Ready -> Show Card`, and replaced the broken remote picture support with local visual glyph fallback.

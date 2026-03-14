@@ -53,6 +53,8 @@ Recently completed work:
 - Word Clue was rebuilt into a real two-step flow:
   - landing page acts as a clean format chooser
   - play page is a separate focused clue stage
+  - the landing page shown in the validated screenshot is the correct chooser and should be preserved as the baseline
+  - after selecting a format, the runtime should open as one single-style game page for that format only
   - shared teacher controls were simplified, but the runtime still needs one stronger flagship composition pass
 - Word Quest was re-stabilized after an overreaching runtime experiment:
   - live `Solve plan` / `Ava` ribbon is now hidden again
@@ -113,6 +115,18 @@ Highest-priority unresolved quality areas:
 - Do not allow overlapping hero + starter rail + placement stack combinations.
 - Full course catalog belongs below the fold or behind a collapsed control.
 - Theme/customization chrome must not dominate the course screen.
+
+### Word Clue rules
+- Treat Word Clue as a locked two-step product flow:
+  - first screen = format chooser
+  - second screen = one single-style runtime for the selected format
+- The format chooser screenshot validated by the user is the correct landing-page design.
+- Do not redesign or collapse the chooser back into the runtime page.
+- The post-selection runtime must be a portrait-style Taboo card, not a wide board/stage layout.
+- Reduce top and bottom chrome aggressively on the runtime page.
+- The card must be the visual owner after format selection.
+- Avoid reintroducing bulky framing above the card or heavy footer bars below it.
+- If a Word Clue pass makes the runtime feel wider, flatter, or more crowded, revert to the previous validated baseline before trying again.
 
 ## 6) Critical File Ownership
 
@@ -227,9 +241,10 @@ Treat these files as the durable project memory:
    - slightly larger keys/letters
    - verify at MacBook size after each single change
 2. Word Clue flagship runtime composition pass:
-   - one dominant clue stage
-   - less repeated framing
-   - cleaner footer/control hierarchy
+   - preserve the current chooser landing page exactly
+   - after format selection, move toward a portrait-style single-card Taboo runtime
+   - reduce runtime chrome above and below the card
+   - keep one dominant clue artifact, not a wide board-like stage
 3. Typing Quest premium identity pass
 4. Homepage top-surface unification and contrast pass
 5. Cross-game interaction polish pass
