@@ -7689,7 +7689,7 @@ body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__panel {
 
 body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__copy h2 {
   font-size: clamp(1.45rem, 2.5vw, 1.95rem) !important;
-  max-width: 8ch !important;
+  max-width: 10ch !important;
 }
 
 body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__copy > p:last-of-type,
@@ -7700,6 +7700,45 @@ body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__panel p {
 
 body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__chips {
   margin-top: 8px !important;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__panel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__stat {
+  display: grid;
+  gap: 4px;
+  padding: 10px 10px 9px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at top right, rgba(141, 183, 233, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.9), rgba(244,247,252,0.92));
+  border: 1px solid color-mix(in oklab, var(--cg-border) 88%, #d7e2f0 12%);
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__stat span {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cg-reading-muted);
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__stat strong {
+  font-size: 0.96rem;
+  line-height: 1.1;
+  color: var(--cg-reading-ink);
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__stat p {
+  margin: 0;
+  font-size: 0.76rem !important;
+  line-height: 1.28 !important;
+  color: var(--cg-reading-muted) !important;
 }
 
 body.game-platform-page[data-shell-view="gallery"] .cg-game-card {
