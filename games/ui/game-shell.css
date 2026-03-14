@@ -8688,9 +8688,12 @@ body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"]
 
 body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-target {
   text-shadow: 0 3px 20px rgba(255, 255, 255, 0.26);
-  font-size: clamp(1.45rem, 3vh, 2.15rem);
-  line-height: 1.05;
-  letter-spacing: 0.02em;
+  font-size: clamp(1.8rem, 3.8vh, 2.65rem);
+  line-height: 0.98;
+  letter-spacing: 0.04em;
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 4px;
 }
 
 body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-danger {
@@ -8710,10 +8713,11 @@ body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"]
 
 body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-target-label {
   margin: 0;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
+  font-weight: 900;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  opacity: 0.82;
+  color: rgba(231, 241, 255, 0.82);
 }
 
 body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"] .cg-word-clue-category {
