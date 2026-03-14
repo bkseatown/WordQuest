@@ -178,8 +178,9 @@ body.cs-has-nav-shell .td-shell {
 
 .td-leadership-card {
   display: grid;
-  gap: 10px;
-  padding: 16px;
+  gap: 8px;
+  padding: 18px;
+  min-height: 168px;
   border-radius: 20px;
   border: 1px solid color-mix(in oklab, var(--border) 82%, white 18%);
   background:
@@ -206,8 +207,8 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .td-leadership-card strong {
-  font-size: 1.04rem;
-  line-height: 1.2;
+  font-size: 1.14rem;
+  line-height: 1.16;
   color: var(--text-primary);
 }
 
@@ -224,19 +225,21 @@ body.cs-has-nav-shell .td-shell {
 }
 
 .td-reports-overview__grid article {
-  padding: 14px;
+  padding: 16px;
   border-radius: 18px;
   background:
     radial-gradient(circle at top right, rgba(132, 173, 223, 0.16), transparent 32%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(244, 241, 235, 0.72));
   border: 1px solid color-mix(in oklab, var(--border) 84%, white 16%);
   display: grid;
-  gap: 10px;
+  gap: 8px;
+  min-height: 128px;
 }
 
 .td-reports-overview__grid article strong {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
+  font-size: 1rem;
 }
 
 .td-overview-eyebrow {
