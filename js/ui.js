@@ -321,11 +321,38 @@ const WQUI = (() => {
     const guessCount = Array.isArray(guesses) ? guesses.length : 0;
     const winMessage = winMessages[Math.max(0, Math.min(winMessages.length - 1, guessCount - 1))] || winMessages[0];
     const lossMessage = lossMessages[word?.length % lossMessages.length] || lossMessages[0];
+    const attemptLabel = guessCount === 1 ? '1 try' : `${guessCount} tries`;
+    const cleanSolve = won && guessCount <= 2;
+    const steadySolve = won && guessCount >= 3;
+    const evidenceHeadline = won
+      ? cleanSolve
+        ? 'Fast, accurate solve'
+        : 'Successful persistence'
+      : 'Word pattern needs one more look';
+    const evidenceDetail = won
+      ? cleanSolve
+        ? `You locked in ${word.toUpperCase()} in ${attemptLabel}. That is a strong sign the sound-spelling pattern is sticking.`
+        : `You stayed with the puzzle and solved ${word.toUpperCase()} in ${attemptLabel}. That recovery matters just as much as speed.`
+      : `You used ${attemptLabel}, which gives us useful evidence about where the tricky sound or pattern showed up this round.`;
+    const nextStepTitle = won
+      ? steadySolve
+        ? 'Replay for a cleaner first read'
+        : 'Carry this pattern into the next word'
+      : 'Listen, chunk, then retry';
+    const nextStepCopy = won
+      ? steadySolve
+        ? 'Tap Word, read the syllables once, and try the next round with fewer checks.'
+        : 'Use the audio and syllable clues once, then keep your eyes on the same pattern in the next challenge.'
+      : 'Use Word and Meaning, say the syllables out loud, and look for the part that changed your guess.';
 
     _el('modal-result').textContent  = won ? winMessage : lossMessage;
     _el('modal-guesses').textContent = won
       ? `Solved in ${guesses.length} guess${guesses.length === 1 ? '' : 'es'}`
       : 'The word was:';
+    _el('modal-evidence-headline').textContent = evidenceHeadline;
+    _el('modal-evidence-detail').textContent = evidenceDetail;
+    _el('modal-next-step-title').textContent = nextStepTitle;
+    _el('modal-next-step-copy').textContent = nextStepCopy;
 
     const wordEl = _el('modal-word');
     if (wordEl) {
