@@ -341,6 +341,10 @@ body.cs-has-nav-shell .td-shell {
   margin: 0;
 }
 
+.td-reports-panel .dashboard-section-meta {
+  max-width: 52ch;
+}
+
 .td-reports-pattern-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -607,6 +611,11 @@ body.cs-has-nav-shell .td-shell {
   overflow: hidden;
 }
 
+body.td-reports-mode .td-cockpit-sidebar {
+  grid-template-rows: repeat(3, auto);
+  align-content: start;
+}
+
 .td-sidebar-section {
   display: grid;
   gap: 8px;
@@ -614,6 +623,34 @@ body.cs-has-nav-shell .td-shell {
 
 .td-sidebar-section--students {
   min-height: 0;
+}
+
+.td-sidebar-compact-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in oklab, var(--border) 76%, white 24%);
+  background:
+    radial-gradient(circle at top right, rgba(132, 173, 223, 0.14), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.84), rgba(241, 237, 230, 0.78));
+}
+
+.td-sidebar-compact-card strong {
+  font-size: 1rem;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.td-sidebar-compact-card p {
+  margin: 0;
+  color: color-mix(in oklab, var(--text-primary) 68%, var(--muted) 32%);
+}
+
+.td-sidebar-compact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .td-sidebar-section__head {

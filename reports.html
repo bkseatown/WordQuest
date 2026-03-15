@@ -114,16 +114,19 @@
                 <button class="td-sidebar-link" type="button" onclick="document.getElementById('td-meeting-workspace')&&document.getElementById('td-meeting-workspace').click()"><span>✎</span><strong>Meeting Prep</strong></button>
               </nav>
             </div>
-            <div class="td-sidebar-section">
-              <p class="dashboard-kicker">Caseload</p>
-              <div id="td-caseload-snapshot" class="td-caseload-snapshot" aria-live="polite"></div>
-            </div>
             <div class="td-sidebar-section td-sidebar-section--students">
               <div class="td-sidebar-section__head">
-                <p class="dashboard-kicker">Students needing support</p>
+                <p class="dashboard-kicker">Student records</p>
                 <span class="td-sidebar-icon-group" aria-hidden="true">👤👤👤</span>
               </div>
-              <div id="td-today-list" class="td-cockpit-student-list" aria-live="polite"></div>
+              <div class="td-sidebar-compact-card">
+                <strong>Open one student only when you need details.</strong>
+                <p>Use the profile for history, goals, family notes, and support records.</p>
+                <div class="td-sidebar-compact-actions">
+                  <a class="td-top-btn" href="./student-profile.html">Open Student Profile</a>
+                  <a class="td-top-btn" href="./teacher-hub-v2.html">Return to Hub</a>
+                </div>
+              </div>
             </div>
           </aside>
 
@@ -169,23 +172,23 @@
             <div class="td-reports-panel__head">
               <div>
                 <p class="dashboard-kicker">Aggregated Caseload Patterns</p>
-                <h2 id="td-patterns-title" class="dashboard-section-title">Scan evidence health, service pressure, and follow-up risk.</h2>
+                <h2 id="td-patterns-title" class="dashboard-section-title">See what needs attention.</h2>
               </div>
               <a class="td-top-btn" href="./teacher-hub-v2.html">Open Hub</a>
             </div>
-            <p class="dashboard-section-meta">Check risk distribution, missing evidence, and who needs review before meetings or summaries.</p>
+            <p class="dashboard-section-meta">Start with risk, evidence, and which students need follow-up.</p>
             <div class="td-reports-pattern-list" aria-label="Reports prep checklist">
               <article>
-                <strong>Before meetings</strong>
-                <p>Review caseload health, evidence gaps, and students whose plans changed.</p>
+                <strong>Evidence gaps</strong>
+                <p>See which students need current proof before a summary or meeting.</p>
               </article>
               <article>
-                <strong>Before exports</strong>
-                <p>Open a student profile only when you need one-student evidence or communication history.</p>
+                <strong>Plan changes</strong>
+                <p>Catch students whose support level or next move shifted this week.</p>
               </article>
               <article>
-                <strong>Before weekly summaries</strong>
-                <p>Generate teacher, family, and student-facing summaries from current data.</p>
+                <strong>Weekly drafts</strong>
+                <p>Generate teacher and family summaries only after the overview looks clean.</p>
               </article>
             </div>
           </article>
@@ -193,16 +196,15 @@
             <div class="td-reports-panel__head">
               <div>
                 <p class="dashboard-kicker">Meeting Prep</p>
-                <h2 id="td-prep-title" class="dashboard-section-title">Prepare packets and follow-up without acting like the Hub.</h2>
+                <h2 id="td-prep-title" class="dashboard-section-title">Open the workroom when you are ready to draft.</h2>
               </div>
             </div>
-            <p class="dashboard-section-meta">Use this workspace for meeting notes, weekly drafts, SAS-aligned packets, and clean exports.</p>
+            <p class="dashboard-section-meta">Start with packet review, then open notes or export only when you need them.</p>
             <div class="td-reports-action-grid">
               <button id="td-reports-open-meeting" class="td-top-btn btn-primary" type="button">Open Meeting Prep</button>
               <button id="td-reports-open-weekly" class="td-top-btn" type="button">Generate Weekly Draft</button>
-              <button id="td-reports-open-library" class="td-top-btn" type="button">Open SAS Library</button>
-              <button id="td-reports-open-import" class="td-top-btn" type="button">Open Import / Export</button>
-              <a class="td-top-btn" href="./student-profile.html">Open Student Profile</a>
+              <button id="td-reports-open-library" class="td-top-btn" type="button">SAS Library</button>
+              <button id="td-reports-open-import" class="td-top-btn" type="button">Import / Export</button>
             </div>
           </article>
         </section>
