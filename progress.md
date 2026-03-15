@@ -36,6 +36,23 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
     - `output/audit-20260315/paragraph-builder.png`
     - `output/audit-20260315/precision-play.png`
 
+- 2026-03-15: Completed a verified teacher-fit reduction pass after the fresh audit, focused on `teacher-hub-v2.html`, `teacher-hub-v2.css`, `teacher-hub-v2.js`, `student-profile.html`, `student-profile.css`, `student-profile.js`, and `home-v3.css`.
+  - Specialist Hub overview now removes the obvious support-count language from the day and lesson-map cards, compresses the lesson-map card rhythm, and keeps the route at `scrollHeight: 900` in the desktop audit viewport
+  - Specialist Hub class detail also drops the `Support load` chip so the command bar stays about lesson fit and support lane rather than repeating what the specialist already knows
+  - Student profile now shows only the highest-value program/assessment/goal slices by default, with a substantially smaller hero and lighter plan stack; current desktop check improved from `scrollHeight: 990` to `906`
+  - Landing CSS dead-code cleanup removed the retired hero/focus-card/workspace-list rules that no longer belong to the compact three-door landing architecture
+  - verified on:
+    - `teacher-hub-v2.html?demo=1&cb=hub-pass-tight2`
+    - `student-profile.html?cb=sp-pass-tight2`
+  - current checkpoint files:
+    - `teacher-hub-v2.html`
+    - `teacher-hub-v2.css`
+    - `teacher-hub-v2.js`
+    - `student-profile.html`
+    - `student-profile.css`
+    - `student-profile.js`
+    - `home-v3.css`
+
 - 2026-03-15: Completed a verified Specialist Hub trust/game-plan checkpoint focused only on `teacher-hub-v2.html`, `teacher-hub-v2.js`, and `teacher-hub-v2.css`.
   - added a compact class-detail command bar that makes lesson alignment status, support load, primary lane, first support move, and pacing reset visible before the deeper lesson block
   - tightened the daily lesson-map cards so they now lead with the likely first move plus a clearer lesson-alignment state instead of repeating long objective-heavy copy

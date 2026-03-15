@@ -435,7 +435,7 @@
   }
 
   function renderPrograms(demo) {
-    var rows = [].concat(demo.core, demo.intervention).slice(0, 3);
+    var rows = [].concat(demo.core.slice(0, 1), demo.intervention.slice(0, 1));
     el.programs.innerHTML = [
       '<p class="sp-kicker">Current Program Record</p>',
       '<h2 class="sp-section-title">Curriculum and intervention</h2>',
@@ -456,14 +456,12 @@
     el.plans.innerHTML = [
       '<p class="sp-kicker">Goals and Plans</p>',
       '<h2 class="sp-section-title">Quarter and annual priorities</h2>',
-      '<div class="sp-compact-card"><p class="sp-tile-label">Current quarter goals</p><div class="sp-stack">' + demo.goals.quarter.slice(0, 3).map(function (item) {
-        return '<span class="sp-chip">' + esc(item) + '</span>';
-      }).join("") + '</div></div>',
+      '<div class="sp-compact-card"><p class="sp-tile-label">Current quarter goals</p>' + compactLines(demo.goals.quarter.slice(0, 2)) + '</div>',
       '<div class="sp-compact-grid">' +
-        '<div class="sp-compact-card"><p class="sp-tile-label">End-of-year goals</p>' + compactLines(demo.goals.annual.slice(0, 2)) + '</div>' +
-        '<div class="sp-compact-card"><p class="sp-tile-label">Executive functioning</p>' + compactLines(demo.executiveFunction.slice(0, 2)) + '</div>' +
+        '<div class="sp-compact-card"><p class="sp-tile-label">End-of-year goals</p>' + compactLines(demo.goals.annual.slice(0, 1)) + '</div>' +
+        '<div class="sp-compact-card"><p class="sp-tile-label">Executive functioning</p>' + compactLines(demo.executiveFunction.slice(0, 1)) + '</div>' +
       '</div>',
-      '<div class="sp-compact-card"><p class="sp-tile-label">Accommodations</p><div class="sp-stack">' + demo.goals.accommodations.slice(0, 3).map(function (item) {
+      '<div class="sp-compact-card"><p class="sp-tile-label">Accommodations</p><div class="sp-stack">' + demo.goals.accommodations.slice(0, 2).map(function (item) {
         return '<span class="sp-chip">' + esc(item) + '</span>';
       }).join("") + '</div></div>',
       '<div class="sp-plan-links">' + demo.files.map(function (item) {

@@ -1234,7 +1234,6 @@
       '  </div>',
       '  <div class="th2-block-command-bar__chips">',
       '    <span class="th2-command-chip th2-command-chip--' + escapeHtml(alignment.tone) + '"><strong>' + escapeHtml(alignment.label) + '</strong><em>' + escapeHtml(alignment.detail) + '</em></span>',
-      '    <span class="th2-command-chip"><strong>Support load</strong><em>' + escapeHtml(String(supportCount || 0)) + ' students</em></span>',
       '    <span class="th2-command-chip"><strong>Primary lane</strong><em>' + escapeHtml(deriveBlockSupportSummary(contextData)) + '</em></span>',
       '  </div>',
       '  <div class="th2-block-command-grid">',
@@ -5425,7 +5424,7 @@
       '<section class="th2-day-brief th2-day-brief--overview">',
       '  <p class="th2-section-label">Day overview</p>',
       '  <h2 class="th2-day-brief__title">What changes today</h2>',
-      '  <div class="th2-day-brief__summary-row"><p class="th2-day-brief__summary">See schedule shifts first, then open the clearest class move.</p><div class="th2-day-brief__microchips"><span>' + escapeHtml(String(totalBlocks)) + ' blocks</span><span>' + escapeHtml(String(supportTouches)) + ' support touches</span></div></div>',
+      '  <div class="th2-day-brief__summary-row"><p class="th2-day-brief__summary">See schedule shifts first, then open the clearest class move.</p><div class="th2-day-brief__microchips"><span>' + escapeHtml(String(totalBlocks)) + ' blocks</span></div></div>',
       (schedulePattern ? '<div class="th2-day-brief__pattern"><span class="th2-day-brief__pattern-label">Cycle</span><strong>' + escapeHtml(schedulePattern) + '</strong></div>' : ''),
       '  <div class="th2-day-brief__actions"><button class="th2-day-sched-sync-btn" data-connect-calendar="1" type="button">Sync Google Calendar</button><a class="th2-inline-link" href="reports.html">Go to reports</a></div>',
       '  <div class="th2-day-overview__events">',
@@ -5459,7 +5458,6 @@
           '  <p class="th2-priority-item__reason">' + escapeHtml(item.move || item.summary) + '</p>',
           '  <div class="th2-priority-item__fact-row">',
           '    <span class="th2-priority-item__fact"><strong>SWBAT</strong><em>' + escapeHtml(item.swbat.replace(/^SWBAT\s+/i, "")) + '</em></span>',
-          '    <span class="th2-priority-item__fact th2-priority-item__fact--' + escapeHtml(item.alignment && item.alignment.tone || "soft") + '"><strong>' + escapeHtml(item.alignment && item.alignment.label || "Lesson review") + '</strong><em>' + escapeHtml(String(item.supportCount || 0)) + ' support students</em></span>',
           '  </div>',
           '</button>'
         ].join("");

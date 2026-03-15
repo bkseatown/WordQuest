@@ -12,6 +12,7 @@ html {
   color-scheme: only light;
   margin: 0;
   height: 100%;
+  overflow: hidden;
   background: #bec5d2; /* fallback for body scroll overshoot — visible slate */
 }
 
@@ -8154,7 +8155,8 @@ body.th2-page {
 }
 
 .th2-day-brief--overview {
-  gap: 12px;
+  gap: 10px;
+  padding: 12px 14px;
 }
 
 .th2-day-brief--overview .th2-day-overview__events {
@@ -8173,14 +8175,48 @@ body.th2-page {
 }
 
 .th2-priority-rail--lesson-map .th2-priority-item {
-  gap: 7px;
-  padding: 14px 14px 12px;
+  gap: 6px;
+  padding: 12px 12px 10px 14px;
 }
 
 .th2-priority-rail--lesson-map .th2-priority-item p,
 .th2-priority-rail--lesson-map .th2-priority-item em {
-  font-size: 12px;
-  line-height: 1.35;
+  font-size: 11.5px;
+  line-height: 1.24;
+}
+
+.th2-priority-rail--lesson-map .th2-priority-item__reason {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.th2-priority-rail--lesson-map .th2-priority-item__fact-row {
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.th2-priority-rail--lesson-map .th2-priority-item__fact {
+  padding: 8px 9px;
+}
+
+.th2-command-center--class-detail .th2-block-command-bar {
+  padding: 12px 14px;
+  gap: 10px;
+}
+
+.th2-command-center--class-detail .th2-block-command-grid {
+  gap: 8px;
+}
+
+.th2-command-center--class-detail .th2-block-command-card {
+  padding: 10px 11px;
+}
+
+.th2-command-center--class-detail .th2-context-zone--support {
+  min-height: 0;
+  overflow: auto;
 }
 
 @media (max-width: 720px) {
