@@ -573,11 +573,29 @@
 
   function openClassDetailPage(blockId) {
     if (!blockId) return;
-    window.location.href = buildHubRoute({ classId: blockId });
+    hubState.set({ context: { mode: "class", studentId: "", classId: blockId } });
+    try {
+      var next = new URL(window.location.href);
+      next.searchParams.set("classId", String(blockId));
+      if (isDemoMode) next.searchParams.set("demo", "1");
+      window.history.replaceState({}, "", next.toString());
+    } catch (_e) {}
+    renderSidebarSchedule();
+    renderClassSnapshot();
+    syncToolsAvailability();
   }
 
   function returnToSchedulePage() {
-    window.location.href = buildHubRoute({});
+    hubState.set({ context: { mode: "class", studentId: "", classId: "" } });
+    try {
+      var next = new URL(window.location.href);
+      next.searchParams.delete("classId");
+      if (isDemoMode) next.searchParams.set("demo", "1");
+      window.history.replaceState({}, "", next.toString());
+    } catch (_e) {}
+    renderSidebarSchedule();
+    renderClassSnapshot();
+    syncToolsAvailability();
   }
 
   function areaLabel(area) {
@@ -624,6 +642,138 @@
     if (!focus) return "SWBAT explain the lesson focus and complete the next support task.";
     var normalized = focus.charAt(0).toLowerCase() + focus.slice(1);
     return "SWBAT " + normalized.replace(/\.$/, "") + ".";
+  }
+
+  function deriveSchedulePattern(blocks) {
+    var rows = Array.isArray(blocks) ? blocks : [];
+    var explicit = "";
+    rows.some(function (block) {
+      explicit = String(
+        block && (
+          block.cycleLabel ||
+          block.schedulePattern ||
+          block.rotationLabel ||
+          block.dayPattern
+        ) || ""
+      ).trim();
+      return !!explicit;
+    });
+    if (explicit) return explicit;
+    if (isDemoMode) return "White Day 1";
+    return "";
+  }
+
+  function inferGradeKeyFromClassText(text) {
+    var value = String(text || "");
+    var match = value.match(/\bgrade\s*([kK]|\d{1,2})\b/i) || value.match(/\b([kK]|\d{1,2})(?:st|nd|rd|th)?\s+grade\b/i);
+    if (!match) return "";
+    return fishtankGradeKey(match[1]);
+  }
+
+  function deriveNavigatorProgramId(contextData) {
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    var block = contextData && contextData.block ? contextData.block : {};
+    var classContext = contextData && contextData.classContext ? contextData.classContext : {};
+    var lessonContext = contextData && contextData.lessonContext ? contextData.lessonContext : {};
+    var value = String(
+      lessonContext.programId ||
+      derived.sourceProgramId ||
+      derived.programId ||
+      block.curriculumId ||
+      block.programId ||
+      classContext.curriculum ||
+      block.curriculum ||
+      ""
+    ).toLowerCase();
+    if (/illustrative[-\s]?math|im\b/.test(value)) return "illustrative-math";
+    if (/fishtank|fish\s*tank/.test(value)) return "fishtank";
+    if (/fundations|just-words|ufli/.test(value)) return "ufli";
+    if (/word\s*study/.test(value)) return "iswordstudy";
+    return value;
+  }
+
+  function deriveNavigatorGradeKey(contextData) {
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    var block = contextData && contextData.block ? contextData.block : {};
+    var classContext = contextData && contextData.classContext ? contextData.classContext : {};
+    var lessonContext = contextData && contextData.lessonContext ? contextData.lessonContext : {};
+    var leadStudent = Array.isArray(derived.students) && derived.students.length ? derived.students[0] : null;
+    var candidates = [
+      block.classSection,
+      block.label,
+      classContext.label,
+      lessonContext.gradeBand,
+      derived.gradeBand,
+      block.gradeBand,
+      block.grade,
+      classContext.gradeBand,
+      leadStudent && (leadStudent.gradeBand || leadStudent.grade)
+    ];
+    for (var i = 0; i < candidates.length; i++) {
+      var key = inferGradeKeyFromClassText(candidates[i]) || fishtankGradeKey(candidates[i]);
+      if (key) return key;
+    }
+    return "";
+  }
+
+  function parseLessonPositionFromText(currId, contextData) {
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    var block = contextData && contextData.block ? contextData.block : {};
+    var lessonContext = contextData && contextData.lessonContext ? contextData.lessonContext : {};
+    var text = [
+      block.lesson,
+      derived.lesson,
+      derived.lessonFocus,
+      lessonContext.title,
+      lessonContext.unit,
+      block.curriculum
+    ].filter(Boolean).join(" · ");
+    var unitMatch = text.match(/\bunit\s*(\d{1,2})\b/i);
+    var lessonMatch = text.match(/\blesson\s*(\d{1,3})\b/i);
+    if (currId === "illustrative-math") {
+      return {
+        unitIdx: unitMatch ? Math.max(0, parseInt(unitMatch[1], 10) - 1) : 0,
+        lessonN: lessonMatch ? Math.max(1, parseInt(lessonMatch[1], 10)) : 1
+      };
+    }
+    if (currId === "fishtank") {
+      return {
+        unitIdx: unitMatch ? Math.max(0, parseInt(unitMatch[1], 10) - 1) : 0,
+        lessonN: lessonMatch ? Math.max(1, parseInt(lessonMatch[1], 10)) : 1
+      };
+    }
+    if (currId === "ufli") {
+      return {
+        lessonN: lessonMatch ? Math.max(1, parseInt(lessonMatch[1], 10)) : 1
+      };
+    }
+    if (currId === "iswordstudy") {
+      return {
+        semIdx: 0,
+        lessonIdx: lessonMatch ? Math.max(0, parseInt(lessonMatch[1], 10) - 1) : 0
+      };
+    }
+    return null;
+  }
+
+  function ensureLessonNavStateForContext(currId, gradeKey, contextData) {
+    if (!currId || !gradeKey) return;
+    if (getLessonNavState(currId, gradeKey)) return;
+    var seed = parseLessonPositionFromText(currId, contextData);
+    if (!seed) return;
+    setLessonNavState(currId, gradeKey, seed);
+  }
+
+  function buildLessonNavigatorHtml(contextData) {
+    var currId = deriveNavigatorProgramId(contextData);
+    var gradeKey = deriveNavigatorGradeKey(contextData);
+    if (!currId || !gradeKey) return "";
+    ensureLessonNavStateForContext(currId, gradeKey, contextData);
+    if (currId === "illustrative-math" && IM_GRADES[gradeKey]) return renderIMNav(gradeKey);
+    if (currId === "fishtank" && FISHTANK_GRADES[gradeKey]) return renderFishtankNav(gradeKey);
+    if (currId === "ufli") return renderUFLINav(gradeKey);
+    if (currId === "iswordstudy" && ISWS_GRADES[gradeKey]) return renderISWSNav(gradeKey);
+    return "";
   }
 
   function getAgendaState(blockId) {
@@ -1109,6 +1259,7 @@
     var classMeta = [block.timeLabel, block.teacher].filter(Boolean).join(" · ");
     var lessonLabel = rawLessonHeadline;
     var mainHeadline = curriculumLabel || lessonHeadline;
+    var navigatorHtml = buildLessonNavigatorHtml(contextData);
     return [
       '<section class="th2-context-zone th2-context-zone--lesson">',
       '  <div class="th2-context-zone__heading"><div class="th2-class-hero"><h1 class="th2-class-hero__title">' + escapeHtml(classTitle) + '</h1>' + (classMeta ? '<p class="th2-class-hero__meta">' + escapeHtml(classMeta) + '</p>' : '') + '</div><button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Edit lesson</button></div>',
@@ -1118,6 +1269,17 @@
       '    <p class="th2-mission-card__sub">' + escapeHtml(lessonSummary) + "</p>",
       '    <p class="th2-mission-card__target">' + escapeHtml(deriveLearningTarget(contextData)) + "</p>",
       "  </div>",
+      (navigatorHtml
+        ? [
+            '  <div class="th2-secondary-card th2-secondary-card--lesson-nav">',
+            '    <div class="th2-secondary-card__head">',
+            '      <p class="th2-section-label">Lesson sequence</p>',
+            '      <p class="th2-today-sub">If the class is ahead or behind, move to the right lesson here first.</p>',
+            '    </div>',
+            navigatorHtml,
+            '  </div>'
+          ].join("")
+        : ""),
       "</section>"
     ].join("");
   }
@@ -1688,6 +1850,7 @@
       el.sidebarCtx.classList.add("th2-sidebar-ctx");
       el.sidebarCtx.innerHTML = '<p class="th2-sidebar-date">' + todayDateStr() + '</p><p class="th2-sidebar-urgency">' + escapeHtml(sidebarNote) + '</p>';
     }
+    bindLessonNavEvents(el.emptyState);
   }
 
   function renderCommandCenter(activeBlock, options) {
@@ -3588,6 +3751,7 @@
             classSection: "Elementary Homeroom Community Block",
             teacher: "Ms. Smith",
             subject: "Advisory",
+            schedulePattern: "White Day 1",
             curriculum: "Second Step",
             curriculumId: "community-circle",
             lesson: "Community launch and check-in",
@@ -3603,6 +3767,7 @@
             classSection: "Grade 4 Math",
             teacher: "Ms. Smith",
             subject: "Math",
+            schedulePattern: "White Day 1",
             curriculum: "Illustrative Math",
             curriculumId: "illustrative-math",
             lesson: "Unit 2 · Lesson 7",
@@ -3618,6 +3783,7 @@
             classSection: "Transition / Unstructured Time",
             teacher: "Grade Team",
             subject: "Community",
+            schedulePattern: "White Day 1",
             curriculum: "Student break",
             curriculumId: "student-break",
             lesson: "Reset and transition",
@@ -3633,6 +3799,7 @@
             classSection: "Grade 3 Reading",
             teacher: "Ms. Rivera",
             subject: "Reading",
+            schedulePattern: "White Day 1",
             curriculum: "Fish Tank Reading",
             curriculumId: "fishtank-ela",
             lesson: "Unit 2 · Shared Text",
@@ -3648,6 +3815,7 @@
             classSection: "Grade 3 Writing",
             teacher: "Ms. Patel",
             subject: "Writing",
+            schedulePattern: "White Day 1",
             curriculum: "Fish Tank Writing",
             curriculumId: "fishtank-writing",
             lesson: "Claim + Evidence Paragraph",
@@ -3663,6 +3831,7 @@
             classSection: "Grade 3 Content Literacy",
             teacher: "Ms. Patel",
             subject: "Science/Social Studies",
+            schedulePattern: "White Day 1",
             curriculum: "Knowledge Builder",
             curriculumId: "knowledge-builder",
             lesson: "Unit 3 · Discussion + notes",
@@ -3678,6 +3847,7 @@
             classSection: "ES Exempt Support / MS-HS Learning Support",
             teacher: "Ms. Rivera",
             subject: "Reading",
+            schedulePattern: "White Day 1",
             curriculum: "Fundations",
             curriculumId: "fundations",
             lesson: "Lesson 56",
@@ -3693,6 +3863,7 @@
             classSection: "Art · Music · PE · World Language",
             teacher: "Specials Team",
             subject: "Specials",
+            schedulePattern: "White Day 1",
             curriculum: "Encore Rotation",
             curriculumId: "specials-rotation",
             lesson: "Afternoon rotation",
@@ -5117,7 +5288,7 @@
 
   function isNotableCalendarBlock(block) {
     var text = [block && block.label, block && block.subject, block && block.curriculum, block && block.notes].join(" ").toLowerCase();
-    return /(library|assembly|stem|specials|world language exempt|recess|snack|meeting|advisory|field trip|testing)/.test(text);
+    return /(library|assembly|stem|specials|world language exempt|field trip|testing|half day|early dismissal|coverage|pull-?out|exempt)/.test(text);
   }
 
   function buildCalendarHighlights(blocks) {
@@ -5125,13 +5296,13 @@
     return rows.map(function (block) {
       var detail = "";
       var tone = "schedule";
-      if (/library/i.test(block.label || "")) detail = "Library visit is on the schedule.";
-      else if (/assembly/i.test(block.label || "")) { detail = "Assembly timing may change the lesson rhythm."; tone = "notice"; }
-      else if (/stem/i.test(block.label || "") || /stem/i.test(block.notes || "")) { detail = "STEM timing is part of the day flow."; tone = "focus"; }
-      else if (/world language exempt/i.test(block.label || "")) { detail = "Check coverage and pull-out timing before this block starts."; tone = "support"; }
-      else if (/specials/i.test(block.label || "")) { detail = "Specials may affect support coverage and transitions."; tone = "support"; }
-      else if (/recess|snack/i.test(block.label || "")) { detail = "Use the transition to reset before the next academic block."; tone = "pause"; }
-      else if (/meeting|advisory/i.test(block.label || "") || /meeting|advisory/i.test(block.subject || "")) { detail = "Morning meeting sets the tone for the day."; tone = "warm"; }
+      if (/library/i.test(block.label || "")) detail = "Library block is on the calendar.";
+      else if (/assembly/i.test(block.label || "")) { detail = "Assembly timing may shift classroom pacing."; tone = "notice"; }
+      else if (/stem/i.test(block.label || "") || /stem/i.test(block.notes || "")) { detail = "STEM block is part of today’s rotation."; tone = "focus"; }
+      else if (/world language exempt/i.test(block.label || "")) { detail = "Check pull-out and coverage before this block."; tone = "support"; }
+      else if (/specials/i.test(block.label || "")) { detail = "Specials affects who is available and when."; tone = "support"; }
+      else if (/recess|snack/i.test(block.label || "")) { detail = "Transition block on the schedule."; tone = "pause"; }
+      else if (/meeting|advisory/i.test(block.label || "") || /meeting|advisory/i.test(block.subject || "")) { detail = "Advisory or community block on the calendar."; tone = "warm"; }
       else detail = block.notes || "Calendar note for today.";
       return {
         timeLabel: block.timeLabel || "",
@@ -5152,16 +5323,19 @@
       var contextData = buildTeacherContextForBlock(block) || {};
       var classContext = contextData.classContext || {};
       var summary = classContext.conceptFocus || classConceptFocus(block);
+      var swbat = deriveLearningTarget(contextData);
       var lessonLabel = [simplifyCurriculumLabel(block.curriculum || programLabel(block.programId)), block.lesson].filter(Boolean).join(" · ");
       var supportCount = countSupportStudentsForContext(contextData);
       var subject = String(block.subject || "").toLowerCase();
       var tone = /math|numeracy/.test(subject) ? "math" : /writing/.test(subject) ? "writing" : /science|social/.test(subject) ? "content" : /language|reading|ela/.test(subject) ? "literacy" : "general";
       return {
+        blockId: block.id || "",
         teacher: block.teacher || "Teacher",
         timeLabel: block.timeLabel || "",
         label: block.label || block.classSection || block.subject || "Class block",
         lessonLabel: lessonLabel || "Lesson context pending",
         summary: summary,
+        swbat: swbat,
         supportCount: supportCount,
         tone: tone
       };
@@ -5170,14 +5344,16 @@
 
   function renderDayOverviewPanel(blocks) {
     var highlights = buildCalendarHighlights(blocks);
+    var schedulePattern = deriveSchedulePattern(blocks);
     return [
       '<section class="th2-day-brief th2-day-brief--overview">',
       '  <p class="th2-section-label">Day overview</p>',
-      '  <h2 class="th2-day-brief__title">Sync the day, then move class by class.</h2>',
-      '  <p class="th2-day-brief__summary">Start by confirming today&rsquo;s Google Calendar so schedule changes, assemblies, specials, and pull-out shifts are current.</p>',
+      '  <h2 class="th2-day-brief__title">What changes today</h2>',
+      '  <p class="th2-day-brief__summary">Announcements, rotating-day notes, and schedule shifts that affect coverage or lesson pacing.</p>',
+      (schedulePattern ? '<div class="th2-day-brief__pattern"><span class="th2-day-brief__pattern-label">Cycle</span><strong>' + escapeHtml(schedulePattern) + '</strong></div>' : ''),
       '  <div class="th2-day-brief__actions"><button class="th2-day-sched-sync-btn" data-connect-calendar="1" type="button">Sync Google Calendar</button><a class="th2-inline-link" href="reports.html">Go to reports</a></div>',
       '  <div class="th2-day-overview__events">',
-      '    <div class="th2-day-overview__events-head"><span class="th2-day-overview__label">Calendar highlights</span><strong>What changes the day</strong></div>',
+      '    <div class="th2-day-overview__events-head"><span class="th2-day-overview__label">Calendar highlights</span><strong>Announcements and exceptions</strong></div>',
       (highlights.length
         ? highlights.map(function (item) {
             return '<article class="th2-day-overview__event" data-tone="' + escapeHtml(item.tone || "schedule") + '"><span class="th2-day-overview__event-time">' + escapeHtml(item.timeLabel || "Today") + '</span><strong>' + escapeHtml(item.label) + '</strong><p>' + escapeHtml(item.detail) + '</p></article>';
@@ -5192,11 +5368,11 @@
     var rows = buildLessonMapRows(blocks);
     return [
       '<section class="th2-priority-rail th2-priority-rail--lesson-map">',
-      '  <div class="th2-priority-rail__head"><p class="th2-section-label">Class lesson map</p><p class="th2-today-sub">What each classroom is teaching today.</p></div>',
+      '  <div class="th2-priority-rail__head"><p class="th2-section-label">Class lesson map</p><p class="th2-today-sub">Objective, SWBAT, and support load for each class.</p></div>',
       (rows.length
         ? '<div class="th2-priority-rail__list">' + rows.map(function (item) {
             return [
-          '<article class="th2-priority-item th2-priority-item--lesson">',
+          '<button class="th2-priority-item th2-priority-item--lesson" data-open-block="' + escapeHtml(item.blockId) + '" type="button">',
           '  <div class="th2-priority-item__tone" data-tone="' + escapeHtml(item.tone || "general") + '"></div>',
           '  <div class="th2-priority-item__top">',
           '    <span class="th2-priority-item__rank">' + escapeHtml(item.teacher) + '</span>',
@@ -5205,9 +5381,10 @@
           '  <strong class="th2-priority-item__title">' + escapeHtml(item.label) + '</strong>',
           '  <p class="th2-priority-item__meta">' + escapeHtml(item.lessonLabel) + '</p>',
           '  <p class="th2-priority-item__reason">' + escapeHtml(item.summary) + '</p>',
+          '  <p class="th2-priority-item__swbat">' + escapeHtml(item.swbat) + '</p>',
           '  <div class="th2-priority-item__lesson-bar"><span style="width:' + escapeHtml(String(Math.max(18, Math.min(100, (item.supportCount || 0) * 18)))) + '%"></span></div>',
           '  <p class="th2-priority-item__cue">' + escapeHtml(String(item.supportCount || 0)) + ' support students in this block</p>',
-          '</article>'
+          '</button>'
         ].join("");
       }).join("") + '</div>'
         : '<div class="th2-priority-rail__empty">Lesson context will appear once today&rsquo;s classes are connected.</div>'),

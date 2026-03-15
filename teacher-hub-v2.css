@@ -101,8 +101,26 @@ body.th2-page {
 }
 
 .th2-day-brief__pattern {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  padding: 10px 12px;
   background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(245,248,253,0.92));
   border-color: rgba(171, 185, 206, 0.28);
+}
+
+.th2-day-brief__pattern-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6a7890;
+}
+
+.th2-day-brief__pattern strong {
+  font-size: 13px;
+  color: #22436f;
 }
 
 .th2-day-brief__group {
@@ -252,15 +270,16 @@ body.th2-page {
 }
 
 .th2-priority-rail--lesson-map .th2-priority-item {
-  cursor: default;
+  cursor: pointer;
   position: relative;
   overflow: hidden;
-  gap: 8px;
+  gap: 9px;
   padding-top: 18px;
+  text-align: left;
 }
 
 .th2-priority-rail--lesson-map .th2-priority-item:hover {
-  transform: none;
+  transform: translateY(-1px);
 }
 
 .th2-priority-item--lesson .th2-priority-item__rank {
@@ -315,6 +334,17 @@ body.th2-page {
   font-size: 11px;
   line-height: 1.35;
   color: #5f7190;
+}
+
+.th2-priority-item__swbat {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(180, 195, 216, 0.22);
+  font-size: 12px;
+  line-height: 1.45;
+  color: #304866;
 }
 
 .th2-day-brief--overview {
@@ -1358,6 +1388,23 @@ body.th2-page.cs-has-nav-shell {
 
 .th2-secondary-card {
   padding: 16px;
+}
+
+.th2-secondary-card__head {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.th2-secondary-card--lesson-nav {
+  background:
+    radial-gradient(circle at top right, rgba(86, 136, 216, 0.10), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,248,253,0.98));
+}
+
+.th2-secondary-card--lesson-nav .th2-today-sub {
+  margin: 0;
+  font-size: 13px;
 }
 
 /* ── Focus card ────────────────────────────────────────── */
