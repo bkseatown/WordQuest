@@ -410,7 +410,7 @@ body.cs-home-page {
 
 .landing-scene__rail {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   height: 100%;
 }
@@ -439,9 +439,7 @@ body.cs-home-page {
   pointer-events: none;
 }
 
-.landing-scene-card__top,
-.landing-preview-quest-meta,
-.landing-preview-clue-footer {
+.landing-scene-card__top {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -455,16 +453,10 @@ body.cs-home-page {
     linear-gradient(180deg, #f7f5ef 0%, #e4ebf7 100%);
 }
 
-.landing-scene-card--typing {
-  background:
-    radial-gradient(circle at top left, rgba(84, 171, 255, 0.18), transparent 34%),
-    linear-gradient(180deg, #f0f5fb 0%, #dae4f3 100%);
-}
-
 .landing-scene-card--clue {
   background:
     radial-gradient(circle at top right, rgba(225, 123, 106, 0.18), transparent 34%),
-    linear-gradient(180deg, #fff7ef 0%, #f4efe8 100%);
+    linear-gradient(180deg, #fff8f1 0%, #f3ede8 100%);
 }
 
 .landing-scene__kicker {
@@ -709,101 +701,31 @@ body.cs-home-page {
   text-transform: uppercase;
 }
 
-.landing-preview-quest-meta span,
-.landing-preview-quest-meta strong,
-.landing-preview-clue-footer span,
-.landing-preview-clue-footer strong {
-  font-size: 0.72rem;
-  font-weight: 800;
-}
-
-.landing-preview-quest-meta span {
-  color: rgba(52, 83, 39, 0.68);
-}
-
-.landing-preview-quest-meta strong {
-  color: #27445f;
-}
-
-.landing-preview-pills,
-.landing-preview-typing-keyboard {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.landing-preview-typing-card {
-  display: grid;
-  gap: 10px;
-  padding: 12px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(242, 246, 252, 0.9));
-  border: 1px solid rgba(106, 129, 171, 0.14);
-}
-
-.landing-preview-typing-line {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  min-height: 40px;
-  padding: 8px 12px;
-  border-radius: 14px;
-  background: rgba(248, 251, 255, 0.94);
-  border: 1px solid rgba(112, 135, 173, 0.16);
-}
-
-.landing-preview-typing-line strong {
-  color: #1a2f4d;
-  font-size: 1.04rem;
-  font-weight: 900;
-}
-
-.landing-preview-typing-line em {
-  color: #7b8aa3;
-  font-style: normal;
-  font-size: 0.98rem;
-  font-weight: 800;
-}
-
-.landing-preview-typing-coach {
-  color: #5573aa;
-  font-size: 0.8rem;
-  font-weight: 800;
-}
-
-.landing-preview-typing-keyboard {
-  gap: 5px;
-}
-
-.landing-preview-typing-keyboard span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 29px;
-  min-height: 32px;
-  padding: 0 8px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.9);
-  color: #304663;
-  font-size: 0.8rem;
-  font-weight: 900;
-  border: 1px solid rgba(112, 135, 173, 0.14);
-  box-shadow: inset 0 -3px 0 rgba(127, 151, 191, 0.18);
-}
-
-.landing-preview-typing-keyboard span.is-guide {
-  background: linear-gradient(180deg, #dfe9ff, #c7d8ff);
-  color: #2c53ad;
-  border-color: rgba(90, 125, 214, 0.24);
-  box-shadow:
-    inset 0 -3px 0 rgba(80, 115, 206, 0.18),
-    0 4px 8px rgba(75, 109, 190, 0.12);
-}
-
 .landing-preview-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.landing-preview-quest-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.landing-preview-quest-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(104, 132, 88, 0.18);
+  color: rgba(55, 86, 44, 0.82);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .landing-preview-key,
@@ -847,6 +769,31 @@ body.cs-home-page {
   border: 1px solid rgba(214, 153, 116, 0.24);
 }
 
+.landing-preview-clue-card--image {
+  grid-template-columns: 70px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.landing-preview-clue-card__media {
+  display: grid;
+  place-items: center;
+  width: 70px;
+  aspect-ratio: 1;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 247, 238, 0.96), rgba(255, 237, 224, 0.92));
+  border: 1px solid rgba(214, 153, 116, 0.24);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 10px 18px rgba(158, 100, 59, 0.08);
+  font-size: 1.9rem;
+}
+
+.landing-preview-clue-card__body {
+  display: grid;
+  gap: 8px;
+}
+
 .landing-preview-clue-card__eyebrow {
   font-size: 0.62rem;
   font-weight: 900;
@@ -859,14 +806,6 @@ body.cs-home-page {
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(210, 156, 122, 0.2);
   color: #8d4d29;
-}
-
-.landing-preview-clue-footer span {
-  color: rgba(148, 80, 41, 0.72);
-}
-
-.landing-preview-clue-footer strong {
-  color: #8f4822;
 }
 
 .landing-preview-note {
@@ -954,7 +893,7 @@ body.cs-home-page {
   }
 
   .landing-scene__rail {
-    grid-template-columns: repeat(3, minmax(140px, 1fr));
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
   }
 
 }
