@@ -17,8 +17,8 @@
     <header class="pp-top">
       <div>
         <h1 class="pp-title">Word Connections</h1>
-        <p class="pp-sub">Vocabulary, morphology, and word relationships.</p>
-        <p id="pp-alignment-badge" class="pp-alignment-badge">Aligned to Literacy Focus: Vocabulary Development</p>
+        <p class="pp-sub">Speak, act, or draw the word relationship.</p>
+        <p id="pp-alignment-badge" class="pp-alignment-badge">Vocabulary Development</p>
       </div>
       <div class="pp-top-actions">
         <button id="pp-teacher-toggle" class="pp-teacher-btn" type="button" aria-expanded="false" aria-controls="pp-teacher-panel" aria-label="Open teacher controls">👩‍🏫 Teacher</button>
@@ -72,8 +72,8 @@
 
       <section id="pp-setup" class="pp-setup">
         <div>
-          <h2 class="h3" style="margin:0 0 6px;">Session Setup</h2>
-          <p class="pp-sub" style="margin:0;">Set the group, mode, and expression format.</p>
+          <h2 class="h3" style="margin:0 0 6px;">Pick a round</h2>
+          <p class="pp-sub" style="margin:0;">Band, pace, mode, and cue.</p>
         </div>
 
         <div class="pp-grid">
@@ -88,7 +88,7 @@
           </div>
 
           <div class="pp-field">
-            <label for="pp-energy">Timer Profile</label>
+            <label for="pp-energy">Pace</label>
             <select id="pp-energy" class="pp-select">
               <option value="low">Low</option>
               <option value="medium" selected>Medium</option>
@@ -97,7 +97,7 @@
           </div>
 
           <div class="pp-field">
-            <label for="pp-challenge">Instructional Mode</label>
+            <label for="pp-challenge">Mode</label>
             <select id="pp-challenge" class="pp-select">
               <option value="FUN">FUN</option>
               <option value="TARGETED" selected>TARGETED</option>
@@ -121,7 +121,7 @@
           </div>
 
           <div class="pp-field">
-            <label for="pp-expression-mode">Expression Mode</label>
+            <label for="pp-expression-mode">Cue</label>
             <select id="pp-expression-mode" class="pp-select">
               <option value="mixed" selected>Mixed</option>
               <option value="speak">Speak</option>
@@ -135,7 +135,7 @@
           </div>
         </div>
 
-        <button id="pp-start" class="pp-start" type="button">Open Word Connections</button>
+        <button id="pp-start" class="pp-start" type="button">Start Round</button>
       </section>
 
       <section id="pp-game" class="pp-game pp-hidden">
@@ -203,7 +203,7 @@
       <section id="pp-summary" class="pp-summary pp-hidden" aria-live="polite">
         <h2 class="h3">Round Summary</h2>
         <p id="pp-summary-text" class="pp-note">Session summary will appear here.</p>
-        <p id="pp-summary-suggested" class="pp-note">Next round: morphology focus.</p>
+        <p id="pp-summary-suggested" class="pp-note"></p>
         <div class="pp-actions-inline">
           <button id="pp-summary-next" class="pp-btn primary" type="button">Start Next Round</button>
           <a class="pp-btn" href="./reports.html">Return to Reports</a>

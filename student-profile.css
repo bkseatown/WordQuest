@@ -20,15 +20,15 @@ body.sp-page {
 
 .sp-shell {
   width: min(1680px, calc(100vw - 28px));
-  height: calc(100vh - 92px);
+  height: calc(100vh - 100px);
   margin: 0 auto;
-  padding: 4px 0 6px;
+  padding: 2px 0 4px;
 }
 
 .sp-shell--single {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 
 .sp-header,
@@ -44,9 +44,9 @@ body.sp-page {
 .sp-header {
   display: grid;
   grid-template-columns: minmax(220px, auto) auto;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
-  padding: 10px 14px;
+  padding: 8px 12px;
 }
 
 .sp-header-meta strong {
@@ -117,14 +117,14 @@ body.sp-page {
 
 .sp-content {
   display: grid;
-  gap: 6px;
+  gap: 5px;
 }
 
 .sp-hero {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.7fr);
-  gap: 8px;
-  padding: 10px 12px;
+  gap: 6px;
+  padding: 9px 11px;
 }
 
 .sp-kicker,
@@ -266,7 +266,7 @@ body.sp-page {
     "programs assessments plans";
   align-items: start;
   min-height: 0;
-  gap: 6px;
+  gap: 5px;
 }
 
 #sp-programs-panel { grid-area: programs; }
@@ -275,7 +275,7 @@ body.sp-page {
 #sp-team-panel { grid-area: team; }
 
 .sp-panel {
-  padding: 10px 12px;
+  padding: 9px 11px;
   min-width: 0;
   height: auto;
   overflow: visible;

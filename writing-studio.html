@@ -24,13 +24,8 @@
           <div>
             <div class="ws-title h2">Writing Studio</div>
             <div class="ws-subtitle" id="ws-subtitle"></div>
-            <div class="ws-welcome muted" id="ws-welcome">Sentence and paragraph setup.</div>
+            <div class="ws-welcome muted" id="ws-welcome">Sentence and paragraph work.</div>
             <div class="ws-runtime-status" id="ws-runtime-status" aria-live="polite">Online</div>
-            <div class="ws-start-here" id="ws-start-here">
-              <div class="ws-start-kicker">Today</div>
-              <div class="ws-start-title" id="ws-start-title">Open a writing routine.</div>
-              <button class="ws-primary" id="ws-start-cta" type="button">Begin</button>
-            </div>
             <div class="ws-launch-search-wrap">
               <input id="ws-launch-search" class="ws-plan-input ws-launch-search" type="search" placeholder="Find a routine or command (e.g., warm-up, small group, teacher)">
               <div id="ws-launch-results" class="ws-launch-results hidden" role="listbox" aria-label="Writing Studio launcher"></div>
@@ -96,7 +91,7 @@
           <button class="ws-step" type="button" data-step="publish">4. Publish</button>
         </div>
         <div id="ws-guidance" class="ws-guidance" aria-live="polite">
-          <div class="ws-meta">Current task</div>
+          <div class="ws-meta">Next</div>
           <div id="ws-goal" class="ws-goal">Plan your first idea.</div>
           <button class="ws-secondary" id="ws-next-step" type="button">Next Step</button>
         </div>
@@ -108,8 +103,8 @@
         </div>
         <div class="ws-launchpad" id="ws-launchpad" aria-label="60 second class launch">
           <div class="ws-launchpad-head">
-            <div class="ws-h2">Quick Launch</div>
-            <div class="ws-meta" id="ws-launchpad-copy">Choose a setup, then open the first task.</div>
+            <div class="ws-h2">Open routine</div>
+            <div class="ws-meta" id="ws-launchpad-copy">Choose the group and the first move.</div>
           </div>
           <div class="ws-launchpad-actions">
             <button class="ws-secondary" id="ws-quick-whole" type="button">Whole Class</button>
@@ -120,7 +115,7 @@
             <button class="ws-secondary" id="ws-quick-core" type="button">Open Lesson</button>
             <button class="ws-secondary" id="ws-quick-full" type="button">All Tools</button>
           </div>
-          <div class="ws-meta" id="ws-quickstart-note">Choose one routine and start in the plan step.</div>
+          <div class="ws-meta" id="ws-quickstart-note">Open one routine and begin.</div>
         </div>
         <details class="ws-advanced-canvas" id="ws-advanced-canvas">
           <summary>Advanced Tools</summary>
@@ -215,12 +210,12 @@
       <aside id="ws-rail">
         <div class="ws-rail-pager" aria-label="Studio sections">
           <button class="ws-rail-link" id="ws-rail-prev" type="button">Prev</button>
-          <div class="ws-rail-title" id="ws-rail-title">Coach</div>
+          <div class="ws-rail-title" id="ws-rail-title">Support</div>
           <button class="ws-rail-link" id="ws-rail-next" type="button">Next</button>
           <button class="ws-rail-link" id="ws-rail-toggle" type="button" aria-pressed="false">Show All</button>
         </div>
         <div class="ws-rail-block" id="ws-block-coach" data-role-group="all">
-          <div class="ws-h2">Coach</div>
+          <div class="ws-h2">Support</div>
           <div class="ws-coach" id="ws-coach"></div>
         </div>
 
@@ -233,11 +228,11 @@
             <button class="ws-pill" id="ws-scaffold-evidence" type="button">Evidence Frame</button>
             <button class="ws-pill" id="ws-scaffold-calm" type="button">Calm Reset</button>
           </div>
-          <div class="ws-tip"><strong>Support Cue:</strong> <span id="ws-scaffold-cue">Use one tool, then write one line.</span></div>
+          <div class="ws-tip"><strong>Cue:</strong> <span id="ws-scaffold-cue">Use one tool, then write one line.</span></div>
         </div>
 
         <div class="ws-rail-block" id="ws-block-caseload" data-role-group="teacher,support">
-          <div class="ws-h2">Caseload Board</div>
+          <div class="ws-h2">Student list</div>
           <div class="ws-plan-row ws-plan-row-organizer">
             <select id="ws-playbook" class="ws-plan-input" aria-label="Intervention playbook">
               <option value="ms-ef">Playbook: MS EF Initiation</option>
@@ -255,23 +250,13 @@
             <input id="ws-case-next" class="ws-plan-input" type="text" placeholder="Next action">
             <button class="ws-secondary" id="ws-case-copy" type="button">Copy PLC Board</button>
           </div>
-          <div class="ws-tip"><strong>Tip:</strong> Click <em>From Draft</em> to update sample date, score, and words for a student.</div>
+          <div class="ws-tip"><strong>From Draft:</strong> update the latest sample for a student.</div>
           <div id="ws-case-list" class="ws-case-list"></div>
           <div class="ws-plan-row ws-plan-row-organizer">
             <button class="ws-secondary" id="ws-week-plan-build" type="button">Build Week Plan</button>
             <button class="ws-secondary" id="ws-week-plan-copy" type="button">Copy Week Plan</button>
           </div>
-          <div class="ws-tip"><strong>Week Plan:</strong> <span id="ws-week-plan-text">Build a plan to auto-fill intervention blocks.</span></div>
-        </div>
-
-        <div class="ws-rail-block" data-role-group="teacher,support">
-          <div class="ws-h2">Teacher Time Dashboard</div>
-          <div class="ws-pills">
-            <span class="ws-pill">Minutes Saved: <span id="ws-roi-minutes">0</span></span>
-            <span class="ws-pill">Artifacts: <span id="ws-roi-artifacts">0</span></span>
-            <span class="ws-pill">Quality Streak: <span id="ws-quality-streak">0</span></span>
-          </div>
-          <div class="ws-tip"><strong>Top Saver:</strong> <span id="ws-roi-top">Session Note</span></div>
+          <div class="ws-tip"><strong>Week plan:</strong> <span id="ws-week-plan-text">Build a plan for intervention blocks.</span></div>
         </div>
 
         <div class="ws-rail-block" data-role-group="support,teacher">

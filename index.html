@@ -8,7 +8,7 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="stylesheet" href="./style/tokens.css?v=20260314d">
   <link rel="stylesheet" href="./style/typography.css?v=20260314d">
-  <link rel="stylesheet" href="./home-v3.css?v=20260315g">
+  <link rel="stylesheet" href="./home-v3.css?v=20260315h">
   <link rel="stylesheet" href="./css/backup-panel.css?v=20260310a">
 </head>
 <body class="cs-home-page">
@@ -30,24 +30,39 @@
     <section class="landing-destinations" aria-label="Main destinations">
       <article class="landing-destination landing-destination--hub">
         <div class="landing-destination__scene landing-scene landing-scene--hub" aria-hidden="true">
-          <div class="landing-hub-panel">
+          <div class="landing-hub-panel landing-hub-panel--crop">
             <p class="landing-scene__kicker">Specialist Hub</p>
             <div class="landing-hub-panel__strip landing-hub-panel__strip--focus">
               <strong>8:20 Math · Ms. Smith</strong>
               <span>Illustrative Math · Grade 4 · Unit 2 · Lesson 7</span>
             </div>
-            <div class="landing-hub-panel__grid">
-              <div class="landing-hub-note">
+            <div class="landing-hub-panel__grid landing-hub-panel__grid--crop">
+              <div class="landing-hub-note landing-hub-note--major">
                 <span>SWBAT</span>
                 <strong>Compare fractions with unlike denominators using benchmark reasoning.</strong>
               </div>
-              <div class="landing-hub-note">
+              <div class="landing-hub-note landing-hub-note--major">
                 <span>Support move</span>
                 <strong>Use visual fraction models before abstract comparison.</strong>
               </div>
             </div>
-            <div class="landing-hub-panel__lane">
-              <i></i><span>Reading 9:35 · Fish Tank Unit 2 shared text · cool-down to log after block</span>
+            <div class="landing-hub-students landing-hub-students--stack">
+              <div class="landing-hub-student landing-hub-student--wide">
+                <strong>Noah K.</strong>
+                <span>T2 Math · needs model-to-equation bridge</span>
+              </div>
+              <div class="landing-hub-student landing-hub-student--wide">
+                <strong>Ava M.</strong>
+                <span>Read directions first · one prompt before independent start</span>
+              </div>
+            </div>
+            <div class="landing-hub-panel__lane landing-hub-panel__lane--strong">
+              <i></i><span>After block: log the cool-down and Noah's model explanation.</span>
+            </div>
+            <div class="landing-hub-sequence">
+              <span class="landing-hub-sequence__chip">Lesson 7</span>
+              <span class="landing-hub-sequence__chip">Unit 2</span>
+              <span class="landing-hub-sequence__chip">Log cool-down</span>
             </div>
           </div>
         </div>
@@ -58,12 +73,37 @@
 
       <article class="landing-destination landing-destination--games">
         <div class="landing-destination__scene landing-scene landing-scene--games" aria-hidden="true">
-          <div class="landing-scene-card landing-scene-card--board landing-scene-card--single">
-            <p class="landing-scene__kicker">Word Quest</p>
-            <div class="landing-preview-board landing-preview-board--quest">
-              <div class="landing-preview-board__row"><i class="is-miss">C</i><i class="is-miss">H</i><i class="is-miss">A</i><i class="is-miss">I</i><i class="is-miss">R</i></div>
-              <div class="landing-preview-board__row"><i class="is-present">B</i><i class="is-miss">R</i><i class="is-miss">I</i><i class="is-miss">N</i><i class="is-miss">G</i></div>
-              <div class="landing-preview-board__row"><i class="is-hit">B</i><i class="is-hit">L</i><i class="is-hit">O</i><i class="is-hit">O</i><i class="is-hit">M</i></div>
+          <div class="landing-games-panel">
+            <div class="landing-games-panel__board">
+              <p class="landing-scene__kicker">Word Quest</p>
+              <div class="landing-preview-board landing-preview-board--quest">
+                <div class="landing-preview-board__row"><i class="is-miss">C</i><i class="is-miss">H</i><i class="is-miss">A</i><i class="is-miss">I</i><i class="is-miss">R</i></div>
+                <div class="landing-preview-board__row"><i class="is-miss">R</i><i class="is-present">O</i><i class="is-miss">U</i><i class="is-miss">N</i><i class="is-miss">D</i></div>
+                <div class="landing-preview-board__row"><i class="is-hit">B</i><i class="is-hit">L</i><i class="is-hit">O</i><i class="is-hit">O</i><i class="is-hit">M</i></div>
+              </div>
+              <div class="landing-preview-keyboard">
+                <span class="landing-preview-key">q</span>
+                <span class="landing-preview-key">w</span>
+                <span class="landing-preview-key is-active">o</span>
+                <span class="landing-preview-key">p</span>
+                <span class="landing-preview-key">l</span>
+                <span class="landing-preview-key is-active">b</span>
+                <span class="landing-preview-key is-active">m</span>
+              </div>
+              <div class="landing-games-panel__status">
+                <span class="landing-preview-key is-active">Guess</span>
+                <span class="landing-preview-key">Type</span>
+                <span class="landing-preview-key">Clue</span>
+              </div>
+            </div>
+            <div class="landing-games-panel__next">
+              <span class="landing-preview-clue-card__eyebrow">Next game</span>
+              <strong class="landing-preview-word">Off Limits</strong>
+              <div class="landing-preview-pills landing-preview-pills--clue">
+                <span class="landing-preview-pill">Forest</span>
+                <span class="landing-preview-pill">tree</span>
+                <span class="landing-preview-pill">woods</span>
+              </div>
             </div>
           </div>
         </div>
@@ -74,19 +114,38 @@
 
       <article class="landing-destination landing-destination--workspace">
         <div class="landing-destination__scene landing-scene landing-scene--workspace" aria-hidden="true">
-          <div class="landing-workspace-panel">
+          <div class="landing-workspace-panel landing-workspace-panel--crop">
             <p class="landing-scene__kicker">Teacher Workspace</p>
             <div class="landing-workspace-brief">
               <strong>Reports · Meetings · Case records</strong>
               <p>Family report drafts, pre-SSM notes, and case links in one place.</p>
             </div>
-            <div class="landing-workspace-metrics">
-              <div class="landing-workspace-metric"><span>Reports</span><strong>2 drafts</strong></div>
-              <div class="landing-workspace-metric"><span>Meetings</span><strong>3 upcoming</strong></div>
-              <div class="landing-workspace-metric"><span>Plans</span><strong>IESP · IAP · BIP</strong></div>
+            <div class="landing-workspace-stage">
+              <div class="landing-workspace-list">
+                <div class="landing-workspace-list__row">
+                  <span>Pre-SSM</span>
+                  <strong>Ava M. · April 4</strong>
+                </div>
+                <div class="landing-workspace-list__row">
+                  <span>Family update</span>
+                  <strong>Maya R. draft ready</strong>
+                </div>
+                <div class="landing-workspace-list__row">
+                  <span>Zoe W.</span>
+                  <strong>BIP review Monday</strong>
+                </div>
+                <div class="landing-workspace-list__row">
+                  <span>Noah K.</span>
+                  <strong>Math progress note drafted</strong>
+                </div>
+              </div>
+              <div class="landing-workspace-metrics landing-workspace-metrics--stack">
+                <div class="landing-workspace-metric"><span>Reports</span><strong>2 drafts</strong></div>
+                <div class="landing-workspace-metric"><span>Meetings</span><strong>3 upcoming</strong></div>
+                <div class="landing-workspace-metric"><span>Plans</span><strong>IESP · IAP · BIP</strong></div>
+              </div>
             </div>
           </div>
-        </div>
         <div class="landing-destination__content">
           <a class="landing-btn landing-btn--secondary" href="./reports.html">Open Workspace</a>
         </div>

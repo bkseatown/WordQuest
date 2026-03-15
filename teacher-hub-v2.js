@@ -1283,15 +1283,13 @@
     }
     var lessonSummary = derived.mainConcept || "Lesson focus not fully mapped yet.";
     var classMeta = [block.timeLabel, block.teacher].filter(Boolean).join(" · ");
-    var lessonLabel = rawLessonHeadline;
-    var mainHeadline = curriculumLabel || lessonHeadline;
+    var lessonLabel = [curriculumLabel, lessonHeadline].filter(Boolean).join(" · ");
     var navigatorHtml = buildLessonNavigatorHtml(contextData);
     return [
       '<section class="th2-context-zone th2-context-zone--lesson">',
       '  <div class="th2-context-zone__heading"><div class="th2-class-hero"><p class="th2-section-label">Lesson focus</p>' + (classMeta ? '<p class="th2-class-hero__meta">' + escapeHtml(classMeta) + '</p>' : '') + '</div><button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Edit lesson</button></div>',
       '  <div class="th2-mission-card">',
       (lessonLabel ? '    <p class="th2-mission-card__title">' + escapeHtml(lessonLabel) + "</p>" : ""),
-      '    <h2 class="th2-mission-card__headline">' + escapeHtml(mainHeadline) + "</h2>",
       '    <p class="th2-mission-card__sub">' + escapeHtml(lessonSummary) + "</p>",
       '    <p class="th2-mission-card__target">' + escapeHtml(deriveLearningTarget(contextData)) + "</p>",
       "  </div>",
