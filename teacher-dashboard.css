@@ -598,6 +598,31 @@ body.cs-has-nav-shell .td-shell {
   transition: background-color var(--dur-1) ease-in-out, border-color var(--dur-1) ease-in-out, color var(--dur-1) ease-in-out, transform var(--dur-1) ease-in-out, box-shadow var(--dur-1) ease-in-out;
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--surface-border) 48%, transparent);
 }
+
+.td-top-btn--primary-soft {
+  background: color-mix(in oklab, var(--accent) 14%, #ffffff 86%);
+  color: var(--accent);
+  font-weight: var(--fw-semibold);
+}
+
+.td-top-btn--quiet {
+  background: color-mix(in oklab, var(--surface-1) 76%, #ece8e2 24%);
+  color: color-mix(in oklab, var(--text-primary) 82%, var(--muted) 18%);
+}
+
+.td-local-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--surface-border) 54%, transparent);
+  background: color-mix(in oklab, var(--surface-1) 88%, #f0ede7 12%);
+  color: color-mix(in oklab, var(--text-primary) 72%, var(--muted) 28%);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
 .td-top-btn:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 26%, transparent);

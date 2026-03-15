@@ -60,9 +60,9 @@
         <a id="td-hub-cta" class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html" aria-label="Open Teacher Hub">
           Back to Hub
         </a>
-        <button id="td-meeting-workspace" class="td-top-btn" type="button">Meeting Prep</button>
+        <button id="td-meeting-workspace" class="td-top-btn td-top-btn--primary-soft" type="button">Meeting Prep</button>
         <div class="td-top-overflow">
-          <button id="td-top-overflow-toggle" class="td-top-btn" type="button" aria-expanded="false" aria-controls="td-top-overflow-menu">More</button>
+          <button id="td-top-overflow-toggle" class="td-top-btn td-top-btn--quiet" type="button" aria-expanded="false" aria-controls="td-top-overflow-menu">Tools</button>
           <div id="td-top-overflow-menu" class="td-top-overflow-menu hidden">
             <button id="td-weekly-insights" class="td-top-btn" type="button">Weekly Insight</button>
             <label class="td-activity-pick" for="td-activity-select">
@@ -91,7 +91,10 @@
             <button id="td-import-export" class="td-top-btn" type="button">Import/Export</button>
           </div>
         </div>
-        <button id="td-local-status" class="td-local-dot" type="button" title="Local data on this device" aria-label="Local mode"></button>
+        <span class="td-local-indicator" aria-label="Local mode active">
+          <span id="td-local-status" class="td-local-dot" title="Local data on this device" aria-hidden="true"></span>
+          <span>Local</span>
+        </span>
       </div>
     </header>
 
