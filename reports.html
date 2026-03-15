@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./style/tokens.css?v=20260301y">
   <link rel="stylesheet" href="./style/typography.css?v=20260301y">
   <link rel="stylesheet" href="./style/nav-shell.css?v=20260312a">
-  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260315a">
+  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260315b">
   <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306m">
   <link rel="stylesheet" href="./css/backup-panel.css?v=20260308a">
   <style>
@@ -53,39 +53,31 @@
       <a class="td-wordmark td-brand-home" href="./index.html" aria-label="Home">
         <strong>Cornerstone MTSS</strong>
         <span>Reports &amp; Prep</span>
-        <p class="td-top-description">Scan caseload status, prep reports, and keep the next move visible.</p>
-        <small id="td-buildline" class="td-buildline">Build: checking...</small>
+        <p class="td-top-description">Reports, meeting prep, and exports.</p>
       </a>
-      <div class="td-top-center">
-        <span class="td-top-chip">Cockpit view</span>
-        <span class="td-top-chip td-top-chip--ela">ELA</span>
-        <span class="td-top-chip td-top-chip--math">Math</span>
-        <span class="td-top-chip td-top-chip--intervention">Intervention</span>
-      </div>
 
       <div class="td-top-actions">
-        <!-- Teacher Hub entry point — links to the daily operating surface -->
         <a id="td-hub-cta" class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html" aria-label="Open Teacher Hub">
           Back to Hub
         </a>
-        <button id="td-weekly-insights" class="td-top-btn" type="button">Weekly Insight</button>
         <button id="td-meeting-workspace" class="td-top-btn" type="button">Meeting Prep</button>
-        <label class="td-activity-pick" for="td-activity-select">
-          <span>Activities</span>
-          <select id="td-activity-select" class="td-top-btn">
-            <option value="">Go to...</option>
-            <option value="word-quest.html">Word Quest</option>
-            <option value="reading-lab.html">Reading Lab</option>
-            <option value="sentence-surgery.html">Sentence Studio</option>
-            <option value="writing-studio.html">Writing Studio</option>
-            <option value="numeracy.html">Numeracy</option>
-            <option value="precision-play.html">Precision Play</option>
-            <option value="activities/decoding-diagnostic.html">Decoding Diagnostic</option>
-          </select>
-        </label>
         <div class="td-top-overflow">
           <button id="td-top-overflow-toggle" class="td-top-btn" type="button" aria-expanded="false" aria-controls="td-top-overflow-menu">More</button>
           <div id="td-top-overflow-menu" class="td-top-overflow-menu hidden">
+            <button id="td-weekly-insights" class="td-top-btn" type="button">Weekly Insight</button>
+            <label class="td-activity-pick" for="td-activity-select">
+              <span>Activities</span>
+              <select id="td-activity-select" class="td-top-btn">
+                <option value="">Go to...</option>
+                <option value="word-quest.html">Word Quest</option>
+                <option value="reading-lab.html">Reading Lab</option>
+                <option value="sentence-surgery.html">Sentence Studio</option>
+                <option value="writing-studio.html">Writing Studio</option>
+                <option value="numeracy.html">Numeracy</option>
+                <option value="precision-play.html">Precision Play</option>
+                <option value="activities/decoding-diagnostic.html">Decoding Diagnostic</option>
+              </select>
+            </label>
             <button id="td-home-btn" class="td-top-btn td-nav-btn" type="button">Home</button>
             <button id="td-lesson-brief" class="td-top-btn" type="button">Lesson Brief</button>
             <button id="td-add-student" class="td-top-btn" type="button">Add Student</button>
@@ -146,8 +138,8 @@
           <div class="td-reports-overview__head">
             <div>
               <p class="dashboard-kicker">Reports &amp; Prep</p>
-              <h1 class="td-title">Show the pattern. Prep the meeting.</h1>
-              <p class="dashboard-section-meta">Use this surface to scan caseload pressure, meeting readiness, and what evidence is ready to share upward.</p>
+              <h1 class="td-title">Choose what to open.</h1>
+              <p class="dashboard-section-meta">Start with overview, meeting prep, or a student record.</p>
             </div>
             <div class="td-reports-overview__actions">
               <a class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html">Back to Hub</a>
@@ -156,33 +148,19 @@
           </div>
           <div class="td-leadership-strip" aria-label="Leadership snapshot">
             <article class="td-leadership-card td-leadership-card--signal">
-              <span class="td-overview-eyebrow">Priority watch</span>
-              <strong>8 students need review before the next meeting</strong>
-              <p>Missing evidence and support shifts are visible in one place.</p>
+              <span class="td-overview-eyebrow">Overview</span>
+              <strong>See caseload patterns</strong>
+              <p>Review readiness, evidence gaps, and students who need follow-up.</p>
             </article>
             <article class="td-leadership-card td-leadership-card--action">
-              <span class="td-overview-eyebrow">Coordinator lens</span>
-              <strong>3 meeting packets are nearly ready to send</strong>
-              <p>Weekly drafts and follow-up outputs are ready to clean up fast.</p>
+              <span class="td-overview-eyebrow">Meeting Prep</span>
+              <strong>Open packet drafts</strong>
+              <p>Capture notes, clean the story, and export after review.</p>
             </article>
             <article class="td-leadership-card td-leadership-card--proof">
-              <span class="td-overview-eyebrow">Evidence lane</span>
-              <strong>Practice, lesson context, and support notes point to the same next move</strong>
-              <p>Use one aligned story instead of rebuilding it for each audience.</p>
-            </article>
-          </div>
-          <div class="td-reports-overview__grid" id="td-overview-grid">
-            <article>
-              <strong>Caseload patterns</strong>
-              <p>See risk, missing evidence, and follow-up load before a walkthrough or review.</p>
-            </article>
-            <article>
-              <strong>Meeting-ready outputs</strong>
-              <p>Generate drafts, packets, and follow-up notes from live evidence.</p>
-            </article>
-            <article>
-              <strong>Leadership framing</strong>
-              <p>Keep the Hub for action. Use this page for the cross-caseload story.</p>
+              <span class="td-overview-eyebrow">Student Record</span>
+              <strong>Open one student when needed</strong>
+              <p>Dive deeper only when you need individual evidence, history, or goals.</p>
             </article>
           </div>
         </section>
@@ -682,15 +660,24 @@
         </div>
         <button id="td-meeting-close" class="td-top-btn" type="button">Close</button>
       </div>
-      <p class="td-modal-intro">Scan the packet, capture notes, and export only when the meeting story is clean.</p>
-      <p class="td-reco-line td-meeting-privacy">Local-only. No recordings uploaded. Confirm meeting consent before device transcription.</p>
-      <div class="td-plan-tabs">
+      <p class="td-modal-intro">Start with the packet. Open notes or export only when you need to go deeper.</p>
+      <div class="td-plan-tabs td-meeting-tabs">
         <button id="td-workspace-tab-summary" class="td-top-btn is-active" type="button">Summary</button>
         <button id="td-workspace-tab-deck" class="td-top-btn" type="button">Deck</button>
         <button id="td-workspace-tab-notes" class="td-top-btn" type="button">Notes</button>
         <button id="td-workspace-tab-export" class="td-top-btn" type="button">Export</button>
       </div>
-      <div class="td-plan-tabs td-meeting-controls">
+      <div class="td-meeting-setup-strip">
+        <div class="td-meeting-setup-strip__copy">
+          <p class="td-meeting-setup-strip__label">Current setup</p>
+          <div id="td-meeting-setup-summary" class="td-meeting-setup-summary"></div>
+        </div>
+        <div class="td-meeting-setup-strip__actions">
+          <span class="td-meeting-privacy-chip">Local-only</span>
+          <button id="td-meeting-setup-toggle" class="td-top-btn" type="button">Adjust setup</button>
+        </div>
+      </div>
+      <div id="td-meeting-controls-shell" class="td-plan-tabs td-meeting-controls">
         <div class="td-meeting-controls__group td-meeting-controls__group--setup">
           <label class="td-meeting-field">
             <span class="td-meeting-field__label">Meeting</span>
@@ -733,11 +720,11 @@
         <div class="td-meeting-controls__group td-meeting-controls__group--actions">
           <span class="td-meeting-field__label">Quick actions</span>
           <div class="td-meeting-actions-row">
-            <button id="td-meeting-stamp" class="td-top-btn" type="button">Insert timestamp</button>
-            <button id="td-meeting-tag-student" class="td-top-btn" type="button">Tag student</button>
-            <button id="td-meeting-tag-tier" class="td-top-btn" type="button">Tag tier</button>
-            <button id="td-meeting-copy-summary" class="td-top-btn" type="button">Copy summary</button>
-            <button id="td-meeting-export-mdt" class="td-top-btn" type="button">Export for MDT</button>
+            <button id="td-meeting-stamp" class="td-top-btn" type="button">Timestamp</button>
+            <button id="td-meeting-tag-student" class="td-top-btn" type="button">Student tag</button>
+            <button id="td-meeting-tag-tier" class="td-top-btn" type="button">Tier tag</button>
+            <button id="td-meeting-copy-summary" class="td-top-btn" type="button">Copy draft</button>
+            <button id="td-meeting-export-mdt" class="td-top-btn" type="button">MDT export</button>
           </div>
         </div>
       </div>
@@ -749,7 +736,7 @@
       <article id="td-workspace-deck-panel" class="td-meeting-deck-slide hidden"></article>
       <textarea id="td-meeting-preview" class="td-share-preview" readonly placeholder="Generated narrative (English canonical output)"></textarea>
       <textarea id="td-meeting-translation-preview" class="td-share-preview hidden" placeholder="Live translation preview (editable before save)"></textarea>
-      <div class="td-plan-tabs">
+      <div id="td-meeting-export-strip" class="td-plan-tabs">
         <label class="td-meeting-label" for="td-meeting-export-format">Export</label>
         <select id="td-meeting-export-format" class="td-top-btn">
           <option value="english">English only</option>
@@ -758,7 +745,7 @@
           <option value="full">Full packet</option>
         </select>
       </div>
-      <div class="td-modal-actions">
+      <div id="td-meeting-actions-strip" class="td-modal-actions">
         <button id="td-meeting-save" class="td-btn td-btn-primary btn btn-quiet" type="button">Save Meeting</button>
         <button id="td-meeting-goals" class="td-btn td-btn-ghost btn btn-quiet" type="button">Convert to Goals</button>
       </div>
@@ -884,7 +871,7 @@
   <script src="./js/auth/google-workspace.js?v=20260306i" defer onerror="0"></script>
   <script src="./js/backup-manager.js?v=20260308a" defer></script>
   <script src="./js/lesson-brief-panel.js?v=20260306n" defer></script>
-  <script src="./teacher-dashboard.js?v=20260312b" defer></script>
+  <script src="./teacher-dashboard.js?v=20260315c" defer></script>
   <script defer>window.addEventListener("DOMContentLoaded",function(){window.CSBackupManager&&window.CSBackupManager.init&&window.CSBackupManager.init();});</script>
 </body>
 </html>

@@ -2963,8 +2963,9 @@ body.td-page .td-modal-card {
 .td-modal {
   position: fixed;
   inset: 0;
-  z-index: 80;
-  background: rgba(28, 39, 51, 0.18);
+  z-index: 140;
+  background: rgba(24, 35, 49, 0.34);
+  backdrop-filter: blur(3px);
   display: grid;
   place-items: center;
   padding: 16px;
@@ -3137,14 +3138,20 @@ body.td-page .td-modal-card {
 #td-meeting-modal .td-modal-card {
   width: min(1120px, calc(100vw - 52px));
   max-height: min(90dvh, 940px);
-  background: color-mix(in oklab, #ffffff 94%, #f5f1ea 6%);
+  background:
+    radial-gradient(circle at top right, rgba(133, 194, 219, 0.14), transparent 24%),
+    radial-gradient(circle at top left, rgba(226, 178, 115, 0.12), transparent 20%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(245, 241, 234, 0.92));
   border: 1px solid color-mix(in oklab, var(--surface-border) 72%, transparent);
   box-shadow: 0 18px 40px rgba(22, 32, 50, 0.14);
   display: grid;
   gap: 14px;
 }
 
-#td-meeting-modal .td-plan-tabs:first-of-type {
+#td-meeting-modal .td-meeting-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
   padding: 6px;
   border-radius: 12px;
   border: 1px solid color-mix(in oklab, var(--surface-border) 66%, transparent);
@@ -3152,18 +3159,18 @@ body.td-page .td-modal-card {
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.32);
 }
 
-#td-meeting-modal .td-plan-tabs:first-of-type .td-top-btn {
+#td-meeting-modal .td-meeting-tabs .td-top-btn {
   background: transparent;
   border-color: transparent;
 }
 
-#td-meeting-modal .td-plan-tabs:first-of-type .td-top-btn.is-active {
+#td-meeting-modal .td-meeting-tabs .td-top-btn.is-active {
   background: #ffffff;
   border-color: var(--surface-border);
   font-weight: var(--fw-semibold);
 }
 
-#td-meeting-modal .td-plan-tabs:nth-of-type(2) {
+#td-meeting-modal .td-meeting-controls {
   display: grid;
   gap: 12px;
   padding: 12px;
@@ -3185,6 +3192,71 @@ body.td-page .td-modal-card {
   margin: -2px 0 0;
   font-size: 15px;
   color: var(--text-secondary);
+}
+
+.td-meeting-setup-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in oklab, var(--surface-border) 64%, transparent);
+  background: linear-gradient(135deg, rgba(43, 86, 145, 0.94), rgba(56, 108, 163, 0.9));
+  color: #f4f7fc;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.td-meeting-setup-strip__copy,
+.td-meeting-setup-strip__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.td-meeting-setup-strip__actions {
+  justify-content: flex-end;
+}
+
+.td-meeting-setup-strip__label {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(232, 239, 250, 0.84);
+}
+
+.td-meeting-setup-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.td-meeting-setup-summary__chip,
+.td-meeting-privacy-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(228, 236, 247, 0.24);
+  background: rgba(255, 255, 255, 0.12);
+  color: #f8fbff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.td-meeting-privacy-chip {
+  color: rgba(248, 251, 255, 0.88);
+}
+
+.td-meeting-setup-strip #td-meeting-setup-toggle {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(228, 236, 247, 0.28);
+  color: #f8fbff;
 }
 
 .td-meeting-controls__group {
@@ -3276,6 +3348,16 @@ body.td-page .td-modal-card {
   font-size: var(--fs-xs, 12px);
 }
 
+#td-meeting-controls-shell.hidden {
+  display: none;
+}
+
+#td-meeting-export-strip.hidden,
+#td-meeting-actions-strip.hidden,
+#td-meeting-stt-status.hidden {
+  display: none;
+}
+
 .td-report-modal-card {
   width: min(860px, calc(100vw - 24px));
 }
@@ -3349,12 +3431,6 @@ body.td-page .td-modal-card {
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.36);
 }
 
-.td-workspace-summary-head {
-  display: grid;
-  gap: 10px;
-  padding: 4px 0 12px;
-}
-
 .td-workspace-summary-kicker {
   margin: 0;
   font-size: 11px;
@@ -3364,7 +3440,27 @@ body.td-page .td-modal-card {
   color: var(--text-secondary);
 }
 
-.td-workspace-summary-head h3 {
+.td-workspace-summary-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.9fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+.td-workspace-summary-hero > div:first-child,
+.td-workspace-summary-hero__signal {
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in oklab, var(--surface-border) 60%, transparent);
+}
+
+.td-workspace-summary-hero > div:first-child {
+  background:
+    radial-gradient(circle at top right, rgba(84, 137, 219, 0.12), transparent 36%),
+    linear-gradient(180deg, rgba(255,255,255,0.86), rgba(239, 244, 250, 0.82));
+}
+
+.td-workspace-summary-hero h3 {
   margin: 0;
   font-size: clamp(1.35rem, 2vw, 1.7rem);
   line-height: 1.12;
@@ -3374,6 +3470,32 @@ body.td-page .td-modal-card {
   margin: 0;
   color: var(--text-secondary);
   max-width: 58ch;
+}
+
+.td-workspace-summary-hero__signal {
+  background: linear-gradient(180deg, rgba(36, 62, 103, 0.96), rgba(49, 88, 143, 0.92));
+  color: #f5f8fe;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.td-workspace-summary-hero__signal span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(233, 240, 251, 0.82);
+}
+
+.td-workspace-summary-hero__signal strong {
+  font-size: 1.5rem;
+  line-height: 1.05;
+  color: #ffffff;
+}
+
+.td-workspace-summary-hero__signal p {
+  color: rgba(241, 246, 253, 0.84);
 }
 
 .td-workspace-summary-cards {
@@ -3437,6 +3559,40 @@ body.td-page .td-modal-card {
 .td-report-preview ul {
   padding-left: 18px;
 }
+
+.td-workspace-story-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.td-workspace-story-card {
+  display: grid;
+  gap: 8px;
+  min-height: 140px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in oklab, var(--surface-border) 60%, transparent);
+  background: linear-gradient(180deg, rgba(255,255,255,0.84), rgba(244, 240, 233, 0.76));
+}
+
+.td-workspace-story-card span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.td-workspace-story-card strong {
+  font-size: 1.08rem;
+  line-height: 1.12;
+  color: var(--text-primary);
+}
+
+.td-workspace-story-card p {
+  color: color-mix(in oklab, var(--text-primary) 74%, var(--muted) 26%);
+}
 .td-plan-tabs .td-top-btn.is-active {
   border-color: color-mix(in oklab, var(--accent) 58%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent);
@@ -3458,8 +3614,18 @@ body.td-page .td-modal-card {
     grid-template-columns: 1fr;
   }
 
+  .td-workspace-summary-hero,
+  .td-workspace-story-grid,
   .td-meeting-controls__group--setup {
     grid-template-columns: 1fr;
+  }
+
+  .td-meeting-setup-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .td-meeting-setup-strip__actions {
+    justify-content: flex-start;
   }
 }
 .td-modal-actions {

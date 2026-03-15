@@ -177,7 +177,66 @@
       return String(el.meetingLanguage.value || "en");
     }
 
+    function summarizeText(text, maxLength) {
+      var clean = String(text || "").replace(/\s+/g, " ").trim();
+      if (!clean) return "";
+      var limit = Number(maxLength || 140);
+      if (clean.length <= limit) return clean;
+      return clean.slice(0, limit).replace(/[,\s.;:!?-]+$/, "") + "...";
+    }
+
+    function getMeetingFormatLabel() {
+      var value = String(state.meetingFormat || "sas");
+      if (value === "optimized") return "Optimized narrative";
+      if (value === "family") return "Family summary";
+      return "SAS-compliant";
+    }
+
+    function renderMeetingSetupSummary() {
+      if (!el.meetingSetupSummary) return;
+      var language = getMeetingLanguage();
+      var languageLabel = "English";
+      if (el.meetingLanguage && el.meetingLanguage.selectedOptions && el.meetingLanguage.selectedOptions[0]) {
+        languageLabel = String(el.meetingLanguage.selectedOptions[0].textContent || "English").trim();
+      }
+      var typeLabel = "SSM";
+      if (el.meetingType && el.meetingType.selectedOptions && el.meetingType.selectedOptions[0]) {
+        typeLabel = String(el.meetingType.selectedOptions[0].textContent || "SSM").trim();
+      }
+      var chips = [
+        typeLabel,
+        getMeetingFormatLabel(),
+        languageLabel,
+        state.liveTranslate ? "Live translate on" : "Manual capture"
+      ];
+      el.meetingSetupSummary.innerHTML = chips.map(function (chip) {
+        return "<span class=\"td-meeting-setup-summary__chip\">" + escHtml(chip) + "</span>";
+      }).join("");
+    }
+
+    function renderMeetingControlsVisibility() {
+      var activeTab = String(state.workspaceTab || "summary");
+      var expanded = !!state.meetingSetupExpanded;
+      var shouldShow = activeTab !== "summary" || expanded;
+      if (el.meetingControlsShell) {
+        el.meetingControlsShell.classList.toggle("hidden", !shouldShow);
+      }
+      if (el.meetingSetupToggle) {
+        el.meetingSetupToggle.textContent = shouldShow ? "Hide setup" : "Adjust setup";
+      }
+      if (el.meetingExportStrip) {
+        el.meetingExportStrip.classList.toggle("hidden", activeTab !== "export");
+      }
+      if (el.meetingActionsStrip) {
+        el.meetingActionsStrip.classList.toggle("hidden", activeTab === "summary" || activeTab === "deck");
+      }
+      if (el.meetingSttStatus) {
+        el.meetingSttStatus.classList.toggle("hidden", activeTab === "export");
+      }
+    }
+
     function renderWorkspacePanels() {
+      renderMeetingSetupSummary();
       if (el.workspaceSummaryPanel) {
         var lang = getMeetingLanguage();
         var report = state.reportDraft;
@@ -211,18 +270,38 @@
             literacyData: state.reportContext && state.reportContext.literacyData,
             reportDraft: report
           });
+          var storyCards = [
+            {
+              label: "Executive snapshot",
+              title: "What matters most",
+              detail: summarizeText(report.executiveSummary || "", 160)
+            },
+            {
+              label: "Tier signal",
+              title: "Support level",
+              detail: summarizeText(report.tierStatement || "", 150)
+            },
+            {
+              label: "Family view",
+              title: lang === "en" ? "Ready in English" : "Translation assist on",
+              detail: summarizeText(report.parentSummary || "", 150)
+            }
+          ];
+          if (weeklyInsight) {
+            storyCards.push({
+              label: "Weekly insight",
+              title: "Teacher draft ready",
+              detail: summarizeText(weeklyInsight.teacher || "", 150)
+            });
+          }
           el.workspaceSummaryPanel.innerHTML = [
-            "<section class=\"td-workspace-summary-head\"><div><p class=\"td-workspace-summary-kicker\">Meeting packet</p><h3>Ready to review before you export.</h3></div><p class=\"td-workspace-summary-line\">Use Summary to scan the story, Notes to capture the meeting, and Export only after cleanup.</p></section>",
+            "<section class=\"td-workspace-summary-hero\"><div><p class=\"td-workspace-summary-kicker\">Meeting packet</p><h3>Ready to review before you export.</h3><p class=\"td-workspace-summary-line\">Scan the packet first. Open Notes only when you need to capture the live meeting.</p></div><div class=\"td-workspace-summary-hero__signal\"><span>Packet status</span><strong>Ready</strong><p>Drafts, family view, and support signal are already pulled in.</p></div></section>",
             "<section class=\"td-workspace-summary-cards\">" + readinessCards.map(function (card) {
               return "<article class=\"td-workspace-summary-card\"><span>" + escHtml(card.label) + "</span><strong>" + escHtml(card.value) + "</strong><p>" + escHtml(card.detail) + "</p></article>";
             }).join("") + "</section>",
-            "<section><h3>Executive Summary</h3><p>" + escHtml(report.executiveSummary || "") + "</p></section>",
-            "<section><h3>Tier Statement</h3><p>" + escHtml(report.tierStatement || "") + "</p></section>",
-            "<section><h3>Executive Function &amp; Organizational Support</h3><p>" + escHtml(report.executiveFunctionSupport || "") + "</p></section>",
-            "<section><h3>Parent Summary</h3><p>" + escHtml(report.parentSummary || "") + "</p></section>",
-            (weeklyInsight
-              ? "<section><h3>Weekly Insight Draft</h3><p><strong>Teacher:</strong></p><p>" + escHtml(weeklyInsight.teacher) + "</p><p><strong>Family:</strong></p><p>" + escHtml(weeklyInsight.family) + "</p><p><strong>Student:</strong></p><p>" + escHtml(weeklyInsight.student) + "</p></section>"
-              : "")
+            "<section class=\"td-workspace-story-grid\">" + storyCards.map(function (card) {
+              return "<article class=\"td-workspace-story-card\"><span>" + escHtml(card.label) + "</span><strong>" + escHtml(card.title) + "</strong><p>" + escHtml(card.detail) + "</p></article>";
+            }).join("") + "</section>"
           ].join("");
           el.workspaceSummaryPanel.scrollTop = 0;
         } else {
@@ -280,6 +359,11 @@
     function setTab(tab) {
       var next = String(tab || "summary");
       state.workspaceTab = next;
+      if (next === "summary") {
+        state.meetingSetupExpanded = false;
+      } else {
+        state.meetingSetupExpanded = true;
+      }
       updateMeetingWorkspaceState({ tab: next });
 
       var map = {
@@ -299,6 +383,7 @@
       if (el.meetingPreview) el.meetingPreview.classList.toggle("hidden", next !== "export");
       if (el.meetingTranslationPreview) el.meetingTranslationPreview.classList.toggle("hidden", next !== "export");
       if (el.meetingTranslationBadge) el.meetingTranslationBadge.classList.toggle("hidden", next !== "export" || getMeetingLanguage() === "en");
+      renderMeetingControlsVisibility();
     }
 
     function buildExportHtml(mode, englishText, translatedText, language) {
@@ -368,6 +453,7 @@
       }
       if (el.meetingLanguage) el.meetingLanguage.value = state.meetingLanguage || "en";
       if (el.meetingLiveTranslate) el.meetingLiveTranslate.checked = !!state.liveTranslate;
+      state.meetingSetupExpanded = false;
 
       var sttSupported = !!(MeetingNotes && typeof MeetingNotes.supportsSpeechRecognition === "function" && MeetingNotes.supportsSpeechRecognition());
       updateMeetingSttStatus(
@@ -406,8 +492,17 @@
       if (el.workspaceTabExport) {
         el.workspaceTabExport.addEventListener("click", function () { setTab("export"); });
       }
+      if (el.meetingSetupToggle) {
+        el.meetingSetupToggle.addEventListener("click", function () {
+          state.meetingSetupExpanded = !state.meetingSetupExpanded;
+          renderMeetingControlsVisibility();
+        });
+      }
       if (el.meetingType) {
-        el.meetingType.addEventListener("change", open);
+        el.meetingType.addEventListener("change", function () {
+          open();
+          renderMeetingSetupSummary();
+        });
       }
       if (el.meetingFormatButtons && el.meetingFormatButtons.length) {
         el.meetingFormatButtons.forEach(function (btn) {
@@ -417,6 +512,7 @@
               item.classList.toggle("is-active", item === btn);
             });
             renderOutput();
+            renderMeetingSetupSummary();
           });
         });
       }
@@ -424,12 +520,14 @@
         el.meetingLanguage.addEventListener("change", function () {
           state.meetingLanguage = String(el.meetingLanguage.value || "en");
           renderOutput();
+          renderMeetingSetupSummary();
         });
       }
       if (el.meetingLiveTranslate) {
         el.meetingLiveTranslate.addEventListener("change", function () {
           state.liveTranslate = !!el.meetingLiveTranslate.checked;
           renderOutput();
+          renderMeetingSetupSummary();
         });
       }
       if (el.meetingNotes) {
