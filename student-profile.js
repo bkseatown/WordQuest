@@ -294,30 +294,45 @@
       accommodations[0] && (accommodations[0].title || accommodations[0].whenToUse || "Accommodation"),
       record.bipPlan && record.bipPlan.reviewDate && ("BIP " + record.bipPlan.reviewDate)
     ].filter(Boolean).slice(0, 5);
+    var topNeed = snapshot && snapshot.needs && snapshot.needs[0]
+      ? (snapshot.needs[0].label || snapshot.needs[0].skillId || "Collect baseline")
+      : "Collect baseline";
+    var readinessLabel = evidenceCount >= 6 ? "Ready to act" : (evidenceCount >= 3 ? "Usable signal" : "Build trust");
+    var readinessDetail = evidenceCount >= 6
+      ? "Enough evidence is visible to act without reopening every record."
+      : (evidenceCount >= 3
+        ? "Use what is here, but confirm with one quick check."
+        : "Start with one fresh signal before making a larger support call.");
+    var planLine = (summary && summary.nextMove && summary.nextMove.line) || "Review support, evidence, communication, and the next move in one place.";
     return [
       '<div class="sp-hero-main">',
-      '  <p class="sp-kicker">Support record</p>',
+      '  <p class="sp-kicker">Support brief</p>',
       '  <h1>' + esc(student.name || "Student") + '</h1>',
       '  <p class="sp-subline">' + esc([
         student.gradeBand || student.grade || "Grade not set",
         summary && summary.focus ? summary.focus : "Support focus forming",
         summary && summary.risk ? summary.risk : "steady"
       ].join(" · ")) + '</p>',
-      '  <p class="sp-body-copy">' + esc((summary && summary.nextMove && summary.nextMove.line) || "Review support, evidence, communication, and the next move in one place.") + '</p>',
+      '  <p class="sp-body-copy">' + esc(planLine) + '</p>',
       '  <div class="sp-chip-row">' +
       supportChips.map(function (item) {
         return '<span class="sp-chip">' + esc(item) + '</span>';
       }).join("") +
       '</div>',
+      '  <div class="sp-hero-command-grid">',
+      '    <article class="sp-hero-command sp-hero-command--focus"><span>Do now</span><strong>' + esc(planLine) + '</strong></article>',
+      '    <article class="sp-hero-command"><span>Top need</span><strong>' + esc(topNeed) + '</strong></article>',
+      '    <article class="sp-hero-command sp-hero-command--trust"><span>' + esc(readinessLabel) + '</span><strong>' + esc(readinessDetail) + '</strong></article>',
+      '  </div>',
       '  <div class="sp-hero-summary">',
       '    <div class="sp-meta-card"><span>Last session</span><strong>' + esc(summary && summary.lastSession ? relativeDate(summary.lastSession.timestamp) : "No sessions yet") + '</strong></div>',
       '    <div class="sp-meta-card"><span>Evidence points</span><strong>' + esc(String(evidenceCount)) + '</strong></div>',
-      '    <div class="sp-meta-card"><span>Top need</span><strong>' + esc(snapshot && snapshot.needs && snapshot.needs[0] ? (snapshot.needs[0].label || snapshot.needs[0].skillId || "Collect baseline") : "Collect baseline") + '</strong></div>',
+      '    <div class="sp-meta-card"><span>Profile trust</span><strong>' + esc(readinessLabel) + '</strong></div>',
       '  </div>',
       '</div>',
       '<div class="sp-hero-side">',
       '  <div class="sp-evidence-story">',
-      '    <p class="sp-kicker">Momentum</p>',
+      '    <p class="sp-kicker">Signal trend</p>',
       '    <div id="sp-hero-evidence-visual"></div>',
       '  </div>',
       '  <div class="sp-reminder-list">' + (reminders.length ? reminders.map(function (row) {

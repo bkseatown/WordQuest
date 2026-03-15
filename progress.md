@@ -1,5 +1,27 @@
 Original prompt: You are improving the Cornerstone MTSS game platform UI.
 
+- 2026-03-15: Completed a verified Specialist Hub trust/game-plan checkpoint focused only on `teacher-hub-v2.html`, `teacher-hub-v2.js`, and `teacher-hub-v2.css`.
+  - added a compact class-detail command bar that makes lesson alignment status, support load, primary lane, first support move, and pacing reset visible before the deeper lesson block
+  - tightened the daily lesson-map cards so they now lead with the likely first move plus a clearer lesson-alignment state instead of repeating long objective-heavy copy
+  - after snapshot review, removed a duplicate class-title/header repetition from the class-detail route so the new command bar remains the visual owner instead of creating a taller stacked introduction
+  - live verification used the desktop audit viewport on:
+    - `teacher-hub-v2.html?demo=1&cb=20260315-hub2`
+    - `teacher-hub-v2.html?demo=1&classId=demo-block-math&cb=20260315-hub3`
+  - current checkpoint files:
+    - `teacher-hub-v2.html`
+    - `teacher-hub-v2.js`
+    - `teacher-hub-v2.css`
+
+- 2026-03-15: Completed a verified student-profile first-screen checkpoint focused on `student-profile.html`, `student-profile.js`, and `student-profile.css`.
+  - shifted the hero from a generic status stack into a support brief with a direct `Do now` action, a clearer top need, and an explicit profile-trust readout
+  - kept the screen lighter by reusing the existing evidence visual and summary cards instead of adding another large panel
+  - live verification used the desktop audit viewport on:
+    - `student-profile.html?cb=20260315-profile2`
+  - current checkpoint files:
+    - `student-profile.html`
+    - `student-profile.js`
+    - `student-profile.css`
+
 - 2026-03-14: Began controlled Word Quest polish pass from the recovered stable baseline. Kept the change tightly scoped to `WQUI.calcLayout` in `js/app.js` so the board tiles can shrink slightly while the on-screen keyboard gains a little more presence, without changing runtime structure or reintroducing hidden support chrome.
 - 2026-03-14: Verified the first Word Quest polish pass live on `word-quest.html?cb=20260314-polish1&play=1` at `1440x900`.
   - syntax check: `node --check js/app.js` passes

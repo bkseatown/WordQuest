@@ -565,17 +565,23 @@ body.game-platform-page[data-game-theme="demonhunter"] {
 
 /* ── Apply page background from theme vars ── */
 body.game-platform-page {
-  --cg-reading-ink: var(--cg-ink);
-  --cg-reading-muted: var(--cg-muted);
-  --cg-reading-muted-strong: var(--cg-muted-strong);
-  --cg-surface-soft: rgba(255, 255, 255, 0.72);
-  --cg-surface: rgba(255, 255, 255, 0.82);
-  --cg-surface-strong: rgba(255, 255, 255, 0.92);
+  --cg-reading-ink: color-mix(in oklab, var(--cg-ink) 94%, #08131f 6%);
+  --cg-reading-muted: color-mix(in oklab, var(--cg-ink) 66%, var(--cg-panel-strong) 34%);
+  --cg-reading-muted-strong: color-mix(in oklab, var(--cg-ink) 80%, var(--cg-panel-strong) 20%);
+  --cg-surface-soft: color-mix(in oklab, var(--cg-panel-strong) 72%, transparent);
+  --cg-surface: color-mix(in oklab, var(--cg-panel-strong) 84%, #ffffff 16%);
+  --cg-surface-strong: color-mix(in oklab, var(--cg-panel-strong) 92%, #ffffff 8%);
   margin: 0;
   min-height: 100vh;
   background: var(--cg-page-gradient);
-  color: var(--cg-ink);
+  color: var(--cg-reading-ink);
   font-family: var(--cg-font-copy);
+}
+
+body.game-platform-page[data-game-theme="rainbowfriends"] {
+  --cg-reading-ink: #311d2f;
+  --cg-reading-muted: rgba(49, 29, 47, 0.72);
+  --cg-reading-muted-strong: rgba(49, 29, 47, 0.84);
 }
 
 body.game-platform-page::before {

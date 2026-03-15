@@ -1215,7 +1215,35 @@
   }
 
   function renderBlockContextHeader(contextData) {
-    return "";
+    var block = contextData && contextData.block ? contextData.block : {};
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    var supportCount = countSupportStudentsForContext(contextData);
+    var alignment = lessonAlignmentStatus(contextData);
+    return [
+      '<section class="th2-block-command-bar">',
+      '  <div class="th2-block-command-bar__head">',
+      '    <div class="th2-block-command-bar__title-wrap">',
+      '      <p class="th2-section-label">Class detail</p>',
+      '      <h1 class="th2-block-command-bar__title">' + escapeHtml(blockDisplayTitle(block)) + '</h1>',
+      '      <p class="th2-block-command-bar__meta">' + escapeHtml([block.timeLabel, block.teacher, simplifyCurriculumLabel(derived.curriculum || block.curriculum || ""), derived.lesson || block.lesson].filter(Boolean).join(" · ")) + '</p>',
+      '    </div>',
+      '    <div class="th2-block-command-bar__actions">',
+      '      <button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Open class plan</button>',
+      '      <button class="th2-inline-link" data-open-curriculum="1" type="button">Check sequence</button>',
+      '    </div>',
+      '  </div>',
+      '  <div class="th2-block-command-bar__chips">',
+      '    <span class="th2-command-chip th2-command-chip--' + escapeHtml(alignment.tone) + '"><strong>' + escapeHtml(alignment.label) + '</strong><em>' + escapeHtml(alignment.detail) + '</em></span>',
+      '    <span class="th2-command-chip"><strong>Support load</strong><em>' + escapeHtml(String(supportCount || 0)) + ' students pre-tagged for support</em></span>',
+      '    <span class="th2-command-chip"><strong>Primary lane</strong><em>' + escapeHtml(deriveBlockSupportSummary(contextData)) + '</em></span>',
+      '  </div>',
+      '  <div class="th2-block-command-grid">',
+      '    <article class="th2-block-command-card th2-block-command-card--focus"><span>Teach first</span><strong>' + escapeHtml(derived.mainConcept || classConceptFocus(block)) + '</strong></article>',
+      '    <article class="th2-block-command-card"><span>First support move</span><strong>' + escapeHtml(blockNextMove(contextData)) + '</strong></article>',
+      '    <article class="th2-block-command-card"><span>If the class moved</span><strong>' + escapeHtml(blockPacingNote(contextData)) + '</strong></article>',
+      '  </div>',
+      '</section>'
+    ].join("");
   }
 
   function renderDayStrip(blocks, activeBlockId) {
@@ -1255,14 +1283,13 @@
       lessonHeadline = rawLessonHeadline.slice(String(curriculumLabel).length).trim() || rawLessonHeadline;
     }
     var lessonSummary = derived.mainConcept || "Lesson focus not fully mapped yet.";
-    var classTitle = blockDisplayTitle(block);
     var classMeta = [block.timeLabel, block.teacher].filter(Boolean).join(" · ");
     var lessonLabel = rawLessonHeadline;
     var mainHeadline = curriculumLabel || lessonHeadline;
     var navigatorHtml = buildLessonNavigatorHtml(contextData);
     return [
       '<section class="th2-context-zone th2-context-zone--lesson">',
-      '  <div class="th2-context-zone__heading"><div class="th2-class-hero"><h1 class="th2-class-hero__title">' + escapeHtml(classTitle) + '</h1>' + (classMeta ? '<p class="th2-class-hero__meta">' + escapeHtml(classMeta) + '</p>' : '') + '</div><button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Edit lesson</button></div>',
+      '  <div class="th2-context-zone__heading"><div class="th2-class-hero"><p class="th2-section-label">Lesson focus</p>' + (classMeta ? '<p class="th2-class-hero__meta">' + escapeHtml(classMeta) + '</p>' : '') + '</div><button class="th2-inline-link" data-open-brief="1" data-open-brief-block="' + escapeHtml(block.id || "") + '" type="button">Edit lesson</button></div>',
       '  <div class="th2-mission-card">',
       (lessonLabel ? '    <p class="th2-mission-card__title">' + escapeHtml(lessonLabel) + "</p>" : ""),
       '    <h2 class="th2-mission-card__headline">' + escapeHtml(mainHeadline) + "</h2>",
@@ -1299,6 +1326,49 @@
   function compactLessonLabel(contextData) {
     var derived = contextData && contextData.derived ? contextData.derived : {};
     return [derived.curriculum || derived.subject, derived.lesson || derived.unit].filter(Boolean).join(" ") || "Lesson context ready";
+  }
+
+  function lessonAlignmentStatus(contextData) {
+    var block = contextData && contextData.block ? contextData.block : {};
+    var classContext = contextData && contextData.classContext ? contextData.classContext : {};
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    var curriculum = simplifyCurriculumLabel(derived.curriculum || block.curriculum || "");
+    var lesson = derived.lesson || block.lesson || "";
+    var hasSequence = !!(classContext.lessonContextId || (curriculum && lesson));
+    var supportedProgram = /illustrative math|fishtank|fundations|ufli|just words|bridges/i.test(String(curriculum || ""));
+    if (supportedProgram && hasSequence) {
+      return {
+        tone: "ready",
+        label: "Lesson aligned",
+        detail: curriculum + (lesson ? " · " + lesson : "")
+      };
+    }
+    if (curriculum && lesson) {
+      return {
+        tone: "watch",
+        label: "Check lesson position",
+        detail: "Curriculum is linked, but pacing may need a quick reset."
+      };
+    }
+    return {
+      tone: "soft",
+      label: "Lesson needs review",
+      detail: "Open the class plan before teaching."
+    };
+  }
+
+  function blockNextMove(contextData) {
+    var companion = contextData && contextData.companion ? contextData.companion : {};
+    var moves = Array.isArray(companion.supportMoves) ? companion.supportMoves : [];
+    if (moves.length) return moves[0];
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    return derived.mainConcept || "Model one example, then stay close to the first supported response.";
+  }
+
+  function blockPacingNote(contextData) {
+    var derived = contextData && contextData.derived ? contextData.derived : {};
+    var lesson = derived.lesson || (contextData && contextData.block && contextData.block.lesson) || "today's lesson";
+    return "Reset the lesson sequence first, then reteach from " + lesson + ".";
   }
 
   function studentSupportTags(student) {
@@ -5335,9 +5405,11 @@
         label: block.label || block.classSection || block.subject || "Class block",
         lessonLabel: lessonLabel || "Lesson context pending",
         summary: summary,
+        move: blockNextMove(contextData),
         swbat: swbat,
         supportCount: supportCount,
-        tone: tone
+        tone: tone,
+        alignment: lessonAlignmentStatus(contextData)
       };
     });
   }
@@ -5368,7 +5440,7 @@
     var rows = buildLessonMapRows(blocks);
     return [
       '<section class="th2-priority-rail th2-priority-rail--lesson-map">',
-      '  <div class="th2-priority-rail__head"><p class="th2-section-label">Class lesson map</p><p class="th2-today-sub">Objective, SWBAT, and support load for each class.</p></div>',
+      '  <div class="th2-priority-rail__head"><p class="th2-section-label">Class lesson map</p><p class="th2-today-sub">Open the class that already has the clearest lesson fit and support move.</p></div>',
       (rows.length
         ? '<div class="th2-priority-rail__list">' + rows.map(function (item) {
             return [
@@ -5380,10 +5452,11 @@
           '  </div>',
           '  <strong class="th2-priority-item__title">' + escapeHtml(item.label) + '</strong>',
           '  <p class="th2-priority-item__meta">' + escapeHtml(item.lessonLabel) + '</p>',
-          '  <p class="th2-priority-item__reason">' + escapeHtml(item.summary) + '</p>',
-          '  <p class="th2-priority-item__swbat">' + escapeHtml(item.swbat) + '</p>',
-          '  <div class="th2-priority-item__lesson-bar"><span style="width:' + escapeHtml(String(Math.max(18, Math.min(100, (item.supportCount || 0) * 18)))) + '%"></span></div>',
-          '  <p class="th2-priority-item__cue">' + escapeHtml(String(item.supportCount || 0)) + ' support students in this block</p>',
+          '  <p class="th2-priority-item__reason">' + escapeHtml(item.move || item.summary) + '</p>',
+          '  <div class="th2-priority-item__fact-row">',
+          '    <span class="th2-priority-item__fact"><strong>SWBAT</strong><em>' + escapeHtml(item.swbat.replace(/^SWBAT\s+/i, "")) + '</em></span>',
+          '    <span class="th2-priority-item__fact th2-priority-item__fact--' + escapeHtml(item.alignment && item.alignment.tone || "soft") + '"><strong>' + escapeHtml(item.alignment && item.alignment.label || "Lesson review") + '</strong><em>' + escapeHtml(String(item.supportCount || 0)) + ' support students</em></span>',
+          '  </div>',
           '</button>'
         ].join("");
       }).join("") + '</div>'

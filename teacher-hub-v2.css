@@ -347,6 +347,49 @@ body.th2-page {
   color: #304866;
 }
 
+.th2-priority-item__fact-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(148px, 0.9fr);
+  gap: 8px;
+}
+
+.th2-priority-item__fact {
+  display: grid;
+  gap: 5px;
+  padding: 10px 11px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,248,253,0.98));
+  border: 1px solid rgba(170, 184, 204, 0.24);
+}
+
+.th2-priority-item__fact strong {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #627089;
+}
+
+.th2-priority-item__fact em {
+  font-style: normal;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.th2-priority-item__fact--ready {
+  background: linear-gradient(180deg, rgba(240, 248, 241, 0.98), rgba(248, 252, 247, 0.96));
+  border-color: rgba(128, 175, 131, 0.34);
+}
+
+.th2-priority-item__fact--watch {
+  background: linear-gradient(180deg, rgba(255, 249, 239, 0.98), rgba(252, 246, 238, 0.96));
+  border-color: rgba(215, 171, 112, 0.34);
+}
+
+.th2-priority-item__fact--soft {
+  background: linear-gradient(180deg, rgba(247, 249, 252, 0.98), rgba(241, 245, 250, 0.96));
+}
+
 .th2-day-brief--overview {
   background:
     radial-gradient(circle at top right, rgba(142, 188, 231, 0.15), transparent 30%),
@@ -5169,6 +5212,124 @@ body.th2-page.cs-has-nav-shell {
   border: 1px solid var(--border-subtle, #dce5f1);
   border-radius: 18px;
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.th2-block-command-bar {
+  display: grid;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(171, 186, 206, 0.34);
+  background:
+    radial-gradient(circle at top right, rgba(214, 165, 92, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(243,248,255,0.96));
+  box-shadow:
+    0 18px 34px rgba(39, 51, 72, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.74);
+}
+
+.th2-block-command-bar__head,
+.th2-block-command-bar__chips,
+.th2-block-command-bar__actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.th2-block-command-bar__head {
+  justify-content: space-between;
+}
+
+.th2-block-command-bar__title-wrap {
+  display: grid;
+  gap: 4px;
+}
+
+.th2-block-command-bar__title {
+  margin: 0;
+  font-size: 31px;
+  line-height: 1;
+  color: #1f3252;
+}
+
+.th2-block-command-bar__meta {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #5f7190;
+}
+
+.th2-command-chip {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 11px 13px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(170, 184, 204, 0.24);
+}
+
+.th2-command-chip strong {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #627089;
+}
+
+.th2-command-chip em {
+  font-style: normal;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.th2-command-chip--ready {
+  background: linear-gradient(180deg, rgba(239, 248, 241, 0.98), rgba(247, 252, 248, 0.96));
+  border-color: rgba(128, 175, 131, 0.34);
+}
+
+.th2-command-chip--watch {
+  background: linear-gradient(180deg, rgba(255, 249, 239, 0.98), rgba(252, 246, 238, 0.96));
+  border-color: rgba(215, 171, 112, 0.34);
+}
+
+.th2-command-chip--soft {
+  background: linear-gradient(180deg, rgba(247, 249, 252, 0.98), rgba(241, 245, 250, 0.96));
+}
+
+.th2-block-command-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.th2-block-command-card {
+  display: grid;
+  gap: 7px;
+  padding: 13px 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,248,253,0.98));
+  border: 1px solid rgba(170, 184, 204, 0.24);
+}
+
+.th2-block-command-card--focus {
+  background:
+    radial-gradient(circle at top right, rgba(102, 154, 222, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(245,249,255,0.98), rgba(238,245,255,0.96));
+}
+
+.th2-block-command-card span {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #627089;
+}
+
+.th2-block-command-card strong {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-primary);
 }
 
 .th2-class-intelligence-grid {

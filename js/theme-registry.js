@@ -55,10 +55,22 @@
     barbie: 'poppink'
   });
 
-  // Restore the full theme library so custom themes remain available in-play.
-  var ACTIVE_THEME_IDS = Object.freeze(THEME_REGISTRY.map(function themeId(theme) {
-    return theme.id;
-  }));
+  // Curate the exposed picker set so the platform stays readable and premium.
+  // Legacy themes remain valid if already saved or referenced directly.
+  var ACTIVE_THEME_IDS = Object.freeze([
+    'default',
+    'ocean',
+    'forest',
+    'classic',
+    'sunset',
+    'coffee',
+    'seahawks',
+    'huskies',
+    'zelda',
+    'minecraft',
+    'dark',
+    'matrix'
+  ]);
 
   var ORDER = Object.freeze(ACTIVE_THEME_IDS.filter(function onlyKnownTheme(id) {
     return themeById.has(id);

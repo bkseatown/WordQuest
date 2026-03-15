@@ -301,6 +301,48 @@ body.sp-page {
   gap: 8px;
 }
 
+.sp-hero-command-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.sp-hero-command {
+  display: grid;
+  gap: 6px;
+  padding: 12px 13px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in oklab, var(--border) 80%, white 20%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(246,248,252,0.78));
+}
+
+.sp-hero-command--focus {
+  background:
+    radial-gradient(circle at top right, rgba(136, 175, 224, 0.16), transparent 30%),
+    linear-gradient(180deg, rgba(244,249,255,0.84), rgba(238,244,252,0.82));
+}
+
+.sp-hero-command--trust {
+  background:
+    radial-gradient(circle at top right, rgba(239, 201, 120, 0.18), transparent 30%),
+    linear-gradient(180deg, rgba(255,250,241,0.84), rgba(249,245,238,0.82));
+}
+
+.sp-hero-command span {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--muted) 80%, white 20%);
+  font-weight: 800;
+}
+
+.sp-hero-command strong {
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
 .sp-meta-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -697,7 +739,8 @@ body.sp-page {
   .sp-layout,
   .sp-workbench,
   .sp-hero,
-  .sp-visual-grid {
+  .sp-visual-grid,
+  .sp-hero-command-grid {
     grid-template-columns: 1fr;
   }
 
@@ -734,6 +777,7 @@ body.sp-page {
   }
 
   .sp-meta-grid,
+  .sp-hero-summary,
   .sp-form-grid {
     grid-template-columns: 1fr;
   }
