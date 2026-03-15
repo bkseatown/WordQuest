@@ -612,7 +612,7 @@
         return normalizeGradeBand(text) === gradeBand;
       });
       var subjectOk = !row.subjects || row.subjects.indexOf(subject) >= 0 || (row.subjects.indexOf("ELA") >= 0 && subject === "Intervention");
-      var programOk = !row.programs || !row.programs.length || row.programs.some(function (value) {
+      var programOk = !programId || !row.programs || !row.programs.length || row.programs.some(function (value) {
         return programId.indexOf(String(value || "").toLowerCase()) >= 0;
       });
       return gradeOk && subjectOk && programOk;

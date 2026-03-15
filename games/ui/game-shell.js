@@ -1335,7 +1335,10 @@
     if (String(state && state.selectedGameId || "") === "word-typing") {
       return "Typing Quest Foundations · " + mode + " · " + (context.typingPlacementRequired ? "Placement" : ("Lesson " + String(context.currentTypingLessonOrder || 1)));
     }
-    return subject + " · " + mode + " · " + (context.lessonTitle || context.classLabel || "Context-aware set");
+    if (String(state && state.selectedGameId || "") === "morphology-builder") {
+      return subject + " · " + mode + " · " + (context.lessonTitle || context.classLabel || "Word-build set");
+    }
+    return subject + " · " + mode + " · " + (context.lessonTitle || context.classLabel || "Lesson-aligned set");
   }
 
   function isGroupView(state) {
@@ -2258,11 +2261,18 @@
     refreshTypingCourseContext();
     /* Restore gallery context from localStorage when not in URL */
     try {
+      var storedGrade = localStorage.getItem("cs.gallery.grade");
+      var storedSubject = localStorage.getItem("cs.gallery.subject");
       if (!params.gradeBand && localStorage.getItem("cs.gallery.grade")) {
-        context.gradeBand = localStorage.getItem("cs.gallery.grade");
+        context.gradeBand = storedGrade;
       }
-      if (!params.subject && localStorage.getItem("cs.gallery.subject")) {
-        context.subject = localStorage.getItem("cs.gallery.subject");
+      if (!params.subject && storedSubject) {
+        var allowedSubjects = ["ELA", "Writing", "Math", "Science", "Intervention"];
+        if (allowedSubjects.indexOf(storedSubject) >= 0) {
+          var shouldHonorIntervention = storedSubject !== "Intervention"
+            || Boolean(params.classId || params.lessonId || context.classLabel || context.lessonTitle);
+          context.subject = shouldHonorIntervention ? storedSubject : (context.subject || "ELA");
+        }
       }
     } catch (_e) {}
     var games = createGames(context);
@@ -3160,6 +3170,7 @@
         return;
       }
 
+      var compactStageChrome = currentGame.id === "morphology-builder";
       shell.innerHTML = [
         '<div class="cg-brandbar cg-brandbar--play">',
         '  <div class="cg-brand">',
@@ -3175,24 +3186,24 @@
         '<div class="cg-play-shell">',
         '  <section class="cg-main-card cg-surface cg-stage-shell cg-stage-shell--focused">',
         '    <div class="cg-stage-meta">',
-        '      <div class="cg-stage-head">',
-        "        <div>",
-        '          <p class="cg-kicker">' + runtimeRoot.CSGameComponents.escapeHtml(stageKicker) + '</p>',
-        '          <h2 class="cg-display">' + runtimeRoot.CSGameComponents.escapeHtml(stageTitle) + '</h2>',
-        '          <p>' + runtimeRoot.CSGameComponents.escapeHtml(stageSubtitle) + '</p>',
-        "        </div>",
-        '        <div class="cg-stage-toolbar">',
-        '          <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("projector") + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.VIEW_MODES[state.settings.viewMode] || {}).label || "Individual") + '</span>',
-        '          <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("progress") + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.DIFFICULTY[state.settings.difficulty] || {}).label || "Core") + '</span>',
-        (typingHubMode ? '          <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + 'Lesson plans</span>' : '          <span class="cg-chip" data-tone="' + (state.settings.timerEnabled ? "positive" : "warning") + '">' + runtimeRoot.CSGameComponents.iconFor("timer") + (state.settings.timerEnabled ? "Timed" : "Untimed") + '</span>'),
-        (state.streak >= 2 ? '          <span class="cg-chip cg-chip-streak" data-tone="positive">' + runtimeRoot.CSGameComponents.iconFor("progress") + state.streak + '\u2009streak</span>' : ""),
-        "        </div>",
-        "      </div>",
-        '      <div class="cg-context-chips">',
-        '        <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + runtimeRoot.CSGameComponents.escapeHtml(supportLine(context, state)) + '</span>',
-        (projectorSuggested ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("projector") + 'Projector-safe layout ready</span>' : ""),
-        "      </div>",
-        (currentGame.id === "word-typing" ? "" : renderFeedback(state.feedback)),
+        (compactStageChrome ? "" : '      <div class="cg-stage-head">'),
+        (compactStageChrome ? "" : "        <div>"),
+        (compactStageChrome ? "" : ('          <p class="cg-kicker">' + runtimeRoot.CSGameComponents.escapeHtml(stageKicker) + '</p>')),
+        (compactStageChrome ? "" : ('          <h2 class="cg-display">' + runtimeRoot.CSGameComponents.escapeHtml(stageTitle) + '</h2>')),
+        (compactStageChrome ? "" : ('          <p>' + runtimeRoot.CSGameComponents.escapeHtml(stageSubtitle) + '</p>')),
+        (compactStageChrome ? "" : "        </div>"),
+        (compactStageChrome ? "" : '        <div class="cg-stage-toolbar">'),
+        (compactStageChrome ? "" : ('          <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("projector") + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.VIEW_MODES[state.settings.viewMode] || {}).label || "Individual") + '</span>')),
+        (compactStageChrome ? "" : ('          <span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("progress") + runtimeRoot.CSGameComponents.escapeHtml((runtimeRoot.CSGameModes.DIFFICULTY[state.settings.difficulty] || {}).label || "Core") + '</span>')),
+        (compactStageChrome ? "" : (typingHubMode ? '          <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + 'Lesson plans</span>' : '          <span class="cg-chip" data-tone="' + (state.settings.timerEnabled ? "positive" : "warning") + '">' + runtimeRoot.CSGameComponents.iconFor("timer") + (state.settings.timerEnabled ? "Timed" : "Untimed") + '</span>')),
+        (compactStageChrome ? "" : (state.streak >= 2 ? '          <span class="cg-chip cg-chip-streak" data-tone="positive">' + runtimeRoot.CSGameComponents.iconFor("progress") + state.streak + '\u2009streak</span>' : "")),
+        (compactStageChrome ? "" : "        </div>"),
+        (compactStageChrome ? "" : "      </div>"),
+        (compactStageChrome ? "" : '      <div class="cg-context-chips">'),
+        (compactStageChrome ? "" : ('        <span class="cg-chip" data-tone="focus">' + runtimeRoot.CSGameComponents.iconFor("context") + runtimeRoot.CSGameComponents.escapeHtml(supportLine(context, state)) + '</span>')),
+        (compactStageChrome ? "" : (projectorSuggested ? '<span class="cg-chip">' + runtimeRoot.CSGameComponents.iconFor("projector") + 'Projector-safe layout ready</span>' : "")),
+        (compactStageChrome ? "" : "      </div>"),
+        (compactStageChrome || currentGame.id === "word-typing" ? "" : renderFeedback(state.feedback)),
         (currentGame.id === "word-typing" ? "" : renderResultBanner(state, currentGame)),
         '      <div id="cg-stage-board" class="cg-stage-board"></div>',
         "    </div>",
@@ -3797,7 +3808,7 @@
         var forgeFilled = forgeChosen.filter(Boolean).length;
         var forgeTargetCount = Array.isArray(round.solution) ? round.solution.length : 0;
         return renderGameScaffold(game, state, round, {
-          beforePlay: renderHostControls(game, state, round),
+          timer: false,
           play: [
             '<div class="cg-game-layout cg-game-layout--builder">',
             '<div class="cg-premium-stage cg-premium-stage--forge">',
@@ -3809,7 +3820,6 @@
             '    </div>',
             '    <div class="cg-forge-hero__stats">',
             '      <div class="cg-forge-stat"><span>Placed</span><strong>' + forgeFilled + " / " + forgeTargetCount + '</strong></div>',
-            '      <div class="cg-forge-stat"><span>Meaning check</span><strong>' + runtimeRoot.CSGameComponents.escapeHtml(round.meaningHint || "Unlock when built") + '</strong></div>',
             "    </div>",
             "  </section>",
             '<div class="cg-forge">',

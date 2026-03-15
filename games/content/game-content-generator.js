@@ -21,18 +21,32 @@
       lessonContext.title || lessonContext.conceptFocus || input.vocabularyFocus || subject,
       input.gradeBand || "3-5"
     ].filter(Boolean);
+    if (gameType === "morphology-builder") {
+      return {
+        id: "generated-morphology-builder-" + Date.now(),
+        source: "fallback-adapter",
+        prompt: "Build the word review.",
+        tiles: ["re", "view", "play", "ing"],
+        solution: ["re", "view"],
+        meaningHint: "'re-' means again, so the word means to look at something again.",
+        lessonContext: {
+          title: lessonContext.title || "",
+          subject: subject
+        }
+      };
+    }
     return {
       id: "generated-" + gameType + "-" + Date.now(),
-      source: "placeholder-adapter",
-      prompt: "Prototype content for " + gameType + " aligned to " + titleBits.join(" · "),
+      source: "fallback-adapter",
+      prompt: "Use the current " + gameType.replace(/-/g, " ") + " warm-up aligned to " + titleBits.join(" · "),
       answer: titleBits[0] || "core concept",
       clues: [
-        "Generated clue set placeholder.",
-        "Replace this adapter with an AI-backed generator later.",
-        "Lesson context is already passed through safely."
+        "Use the current lesson language.",
+        "Keep the response short and academic.",
+        "Match the task to the current class focus."
       ],
       accepted: [String(input.vocabularyFocus || "focus"), String(subject).toLowerCase()],
-      tiles: ["academic", "language", "placeholder"],
+      tiles: ["academic", "language", "focus"],
       lessonContext: {
         title: lessonContext.title || "",
         subject: subject

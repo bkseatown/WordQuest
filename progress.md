@@ -632,6 +632,34 @@ Original prompt: You are improving the Cornerstone MTSS game platform UI.
 - `writing-studio.html` + `writing-studio.js`
   - removed the forced startup greeting modal, replaced the highest-friction coaching/product phrasing, and let the page open directly into the tool shell
   - verified at `1440x900` on `writing-studio.html?cb=ws3`
-  - screenshot-backed truth:
+ - screenshot-backed truth:
     - the biggest onboarding friction is gone
     - the route still needs a later layout pass because the opened state shows too much empty stage before the working canvas takes over
+2026-03-15: Stabilization checkpoint completed in `games/ui/game-shell.css`, `games/ui/game-shell.js`, `js/teacher-context/lesson-context-deriver.js`, `teacher-hub-v2.html`, `teacher-hub-v2.js`, `reports.html`, and `progress.md`.
+- `games/ui/game-shell.css` + `games/ui/game-shell.js`
+  - removed the gallery-wide floating music strip behavior and tightened music controls into a compact setup-band cluster
+  - prevented stale `Intervention` subject restore from hijacking the gallery default when there is no explicit intervention context
+  - raised dark/forest/seahawks readability floors for chooser and play surfaces, including `Off Limits` and `Build the Word`
+  - verified by screenshot at `1440x900` on:
+    - `game-platform.html?cb=matrix-audit-gallery-2`
+    - `game-platform.html?play=1&game=word-connections&cb=stabilize-offlimits-1` in forest theme
+    - `game-platform.html?play=1&game=morphology-builder&cb=stabilize-buildword-1` in forest theme
+  - screenshot-backed truth:
+    - the full-width translucent music strip regression is gone
+    - gallery dark-theme recommendation cards are readable again
+    - `Build the Word` is no longer unreadable dark-on-dark, though it still needs later product-surface polish
+- `js/teacher-context/lesson-context-deriver.js` + `teacher-hub-v2.html` + `teacher-hub-v2.js`
+  - replaced generic inferred block moves like `Front-load one worked example` with concrete subject-specific support moves for reading, writing, content, and intervention blocks
+  - bumped teacher-hub asset versions and reseeded the bridge-backed demo store so the live route reflects the updated language instead of stale cached context
+  - tightened the demo specials block so it now uses a real transition target instead of the old rotation placeholder wording
+  - verified live on `teacher-hub-v2.html?demo=1&cb=hub-truth-pass4`
+  - screenshot-backed truth:
+    - math, reading, writing, content, and intervention cards now show concrete support moves
+    - the day overview is materially more trustworthy and less like placeholder coaching copy
+- `reports.html`
+  - reduced the most verbose instructional copy in the first-screen report queue and output sections
+  - kept the overall reporting structure intact to avoid destabilizing the strongest teacher-facing surface
+  - verified live on `reports.html?cb=matrix-audit-r2`
+  - screenshot-backed truth:
+    - the page reads faster and more like an output engine
+    - it still has some explanatory copy left, but the first screen is lighter and clearer than before

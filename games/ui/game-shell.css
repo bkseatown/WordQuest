@@ -4336,6 +4336,176 @@ body.game-platform-page[data-shell-view="play"] .cg-taboo-pill {
 body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card--play {
   background: linear-gradient(180deg, #ecfeff, #ffffff);
   border-color: rgba(8, 145, 178, 0.18);
+  min-height: 0;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-main-card,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-stage-shell {
+  background: linear-gradient(180deg, rgba(234, 241, 250, 0.98), rgba(214, 226, 244, 0.98));
+  border-color: rgba(146, 166, 201, 0.4);
+  color: #132233;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-main-card h1,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-main-card h2,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-main-card h3,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card h1,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card h2,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card h3,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-main-card strong,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card strong {
+  color: #132233;
+  -webkit-text-fill-color: #132233;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-main-card p,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card p,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-micro-label,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-kicker {
+  color: rgba(33, 51, 78, 0.78);
+  -webkit-text-fill-color: rgba(33, 51, 78, 0.78);
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card__body,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-game-layout,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-layout__main,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-layout__side {
+  justify-content: flex-start;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card__body,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-game-layout {
+  width: 100%;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-game-layout {
+  display: grid;
+  align-content: start;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-game-layout--builder {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  width: 100%;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-layout {
+  grid-template-columns: minmax(0, 1.25fr) minmax(220px, 0.75fr);
+  gap: 12px;
+  align-items: start;
+  width: 100%;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-layout__main {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) minmax(160px, 1fr);
+  align-items: start;
+  gap: 12px;
+  width: 100%;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-bench,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-tray {
+  min-height: 0;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-main-card {
+  padding-bottom: 14px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card--play {
+  min-height: min(64vh, 620px);
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card--play .cg-zone-card__body {
+  min-height: 0;
+  display: grid;
+  align-content: start;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-premium-stage--forge {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  width: 100%;
+  justify-self: stretch;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge {
+  width: 100%;
+  justify-self: stretch;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-hero {
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-hero__copy {
+  display: grid;
+  gap: 6px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-hero h3 {
+  font-size: clamp(1.1rem, 1.35vw, 1.45rem);
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-hero__stats {
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-stat {
+  min-width: 112px;
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  border-radius: 16px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-bench,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-tray,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-premium-note,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-order-check {
+  padding: 14px 16px;
+  border-radius: 20px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-bench__head,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-tray__head {
+  margin-bottom: 10px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-equation {
+  margin-bottom: 10px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-slots {
+  gap: 10px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-tiles {
+  gap: 10px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-morph-tile,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-slot {
+  min-height: 50px;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-layout__side {
+  gap: 10px;
+}
+
+@media (max-width: 1180px) {
+  body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-layout,
+  body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-layout__main {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 body.game-platform-page[data-shell-view="play"] .cg-forge-bench,
@@ -10956,4 +11126,291 @@ body.game-platform-page[data-shell-view="play"][data-game-id="word-connections"]
   body.game-platform-page[data-shell-view="play"][data-game-id="word-typing"] .cg-typing-page-wrap {
     gap: 10px !important;
   }
+}
+
+/* 2026-03-15 stabilization pass:
+   keep gallery controls in one compact band and raise readability on dark shells */
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-setup {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px 14px !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding: 10px 14px !important;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-setup .cg-setup-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 10px 12px !important;
+  min-width: 0 !important;
+  flex: 1 1 320px !important;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-setup__hint {
+  order: 3 !important;
+  flex: 1 0 100% !important;
+  margin-top: 0 !important;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-audio-cluster--gallery {
+  order: 2 !important;
+  width: auto !important;
+  max-width: min(100%, 540px) !important;
+  flex: 0 1 auto !important;
+  justify-content: flex-start !important;
+  align-self: center !important;
+  padding: 6px 8px !important;
+  border-radius: 999px !important;
+  background: color-mix(in oklab, var(--cg-surface-strong) 94%, rgba(255,255,255,0.08)) !important;
+  border: 1px solid color-mix(in oklab, var(--cg-border-strong) 88%, rgba(255,255,255,0.12)) !important;
+  box-shadow: var(--cg-shadow-soft) !important;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-audio-cluster--gallery .cg-action {
+  min-height: 38px !important;
+  padding: 8px 14px !important;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-audio-cluster--gallery .cg-audio-label {
+  max-width: 132px !important;
+  color: var(--cg-reading-muted-strong) !important;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__panel-grid {
+  gap: 10px !important;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__stat {
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--cg-panel-strong) 96%, #ffffff 4%), color-mix(in oklab, var(--cg-panel) 94%, #f4f8fc 6%)) !important;
+  border: 1px solid color-mix(in oklab, var(--cg-border-strong) 86%, rgba(255,255,255,0.08)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 8px 18px color-mix(in oklab, var(--cg-bg-deep) 16%, transparent) !important;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__stat span,
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__stat p {
+  color: var(--cg-reading-muted-strong) !important;
+}
+
+body.game-platform-page[data-shell-view="gallery"] .cg-gallery-hero__stat strong {
+  color: var(--cg-reading-ink) !important;
+}
+
+body.game-platform-page[data-game-theme="dark"] .cg-surface,
+body.game-platform-page[data-game-theme="forest"] .cg-surface,
+body.game-platform-page[data-game-theme="seahawks"] .cg-surface {
+  background: color-mix(in oklab, var(--cg-panel-strong) 94%, rgba(255,255,255,0.03)) !important;
+  border-color: color-mix(in oklab, var(--cg-border-strong) 92%, rgba(255,255,255,0.08)) !important;
+}
+
+body.game-platform-page[data-game-theme="dark"] .cg-main-card,
+body.game-platform-page[data-game-theme="forest"] .cg-main-card,
+body.game-platform-page[data-game-theme="seahawks"] .cg-main-card,
+body.game-platform-page[data-game-theme="dark"] .cg-zone-card,
+body.game-platform-page[data-game-theme="forest"] .cg-zone-card,
+body.game-platform-page[data-game-theme="seahawks"] .cg-zone-card,
+body.game-platform-page[data-game-theme="dark"] .cg-stage-shell,
+body.game-platform-page[data-game-theme="forest"] .cg-stage-shell,
+body.game-platform-page[data-game-theme="seahawks"] .cg-stage-shell {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--cg-panel-strong) 96%, rgba(255,255,255,0.04)), color-mix(in oklab, var(--cg-panel) 94%, rgba(255,255,255,0.02))) !important;
+  border-color: color-mix(in oklab, var(--cg-border-strong) 92%, rgba(255,255,255,0.08)) !important;
+}
+
+body.game-platform-page[data-game-theme="dark"] .cg-main-card h1,
+body.game-platform-page[data-game-theme="dark"] .cg-main-card h2,
+body.game-platform-page[data-game-theme="dark"] .cg-main-card h3,
+body.game-platform-page[data-game-theme="forest"] .cg-main-card h1,
+body.game-platform-page[data-game-theme="forest"] .cg-main-card h2,
+body.game-platform-page[data-game-theme="forest"] .cg-main-card h3,
+body.game-platform-page[data-game-theme="seahawks"] .cg-main-card h1,
+body.game-platform-page[data-game-theme="seahawks"] .cg-main-card h2,
+body.game-platform-page[data-game-theme="seahawks"] .cg-main-card h3,
+body.game-platform-page[data-game-theme="dark"] .cg-zone-card h1,
+body.game-platform-page[data-game-theme="dark"] .cg-zone-card h2,
+body.game-platform-page[data-game-theme="dark"] .cg-zone-card h3,
+body.game-platform-page[data-game-theme="forest"] .cg-zone-card h1,
+body.game-platform-page[data-game-theme="forest"] .cg-zone-card h2,
+body.game-platform-page[data-game-theme="forest"] .cg-zone-card h3,
+body.game-platform-page[data-game-theme="seahawks"] .cg-zone-card h1,
+body.game-platform-page[data-game-theme="seahawks"] .cg-zone-card h2,
+body.game-platform-page[data-game-theme="seahawks"] .cg-zone-card h3 {
+  color: rgba(245, 250, 255, 0.96) !important;
+  -webkit-text-fill-color: rgba(245, 250, 255, 0.96) !important;
+}
+
+body.game-platform-page[data-game-theme="dark"] .cg-main-card p,
+body.game-platform-page[data-game-theme="dark"] .cg-zone-card p,
+body.game-platform-page[data-game-theme="dark"] .cg-kicker,
+body.game-platform-page[data-game-theme="dark"] .cg-micro-label,
+body.game-platform-page[data-game-theme="forest"] .cg-main-card p,
+body.game-platform-page[data-game-theme="forest"] .cg-zone-card p,
+body.game-platform-page[data-game-theme="forest"] .cg-kicker,
+body.game-platform-page[data-game-theme="forest"] .cg-micro-label,
+body.game-platform-page[data-game-theme="seahawks"] .cg-main-card p,
+body.game-platform-page[data-game-theme="seahawks"] .cg-zone-card p,
+body.game-platform-page[data-game-theme="seahawks"] .cg-kicker,
+body.game-platform-page[data-game-theme="seahawks"] .cg-micro-label {
+  color: rgba(220, 233, 245, 0.84) !important;
+}
+
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"],
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"],
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] {
+  --cg-play-surface: #eaf0f4 !important;
+  --cg-play-surface-strong: #f8fbfd !important;
+  --cg-play-border: #c8d5df !important;
+  --cg-play-ink: #142233 !important;
+  --cg-play-muted: #536373 !important;
+}
+
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-stage-shell,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-round-guide,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-host-panel,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-feedback,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-result-banner,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-focus-panel,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-prompt-card,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-zone-card,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-stage-shell,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-round-guide,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-host-panel,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-feedback,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-result-banner,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-focus-panel,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-prompt-card,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-zone-card,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-stage-shell,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-round-guide,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-host-panel,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-feedback,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-result-banner,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-focus-panel,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-prompt-card,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-zone-card {
+  background: var(--cg-play-surface-strong) !important;
+  color: var(--cg-play-ink) !important;
+  border-color: var(--cg-play-border) !important;
+}
+
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-chip,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-action-quiet,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-choice,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-input,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-textarea,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-select,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-chip,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-action-quiet,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-choice,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-input,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-textarea,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-select,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-chip,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-action-quiet,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-choice,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-input,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-textarea,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-select {
+  background: var(--cg-play-surface) !important;
+  color: var(--cg-play-ink) !important;
+  border-color: var(--cg-play-border) !important;
+}
+
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-chip *,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-action-quiet *,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-chip *,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-action-quiet *,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-chip *,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-action-quiet *,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-round-guide__row strong,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-round-guide__row span,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-host-panel__meta,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-round-guide__row strong,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-round-guide__row span,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-host-panel__meta,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-round-guide__row strong,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-round-guide__row span,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-host-panel__meta {
+  color: var(--cg-play-ink) !important;
+  -webkit-text-fill-color: var(--cg-play-ink) !important;
+}
+
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-forge-hero,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-forge-hero,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-forge-hero,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-premium-note,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-premium-note,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-premium-note,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-forge-bench,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-forge-bench,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-forge-bench,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-forge-tray,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-forge-tray,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-forge-tray {
+  background: var(--cg-play-surface-strong) !important;
+  color: var(--cg-play-ink) !important;
+  border-color: var(--cg-play-border) !important;
+}
+
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-forge-hero h3,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-forge-hero p,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-main-card h2,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-main-card h3,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-forge-stat span,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-forge-stat strong,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-forge-bench__head,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-forge-tray__head,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-premium-note h4,
+body.game-platform-page[data-game-theme="dark"][data-shell-view="play"] .cg-premium-note p,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-forge-hero h3,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-forge-hero p,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-main-card h2,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-main-card h3,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-forge-stat span,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-forge-stat strong,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-forge-bench__head,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-forge-tray__head,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-premium-note h4,
+body.game-platform-page[data-game-theme="forest"][data-shell-view="play"] .cg-premium-note p,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-forge-hero h3,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-forge-hero p,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-main-card h2,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-main-card h3,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-forge-stat span,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-forge-stat strong,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-forge-bench__head,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-forge-tray__head,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-premium-note h4,
+body.game-platform-page[data-game-theme="seahawks"][data-shell-view="play"] .cg-premium-note p {
+  color: var(--cg-play-ink) !important;
+  -webkit-text-fill-color: var(--cg-play-ink) !important;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card__body,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-game-layout {
+  display: grid !important;
+  width: 100% !important;
+  align-content: start !important;
+  justify-content: initial !important;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-zone-card--play .cg-zone-card__body,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-game-layout--builder,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-premium-stage--forge,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge,
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-layout {
+  width: 100% !important;
+  justify-self: stretch !important;
+}
+
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-layout__main {
+  display: grid !important;
+  grid-template-columns: minmax(160px, 1fr) minmax(160px, 1fr) !important;
+  width: 100% !important;
+  justify-content: initial !important;
 }

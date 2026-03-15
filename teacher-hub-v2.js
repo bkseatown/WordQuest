@@ -645,8 +645,17 @@
 
   function deriveLearningTarget(contextData) {
     var derived = contextData && contextData.derived ? contextData.derived : {};
+    var lessonContext = contextData && contextData.lessonContext ? contextData.lessonContext : {};
+    var classContext = contextData && contextData.classContext ? contextData.classContext : {};
+    var explicit = String(
+      lessonContext.swbat ||
+      classContext.swbat ||
+      derived.swbat ||
+      ""
+    ).trim();
+    if (explicit) return /^swbat\b/i.test(explicit) ? explicit : "SWBAT " + explicit.replace(/\.$/, "") + ".";
     var focus = String(derived.mainConcept || derived.lessonFocus || "").trim();
-    if (!focus) return "SWBAT explain the lesson focus and complete the next support task.";
+    if (!focus) return "SWBAT complete the lesson task with the current support in place.";
     var normalized = focus.charAt(0).toLowerCase() + focus.slice(1);
     return "SWBAT " + normalized.replace(/\.$/, "") + ".";
   }
@@ -1063,11 +1072,11 @@
 
   function classConceptFocus(block) {
     var subject = String(block && block.subject || "").toLowerCase();
-    if (subject === "math") return "Keep one representation and one explanation path visible while students solve.";
-    if (subject === "writing") return "Anchor students in structure first, then elaboration and sentence clarity.";
-    if (subject === "humanities") return "Keep the claim, evidence, and language demand narrow and explicit.";
-    if (subject === "intervention") return "Prioritize the highest-leverage target skill and skip already-mastered review.";
-    return "Highlight the lesson target, vocabulary, and one support move before the student starts.";
+    if (subject === "math") return "Use one clear model and one matching explanation while students solve.";
+    if (subject === "writing") return "State the claim, add one piece of evidence, and rehearse the sentence before writing.";
+    if (subject === "humanities" || /science|social/.test(subject)) return "Teach the key term, discuss the idea aloud, then record it in notes.";
+    if (subject === "intervention" || subject === "reading") return "Read or spell the current pattern accurately and transfer it into a word, phrase, or sentence.";
+    return "Show the target, name the key vocabulary, and start with one concrete support move.";
   }
 
   function classLanguageDemands(block) {
@@ -4004,7 +4013,8 @@
             curriculum: "Fish Tank Reading",
             lesson: "Unit 2 · Shared Text",
             supportType: "push-in",
-            conceptFocus: "Read closely, track evidence, and support comprehension during the reading block.",
+            conceptFocus: "Read the shared text, find one important detail, and support it with text evidence.",
+            swbat: "Use text evidence to explain a key detail from the shared text.",
             languageDemands: ["read", "cite", "explain"],
             lessonContextId: "demo-lesson-ela"
           });
@@ -4016,7 +4026,8 @@
             curriculum: "Fish Tank Writing",
             lesson: "Claim + Evidence Paragraph",
             supportType: "push-in",
-            conceptFocus: "Write a claim and support it with one precise piece of evidence.",
+            conceptFocus: "State a claim, add one matching piece of evidence, and say the sentence before writing it.",
+            swbat: "Write a clear claim and support it with one piece of evidence.",
             languageDemands: ["claim", "evidence", "justify"],
             lessonContextId: "demo-lesson-writing"
           });
@@ -4028,7 +4039,8 @@
             curriculum: "Knowledge Builder",
             lesson: "Unit 3 · Discussion + notes",
             supportType: "push-in",
-            conceptFocus: "Support content vocabulary, discussion language, and evidence notes during science/social studies.",
+            conceptFocus: "Learn two key content words, discuss the idea aloud, and capture one fact in notes.",
+            swbat: "Use the key content words to explain one idea in discussion and notes.",
             languageDemands: ["discuss", "describe", "record evidence"],
             lessonContextId: "demo-lesson-content"
           });
@@ -4040,7 +4052,8 @@
             curriculum: "Fundations",
             lesson: "Current unit",
             supportType: "pull-out",
-            conceptFocus: "Use the exempt/support window for targeted literacy support in ES and learning support time in MS/HS.",
+            conceptFocus: "Read and spell the current Fundations pattern, then transfer it into short dictation.",
+            swbat: "Read and spell current-unit words with the taught pattern.",
             languageDemands: ["blend", "segment", "explain"],
             lessonContextId: "demo-lesson-intervention"
           });
@@ -4052,7 +4065,8 @@
             curriculum: "Encore Rotation",
             lesson: "Afternoon rotation",
             supportType: "core",
-            conceptFocus: "Students rotate through world language and specials while intervention groups pull as needed.",
+            conceptFocus: "Follow the posted rotation, move to the correct special, and start with materials ready.",
+            swbat: "Follow the posted rotation and transition into the assigned special with materials ready.",
             languageDemands: ["follow directions", "participate"],
             lessonContextId: "demo-lesson-specials"
           });
@@ -4126,15 +4140,16 @@
             programId: "fishtank-ela",
             unit: "Unit 2",
             title: "Shared Text",
-            conceptFocus: "Use text evidence to build understanding during the reading block.",
+            conceptFocus: "Read the shared text, find one important detail, and support it with text evidence.",
+            swbat: "Use text evidence to explain a key detail from the shared text.",
             languageDemands: ["read", "cite", "explain"],
             misconceptions: [
               "Students retell loosely without grounding answers in text evidence.",
               "Academic vocabulary can block comprehension even when decoding is solid."
             ],
             supportMoves: [
-              "Preview two anchor words before the first read.",
-              "Use a text-evidence sentence frame during discussion."
+              "Preview two anchor words before the first read, then keep one text-evidence question visible.",
+              "Use a short sentence frame such as 'I know ___ because the text says ___.'."
             ],
             targetSkills: ["text evidence", "academic vocabulary", "reading comprehension"],
             vocabulary: ["evidence", "topic", "details", "explain"]
@@ -4146,15 +4161,16 @@
             programId: "writing-workshop",
             unit: "Argument",
             title: "Claim + Evidence Paragraph",
-            conceptFocus: "Write a claim and support it with clear evidence and reasoning.",
+            conceptFocus: "State a claim, add one matching piece of evidence, and say the sentence before writing it.",
+            swbat: "Write a clear claim and support it with one piece of evidence.",
             languageDemands: ["claim", "cite", "justify"],
             misconceptions: [
               "Students restate the topic without making a true claim.",
               "Students add evidence but do not explain how it supports the claim."
             ],
             supportMoves: [
-              "Model one claim-evidence-reasoning example aloud before release.",
-              "Keep transition stems visible during sentence rehearsal."
+              "Model one short claim-and-evidence example aloud before release.",
+              "Keep transition stems visible during oral rehearsal and drafting."
             ],
             targetSkills: ["argument writing", "evidence sentence", "reasoning language"],
             vocabulary: ["claim", "evidence", "reasoning", "therefore"]
@@ -4166,15 +4182,16 @@
             programId: "knowledge-builder",
             unit: "Unit 3",
             title: "Discussion + notes",
-            conceptFocus: "Build understanding of new content through structured discussion and evidence notes.",
+            conceptFocus: "Learn two key content words, discuss the idea aloud, and capture one fact in notes.",
+            swbat: "Use the key content words to explain one idea in discussion and notes.",
             languageDemands: ["describe", "compare", "record evidence"],
             misconceptions: [
               "Students can understand the concept orally but struggle to capture the idea in notes.",
               "Content vocabulary can block participation in discussion."
             ],
             supportMoves: [
-              "Pre-teach two key terms before discussion starts.",
-              "Keep a simple note-taking frame visible during partner talk."
+              "Pre-teach two key terms with a picture or quick example before discussion starts.",
+              "Keep a two-column note frame visible during partner talk and note-taking."
             ],
             targetSkills: ["content vocabulary", "discussion language", "note-taking"],
             vocabulary: ["observe", "evidence", "describe", "compare"]
@@ -4186,14 +4203,15 @@
             programId: "fundations",
             unit: "Fundations",
             title: "Current unit",
-            conceptFocus: "Use the current Fundations unit for explicit word reading, spelling, and short sentence dictation.",
+            conceptFocus: "Read and spell the current Fundations pattern, then transfer it into short dictation.",
+            swbat: "Read and spell current-unit words with the taught pattern.",
             languageDemands: ["blend", "tap", "read"],
             misconceptions: [
               "Students guess from the first sound instead of using the full routine.",
               "Students can read the pattern in isolation but lose accuracy when spelling or reading a sentence."
             ],
             supportMoves: [
-              "Tap and map two current-unit words before students read independently.",
+              "Tap and map two current-unit words such as ar/or words before students read independently.",
               "Move quickly from word work into one dictated phrase or short sentence."
             ],
             targetSkills: ["decoding", "encoding", "dictation transfer"],
@@ -4206,7 +4224,8 @@
             programId: "specials-rotation",
             unit: "Encore",
             title: "Afternoon rotation",
-            conceptFocus: "Students rotate through world language and specials while intervention pulls continue.",
+            conceptFocus: "Follow the posted rotation, move to the correct special, and start with materials ready.",
+            swbat: "Follow the posted rotation and transition into the assigned special with materials ready.",
             languageDemands: ["participate", "respond"],
             misconceptions: [
               "Students in intervention can feel they are missing a preferred activity.",
