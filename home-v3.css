@@ -475,7 +475,15 @@ body.cs-home-page {
 }
 
 .landing-destination--hub .landing-destination__scene {
-  min-height: clamp(238px, 28vh, 320px);
+  min-height: clamp(214px, 24vh, 284px);
+}
+
+.landing-destination--games .landing-destination__scene,
+.landing-destination--workspace .landing-destination__scene {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .landing-scene--workspace {
@@ -504,6 +512,11 @@ body.cs-home-page {
   border-radius: 999px;
   background: radial-gradient(circle, rgba(89, 136, 255, 0.16), transparent 68%);
   pointer-events: none;
+}
+
+.landing-destination--games .landing-scene::after,
+.landing-destination--workspace .landing-scene::after {
+  display: none;
 }
 
 .landing-scene__rail {
@@ -565,7 +578,7 @@ body.cs-home-page {
   display: grid;
   gap: 8px;
   min-height: 100%;
-  padding: 12px;
+  padding: 10px;
   border-radius: 20px;
   background:
     linear-gradient(180deg, rgba(255, 253, 250, 0.99), rgba(232, 240, 250, 0.98));
@@ -579,7 +592,7 @@ body.cs-home-page {
   display: grid;
   gap: 8px;
   min-height: 100%;
-  padding: 12px;
+  padding: 10px;
   border-radius: 20px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(233, 241, 251, 0.98));
@@ -677,7 +690,7 @@ body.cs-home-page {
 }
 
 .landing-hub-note--major {
-  min-height: 88px;
+  min-height: 72px;
   align-content: start;
 }
 
@@ -733,12 +746,12 @@ body.cs-home-page {
 }
 
 .landing-hub-student--wide {
-  min-height: 64px;
+  min-height: 52px;
   align-content: start;
 }
 
 .landing-hub-panel__lane--strong {
-  min-height: 48px;
+  min-height: 40px;
   align-items: flex-start;
 }
 
@@ -791,7 +804,7 @@ body.cs-home-page {
 
 .landing-workspace-list {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   align-content: start;
   min-height: 100%;
 }
@@ -801,7 +814,7 @@ body.cs-home-page {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 8px 10px;
+  padding: 7px 10px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(111, 133, 173, 0.14);
@@ -1033,7 +1046,7 @@ body.cs-home-page {
   display: grid;
   gap: 8px;
   align-content: start;
-  min-height: 100%;
+  min-height: auto;
   padding: 10px;
   border-radius: 18px;
   border: 1px solid rgba(88, 111, 147, 0.22);
@@ -1050,7 +1063,7 @@ body.cs-home-page {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: auto;
+  margin-top: 2px;
 }
 
 
