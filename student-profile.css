@@ -20,8 +20,8 @@ body.sp-page {
 
 .sp-shell {
   width: min(1680px, calc(100vw - 28px));
-  height: calc(100vh - 100px);
-  margin: 0 auto;
+  height: calc(100dvh - var(--nav-h, 74px) - var(--app-safe-vh-margin, 24px));
+  margin: calc(var(--app-safe-vh-margin, 24px) / 2) auto 0;
   padding: 2px 0 4px;
 }
 

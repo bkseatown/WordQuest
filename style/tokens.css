@@ -186,6 +186,13 @@
   --track-normal: 0em;
   --track-wide: 0.02em;
 
+  /* ===== Desktop Safe Viewport =====
+     Reserve a little vertical breathing room so browser chrome/window framing
+     does not clip bottom actions on fixed desktop shells. */
+  --app-safe-vh-margin: 24px;
+  --app-safe-vh-margin-compact: 14px;
+  --app-safe-inline-margin: 12px;
+
   /* ===== Motion Timing ===== */
   --motion-fast: 160ms;
   --motion-med: 220ms;

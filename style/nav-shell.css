@@ -164,7 +164,8 @@
 }
 
 body.cs-has-nav-shell:not(.td-page) {
-  padding-top: calc(var(--nav-h) + 24px);
+  padding-top: calc(var(--nav-h) + var(--app-safe-vh-margin, 24px));
+  padding-bottom: calc(var(--app-safe-vh-margin, 24px) / 2);
 }
 
 body.cs-has-nav-shell {
@@ -192,7 +193,8 @@ body.cs-has-nav-shell {
   }
 
   body.cs-has-nav-shell:not(.td-page) {
-    padding-top: calc(var(--nav-h) + 26px);
+    padding-top: calc(var(--nav-h) + var(--app-safe-vh-margin-compact, 14px));
+    padding-bottom: calc(var(--app-safe-vh-margin-compact, 14px) / 2);
   }
 }
 

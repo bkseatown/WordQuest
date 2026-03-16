@@ -19,8 +19,8 @@ body.cm-page {
 
 .cm-shell {
   width: min(1680px, calc(100vw - 28px));
-  height: calc(100vh - 8px);
-  margin: 0 auto;
+  height: calc(100dvh - var(--app-safe-vh-margin, 24px));
+  margin: calc(var(--app-safe-vh-margin, 24px) / 2) auto;
   padding: 8px 0 8px;
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr);

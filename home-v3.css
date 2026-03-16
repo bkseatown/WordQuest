@@ -4,7 +4,7 @@
   --landing-max: 1960px;
   --landing-gap: clamp(14px, 1.5vw, 22px);
   --landing-pad: clamp(16px, 1.8vw, 28px);
-  --landing-safe-y: 24px;
+  --landing-safe-y: var(--app-safe-vh-margin, 24px);
   --landing-radius-xl: clamp(24px, 2.4vw, 32px);
   --landing-radius-lg: clamp(18px, 2vw, 24px);
   --landing-radius-md: 16px;
@@ -108,8 +108,7 @@ body.cs-home-page {
   max-width: 760px;
 }
 
-.landing-eyebrow,
-.landing-scene__kicker {
+.landing-eyebrow {
   margin: 0;
   font-size: 1rem;
   font-weight: 900;
@@ -123,7 +122,6 @@ body.cs-home-page {
 
 .landing-eyebrow,
 .landing-title,
-.landing-storyboard__head h2,
 .landing-destination__content h2 {
   font-family: var(--font-display, var(--font-body));
 }
@@ -310,14 +308,6 @@ body.cs-home-page {
     gap: 7px;
   }
 
-  .landing-scene__kicker {
-    font-size: 0.9rem;
-  }
-
-  .landing-scene__label {
-    font-size: 0.76rem;
-  }
-
   .landing-hub-panel__strip {
     padding: 9px 10px;
   }
@@ -326,8 +316,7 @@ body.cs-home-page {
     font-size: 0.88rem;
   }
 
-  .landing-hub-panel__strip span,
-  .landing-workspace-brief p {
+  .landing-hub-panel__strip span {
     font-size: 0.72rem;
   }
 
@@ -572,21 +561,6 @@ body.cs-home-page {
     linear-gradient(180deg, #fff8f1 0%, #f3ede8 100%);
 }
 
-.landing-scene__kicker {
-  color: rgba(46, 64, 96, 0.82);
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.landing-scene__label {
-  margin: 0;
-  color: #30496f;
-  font-size: 0.82rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
 .landing-workspace-panel {
   display: grid;
   gap: 8px;
@@ -768,36 +742,15 @@ body.cs-home-page {
   align-items: flex-start;
 }
 
-.landing-workspace-brief {
-  display: grid;
-  gap: 5px;
-  padding: 10px 12px;
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(29, 58, 108, 0.94), rgba(43, 80, 140, 0.88));
-  color: #eef5ff;
-}
-
 .landing-workspace-panel strong {
   font-size: 1rem;
   color: var(--landing-text);
 }
 
-.landing-workspace-brief strong {
-  color: #ffffff;
-  font-size: 0.96rem;
-}
-
-.landing-workspace-brief p {
-  margin: 0;
-  color: rgba(231, 241, 255, 0.84);
-  line-height: 1.28;
-  font-size: 0.78rem;
-}
-
 .landing-workspace-stage {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 8px;
+  gap: 6px;
   min-height: 0;
   height: auto;
 }
@@ -1078,15 +1031,15 @@ body.cs-home-page {
 
 .landing-games-panel__board {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   align-content: start;
   min-height: 100%;
-  padding: 12px;
+  padding: 10px;
   border-radius: 18px;
   border: 1px solid rgba(88, 111, 147, 0.22);
   background:
-    radial-gradient(circle at top right, rgba(239, 180, 76, 0.2), transparent 34%),
-    radial-gradient(circle at bottom left, rgba(133, 215, 197, 0.16), transparent 30%),
+    radial-gradient(circle at top right, rgba(239, 180, 76, 0.14), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(133, 215, 197, 0.12), transparent 24%),
     linear-gradient(180deg, #f9f7f1 0%, #e2eaf6 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.7),
