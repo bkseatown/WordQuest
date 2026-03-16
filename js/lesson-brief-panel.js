@@ -46,6 +46,44 @@
     return String(fallback || "");
   }
 
+  function truthProgram(id) {
+    return CurriculumTruth && typeof CurriculumTruth.cloneProgram === "function"
+      ? CurriculumTruth.cloneProgram(id)
+      : null;
+  }
+
+  function progressDataLine(entry, program) {
+    if (entry && entry.progressDataNote) return String(entry.progressDataNote);
+    if (program && program.progressDataNote) return String(program.progressDataNote);
+    return "";
+  }
+
+  function buildFishtankGradeLink(unit) {
+    var gradeSlug = String(unit && unit.gradeSlug || "").trim();
+    if (!gradeSlug) return "https://www.fishtanklearning.org/curriculum/ela/";
+    return "https://www.fishtanklearning.org/curriculum/ela/" + gradeSlug + "/";
+  }
+
+  function buildElModuleLinks(grade, module, unit) {
+    var gradeText = String(grade || "").trim();
+    var moduleId = String(module && module.id || "").trim();
+    var unitId = String(unit && unit.id || "").trim();
+    var gradeNum = gradeText.replace(/[^\d]/g, "");
+    var moduleNumMatch = moduleId.match(/m(\d+)/i);
+    var unitNumMatch = unitId.match(/u(\d+)/i);
+    if (!gradeNum || !moduleNumMatch) {
+      return {
+        moduleHref: "https://curriculum.eleducation.org/",
+        unitHref: "https://curriculum.eleducation.org/"
+      };
+    }
+    var moduleHref = "https://curriculum.eleducation.org/curriculum/ela/2019/grade-" + gradeNum + "/module-" + moduleNumMatch[1];
+    return {
+      moduleHref: moduleHref,
+      unitHref: unitNumMatch ? (moduleHref + "/unit-" + unitNumMatch[1]) : moduleHref
+    };
+  }
+
   var SUPPORT_TYPES = [
     { id: "push-in", label: "Push-in class support" },
     { id: "pullout", label: "Tier 2 / Tier 3 pullout" },
@@ -67,6 +105,7 @@
     { id: "fundations", label: "Fundations", area: "intervention", grades: ["K", "1", "2", "3"], type: "fundations" },
     { id: "just-words", label: "Just Words", area: "intervention", grades: ["4", "5", "6", "7", "8"], type: "just-words" },
     { id: "haggerty", label: "Heggerty / Haggerty PA", area: "intervention", grades: ["K", "1", "2"], type: "haggerty" },
+    { id: "illustrative-math", label: "Illustrative Math", area: "math", grades: ["K", "1", "2", "3", "4", "5"], type: "illustrative" },
     { id: "bridges-math", label: "Bridges Math", area: "math", grades: ["K", "1", "2", "3", "4", "5"], type: "bridges" },
     { id: "step-up-writing", label: "Step Up to Writing", area: "writing", grades: ["2", "3", "4", "5", "6", "7", "8", "9"], type: "step-up" },
     { id: "sas-humanities-9", label: "SAS Humanities 9", area: "humanities", grades: ["9"], type: "humanities" }
@@ -426,6 +465,37 @@
     return findStudent(_selection.studentId) || null;
   }
 
+  function inferProgramIdFromBlock(block, area) {
+    var curriculumId = String(block && (block.curriculumId || block.programId) || "").trim().toLowerCase();
+    var curriculum = String(block && block.curriculum || "").trim().toLowerCase();
+    var subject = String(block && block.subject || "").trim().toLowerCase();
+    var label = String(block && block.label || "").trim().toLowerCase();
+    var text = [curriculumId, curriculum, subject, label].join(" ");
+    if (curriculumId === "illustrative-math" || text.indexOf("illustrative") >= 0) return "illustrative-math";
+    if (curriculumId === "fishtank-ela" || text.indexOf("fishtank") >= 0) return "fishtank-ela";
+    if (curriculumId === "fundations" || text.indexOf("fundations") >= 0) return "fundations";
+    if (curriculumId === "ufli" || text.indexOf("ufli") >= 0) return "ufli";
+    if (curriculumId === "just-words" || text.indexOf("just words") >= 0) return "just-words";
+    if (curriculumId === "haggerty" || curriculumId === "heggerty" || text.indexOf("heggerty") >= 0 || text.indexOf("haggerty") >= 0) return "haggerty";
+    if (curriculumId === "bridges" || curriculumId === "bridges-intervention" || text.indexOf("bridges") >= 0) return area === "math" ? "bridges-math" : "bridges-math";
+    if (text.indexOf("el education") >= 0) return "el-education";
+    if (text.indexOf("step up") >= 0) return "step-up-writing";
+    if (area === "math") return "";
+    if (area === "writing") return "step-up-writing";
+    if (area === "humanities") return "sas-humanities-9";
+    if (area === "intervention") return "";
+    return "fishtank-ela";
+  }
+
+  function inferAreaFromBlock(block) {
+    var explicit = String(block && block.area || "").trim();
+    if (explicit) return explicit;
+    var subject = String(block && block.subject || "").trim();
+    var curriculum = String(block && block.curriculum || "").trim();
+    var classSection = String(block && block.classSection || "").trim();
+    return inferAreaFromBlockLabel([subject, curriculum, classSection, block && block.label || ""].join(" "));
+  }
+
   function currentBlock() {
     var blocks = getBlocks();
     var i;
@@ -448,15 +518,17 @@
     var profile = TeacherStorage && typeof TeacherStorage.loadTeacherProfile === "function"
       ? TeacherStorage.loadTeacherProfile()
       : { name: "" };
-    var program = programById(String(block && block.programId || ""));
+    var area = inferAreaFromBlock(block);
+    var programId = String(block && block.programId || inferProgramIdFromBlock(block, area) || "");
+    var program = programById(programId);
     var next = {
       id: String(block && block.id || "blk-" + Date.now()),
       label: String(block && block.label || "").trim(),
       timeLabel: String(block && block.timeLabel || "").trim(),
       supportType: String(block && block.supportType || "push-in"),
-      area: String(block && block.area || "ela"),
-      programId: String(block && block.programId || ""),
-      subject: String(block && block.subject || block && block.area || "ela").trim(),
+      area: area || "ela",
+      programId: programId,
+      subject: String(block && block.subject || block && block.area || area || "ela").trim(),
       teacher: String(block && block.teacher || profile.name || "").trim(),
       curriculum: String(block && block.curriculum || program && program.label || "").trim(),
       lesson: String(block && block.lesson || "").trim(),
@@ -562,10 +634,10 @@
   function loadData() {
     if (_loadPromise) return _loadPromise;
     _loadPromise = Promise.all([
-      fetch("./data/lesson-briefs.json").then(function (response) {
+      fetch("./data/lesson-briefs.json?v=20260316a").then(function (response) {
         return response.ok ? response.json() : null;
       }).catch(function () { return null; }),
-      fetch("./data/curriculum-extended.json").then(function (response) {
+      fetch("./data/curriculum-extended.json?v=20260316a").then(function (response) {
         return response.ok ? response.json() : null;
       }).catch(function () { return null; })
     ]).then(function (payload) {
@@ -623,13 +695,19 @@
 
   function ensureSelectionValid() {
     var block = currentBlock();
+    var previousProgramId = _selection.programId;
     if (block) {
-      if (!_selection.blockLabel) _selection.blockLabel = block.label;
-      if (!_selection.blockTime) _selection.blockTime = block.timeLabel;
-      if (!_selection.supportType) _selection.supportType = block.supportType;
-      if (!_selection.area) _selection.area = block.area;
-      if (!_selection.programId) _selection.programId = block.programId;
-      if (!_selection.lessonLabel && block.lesson) _selection.lessonLabel = String(block.lesson);
+      if (block.label) _selection.blockLabel = block.label;
+      if (block.timeLabel) _selection.blockTime = block.timeLabel;
+      if (block.supportType) _selection.supportType = block.supportType;
+      if (block.area) _selection.area = block.area;
+      if (block.programId) _selection.programId = block.programId;
+      if (block.lesson && (!_selection.lessonLabel || (block.programId && block.programId !== previousProgramId))) {
+        _selection.lessonLabel = String(block.lesson);
+      }
+      if (_selection.studentId && block.studentIds.length && block.studentIds.indexOf(_selection.studentId) < 0) {
+        _selection.studentId = block.studentIds[0];
+      }
       if (!_selection.studentId && block.studentIds.length === 1) _selection.studentId = block.studentIds[0];
     }
 
@@ -998,6 +1076,7 @@
 
     if (program.type === "fishtank") return renderFishtankControls();
     if (program.type === "el") return renderElControls();
+    if (program.type === "illustrative") return renderIllustrativeControls();
     if (program.type === "ufli") {
       return [
         '<div class="cs-brief-field">',
@@ -1131,6 +1210,19 @@
     ].join("\n");
   }
 
+  function renderIllustrativeControls() {
+    return [
+      '<div class="cs-brief-field">',
+      "  <label>Unit</label>",
+      '  <input id="cs-brief-custom-unit" type="text" value="' + escapeHtml(_selection.customUnit) + '" placeholder="Example: Unit 2">',
+      "</div>",
+      '<div class="cs-brief-field">',
+      "  <label>Lesson</label>",
+      '  <input id="cs-brief-lesson-label" type="text" value="' + escapeHtml(_selection.lessonLabel) + '" placeholder="Example: Lesson 7">',
+      "</div>"
+    ].join("\n");
+  }
+
   function renderBriefCard(brief) {
     var noteKey = noteKeyForBrief(brief);
     var noteText = getNoteForKey(noteKey);
@@ -1154,6 +1246,7 @@
       "      <label>Worked example</label>",
       '      <p class="cs-brief-copy">' + escapeHtml(brief.workedExample) + "</p>",
       "    </div>",
+      renderResourceLinks(brief.resourceLinks),
       '    <div class="cs-brief-field">',
       "      <label>Likely confusions</label>",
       renderList(brief.likelyConfusions),
@@ -1166,6 +1259,12 @@
       "      <label>What to look for</label>",
       renderList(brief.lookFors),
       "    </div>",
+      (brief.progressDataNote ? [
+        '    <div class="cs-brief-field cs-brief-field--full">',
+        "      <label>Progress data note</label>",
+        '      <p class="cs-brief-copy">' + escapeHtml(brief.progressDataNote) + "</p>",
+        "    </div>"
+      ].join("\n") : ""),
       '    <div class="cs-brief-field">',
       "      <label>Useful prompts</label>",
       renderList(brief.prompts),
@@ -1204,15 +1303,53 @@
     return program ? program.label : "";
   }
 
+  function currentBlockProgramLabel() {
+    var block = currentBlock();
+    if (block) {
+      if (block.curriculum) return String(block.curriculum);
+      if (block.programId) {
+        var blockProgram = programById(block.programId);
+        if (blockProgram && blockProgram.label) return blockProgram.label;
+      }
+    }
+    return currentProgramLabel();
+  }
+
   function currentGoogleQuery(brief) {
-    var bits = [
-      brief && brief.title || "",
-      _selection.lessonLabel || "",
-      _selection.customUnit || "",
-      _selection.blockLabel || "",
-      currentProgramLabel()
-    ];
-    return bits.filter(Boolean).join(" ").trim() || "lesson support";
+    var bits = [];
+    var seen = {};
+
+    function pushBit(value) {
+      var text = String(value || "").trim();
+      var key = text.toLowerCase();
+      if (!text || seen[key]) return;
+      seen[key] = true;
+      bits.push(text);
+    }
+
+    pushBit(_selection.studentName);
+    pushBit(brief && brief.title || _selection.lessonLabel);
+    pushBit(_selection.customUnit);
+    pushBit(_selection.blockLabel);
+    pushBit(currentBlockProgramLabel());
+    return bits.join(" ").trim() || "lesson support";
+  }
+
+  function googleWorkspaceRecommendation(brief) {
+    var supportTypeLabel = labelFor(SUPPORT_TYPES, _selection.supportType) || "support";
+    var studentName = _selection.studentName || "the selected student";
+    var title = brief && brief.title || _selection.lessonLabel || "today's lesson";
+    var blockLabel = _selection.blockLabel || "today's block";
+    var primaryAction = "Create a planning doc for " + blockLabel + " so notes, lesson moves, and follow-up stay together.";
+    if (_selection.supportType === "pullout") {
+      primaryAction = "Create a progress tracker for " + studentName + " so you can log the pullout move, evidence, and next step in one place.";
+    } else if (_selection.area === "writing" || _selection.area === "humanities") {
+      primaryAction = "Open the lesson deck or notes for " + title + " before class so prompts and support language stay aligned.";
+    }
+    return {
+      contextLine: [studentName, blockLabel, supportTypeLabel, currentBlockProgramLabel()].filter(Boolean).join(" • "),
+      nextMove: primaryAction
+    };
   }
 
   function renderLinkList(items, kind) {
@@ -1235,29 +1372,35 @@
     var configured = googleWorkspaceReady();
     var signedIn = googleSignedIn();
     var query = currentGoogleQuery(brief);
+    var recommendation = googleWorkspaceRecommendation(brief);
     var lastCreated = _googleState.lastCreated
       ? '<a class="cs-brief-inline-link" href="' + escapeHtml(_googleState.lastCreated.url) + '" target="_blank" rel="noopener">Open latest: ' + escapeHtml(_googleState.lastCreated.label) + "</a>"
       : "";
     var stateLine = configured
-      ? (signedIn ? "Connected. Pull today's blocks from Calendar or create lesson-linked Google files." : "Google is configured. Sign in to import schedule blocks and open Workspace tools.")
+      ? (signedIn ? "Connected. Continue today's support work into Google without rebuilding the context." : "Google is configured. Sign in to continue today's support work into Calendar and Drive.")
       : "Add your Google client details in js/google-auth-config.js to enable Calendar, Drive, Docs, Sheets, Slides, and YouTube.";
     return [
       '<section class="cs-brief-card">',
       '  <p class="cs-brief-kicker">Google Workspace</p>',
       '  <p class="cs-brief-summary">' + escapeHtml(stateLine) + "</p>",
+      '  <div class="cs-brief-google-next"><span>Best next move</span><strong>' + escapeHtml(recommendation.nextMove) + '</strong><p>' + escapeHtml(recommendation.contextLine || "Pick a block and student to tighten the recommendation.") + "</p></div>",
       (_googleState.status ? '  <p class="cs-brief-status">' + escapeHtml(_googleState.status) + "</p>" : ""),
       (lastCreated ? '  <p class="cs-brief-status">' + lastCreated + "</p>" : ""),
       '  <div class="cs-brief-actions">',
       (configured && !signedIn ? '    <button class="cs-brief-btn cs-brief-btn--primary" data-brief-google-connect="1" type="button">Sign in with Google</button>' : ""),
-      '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-calendar-sync="1" type="button">Sync today from Calendar</button>',
+      '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-calendar-sync="1" type="button">Sync today\'s blocks</button>',
       '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-calendar-open="1" type="button">Open Calendar</button>',
-      '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-doc="1" type="button">New Doc</button>',
-      '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-sheet="1" type="button">New Sheet</button>',
-      '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-slide="1" type="button">New Slides</button>',
-      '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-drive="1" type="button">Search Drive</button>',
+      '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-doc="1" type="button">Create planning doc</button>',
+      '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-sheet="1" type="button">Create progress sheet</button>',
+      '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-slide="1" type="button">Create lesson slides</button>',
+      '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-drive="1" type="button">Find related Drive files</button>',
       '    <button class="cs-brief-btn cs-brief-btn--quiet" data-brief-google-youtube="1" type="button">Find YouTube support</button>',
       "  </div>",
       '  <div class="cs-brief-grid">',
+      '    <div class="cs-brief-field cs-brief-field--full">',
+      "      <label>Current block context</label>",
+      '      <p class="cs-brief-copy">' + escapeHtml(recommendation.contextLine || "No block context selected yet.") + "</p>",
+      "    </div>",
       '    <div class="cs-brief-field cs-brief-field--full">',
       "      <label>Current query</label>",
       '      <p class="cs-brief-copy">' + escapeHtml(query) + "</p>",
@@ -1295,6 +1438,25 @@
     }).join("") + "</ul>";
   }
 
+  function renderResourceLinks(items) {
+    var seen = {};
+    var links = (items || []).filter(function (item) {
+      var href = String(item && item.href || "").trim();
+      if (!href || seen[href]) return false;
+      seen[href] = true;
+      return true;
+    });
+    if (!links.length) return "";
+    return [
+      '    <div class="cs-brief-field cs-brief-field--full">',
+      "      <label>Bigger picture</label>",
+      '      <div class="cs-brief-link-list">' + links.map(function (item) {
+        return '<a class="cs-brief-link-item" href="' + escapeHtml(item.href) + '" target="_blank" rel="noopener"><strong>' + escapeHtml(item.label || "Open resource") + "</strong>" + (item.meta ? "<span>" + escapeHtml(item.meta) + "</span>" : "") + "</a>";
+      }).join("") + "</div>",
+      "    </div>"
+    ].join("\n");
+  }
+
   function renderWithTips(base, programId) {
     var meta = _curriculumMeta[programId] || null;
     var tips = meta && Array.isArray(meta.quickTips) ? meta.quickTips.slice(0, 2) : [];
@@ -1318,6 +1480,94 @@
     if (_selection.blockLabel) bits.push(_selection.blockLabel);
     if (_selection.supportType) bits.push(labelFor(SUPPORT_TYPES, _selection.supportType));
     return bits.join(" • ");
+  }
+
+  function parseIllustrativeReference() {
+    var block = currentBlock();
+    var unitSource = [_selection.customUnit, block && block.lesson, _selection.lessonLabel].filter(Boolean).join(" ");
+    var lessonSource = [_selection.lessonLabel, block && block.lesson].filter(Boolean).join(" ");
+    var gradeSource = [
+      block && block.classSection,
+      block && block.lesson,
+      _selection.blockLabel,
+      _selection.grade
+    ].filter(Boolean).join(" ");
+    var unitMatch = unitSource.match(/unit\s*(\d+)/i);
+    var lessonMatch = lessonSource.match(/lesson\s*(\d+)/i);
+    var gradeMatch = gradeSource.match(/grade\s*(k|[1-9]|1[0-2])/i);
+    return {
+      grade: gradeMatch && gradeMatch[1] ? normalizeGrade(gradeMatch[1]) : normalizeGrade(_selection.grade),
+      unit: unitMatch && unitMatch[1] ? String(Number(unitMatch[1])) : "",
+      lesson: lessonMatch && lessonMatch[1] ? String(Number(lessonMatch[1])) : ""
+    };
+  }
+
+  function buildIllustrativeBrief() {
+    var reference = parseIllustrativeReference();
+    var grade = reference.grade || "4";
+    var unit = reference.unit || "";
+    var lesson = reference.lesson || "";
+    var truthId = grade && unit && lesson ? ["im", "g" + String(grade).toLowerCase(), "u" + unit, "l" + lesson].join("-") : "";
+    var entry = truthId && CurriculumTruth && typeof CurriculumTruth.cloneEntry === "function"
+      ? CurriculumTruth.cloneEntry(truthId)
+      : null;
+    var program = CurriculumTruth && typeof CurriculumTruth.cloneProgram === "function"
+      ? CurriculumTruth.cloneProgram("illustrative-math")
+      : null;
+    var gradeMap = program && program.gradeMap ? program.gradeMap[String(grade)] : null;
+    var unitMeta = Array.isArray(gradeMap)
+      ? gradeMap.filter(function (row) { return String(row.unit || "") === String(unit || ""); })[0] || null
+      : null;
+    var resourceLinks = [];
+    if (entry && entry.sourceUrl) resourceLinks.push({ label: "Open lesson overview", href: entry.sourceUrl, meta: "Illustrative lesson context" });
+    if (program && program.sourceUrl) resourceLinks.push({ label: "Open K-5 scope and sequence", href: program.sourceUrl, meta: "Illustrative curriculum overview" });
+    var titleBits = [];
+    if (grade) titleBits.push(formatGradeLabel(grade));
+    if (unit) titleBits.push("Unit " + unit);
+    if (lesson) titleBits.push("Lesson " + lesson);
+    return {
+      key: ["illustrative", grade || "g", unit || "u", lesson || "l"].join(":"),
+      curriculumLabel: "Illustrative Math",
+      title: titleBits.join(" - ") || "Illustrative Math",
+      contextLine: contextLine(),
+      phaseLabel: "Lesson briefing",
+      summary: entry && entry.officialFocus
+        ? entry.officialFocus
+        : unitMeta && unitMeta.focus
+          ? "Stay aligned to the active Illustrative Math pathway: " + unitMeta.focus + "."
+          : "Use the current Illustrative Math lesson goal, visual model, and cool-down together.",
+      mainConcept: entry && entry.assessmentDetail
+        ? entry.assessmentDetail
+        : unitMeta && unitMeta.focus
+          ? "The main concept in this unit is " + unitMeta.focus + "."
+          : "Students should show the quantity or relationship first, then explain the math language.",
+      workedExample: entry && entry.supportMove
+        ? entry.supportMove
+        : "Model one example with a visual representation before asking for independent explanation.",
+      likelyConfusions: [
+        "Naming an answer without showing the model or quantity first.",
+        "Using the right representation but not explaining what it proves.",
+        "Switching procedures before the relationship in the problem is clear."
+      ],
+      supportMoves: dedupeList([
+        entry && entry.supportMove,
+        "Keep the class representation visible while the student explains the relationship.",
+        "Ask the student to point to the equal amount, part, or comparison before naming it."
+      ]),
+      progressDataNote: progressDataLine(entry, program),
+      resourceLinks: resourceLinks,
+      lookFors: dedupeList([
+        entry && entry.progressMonitoring,
+        "Student matches the model to the mathematical idea with one prompt or less.",
+        "Student uses lesson language to explain why the representation works."
+      ]),
+      prompts: [
+        "What in the model shows your answer is true?",
+        "Which two quantities match here, and how do you know?",
+        "Can you explain the relationship before you compute?"
+      ],
+      recentLabel: ((_selection.studentName || "Planning") + " - Illustrative Math " + (lesson ? "L" + lesson : "brief"))
+    };
   }
 
   function buildFishtankBrief(unit, lessonNumber) {
@@ -1354,6 +1604,11 @@
       workedExample: replace(phaseNode.workedExampleTemplate),
       likelyConfusions: Array.isArray(domainNode.likelyConfusions) ? domainNode.likelyConfusions.slice() : [],
       supportMoves: renderWithTips(Array.isArray(domainNode.supportMoves) ? domainNode.supportMoves.slice() : [], "fishtank-ela"),
+      progressDataNote: progressDataLine(null, truthProgram("fishtank-ela")),
+      resourceLinks: [
+        { label: "Open grade sequence", href: buildFishtankGradeLink(unit), meta: "Fishtank grade overview" },
+        { label: "Open curriculum overview", href: "https://www.fishtanklearning.org/curriculum/ela/", meta: "Fishtank ELA overview" }
+      ],
       lookFors: Array.isArray(domainNode.lookFors) ? domainNode.lookFors.slice() : [],
       prompts: Array.isArray(domainNode.prompts) ? domainNode.prompts.slice() : [],
       recentLabel: ((_selection.studentName || "Planning") + " - " + (unit.title || "Fishtank") + " L" + lesson)
@@ -1363,6 +1618,7 @@
   function buildElBrief(unit, module, grade) {
     if (!unit) return null;
     var entry = truth(grade === "6" ? "el-g6-current" : grade === "7" ? "el-g7-current" : grade === "8" ? "el-g8-current" : "");
+    var links = buildElModuleLinks(grade, module, unit);
     return {
       key: ["el", grade, module && module.id, unit.id].join(":"),
       curriculumLabel: "EL Education ELA",
@@ -1374,6 +1630,11 @@
       workedExample: String(unit.workedExample || ""),
       likelyConfusions: Array.isArray(unit.likelyConfusions) ? unit.likelyConfusions.slice() : [],
       supportMoves: dedupeList((entry && entry.supportMove ? [entry.supportMove] : []).concat(unit.supportMoves ? unit.supportMoves.slice() : [])),
+      progressDataNote: progressDataLine(entry, truthProgram("el-education")),
+      resourceLinks: [
+        { label: "Open module overview", href: links.moduleHref, meta: "EL module overview" },
+        { label: "Open current unit", href: links.unitHref, meta: "EL unit overview" }
+      ],
       lookFors: unit.lookFors ? unit.lookFors.slice() : [],
       prompts: unit.prompts ? unit.prompts.slice() : [],
       recentLabel: ((_selection.studentName || "Planning") + " - " + (unit.title || "EL unit"))
@@ -1401,6 +1662,8 @@
         "Correct at the sound or pattern level, then have the student reread immediately.",
         "Use one short transfer sentence before moving on."
       ]), "ufli"),
+      progressDataNote: progressDataLine(entry, truthProgram("ufli-foundations")),
+      resourceLinks: [{ label: "Open UFLI Foundations overview", href: "https://ufli.education.ufl.edu/foundations/", meta: "Program overview" }],
       lookFors: [
         "Student reads with sound-by-sound accuracy first.",
         "Student can spell the target pattern, not just read it.",
@@ -1438,6 +1701,8 @@
         "Keep modeling brief, then get the student producing the response.",
         "Return to one previously taught pattern before introducing the new part."
       ]), "fundations"),
+      progressDataNote: progressDataLine(entry, truthProgram("fundations")),
+      resourceLinks: [{ label: "Open Fundations overview", href: "https://www.wilsonlanguage.com/programs/fundations/", meta: "Program overview" }],
       lookFors: [
         "Student can tap, read, and spell the target pattern.",
         "Student marks or explains the pattern accurately enough to show understanding.",
@@ -1474,6 +1739,8 @@
         "Ask the student to explain which chunk helped unlock the word.",
         "Finish with a quick transfer read or write."
       ]), "just-words"),
+      progressDataNote: progressDataLine(entry, truthProgram("just-words")),
+      resourceLinks: [{ label: "Open Just Words overview", href: "https://www.wilsonlanguage.com/programs/just-words/", meta: "Program overview" }],
       lookFors: [
         "Student identifies the relevant chunk or morpheme.",
         "Student can read and spell the word family more accurately.",
@@ -1536,6 +1803,8 @@
       workedExample: component.workedExample,
       likelyConfusions: component.confusions.slice(),
       supportMoves: renderWithTips(component.moves.slice(), "bridges-math"),
+      progressDataNote: progressDataLine(null, truthProgram("bridges-intervention")),
+      resourceLinks: [{ label: "Open Bridges Intervention overview", href: "https://www.mathlearningcenter.org/curriculum/bridges-intervention", meta: "Program overview" }],
       lookFors: component.lookFors.slice(),
       prompts: component.prompts.slice(),
       recentLabel: ((_selection.studentName || "Planning") + " - Bridges " + component.label)
@@ -1602,6 +1871,7 @@
         "Keep the student on one paragraph, image, or source excerpt at a time.",
         "Use one frame: This matters because it shows ___."
       ],
+      resourceLinks: [],
       lookFors: [
         "Student can name the central idea or claim in plain language.",
         "Student connects one piece of evidence to that idea.",
@@ -1621,6 +1891,7 @@
     ensureSelectionValid();
     var program = programById(_selection.programId);
     if (!program) return null;
+    if (program.type === "illustrative") return buildIllustrativeBrief();
     if (program.type === "fishtank") return buildFishtankBrief(findFishtankUnit(_selection.unitId), _selection.lesson);
     if (program.type === "el") return buildElBrief(findElUnit(_selection.grade, _selection.moduleId, _selection.moduleUnitId), findElModule(_selection.grade, _selection.moduleId), _selection.grade);
     if (program.type === "ufli") return buildUfliBrief();

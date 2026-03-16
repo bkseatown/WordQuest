@@ -7,7 +7,6 @@
     firstClick: "cs.eval.firstclick"
   };
 
-  var EMOTION_OPTIONS = ["Empowered", "Calm", "Overwhelmed", "Curious", "Confused", "Neutral"];
   var firstClickCaptured = false;
   var loadStart = (window.performance && typeof window.performance.now === "function") ? window.performance.now() : Date.now();
 
@@ -189,43 +188,9 @@
     }, 5000);
   }
 
-  function showEmotionPrompt() {
-    if (sessionStorage.getItem("cs.eval.emotion.prompted") === "1") return;
-    sessionStorage.setItem("cs.eval.emotion.prompted", "1");
-    var prompt = document.createElement("aside");
-    prompt.className = "td-emotion-prompt";
-    prompt.innerHTML = [
-      '<section class="td-emotion-card" role="dialog" aria-modal="false" aria-label="Emotion check">',
-      "<h2>2-Minute Emotional Signal</h2>",
-      "<p>How does this make you feel?</p>",
-      '<div class="td-emotion-actions">',
-      EMOTION_OPTIONS.map(function (label) {
-        return '<button class="td-top-btn" type="button" data-emotion="' + label + '">' + label + "</button>";
-      }).join(""),
-      "</div>",
-      "</section>"
-    ].join("");
-    document.body.appendChild(prompt);
-    Array.prototype.forEach.call(prompt.querySelectorAll("[data-emotion]"), function (btn) {
-      btn.addEventListener("click", function () {
-        appendRecord(STORAGE_KEYS.emotion, {
-          timestamp: nowIso(),
-          emotion: String(btn.getAttribute("data-emotion") || ""),
-          page: "teacher-dashboard"
-        });
-        prompt.remove();
-      });
-    });
-  }
-
-  function scheduleEmotionPrompt() {
-    setTimeout(showEmotionPrompt, 120000);
-  }
-
   function init() {
     attachFirstClickTracker();
     maybeRunWowRoute();
-    scheduleEmotionPrompt();
   }
 
   window.CSWowEvaluator = {

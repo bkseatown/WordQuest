@@ -11408,6 +11408,10 @@ body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder
   justify-self: stretch !important;
 }
 
+body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-game-layout--builder {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
 body.game-platform-page[data-shell-view="play"][data-game-id="morphology-builder"] .cg-forge-layout__main {
   display: grid !important;
   grid-template-columns: minmax(160px, 1fr) minmax(160px, 1fr) !important;

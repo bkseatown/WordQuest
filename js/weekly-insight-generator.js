@@ -7,6 +7,9 @@
 })(typeof globalThis !== "undefined" ? globalThis : window, function createWeeklyInsightGenerator() {
   "use strict";
 
+  var SkillLabels = globalThis.CSSkillLabels || null;
+  var AlignmentLoader = globalThis.CSAlignmentLoader || null;
+
   function toText(value) {
     return String(value == null ? "" : value).trim();
   }
@@ -23,6 +26,52 @@
       out.push(text);
     });
     return typeof maxItems === "number" ? out.slice(0, maxItems) : out;
+  }
+
+  function canonicalSkillId(raw) {
+    return String(raw || "").trim().toUpperCase();
+  }
+
+  function skillLabel(raw) {
+    var id = canonicalSkillId(raw);
+    if (!id) return "";
+    if (SkillLabels && typeof SkillLabels[id] === "string" && SkillLabels[id]) return String(SkillLabels[id]);
+    return "";
+  }
+
+  function standardsForSkill(skillId) {
+    if (!AlignmentLoader || typeof AlignmentLoader.getAlignmentForSkill !== "function") return [];
+    var row = AlignmentLoader.getAlignmentForSkill(skillId) || {};
+    return uniqueList([]
+      .concat(Array.isArray(row.fishTank) ? row.fishTank : [])
+      .concat(Array.isArray(row.illustrativeMath) ? row.illustrativeMath : [])
+      .concat(Array.isArray(row.elEducation) ? row.elEducation : [])
+      .map(function (item) { return toText(item); }), 3);
+  }
+
+  function swbatGoalForSkill(skillId, fallbackLabel) {
+    var id = canonicalSkillId(skillId);
+    var label = toText(fallbackLabel || skillLabel(skillId) || "the current target skill");
+    if (id.indexOf("LIT.DEC.PHG") === 0) return "SWBAT match sounds to spellings more accurately while reading and spelling words.";
+    if (id.indexOf("LIT.DEC.SYL") === 0) return "SWBAT read multisyllabic words more accurately by using syllable types and vowel patterns.";
+    if (id.indexOf("LIT.DEC.IRREG") === 0) return "SWBAT read and write high-frequency irregular words more automatically.";
+    if (id.indexOf("LIT.FLU") === 0) return "SWBAT read connected text more smoothly and accurately while keeping meaning.";
+    if (id.indexOf("LIT.COMP") === 0) return "SWBAT explain what they read using evidence from the text.";
+    if (id.indexOf("WRITE") >= 0 || id.indexOf("WRI.") >= 0) return "SWBAT write clearer sentences and organize ideas with stronger evidence.";
+    if (id.indexOf("NUM") === 0 || id.indexOf("MATH") === 0) return "SWBAT explain their math thinking and solve problems more accurately using a clear strategy.";
+    if (label) return "SWBAT strengthen " + label.toLowerCase() + " with less prompting.";
+    return "SWBAT strengthen the current target skill with less prompting.";
+  }
+
+  function normalizeNeed(need) {
+    var row = need && typeof need === "object" ? need : {};
+    var label = toText(row.label || skillLabel(row.skillId || row.id || row.key));
+    var goal = swbatGoalForSkill(row.skillId || row.id || row.key, label);
+    return {
+      label: label,
+      goal: goal,
+      standards: standardsForSkill(row.skillId || row.id || row.key)
+    };
   }
 
   function weekRangeLabel(referenceDate) {
@@ -73,7 +122,8 @@
     var focus = [];
     if (summary.nextMove && summary.nextMove.line) focus.push(String(summary.nextMove.line));
     needs.slice(0, 2).forEach(function (need) {
-      focus.push(need.label || need.skillId || need.id || "");
+      var detail = normalizeNeed(need);
+      focus.push(detail.goal || detail.label);
     });
     supportNeeds.slice(0, 2).forEach(function (need) {
       focus.push(need.label || need.key || "");
@@ -93,6 +143,18 @@
       rows.push(row.title || row.activity || row.type || row.source || "");
     });
     return uniqueList(rows, 3);
+  }
+
+  function inferEvidence(context) {
+    var support = context.supportProfile || {};
+    var anchors = context.institutionalAnchors || support.institutionalAnchors || {};
+    var evidence = [];
+    if (anchors.reading && anchors.reading.classroomData) evidence.push(String(anchors.reading.classroomData));
+    if (anchors.reading && anchors.reading.interventionData) evidence.push(String(anchors.reading.interventionData));
+    if (anchors.writing && anchors.writing.classroomData) evidence.push(String(anchors.writing.classroomData));
+    if (anchors.math && anchors.math.classroomData) evidence.push(String(anchors.math.classroomData));
+    if (anchors.math && anchors.math.interventionData) evidence.push(String(anchors.math.interventionData));
+    return uniqueList(evidence, 3);
   }
 
   function inferHomeSupport(subject, growthFocus) {
@@ -135,9 +197,13 @@
     var strengths = inferStrengths(config, subject);
     var growthFocus = inferGrowthFocus(config, subject);
     var recentActivities = inferRecentActivities(config);
+    var evidence = inferEvidence(config);
     var homeSupport = inferHomeSupport(subject, growthFocus);
     var goalLine = sentenceCaseGoal(growthFocus[0] || summary.nextMove && summary.nextMove.line);
     var strengthLine = strengths[0] || "You are showing steady effort in class.";
+    var standards = uniqueList((Array.isArray(config.model && config.model.topNeeds) ? config.model.topNeeds : []).reduce(function (acc, need) {
+      return acc.concat(normalizeNeed(need).standards || []);
+    }, []), 4);
     return {
       studentName: toText(student.name) || "Student",
       subject: subject,
@@ -145,6 +211,8 @@
       strengths: strengths.length ? strengths : ["Showed steady participation during support time"],
       growthFocus: growthFocus.length ? growthFocus : ["Continue building the next target skill"],
       recentActivities: recentActivities.length ? recentActivities : ["Class lesson review", "Small group support"],
+      evidence: evidence,
+      standards: standards,
       suggestedHomeSupport: uniqueList(homeSupport.concat(config.suggestedHomeSupport || []), 3),
       studentReflection: {
         strength: strengthLine,
@@ -166,6 +234,11 @@
       "Recent Instructional Activities",
       (data.recentActivities || []).map(function (item) { return "- " + item; }).join("\n"),
       "",
+      "Current Evidence",
+      (data.evidence || []).length
+        ? (data.evidence || []).map(function (item) { return "- " + item; }).join("\n")
+        : "- Add classroom or intervention evidence to sharpen the next move.",
+      "",
       "Suggested Instructional Moves",
       (data.suggestedHomeSupport || []).slice(0, 2).map(function (item) {
         return "- " + item.replace(/^Ask your child to /i, "Prompt the student to ");
@@ -181,6 +254,11 @@
       "",
       "What is improving",
       (data.strengths || []).slice(0, 2).map(function (item) { return "- " + item; }).join("\n"),
+      "",
+      "What we are seeing in class",
+      (data.evidence || []).length
+        ? (data.evidence || []).slice(0, 2).map(function (item) { return "- " + item; }).join("\n")
+        : "- We are continuing to gather classroom and support evidence.",
       "",
       "What we are practicing next",
       (data.growthFocus || []).slice(0, 2).map(function (item) { return "- " + item; }).join("\n"),

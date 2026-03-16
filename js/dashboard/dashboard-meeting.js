@@ -30,6 +30,7 @@
       var insight = WeeklyInsightGenerator.generateWeeklyInsights({
         summary: reportContext && reportContext.summary,
         studentProfile: reportContext && reportContext.studentProfile,
+        institutionalAnchors: reportContext && reportContext.institutionalAnchors,
         subject: reportContext && reportContext.summary && reportContext.summary.focus,
         goalLine: reportContext && reportContext.literacyData && reportContext.literacyData.nextStep,
         suggestedHomeSupport: reportContext && reportContext.reportDraft && reportContext.reportDraft.recommendedNextSteps
@@ -123,17 +124,26 @@
       return Evidence && typeof Evidence.getStudentSummary === "function" ? Evidence.getStudentSummary(studentId) : null;
     }
 
+    function getInstitutionalAnchors(studentId) {
+      if (SupportStore && typeof SupportStore.getInstitutionalAnchors === "function") {
+        return SupportStore.getInstitutionalAnchors(studentId);
+      }
+      return null;
+    }
+
     function meetingStudentContext() {
       var sid = state.selectedId || "student";
       var summary = getStudentSummary(sid);
       var model = Evidence && typeof Evidence.getSkillModel === "function"
         ? Evidence.getSkillModel(sid)
         : { topNeeds: [] };
+      var institutionalAnchors = getInstitutionalAnchors(sid);
       return WorkspaceMeetingContent && typeof WorkspaceMeetingContent.meetingStudentContext === "function"
         ? WorkspaceMeetingContent.meetingStudentContext({
             studentId: sid,
             summary: summary,
-            model: model
+            model: model,
+            institutionalAnchors: institutionalAnchors
           })
         : {
             sid: sid,
@@ -159,13 +169,15 @@
     }
 
     function buildMeetingNarrative(format, notesText, actionsText) {
+      var sid = state.selectedId || "student";
       return WorkspaceMeetingContent && typeof WorkspaceMeetingContent.buildMeetingNarrative === "function"
         ? WorkspaceMeetingContent.buildMeetingNarrative(format, notesText, actionsText, {
-            summary: getStudentSummary(state.selectedId || "student"),
+            summary: getStudentSummary(sid),
             model: Evidence && typeof Evidence.getSkillModel === "function"
-              ? Evidence.getSkillModel(state.selectedId || "student")
+              ? Evidence.getSkillModel(sid)
               : { topNeeds: [] },
-            studentId: state.selectedId || "student",
+            studentId: sid,
+            institutionalAnchors: getInstitutionalAnchors(sid),
             meetingType: el.meetingType ? String(el.meetingType.value || "SSM") : "SSM",
             MeetingTranslation: MeetingTranslation
           })
@@ -387,9 +399,17 @@
     }
 
     function buildExportHtml(mode, englishText, translatedText, language) {
+      var sid = state.selectedId || "student";
       return WorkspaceMeetingContent && typeof WorkspaceMeetingContent.buildExportHtml === "function"
         ? WorkspaceMeetingContent.buildExportHtml(mode, englishText, translatedText, language, {
-            MeetingTranslation: MeetingTranslation
+            MeetingTranslation: MeetingTranslation,
+            summary: getStudentSummary(sid),
+            model: Evidence && typeof Evidence.getSkillModel === "function"
+              ? Evidence.getSkillModel(sid)
+              : { topNeeds: [] },
+            studentId: sid,
+            institutionalAnchors: getInstitutionalAnchors(sid),
+            meetingType: el.meetingType ? String(el.meetingType.value || "SSM") : "SSM"
           })
         : "";
     }

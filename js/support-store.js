@@ -89,17 +89,23 @@
         aimswebPercentile: null,
         corePhonicsBenchmark: null,
         wordsTheirWayStage: null,
-        fundationsUnit: null
+        fundationsUnit: null,
+        classroomData: null,
+        interventionData: null
       },
       writing: {
         onDemandRubricScore: null,
-        currentWritingGoal: null
+        currentWritingGoal: null,
+        classroomData: null,
+        interventionData: null
       },
       math: {
         mapRIT: null,
         bridgesUnitScore: null,
         glossStage: null,
-        illustrativeCheckpoint: null
+        illustrativeCheckpoint: null,
+        classroomData: null,
+        interventionData: null
       }
     };
   }
@@ -127,12 +133,18 @@
     base.reading.corePhonicsBenchmark = textOrNull(reading.corePhonicsBenchmark, 80);
     base.reading.wordsTheirWayStage = textOrNull(reading.wordsTheirWayStage, 80);
     base.reading.fundationsUnit = textOrNull(reading.fundationsUnit, 80);
+    base.reading.classroomData = textOrNull(reading.classroomData, 240);
+    base.reading.interventionData = textOrNull(reading.interventionData, 240);
     base.writing.onDemandRubricScore = finiteOrNull(writing.onDemandRubricScore);
     base.writing.currentWritingGoal = textOrNull(writing.currentWritingGoal, 180);
+    base.writing.classroomData = textOrNull(writing.classroomData, 240);
+    base.writing.interventionData = textOrNull(writing.interventionData, 240);
     base.math.mapRIT = finiteOrNull(math.mapRIT);
     base.math.bridgesUnitScore = finiteOrNull(math.bridgesUnitScore);
     base.math.glossStage = textOrNull(math.glossStage, 80);
     base.math.illustrativeCheckpoint = textOrNull(math.illustrativeCheckpoint, 120);
+    base.math.classroomData = textOrNull(math.classroomData, 240);
+    base.math.interventionData = textOrNull(math.interventionData, 240);
     return base;
   }
 

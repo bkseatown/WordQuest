@@ -12,6 +12,7 @@
     var Evidence = deps.Evidence || null;
     var InterventionPlanner = deps.InterventionPlanner || null;
     var SASLibrary = deps.SASLibrary || null;
+    var SkillLabels = globalThis.CSSkillLabels || null;
 
     function setCoachLine(text) {
       if (typeof hooks.setCoachLine === "function") hooks.setCoachLine(text);
@@ -102,13 +103,219 @@
       return section("During class", classRows, "class") + section("During assessment", assessRows, "assessment");
     }
 
+    function normalizeText(value) {
+      return String(value || "").toLowerCase().trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function canonicalSkillId(raw) {
+      return String(raw || "").trim().toUpperCase();
+    }
+
+    function skillLabel(raw) {
+      var id = canonicalSkillId(raw);
+      if (!id) return "";
+      if (SkillLabels && typeof SkillLabels[id] === "string" && SkillLabels[id]) return String(SkillLabels[id]);
+      return "";
+    }
+
+    function swbatGoalForSkill(skillId, fallbackLabel) {
+      var id = canonicalSkillId(skillId);
+      var label = String(fallbackLabel || skillLabel(skillId) || "the current target skill").trim();
+      if (id.indexOf("LIT.DEC.PHG") === 0) return "SWBAT match sounds to spellings more accurately while reading and spelling words.";
+      if (id.indexOf("LIT.DEC.SYL") === 0) return "SWBAT read multisyllabic words more accurately by using syllable types and vowel patterns.";
+      if (id.indexOf("LIT.DEC.IRREG") === 0) return "SWBAT read and write high-frequency irregular words more automatically.";
+      if (id.indexOf("LIT.FLU") === 0) return "SWBAT read connected text more smoothly and accurately while keeping meaning.";
+      if (id.indexOf("LIT.COMP") === 0) return "SWBAT explain what they read using evidence from the text.";
+      if (id.indexOf("WRITE") >= 0 || id.indexOf("WRI.") >= 0) return "SWBAT write clearer sentences and organize ideas with stronger evidence.";
+      if (id.indexOf("NUM") === 0 || id.indexOf("MATH") === 0) return "SWBAT explain their math thinking and solve problems more accurately using a clear strategy.";
+      if (label) return "SWBAT strengthen " + label.toLowerCase() + " with less prompting.";
+      return "SWBAT strengthen the current target skill with less prompting.";
+    }
+
+    function summarizeNeed(row) {
+      var need = row && typeof row === "object" ? row : {};
+      var label = String(need.label || skillLabel(need.skillId || need.id || need.key) || need.skill || need.domain || need.key || "priority support area");
+      return {
+        label: label,
+        goal: swbatGoalForSkill(need.skillId || need.id || need.key, label)
+      };
+    }
+
+    function inferGoalDomain(topNeeds, goals) {
+      var pool = []
+        .concat(Array.isArray(topNeeds) ? topNeeds : [])
+        .concat(Array.isArray(goals) ? goals : []);
+      var i;
+      for (i = 0; i < pool.length; i++) {
+        var row = pool[i] || {};
+        var blob = normalizeText([
+          row.domain,
+          row.label,
+          row.skill,
+          row.key,
+          row.skillId
+        ].join(" "));
+        if (!blob) continue;
+        if (blob.indexOf("math") !== -1 || blob.indexOf("num") !== -1) return "math";
+        if (blob.indexOf("write") !== -1 || blob.indexOf("sentence") !== -1 || blob.indexOf("paragraph") !== -1) return "writing";
+        if (blob.indexOf("executive") !== -1 || blob.indexOf("attention") !== -1 || blob.indexOf("organization") !== -1) return "executive";
+        if (blob.indexOf("behavior") !== -1 || blob.indexOf("regulation") !== -1) return "behavior";
+        if (blob.indexOf("read") !== -1 || blob.indexOf("decod") !== -1 || blob.indexOf("flu") !== -1 || blob.indexOf("phon") !== -1 || blob.indexOf("morph") !== -1) {
+          return "literacy";
+        }
+      }
+      return "literacy";
+    }
+
+    function inferBaseline(studentId, topNeeds, studentSupport) {
+      var anchors = SupportStore && typeof SupportStore.getInstitutionalAnchors === "function" && studentId
+        ? SupportStore.getInstitutionalAnchors(studentId)
+        : null;
+      var evidenceBits = [];
+      if (anchors && anchors.reading) {
+        if (anchors.reading.aimswebPercentile != null) evidenceBits.push("Aimsweb+ reading percentile " + anchors.reading.aimswebPercentile);
+        if (anchors.reading.classroomData) evidenceBits.push("reading classroom evidence: " + anchors.reading.classroomData);
+        if (anchors.reading.interventionData) evidenceBits.push("reading intervention evidence: " + anchors.reading.interventionData);
+      }
+      if (anchors && anchors.writing) {
+        if (anchors.writing.currentWritingGoal) evidenceBits.push("writing goal: " + anchors.writing.currentWritingGoal);
+        if (anchors.writing.classroomData) evidenceBits.push("writing classroom evidence: " + anchors.writing.classroomData);
+      }
+      if (anchors && anchors.math) {
+        if (anchors.math.illustrativeCheckpoint) evidenceBits.push("math checkpoint: " + anchors.math.illustrativeCheckpoint);
+        if (anchors.math.classroomData) evidenceBits.push("math classroom evidence: " + anchors.math.classroomData);
+        if (anchors.math.interventionData) evidenceBits.push("math intervention evidence: " + anchors.math.interventionData);
+      }
+      var needs = Array.isArray(topNeeds) ? topNeeds : [];
+      var supportNeeds = studentSupport && Array.isArray(studentSupport.needs) ? studentSupport.needs : [];
+      var source = needs[0] || supportNeeds[0] || null;
+      if (source) {
+        var label = source.label || source.skill || source.domain || source.key || "priority support area";
+        return "Current classwork and quick checks show the clearest support need in " + label + ". " +
+          (evidenceBits.length ? ("Use this evidence as the starting truth: " + evidenceBits.slice(0, 2).join("; ") + ". ") : "") +
+          "Keep the next goal narrow enough to measure within the next two weeks.";
+      }
+      if (evidenceBits.length) {
+        return "Visible school and classroom data already provide a starting baseline: " + evidenceBits.slice(0, 3).join("; ") + ". Use that to draft a measurable two-week goal before collecting more.";
+      }
+      return "Current baseline still needs one short classwork sample and one quick check. Start with a measurable goal the team can progress-monitor within two weeks.";
+    }
+
+    function inferTimeBudget(topNeeds, studentSupport) {
+      var needsCount = Array.isArray(topNeeds) && topNeeds.length ? topNeeds.length : (studentSupport && Array.isArray(studentSupport.needs) ? studentSupport.needs.length : 0);
+      if (needsCount >= 3) return 30;
+      if (needsCount === 2) return 25;
+      return 20;
+    }
+
+    function ensurePlanDraft(studentId, studentSupport) {
+      if (!state.planDraft || state.planDraft.studentId !== studentId) {
+        var skillModel = Evidence && typeof Evidence.getSkillModel === "function" ? Evidence.getSkillModel(studentId) : null;
+        var topNeeds = skillModel && Array.isArray(skillModel.topNeeds) ? skillModel.topNeeds : (studentSupport.needs || []);
+        state.planDraft = {
+          studentId: studentId,
+          domain: inferGoalDomain(topNeeds, studentSupport.goals || []),
+          baseline: inferBaseline(studentId, topNeeds, studentSupport),
+          timeBudgetMin: inferTimeBudget(topNeeds, studentSupport)
+        };
+      }
+      return state.planDraft;
+    }
+
+    function anchorDrivenPriorities(studentId) {
+      if (!SupportStore || typeof SupportStore.getInstitutionalAnchors !== "function" || !studentId) return [];
+      var anchors = SupportStore.getInstitutionalAnchors(studentId);
+      if (!anchors) return [];
+      var priorities = [];
+      if (anchors.reading && (anchors.reading.classroomData || anchors.reading.interventionData || anchors.reading.aimswebPercentile != null)) {
+        priorities.push("SWBAT read connected text more accurately and independently using the current decoding strategy.");
+      }
+      if (anchors.writing && (anchors.writing.classroomData || anchors.writing.interventionData || anchors.writing.currentWritingGoal)) {
+        priorities.push("SWBAT organize a written response more clearly and complete it with less prompting.");
+      }
+      if (anchors.math && (anchors.math.classroomData || anchors.math.interventionData || anchors.math.illustrativeCheckpoint || anchors.math.mapRIT != null)) {
+        priorities.push("SWBAT explain their math thinking and solve lesson-aligned problems more independently.");
+      }
+      return priorities.slice(0, 3);
+    }
+
+    function renderPlanDraftCard(studentId, studentSupport) {
+      var draft = ensurePlanDraft(studentId, studentSupport);
+      var skillModel = Evidence && typeof Evidence.getSkillModel === "function" ? Evidence.getSkillModel(studentId) : null;
+      var topNeeds = skillModel && Array.isArray(skillModel.topNeeds) ? skillModel.topNeeds : (studentSupport.needs || []);
+      var needLine = topNeeds.length
+        ? topNeeds.slice(0, 2).map(function (row) { return summarizeNeed(row).goal; }).join(" ")
+        : "No instructional priorities surfaced yet.";
+      var gradeBand = typeof hooks.getSelectedStudentGradeBand === "function"
+        ? hooks.getSelectedStudentGradeBand()
+        : "";
+      return [
+        '<div class="td-support-item td-plan-brief">',
+        '<p class="td-plan-kicker">Recommended next move</p>',
+        '<h4>Build a goal set from the current student context.</h4>',
+        '<p>Cornerstone is using the selected student, visible needs, and current goals to suggest the starting lane before you edit anything.</p>',
+        '<div class="td-plan-brief-grid">',
+        '<div class="td-plan-brief-card"><span>Focus lane</span><strong>' + escapeHtml(draft.domain) + '</strong><p>' + escapeHtml(needLine) + '</p></div>',
+        '<div class="td-plan-brief-card"><span>Time budget</span><strong>' + escapeHtml(String(draft.timeBudgetMin)) + ' min</strong><p>' + escapeHtml(gradeBand ? ("Grade band " + gradeBand + " context applied.") : "Grade context not yet set.") + '</p></div>',
+        "</div>",
+        '<div class="td-plan-domain-row">',
+        ["literacy", "writing", "math", "executive", "behavior"].map(function (domain) {
+          return '<button class="td-top-btn' + (draft.domain === domain ? ' is-active' : '') + '" type="button" data-plan-domain="' + domain + '">' + domain + "</button>";
+        }).join(""),
+        "</div>",
+        '<label class="td-plan-field"><span>Baseline summary</span><textarea id="td-plan-baseline" class="td-anchor-input td-plan-textarea" rows="4" placeholder="What is true right now and what should the next goal tighten?">' + escapeHtml(draft.baseline) + "</textarea></label>",
+        '<label class="td-plan-field"><span>Time budget for the support move</span><select id="td-plan-budget" class="td-anchor-input">' +
+          [15, 20, 25, 30].map(function (minutes) {
+            return '<option value="' + minutes + '"' + (draft.timeBudgetMin === minutes ? " selected" : "") + ">" + minutes + " minutes</option>";
+          }).join("") +
+          "</select></label>",
+        '<div class="td-plan-tabs"><button id="td-create-plan-btn" class="td-top-btn" type="button">Build Recommended Plan</button><button id="td-suggest-goals-btn" class="td-top-btn" type="button">Suggest Goal Templates</button></div>',
+        '<div id="td-suggested-goals"></div>',
+        '<div id="td-generated-plan"></div>',
+        "</div>"
+      ].join("");
+    }
+
+    function bindPlanDraftControls(studentId) {
+      var draft = state.planDraft;
+      Array.prototype.forEach.call(document.querySelectorAll("[data-plan-domain]"), function (button) {
+        button.addEventListener("click", function () {
+          if (!draft) return;
+          draft.domain = String(button.getAttribute("data-plan-domain") || "literacy");
+          rerenderSupportHub(studentId);
+        });
+      });
+      var baselineField = document.getElementById("td-plan-baseline");
+      if (baselineField) {
+        baselineField.addEventListener("input", function () {
+          if (!draft) return;
+          draft.baseline = String(baselineField.value || "");
+        });
+      }
+      var budgetField = document.getElementById("td-plan-budget");
+      if (budgetField) {
+        budgetField.addEventListener("change", function () {
+          if (!draft) return;
+          draft.timeBudgetMin = Number(budgetField.value || draft.timeBudgetMin || 20);
+        });
+      }
+    }
+
     function renderSuggestedGoals(studentId) {
       var target = document.getElementById("td-suggested-goals");
       if (!target || !state.sasPack || !SASLibrary) return;
-      var domainInput = window.prompt("Goal domain (literacy/math/writing/behavior/executive)", "literacy");
-      if (!domainInput) return;
-      var baselineInput = window.prompt("Baseline note (short)", "Current baseline from classwork and quick checks");
-      if (baselineInput == null) return;
+      var draft = state.planDraft || {};
+      var domainInput = String(draft.domain || "literacy");
+      var baselineInput = String(draft.baseline || "").trim();
       var gradeBand = typeof hooks.getSelectedStudentGradeBand === "function"
         ? hooks.getSelectedStudentGradeBand()
         : "";
@@ -125,6 +332,7 @@
         return [
           '<article class="td-suggest-goal">',
           '<strong>' + (goal.skill || goal.domain || "Goal") + '</strong>',
+          '<span class="td-suggest-goal__meta">' + escapeHtml(domainInput) + ' • ' + escapeHtml(gradeBand || "broad grade match") + '</span>',
           '<p>' + (goal.goal_template_smart || "") + '</p>',
           "</article>"
         ].join("");
@@ -144,7 +352,7 @@
           });
         });
       }
-      setCoachLine("Suggested SAS goal templates ready.");
+      setCoachLine("Suggested SAS goal templates ready from the current student context.");
     }
 
     function renderGeneratedPlanner(studentId) {
@@ -158,7 +366,8 @@
       target.innerHTML = [
         '<div class="td-support-item">',
         "<h4>Plan Summary</h4>",
-        '<p>Frequency: ' + (plan.frequency || "3x/week") + ' • Progress cadence: ' + (plan.progressCadence || "Weekly mini-probe") + "</p>",
+        '<p>Frequency: ' + (plan.frequency || "3x/week") + ' • Progress cadence: ' + (plan.progressCadence || "Weekly mini-probe") + ' • Focus lane: ' + (plan.domain || "recommended") + "</p>",
+        (plan.baselineSummary ? '<p>' + plan.baselineSummary + "</p>" : ""),
         "</div>",
         '<div class="td-support-item"><h4>SMART Goals</h4>' + (plan.goals || []).map(function (goal) {
           return '<div class="td-support-line"><strong>' + (goal.skill || goal.domain || "Goal") + '</strong><p>' + (goal.goal_template_smart || "") + "</p></div>";
@@ -223,8 +432,11 @@
         var anchorPanel = typeof hooks.renderInstitutionalAnchorPanel === "function"
           ? hooks.renderInstitutionalAnchorPanel(studentId, false)
           : "";
+        var visiblePriorities = studentSupport.needs.length
+          ? studentSupport.needs.slice(0, 3).map(function (n) { return summarizeNeed(n).goal; })
+          : anchorDrivenPriorities(studentId);
         el.supportBody.innerHTML = [
-          '<div class="td-support-item"><h4>Top Needs</h4><p>' + (studentSupport.needs.length ? studentSupport.needs.slice(0, 5).map(function (n) { return n.label; }).join(" • ") : "No needs captured yet.") + "</p></div>",
+          '<div class="td-support-item"><h4>Instructional priorities</h4><p>' + (visiblePriorities.length ? visiblePriorities.join(" ") : "No instructional priorities captured yet.") + "</p></div>",
           '<div class="td-support-item"><h4>Last 14 days trend</h4><p>Use Skill Tiles + Recent Sessions for trend checks before meetings.</p></div>',
           anchorPanel
         ].join("");
@@ -235,12 +447,13 @@
       }
       if (state.activeSupportTab === "plan") {
         var goals = studentSupport.goals || [];
-        el.supportBody.innerHTML = '<div class="td-support-item"><h4>SMART Goal Builder</h4><p>Generate 3-5 SAS-aligned goal templates by domain + baseline.</p><div class="td-plan-tabs"><button id="td-create-plan-btn" class="td-top-btn" type="button">Create Plan</button><button id="td-suggest-goals-btn" class="td-top-btn" type="button">Suggest Goals</button></div><div id="td-suggested-goals"></div><div id="td-generated-plan"></div></div>' + (goals.length
+        el.supportBody.innerHTML = renderPlanDraftCard(studentId, studentSupport) + (goals.length
           ? goals.slice(0, 5).map(function (goal) {
               return '<div class="td-support-item"><h4>' + (goal.skill || goal.domain || "Goal") + '</h4><p>Baseline ' + (goal.baseline || "--") + ' → Target ' + (goal.target || "--") + ' • Review every ' + (goal.reviewEveryDays || 14) + "d</p></div>";
             }).join("")
           : '<div class="td-support-item"><p>No SMART goals yet. Add from Meeting Notes conversion.</p></div>');
         renderGeneratedPlanner(studentId);
+        bindPlanDraftControls(studentId);
         var createPlanBtn = document.getElementById("td-create-plan-btn");
         if (createPlanBtn) {
           createPlanBtn.addEventListener("click", function () {
@@ -253,12 +466,15 @@
             var gradeBand = typeof hooks.getSelectedStudentGradeBand === "function"
               ? hooks.getSelectedStudentGradeBand()
               : "";
+            var draft = state.planDraft || {};
             InterventionPlanner.buildPlan({
               studentId: studentId,
               topNeeds: topNeeds,
               gradeBand: gradeBand,
-              timeBudgetMin: 20
+              timeBudgetMin: Number(draft.timeBudgetMin || 20)
             }).then(function (plan) {
+              plan.domain = draft.domain || inferGoalDomain(topNeeds, goals);
+              plan.baselineSummary = String(draft.baseline || "");
               state.generatedPlanner = plan;
               renderGeneratedPlanner(studentId);
               setCoachLine("SAS-aligned intervention plan generated.");

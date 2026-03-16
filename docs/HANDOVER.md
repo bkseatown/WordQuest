@@ -82,6 +82,18 @@ Recently completed work:
   - key support cues appear earlier
   - hero wastes less space
   - still not at flagship quality
+- March 15 stabilization corrected a real shared-shell regression:
+  - the gallery no longer shows the full-width translucent floating music strip
+  - stale gallery subject restore no longer forces `Intervention` when there is no intervention context
+  - dark `forest` / `seahawks` chooser and play surfaces are readable again
+  - `Build the Word` no longer falls into placeholder/prototype content when valid morphology rows exist
+  - `Build the Word` now shows the actual assembly area and word-part tray in the first viewport instead of hiding them below duplicate stage chrome
+- March 15 curriculum-truth work is now live in code:
+  - hub math detail uses the corrected IM Grade 4 Unit 2 Lesson 7 equivalent-fractions pairing
+  - student records now use a real source-backed curriculum layer for current visible Fishtank / EL / Fundations / IM entries
+  - EL should be treated as `6-8` only
+  - Fishtank ELA should be treated as `K-5`
+  - Fundations should be treated as Levels `K, 1, 2, 3`
 
 Latest pushed commits from this thread:
 - `42fbc93e` `Simplify homepage games showcase`
@@ -95,6 +107,18 @@ Latest verified local page markers from this thread:
 - Word Quest stabilized asset refs:
   - `style/components.css?v=20260314c`
   - `js/app.js?v=20260314c`
+
+Latest verified screenshot pack from the current local state:
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/index-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/hub-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/hub-detail-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/student-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/reports-audit-r4.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/gallery-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/offlimits-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/buildword-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/buildword-fix11.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/buildword-fix11-forest.png`
 
 ## 4) What Still Needs Work
 Highest-priority unresolved quality areas:
@@ -143,6 +167,29 @@ Highest-priority unresolved quality areas:
   - SWBAT
   are reliably aligned and easy to correct when a class is ahead or behind
 
+### Shared shell / theme system
+- this is the highest-risk system area for regressions
+- the March 15 audit proved that a route can look fine in one default state and still be broken across:
+  - dark theme
+  - music controls visible
+  - dropdown open
+  - restored local state
+  - alternate live game routes
+- do not call a shared-shell pass complete until the following are screenshot-checked:
+  - gallery default
+  - gallery dark/forest
+  - Off Limits chooser
+  - one live clue/card route
+  - one builder route (`Build the Word`)
+- `Build the Word` is now functionally repaired, but it still is not flagship-quality yet
+- the current route is trustworthy enough to continue from; it is no longer in prototype collapse
+
+### Reports / Workroom
+- still one of the strongest teacher-facing routes
+- the visible `Pilot Evaluation` section has now been hidden again because it was legacy/pilot chrome leaking into the live first screen
+- reports still has too many small actions and older support rails competing with the main output engine
+- next reports pass should be subtraction-first, not feature-first
+
 ## 5) Critical Product Rules
 
 ### Global rules
@@ -164,6 +211,9 @@ Highest-priority unresolved quality areas:
   - card/surface
   - inset play/work scene
   - primary vs secondary information
+- if a parent card and child card start blending into one low-contrast slab, treat that as a real failure even if text remains technically readable
+- if a floating bar / overlay interrupts the main work surface, remove or contain it before polishing typography
+- if a page is only “fixed” because content is hidden below a clipped internal surface, it is not fixed
 
 ### Word Quest rules
 - Board and keyboard remain the primary objects.
@@ -205,6 +255,23 @@ Highest-priority unresolved quality areas:
   - what to do if the class is on a different lesson today
 - Rotating schedule patterns like Red / Blue / White Day 1/2 must be treated as first-class schedule information when present.
 
+### Reports rules
+- output surfaces should lead with:
+  - what is ready
+  - what is missing
+  - what can be sent today
+- remove pilot / meta-evaluation UI from the live first screen unless explicitly working on evaluation tooling
+- the page should feel like a report engine, not a settings launcher
+
+### Shared shell rules
+- one route passing in one theme is not enough evidence
+- every shell-level pass must be checked in at least:
+  - default theme
+  - one dark theme
+  - one alternate interactive state (dropdown open, audio visible, chooser open, etc.)
+- stale restored state is a product bug, not just a local annoyance
+- builder routes must show the actual playable artifact in the first screen, not just surrounding shell chrome
+
 ## 6) Critical File Ownership
 
 ### Standalone Word Quest
@@ -218,6 +285,8 @@ Highest-priority unresolved quality areas:
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/typing-quest.html`
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/games/ui/game-shell.js`
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/games/ui/game-shell.css`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/games/content/game-content-registry.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/games/content/game-content-generator.js`
 
 ### Homepage and dashboard shell
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/index.html`
@@ -238,6 +307,11 @@ Highest-priority unresolved quality areas:
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/student-profile.html`
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/student-profile.js`
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/student-profile.css`
+
+### Curriculum truth layer
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/curriculum-truth.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/lesson-brief-panel.js`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/js/teacher-context/lesson-context-deriver.js`
 
 ### Build/version truth
 - `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/build.json`

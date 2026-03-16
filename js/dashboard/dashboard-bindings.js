@@ -48,7 +48,7 @@
       if (el.search) {
         el.search.addEventListener("input", function () { run("filterCaseload", el.search.value || ""); });
       }
-      if (el.importExport) el.importExport.addEventListener("click", function () { run("handleImportExport"); });
+      if (el.importExport) el.importExport.addEventListener("click", function () { run("openBackupModal"); });
       if (el.addStudent) el.addStudent.addEventListener("click", function () { run("addStudentQuick"); });
       if (el.settings) {
         el.settings.addEventListener("click", function () {
@@ -187,16 +187,50 @@
       if (el.reportsOpenLibraryBtn) {
         el.reportsOpenLibraryBtn.addEventListener("click", function () {
           if (modalController && el.sasLibraryModal) {
-            modalController.open("sas-library");
+            modalController.show("sas-library");
             run("setCoachLine", "SAS library opened.");
           }
         });
       }
       if (el.reportsOpenImportBtn) {
         el.reportsOpenImportBtn.addEventListener("click", function () {
-          if (el.importExport) {
-            el.importExport.click();
+          run("openBackupModal");
+        });
+      }
+      if (el.familyCommsOpenWeekly) {
+        el.familyCommsOpenWeekly.addEventListener("click", function () {
+          if (!state.selectedId) {
+            run("setCoachLine", "Open one student before preparing the family update.");
+            return;
           }
+          run("openShareModal", state.selectedId);
+          run("setDashboardMode", "reports");
+          run("setCoachLine", "Family update opened.");
+        });
+      }
+      if (el.familyCommsOpenTranslation) {
+        el.familyCommsOpenTranslation.addEventListener("click", function () {
+          if (!state.selectedId) {
+            run("setCoachLine", "Open one student before preparing the translated family draft.");
+            return;
+          }
+          run("openShareModal", state.selectedId);
+          run("setDashboardMode", "reports");
+          window.setTimeout(function () {
+            if (el.weeklyFamilyLanguage) el.weeklyFamilyLanguage.focus();
+          }, 80);
+          run("setCoachLine", "Translation tools opened.");
+        });
+      }
+      if (el.familyCommsOpenMeeting) {
+        el.familyCommsOpenMeeting.addEventListener("click", function () {
+          if (!state.selectedId) {
+            run("setCoachLine", "Open one student before preparing the meeting summary.");
+            return;
+          }
+          run("openMeetingModal");
+          run("setDashboardMode", "reports");
+          run("setCoachLine", "Meeting summary opened.");
         });
       }
       if (el.focusViewDetailsBtn) {

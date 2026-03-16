@@ -19,8 +19,11 @@ For game pages, audit these states separately:
 - concealed play card
 - revealed play card
 - result / round end if applicable
+- one dark-theme or alternate-theme state if the route supports them
+- one restored-state / control-open state when shared shell, audio, or dropdown controls exist
 
 For platform pages, audit the first visible screen at `1440x900` before anything below the fold.
+For platform pages with local state or alternate lanes, also check one non-default state if it changes visible chrome.
 
 ## Scoring Categories
 Score each category from `1-100`.
@@ -151,6 +154,53 @@ Every visual pass should include:
 - the score by category
 - a blunt list of what is still wrong
 - the next single highest-value pass
+
+## Shared-Shell Regression Trap
+The March 15 audit proved a major failure mode:
+- a route can look acceptable in one default state and still be broken across the actual product matrix
+- this happened with:
+  - the gallery floating music strip
+  - stale restored subject state
+  - dark `forest` / `seahawks` readability collapse
+  - `Build the Word` falling into placeholder content and hidden play artifacts
+
+So for any shared shell or theme pass, the minimum required matrix is:
+- gallery default
+- gallery dark/forest
+- one chooser route
+- one live clue/card route
+- one builder route
+
+If that matrix is not checked, do not give a production-discipline score above `70`.
+
+## Current Local Baseline: March 15 Stabilized Pack
+Reference screenshots:
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/index-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/hub-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/hub-detail-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/student-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/reports-audit-r4.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/gallery-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/offlimits-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/buildword-audit-r3.png`
+- `/Users/robertwilliamknaus/Desktop/Cornerstone MTSS/output/buildword-fix11.png`
+
+Current screen truths:
+- `Student Profile` now fits honestly and is one of the stronger teacher-facing screens.
+- `Specialist Hub` overview and class detail both fit honestly and now carry more trustworthy support language.
+- `Reports` is structurally strong, but still has too many secondary controls competing with the output work.
+- `Game Gallery` is stabilized and readable again, but still not at premium art-direction level.
+- `Build the Word` is no longer in prototype collapse; its actual assembly area and tile tray are visible again, but it still needs a premium surface pass.
+
+Current approximate readiness reads from the stabilized pack:
+- Landing: `76`
+- Specialist Hub overview: `82`
+- Specialist Hub class detail: `86`
+- Student profile: `85`
+- Reports & Prep: `81`
+- Gallery: `78`
+- Off Limits chooser: `86`
+- Build the Word: `72`
 
 ## Current Baseline Example: Off Limits Chooser
 Reference screenshot:

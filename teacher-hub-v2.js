@@ -888,6 +888,8 @@
   }
 
   function inferPrimarySupportArea(student, block) {
+    var blockArea = inferSupportAreaFromText(block && block.subject);
+    if (blockArea) return blockArea;
     var supports = Array.isArray(student && student.relatedSupport) ? student.relatedSupport : [];
     for (var i = 0; i < supports.length; i += 1) {
       var area = inferSupportAreaFromText(supports[i]);
@@ -905,6 +907,7 @@
     var students = contextData && contextData.derived && Array.isArray(contextData.derived.students)
       ? contextData.derived.students
       : [];
+    var blockArea = inferSupportAreaFromText(block && block.subject);
     var tierGroups = {};
     students.forEach(function (student) {
       var tier = displayTierLabel(student);
@@ -913,7 +916,8 @@
       if (tierGroups[tier].indexOf(area) === -1) tierGroups[tier].push(area);
     });
     var tier = tierGroups.T3 && tierGroups.T3.length ? "T3" : (tierGroups.T2 && tierGroups.T2.length ? "T2" : "T1");
-    var areas = tierGroups[tier] && tierGroups[tier].length ? tierGroups[tier] : [inferSupportAreaFromText(block.subject) || "Reading"];
+    var areas = tierGroups[tier] && tierGroups[tier].length ? tierGroups[tier] : [blockArea || "Reading"];
+    if (blockArea) return tier + " " + blockArea;
     return tier + " " + areas.join("/");
   }
 

@@ -97,11 +97,15 @@
       var rec = (window.CSEvidence && typeof window.CSEvidence.recommendNextSteps === "function")
         ? window.CSEvidence.recommendNextSteps(sig)
         : { bullets: [summary.nextMove.line] };
+      var anchors = SupportStore && typeof SupportStore.getInstitutionalAnchors === "function"
+        ? SupportStore.getInstitutionalAnchors(studentId)
+        : null;
       return WorkspaceSupportContent && typeof WorkspaceSupportContent.buildShareSummaryText === "function"
         ? WorkspaceSupportContent.buildShareSummaryText({
             summary: summary,
             sessions: sessions,
-            recommendation: rec
+            recommendation: rec,
+            institutionalAnchors: anchors
           })
         : "";
     }
@@ -130,6 +134,9 @@
       var recommendation = recentSessions[0] && recentSessions[0].signals && window.CSEvidence && typeof window.CSEvidence.recommendNextSteps === "function"
         ? window.CSEvidence.recommendNextSteps(recentSessions[0].signals)
         : { bullets: [summary.nextMove && summary.nextMove.line || "Continue focused support."] };
+      var anchors = SupportStore && typeof SupportStore.getInstitutionalAnchors === "function"
+        ? SupportStore.getInstitutionalAnchors(sid)
+        : null;
       var weeklyInsights = buildWeeklyInsightDraft(studentId, summary, model, recentSessions, teacherNotes);
       var payload = WorkspaceSupportContent && typeof WorkspaceSupportContent.buildSharePayload === "function"
         ? WorkspaceSupportContent.buildSharePayload({
@@ -140,6 +147,7 @@
             plan: plan,
             teacherNotes: teacherNotes,
             recommendation: recommendation,
+            institutionalAnchors: anchors,
             ShareSummaryAPI: ShareSummaryAPI
           })
         : { text: "", json: {}, csv: "" };
@@ -178,6 +186,9 @@
         model: model,
         recentSessions: recentSessions,
         supportProfile: supportProfile,
+        institutionalAnchors: SupportStore && typeof SupportStore.getInstitutionalAnchors === "function"
+          ? SupportStore.getInstitutionalAnchors(studentId)
+          : null,
         lessonContexts: lessonContexts,
         teacherNotes: teacherNotes,
         subject: summary && summary.focus || "",

@@ -218,6 +218,13 @@
     needsChipList: document.getElementById("td-needs-chip-list"),
     supportBody: document.getElementById("td-support-body"),
     supportTabs: Array.prototype.slice.call(document.querySelectorAll("[data-support-tab]")),
+    visibleSupportStudent: document.getElementById("td-visible-support-student"),
+    visibleSupportList: document.getElementById("td-visible-support-list"),
+    visibleSupportBody: document.getElementById("td-visible-support-body"),
+    visibleSupportTabs: Array.prototype.slice.call(document.querySelectorAll("[data-visible-support-tab]")),
+    familyCommsOpenWeekly: document.getElementById("td-family-comms-open-weekly"),
+    familyCommsOpenTranslation: document.getElementById("td-family-comms-open-translation"),
+    familyCommsOpenMeeting: document.getElementById("td-family-comms-open-meeting"),
     meetingModal: document.getElementById("td-meeting-modal"),
     meetingClose: document.getElementById("td-meeting-close"),
     meetingControlsShell: document.getElementById("td-meeting-controls-shell"),
@@ -978,6 +985,9 @@
     var literacyFrameworks = frameworkListFromAlignment(getFrameworkAlignmentSafe(summary ? summary.focus : "literacy"));
     var numeracyFrameworks = frameworkListFromAlignment(getFrameworkAlignmentSafe(numeracy.contentFocus || "numeracy"));
     var curriculumLine = el.numCurriculumLine ? String(el.numCurriculumLine.textContent || "").trim() : "";
+    var institutionalAnchors = SupportStore && typeof SupportStore.getInstitutionalAnchors === "function"
+      ? SupportStore.getInstitutionalAnchors(state.selectedId)
+      : null;
     if (WorkspaceReports && typeof WorkspaceReports.buildContext === "function") {
       return WorkspaceReports.buildContext({
         selectedId: state.selectedId,
@@ -987,7 +997,8 @@
         tierSignal: tierSignal,
         literacyFrameworks: literacyFrameworks,
         numeracyFrameworks: numeracyFrameworks,
-        curriculumLine: curriculumLine
+        curriculumLine: curriculumLine,
+        institutionalAnchors: institutionalAnchors
       });
     }
     return {
@@ -2155,12 +2166,42 @@
   function renderSupportHub(studentId) {
     if (supportViewController && typeof supportViewController.renderSupportHub === "function") {
       supportViewController.renderSupportHub(studentId);
+      renderVisibleSupportHub();
       return;
     }
     if (!el.supportBody) return;
     el.supportBody.innerHTML = studentId
       ? '<div class="td-support-item"><p>Support workflows loading.</p></div>'
       : '<div class="td-support-item"><p>Select a student to load support workflows.</p></div>';
+    renderVisibleSupportHub();
+  }
+
+  function renderVisibleSupportHub() {
+    if (el.visibleSupportBody && el.supportBody && el.supportBody.parentNode !== el.visibleSupportBody) {
+      el.visibleSupportBody.innerHTML = "";
+      el.visibleSupportBody.appendChild(el.supportBody);
+    }
+    if (el.visibleSupportStudent) {
+      var student = (state.caseload || []).find(function (row) { return row.id === state.selectedId; });
+      el.visibleSupportStudent.textContent = student
+        ? (student.name + " • " + (student.focus || "Support planning"))
+        : "Select a student to load support planning.";
+    }
+    if (el.visibleSupportList && WorkspaceCaseload && typeof WorkspaceCaseload.renderList === "function") {
+      WorkspaceCaseload.renderList({
+        listEl: el.visibleSupportList,
+        rows: state.filtered && state.filtered.length ? state.filtered : state.caseload,
+        selectedId: state.selectedId,
+        mode: "default",
+        onSelect: selectStudent
+      });
+    }
+    if (Array.isArray(el.visibleSupportTabs)) {
+      el.visibleSupportTabs.forEach(function (button) {
+        var active = String(button.getAttribute("data-visible-support-tab") || "plan") === String(state.activeSupportTab || "snapshot");
+        button.classList.toggle("is-active", active);
+      });
+    }
   }
 
   function renderDrawer(studentId) {
@@ -2497,6 +2538,7 @@
         stopMeetingRecognition: stopMeetingRecognition,
         filterCaseload: filterCaseload,
         handleImportExport: handleImportExport,
+        openBackupModal: openBackupModal,
         addStudentQuick: addStudentQuick,
         setCoachLine: setCoachLine,
         appendStudentParam: appendStudentParam,
@@ -2506,6 +2548,7 @@
         renderInstructionalSequencer: renderInstructionalSequencer,
         renderDrawer: renderDrawer,
         openMeetingModal: openMeetingModal,
+        openShareModal: openShareModal,
         setDashboardMode: setDashboardMode,
         updateAccommodationButtons: updateAccommodationButtons,
         download: download,
@@ -2568,17 +2611,16 @@
   }
 
   function handleImportExport() {
-    var choice = window.prompt("Type EXPORT to download JSON and copy CSV, or paste roster CSV now.", "EXPORT");
-    if (choice == null) return;
-    if (choice.trim().toUpperCase() === "EXPORT") {
-      download("cs-evidence.json", Evidence.exportJSON(), "application/json");
-      navigator.clipboard && navigator.clipboard.writeText(Evidence.rosterCSV()).catch(function () {});
-      setCoachLine("Exported JSON and copied roster CSV.");
+    openBackupModal();
+  }
+
+  function openBackupModal() {
+    if (window.CSBackupManager && typeof window.CSBackupManager.openModal === "function") {
+      window.CSBackupManager.openModal();
+      setCoachLine("Backup tools opened.");
       return;
     }
-    var count = Evidence.importRosterCSV(choice);
-    refreshCaseload();
-    setCoachLine("Imported " + count + " student rows.");
+    setCoachLine("Backup tools are unavailable. Reload this page.");
   }
 
   function addStudentQuick() {
@@ -2717,6 +2759,32 @@
     }
     if (el.meetingWorkspaceBtn) {
       el.meetingWorkspaceBtn.addEventListener("click", function () {
+        openMeetingModal();
+      });
+    }
+    if (Array.isArray(el.visibleSupportTabs)) {
+      el.visibleSupportTabs.forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          state.activeSupportTab = String(tab.getAttribute("data-visible-support-tab") || "plan");
+          renderSupportHub(state.selectedId);
+        });
+      });
+    }
+    if (el.familyCommsOpenWeekly) {
+      el.familyCommsOpenWeekly.addEventListener("click", function () {
+        openShareModal(state.selectedId);
+      });
+    }
+    if (el.familyCommsOpenTranslation) {
+      el.familyCommsOpenTranslation.addEventListener("click", function () {
+        openShareModal(state.selectedId);
+        window.setTimeout(function () {
+          if (el.weeklyFamilyLanguage) el.weeklyFamilyLanguage.focus();
+        }, 60);
+      });
+    }
+    if (el.familyCommsOpenMeeting) {
+      el.familyCommsOpenMeeting.addEventListener("click", function () {
         openMeetingModal();
       });
     }
@@ -2887,6 +2955,7 @@
   })();
   selectStudent(initial);
   renderReportsOverviewGrid();
+  renderVisibleSupportHub();
 })();
 (() => {
   const topOverflowToggle = document.getElementById("td-top-overflow-toggle");

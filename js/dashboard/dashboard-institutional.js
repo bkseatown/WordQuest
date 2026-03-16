@@ -68,6 +68,23 @@
       );
     }
 
+    function summarizeAnchorEvidence(anchors) {
+      var lines = [];
+      var reading = anchors && anchors.reading ? anchors.reading : {};
+      var writing = anchors && anchors.writing ? anchors.writing : {};
+      var math = anchors && anchors.math ? anchors.math : {};
+      if (reading.classroomData || reading.interventionData) {
+        lines.push("Reading evidence is already logged from classroom or intervention notes.");
+      }
+      if (writing.classroomData || writing.interventionData) {
+        lines.push("Writing evidence is available to tighten the next support move.");
+      }
+      if (math.classroomData || math.interventionData) {
+        lines.push("Math evidence is available from classroom or support sessions.");
+      }
+      return lines[0] || "Add school, classroom, and intervention data so the planner can recommend a tighter next move.";
+    }
+
     function rankWeightFromAnchor(studentId, row, anchors) {
       var score = (4 - Math.max(1, Math.min(3, Number(row.rank || 3)))) * 10;
       var contexts = [];
@@ -169,25 +186,33 @@
       return [
         '<div class="td-support-item td-anchor-panel">',
         '<h4>Institutional Data Anchors</h4>',
+        '<p class="td-sequencer-alignment">School data, classroom evidence, and intervention notes all live here so the planner can react to the real student picture.</p>',
         '<div class="' + cls + '">',
         '<section class="td-anchor-group"><h5>Reading</h5>',
-        '<label>MAP RIT<input class="td-anchor-input" data-anchor-path="reading.mapRIT" type="number" value="' + escAttr(a.reading.mapRIT == null ? "" : a.reading.mapRIT) + '" /></label>',
-        '<label>Aimsweb Percentile<input class="td-anchor-input" data-anchor-path="reading.aimswebPercentile" type="number" min="0" max="99" value="' + escAttr(a.reading.aimswebPercentile == null ? "" : a.reading.aimswebPercentile) + '" /></label>',
-        '<label>Core Phonics<input class="td-anchor-input" data-anchor-path="reading.corePhonicsBenchmark" type="text" value="' + escAttr(a.reading.corePhonicsBenchmark || "") + '" /></label>',
+        '<label>MAP Reading RIT<input class="td-anchor-input" data-anchor-path="reading.mapRIT" type="number" value="' + escAttr(a.reading.mapRIT == null ? "" : a.reading.mapRIT) + '" /></label>',
+        '<label>Aimsweb+ Percentile (ES)<input class="td-anchor-input" data-anchor-path="reading.aimswebPercentile" type="number" min="0" max="99" value="' + escAttr(a.reading.aimswebPercentile == null ? "" : a.reading.aimswebPercentile) + '" /></label>',
+        '<label>Core Phonics Benchmark<input class="td-anchor-input" data-anchor-path="reading.corePhonicsBenchmark" type="text" value="' + escAttr(a.reading.corePhonicsBenchmark || "") + '" /></label>',
         '<label>Words Their Way Stage<input class="td-anchor-input" data-anchor-path="reading.wordsTheirWayStage" type="text" value="' + escAttr(a.reading.wordsTheirWayStage || "") + '" /></label>',
         '<label>Fundations Unit<input class="td-anchor-input" data-anchor-path="reading.fundationsUnit" type="text" value="' + escAttr(a.reading.fundationsUnit || "") + '" /></label>',
+        '<label>Classroom Data<textarea class="td-anchor-input td-plan-textarea" data-anchor-path="reading.classroomData" rows="3" placeholder="Running records, exit tickets, conferring notes, unit checks.">' + escAttr(a.reading.classroomData || "") + '</textarea></label>',
+        '<label>Intervention Data<textarea class="td-anchor-input td-plan-textarea" data-anchor-path="reading.interventionData" rows="3" placeholder="Progress-monitoring trend, decoding probes, intervention observations.">' + escAttr(a.reading.interventionData || "") + '</textarea></label>',
         '</section>',
         '<section class="td-anchor-group"><h5>Writing</h5>',
         '<label>On-Demand Rubric<input class="td-anchor-input" data-anchor-path="writing.onDemandRubricScore" type="number" step="0.1" value="' + escAttr(a.writing.onDemandRubricScore == null ? "" : a.writing.onDemandRubricScore) + '" /></label>',
         '<label>Current Goal<input class="td-anchor-input" data-anchor-path="writing.currentWritingGoal" type="text" value="' + escAttr(a.writing.currentWritingGoal || "") + '" /></label>',
+        '<label>Classroom Data<textarea class="td-anchor-input td-plan-textarea" data-anchor-path="writing.classroomData" rows="3" placeholder="Writing samples, rubric notes, conferencing highlights.">' + escAttr(a.writing.classroomData || "") + '</textarea></label>',
+        '<label>Intervention Data<textarea class="td-anchor-input td-plan-textarea" data-anchor-path="writing.interventionData" rows="3" placeholder="Sentence work, strategy group notes, revision transfer evidence.">' + escAttr(a.writing.interventionData || "") + '</textarea></label>',
         '</section>',
         '<section class="td-anchor-group"><h5>Math</h5>',
-        '<label>MAP RIT<input class="td-anchor-input" data-anchor-path="math.mapRIT" type="number" value="' + escAttr(a.math.mapRIT == null ? "" : a.math.mapRIT) + '" /></label>',
+        '<label>MAP Math RIT<input class="td-anchor-input" data-anchor-path="math.mapRIT" type="number" value="' + escAttr(a.math.mapRIT == null ? "" : a.math.mapRIT) + '" /></label>',
         '<label>Bridges Unit Score<input class="td-anchor-input" data-anchor-path="math.bridgesUnitScore" type="number" step="0.1" value="' + escAttr(a.math.bridgesUnitScore == null ? "" : a.math.bridgesUnitScore) + '" /></label>',
         '<label>GLOSS Stage<input class="td-anchor-input" data-anchor-path="math.glossStage" type="text" value="' + escAttr(a.math.glossStage || "") + '" /></label>',
         '<label>Illustrative Checkpoint<input class="td-anchor-input" data-anchor-path="math.illustrativeCheckpoint" type="text" value="' + escAttr(a.math.illustrativeCheckpoint || "") + '" /></label>',
+        '<label>Classroom Data<textarea class="td-anchor-input td-plan-textarea" data-anchor-path="math.classroomData" rows="3" placeholder="Checks for understanding, problem sets, unit assessment patterns.">' + escAttr(a.math.classroomData || "") + '</textarea></label>',
+        '<label>Intervention Data<textarea class="td-anchor-input td-plan-textarea" data-anchor-path="math.interventionData" rows="3" placeholder="Small-group notes, strategy use, intervention progress checks.">' + escAttr(a.math.interventionData || "") + '</textarea></label>',
         '</section>',
         '</div>',
+        '<p class="td-sequencer-alignment">Planner status: ' + escAttr(summarizeAnchorEvidence(a)) + '</p>',
         '<div class="td-plan-tabs"><button class="td-top-btn" type="button" data-anchor-save="1">Save Anchors</button></div>',
         '</div>'
       ].join("");

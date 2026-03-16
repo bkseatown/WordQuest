@@ -7,6 +7,9 @@
 })(typeof globalThis !== "undefined" ? globalThis : window, function createWorkspaceMeetingContent() {
   "use strict";
 
+  var SkillLabels = typeof globalThis !== "undefined" ? globalThis.CSSkillLabels || null : null;
+  var AlignmentLoader = typeof globalThis !== "undefined" ? globalThis.CSAlignmentLoader || null : null;
+
   function toneDownFamilyLanguage(text) {
     return String(text || "")
       .replace(/\bMTSS\b/gi, "school support plan")
@@ -19,23 +22,86 @@
       .trim();
   }
 
+  function canonicalSkillId(raw) {
+    if (SkillLabels && typeof SkillLabels.canonicalSkillId === "function") {
+      return String(SkillLabels.canonicalSkillId(raw) || "").trim();
+    }
+    return String(raw || "").trim();
+  }
+
+  function skillLabel(raw) {
+    if (SkillLabels && typeof SkillLabels.getSkillLabel === "function") {
+      return String(SkillLabels.getSkillLabel(raw) || "").trim();
+    }
+    return String(raw || "priority skill").trim();
+  }
+
+  function standardsForSkill(skillId) {
+    if (!AlignmentLoader || typeof AlignmentLoader.getAlignmentForSkill !== "function") return [];
+    var row = AlignmentLoader.getAlignmentForSkill(skillId) || {};
+    var refs = [];
+    ["fishTank", "illustrativeMath"].forEach(function (key) {
+      (Array.isArray(row[key]) ? row[key] : []).forEach(function (value) {
+        var text = String(value || "").trim();
+        if (text && refs.indexOf(text) === -1) refs.push(text);
+      });
+    });
+    return refs.slice(0, 3);
+  }
+
+  function swbatGoalForSkill(skillId, fallbackLabel) {
+    var id = canonicalSkillId(skillId).toUpperCase();
+    var label = String(fallbackLabel || skillLabel(skillId) || "the current target skill").trim();
+    if (id.indexOf("LIT.DEC.PHG") === 0) return "SWBAT match sounds to spellings more accurately while reading and spelling words.";
+    if (id.indexOf("LIT.DEC.SYL") === 0) return "SWBAT read multisyllabic words more accurately by using syllable types and vowel patterns.";
+    if (id.indexOf("LIT.DEC.IRREG") === 0) return "SWBAT read and write high-frequency irregular words more automatically.";
+    if (id.indexOf("LIT.FLU.ACC") === 0) return "SWBAT read connected text more accurately and smoothly.";
+    if (id.indexOf("LIT.FLU.PRO") === 0) return "SWBAT read connected text with stronger phrasing, pace, and expression.";
+    if (id.indexOf("LIT.LANG.VOC") === 0) return "SWBAT use and explain grade-level vocabulary more precisely.";
+    if (id.indexOf("LIT.LANG.SYN") === 0) return "SWBAT make meaning from complex sentences with more independence.";
+    if (id.indexOf("LIT.WRITE.SENT") === 0) return "SWBAT write complete, clear sentences that match the lesson task.";
+    if (id.indexOf("LIT.WRITE.PAR") === 0) return "SWBAT organize ideas into a clear paragraph with evidence and elaboration.";
+    if (id.indexOf("NUM.BASE10.PLACEVALUE") === 0) return "SWBAT explain place value and use it to reason about numbers.";
+    if (id.indexOf("NUM.FACT.FLUENCY") === 0) return "SWBAT solve basic facts more efficiently and explain the strategy used.";
+    if (id.indexOf("NUM.RATIO.REASONING") === 0) return "SWBAT compare quantities and explain ratio reasoning with models and words.";
+    return "SWBAT strengthen " + label.charAt(0).toLowerCase() + label.slice(1) + " during class tasks and checks.";
+  }
+
+  function buildNeedDetail(need) {
+    var row = need && typeof need === "object" ? need : {};
+    var id = String(row.skillId || row.id || row.key || "").trim();
+    var label = String(row.label || row.skill || row.domain || skillLabel(id) || "priority skill").trim();
+    return {
+      label: label,
+      goal: swbatGoalForSkill(id, label),
+      standards: standardsForSkill(id)
+    };
+  }
+
   function meetingStudentContext(options) {
     var config = options && typeof options === "object" ? options : {};
     var summary = config.summary || null;
     var model = config.model || { topNeeds: [] };
+    var anchors = config.institutionalAnchors || {};
     var sid = String(config.studentId || "student");
-    var topNeeds = (model && Array.isArray(model.topNeeds) ? model.topNeeds : [])
+    var topNeedDetails = (model && Array.isArray(model.topNeeds) ? model.topNeeds : [])
       .slice(0, 3)
-      .map(function (n) {
-        return n.label || n.skillId || n.id || "priority skill";
-      });
+      .map(buildNeedDetail);
+    var topNeeds = topNeedDetails.map(function (row) { return row.goal; });
     var riskText = summary && summary.risk === "risk" ? "higher support intensity" : "steady support";
+    var evidenceLines = [];
+    if (anchors.reading && anchors.reading.classroomData) evidenceLines.push(String(anchors.reading.classroomData));
+    if (anchors.reading && anchors.reading.interventionData) evidenceLines.push(String(anchors.reading.interventionData));
+    if (anchors.math && anchors.math.classroomData) evidenceLines.push(String(anchors.math.classroomData));
+    if (anchors.math && anchors.math.interventionData) evidenceLines.push(String(anchors.math.interventionData));
     return {
       sid: sid,
       studentName: summary && summary.student ? summary.student.name : sid,
       topNeeds: topNeeds.length ? topNeeds : ["decoding accuracy"],
+      topNeedDetails: topNeedDetails,
       riskText: riskText,
-      nextMove: summary && summary.nextMove ? summary.nextMove.line : "continue focused practice"
+      nextMove: summary && summary.nextMove ? summary.nextMove.line : "continue focused practice",
+      evidenceLines: evidenceLines.slice(0, 3)
     };
   }
 
@@ -71,6 +137,7 @@
       "How Your Child Is Doing",
       "Strengths first: " + toneDownFamilyLanguage(context.nextMove) + ".",
       "Growth areas: " + toneDownFamilyLanguage(context.topNeeds.join(", ")) + ".",
+      (context.evidenceLines.length ? ("Current evidence: " + toneDownFamilyLanguage(context.evidenceLines.join(" ")) + ".") : ""),
       "",
       "What We Are Working On",
       toneDownFamilyLanguage(notesText || "We are building accuracy, confidence, and consistency in class tasks."),
@@ -103,7 +170,8 @@
       return [
         "Student: " + context.studentName + " (" + context.sid + ")",
         "Highlights: " + toneDownFamilyLanguage(context.nextMove),
-        "Priority Skills: " + toneDownFamilyLanguage(context.topNeeds.join(", ")),
+        "Priority Skills: " + toneDownFamilyLanguage(context.topNeeds.join(" ")),
+        (context.evidenceLines.length ? ("Current evidence: " + toneDownFamilyLanguage(context.evidenceLines.join(" ")) ) : ""),
         "Current Support Signal: " + context.riskText,
         "",
         "Meeting Notes",
@@ -127,8 +195,11 @@
       "Action Items",
       actionsText || "No action items captured.",
       "",
-      "Top Needs",
+      "Instructional Priorities",
       context.topNeeds.join(" • "),
+      "",
+      "Current Evidence",
+      context.evidenceLines.length ? context.evidenceLines.join(" • ") : "Add classroom or intervention evidence.",
       "",
       "Recommended Next Step",
       context.nextMove
@@ -138,6 +209,7 @@
   function buildExportHtml(mode, englishText, translatedText, language, options) {
     var config = options && typeof options === "object" ? options : {};
     var MeetingTranslation = config.MeetingTranslation || null;
+    var context = meetingStudentContext(config);
     var safeEnglish = String(englishText || "")
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -149,27 +221,39 @@
     var langLabel = (MeetingTranslation && typeof MeetingTranslation.languageLabel === "function")
       ? MeetingTranslation.languageLabel(language)
       : String(language || "Target");
+    var standardsHtml = context.topNeedDetails && context.topNeedDetails.length
+      ? "<section><h2>Instructional Priorities</h2><ul>" + context.topNeedDetails.map(function (row) {
+          var refs = Array.isArray(row.standards) && row.standards.length
+            ? " <em>Aligned standards:</em> " + row.standards.map(function (ref) { return "<code>" + String(ref || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</code>"; }).join(", ")
+            : "";
+          return "<li><strong>" + String(row.goal || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</strong>" + refs + "</li>";
+        }).join("") + "</ul></section>"
+      : "";
 
     if (mode === "bilingual") {
       return [
         "<!doctype html><html><head><meta charset='utf-8'><title>Bilingual Meeting Summary</title>",
-        "<style>body{font:14px/1.45 -apple-system,Segoe UI,Arial;padding:20px;color:#112}h1{margin:0 0 10px} .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px} pre{white-space:pre-wrap;border:1px solid #ccd;border-radius:8px;padding:10px;background:#f8fbff}</style>",
+        "<style>body{font:14px/1.45 -apple-system,Segoe UI,Arial;padding:20px;color:#112}h1{margin:0 0 10px} h2{margin:18px 0 8px} .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px} pre{white-space:pre-wrap;border:1px solid #ccd;border-radius:8px;padding:10px;background:#f8fbff} ul{padding-left:18px} code{background:#eef3fb;border-radius:4px;padding:1px 4px}</style>",
         "</head><body><h1>Bilingual Meeting Summary</h1><div class='grid'><section><h2>English</h2><pre>",
         safeEnglish,
         "</pre></section><section><h2>",
         langLabel,
         "</h2><pre>",
         safeTranslated || safeEnglish,
-        "</pre></section></div></body></html>"
+        "</pre></section></div>",
+        standardsHtml,
+        "</body></html>"
       ].join("");
     }
 
     return [
       "<!doctype html><html><head><meta charset='utf-8'><title>Meeting Summary</title>",
-      "<style>body{font:14px/1.45 -apple-system,Segoe UI,Arial;padding:20px;color:#112}pre{white-space:pre-wrap;border:1px solid #ccd;border-radius:8px;padding:10px;background:#f8fbff}</style>",
+      "<style>body{font:14px/1.45 -apple-system,Segoe UI,Arial;padding:20px;color:#112}h2{margin:18px 0 8px} pre{white-space:pre-wrap;border:1px solid #ccd;border-radius:8px;padding:10px;background:#f8fbff} ul{padding-left:18px} code{background:#eef3fb;border-radius:4px;padding:1px 4px}</style>",
       "</head><body><h1>Meeting Summary</h1><pre>",
       mode === "parent" ? safeEnglish : (safeTranslated || safeEnglish),
-      "</pre></body></html>"
+      "</pre>",
+      standardsHtml,
+      "</body></html>"
     ].join("");
   }
 

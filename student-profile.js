@@ -38,10 +38,14 @@
 
   function truthAssessment(label, id, fallbackTitle, fallbackDetail) {
     var entry = truth(id);
+    var detail = entry && entry.assessmentDetail ? entry.assessmentDetail : fallbackDetail;
+    if (entry && entry.progressDataNote) {
+      detail += " Progress-data note: " + entry.progressDataNote;
+    }
     return {
       label: label,
       title: entry && entry.assessmentPoint ? entry.assessmentPoint : fallbackTitle,
-      detail: entry && entry.assessmentDetail ? entry.assessmentDetail : fallbackDetail
+      detail: detail
     };
   }
 

@@ -1,5 +1,31 @@
 Original prompt: You are improving the Cornerstone MTSS game platform UI.
 
+- 2026-03-15: Updated the active handover docs from the current screenshot-verified stabilization state in `docs/HANDOVER.md`, `docs/FIGMA_AUDIT_SCORECARD.md`, and `progress.md`.
+  - recorded the March 15 shared-shell stabilization truths:
+    - gallery floating music strip regression removed
+    - stale restored gallery subject no longer forces `Intervention`
+    - dark shared-shell surfaces are readable again
+    - `Build the Word` no longer collapses into placeholder/prototype content
+  - added the current local screenshot pack as the handover truth set:
+    - `output/index-audit-r3.png`
+    - `output/hub-audit-r3.png`
+    - `output/hub-detail-audit-r3.png`
+    - `output/student-audit-r3.png`
+    - `output/reports-audit-r4.png`
+    - `output/gallery-audit-r3.png`
+    - `output/offlimits-audit-r3.png`
+    - `output/buildword-audit-r3.png`
+    - `output/buildword-fix11.png`
+  - strengthened the Figma audit scorecard with a new shared-shell regression rule:
+    - default state alone is not enough
+    - shared-shell/theme passes now require gallery + dark theme + chooser + live play + builder checks
+  - captured the current product truths for the next thread:
+    - Student Profile is now one of the strongest teacher-facing screens
+    - Hub overview/detail are materially more trustworthy
+    - Reports is structurally strong but still over-controlled
+    - Gallery is stabilized but not yet premium-finished
+    - `Build the Word` is functionally repaired but still needs a later flagship surface pass
+
 - 2026-03-15: Corrected the landing page after screenshot-led regression review on `index.html` + `home-v3.css`.
   - removed the oversized hero so the page now starts with a true compact header instead of a second pseudo-destination surface
   - removed duplicate destination headings and fake shorthand metrics from the three main cards so `Specialist Hub`, `Word Quest`, and `Teacher Workspace` each tell the story once

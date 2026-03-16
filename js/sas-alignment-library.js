@@ -103,6 +103,9 @@
     var gradeBand = normalize(opts && opts.gradeBand);
     var baseline = normalize(opts && opts.baseline);
     var goals = Array.isArray(pack && pack.goal_bank) ? pack.goal_bank : [];
+    var baselineTerms = baseline ? baseline.split(/\s+/).filter(function (term) {
+      return term && term.length > 2;
+    }).slice(0, 5) : [];
     return goals.filter(function (goal) {
       var gDomain = normalize(goal.domain);
       var gGrade = normalize(goal.grade_band);
@@ -110,7 +113,10 @@
       if (gradeBand && gGrade.indexOf(gradeBand) === -1) return false;
       if (!baseline) return true;
       var blob = normalize([goal.skill, goal.goal_template_smart, goal.progress_monitoring_method].join(' '));
-      return blob.indexOf(baseline.split(' ')[0] || '') !== -1 || true;
+      if (!baselineTerms.length) return true;
+      return baselineTerms.some(function (term) {
+        return blob.indexOf(term) !== -1;
+      });
     }).slice(0, 5);
   }
 

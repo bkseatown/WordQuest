@@ -7,6 +7,29 @@
 })(typeof globalThis !== "undefined" ? globalThis : window, function createWorkspaceReports() {
   "use strict";
 
+  function summarizeAnchors(anchors) {
+    var row = anchors && typeof anchors === "object" ? anchors : {};
+    var reading = row.reading || {};
+    var writing = row.writing || {};
+    var math = row.math || {};
+    var literacyBits = [];
+    var numeracyBits = [];
+    if (reading.aimswebPercentile != null) literacyBits.push("Aimsweb+ percentile " + reading.aimswebPercentile);
+    if (reading.mapRIT != null) literacyBits.push("MAP reading RIT " + reading.mapRIT);
+    if (reading.classroomData) literacyBits.push(reading.classroomData);
+    if (reading.interventionData) literacyBits.push(reading.interventionData);
+    if (writing.currentWritingGoal) literacyBits.push("writing goal: " + writing.currentWritingGoal);
+    if (writing.classroomData) literacyBits.push(writing.classroomData);
+    if (math.mapRIT != null) numeracyBits.push("MAP math RIT " + math.mapRIT);
+    if (math.illustrativeCheckpoint) numeracyBits.push("IM checkpoint: " + math.illustrativeCheckpoint);
+    if (math.classroomData) numeracyBits.push(math.classroomData);
+    if (math.interventionData) numeracyBits.push(math.interventionData);
+    return {
+      literacy: literacyBits.slice(0, 3),
+      numeracy: numeracyBits.slice(0, 3)
+    };
+  }
+
   function buildContext(options) {
     var input = options && typeof options === "object" ? options : {};
     var summary = input.summary || null;
@@ -17,6 +40,7 @@
     var literacyFrameworks = Array.isArray(input.literacyFrameworks) ? input.literacyFrameworks : [];
     var numeracyFrameworks = Array.isArray(input.numeracyFrameworks) ? input.numeracyFrameworks : [];
     var curriculumLine = String(input.curriculumLine || "").trim();
+    var anchors = summarizeAnchors(input.institutionalAnchors);
     var selectedId = String(input.selectedId || "");
     var student = summary && summary.student ? summary.student : {};
     var literacyData = {
@@ -29,7 +53,7 @@
       stableCount: Number(tierInput.stableCount || 2),
       weeksInIntervention: Number(tierInput.weeksInIntervention || 6),
       fidelitySummary: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 },
-      curriculumAlignment: "Literacy sequencing aligned to active instructional pathways.",
+      curriculumAlignment: "Literacy sequencing follows active instructional pathways where source-backed mapping is available. " + (anchors.literacy.length ? ("Current evidence: " + anchors.literacy.join("; ") + ".") : "Add school and classroom evidence to tighten this line further."),
       frameworkAlignment: literacyFrameworks
     };
     var numeracyData = {
@@ -46,7 +70,7 @@
         parentExplanation: "School is supporting organization and task completion with clear steps, check-ins, and accommodations."
       },
       fidelitySummary: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 },
-      curriculumAlignment: curriculumLine || "Numeracy sequencing aligned to active instructional pathways.",
+      curriculumAlignment: curriculumLine || ("Numeracy sequencing follows active instructional pathways where source-backed mapping is available. " + (anchors.numeracy.length ? ("Current evidence: " + anchors.numeracy.join("; ") + ".") : "Add math school/classroom/intervention evidence to tighten this line further.")),
       frameworkAlignment: numeracyFrameworks
     };
     var studentProfile = {
@@ -64,6 +88,7 @@
       studentProfile: studentProfile,
       literacyData: literacyData,
       numeracyData: numeracyData,
+      institutionalAnchors: input.institutionalAnchors || null,
       tierSignal: tierSignal,
       fidelityData: tierInput.fidelitySummary || { fidelityPercent: 82, totalSessions: 6 }
     };

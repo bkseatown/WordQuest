@@ -19,6 +19,8 @@
       assessmentPoint: "Lesson cool-down",
       assessmentDetail: "Use the cool-down to check whether the student can identify equal amounts and explain the equivalence.",
       progressMonitoring: "Track whether the student can match a model to two equivalent fractions with one prompt or less.",
+      progressDataNote: "Log the cool-down result, the student's model explanation, and whether the student identified equivalence independently or with prompting.",
+      sourceUrl: "https://im.kendallhunt.com/K5/teachers/grade-4/unit-2/lesson-7/preparation.html",
       sourceType: "verified"
     }),
     "im-g3-u6-l12": freeze({
@@ -34,6 +36,8 @@
       assessmentPoint: "Lesson cool-down",
       assessmentDetail: "Check whether the student can match the situation to the correct diagram and explain the quantities.",
       progressMonitoring: "Track correct diagram matching and equation selection across cool-downs.",
+      progressDataNote: "Log the cool-down score, the diagram/equation match, and whether the student explained the quantities without teacher language support.",
+      sourceUrl: "https://im.kendallhunt.com/K5/teachers/grade-3/unit-6/lesson-12/preparation.html",
       sourceType: "verified"
     }),
     "im-g4-u4-l9": freeze({
@@ -49,6 +53,8 @@
       assessmentPoint: "Lesson cool-down",
       assessmentDetail: "Check whether the student can explain a digit's value in the number and compare two forms correctly.",
       progressMonitoring: "Track explanation accuracy for digit value and comparison language on cool-downs.",
+      progressDataNote: "Log the cool-down result, the student's place-value explanation, and whether comparison language was accurate independently.",
+      sourceUrl: "https://im.kendallhunt.com/K5/teachers/grade-4/unit-4/lesson-9/preparation.html",
       sourceType: "verified"
     }),
     "fishtank-g3-current": freeze({
@@ -61,6 +67,8 @@
       assessmentPoint: "Unit assessment set",
       assessmentDetail: "Use the current unit's pre-, mid-, and end-of-unit assessment tasks to check reading, discussion, and writing performance.",
       progressMonitoring: "Track text evidence use, response completion, and independence with the unit writing task.",
+      progressDataNote: "Log the current pre-, mid-, or end-of-unit task, plus discussion evidence use, writing completion, and the level of prompting needed.",
+      sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/3rd-grade/",
       sourceType: "broad"
     }),
     "fishtank-g1-current": freeze({
@@ -73,6 +81,8 @@
       assessmentPoint: "Unit assessment set",
       assessmentDetail: "Use the current unit's pre-, mid-, and end-of-unit tasks to check comprehension, discussion, and writing.",
       progressMonitoring: "Track oral response, text evidence use, and completion of the same classroom task with supports.",
+      progressDataNote: "Log the current unit task, oral rehearsal strength, and how much support was needed to complete the same classroom response.",
+      sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/early-elementary/",
       sourceType: "broad"
     }),
     "fishtank-g2-current": freeze({
@@ -85,6 +95,8 @@
       assessmentPoint: "Unit assessment set",
       assessmentDetail: "Use the current unit's pre-, mid-, and end-of-unit tasks to check reading, discussion, and writing performance.",
       progressMonitoring: "Track vocabulary carryover, response completion, and independence on the same classroom task.",
+      progressDataNote: "Log the current unit task, target vocabulary carryover, and whether the student completed the classroom response with or without scaffolds.",
+      sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/early-elementary/",
       sourceType: "broad"
     }),
     "el-g7-current": freeze({
@@ -97,6 +109,7 @@
       assessmentPoint: "Mid-unit / end-of-unit / performance task",
       assessmentDetail: "Use the module's mid-unit assessment, end-of-unit assessment, and performance task to track reading analysis and writing.",
       progressMonitoring: "Track note-catcher completion, text evidence selection, and written response accuracy across lessons.",
+      progressDataNote: "Log the current EL assessment or check-in, note-catcher completion, evidence selection accuracy, and writing independence.",
       sourceType: "verified"
     }),
     "el-g6-current": freeze({
@@ -109,6 +122,7 @@
       assessmentPoint: "Mid-unit / end-of-unit / performance task",
       assessmentDetail: "Use the module's mid-unit assessment, end-of-unit assessment, and performance task to track reading analysis and writing.",
       progressMonitoring: "Track note-catcher completion, evidence use, and written response accuracy across lessons.",
+      progressDataNote: "Log the current EL assessment or check-in, note-catcher completion, evidence use, and writing independence.",
       sourceType: "verified"
     }),
     "el-g8-current": freeze({
@@ -121,6 +135,7 @@
       assessmentPoint: "Mid-unit / end-of-unit / performance task",
       assessmentDetail: "Use the module's mid-unit assessment, end-of-unit assessment, and performance task to track reading analysis and writing.",
       progressMonitoring: "Track note-catcher completion, text evidence selection, and written response accuracy across lessons.",
+      progressDataNote: "Log the current EL assessment or check-in, note-catcher completion, evidence selection accuracy, and writing independence.",
       sourceType: "verified"
     }),
     "fundations-l2-u8": freeze({
@@ -133,6 +148,8 @@
       assessmentPoint: "Diagnostic check / Unit test / Dictation",
       assessmentDetail: "Use weekly dictation and unit-level checks to measure decoding and encoding of the target patterns.",
       progressMonitoring: "Track accuracy on ar/or word reading, dictated words, and short sentence dictation.",
+      progressDataNote: "Log dictation accuracy, unit check results, and whether the target pattern transferred into connected reading or sentence writing.",
+      sourceUrl: "https://www.wilsonlanguage.com/programs/fundations/",
       sourceType: "verified"
     }),
     "fundations-k-current": freeze({
@@ -145,6 +162,8 @@
       assessmentPoint: "Diagnostic check / Unit test / Dictation",
       assessmentDetail: "Use current-unit checks and dictated word practice to monitor letter-sound and CVC accuracy.",
       progressMonitoring: "Track letter-sound fluency, CVC reading, and dictated-word accuracy.",
+      progressDataNote: "Log unit check performance, dictated word accuracy, and whether the student held the pattern in reading and spelling.",
+      sourceUrl: "https://www.wilsonlanguage.com/programs/fundations/",
       sourceType: "broad"
     }),
     "ufli-current": freeze({
@@ -157,6 +176,8 @@
       assessmentPoint: "Weekly encoding / concept check",
       assessmentDetail: "Use dictated words and concept-based checks to measure whether the current pattern is stable.",
       progressMonitoring: "Track encoding accuracy and transfer into a phrase or short sentence.",
+      progressDataNote: "Log the concept check or dictation result, the target pattern, and whether the student transferred it into phrase or sentence work.",
+      sourceUrl: "https://ufli.education.ufl.edu/foundations/",
       sourceType: "broad"
     }),
     "bridges-place-value-cycle": freeze({
@@ -169,6 +190,7 @@
       assessmentPoint: "Placement / progress monitoring",
       assessmentDetail: "Use the current Bridges intervention monitoring task to check model use and equation accuracy.",
       progressMonitoring: "Track whether the student selects a representation that matches the quantities and operation.",
+      progressDataNote: "Log the current monitoring task, the model chosen, equation accuracy, and whether the student explained why the representation fit.",
       sourceType: "broad"
     }),
     "bridges-multistep-cycle": freeze({
@@ -181,6 +203,7 @@
       assessmentPoint: "Placement / progress monitoring",
       assessmentDetail: "Use current-cycle monitoring to check model selection, equation writing, and explanation of operation choice.",
       progressMonitoring: "Track whether the student can choose an operation and defend it with a model.",
+      progressDataNote: "Log the current monitoring task, operation choice, model match, and the quality of the student's explanation.",
       sourceType: "broad"
     }),
     "justwords-current": freeze({
@@ -193,6 +216,8 @@
       assessmentPoint: "Progress check / dictation",
       assessmentDetail: "Use progress checks and dictation to monitor multisyllabic decoding and spelling transfer.",
       progressMonitoring: "Track accuracy on target words and transfer into connected text.",
+      progressDataNote: "Log the progress check, dictation accuracy, and whether the pattern transferred into connected reading or sentence-level writing.",
+      sourceUrl: "https://www.wilsonlanguage.com/programs/just-words/",
       sourceType: "broad"
     }),
     "wilson-current-step": freeze({
@@ -205,6 +230,8 @@
       assessmentPoint: "Wordlist charting / dictation",
       assessmentDetail: "Use charting and dictation to determine whether the student is ready to move within the current step.",
       progressMonitoring: "Track wordlist accuracy, dictation accuracy, and carryover into connected reading.",
+      progressDataNote: "Log wordlist charting, dictation accuracy, controlled-text reading, and whether the student is ready to stay in or move beyond the current step.",
+      sourceUrl: "https://www.wilsonlanguage.com/programs/wilson-reading-system/",
       sourceType: "broad"
     })
   });
@@ -216,6 +243,8 @@
       grades: freeze(["K", "1", "2", "3", "4", "5"]),
       assessmentModel: "Pre-unit / mid-unit / end-of-unit",
       supportRule: "Use the anchor text, preteach critical vocabulary, and keep one text-dependent prompt or sentence frame visible during the same classroom task.",
+      progressDataNote: "Progress data should name the current Fishtank task and capture reading, discussion, and writing performance on the same classroom assessment or check-in.",
+      sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/early-elementary/",
       gradeMap: freeze({
         "K": freeze([
           freeze({ unit: "K-1", title: "Welcome to School", focus: "community, belonging, and narrative comprehension" }),
@@ -251,37 +280,25 @@
           freeze({ unit: "2-9", title: "Voting and Elections", focus: "civic vocabulary, reasons, and argument writing" })
         ]),
         "3": freeze([
-          freeze({ unit: "3-1", title: "Garvey's Choice", focus: "identity, character change, and theme" }),
-          freeze({ unit: "3-2", title: "Charlotte's Web", focus: "friendship, relationships, and literary analysis" }),
-          freeze({ unit: "3-3", title: "Dyamonde Daniel", focus: "community, character traits, and perspective" }),
-          freeze({ unit: "3-4", title: "Ecosystems", focus: "science knowledge, evidence, and informational writing" }),
-          freeze({ unit: "3-5", title: "American Indians", focus: "history, compare-contrast, and informational writing" }),
-          freeze({ unit: "3-6", title: "The One and Only Ivan", focus: "justice, point of view, and theme" }),
-          freeze({ unit: "3-7", title: "Famous Inventors", focus: "biography, problem-solution, and research writing" }),
-          freeze({ unit: "3-8", title: "Natural Disasters", focus: "earth science, cause and effect, and argument writing" }),
-          freeze({ unit: "3-9", title: "Picture Books and Politics", focus: "author perspective, claim, and evidence" }),
-          freeze({ unit: "3-10", title: "Water and Weather", focus: "main idea, science vocabulary, and text features" })
+          freeze({ unit: "3-1", title: "Defining Identity: Dyamonde Daniel and My Name Is Maria Isabel", focus: "identity, belonging, and character analysis", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/3rd-grade/" }),
+          freeze({ unit: "3-2", title: "Rediscovering Thanksgiving: Fact vs. Fiction", focus: "informational reading, Indigenous history, and fact versus fiction", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/3rd-grade/" }),
+          freeze({ unit: "3-3", title: "Passing Down Wisdom: Indigenous, Hispanic, and African American Traditional Stories", focus: "traditional stories, theme, and retelling with evidence", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/3rd-grade/" }),
+          freeze({ unit: "3-4", title: "Understanding the Animal Kingdom", focus: "science text, key details, and text evidence", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/3rd-grade/" }),
+          freeze({ unit: "3-5", title: "Embracing Difference: The Hundred Dresses and Garvey's Choice", focus: "acceptance, central message, and literary response", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/3rd-grade/" })
         ]),
         "4": freeze([
-          freeze({ unit: "4-1", title: "Taking a Stand", focus: "character, moral dilemma, and theme" }),
-          freeze({ unit: "4-2", title: "Finding Fortune", focus: "adventure, folktale elements, and author's craft" }),
-          freeze({ unit: "4-3", title: "Believing in Yourself", focus: "resilience, character growth, and personal response" }),
-          freeze({ unit: "4-4", title: "Interpreting Perspectives", focus: "mythology, multiple perspectives, and literary analysis" }),
-          freeze({ unit: "4-5", title: "Learning Differently", focus: "perspective, empathy, and informational response" }),
-          freeze({ unit: "4-6", title: "Discovering Self", focus: "identity, historical fiction, and theme" }),
-          freeze({ unit: "4-7", title: "American Revolution", focus: "primary sources, argument, and research writing" }),
-          freeze({ unit: "4-8", title: "Extreme Earth", focus: "scientific argument, claim, and evidence" }),
-          freeze({ unit: "4-9", title: "Power of Words", focus: "figurative language, poetry analysis, and author's craft" }),
-          freeze({ unit: "4-10", title: "Ancient Civilizations", focus: "history, compare-contrast, and informational essay" })
+          freeze({ unit: "4-1", title: "Finding Fortune: Where the Mountain Meets the Moon", focus: "identity, values, beliefs, and literary analysis", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/4th-grade/" }),
+          freeze({ unit: "4-2", title: "Preparing for the Worst: Natural Disasters", focus: "science knowledge, explanation, and informational reading", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/4th-grade/" }),
+          freeze({ unit: "4-3", title: "Interpreting Perspectives: Greek Myths", focus: "mythology, perspective, and literary analysis", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/4th-grade/" }),
+          freeze({ unit: "4-4", title: "Believing in Yourself: The Wild Book", focus: "learning differences, self-image, and character analysis", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/4th-grade/" }),
+          freeze({ unit: "4-5", title: "Heart and Soul: The Story of America and African Americans", focus: "history, equality, and informational synthesis", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/4th-grade/" })
         ]),
         "5": freeze([
-          freeze({ unit: "5-1", title: "Building Community", focus: "multiple perspectives, theme, and literary essay" }),
-          freeze({ unit: "5-2", title: "Exploring Human Rights", focus: "historical context, theme, and argument writing" }),
-          freeze({ unit: "5-3", title: "Protecting the Earth", focus: "environmental argument, research, and persuasive writing" }),
-          freeze({ unit: "5-4", title: "Young Heroes", focus: "historical biography, cause and effect, and research report" }),
-          freeze({ unit: "5-5", title: "Friendship Across Boundaries", focus: "identity, multiple perspectives, and literary essay" }),
-          freeze({ unit: "5-6", title: "The Civil War", focus: "history, primary sources, and argument writing" }),
-          freeze({ unit: "5-7", title: "Technology and Society", focus: "digital citizenship, argument, and evidence evaluation" })
+          freeze({ unit: "5-1", title: "Building Community: Seedfolks", focus: "community, multiple perspectives, and theme", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/5th-grade/" }),
+          freeze({ unit: "5-2", title: "Exploring Human Rights: The Breadwinner", focus: "human rights, historical context, and literary analysis", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/5th-grade/" }),
+          freeze({ unit: "5-3", title: "Protecting the Earth", focus: "plastic pollution, argument, and research", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/5th-grade/" }),
+          freeze({ unit: "5-4", title: "Young Heroes: Children of the Civil Rights Movement", focus: "civil rights, multiple accounts, and informational analysis", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/5th-grade/" }),
+          freeze({ unit: "5-5", title: "Friendship Across Boundaries: Return to Sender", focus: "immigration, stereotypes, and multiple perspectives", sourceUrl: "https://www.fishtanklearning.org/curriculum/ela/5th-grade/" })
         ])
       }),
       sourceType: "mixed"
@@ -292,6 +309,8 @@
       grades: freeze(["6", "7", "8"]),
       assessmentModel: "Mid-unit / end-of-unit / performance task",
       supportRule: "Preview the critical vocabulary and note-catcher first, then keep the writing target and one model response visible during the same classroom task.",
+      progressDataNote: "Progress data should name the EL assessment point and capture note-catcher completion, evidence use, and writing independence.",
+      sourceUrl: "https://curriculum.eleducation.org/",
       sourceType: "verified"
     }),
     "fundations": freeze({
@@ -300,6 +319,8 @@
       grades: freeze(["K", "1", "2", "3"]),
       assessmentModel: "Diagnostic check / Unit test / Dictation",
       supportRule: "Keep the oral routine, mark-up, reading, spelling, and dictation tightly sequenced so students transfer the pattern instead of naming it only.",
+      progressDataNote: "Progress data should name the Fundations check used and capture reading, dictation, and transfer accuracy for the target pattern.",
+      sourceUrl: "https://www.wilsonlanguage.com/programs/fundations/",
       levels: freeze([
         freeze({ level: "K", units: freeze([
           freeze({ unit: "1", weeks: "12", swbat: "Match letters to sounds and read or build simple CVC words.", focus: "letter-sound knowledge, phonemic awareness, and early CVC transfer", sourceType: "broad" }),
@@ -369,6 +390,8 @@
       grades: freeze(["K", "1", "2", "3", "4", "5"]),
       assessmentModel: "Cool-down / section checkpoint / end-of-unit",
       supportRule: "Use the visual model, lesson language, and cool-down together. Ask students to show the quantity or relationship before naming it abstractly.",
+      progressDataNote: "Progress data should name the IM cool-down or checkpoint and capture model use, explanation strength, and independence.",
+      sourceUrl: "https://im.kendallhunt.com/k5/curriculum.html",
       gradeMap: freeze({
         "K": freeze([
           freeze({ unit: "1", title: "Math in Our World", focus: "explore tools, recognize quantities, and count collections" }),
@@ -435,12 +458,44 @@
       }),
       sourceType: "verified"
     }),
+    "wilson-reading-system": freeze({
+      id: "wilson-reading-system",
+      label: "Wilson Reading System",
+      grades: freeze(["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]),
+      assessmentModel: "Wordlist charting / dictation / passage reading",
+      supportRule: "Keep sounds, word cards, controlled text, and dictation in the planned Wilson sequence so mastery decisions stay evidence-based.",
+      progressDataNote: "Progress data should name the Wilson check and capture wordlist charting, dictation, and controlled-text reading accuracy.",
+      sourceUrl: "https://www.wilsonlanguage.com/programs/wilson-reading-system/",
+      sourceType: "verified"
+    }),
+    "just-words": freeze({
+      id: "just-words",
+      label: "Just Words",
+      grades: freeze(["4", "5", "6", "7", "8", "9", "10", "11", "12"]),
+      assessmentModel: "Progress check / word reading / spelling dictation",
+      supportRule: "Keep the target pattern set small, practice it in connected reading and spelling, and move quickly into sentence-level transfer.",
+      progressDataNote: "Progress data should name the Just Words check and capture word reading, spelling dictation, and connected-text transfer.",
+      sourceUrl: "https://www.wilsonlanguage.com/programs/just-words/",
+      sourceType: "verified"
+    }),
+    "ufli-foundations": freeze({
+      id: "ufli-foundations",
+      label: "UFLI Foundations",
+      grades: freeze(["K", "1", "2", "3", "4", "5"]),
+      assessmentModel: "Daily concept checks / encoding / connected text",
+      supportRule: "Run the cumulative routine in order and correct at the pattern level before asking for another independent response.",
+      progressDataNote: "Progress data should name the UFLI concept check and capture decoding, encoding, and connected-text transfer.",
+      sourceUrl: "https://ufli.education.ufl.edu/foundations/",
+      sourceType: "verified"
+    }),
     "bridges-intervention": freeze({
       id: "bridges-intervention",
       label: "Bridges Intervention",
       grades: freeze(["K", "1", "2", "3", "4", "5"]),
       assessmentModel: "Placement / ongoing progress monitoring",
       supportRule: "Anchor the work in one representation before moving to the equation. Use the current monitoring task to decide whether the student can explain the quantity and operation choice.",
+      progressDataNote: "Progress data should name the Bridges monitoring task and capture representation choice, equation accuracy, and explanation strength.",
+      sourceUrl: "https://www.mathlearningcenter.org/curriculum/bridges-intervention",
       cycleMap: freeze({
         "K-2": freeze([
           freeze({ cycle: "Quantity and counting", swbat: "Represent the quantity with one model and explain how the count matches the set.", focus: "counting, quantity, and one-to-one correspondence", sourceType: "broad" }),

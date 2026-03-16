@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="./style/tokens.css?v=20260301y">
   <link rel="stylesheet" href="./style/typography.css?v=20260301y">
   <link rel="stylesheet" href="./style/nav-shell.css?v=20260312a">
-  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260315b">
-  <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260306m">
+  <link rel="stylesheet" href="./teacher-dashboard.css?v=20260316d">
+  <link rel="stylesheet" href="./css/lesson-brief-panel.css?v=20260316a">
   <link rel="stylesheet" href="./css/backup-panel.css?v=20260308a">
   <style>
     /* ── Teacher Hub CTA ─────────────────────────────── */
@@ -145,44 +145,44 @@
             <div>
               <p class="dashboard-kicker">Reports &amp; Prep</p>
               <h1 class="td-title">Reports from the record.</h1>
-              <p class="dashboard-section-meta">Family updates, progress reports, and meeting packets.</p>
+              <p class="dashboard-section-meta">Choose the output, then act on the student evidence.</p>
             </div>
             <div class="td-reports-overview__actions">
               <a class="td-top-btn td-hub-cta" href="./teacher-hub-v2.html">Back to Hub</a>
               <a class="td-top-btn" href="./student-profile.html">Open Student Profile</a>
             </div>
           </div>
-          <div class="td-leadership-strip" aria-label="Leadership snapshot">
+          <div class="td-leadership-strip hidden" aria-label="Leadership snapshot" aria-hidden="true">
             <article class="td-leadership-card td-leadership-card--signal">
               <span class="td-overview-eyebrow">Family Update</span>
-              <strong>Send one clear weekly summary</strong>
-              <p>Pull current strengths, focus, and next steps from the student record.</p>
+              <strong>Weekly family summary</strong>
+              <p>Strength, focus, next step.</p>
               <a class="td-leadership-card__cta" href="#td-prep-title">Open family update</a>
             </article>
             <article class="td-leadership-card td-leadership-card--action">
               <span class="td-overview-eyebrow">Pre-SSM Brief</span>
-              <strong>Open packet drafts before the meeting</strong>
-              <p>Review support history, collected evidence, and active goals before discussion.</p>
+              <strong>Open the meeting brief</strong>
+              <p>Evidence, supports, goals.</p>
               <button id="td-reports-hero-open-meeting" class="td-leadership-card__cta" type="button">Open pre-SSM brief</button>
             </article>
             <article class="td-leadership-card td-leadership-card--proof">
               <span class="td-overview-eyebrow">SSM Packet</span>
-              <strong>Prepare the detailed meeting record</strong>
-              <p>Use the same structured notes for the packet, family share-out, and follow-up plan.</p>
+              <strong>Prepare the full packet</strong>
+              <p>Meeting-ready record.</p>
               <a class="td-leadership-card__cta" href="#td-prep-title">Open SSM packet</a>
             </article>
           </div>
         </section>
         <section class="td-reports-workbench">
-          <article class="td-reports-panel card td-surface" aria-labelledby="td-patterns-title">
+          <article class="td-reports-panel td-reports-panel--queue card td-surface" aria-labelledby="td-patterns-title">
             <div class="td-reports-panel__head">
               <div>
-                <p class="dashboard-kicker">Report Queue</p>
-                <h2 id="td-patterns-title" class="dashboard-section-title">What is ready now.</h2>
+                <p class="dashboard-kicker">Queue</p>
+                <h2 id="td-patterns-title" class="dashboard-section-title">What needs attention.</h2>
               </div>
               <a class="td-top-btn" href="./teacher-hub-v2.html">Open Hub</a>
             </div>
-            <p class="dashboard-section-meta">Missing evidence, due items, and ready drafts.</p>
+            <p class="dashboard-section-meta">Scan this first.</p>
             <div class="td-reports-pattern-strips" aria-label="Reports prep signals">
               <div class="td-reports-pattern-strip td-reports-pattern-strip--warn">
                 <span>Need evidence</span>
@@ -200,50 +200,94 @@
             <div class="td-reports-pattern-list" aria-label="Reports prep checklist">
               <article>
                 <strong>Family update queue</strong>
-                <p>Weekly summaries ready for final review.</p>
+                <p>Ready for review.</p>
               </article>
               <article>
                 <strong>Pre-SSM packet queue</strong>
-                <p>Briefs with evidence, services, and goals already aligned.</p>
+                <p>Evidence and goals aligned.</p>
               </article>
               <article>
                 <strong>Missing evidence queue</strong>
-                <p>One more data point needed before export.</p>
+                <p>One more data point needed.</p>
               </article>
             </div>
           </article>
-          <article class="td-reports-panel card td-surface" aria-labelledby="td-prep-title">
+          <article class="td-reports-panel td-reports-panel--actions card td-surface" aria-labelledby="td-prep-title">
             <div class="td-reports-panel__head">
               <div>
-                <p class="dashboard-kicker">Output Types</p>
+                <p class="dashboard-kicker">Start Here</p>
                 <h2 id="td-prep-title" class="dashboard-section-title">Choose the output.</h2>
               </div>
             </div>
-            <p class="dashboard-section-meta">Same record, different output.</p>
+            <p class="dashboard-section-meta">One record, four outputs.</p>
             <div class="td-reports-prep-steps" aria-label="Meeting prep flow">
               <article>
                 <span>1</span>
                 <strong>Family update</strong>
-                <p>Strength, focus, next step.</p>
+                <p>Weekly summary.</p>
               </article>
               <article>
                 <span>2</span>
                 <strong>Progress report</strong>
-                <p>Goal progress and current supports.</p>
+                <p>Goal progress.</p>
               </article>
               <article>
                 <span>3</span>
                 <strong>Pre-SSM / SSM packet</strong>
-                <p>Meeting-ready packet from the same record.</p>
+                <p>Meeting packet.</p>
               </article>
             </div>
             <div class="td-reports-action-grid">
               <button id="td-reports-open-meeting" class="td-top-btn btn-primary" type="button">Open Pre-SSM Brief</button>
               <button id="td-reports-open-weekly" class="td-top-btn" type="button">Generate Family Update</button>
-              <button id="td-reports-open-library" class="td-top-btn" type="button">Progress Report Format</button>
-              <button id="td-reports-open-import" class="td-top-btn" type="button">Export / Save to Drive</button>
+              <button id="td-reports-open-library" class="td-top-btn" type="button">Open SAS Library</button>
+              <button id="td-reports-open-import" class="td-top-btn" type="button">Open Backup Tools</button>
             </div>
           </article>
+        </section>
+        <section class="td-specialist-planning card td-surface" aria-labelledby="td-specialist-planning-title">
+          <div class="td-specialist-planning__head">
+            <div>
+              <p class="dashboard-kicker">Specialist Planning</p>
+              <h2 id="td-specialist-planning-title" class="dashboard-section-title">Open one student and plan the next move.</h2>
+              <p class="dashboard-section-meta">Tighten goals, supports, and next actions before you export.</p>
+            </div>
+            <p id="td-visible-support-student" class="td-specialist-planning__student">Select a student to load support planning.</p>
+          </div>
+          <div id="td-visible-support-list" class="td-specialist-planning__list" aria-label="Student planning roster"></div>
+          <div class="td-plan-tabs td-specialist-planning__tabs" aria-label="Support planning tabs">
+            <button class="td-top-btn is-active" type="button" data-visible-support-tab="plan">Plan</button>
+            <button class="td-top-btn" type="button" data-visible-support-tab="snapshot">Snapshot</button>
+            <button class="td-top-btn" type="button" data-visible-support-tab="accommodations">Accommodations</button>
+            <button class="td-top-btn" type="button" data-visible-support-tab="interventions">Interventions</button>
+          </div>
+          <div id="td-visible-support-body" class="td-specialist-planning__body"></div>
+        </section>
+        <section class="td-family-comms card td-surface" aria-labelledby="td-family-comms-title">
+          <div class="td-family-comms__head">
+            <div>
+              <p class="dashboard-kicker">Family Communication</p>
+              <h2 id="td-family-comms-title" class="dashboard-section-title">Prepare the update before you send it.</h2>
+              <p class="dashboard-section-meta">Keep family messaging short, translated when needed, and tied to the same student evidence.</p>
+            </div>
+          </div>
+          <div class="td-family-comms__grid" aria-label="Family communication actions">
+            <article class="td-family-comms__card">
+              <strong>Weekly update</strong>
+              <p>Share strength, focus, and next step.</p>
+              <button id="td-family-comms-open-weekly" class="td-top-btn" type="button">Open family update</button>
+            </article>
+            <article class="td-family-comms__card">
+              <strong>Translated draft</strong>
+              <p>Prepare a reviewed family-facing version.</p>
+              <button id="td-family-comms-open-translation" class="td-top-btn" type="button">Open translation tools</button>
+            </article>
+            <article class="td-family-comms__card">
+              <strong>Meeting follow-up</strong>
+              <p>Turn the packet into a family summary.</p>
+              <button id="td-family-comms-open-meeting" class="td-top-btn" type="button">Open meeting summary</button>
+            </article>
+          </div>
         </section>
         <section class="td-priority-hero card td-surface hidden" aria-label="Highest priority right now" aria-hidden="true">
           <div class="td-priority-hero__copy">
@@ -496,7 +540,7 @@
             </div>
           </aside>
         </section>
-        <details id="td-pilot-evaluation" class="dashboard-eval card td-surface" aria-label="Pilot evaluation">
+        <details id="td-pilot-evaluation" class="dashboard-eval card td-surface hidden" aria-label="Pilot evaluation" aria-hidden="true">
           <summary class="dashboard-eval-summary">
             <span class="dashboard-eval-summary__copy">
               <strong>Pilot Evaluation</strong>
@@ -847,7 +891,7 @@
   <script src="./js/search/teacher-search-service.js?v=20260306u" defer></script>
   <script src="./js/skill-taxonomy.js?v=20260306h" defer></script>
   <script src="./js/skill-mapper.js?v=20260306h" defer></script>
-  <script src="./js/support-store.js?v=20260306h" defer></script>
+  <script src="./js/support-store.js?v=20260316b" defer></script>
   <script src="./js/evidence-store.js?v=20260306h" defer></script>
   <script src="./js/intervention-planner.js?v=20260306h" defer></script>
   <script src="./js/data-registry.js?v=20260306h" defer></script>
@@ -871,47 +915,47 @@
   <script src="./js/instructional-sequencer.js?v=20260306h" defer></script>
   <script src="./js/alignment-loader.js?v=20260306h" defer></script>
   <script src="./js/share-summary.js?v=20260306h" defer></script>
-  <script src="./js/weekly-insight-generator.js?v=20260306q" defer></script>
+  <script src="./js/weekly-insight-generator.js?v=20260316c" defer></script>
   <script src="./js/reporting/generator.js?v=20260306h" defer></script>
   <script src="./js/reporting/meeting-generator.js?v=20260306h" defer></script>
   <script src="./js/meeting-notes.js?v=20260306h" defer></script>
   <script src="./js/meeting-translation.js?v=20260306h" defer></script>
-  <script src="./js/sas-alignment-library.js?v=20260306h" defer></script>
+  <script src="./js/sas-alignment-library.js?v=20260316a" defer></script>
   <script src="./js/dashboard/utils/dashboard-utils.js?v=20260306h" defer></script>
   <script src="./js/teacher-runtime-state.js?v=20260306n" defer></script>
   <script src="./js/dashboard/dashboard-state.js?v=20260306n" defer></script>
   <script src="./js/dashboard/dashboard-role.js?v=20260306h" defer></script>
   <script src="./js/dashboard/dashboard-ui.js?v=20260309b" defer></script>
   <script src="./js/dashboard/dashboard-focus.js?v=20260306h" defer></script>
-  <script src="./js/dashboard/dashboard-support.js?v=20260306h" defer></script>
-  <script src="./js/dashboard/dashboard-support-view.js?v=20260306h" defer></script>
-  <script src="./js/dashboard/dashboard-institutional.js?v=20260306h" defer></script>
+  <script src="./js/dashboard/dashboard-support.js?v=20260316b" defer></script>
+  <script src="./js/dashboard/dashboard-support-view.js?v=20260316d" defer></script>
+  <script src="./js/dashboard/dashboard-institutional.js?v=20260316b" defer></script>
   <script src="./js/dashboard/dashboard-drawer.js?v=20260306h" defer></script>
-  <script src="./js/dashboard/dashboard-bindings.js?v=20260306h" defer></script>
-  <script src="./js/dashboard/dashboard-meeting.js?v=20260315b" defer></script>
+  <script src="./js/dashboard/dashboard-bindings.js?v=20260316b" defer></script>
+  <script src="./js/dashboard/dashboard-meeting.js?v=20260316c" defer></script>
   <script src="./js/dashboard/dashboard-modals.js?v=20260306h" defer></script>
   <script src="./js/dashboard/workspace-caseload.js?v=20260306p" defer></script>
   <script src="./js/dashboard/workspace-focus-shell.js?v=20260306q" defer></script>
   <script src="./js/dashboard/workspace-student-intelligence.js?v=20260306v" defer></script>
   <script src="./js/dashboard/workspace-selection.js?v=20260306w" defer></script>
   <script src="./js/dashboard/workspace-recommendations.js?v=20260306r" defer></script>
-  <script src="./js/dashboard/workspace-support-content.js?v=20260306z" defer></script>
+  <script src="./js/dashboard/workspace-support-content.js?v=20260316a" defer></script>
   <script src="./js/dashboard/workspace-support-ops.js?v=20260306s" defer></script>
-  <script src="./js/dashboard/workspace-reports.js?v=20260306n" defer></script>
+  <script src="./js/dashboard/workspace-reports.js?v=20260316c" defer></script>
   <script src="./js/dashboard/workspace-meetings.js?v=20260306n" defer></script>
-  <script src="./js/dashboard/workspace-meeting-content.js?v=20260306y" defer></script>
+  <script src="./js/dashboard/workspace-meeting-content.js?v=20260316c" defer></script>
   <script src="./js/dashboard/workspace-family-communication.js?v=20260306n" defer></script>
   <script src="./js/dashboard/workspace-drawer-content.js?v=20260306aa" defer></script>
   <script src="./js/dashboard/workspace-history.js?v=20260306n" defer></script>
   <script src="./js/dashboard/workspace-fidelity.js?v=20260306n" defer></script>
-  <script src="./js/evaluation/wow-evaluator.js?v=20260306h" defer></script>
+  <script src="./js/evaluation/wow-evaluator.js?v=20260316a" defer></script>
   <script src="./js/evaluation/evaluation-summary.js?v=20260306h" defer></script>
   <script src="./js/google-auth-config.js?v=20260306i" onerror="0"></script>
   <script src="./js/auth/google-auth.js?v=20260306i" defer onerror="0"></script>
   <script src="./js/auth/google-workspace.js?v=20260306i" defer onerror="0"></script>
   <script src="./js/backup-manager.js?v=20260308a" defer></script>
-  <script src="./js/lesson-brief-panel.js?v=20260306n" defer></script>
-  <script src="./teacher-dashboard.js?v=20260315c" defer></script>
+  <script src="./js/lesson-brief-panel.js?v=20260316g" defer></script>
+  <script src="./teacher-dashboard.js?v=20260316f" defer></script>
   <script defer>window.addEventListener("DOMContentLoaded",function(){window.CSBackupManager&&window.CSBackupManager.init&&window.CSBackupManager.init();});</script>
 </body>
 </html>

@@ -294,6 +294,39 @@
   color: #36506f;
 }
 
+.cs-brief-google-next {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(159, 177, 210, 0.55);
+  background:
+    radial-gradient(circle at top right, rgba(114, 161, 231, 0.14), transparent 34%),
+    linear-gradient(180deg, rgba(246, 249, 255, 0.94), rgba(240, 246, 255, 0.88));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+.cs-brief-google-next span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7287ab;
+}
+
+.cs-brief-google-next strong {
+  font-size: 16px;
+  line-height: 1.35;
+  color: #20324d;
+}
+
+.cs-brief-google-next p {
+  margin: 0;
+  color: #4d6487;
+  line-height: 1.45;
+}
+
 .cs-brief-inline-link {
   color: #214e91;
   font-weight: 700;
